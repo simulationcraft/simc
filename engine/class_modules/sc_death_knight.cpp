@@ -422,6 +422,7 @@ public:
   // Counters
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
+  bool triggered_biting_cold;
   unsigned int km_proc_attempts;
 
   // Enemies affected by festering wounds
@@ -908,6 +909,7 @@ public:
 
     // Frost                                      // bonus_id
     item_runeforge_t absolute_zero;               // 6946
+    item_runeforge_t biting_cold;                 // 6945
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
@@ -933,6 +935,7 @@ public:
     runeforge_expression_warning( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
+    triggered_biting_cold( false ),
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
@@ -5473,7 +5476,7 @@ struct howling_blast_t : public death_knight_spell_t
       echoing_howl -> execute();
     }
 
-    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion->ok() )
+    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion.ok() )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
@@ -5605,7 +5608,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
     }
-    if ( p -> legendary.koltiras_favor-> ok() )
+    if ( p -> legendary.koltiras_favor.ok() )
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
@@ -5641,7 +5644,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.icy_citadel_builder -> trigger();
     }
 
-    if ( p() -> legendary.koltiras_favor -> ok() )
+    if ( p() -> legendary.koltiras_favor.ok() )
     {
       if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
       {
@@ -5931,10 +5934,12 @@ struct raise_dead_t : public death_knight_spell_t
 struct remorseless_winter_damage_t : public death_knight_spell_t
 {
   double frozen_tempest_target_threshold;
+  double biting_cold_target_threshold;
 
   remorseless_winter_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "remorseless_winter_damage", p, p -> spec.remorseless_winter -> effectN( 2 ).trigger() ),
-    frozen_tempest_target_threshold( 0 )
+    frozen_tempest_target_threshold( 0 ),
+    biting_cold_target_threshold( 0 )
   {
     background = true;
     aoe = -1;
@@ -5952,6 +5957,12 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     if ( p -> azerite.frozen_tempest.enabled() )
     {
       frozen_tempest_target_threshold = p -> azerite.frozen_tempest.spell() -> effectN( 1 ).base_value();
+    }
+
+    if ( p -> legendary.biting_cold.ok() )
+    {
+      biting_cold_target_threshold = p -> legendary.biting_cold->effectN ( 1 ).base_value();
+      base_multiplier *= 1.0 + p -> legendary.biting_cold->effectN( 2 ).percent();
     }
   }
 
@@ -5991,8 +6002,14 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
 
     if ( state -> n_targets >= frozen_tempest_target_threshold && p() -> azerite.frozen_tempest.enabled() && ! p() -> triggered_frozen_tempest )
     {
-      p() -> buffs.rime -> trigger();
+      p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       p() -> triggered_frozen_tempest = true;
+    }
+
+    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! p() -> triggered_biting_cold )
+    {
+      p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      p() -> triggered_biting_cold = true;
     }
 
     if ( p() -> conduits.biting_cold.ok() )
@@ -6046,6 +6063,7 @@ struct remorseless_winter_t : public death_knight_spell_t
   void execute() override
   {
     p() -> triggered_frozen_tempest = false;
+    p() -> triggered_biting_cold = false;
 
     death_knight_spell_t::execute();
 
@@ -8142,6 +8160,7 @@ void death_knight_t::init_spells()
   // Blood
   // Frost
   legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
+  legendary.biting_cold                 = find_runeforge_legendary( "Biting Cold" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
   // Unholy

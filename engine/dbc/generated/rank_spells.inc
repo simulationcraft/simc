@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.2.35938
-static const std::array<rank_class_spell_t, 334> __rank_spells_data { {
+// Rank class spells, wow build 9.0.2.35978
+static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -114,6 +114,7 @@ static const std::array<rank_class_spell_t, 334> __rank_spells_data { {
   { 10, 270, 322104,      0, "Expel Harm"                        , "Rank 2" },
   { 10, 270, 325214,      0, "Expel Harm"                        , "Rank 3" },
   { 12, 577, 320415,      0, "Eye Beam"                          , "Rank 2" },
+  { 12, 577, 343311,      0, "Eye Beam"                          , "Rank 3" },
   {  5,   0, 327821,      0, "Fade"                              , "Rank 2" },
   {  9,   0, 342914,      0, "Fear"                              , "Rank 2" },
   { 12, 581, 320639,      0, "Fel Devastation"                   , "Rank 2" },

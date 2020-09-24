@@ -149,6 +149,7 @@ struct agony_t : public affliction_spell_t
     pandemic_invocation_usable = false;  // BFA - Azerite
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
+    dot_duration += p->conduit.rolling_agony.time_value();
   }
 
   void last_tick( dot_t* d ) override
@@ -334,8 +335,27 @@ struct unstable_affliction_t : public affliction_spell_t
 
     if ( p->spec.unstable_affliction_3->ok() )
     {
-      this->dot_duration += p->find_spell( 334315 )->duration();
+      dot_duration += timespan_t::from_millis( p->spec.unstable_affliction_3->effectN( 1 ).base_value() );
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->ua_target )
+    {
+      td( p()->ua_target )->dots_unstable_affliction->cancel();
+    }
+
+    p()->ua_target = target;
+
+    affliction_spell_t::execute();
+  }
+
+  void last_tick( dot_t* d) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    p()->ua_target = nullptr;
   }
 };
 
@@ -346,7 +366,11 @@ struct summon_darkglare_t : public affliction_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
+    //Disabling this Azerite Essence for now. If someone desperately wants to do a prepatch sim with both, they'll need to test the interaction.
+    //cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+    
+    cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -833,6 +857,7 @@ void warlock_t::init_spells_affliction()
   talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
+  talents.dark_caller         = find_talent_spell( "Dark Caller" );
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 

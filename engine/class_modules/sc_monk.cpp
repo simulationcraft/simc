@@ -1077,37 +1077,76 @@ namespace pets
 // Base Monk Pet Action
 // ==========================================================================
 
-template <typename T_PET, typename T_ACTION>
-struct pet_action_t : public T_ACTION
+struct pet_td_t : public actor_target_data_t
 {
-  typedef pet_action_t<T_PET, T_ACTION> super;
-
-  pet_action_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : T_ACTION( name, pet, spell )
+  pet_td_t( player_t* target, pet_t* source ) : actor_target_data_t( target, source )
   {
-    this->special  = true;
-    this->may_crit = true;
   }
+};
 
-  T_PET* p() const
+template <typename BASE>
+struct pet_action_base_t : public BASE
+{
+  using super_t = BASE;
+  using base_t  = pet_action_base_t<BASE>;
+
+  const action_t* source_action;
+
+  pet_action_base_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    : BASE( n, p, data ), source_action( nullptr )
   {
-    return debug_cast<T_PET*>( this->player );
+    // No costs are needed either
+    this->base_costs[ RESOURCE_ENERGY ] = 0;
+    this->base_costs[ RESOURCE_CHI ]    = 0;
+    this->base_costs[ RESOURCE_MANA ]   = 0;
   }
 
   void init() override
   {
-    T_ACTION::init();
+    super_t::init();
 
     if ( !this->player->sim->report_pets_separately )
     {
-      auto it = range::find_if( p()->o()->pet_list,
-                                [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+      auto it =
+          range::find_if( o()->pet_list, [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
 
-      if ( it != p()->o()->pet_list.end() && this->player != *it )
+      if ( it != o()->pet_list.end() && this->player != *it )
       {
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
+  }
+
+  pet_td_t* td( player_t* t ) const
+  {
+    return this->p()->get_target_data( t );
+  }
+
+  monk_t* o()
+  {
+    return debug_cast<monk_t*>( this->player->cast_pet()->owner );
+  }
+
+  const monk_t* o() const
+  {
+    return debug_cast<const monk_t*>( this->player->cast_pet()->owner );
+  }
+
+  const pet_t* p() const
+  {
+    return debug_cast<pet_t*>( this->player );
+  }
+
+  pet_t* p()
+  {
+    return debug_cast<pet_t*>( this->player );
+  }
+
+  void execute() override
+  {
+    this->target = this->player->target;
+
+    super_t::execute();
   }
 };
 
@@ -1115,34 +1154,36 @@ struct pet_action_t : public T_ACTION
 // Base Monk Pet Melee Attack
 // ==========================================================================
 
-template <typename T_PET>
-struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
+  struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
-  using super = pet_melee_attack_t<T_PET>;
+  bool main_hand, off_hand;
 
-  pet_melee_attack_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : pet_action_t<T_PET, melee_attack_t>( pet, name, spell )
+  pet_melee_attack_t( const std::string& n, pet_t* p,
+                      const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
+    : base_t( n, p, data ),
+      main_hand( !w ? true : false ),
+      off_hand( !w ? true : false )
   {
-    if ( this->school == SCHOOL_NONE )
+    school = SCHOOL_PHYSICAL;
+
+    if ( w )
     {
-      this->school        = SCHOOL_PHYSICAL;
-      this->stats->school = SCHOOL_PHYSICAL;
+      weapon = w;
     }
   }
 
-  void init() override
+  // Physical tick_action abilities need amount_type() override, so the
+  // tick_action multistrikes are properly physically mitigated.
+  result_amount_type amount_type( const action_state_t* state, bool periodic ) const override
   {
-    pet_action_t<T_PET, melee_attack_t>::init();
-
-    if ( !this->background && this->trigger_gcd == 0_ms )
+    if ( tick_action && tick_action->school == SCHOOL_PHYSICAL )
     {
-      this->trigger_gcd = 1.5_s;
+      return result_amount_type::DMG_DIRECT;
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    pet_action_t<T_PET, melee_attack_t>::impact( state );
+    else
+    {
+      return base_t::amount_type( state, periodic );
+    }
   }
 };
 
@@ -1176,16 +1217,11 @@ struct pet_auto_attack_t : public melee_attack_t
 // Base Monk Pet Spell
 // ==========================================================================
 
-template <typename T_PET>
-struct pet_spell_t : public pet_action_t<T_PET, spell_t>
+struct pet_spell_t : public pet_action_base_t<spell_t>
 {
-  using super = pet_spell_t<T_PET>;
-
-  pet_spell_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : pet_action_t<T_PET, spell_t>( pet, name, spell )
+  pet_spell_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    : base_t( n, p, data )
   {
-    this->tick_may_crit = true;
-    this->hasted_ticks  = false;
   }
 };
 
@@ -1193,18 +1229,16 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Base Monk Heal Spell
 // ==========================================================================
 
-template <typename T_PET>
-struct pet_heal_t : public pet_action_t<T_PET, heal_t>
+struct pet_heal_t : public pet_action_base_t<heal_t>
 {
-  using super = pet_heal_t<T_PET>;
-
-  pet_heal_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : pet_action_t<T_PET, heal_t>( pet, name, spell )
+  pet_heal_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() ) : base_t( n, p, data )
   {
-    this->tick_may_crit = true;
-    this->hasted_ticks  = false;
   }
 };
+
+// ==========================================================================
+// Monk Statues
+// ==========================================================================
 
 struct statue_t : public pet_t
 {
@@ -2247,7 +2281,7 @@ private:
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
       : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
-      dual = direct_tick = background = may_crit = may_miss = true;
+      dual = direct_tick = background = may_crit = true;
     }
   };
 
@@ -2261,7 +2295,7 @@ private:
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
       dot_duration        = p->o()->spec.invoke_xuen->duration();
-      hasted_ticks        = false;
+      hasted_ticks        = true;
       may_miss            = false;
       dynamic_tick_action = true;  
       base_tick_time =
@@ -2407,7 +2441,7 @@ private:
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
       dot_duration        = p->o()->buff.fury_of_xuen_haste->buff_duration();
-      hasted_ticks        = false;
+      hasted_ticks        = true;
       may_miss            = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
@@ -5013,8 +5047,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
-//    if ( p()->spec.rising_sun_kick_2->ok() )
-//      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+    if ( p()->spec.rising_sun_kick_2->ok() )
+      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
     return am;
   }
@@ -5444,12 +5478,13 @@ struct blackout_kick_t : public monk_melee_attack_t
       {
         if ( p()->spec.blackout_kick_3->ok() )
         {
-          // Reduce the cooldown of Rising Sun Kick, Fists of Fury and Whirling Dragon Punch
+          // Reduce the cooldown of Rising Sun Kick and Fists of Fury
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+          if ( p()->buff.weapons_of_order->up() )
+            cd_reduction += timespan_t::from_seconds( -1 );
+
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
-          if ( p()->buff.whirling_dragon_punch->up() )
-            p()->buff.whirling_dragon_punch->extend_duration( p(), cd_reduction );
         }
         break;
       }
@@ -5570,6 +5605,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 // Spinning Crane Kick
 // ==========================================================================
 
+// Jade Ignition Legendary
 struct chi_explosion_t : public monk_spell_t
 {
   chi_explosion_t( monk_t* player )

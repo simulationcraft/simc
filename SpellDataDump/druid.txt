@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2105,7 +2105,7 @@ Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 85
+Req. Max Level   : 49
 Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5272,7 +5272,7 @@ Name             : Stalwart Guardian (id=184878) [Scaling Spell (-1), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 109
+Req. Max Level   : 49
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5417,7 +5417,7 @@ Proc Flags       : ........ ......x. ........ ........
                  : Magic Heal
 Triggered by     : Memory of the Mother Tree (339064)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -5646,7 +5646,7 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
+Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
@@ -7140,7 +7140,7 @@ Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -9563,7 +9563,7 @@ Description      : Deals $s1 Astral damage to the target and empowers Half Moon 
 
 Name             : Full Moon (id=274283) [Spell Family (7)] 
 Class            : Druid
-School           : Arcane
+School           : Astral
 Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -9582,7 +9582,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=726528)   : School Damage (2): arcane
+#1 (id=726528)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=726529)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
@@ -9592,7 +9592,7 @@ Effects          :
                    Base Value: 202787 | Scaled Value: 202787 | PvP Coefficient: 1.00000
 #5 (id=726532)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: At Enemy (53)
-Description      : Deals $m1 Arcane damage to the target and nearby enemies, and resets Full Moon to become New Moon. Deals reduced damage to secondary targets.
+Description      : Deals $m1 Astral damage to the target and nearby enemies, and resets Full Moon to become New Moon. Deals reduced damage to secondary targets.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
@@ -12622,7 +12622,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=837693)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Swiftmend no longer consumes a heal over time effect, and extends the duration of your heal over time effects on the target by $s1 sec.
 
 Name             : The Dark Titan's Lesson (id=338831) [Spell Family (7), Passive] 
@@ -12640,7 +12640,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=837695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
 #2 (id=837700)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -12768,7 +12768,7 @@ Description      : Barkskin reduces damage by an additional $s1%. When it begins
 Name             : Memory of the Mother Tree (id=339064) [Spell Family (7), Passive] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 25%
+Proc Chance      : 50%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -12782,7 +12782,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=838057)   : Apply Aura (6) | Proc Trigger Spell (42): Memory of the Mother Tree
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 189877 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 189877 | Target: Self (1)
 Description      : Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional allies within $189877s1 yards of the target.
 
 Name             : Apex Predator's Craving (id=339139) [Spell Family (7), Passive] 

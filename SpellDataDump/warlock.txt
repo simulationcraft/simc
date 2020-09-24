@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4310,6 +4310,12 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 #2 (id=708688)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+#3 (id=871511)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 966 (Label) | Target: Self (1)
+                   Affected Spells (Label): Decimating Bolt (325299)
+#4 (id=871512)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 966 (Label) | Target: Self (1)
+                   Affected Spells (Label): Decimating Bolt (325299)
 Description      : Incinerate now also hits all enemies near your target for $s1% damage and generates $s2 Soul Shard Fragment for each additional enemy hit.
 
 Name             : Eradication (id=196412) [Spell Family (5), Passive] 
@@ -4961,7 +4967,7 @@ Name             : Varo'then's Restraint (id=213014) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -6129,7 +6135,7 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Power Siphon (334581 effect#1), Wrath of Consumption (337130 effect#1), Balespider's Burning Core (337161 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Decimating Bolt (325299 effect#1), Power Siphon (334581 effect#1), Wrath of Consumption (337130 effect#1), Balespider's Burning Core (337161 effect#1)
 Family Flags     : 49, 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9691,28 +9697,17 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=793902)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=793903)   : Apply Aura (6) | Periodic Damage (3): arcane every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the enemy dies while affected by Scouring Tithe, you generate ${$312379s1/10} Soul $LShard:Shards;. If they survive, Scouring Tithe's cooldown is refreshed.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#3 (id=871508)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#4 (id=871509)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#5 (id=871510)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the enemy dies while affected by Scouring Tithe, you generate $?a137043[${$s3/10}]?a137044[${$s4/10}][${$s5/10}] Soul $LShard:Shards;. If they survive, Scouring Tithe's cooldown is refreshed.
 Tooltip          : Suffering $w2 Arcane damage every $t2 sec.
-
-Name             : Scouring Tithe (desc=Kyrian) (id=312379) [Spell Family (5)] 
-Class            : Warlock
-School           : Arcane
-Spell Type       : None
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=794006)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
-Description      : $@spelldesc312321
 
 Name             : Unstable Affliction (id=316099) [Spell Family (5)] 
 Class            : Affliction Warlock
@@ -9903,7 +9898,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=810357)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc321792
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -9964,9 +9959,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 300 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Enemy (6)
 #5 (id=819802)   : Trigger Spell (64): Decimating Bolt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 400 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next $325299u $?s137046[Incinerates]?s198590[Drain Souls][Shadow Bolts] by $325299s1%.
+Description      : 196Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next$?s198590[][ $325299u] $?s137046[Incinerates]?s198590[Drain Soul][Shadow Bolts]$?a137044[ or Demonbolts][] by $325299s1%.$?a196408[ This value is reduced while using Fire and Brimstone.][]
 
-Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt] both increase as your target's health decreases.
+Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt]$?a137044[ and Demonbolt][] both increase as your target's health decreases.
 Variables        : $damage=${4*$327059s1}
 
 Name             : Decimating Bolt (desc=Necrolord) (id=325299) [Spell Family (5)] 
@@ -9975,6 +9970,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 45 seconds
+Labels           : 966: Fire and Brimstone (196408 effect#3), Fire and Brimstone (196408 effect#4)
 Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -9990,21 +9986,21 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=815488)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670)
-                   Family Flags: 0, 38
+                   Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670), Demonbolt (264178)
+                   Family Flags: 0, 38, 70
 #2 (id=815492)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
 Description      : $@spelldesc325289
-Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt] increased by $w2%.
+Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt]$?a137044[ and Demonbolt][] increased by $w2%.
 
 Name             : Soul Rot (desc=Night Fae) (id=325640) [Spell Family (5)] 
 Class            : Warlock
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : Magic
-Resource         : 0 - 20 Health (-2) (id=192719)
+Resource         : 0.5% Base Mana (0) (id=192719)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -10029,12 +10025,10 @@ Effects          :
 #3 (id=816151)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #4 (id=816155)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : Wither away all life force of your current target and up to $s3 additional targets nearby, causing them to suffer $o2 Nature damage over $d.
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.
 
-For the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.
-
-Consumes $s4% of maximum health when cast.
+For the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Decimating Bolt (desc=Necrolord) (id=327059) [Spell Family (5)] 

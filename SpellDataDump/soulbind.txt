@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-19/35938, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -281,7 +281,6 @@ Description      : Your damaging attacks and spells have a chance to toss Niya's
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
-Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -1095,6 +1094,7 @@ Name             : Bond of Friendship (id=328265) [Passive, Hidden]
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
+Proc Chance      : 101%
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -1106,8 +1106,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=820393)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : [NYI] Defeating an enemy reduces the cooldown on your steward's non-Phial services by 1 sec.
+                   Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.
 
 Name             : Combat Meditation (id=328266) [Passive, Hidden] 
 Covenant         : Kyrian

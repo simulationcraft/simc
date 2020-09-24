@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -2864,7 +2864,7 @@ Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden]
 Class            : Arcane Death Knight, Mage
 School           : Physical
 Spell Type       : None
-Spell Level      : 10 (max 40)
+Spell Level      : 10 (max 49)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2886,7 +2886,7 @@ Effects          :
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: -18 | Points Per Level: -2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Family Flags: 36
@@ -5944,7 +5944,7 @@ Name             : Contained Infernal Core (id=248099) [Spell Family (3), Passiv
 Class            : Mage
 School           : Fire
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -5966,7 +5966,7 @@ Name             : Shattered Fragments of Sindragosa (id=248100) [Spell Family (
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -9109,7 +9109,7 @@ Resource         : 2% Base Mana (0) (id=192387)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : 10 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... x.x..... ........ 
@@ -9129,7 +9129,7 @@ Effects          :
 #1 (id=786039)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=786041)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08240 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=786058)   : Apply Aura (6) | Proc Trigger Spell (42): Radiant Spark Vulnerability
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 307454 | Target: Self (1)
 #4 (id=797439)   : Interrupt Cast (68)
@@ -9208,31 +9208,34 @@ Resource         : 4% Base Mana (0) (id=192533)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 20 seconds
+Duration         : 25 seconds
 Cooldown         : 90 seconds
-Internal Cooldown: 1.5 seconds
+Internal Cooldown: 6 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : ..x.x.x. x.x.x.x. x....... ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 75
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=798085)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Conjure $n mirrors to torment the enemy for $d. Whenever the target casts a spell or ability, a mirror is consumed to inflict $320035s1 Shadow damage and their movement and cast speed are slowed by $320035s3%.
+#2 (id=871274)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+Description      : Conjure $n mirrors to torment the enemy for $d. Whenever the target attacks,  casts a spell or ability, a mirror is consumed to inflict $320035s1 Shadow damage and their movement and cast speed are slowed by $320035s3%.
 
 The final mirror will instead inflict $317589s1 Shadow damage to the enemy, Rooting and Silencing them for $317589d.
-
-Tooltip          : Casting a spell or ability, consumes a mirror to inflict $320035s1 Shadow damage and reduce cast and movement speed by $320035s3%. 
+
+Whenever a mirror is consumed $?c1[you gain $345417s1% mana][]$?c2[your Fire Blast cooldown is reduced by $s2 sec][]$?c3[you gain Brain Freeze][].
+Tooltip          : Attacking, casting a spell or ability, consumes a mirror to inflict Shadow damage and reduce cast and movement speed by $320035s3%. 
 
 Your final mirror will instead Root and Silence you for $317589d.
 
@@ -9273,7 +9276,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=802830)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.51000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=802831)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 #3 (id=805341)   : Apply Aura (6) | Silence (27)
@@ -9329,7 +9332,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=806876)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=806877)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=806878)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
@@ -10424,7 +10427,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=828013)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each consecutive critical strike you deal increases critical strike damage you deal by $333049s1%.
+Description      : Each consecutive critical strike you deal increases critical strike damage you deal by $333049s1%, up to ${ $333049s1*$333049u}%.
 
 Name             : Firestorm (id=333097) [Spell Family (3), Passive] 
 School           : Physical
@@ -11680,5 +11683,22 @@ Effects          :
                    Affected Spells: Flamestrike (2120)
                    Family Flags: 2
 Description      : Flamestrike cast time is reduced by ${$s1/-1000}.1 sec.
+
+Name             : Mirrors of Torment (id=345417) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=871273)   : Energize Power% (137)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc314793
 
 
