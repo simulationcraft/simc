@@ -2211,6 +2211,7 @@ double priest_t::shadow_weaving_multiplier( const player_t* target ) const
 
   if ( mastery_spells.shadow_weaving->ok() )
   {
+    // TODO: add logic to auto give mastery benefit if you are casting a DoT
     auto dots = shadow_weaving_active_dots( target );
 
     if ( dots > 0 )

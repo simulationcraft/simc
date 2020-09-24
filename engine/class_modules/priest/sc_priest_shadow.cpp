@@ -934,7 +934,7 @@ struct devouring_plague_dot_state_t : public action_state_t
   {
     action_state_t::copy_state( o );
     auto other_dp_state = debug_cast<const devouring_plague_dot_state_t*>( o );
-    rolling_multiplier = other_dp_state->rolling_multiplier;
+    rolling_multiplier  = other_dp_state->rolling_multiplier;
   }
 
   double composite_ta_multiplier() const override
@@ -974,7 +974,6 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::consume_resource();
 
-    // TODO: Verify if Damnation can proc this
     if ( priest().buffs.mind_devourer->up() )
     {
       priest().buffs.mind_devourer->decrement();
@@ -1002,27 +1001,56 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
-  // TODO override refresh duration to match in-game refresh
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    // when you refresh, you lose the partial tick
+    return duration + d->time_to_next_tick();
+  }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     priest_spell_t::snapshot_state( s, rt );
 
     double multiplier = 1.0;
-    dot_t* dot = get_dot( s->target );
+    dot_t* dot        = get_dot( s->target );
     if ( dot->is_ticking() )
     {
       action_state_t* old_s = dot->state;
       action_state_t* new_s = s;
 
       timespan_t time_to_tick = dot->time_to_next_tick();
-      timespan_t old_remains = dot->remains();
-      timespan_t new_remains = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
-      timespan_t old_tick = tick_time( old_s );
-      timespan_t new_tick = tick_time( new_s );
-      double old_multiplier = cast_state( old_s )->rolling_multiplier;
+      timespan_t old_remains  = dot->remains();
+      timespan_t new_remains  = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
+      timespan_t old_tick     = tick_time( old_s );
+      timespan_t new_tick     = tick_time( new_s );
+      double old_multiplier   = cast_state( old_s )->rolling_multiplier;
 
-      multiplier = 2.0; // TODO Calculate multiplier here
+      // old_remains * old_multiplier / new_remains * X
+      int num_full_ticks      = as<int>( std::floor( ( old_remains - time_to_tick ) / old_tick ) );
+      double tick_coefficient = dot->current_action->spell_tick_power_coefficient( old_s ) * old_multiplier;
+
+      // find number of ticks in new DP
+      double new_num_ticks        = new_remains / new_tick;
+      double new_tick_coefficient = dot->current_action->spell_tick_power_coefficient( new_s );
+
+      if ( sim->debug )
+      {
+        sim->print_debug(
+            "Devouring Plague calculations - num_full_ticks: {}, tick_coefficient: {}, new_num_ticks: {}, "
+            "new_tick_coefficient: {}",
+            num_full_ticks, tick_coefficient, new_num_ticks, new_tick_coefficient );
+      }
+
+      // figure out the increase for each new tick of DP
+      multiplier = 1 + ( ( ( num_full_ticks * tick_coefficient ) / new_num_ticks ) / new_tick_coefficient );
+
+      if ( sim->debug )
+      {
+        sim->print_debug(
+            "{} {} updated Devouring Plague modifier per tick from previous dot. Modifier per tick went "
+            "from {} to {}.",
+            *player, *this, old_multiplier, multiplier );
+      }
     }
 
     cast_state( s )->rolling_multiplier = multiplier;
