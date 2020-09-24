@@ -1032,12 +1032,12 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     return base_tick_time;
   }
 
-  void impact( action_state_t* s ) override
+  void tick( dot_t* d ) override
   {
-    priest_pet_spell_t::impact( s );
+    priest_pet_spell_t::tick( d );
 
     p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, s->action );
+                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, d->state->action );
   }
 };
 
