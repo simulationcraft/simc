@@ -29,6 +29,7 @@ enum secondary_trigger_e
   TRIGGER_AKAARIS_SOUL_FRAGMENT,
   TRIGGER_TRIPLE_THREAT,
   TRIGGER_CONCEALED_BLUNDERBUSS,
+  TRIGGER_FLAGELLATION,
 };
 
 enum stealth_type_e
@@ -54,6 +55,7 @@ namespace actions
   struct rogue_poison_t;
   struct melee_t;
   struct shadow_blades_attack_t;
+  struct flagellation_damage_t;
 }
 
 enum current_weapon_e
@@ -127,18 +129,19 @@ public:
 
   struct debuffs_t
   {
-    damage_buff_t* vendetta;
-    buff_t* wound_poison;
+    buff_t* akaaris_soul_fragment;
+    buff_t* between_the_eyes;   
     buff_t* crippling_poison;
-    buff_t* numbing_poison;
-    buff_t* marked_for_death;
+    buff_t* find_weakness;
+    buff_t* flagellation;
     buff_t* ghostly_strike;
+    buff_t* marked_for_death;
+    buff_t* numbing_poison;
+    buff_t* prey_on_the_weak;
     buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
     damage_buff_t* shiv;
-    buff_t* find_weakness;
-    buff_t* prey_on_the_weak;
-    buff_t* between_the_eyes;
-    buff_t* akaaris_soul_fragment;
+    damage_buff_t* vendetta;
+    buff_t* wound_poison;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -200,18 +203,20 @@ public:
   // Active
   struct
   {
-    actions::rogue_attack_t* blade_flurry = nullptr;
+    
     actions::rogue_poison_t* lethal_poison = nullptr;
-    actions::rogue_poison_t* nonlethal_poison = nullptr;
-    actions::rogue_attack_t* main_gauche = nullptr;
+    actions::rogue_poison_t* nonlethal_poison = nullptr;   
+    actions::flagellation_damage_t* flagellation = nullptr;
     actions::rogue_spell_t* poison_bomb = nullptr;
     actions::rogue_spell_t* replicating_shadows = nullptr;
-    actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
+    actions::rogue_attack_t* blade_flurry = nullptr;
     actions::rogue_attack_t* bloodfang = nullptr;
+    actions::rogue_attack_t* concealed_blunderbuss = nullptr;
+    actions::rogue_attack_t* main_gauche = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
-    actions::rogue_attack_t* concealed_blunderbuss = nullptr;
+    actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -323,6 +328,7 @@ public:
     buff_t* echoing_reprimand_2;
     buff_t* echoing_reprimand_3;
     buff_t* echoing_reprimand_4;
+    buff_t* flagellation;
 
     // Conduits
     buff_t* deeper_daggers;
@@ -333,31 +339,32 @@ public:
   struct cooldowns_t
   {
     cooldown_t* adrenaline_rush;
-    cooldown_t* garrote;
-    cooldown_t* killing_spree;
-    cooldown_t* shadow_dance;
-    cooldown_t* sprint;
-    cooldown_t* vanish;
     cooldown_t* between_the_eyes;
     cooldown_t* blade_flurry;
     cooldown_t* blade_rush;
     cooldown_t* blind;
     cooldown_t* cloak_of_shadows;
     cooldown_t* dreadblades;
+    cooldown_t* flagellation;
+    cooldown_t* garrote;
+    cooldown_t* ghostly_strike;
     cooldown_t* gouge;
+    cooldown_t* grappling_hook;
+    cooldown_t* killing_spree;
+    cooldown_t* marked_for_death;
     cooldown_t* riposte;
     cooldown_t* roll_the_bones;
-    cooldown_t* ghostly_strike;
-    cooldown_t* grappling_hook;
-    cooldown_t* marked_for_death;
-    cooldown_t* weaponmaster;
-    cooldown_t* vendetta;
-    cooldown_t* shiv;
-    cooldown_t* symbols_of_death;
     cooldown_t* secret_technique;
-    cooldown_t* shadow_blades;
     cooldown_t* sepsis;
     cooldown_t* serrated_bone_spike;
+    cooldown_t* shadow_blades;
+    cooldown_t* shadow_dance;
+    cooldown_t* shiv;
+    cooldown_t* sprint;
+    cooldown_t* symbols_of_death;
+    cooldown_t* vanish;
+    cooldown_t* vendetta;
+    cooldown_t* weaponmaster;
   } cooldowns;
 
   // Gains
@@ -590,6 +597,7 @@ public:
   {
     const spell_data_t* echoing_reprimand;
     const spell_data_t* flagellation;
+    const spell_data_t* flagellation_buff;
     const spell_data_t* sepsis;
     const spell_data_t* serrated_bone_spike;
   } covenant;
@@ -736,6 +744,7 @@ public:
     cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
     cooldowns.sepsis                   = get_cooldown( "sepsis"                   );
     cooldowns.serrated_bone_spike      = get_cooldown( "serrated_bone_spike"      );
+    cooldowns.flagellation             = get_cooldown( "flagellation"             );
 
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -778,6 +787,7 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
 
+  double    composite_rating_multiplier( rating_e ) const override;
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit_chance() const override;
@@ -4656,6 +4666,89 @@ struct echoing_reprimand_t : public rogue_attack_t
   }
 };
 
+// Flagellation =============================================================
+
+struct flagellation_damage_t : public rogue_spell_t
+{
+  buff_t* debuff;
+
+  flagellation_damage_t( util::string_view name, rogue_t* p ) :
+    rogue_spell_t( name, p, p->find_spell( 345316 ) ),
+    debuff( nullptr )
+  {
+    dual = true;
+  }
+
+  void execute() override
+  {
+    // Damage can be scheduled prior to the buff being consumed, this still works but doesn't re-stack
+    rogue_spell_t::execute();
+    if ( debuff && debuff->check() )
+      debuff->trigger();
+  }
+};
+
+struct flagellation_cleanse_t : public rogue_spell_t
+{
+  flagellation_cleanse_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p->covenant.flagellation_buff, options_str )
+  {
+    // TOCHECK: See if this is on the GCD or not
+  }
+
+  void execute() override
+  {
+    rogue_spell_t::execute();
+    p()->active.flagellation->debuff->expire();
+    p()->buffs.flagellation->trigger();
+  }
+
+  bool ready() override
+  {
+    const buff_t* current_debuff = p()->active.flagellation->debuff;
+    if ( current_debuff && current_debuff->at_max_stacks() )
+      return true;
+
+    return false;
+  }
+};
+
+struct flagellation_t : public rogue_attack_t
+{
+  flagellation_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->covenant.flagellation, options_str )
+  {
+    base_costs[ RESOURCE_ENERGY ] = 0; // Incorrect in SimC due to hotfix data
+    cooldown->duration = timespan_t::zero();
+    if ( p->active.flagellation )
+    {
+      add_child( p->active.flagellation );
+    }
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->active.flagellation->debuff = td( execute_state->target )->debuffs.flagellation;
+    p()->active.flagellation->debuff->trigger();
+    p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 1_s );
+    p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 1.25_s );
+  }
+
+  bool ready() override
+  {
+    const buff_t* current_debuff = p()->active.flagellation->debuff;
+    if ( current_debuff && current_debuff->check() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+
+  // Incorrect in SimC due to hotfix data
+  bool requires_stealth() const override
+  { return false; }
+};
+
 // Sepsis ===================================================================
 
 struct sepsis_t : public rogue_attack_t
@@ -6285,6 +6378,19 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     p()->active.replicating_shadows->execute();
   }
 
+  // Proc Flagellation Damage Triggers
+  if ( p()->covenant.flagellation->ok() )
+  {
+    buff_t* debuff = p()->active.flagellation->debuff;
+    if ( debuff && debuff->up() )
+    {
+      for ( unsigned i = 0; i < max_spend; ++i )
+      {
+        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 1_s + 0.25_s * i );
+      }
+    }
+  }
+
   // Remove Echoing Reprimand Buffs
   if ( p()->covenant.echoing_reprimand->ok() )
   {
@@ -6485,6 +6591,15 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
     ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS )
     ->set_cooldown( timespan_t::zero() );
+  debuffs.flagellation = make_buff( *this, "flagellation", source->covenant.flagellation )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [ source ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+      {
+        source->cooldowns.flagellation->start( source->covenant.flagellation->cooldown() );
+      }
+    } );
 
   if ( source->legendary.akaaris_soul_fragment.ok() )
   {
@@ -6523,6 +6638,20 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // ==========================================================================
 // Rogue Character Definition
 // ==========================================================================
+
+// rogue_t::composite_rating_multiplier =====================================
+
+double rogue_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double rm = player_t::composite_rating_multiplier( rating );
+
+  if ( rating == RATING_MASTERY )
+  {
+    rm *= 1.0 + buffs.flagellation->value();
+  }
+
+  return rm;
+}
 
 // rogue_t::composite_attack_speed ==========================================
 
@@ -6777,6 +6906,8 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
+    cds->add_action( "flagellation" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -6897,6 +7028,8 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all" );
+    cds->add_action( "flagellation" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
     cds->add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -6986,6 +7119,8 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
+    cds->add_action( "flagellation" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped|runeforge.deathly_shadows.equipped)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down&(combo_points<1|!runeforge.deathly_shadows.equipped)" );
@@ -7104,6 +7239,8 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "exsanguinate"        ) return new exsanguinate_t        ( name, this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t       ( name, this, options_str );
   if ( name == "feint"               ) return new feint_t               ( name, this, options_str );
+  if ( name == "flagellation"        ) return new flagellation_t        ( name, this, options_str );
+  if ( name == "flagellation_cleanse") return new flagellation_cleanse_t( name, this, options_str );
   if ( name == "garrote"             ) return new garrote_t             ( name, this, options_str );
   if ( name == "gouge"               ) return new gouge_t               ( name, this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t      ( name, this, options_str );
@@ -7747,6 +7884,7 @@ void rogue_t::init_spells()
 
   covenant.echoing_reprimand      = find_covenant_spell( "Echoing Reprimand" );
   covenant.flagellation           = find_covenant_spell( "Flagellation" );
+  covenant.flagellation_buff      = covenant.flagellation->ok() ? find_spell( 345569 ) : spell_data_t::not_found();
   covenant.sepsis                 = find_covenant_spell( "Sepsis" );
   covenant.serrated_bone_spike    = find_covenant_spell( "Serrated Bone Spike" );
 
@@ -7853,6 +7991,11 @@ void rogue_t::init_spells()
   {
     active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
     active.triple_threat_oh = get_secondary_trigger_action<actions::sinister_strike_t::triple_threat_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_oh" );
+  }
+
+  if ( covenant.flagellation->ok() )
+  {
+    active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>( TRIGGER_FLAGELLATION, "flagellation_damage" );
   }
 }
 
@@ -8217,6 +8360,10 @@ void rogue_t::create_buffs()
                                               } );
 
   // Covenants ==============================================================
+
+  buffs.flagellation = make_buff( this, "flagellation", covenant.flagellation_buff )
+    ->set_default_value_from_effect( 1 )
+    ->add_invalidate( CACHE_MASTERY );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323558 ) : spell_data_t::not_found() )
