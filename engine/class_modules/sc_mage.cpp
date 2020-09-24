@@ -66,6 +66,13 @@ enum ground_aoe_type_e
   AOE_MAX
 };
 
+enum hs_e
+{
+  HS_NONE,
+  HS_MAIN_TARGET,
+  HS_ALL_TARGETS
+};
+
 struct state_switch_t
 {
 private:
@@ -1476,7 +1483,7 @@ struct mage_spell_t : public spell_t
   {
     bool bone_chilling = false;
     bool from_the_ashes = false;
-    bool hot_streak = false;
+    hs_e hot_streak = HS_NONE;
     bool ignite = false;
     bool kindling = false;
 
@@ -1904,7 +1911,7 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.ignite )
         trigger_ignite( s );
 
-      if ( triggers.hot_streak && s->chain_target == 0 )
+      if ( triggers.hot_streak == HS_ALL_TARGETS || ( triggers.hot_streak == HS_MAIN_TARGET && s->chain_target == 0 ) )
         handle_hot_streak( s );
 
       // TODO: Double check how this works with Pheonix Flames and Deathborne Fireball
@@ -3308,7 +3315,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     if ( p->talents.alexstraszas_fury->ok() )
     {
       base_crit = 1.0;
-      triggers.hot_streak = true;
+      triggers.hot_streak = HS_MAIN_TARGET;
     }
   }
 
@@ -3425,7 +3432,8 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = HS_ALL_TARGETS;
+    triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.fireball_3->effectN( 1 ).percent();
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
@@ -4363,7 +4371,8 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = HS_MAIN_TARGET;
+    triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4713,7 +4722,8 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
+    triggers.hot_streak = HS_MAIN_TARGET;
+    triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // TODO: Phoenix Flames currently does not trigger fevered incantation or Kindling
     // on the beta. Verify whether this is fixed closer to shadowlands release.
@@ -4836,7 +4846,8 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = HS_MAIN_TARGET;
+    triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
@@ -5012,7 +5023,8 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = HS_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -7678,7 +7690,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     auto is_hss = [] ( action_t* a )
     {
       if ( auto m = dynamic_cast<actions::mage_spell_t*>( a ) )
-        return m->triggers.hot_streak;
+        return m->triggers.hot_streak != HS_NONE;
       else
         return false;
     };
