@@ -228,8 +228,13 @@ struct eclipse_handler_t
   unsigned wrath_counter;
   unsigned starfire_counter;
   eclipse_state_e state;
+  bool enabled_;
 
-  eclipse_handler_t( druid_t* player ) : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ) {}
+  eclipse_handler_t( druid_t* player )
+    : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ), enabled_( false )
+  {}
+
+  bool enabled() { return enabled_; }
 
   void cast_wrath();
   void cast_starfire();
@@ -1027,6 +1032,8 @@ druid_t::~druid_t()
 // eclipse handler function definitions
 void eclipse_handler_t::cast_wrath()
 {
+  if ( !enabled() ) return;
+
   if ( state == ANY_NEXT || state == LUNAR_NEXT )
   {
     wrath_counter--;
@@ -1036,11 +1043,24 @@ void eclipse_handler_t::cast_wrath()
 
 void eclipse_handler_t::cast_starfire()
 {
+  if ( !enabled() ) return;
+
   if ( state == ANY_NEXT || state == SOLAR_NEXT )
   {
     starfire_counter--;
     advance_eclipse();
   }
+}
+
+void eclipse_handler_t::cast_starsurge()
+{
+  if ( !enabled() ) return;
+
+  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
+  p->buff.starsurge->trigger();
+
+  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+    p->buff.starsurge->trigger();
 }
 
 void eclipse_handler_t::advance_eclipse()
@@ -1092,15 +1112,6 @@ void eclipse_handler_t::advance_eclipse()
 
   if ( state == IN_BOTH )
     state = ANY_NEXT;
-}
-
-void eclipse_handler_t::cast_starsurge()
-{
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-  p->buff.starsurge->trigger();
-
-  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
-    p->buff.starsurge->trigger();
 }
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
@@ -9219,6 +9230,9 @@ timespan_t druid_t::available() const
 void druid_t::arise()
 {
   player_t::arise();
+
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+    eclipse_handler.enabled_ = true;
 
   if ( talent.earthwarden->ok() )
     buff.earthwarden->trigger( buff.earthwarden->max_stack() );
