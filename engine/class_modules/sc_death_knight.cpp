@@ -8512,12 +8512,12 @@ void death_knight_t::default_apl_unholy()
 
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>65&pet.gargoyle.active&rune.deficit>=5", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood_fury,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
-  def -> add_action( "berserking,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
+  def -> add_action( "blood_fury,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.up&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
+  def -> add_action( "berserking,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.up&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
   def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
-  def -> add_action( "ancestral_call,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
+  def -> add_action( "ancestral_call,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.up&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
   def -> add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
-  def -> add_action( "fireblood,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
+  def -> add_action( "fireblood,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.up&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled" );
   def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
   // Items and In Combat Potion
   def -> add_action( "use_items" );
