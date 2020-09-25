@@ -352,7 +352,7 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void execute() override
   {
-    if ( p()->ua_target )
+    if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
