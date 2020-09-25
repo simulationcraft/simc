@@ -1327,10 +1327,12 @@ struct psychic_horror_t final : public priest_spell_t
 struct void_torrent_t final : public priest_spell_t
 {
   double insanity_gain;
+  propagate_const<devouring_plague_t*> child_dp;
 
   void_torrent_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_torrent", p, p.talents.void_torrent ),
-      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      child_dp( new devouring_plague_t( priest(), false ) )
   {
     parse_options( options_str );
 
@@ -1345,6 +1347,8 @@ struct void_torrent_t final : public priest_spell_t
     energize_type     = action_energize::PER_TICK;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+
+    child_dp->background = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -1375,6 +1379,11 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
+
+    // TODO: Verify if this triggers just the DoT, or the upfront damage as well
+    // Void Torrent just applies Devouring Plague, it does not refresh it per tick
+    child_dp->set_target( target );
+    child_dp->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1385,7 +1394,6 @@ struct void_torrent_t final : public priest_spell_t
 
     td.dots.shadow_word_pain->refresh_duration();
     td.dots.vampiric_touch->refresh_duration();
-    td.dots.devouring_plague->refresh_duration();
   }
 };
 
