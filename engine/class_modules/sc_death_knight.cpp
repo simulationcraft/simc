@@ -8535,7 +8535,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound<2|target.time_to_die<=30" "Cooldowns" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=buff.dark_transformation.active" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&((runeforge.frenzied_monstrosity.enabled)|(runeforge.deadliest_coil.enabled&!buff.dark_transformation.active))|raid_event.adds.in>15" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&(runeforge.deadliest_coil.enabled&!buff.dark_transformation.active|!runeforge.deadliest_coil.enabled)|raid_event.adds.in>15" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&buff.dark_transformation.remains>12" );
