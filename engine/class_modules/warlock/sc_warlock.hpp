@@ -511,13 +511,10 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
-<<<<<<< HEAD
-=======
 
     // SL
     gain_t* scouring_tithe;
     gain_t* decimating_bolt;
->>>>>>> 5d32ef9dc3... added skeleton of spell, implemented spell velocity
   } gains;
 
   // Procs

@@ -84,7 +84,9 @@ struct decimating_bolt_t : public warlock_spell_t
 
     void impact( action_state_t* s ) override
   {
-      p()->buffs.decimating_bolt->value();
+    //p()->buffs.decimating_bolt->trigger(
+    //    1, ( (s->target->health_percentage() * 0.01) * -2 + p()->buffs.decimating_bolt->default_value ) );
+     //p()->buffs.decimating_bolt->value();
       warlock_spell_t::impact( s );
 
   };
@@ -586,7 +588,8 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt = make_buff( this, "decimating_bolt", find_spell( 325299 ) )
                               ->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value( 4.0 );
+                              ->set_default_value( buffs.decimating_bolt->default_value )
+                              ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 }
 
 void warlock_t::init_spells()
