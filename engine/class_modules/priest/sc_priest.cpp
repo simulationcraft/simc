@@ -579,8 +579,8 @@ struct ascended_eruption_t final : public priest_spell_t
     aoe        = -1;
     background = true;
     radius     = data().effectN( 1 ).radius_max();
-    // Using coeff from Ascended Blast, can't find this anywhere else???
-    spell_power_mod.direct = p.find_spell( 325283 )->effectN( 1 ).sp_coeff();
+    // By default the spell tries to use the healing SP Coeff
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
   }
 
   void trigger_eruption( int stacks )
@@ -610,7 +610,7 @@ struct ascended_eruption_t final : public priest_spell_t
       sim->print_debug( "{} {} sets damage multiplier as if it hit {} targets.", *player, *this, priest().options.priest_ascended_eruption_targets );
       targets = priest().options.priest_ascended_eruption_targets;
     }
-    return cam / std::sqrt( state->n_targets );
+    return cam / std::sqrt( targets );
   }
 };
 
