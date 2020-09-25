@@ -8333,7 +8333,7 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_pooling  = get_action_priority_list( "bos_pooling" );
   action_priority_list_t* bos_ticking  = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
-  //action_priority_list_t* covenants = get_action_priority_list( "covenants" );
+  action_priority_list_t* covenants    = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -8363,7 +8363,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
-  // def -> add_action( "call_action_list,name=covenants" );
+  def -> add_action( "call_action_list,name=covenants" );
 
   // On-use items
 
@@ -8390,9 +8390,8 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_talent( this, "Hypothermic Presence", "if=talent.breath_of_sindragosa.enabled&runic_power.defecit>40&rune>=3|!talent.breath_of_sindragosa.enabled&runic_power.deficit>=25" );
   
   // Raise Dead and Sacrificial Pact
-  // WIP, not added to the module yet
-  // cooldowns -> add_action( this, "Raise Dead", "if=cooldown.pillar_of_frost.remains<3" );
-  // cooldowns -> add_action( this, "Sacrificial Pact", "if=(buff.pillar_of_frost.up&buff.pillar_of_frost.remains=<1|cooldown.raise_dead.remains<63)&pet.risen_ghoul.active" );
+  cooldowns -> add_action( this, "Raise Dead", "if=cooldown.pillar_of_frost.remains<3" );
+  cooldowns -> add_action( this, "Sacrificial Pact", "if=(buff.pillar_of_frost.up&buff.pillar_of_frost.remains=<1|cooldown.raise_dead.remains<63)&pet.risen_ghoul.active" );
 
 
   // Cold Heart conditionals
@@ -8400,10 +8399,10 @@ void death_knight_t::default_apl_frost()
 
   // Covenants
   // WIP, conditions will need to be added once their useage is more clear. 
-  // covenants -> add_action ( "deaths_due", "Covenants" );
-  // covenants -> add_action ( "abomination_limb" );
-  // covenants -> add_action ( "shackle_the_unworthy" );
-  // covenants -> add_action ( "swarming_mist" );
+  covenants -> add_action ( "deaths_due", "Covenants" );
+  covenants -> add_action ( "abomination_limb" );
+  covenants -> add_action ( "shackle_the_unworthy" );
+  covenants -> add_action ( "swarming_mist" );
 
   // Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
@@ -8456,7 +8455,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
-  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)|buff.hypothermic_presence.active&talent.hypothermic_presence.active" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&rune.time_to_4>=gcd" );
   standard -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   standard -> add_action( this, "Frost Strike" );
@@ -8492,7 +8491,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* aoe       = get_action_priority_list( "aoe" );
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
   // NYI
-  //action_priority_list_t* covenants = get_action_priority_list( "covenants" );
+  action_priority_list_t* covenants = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -8529,7 +8528,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=generic" );
   //NYI
-  // def -> add_action( "call_action_list,name=covenants" );
+  def -> add_action( "call_action_list,name=covenants" );
 
 
   // Cooldowns
@@ -8541,27 +8540,26 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&buff.dark_transformation.remains>12" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.health.pct<35&target.time_to_die>5" );
-  cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
-  // NYI 
-  // cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.active&!cooldown.dark_transformation.ready&cooldown.dark_transformation.remains>cooldown.raise_dead.remains" );
+  cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" ); 
+  cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.active&!cooldown.dark_transformation.ready&cooldown.dark_transformation.remains>cooldown.raise_dead.remains" );
   
   // Covenants
   // WIP, conditions will need to be added once their useage is more clear. 
-  // covenants -> add_action ( "deaths_due", "Covenants" );
-  // covenants -> add_action ( "abomination_limb" );
-  // covenants -> add_action ( "shackle_the_unworthy" );
-  // covenants -> add_action ( "swarming_mist" );
+  covenants -> add_action ( "deaths_due", "Covenants" );
+  covenants -> add_action ( "abomination_limb" );
+  covenants -> add_action ( "shackle_the_unworthy" );
+  covenants -> add_action ( "swarming_mist" );
 
   // General Rotation
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd&!variable.pooling_for_gargoyle|pet.gargoyle.active", "General Rotation" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&rune.time_to_4>gcd&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile" );
   generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled)&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&((cooldown.unholy_blight.remains>8&(cooldown.apocalypse.remains>8|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&(((cooldown.unholy_blight.remains>8|cooldown.apocalypse.remains>40)&(cooldown.apocalypse.remains|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled)&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&((cooldown.unholy_blight.remains>8&(cooldown.apocalypse.remains>8|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&(((cooldown.unholy_blight.remains>8|cooldown.apocalypse.remains>40)&(cooldown.apocalypse.remains|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&((cooldown.apocalypse.remains<3&((!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled)|(talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&(cooldown.unholy_blight.remains<7|dot.unholy_blight.remains))))|debuff.festering_wound.stack<1)&variable.disable_aotd|cooldown.army_of_the_dead.ready" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&((cooldown.apocalypse.remains<3&((!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled)|((talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled)&((cooldown.unholy_blight.remains<7|cooldown.apocalypse.remains>40)|dot.unholy_blight.remains))))|debuff.festering_wound.stack<1)&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done
