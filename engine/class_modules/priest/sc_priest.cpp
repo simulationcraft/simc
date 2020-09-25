@@ -385,6 +385,31 @@ struct wrathful_faerie_t final : public priest_spell_t
   }
 };
 
+struct wrathful_faerie_fermata_t final : public priest_spell_t
+{
+  double insanity_gain;
+@
+  wrathful_faerie_fermata_t( priest_t& p )
+    : priest_spell_t( "wrathful_faerie_fermata", p, p.find_spell( 345452 ) ),
+      insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+
+    cooldown->duration = data().internal_cooldown();
+  }
+
+  void trigger()
+  {
+    if ( priest().cooldowns.wrathful_faerie->is_ready() )
+    {
+      execute();
+      priest().cooldowns.wrathful_faerie->start();
+    }
+  }
+};
+
 // ==========================================================================
 // Unholy Nova - Necrolord Covenant
 // ==========================================================================
@@ -794,11 +819,6 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
       shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) ),
       mindbender_cooldown( p.get_cooldown( "mindbender" ) )
   {
-    if ( priest().conduits.fae_fermata->ok() )
-    {
-      set_duration( data().duration() + priest().conduits.fae_fermata.time_value() );
-    }
-
     set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       if ( priest().talents.mindbender->ok() )
       {
@@ -1654,6 +1674,11 @@ void priest_t::trigger_wrathful_faerie()
   active_spells.wrathful_faerie->trigger();
 }
 
+void priest_t::trigger_wrathful_faerie_fermata()
+{
+  active_spells.wrathful_faerie_fermata->trigger();
+}
+
 void priest_t::init_base_stats()
 {
   if ( base.distance < 1 )
@@ -2189,6 +2214,30 @@ void priest_t::remove_wrathful_faerie()
     if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
     {
       priest_td->buffs.wrathful_faerie->expire();
+
+      // If you have the conduit enabled, clear out the conduit buff and trigger it on the old Wrathful Faerie target
+      if ( conduits.fae_fermata )
+      {
+        remove_wrathful_faerie_fermata();
+        priest_td->buffs.wrathful_faerie_fermata->trigger();
+      }
+    }
+  }
+}
+
+// Fae Guardian Wrathful Faerie conduit buff helper
+void priest_t::remove_wrathful_faerie_fermata()
+{
+  if ( !conduits.fae_fermata )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
+    {
+      priest_td->buffs.wrathful_faerie_fermata->expire();
     }
   }
 }
