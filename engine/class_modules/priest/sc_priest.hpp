@@ -278,8 +278,15 @@ public:
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
     const spell_data_t* dark_thoughts;
-
   } specs;
+
+  // DoT Spells
+  struct
+  {
+    const spell_data_t* shadow_word_pain;
+    const spell_data_t* vampiric_touch;
+    const spell_data_t* devouring_plague;
+  } dot_spells;
 
   // Mastery Spells
   struct
@@ -585,8 +592,8 @@ public:
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
-  int shadow_weaving_active_dots( const player_t* target ) const;
-  double shadow_weaving_multiplier( const player_t* target ) const;
+  int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
+  double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
   const priest_td_t* find_target_data( const player_t* target ) const
   {
@@ -785,7 +792,7 @@ struct priest_pet_spell_t : public spell_t
 
     if ( affected_by_shadow_weaving )
     {
-      tdm *= p().o().shadow_weaving_multiplier( t );
+      tdm *= p().o().shadow_weaving_multiplier( t, id );
     }
 
     return tdm;
@@ -797,7 +804,7 @@ struct priest_pet_spell_t : public spell_t
 
     if ( affected_by_shadow_weaving )
     {
-      ttm *= p().o().shadow_weaving_multiplier( t );
+      ttm *= p().o().shadow_weaving_multiplier( t, id );
     }
 
     return ttm;
@@ -1411,7 +1418,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      tdm *= priest().shadow_weaving_multiplier( t );
+      tdm *= priest().shadow_weaving_multiplier( t, id );
     }
 
     return tdm;
@@ -1423,7 +1430,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      ttm *= priest().shadow_weaving_multiplier( t );
+      ttm *= priest().shadow_weaving_multiplier( t, id );
     }
 
     return ttm;

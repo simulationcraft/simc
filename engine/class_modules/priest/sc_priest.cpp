@@ -1182,6 +1182,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     talents(),
     specs(),
+    dot_spells(),
     mastery_spells(),
     cooldowns(),
     rppm(),
@@ -1725,6 +1726,11 @@ void priest_t::init_spells()
   specs.discipline = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
+  // DoT Spells
+  dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
+  dot_spells.vampiric_touch   = find_class_spell( "Vampiric Touch" );
+  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
+
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
@@ -2187,7 +2193,7 @@ void priest_t::remove_wrathful_faerie()
   }
 }
 
-int priest_t::shadow_weaving_active_dots( const player_t* target ) const
+int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
 {
   int dots = 0;
 
@@ -2203,21 +2209,26 @@ int priest_t::shadow_weaving_active_dots( const player_t* target ) const
       const dot_t* vt  = td->dots.vampiric_touch;
       const dot_t* dp  = td->dots.devouring_plague;
 
-      dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      // You get mastery benefit for a DoT as if it was active, if you are actively putting that DoT up
+      // So to get the mastery benefit you either have that DoT ticking, or you are casting it
+      bool swp_ticking = ( spell_id == dot_spells.shadow_word_pain->id() ) || swp->is_ticking();
+      bool vt_ticking  = ( spell_id == dot_spells.vampiric_touch->id() ) || vt->is_ticking();
+      bool dp_ticking  = ( spell_id == dot_spells.devouring_plague->id() ) || dp->is_ticking();
+
+      dots = swp_ticking + vt_ticking + dp_ticking;
     }
   }
 
   return dots;
 }
 
-double priest_t::shadow_weaving_multiplier( const player_t* target ) const
+double priest_t::shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const
 {
   double multiplier = 1.0;
 
   if ( mastery_spells.shadow_weaving->ok() )
   {
-    // TODO: add logic to auto give mastery benefit if you are casting a DoT
-    auto dots = shadow_weaving_active_dots( target );
+    auto dots = shadow_weaving_active_dots( target, spell_id );
 
     if ( dots > 0 )
     {
