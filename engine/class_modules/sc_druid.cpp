@@ -312,6 +312,7 @@ public:
     action_t* frenzied_assault;
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
     action_t* oneths_clear_vision;       // fake holder action for reporting
+    action_t* the_natural_orders_will;   // fake holder action for reporting
   } active;
 
   // Pets
@@ -7405,7 +7406,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     player_t* new_swarm_target()
     {
-      auto tl = other->target_list();
+      const auto &tl = other->target_list();
       if ( !tl.size() )
         return nullptr;
 
@@ -7736,6 +7737,25 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
   {
     d->active.lycaras_fleeting_glimpse->execute();
     make_event<lycaras_fleeting_glimpse_event_t>( sim(), d, interval );
+  }
+};
+
+struct the_natural_orders_will_t : public action_t
+{
+  action_t* ironfur;
+  action_t* frenzied;
+
+  the_natural_orders_will_t( druid_t* p )
+    : action_t( action_e::ACTION_OTHER, "the_natural_orders_will", p, p->legendary.the_natural_orders_will )
+  {
+    ironfur  = p->get_secondary_action<spells::ironfur_t>( "Ironfur", "" );
+    frenzied = p->get_secondary_action<heals::frenzied_regeneration_t>( "Frenzied Regeneration", "" );
+  }
+
+  void execute() override
+  {
+    ironfur->execute();
+    frenzied->execute();
   }
 };
 
@@ -8475,12 +8495,18 @@ void druid_t::create_buffs()
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
-    ->set_tick_behavior( talent.brambles->ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
-    ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2") )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-      if ( talent.brambles->ok() )
-        active.brambles_pulse->execute();
-      } );
+    ->set_tick_behavior( buff_tick_behavior::NONE )
+    ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2" ) );
+  if ( talent.brambles->ok() )
+  {
+    buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH )
+      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { active.brambles_pulse->execute(); } );
+  }
+  if ( legendary.the_natural_orders_will->ok() )
+  {
+    buff.barkskin->apply_affecting_aura( legendary.the_natural_orders_will )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int ) { active.the_natural_orders_will->execute(); } );
+  }
 
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
@@ -8660,6 +8686,9 @@ void druid_t::create_actions()
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
         talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
   }
+
+  if ( legendary.the_natural_orders_will->ok() )
+    active.the_natural_orders_will = new the_natural_orders_will_t( this );
 
   if ( talent.galactic_guardian->ok() )
     active.galactic_guardian = new galactic_guardian_t( this );
