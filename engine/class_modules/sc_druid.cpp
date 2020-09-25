@@ -389,6 +389,7 @@ public:
     buff_t* heart_of_the_wild;
     // General Legendaries
     buff_t* oath_of_the_elder_druid;
+    buff_t* lycaras_fleeting_glimpse;  // lycara's '5s warning' buff
     // Conduits
     buff_t* ursine_vigor;
 
@@ -7735,22 +7736,10 @@ struct lycaras_fleeting_glimpse_t : public action_t
       a->set_target( d->target );
       a->execute();
     }
-  }
-};
 
-struct lycaras_fleeting_glimpse_event_t : public event_t
-{
-  druid_t* d;
-  timespan_t interval;
-
-  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm ) : event_t( *p, tm ), d( p ), interval( tm ) {}
-
-  const char* name() const override { return "lycaras_fleeting_glimpse"; }
-
-  void execute() override
-  {
-    d->active.lycaras_fleeting_glimpse->execute();
-    make_event<lycaras_fleeting_glimpse_event_t>( sim(), d, interval );
+    make_event( *sim, timespan_t::from_seconds( d->buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
+      d->buff.lycaras_fleeting_glimpse->trigger();
+    } );
   }
 };
 
@@ -8382,6 +8371,16 @@ void druid_t::create_buffs()
   // Generic legendaries
   buff.oath_of_the_elder_druid = make_buff( this, "oath_of_the_elder_druid", find_spell( 338643 ) )
     ->set_quiet( true );
+
+  buff.lycaras_fleeting_glimpse = make_buff( this, "lycaras_fleeting_glimpse", find_spell( 340060 ) )
+    ->set_period( 0_ms )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        active.lycaras_fleeting_glimpse->execute();
+    } );
+  // default value used as interval for event
+  buff.lycaras_fleeting_glimpse->set_default_value( legendary.lycaras_fleeting_glimpse->effectN( 1 ).base_value() -
+                                                    buff.lycaras_fleeting_glimpse->buff_duration().total_seconds() );
 
   // Endurance conduits
   buff.ursine_vigor = make_buff<ursine_vigor_buff_t>( *this );
@@ -9258,8 +9257,9 @@ void druid_t::combat_begin()
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
   {
-    make_event<lycaras_fleeting_glimpse_event_t>(
-        *sim, this, timespan_t::from_seconds( legendary.lycaras_fleeting_glimpse->effectN( 1 ).base_value() ) );
+    make_event( *sim, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
+      buff.lycaras_fleeting_glimpse->trigger();
+    } );
   }
 }
 
