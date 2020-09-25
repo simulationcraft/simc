@@ -8534,9 +8534,9 @@ void death_knight_t::default_apl_unholy()
 
   // Cooldowns
   cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.stack>=1|target.time_to_die<=30", "Cooldowns" );
-  cooldowns -> add_talent( this, "Unholy Blight", "if=pet.apoc_ghoul.active&(talent.defile.enabled)|debuff.festering_wound.stack>=4&(!talent.defile.enabled)|cooldown.dark_transformation.remains<3&cooldown.apocalypse.remains" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(!talent.unholy_blight.enabled|(talent.unholy_blight.enabled&(cooldown.unholy_blight.ready&(talent.defile.enabled))|cooldown.unholy_blight.remains&(!talent.defile.enabled)))" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&cooldown.apocalypse.remains&(runeforge.deadliest_coil.equipped&!buff.dark_transformation.up|!runeforge.deadliest_coil.equipped)|raid_event.adds.in>15" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.disable_aotd" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5)" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&cooldown.apocalypse.remains&(runeforge.deadliest_coil.equipped&!buff.dark_transformation.up|!runeforge.deadliest_coil.equipped)|raid_event.adds.in>15&raid_event.adds.exists" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&buff.dark_transformation.remains>12" );
@@ -8556,10 +8556,12 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd&!variable.pooling_for_gargoyle|pet.gargoyle.active", "General Rotation" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&rune.time_to_4>gcd&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&((cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&((cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&!talent.unholy_blight.enabled&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&((cooldown.unholy_blight.remains>5&(cooldown.apocalypse.remains>5|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&!talent.unholy_blight.enabled&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&((cooldown.unholy_blight.remains>5&(cooldown.apocalypse.remains>5|cooldown.apocalypse.ready&!dot.unholy_blight.remains))|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains<3))|debuff.festering_wound.stack<1&variable.disable_aotd|cooldown.army_of_the_dead.ready" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&((cooldown.apocalypse.remains<3&(!talent.unholy_blight.enabled|(talent.unholy_blight.enabled&(cooldown.unholy_blight.remains<3|dot.unholy_blight.remains))))|debuff.festering_wound.stack<1)&variable.disable_aotd|cooldown.army_of_the_dead.ready" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done
