@@ -192,6 +192,7 @@ public:
     action_t* rushing_jade_wind;
 
     // Brewmaster
+    action_t* breath_of_fire;
     heal_t* celestial_fortune;
     heal_t* gift_of_the_ox_trigger;
     heal_t* gift_of_the_ox_expire;
@@ -5644,38 +5645,6 @@ struct chi_explosion_t : public monk_spell_t
   }
 };
 
-struct breath_of_fire_celestial_flames_t : public monk_spell_t
-{
-  breath_of_fire_celestial_flames_t( monk_t& p )
-    : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
-  {
-    background    = true;
-    tick_may_crit = may_crit = true;
-    hasted_ticks             = false;
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_ta( s );
-
-    if ( p()->azerite.boiling_brew.ok() )
-      b += p()->azerite.boiling_brew.value( 2 );
-
-    return b;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
-
-    if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
-    {
-      p()->proc.boiling_brew_healing_sphere->occur();
-      p()->buff.gift_of_the_ox->trigger();
-    }
-  }
-};
-
 struct sck_tick_action_t : public monk_melee_attack_t
 {
   flaming_kicks_t* flaming_kicks;
@@ -5788,7 +5757,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   chi_explosion_t* chi_x;
-  breath_of_fire_celestial_flames_t* breath_of_fire;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
@@ -5808,7 +5776,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
     chi_x = new chi_explosion_t( p );
-    breath_of_fire = new breath_of_fire_celestial_flames_t( *p );
   }
 
   // N full ticks, but never additional ones.
@@ -5884,7 +5851,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       chi_x->execute();
 
     if ( p()->buff.celestial_flames->up() )
-      breath_of_fire->execute();
+    {
+      p()->active_actions.breath_of_fire->target = execute_state->target;
+      p()->active_actions.breath_of_fire->execute();
+    }
 
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
@@ -7017,50 +6987,49 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // Breath of Fire
 // ==========================================================================
 
+  struct breath_of_fire_dot_t : public monk_spell_t
+{
+    breath_of_fire_dot_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
+  {
+    background    = true;
+    tick_may_crit = may_crit = true;
+    hasted_ticks             = false;
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_ta( s );
+
+    if ( p()->azerite.boiling_brew.ok() )
+      b += p()->azerite.boiling_brew.value( 2 );
+
+    return b;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
+    {
+      p()->proc.boiling_brew_healing_sphere->occur();
+      p()->buff.gift_of_the_ox->trigger();
+    }
+  }
+};
+
 struct breath_of_fire_t : public monk_spell_t
 {
-  struct periodic_t : public monk_spell_t
-  {
-    periodic_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
-    {
-      background    = true;
-      tick_may_crit = may_crit = true;
-      hasted_ticks             = false;
-    }
-
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double b = base_t::bonus_ta( s );
-
-      if ( p()->azerite.boiling_brew.ok() )
-        b += p()->azerite.boiling_brew.value( 2 );
-
-      return b;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      monk_spell_t::impact( s );
-
-      if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
-      {
-        p()->proc.boiling_brew_healing_sphere->occur();
-        p()->buff.gift_of_the_ox->trigger();
-      }
-    }
-  };
-
-  periodic_t* dot_action;
 
   breath_of_fire_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ), dot_action( new periodic_t( p ) )
+    : monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire )
   {
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
     trigger_gcd = timespan_t::from_seconds( 1 );
 
-    add_child( dot_action );
+    add_child( p.active_actions.breath_of_fire );
   }
 
   void update_ready( timespan_t ) override
@@ -7097,8 +7066,8 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() )
     {
-      dot_action->target = s->target;
-      dot_action->execute();
+      p()->active_actions.breath_of_fire->target = s->target;
+      p()->active_actions.breath_of_fire->execute();
     }
   }
 };
@@ -7903,19 +7872,31 @@ struct faeline_stomp_t : public monk_spell_t
     aoe = 5; // Currently hard-coded
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    monk_spell_t::execute();
+    monk_spell_t::impact( s );
 
-    damage->set_target( target );
+    damage->set_target( s->target );
     damage->execute();
 
     p()->buff.faeline_stomp->trigger();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    switch ( p()->specialization() )
     {
-      ww_damage->set_target( target );
-      ww_damage->execute();
+      case MONK_WINDWALKER:
+      {
+        ww_damage->set_target( s->target );
+        ww_damage->execute();
+        break;
+      }
+      case MONK_BREWMASTER:
+      {
+        p()->active_actions.breath_of_fire->target = s->target;
+        p()->active_actions.breath_of_fire->execute();
+        break;
+      }
+      default:
+        break;
     }
   }
 };
@@ -10024,6 +10005,7 @@ void monk_t::init_spells()
 
   // Active Action Spells
   // Brewmaster
+  active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t( *this );
   active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t( *this );
   active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
   active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t( *this );
