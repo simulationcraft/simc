@@ -87,6 +87,7 @@ public:
   timespan_t time_to_next_tick() const;
   timespan_t duration() const { return !is_ticking() ? timespan_t::zero() : current_duration; }
   int ticks_left() const;
+  double ticks_left_fractional() const;
   const char* name() const { return name_str.c_str(); }
   bool is_ticking() const { return ticking; }
   timespan_t get_extended_time() const { return extended_time; }
