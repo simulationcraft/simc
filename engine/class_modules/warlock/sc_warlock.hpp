@@ -24,8 +24,8 @@ struct warlock_td_t : public actor_target_data_t
 {
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
-  // General
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_scouring_tithe;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -50,9 +50,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_roaring_blaze; 
   propagate_const<buff_t*> debuffs_havoc;
 
-  // SL - Covenant
-  propagate_const<dot_t*> dots_scouring_tithe;
-  
   // SL - Legendary
   propagate_const<buff_t*> debuffs_odr;
 
@@ -474,6 +471,9 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
 
+    // SL
+    propagate_const<buff_t*> decimating_bolt;
+
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
@@ -514,7 +514,8 @@ public:
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
 
-    gain_t* scouring_tithe; // SL - Covenant
+    // SL
+    gain_t* scouring_tithe;
   } gains;
 
   // Procs
