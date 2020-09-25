@@ -56,7 +56,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
 
-  propagate_const<buff_t*> debuffs_from_the_shadows;
+  propagate_const<buff_t*> debuffs_from_the_shadows; //TODO: Refactor handling for this - see PR 5294
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -173,7 +173,7 @@ public:
     const spell_data_t* drain_soul;
 
     // tier 25
-    const spell_data_t* writhe_in_agony; //TODO: SL Beta - SUDDEN ONSET PORTION (INITIAL STACK AMOUNT) HAS NOT BEEN IMPLEMENTED AS A TALENT YET AND REMAINS AS AZERITE IN THE MODULE. FIX THIS!
+    const spell_data_t* writhe_in_agony; //Note: there is an unimplemented bug for SL prepatch
     const spell_data_t* absolute_corruption;
     const spell_data_t* siphon_life;
 
@@ -184,7 +184,7 @@ public:
 
     // tier 45
     const spell_data_t* dark_caller;
-    const spell_data_t* haunt; //TODO: SL Beta - Haunt currently is not applying Shadow Embrace in the sim. Fix this!
+    const spell_data_t* haunt;
     // grimoire of sacrifice
 
     // tier 50
@@ -204,7 +204,7 @@ public:
     const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
-    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). Consider rebuilding this.
+    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). See PR 5294.
     const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
     const spell_data_t* summon_vilefiend;
 
@@ -378,16 +378,15 @@ public:
 
     // Affliction only
     const spell_data_t* affliction; //Spec aura
-    const spell_data_t* agony; //TODO: SL Beta - This is the primary active ability, but is not currently being used. Fix this.
+    const spell_data_t* agony; //This is the primary active ability
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
-    //TODO: SL Beta - These corruption passives are not currently implemented in the spell, fix this!
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
     const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
     const spell_data_t* nightfall;  // TODO: SL Beta - There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)
     const spell_data_t* shadow_bite; //TODO: SL Beta - Pet spell? Does not appear in specialization data
     const spell_data_t* shadow_bolt; //TODO: SL Beta - This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
-    const spell_data_t* unstable_affliction;  //This is the primary active ability (should be 316099)
+    const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
 

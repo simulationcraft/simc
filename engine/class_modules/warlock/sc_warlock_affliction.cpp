@@ -142,7 +142,7 @@ struct agony_t : public affliction_spell_t
   double chance;
   bool pandemic_invocation_usable;  // BFA - Azerite
 
-  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( p, "Agony" )
+  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->spec.agony )
   {
     parse_options( options_str );
     may_crit                   = false;
@@ -186,7 +186,16 @@ struct agony_t : public affliction_spell_t
       pandemic_invocation_usable = false;
     }
 
-    if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
+    //There is TECHNICALLY a prepatch bug on PTR (as of 9/23) where having both the talent and the azerite starts at 3 stacks
+    //Making a note of it here in this comment but not going to implement it at this time
+    if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() < 
+      (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
+    {
+      td ( execute_state->target )
+        ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() - 
+          td( execute_state->target )->dots_agony->current_stack() );
+    }
+    else if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
                                                (int)p()->azerite.sudden_onset.spell_ref().effectN( 2 ).base_value() )
     {
       td( execute_state->target )
@@ -268,6 +277,14 @@ struct corruption_t : public affliction_spell_t
     may_crit                   = false;
     tick_zero                  = false;
     pandemic_invocation_usable = false;  // BFA - Azerite
+
+    
+    if ( !p->spec.corruption_3->ok() )
+    {
+      spell_power_mod.direct = 0; //Rank 3 is required for direct damage
+    }
+    
+
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
 
@@ -343,7 +360,7 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void execute() override
   {
-    if ( p()->ua_target )
+    if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
@@ -375,11 +392,11 @@ struct summon_darkglare_t : public affliction_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-
-    //Disabling this Azerite Essence for now. If someone desperately wants to do a prepatch sim with both, they'll need to test the interaction.
-    //cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
     
     cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+
+    //PTR for prepatch presumably does additive CDR, then multiplicative
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -631,7 +648,6 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    // TODO - Add Shadow Embrace
     td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
