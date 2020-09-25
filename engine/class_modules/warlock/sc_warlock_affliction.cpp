@@ -142,7 +142,7 @@ struct agony_t : public affliction_spell_t
   double chance;
   bool pandemic_invocation_usable;  // BFA - Azerite
 
-  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( p, "Agony" )
+  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->spec.agony )
   {
     parse_options( options_str );
     may_crit                   = false;

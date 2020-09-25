@@ -378,7 +378,7 @@ public:
 
     // Affliction only
     const spell_data_t* affliction; //Spec aura
-    const spell_data_t* agony; //TODO: SL Beta - This is the primary active ability, but is not currently being used. Fix this.
+    const spell_data_t* agony; //This is the primary active ability
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
     //TODO: SL Beta - These corruption passives are not currently implemented in the spell, fix this!
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
@@ -387,7 +387,7 @@ public:
     const spell_data_t* shadow_bite; //TODO: SL Beta - Pet spell? Does not appear in specialization data
     const spell_data_t* shadow_bolt; //TODO: SL Beta - This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
-    const spell_data_t* unstable_affliction;  //This is the primary active ability (should be 316099)
+    const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
 
