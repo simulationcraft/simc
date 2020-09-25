@@ -6,6 +6,9 @@
 #include "dbc/spell_data.hpp"
 
 #include "sim/sc_expressions.hpp"
+#include "report/decorators.hpp"
+#include "util/io.hpp"
+
 
 const item_runeforge_t& item_runeforge_t::nil()
 {
@@ -124,5 +127,39 @@ std::unique_ptr<expr_t> create_expression( const player_t* player,
   }
 
   return nullptr;
+}
+report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root )
+{
+  std::string legendary_str;
+
+  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  {
+    const item_t& item = player.items[ i ];
+    if ( !item.active() )
+      continue;
+
+    for ( auto id : item.parsed.bonus_id )
+    {
+      auto entry = runeforge_legendary_entry_t::find( id, player.dbc->ptr );
+      if ( !entry.empty() )
+      {
+        auto s_data = player.find_spell( entry.front().spell_id );
+        if ( s_data->ok() )
+        {
+          legendary_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_item( item ),
+                                        report_decorators::decorated_spell_data( *player.sim, s_data ) );
+        }
+      }
+    }
+  }
+
+  if ( !legendary_str.empty() )
+  {
+    root << "<tr class=\"left\"><th>Runeforge</th><td><ul class=\"float\">\n";
+    root << legendary_str;
+    root << "</ul></td></tr>\n";
+  }
+
+  return root;
 }
 } // Namespace runeforge enas

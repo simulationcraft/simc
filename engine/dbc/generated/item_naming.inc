@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 9.0.2.35854
+// Item name descriptions, wow build 9.0.2.35978
 static const std::array<item_name_description_t, 544> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
@@ -390,7 +390,7 @@ static const std::array<item_name_description_t, 544> __item_name_description_da
   { 13631, "Sephuz's Proclamation"                       },
   { 13632, "Judgment of the Arbiter"                     },
   { 13633, "Vitality Sacrifice"                          },
-  { 13634, "Ursoc's Lingering Spirit"                    },
+  { 13634, "Ursoc's Fury Remembered"                     },
   { 13635, "Maw Rattle"                                  },
   { 13636, "Echo of Eonar"                               },
   { 13637, "Legacy of the Sleeper"                       },

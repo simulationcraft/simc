@@ -186,6 +186,9 @@ public:
 
     // Covenants
     buff_t* vanquishers_hammer;
+
+    // Legendaries
+    buff_t* vanguards_momentum;
   } buffs;
 
   // Gains
@@ -293,6 +296,9 @@ public:
 
     const spell_data_t* judgment_2;
     const spell_data_t* avenging_wrath_2;
+    const spell_data_t* hammer_of_wrath_2;
+
+    const spell_data_t* ashen_hallow_how;
   } spells;
 
   // Talents
@@ -463,11 +469,12 @@ public:
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
   // player stat functions
+  virtual double    composite_player_multiplier( school_e ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_melee_attack_power(attack_power_type ap_type ) const override;
+  virtual double    composite_melee_attack_power_by_type(attack_power_type ap_type ) const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_damage_versatility() const override;
@@ -507,6 +514,7 @@ public:
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
+  bool    standing_in_hallow() const;
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
@@ -517,6 +525,7 @@ public:
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
+  ground_aoe_event_t* active_hallow;
 
   std::string default_potion() const override;
   std::string default_flask() const override;

@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.2.35854
+// 636 talents, wow build 9.0.2.35978
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -412,7 +412,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Earthwarden"                       , 22423, 0x00, 0x0400, 104,   0,   5,  203974,       0,  0 },
   { "Pulverize"                         , 22425, 0x00, 0x0400, 104,   2,   6,   80313,       0,  0 },
   { "Rend and Tear"                     , 22426, 0x00, 0x0400, 104,   0,   6,  204053,       0,  0 },
-  { "Lunar Beam"                        , 22427, 0x00, 0x0400, 104,   1,   6,  204066,       0,  0 },
+  { "Tooth and Claw"                    , 22427, 0x00, 0x0400, 104,   1,   6,  135288,       0,  0 },
   { "Holy Shield"                       , 22428, 0x00, 0x0002,  66,   0,   0,  152261,       0,  0 },
   { "First Avenger"                     , 22431, 0x00, 0x0002,  66,   0,   1,  203776,       0,  0 },
   { "Unbreakable Spirit"                , 22433, 0x00, 0x0002,   0,   0,   3,  114154,       0,  0 },

@@ -48,8 +48,30 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    return pm;
+  }
+
+  // direct action multiplier
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_da_multiplier( s );
+        
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    {
       pm *= 1.0 + p()->cache.mastery_value();
+    }
+    return pm;
+  }
+
+  // tick action multiplier
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_ta_multiplier( s );
+
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    {
+      pm *= 1.0 + p()->cache.mastery_value();
+    }
 
     return pm;
   }
@@ -127,6 +149,7 @@ struct agony_t : public affliction_spell_t
     pandemic_invocation_usable = false;  // BFA - Azerite
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
+    dot_duration += p->conduit.rolling_agony.time_value();
   }
 
   void last_tick( dot_t* d ) override
@@ -222,11 +245,12 @@ struct agony_t : public affliction_spell_t
       p()->agony_accumulator -= 1.0;
     }
 
-    // BFA - Azerite
-    if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
+    if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
     {
       p()->buffs.inevitable_demise->trigger();
     }
+
+    p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
   }
@@ -237,14 +261,19 @@ struct corruption_t : public affliction_spell_t
   bool pandemic_invocation_usable;
 
   corruption_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Corruption", p, p->find_spell( 172 ) )  // triggers 146739
+    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
   {
+    auto otherSP = p->find_spell( 146739 );
     parse_options( options_str );
     may_crit                   = false;
     tick_zero                  = false;
     pandemic_invocation_usable = false;  // BFA - Azerite
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+
+    // 172 does not have spell duration any more.
+    // were still lazy though so we aren't making a seperate spell for this.
+    dot_duration               = otherSP->duration();
     // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
     base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
 
@@ -255,6 +284,13 @@ struct corruption_t : public affliction_spell_t
                          : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
       base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
     }
+
+    if ( p->spec.corruption_2->ok())
+    {
+      base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
+    }
+    
+
   }
 
   void tick( dot_t* d ) override
@@ -287,6 +323,8 @@ struct corruption_t : public affliction_spell_t
       p()->active.pandemic_invocation->schedule_execute();
       pandemic_invocation_usable = false;
     }
+
+
   }
 };
 
@@ -296,17 +334,52 @@ struct unstable_affliction_t : public affliction_spell_t
     : affliction_spell_t( "unstable_affliction", p, p->spec.unstable_affliction )
   {
     parse_options( options_str );
+
+    if ( p->spec.unstable_affliction_3->ok() )
+    {
+      dot_duration += timespan_t::from_millis( p->spec.unstable_affliction_3->effectN( 1 ).base_value() );
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->ua_target )
+    {
+      td( p()->ua_target )->dots_unstable_affliction->cancel();
+    }
+
+    p()->ua_target = target;
+
+    affliction_spell_t::execute();
+  }
+
+  void last_tick( dot_t* d) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    p()->ua_target = nullptr;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    p()->malignancy_reduction_helper();
+
+    affliction_spell_t::tick( d );
   }
 };
 
-struct summon_darkglare_t : public affliction_spell_t
+struct summon_darkglare_t : public affliction_spell_t   
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "summon_darkglare", p, p->spec.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
+    //Disabling this Azerite Essence for now. If someone desperately wants to do a prepatch sim with both, they'll need to test the interaction.
+    //cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+    
+    cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -359,7 +432,7 @@ struct seed_of_corruption_t : public affliction_spell_t
 
       if ( result_is_hit( s->result ) )
       {
-        warlock_td_t* tdata = this->td( s->target );
+        auto tdata = this->td( s->target );
         if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
         {
           tdata->soc_threshold = 0;
@@ -446,6 +519,68 @@ struct seed_of_corruption_t : public affliction_spell_t
   }
 };
 
+struct malefic_rapture_t : public affliction_spell_t
+{
+    struct malefic_rapture_damage_instance_t : public affliction_spell_t
+    {
+
+      malefic_rapture_damage_instance_t(warlock_t *p) : 
+          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324536 ) )
+      {
+        aoe = 1;
+        background = true;
+        spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+
+        p->spells.malefic_rapture_aoe = this;
+      }
+       
+      double get_dots_ticking(player_t *target) const
+      {
+        double mult = 0.0;
+        auto td = this->td( target );
+        if ( td->dots_agony->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_corruption->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_unstable_affliction->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_vile_taint->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_siphon_life->is_ticking() )
+          mult += 1.0;
+
+        return mult;
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = affliction_spell_t::composite_da_multiplier( s );
+        m *= get_dots_ticking( s->target );
+        return m;
+      }
+
+    };
+
+    malefic_rapture_damage_instance_t* damage_instance;
+
+    malefic_rapture_t( warlock_t* p, util::string_view options_str )
+      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) ), 
+        damage_instance( new malefic_rapture_damage_instance_t(p) )
+    {
+      parse_options( options_str );
+      aoe = -1;
+
+      impact_action = damage_instance;
+      add_child( impact_action );
+
+    }
+
+};
+
 // Talents
 
 // lvl 15 - nightfall|drain soul|haunt
@@ -497,6 +632,7 @@ struct haunt_t : public affliction_spell_t
     }
 
     // TODO - Add Shadow Embrace
+    td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
 
@@ -656,6 +792,8 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, co
     return new dark_soul_t( this, options_str );
   if ( action_name == "vile_taint" )
     return new vile_taint_t( this, options_str );
+  if ( action_name == "malefic_rapture" )
+    return new malefic_rapture_t( this, options_str );
 
   return nullptr;
 }
@@ -671,6 +809,9 @@ void warlock_t::create_buffs_affliction()
   buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
                         ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
                         ->set_trigger_spell( talents.nightfall );
+  buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise )
+                                ->set_max_stack( find_spell( 334320 )->max_stacks() )
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
   // BFA - Azerite
   buffs.cascading_calamity = make_buff<stat_buff_t>( this, "cascading_calamity", azerite.cascading_calamity )
                                  ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
@@ -680,15 +821,8 @@ void warlock_t::create_buffs_affliction()
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buffs.inevitable_demise = make_buff( this, "inevitable_demise", azerite.inevitable_demise )
-                                ->set_max_stack( find_spell( 273525 )->max_stacks() )
-                                // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is
-                                // applied as a flat multiplier to the total value.
-                                ->set_default_value( azerite.inevitable_demise.value() *
-                                                     ( ( 1.0 + 0.75 * ( azerite.inevitable_demise.n_items() - 1 ) ) /
-                                                       azerite.inevitable_demise.n_items() ) );
 }
-
+ 
 void warlock_t::vision_of_perfection_proc_aff()
 {
   timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
@@ -715,9 +849,15 @@ void warlock_t::init_spells_affliction()
   spec.agony               = find_specialization_spell( "Agony" );
   spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
+  spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
+  spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
+  spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
+  spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
+  spec.shadow_bolt            = find_specialization_spell( "Shadow Bolt" );
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
+  talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
   talents.writhe_in_agony     = find_talent_spell( "Writhe in Agony" );
@@ -726,6 +866,7 @@ void warlock_t::init_spells_affliction()
   talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
+  talents.dark_caller         = find_talent_spell( "Dark Caller" );
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
@@ -769,6 +910,7 @@ void warlock_t::init_rng_affliction()
 void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
+  procs.corrupting_leer = get_proc( "corrupting_leer" );
 }
 
 void warlock_t::create_apl_affliction()

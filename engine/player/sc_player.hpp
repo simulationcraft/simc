@@ -518,7 +518,6 @@ struct player_t : public actor_t
     // 9.0 Soulbinds
     buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
     buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
     buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
     buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
@@ -894,7 +893,7 @@ public:
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
-  virtual double composite_melee_attack_power(attack_power_type type ) const;
+  virtual double composite_melee_attack_power_by_type(attack_power_type type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -1026,6 +1025,8 @@ public:
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void   recalculate_resource_max( resource_e resource_type, gain_t* g = nullptr );
+  // Check whether the player has enough of a given resource.
+  // The caller needs to ensure current resources are up to date (in particular with dynamic regen).
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
   virtual resource_e primary_resource() const
   { return RESOURCE_NONE; }

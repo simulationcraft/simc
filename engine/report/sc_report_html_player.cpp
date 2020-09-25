@@ -2603,7 +2603,7 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
       << "<thead>\n"
       << "<tr>\n";
 
-  sorttable_header( os, "Resource Gains", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Gains", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Total" );
@@ -2665,7 +2665,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
     << "<thead>\n"
     << "<tr>\n";
 
-  sorttable_header( os, "Resource Usage", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Usage", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Total" );
@@ -2716,7 +2716,7 @@ void print_html_resource_changes_table( report::sc_html_stream& os, const player
   os << "<table class=\"sc even\">\n"
      << "<thead>\n"
      << "<tr>\n"
-     << "<th class=\"left\">Resource Change</th>\n"
+     << "<th class=\"left\">Change</th>\n"
      << "<th>Start</th>\n"
      << "<th>Gain/s</th>\n"
      << "<th>Loss/s</th>\n"
@@ -2765,11 +2765,12 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
   // Resources Section
   os << "<div class=\"player-section gains\">\n"
      << "<h3 class=\"toggle open\">Resources</h3>\n"
-     << "<div class=\"toggle-content\">\n";
+     << "<div class=\"toggle-content flexwrap\">\n";
 
-  os << "<div class=\"column-tables\">\n"; // Open DIV for tables
+  int count_gains   = 0;
+  int count_usage   = 0;
+  int count_changes = 0;
 
-  int count_gains = 0;
   for ( const auto& g : p.gain_list )
   {
     for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
@@ -2779,14 +2780,12 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
     }
   }
 
-  int count_usage = 0;
   for ( const auto& s : p.stats_list )
   {
     if ( s->rpe_sum > 0 )
       count_usage++;
   }
 
-  int count_changes = 0;
   for ( const auto& d : p.collected_data.resource_lost )
   {
     if ( d.mean() > 0.0 )
@@ -2800,20 +2799,23 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
   {
     if ( count_changes )
       print_html_resource_changes_table( os, p );
+
+    os << "<div>";
+
     if ( count_usage )
       print_html_resource_usage_table( os, p );
   }
   else
   {
+    os << "<div>";
+
     if ( count_usage )
       print_html_resource_usage_table( os, p );
     if ( count_changes )
       print_html_resource_changes_table( os, p );
   }
 
-  os << "</div>\n"; // Close DIV for tables
-
-  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
+  os << "</div><div class=\"column-charts\">\n"; // Open DIV for charts
 
   for ( resource_e r = RESOURCE_MAX; --r > RESOURCE_NONE; )
   {
@@ -3879,10 +3881,14 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       p.azerite->generate_report( os );
     }
 
-    if (p.covenant )
+    // Covenant, Soulbinds, and Conduits
+    if ( p.covenant )
     {
       p.covenant->generate_report( os );
     }
+
+    // Runeforge Legendaries
+    runeforge::generate_report( p, os );
 
     // Professions
     if ( !p.professions_str.empty() )

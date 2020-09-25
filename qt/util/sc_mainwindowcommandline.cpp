@@ -206,7 +206,7 @@ void SC_MainWindowCommandLine::initTextStrings()
   text_resume             = tr( "Resume!" );
   text_queue              = tr( "Queue!" );
   text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
-  text_cancel             = tr( "Cancel! " );
+  text_cancel             = tr( "Cancel!" );
   text_cancel_all         = tr( "Cancel All!" );
   text_cancel_all_tooltip = tr( "Cancel ALL simulations, including what is queued" );
   text_save               = tr( "Save!" );

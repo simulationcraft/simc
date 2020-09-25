@@ -8,11 +8,11 @@
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
-#include "simulationcraft.hpp"
-
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -55,6 +55,10 @@ namespace pets
 {
 struct void_tendril_t;
 struct void_lasher_t;
+namespace fiend
+{
+struct base_fiend_pet_t;
+}
 }  // namespace pets
 
 /**
@@ -564,10 +568,6 @@ private:
   void generate_apl_holy_h();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
-
-  int shadow_weaving_active_dots( const player_t* target ) const;
-  double shadow_weaving_multiplier( const player_t* target ) const;
-
   target_specific_t<priest_td_t> _target_data;
 
 public:
@@ -577,11 +577,15 @@ public:
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
+  void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
+  int shadow_weaving_active_dots( const player_t* target ) const;
+  double shadow_weaving_multiplier( const player_t* target ) const;
+  pets::fiend::base_fiend_pet_t* get_current_main_pet();
   const priest_td_t* find_target_data( const player_t* target ) const
   {
     return _target_data[ target ];
@@ -750,7 +754,10 @@ struct priest_pet_melee_t : public melee_attack_t
 
 struct priest_pet_spell_t : public spell_t
 {
-  priest_pet_spell_t( priest_pet_t& p, util::string_view n ) : spell_t( n, &p, p.find_pet_spell( n ) )
+  bool affected_by_shadow_weaving;
+
+  priest_pet_spell_t( priest_pet_t& p, util::string_view n )
+    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
   }
@@ -769,6 +776,30 @@ struct priest_pet_spell_t : public spell_t
   {
     return static_cast<priest_pet_t&>( *player );
   }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      tdm *= p().o().shadow_weaving_multiplier( t );
+    }
+
+    return tdm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = action_t::composite_target_ta_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      ttm *= p().o().shadow_weaving_multiplier( t );
+    }
+
+    return ttm;
+  }
 };
 
 namespace fiend
@@ -783,7 +814,7 @@ struct shadowflame_prism_t;
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-  propagate_const<actions::shadowflame_prism_t*> active_spell_shadowflame_prism;
+  propagate_const<actions::shadowflame_prism_t*> shadowflame_prism;
 
   struct gains_t
   {
@@ -793,7 +824,7 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, util::string_view name )
-    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 )
+    : priest_pet_t( sim, owner, name, pt ), shadowflame_prism( nullptr ), gains(), direct_power_mod( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -807,8 +838,6 @@ struct base_fiend_pet_t : public priest_pet_t
   void init_action_list() override;
 
   void init_background_actions() override;
-
-  void trigger_shadowflame_prison( player_t* target, double original_amount );
 
   void init_gains() override
   {
@@ -951,11 +980,6 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     priest_pet_melee_t::impact( s );
 
-    if ( p().o().legendary.shadowflame_prism->ok() )
-    {
-      p().trigger_shadowflame_prison( s->target, s->result_amount );
-    }
-
     if ( result_is_hit( s->result ) )
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
@@ -984,29 +1008,50 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 
 // ==========================================================================
+// Shadowflame Rift
+// ==========================================================================
+struct shadowflame_rift_t final : public priest_pet_spell_t
+{
+  shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
+  {
+    background = true;
+    // This is hard coded in the spell, base SP is 3.0
+    spell_power_mod.direct *= 0.6;
+  }
+};
+
+// ==========================================================================
 // Shadowflame Prism
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  double shadowflame_increase;
+  timespan_t duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) ),
-      shadowflame_increase( p.o().find_spell( 336144 )->effectN( 1 ).percent() )
+    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
+      duration( timespan_t::from_seconds( as<double>( data().effectN( 3 ).base_value() ) +
+                                          0.5 ) )  // This 0.5 is hardcoded in spell data
   {
     background = true;
-    may_crit   = false;
-    may_miss   = false;
+
+    impact_action = new shadowflame_rift_t( p );
+    add_child( impact_action );
   }
 
-  void trigger( player_t* target, double original_amount )
+  void execute() override
   {
-    base_dd_min = base_dd_max = ( original_amount * shadowflame_increase );
-    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target,
-                              shadowflame_increase );
+    priest_pet_spell_t::execute();
 
-    set_target( target );
-    execute();
+    auto current_pet = p().o().get_current_main_pet();
+
+    if ( current_pet && !current_pet->is_sleeping() )
+    {
+      auto remaining_duration = current_pet->expiration->remains();
+      auto new_duration       = remaining_duration + duration;
+      sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet->full_name_str,
+                        duration, new_duration, remaining_duration );
+      current_pet->expiration->reschedule( new_duration );
+    }
   }
 };
 }  // namespace actions
@@ -1286,8 +1331,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
+  bool affected_by_shadow_weaving;
+
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1356,6 +1403,30 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      tdm *= priest().shadow_weaving_multiplier( t );
+    }
+
+    return tdm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = action_t::composite_target_ta_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      ttm *= priest().shadow_weaving_multiplier( t );
+    }
+
+    return ttm;
+  }
+
   double get_death_throes_bonus() const
   {
     if ( priest().azerite.death_throes.enabled() )
@@ -1385,8 +1456,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
-      sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
+                          priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+      }
       priest().buffs.dark_thoughts->trigger();
       proc->occur();
     }

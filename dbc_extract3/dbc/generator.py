@@ -1220,6 +1220,12 @@ class SpellDataGenerator(DataGenerator):
          327702, 327704, 327705,
          # Feast of Gluttonous Hedonism
          327707, 327708, 327709,
+         # Darkmoon Deck Putrescence
+         311465, 311466, 311467, 311468, 311469, 311470,
+         # Darkmoon Deck Voracity
+         311484, 311485, 311486, 311487, 311488, 311489,
+         # Soul Igniter Trinket
+         345215,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
@@ -1276,6 +1282,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
+            ( 327225, 2 ),          # First Avenger absorb buff
             ( 339669, 0 ),          # Seal of Command
             ( 339376, 0 ),          # Truth's Wake
             ( 339538, 0 ),          # TV echo
@@ -1356,11 +1363,13 @@ class SpellDataGenerator(DataGenerator):
             ( 340582, 0 ), ( 340583, 0 ), ( 340584, 0 ), # Guile Charm legendary buffs
             ( 340600, 0 ), ( 340601, 0 ), ( 340603, 0 ), # Finality legendary buffs
             ( 341111, 0 ),          # Akaari's Soul Fragment legendary debuff
+            ( 345121, 0 ),          # Akaari's Soul Fragment Shadowstrike clone
             ( 340587, 0 ),          # Concealed Blunderbuss legendary buff
             ( 340573, 0 ),          # Greenskin's Wickers legendary buff
             ( 340431, 0 ),          # Doomblade legendary debuff
             ( 343173, 0 ),          # Premeditation buff
             ( 319190, 0 ),          # Shadow Vault shadow damage spell
+            ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
         ),
 
         # Priest:
@@ -1412,6 +1421,7 @@ class SpellDataGenerator(DataGenerator):
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
+          ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
 
         ),
 
@@ -1580,6 +1590,8 @@ class SpellDataGenerator(DataGenerator):
         # Monk:
         (
           # General
+          ( 138311, 0 ), # Energy Sphere energy refund
+          ( 163272, 0 ), # Chi Sphere chi refund
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -1592,9 +1604,11 @@ class SpellDataGenerator(DataGenerator):
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
+
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
+
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
@@ -1611,8 +1625,9 @@ class SpellDataGenerator(DataGenerator):
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		      ( 290461, 3 ), # Reverse Harm Damage
-		      ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+		  ( 290461, 3 ), # Reverse Harm Damage
+		  ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
@@ -1630,9 +1645,32 @@ class SpellDataGenerator(DataGenerator):
           ( 287837, 2 ), # Secret Infusion Versatility Buff
           ( 288634, 3 ), # Glory of the Dawn trait
           ( 288636, 3 ), # Glory of the Dawn proc
+
+          # Covenant
+          ( 325217, 0 ), # Necrolord Bonedust Brew damage
+          ( 325218, 0 ), # Necrolord Bonedust Brew heal
+          ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
+          ( 327264, 0 ), # Ardenweald Faeline Stomp damage
+          ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
+          ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
+          ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
+          ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
+          ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
+          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick damage
+          ( 330907, 0 ), # Venthyr Fallen Monk Breath of Fire
+          ( 330909, 0 ), # Venthyr Fallen Monk Clash
+          ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
+          ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
+          ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
+          ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
+          ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
+
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
+
           # Shadowland Legendaries
+          ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
 
@@ -1693,6 +1731,7 @@ class SpellDataGenerator(DataGenerator):
           ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
           ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
+          ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS

@@ -102,8 +102,7 @@ ol.float li {
 .float {
     float: left;
 }
-.column-charts,
-.column-tables {
+.column-charts {
     -moz-column-count: 2;
     -webkit-column-count: 2;
     column-count: 2;
@@ -112,16 +111,8 @@ ol.float li {
     column-gap: 10px;
     margin-top: 10px;
 }
-.column-tables {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-}
-.column-tables table.sc:first-of-type {
-    margin-top: 0;
-}
 .toggle-content .column-charts {
-    margin-top: -2px;
+    margin-top: 0px;
 }
 .mt {
     margin-top: 20px;
@@ -378,7 +369,7 @@ ul.params li a:hover {
     margin-left: 10px;
 }
 #masthead {
-    height: 200px;
+    height: 160px;
     padding-bottom: 15px;
     border: 0;
     -moz-border-radius: 8px;
@@ -552,9 +543,6 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
 }
 .flexwrap table.sc {
     margin-right: 10px;
-    margin-bottom: 0;
-}
-.column-tables table.sc {
     margin-bottom: 0;
 }
 .dsc-sorted:after,

@@ -8,6 +8,8 @@
 #include "dbc/item_runeforge.hpp"
 #include "dbc/item_effect.hpp"
 
+#include "report/reports.hpp"
+
 struct spell_data_t;
 struct item_t;
 struct expr_t;
@@ -48,6 +50,7 @@ namespace runeforge
 {
 std::unique_ptr<expr_t> create_expression( const player_t* player,
                                            util::span<const util::string_view> expr_str );
+report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root );
 } // Namespace runeforge ends
 
 #endif /* RUNEFORGE_DATA_HPP */

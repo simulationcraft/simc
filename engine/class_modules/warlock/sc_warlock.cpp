@@ -24,7 +24,7 @@ struct drain_life_t : public warlock_spell_t
 
   void execute() override
   {
-    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0 )
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
     {
       if ( p()->buffs.drain_life->check() )
         p()->buffs.inevitable_demise->expire();
@@ -35,13 +35,15 @@ struct drain_life_t : public warlock_spell_t
     p()->buffs.drain_life->trigger();
   }
 
-  double bonus_ta( const action_state_t* s ) const override
+  double action_multiplier() const override
   {
-    double ta = warlock_spell_t::bonus_ta( s );
+    double m = warlock_spell_t::action_multiplier();
 
-    ta += p()->buffs.inevitable_demise->check_stack_value();
-
-    return ta;
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    {
+      m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+    }
+    return m;
   }
 
   void last_tick( dot_t* d ) override
@@ -158,23 +160,22 @@ void warlock_td_t::target_demise()
     return;
   }
 
-  if ( warlock.specialization() == WARLOCK_AFFLICTION )
+  if ( warlock.spec.unstable_affliction_2->ok() )
   {
     if ( dots_unstable_affliction->is_ticking() )
     {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from unstable affliction.", target->name(),
+      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(),
                               warlock.name() );
 
       warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
     }
+  }
+  if ( dots_drain_soul->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(),
+                            warlock.name() );
 
-    if ( dots_drain_soul->is_ticking() )
-    {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(),
-                              warlock.name() );
-
-      warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
-    }
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
 
   if ( debuffs_haunt->check() )
@@ -252,6 +253,7 @@ void warlock_t::trigger_memory_of_lucid_dreams( double cost )
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    ua_target( nullptr ),
     havoc_spells(),
     wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
@@ -318,11 +320,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
     if ( td->debuffs_shadow_embrace->check() )
       m *= 1.0 + ( td->debuffs_shadow_embrace->data().effectN( 1 ).percent() * td->debuffs_shadow_embrace->check() );
-  }
-
-  if ( td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME )
-  {
-    m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
   }
 
   return m;
@@ -570,14 +567,14 @@ void warlock_t::init_spells()
   spec.firebolt         = find_specialization_spell( "Firebolt" );
 
   // Talents
-  talents.demon_skin                = find_talent_spell( "Fire and Brimstone" );
+  talents.demon_skin                = find_talent_spell( "Demon Skin" );
   talents.burning_rush              = find_talent_spell( "Burning Rush" );
   talents.dark_pact                 = find_talent_spell( "Dark Pact" );
   talents.darkfury                  = find_talent_spell( "Darkfury" );
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
-  talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );         // aff and destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );  // grimoire of sacrifice
+  talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
+  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -662,6 +659,8 @@ void warlock_t::init_procs()
   procs.portal_summon   = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
+  procs.corrupting_leer = get_proc( "corrupting_leer" );
+
 }
 
 void warlock_t::init_base_stats()
@@ -867,6 +866,7 @@ void warlock_t::reset()
 
   warlock_pet_list.active            = nullptr;
   havoc_target                       = nullptr;
+  ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
@@ -947,6 +947,15 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_phantom_singularity->extend_duration( darkglare_extension );
     td->dots_vile_taint->extend_duration( darkglare_extension );
     td->dots_unstable_affliction->extend_duration( darkglare_extension );
+  }
+}
+
+void warlock_t::malignancy_reduction_helper()
+{
+  if ( rng().roll( conduit.corrupting_leer.percent() ) )
+  {
+    procs.corrupting_leer->occur();
+    cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
 }
 

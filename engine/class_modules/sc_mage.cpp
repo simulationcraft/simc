@@ -66,6 +66,13 @@ enum ground_aoe_type_e
   AOE_MAX
 };
 
+enum target_trigger_type_e
+{
+  TT_NONE,
+  TT_MAIN_TARGET,
+  TT_ALL_TARGETS
+};
+
 struct state_switch_t
 {
 private:
@@ -504,6 +511,7 @@ public:
     gain_t* lucid_dreams;
     gain_t* mana_gem;
     gain_t* arcane_barrage;
+    gain_t* mirrors_of_torment;
   } gains;
 
   // Options
@@ -521,9 +529,7 @@ public:
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t from_the_ashes_interval = 2.0_s;
-    // TODO: Determine reasonable default values for Mirrors of Torment options.
-    std::vector<timespan_t> mirrors_of_torment_interval = { 2.0_s };
-    std::vector<double> mirrors_of_torment_stddev = { 0.1 };
+    timespan_t mirrors_of_torment_interval = 1.5_s;
   } options;
 
   // Pets
@@ -550,6 +556,7 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze;
+    proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
@@ -782,7 +789,9 @@ public:
 
     // Shared
     conduit_data_t discipline_of_the_grove;
+    conduit_data_t flow_of_time;
     conduit_data_t gift_of_the_lich;
+    conduit_data_t grounding_surge;
     conduit_data_t ire_of_the_ascended;
     conduit_data_t siphoned_malice;
   } conduits;
@@ -895,7 +904,7 @@ public:
   void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
-  void      trigger_brain_freeze( double chance, proc_t* source );
+  void      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   void      trigger_fof( double chance, int stacks, proc_t* source );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
@@ -1022,7 +1031,7 @@ namespace mirror_image {
 struct mirror_image_pet_t : public mage_pet_t
 {
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "mirror_image", true )
+    mage_pet_t( sim, owner, "mirror_image", true, true )
   {
     owner_coeff.sp_from_sp = 0.55;
   }
@@ -1256,60 +1265,92 @@ struct incanters_flow_t : public buff_t
 
 struct mirrors_of_torment_t : public buff_t
 {
-  unsigned tick_index;
-  timespan_t period;
+  cooldown_t* icd;
+  int successful_triggers;
+
+  double mana_pct;
+  timespan_t reduction;
 
   mirrors_of_torment_t( mage_td_t* td ) :
     buff_t( *td, "mirrors_of_torment", td->source->find_spell( 314793 ) ),
-    tick_index(),
-    period()
+    icd( td->source->get_cooldown( "mirrors_of_torment_icd" ) ),
+    successful_triggers(),
+    mana_pct(),
+    reduction()
   {
     set_cooldown( 0_ms );
     set_reverse( true );
+    icd->duration = data().internal_cooldown();
 
     auto p = debug_cast<mage_t*>( source );
-    if ( p->options.mirrors_of_torment_interval.empty() || p->options.mirrors_of_torment_stddev.empty() )
+    if ( p->options.mirrors_of_torment_interval <= 0_ms )
       return;
 
+    switch ( p->specialization() )
+    {
+      case MAGE_ARCANE:
+        mana_pct = p->find_spell( 345417 )->effectN( 1 ).percent();
+        break;
+      case MAGE_FIRE:
+        reduction = -1000 * data().effectN( 2 ).time_value();
+        break;
+      default:
+        break;
+    }
+
+    set_period( p->options.mirrors_of_torment_interval );
     set_tick_behavior( buff_tick_behavior::REFRESH );
-    set_tick_time_callback( [ this, p ] ( const buff_t*, unsigned current_tick )
+    set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
     {
-      if ( tick_index == current_tick && period > 0_ms )
-        return period;
+      if ( icd->down() )
+        return;
 
-      size_t interval_ix = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_interval.size() - 1 );
-      size_t stddev_ix   = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_stddev.size() - 1 );
+      successful_triggers++;
+      icd->start();
 
-      tick_index = current_tick;
-      period = p->options.mirrors_of_torment_interval[ interval_ix ];
-      period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev[ stddev_ix ] ) );
-
-      return period;
-    } );
-    set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
-    {
-      if ( buff->current_tick % buff->max_stack() == 0 )
+      if ( successful_triggers % max_stack() == 0 )
       {
-        p->action.tormenting_backlash->set_target( buff->player );
+        p->action.tormenting_backlash->set_target( player );
         p->action.tormenting_backlash->execute();
       }
       else
       {
-        p->action.agonizing_backlash->set_target( buff->player );
+        p->action.agonizing_backlash->set_target( player );
         p->action.agonizing_backlash->execute();
       }
+
       p->buffs.siphoned_malice->trigger();
+
+      switch ( p->specialization() )
+      {
+        case MAGE_ARCANE:
+          p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * mana_pct, p->gains.mirrors_of_torment );
+          break;
+        case MAGE_FIRE:
+          p->cooldowns.fire_blast->adjust( reduction );
+          break;
+        case MAGE_FROST:
+          p->trigger_brain_freeze( 1.0, p->procs.brain_freeze_mirrors, 0_ms );
+          break;
+        default:
+          break;
+      }
+
+      decrement();
     } );
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-    { if ( cur == 0 ) period = 0_ms; } );
+    { if ( cur == 0 ) successful_triggers = 0; } );
   }
 
   void reset() override
   {
     buff_t::reset();
+    successful_triggers = 0;
+  }
 
-    tick_index = 0;
-    period = 0_ms;
+  bool freeze_stacks() override
+  {
+    return true;
   }
 };
 
@@ -1405,6 +1446,9 @@ struct mage_spell_state_t : public action_state_t
 
 struct mage_spell_t : public spell_t
 {
+  static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
+  static const snapshot_state_e STATE_FROZEN_MUL = STATE_TGT_USER_2;
+
   struct affected_by_t
   {
     // Permanent damage increase
@@ -1432,32 +1476,30 @@ struct mage_spell_t : public spell_t
     bool shifting_power = true;
   } affected_by;
 
-  static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
-  static const snapshot_state_e STATE_FROZEN_MUL = STATE_TGT_USER_2;
-
-  bool track_cd_waste;
-  cooldown_waste_data_t* cd_waste;
-
   struct triggers_t
   {
     bool bone_chilling = false;
     bool from_the_ashes = false;
-    bool hot_streak = false;
     bool ignite = false;
-    bool kindling = false;
+
+    target_trigger_type_e hot_streak = TT_NONE;
+    target_trigger_type_e kindling = TT_NONE;
 
     bool fevered_incantation = true; // TODO: Need to verify what exactly triggers Fevered Incantation.
     bool icy_propulsion = true;
     bool radiant_spark = false;
   } triggers;
 
+  bool track_cd_waste;
+  cooldown_waste_data_t* cd_waste;
+
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
+    triggers(),
     track_cd_waste(),
-    cd_waste(),
-    triggers()
+    cd_waste()
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
@@ -1483,6 +1525,20 @@ public:
 
   action_state_t* new_state() override
   { return new mage_spell_state_t( this, target ); }
+
+  static bool tt_applicable( const action_state_t* s, target_trigger_type_e t )
+  {
+    switch ( t )
+    {
+      case TT_NONE:
+        return false;
+      case TT_MAIN_TARGET:
+        return s->chain_target == 0;
+      case TT_ALL_TARGETS:
+        return true;
+    }
+    return false;
+  }
 
   void init() override
   {
@@ -1870,13 +1926,15 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.ignite )
         trigger_ignite( s );
 
-      if ( triggers.hot_streak && s->chain_target == 0 )
+      if ( tt_applicable( s, triggers.hot_streak ) )
         handle_hot_streak( s );
 
-      // TODO: Double check how this works with Pheonix Flames and Deathborne Fireball
-      // closer to release.
-      if ( triggers.kindling && s->result == RESULT_CRIT && p()->talents.kindling->ok() )
+      if ( tt_applicable( s, triggers.kindling )
+        && s->result == RESULT_CRIT
+        && p()->talents.kindling->ok() )
+      {
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
+      }
 
       if ( triggers.from_the_ashes
         && s->result == RESULT_CRIT
@@ -2950,6 +3008,7 @@ struct blink_t : public mage_spell_t
     ignore_false_positive = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
+    cooldown->duration += p->conduits.flow_of_time.time_value();
 
     background = p->talents.shimmer->ok();
   }
@@ -3242,7 +3301,10 @@ struct counterspell_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
+
+    bool success = p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
+    if ( success )
+      make_event( *sim, 0_ms, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -3270,7 +3332,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     if ( p->talents.alexstraszas_fury->ok() )
     {
       base_crit = 1.0;
-      triggers.hot_streak = true;
+      triggers.hot_streak = TT_MAIN_TARGET;
     }
   }
 
@@ -3384,10 +3446,11 @@ struct ebonbolt_t : public frost_mage_spell_t
 struct fireball_t : public fire_mage_spell_t
 {
   fireball_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( n, p, p->find_specialization_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.fireball_3->effectN( 1 ).percent();
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
@@ -4325,7 +4388,8 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4675,11 +4739,12 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-    // TODO: Phoenix Flames currently does not trigger fevered incantation or Kindling
+    // TODO: Phoenix Flames currently does not trigger fevered incantation
     // on the beta. Verify whether this is fixed closer to shadowlands release.
-    triggers.kindling = triggers.fevered_incantation = !p->bugs;
+    triggers.fevered_incantation = !p->bugs;
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -4696,34 +4761,46 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      dot_t* source_ignite = s->target->get_dot( "ignite", p() );
-      if ( source_ignite->is_ticking() )
+      auto source = s->target->get_dot( "ignite", player );
+      if ( source->is_ticking() )
       {
-        int spreads_remaining = max_spread_targets;
-        // TODO: Verify which targets Ignite spreads to when there are more than eight.
+        std::vector<dot_t*> ignites;
+
+        // Collect the Ignite DoT objects of all targets that are in range.
         for ( auto t : target_list() )
+          ignites.push_back( t->get_dot( "ignite", player ) );
+
+        // Sort candidate Ignites by descending bank size.
+        // TODO: Double check what targets the Ignite spread prioritizes.
+        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+        { return ignite_bank( a ) > ignite_bank( b ); } );
+
+        auto source_bank = ignite_bank( source );
+        auto targets_remaining = max_spread_targets;
+        for ( auto destination : ignites )
         {
-          if ( t == s->target )
+          // The original spread source doesn't count towards the spread target limit.
+          if ( source == destination )
             continue;
 
-          if ( spreads_remaining <= 0 )
+          // Target cap was reached, stop.
+          if ( targets_remaining-- <= 0 )
             break;
+
+          // Source Ignite cannot spread to targets with higher Ignite bank. It will
+          // still count towards the spread target cap, though.
+          if ( ignite_bank( destination ) >= source_bank )
+            continue;
+
+          if ( destination->is_ticking() )
+            p()->procs.ignite_overwrite->occur();
+          else
+            p()->procs.ignite_new_spread->occur();
 
           // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
           // sometimes have partial ticks, but the conditions for this are not known.
-          dot_t* dest_ignite = t->get_dot( "ignite", p() );
-          if ( ignite_bank( dest_ignite ) < ignite_bank( source_ignite ) )
-          {
-            if ( dest_ignite->is_ticking() )
-              p()->procs.ignite_overwrite->occur();
-            else
-              p()->procs.ignite_new_spread->occur();
-            // In game, the existing Ignite is not removed; its
-            // state is updated to closely match the source Ignite.
-            dest_ignite->cancel();
-            source_ignite->copy( t, DOT_COPY_CLONE );
-            spreads_remaining--;
-          }
+          destination->cancel();
+          source->copy( destination->target, DOT_COPY_CLONE );
         }
       }
     }
@@ -4786,7 +4863,8 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
@@ -4962,7 +5040,8 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.hot_streak = TT_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5014,6 +5093,7 @@ struct shimmer_t : public mage_spell_t
     ignore_false_positive = usable_while_casting = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
+    cooldown->duration += p->conduits.flow_of_time.time_value();
   }
 };
 
@@ -5687,7 +5767,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
                                           ->set_default_value_from_effect( 1 )
-                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() );
+                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
+                                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Azerite
   debuffs.packed_ice = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
@@ -5742,7 +5823,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
 bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t d )
 {
   if ( type == MECHANIC_INTERRUPT )
-    return true;
+    return s->target->debuffs.casting->check() != 0;
 
   if ( action_t::result_is_hit( s->result )
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
@@ -5917,32 +5998,7 @@ void mage_t::create_options()
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
-  add_option( opt_func( "mirrors_of_torment_interval", [ this ] ( sim_t*, util::string_view, util::string_view val )
-  {
-    options.mirrors_of_torment_interval.clear();
-    auto splits = util::string_split<util::string_view>( val, "/" );
-    for ( auto split : splits )
-    {
-      double d = util::to_double( split );
-      if ( d < 0.0 )
-        throw std::invalid_argument( "Mirrors of Torment interval can't be negative" );
-      options.mirrors_of_torment_interval.push_back( timespan_t::from_seconds( d ) );
-    }
-    return true;
-  } ) );
-  add_option( opt_func( "mirrors_of_torment_stddev", [ this ] ( sim_t*, util::string_view, util::string_view val )
-  {
-    options.mirrors_of_torment_stddev.clear();
-    auto splits = util::string_split<util::string_view>( val, "/" );
-    for ( auto split : splits )
-    {
-      double d = util::to_double( split );
-      if ( d < 0.0 )
-        throw std::invalid_argument( "Mirrors of Torment stddev can't be negative" );
-      options.mirrors_of_torment_stddev.push_back( d );
-    }
-    return true;
-  } ) );
+  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
 
   player_t::create_options();
 }
@@ -6259,7 +6315,9 @@ void mage_t::init_spells()
   conduits.unrelenting_cold         = find_conduit_spell( "Unrelenting Cold"         );
 
   conduits.discipline_of_the_grove  = find_conduit_spell( "Discipline of the Grove"  );
+  conduits.flow_of_time             = find_conduit_spell( "Flow of Time"             );
   conduits.gift_of_the_lich         = find_conduit_spell( "Gift of the Lich"         );
+  conduits.grounding_surge          = find_conduit_spell( "Grounding Surge"          );
   conduits.ire_of_the_ascended      = find_conduit_spell( "Ire of the Ascended"      );
   conduits.siphoned_malice          = find_conduit_spell( "Siphoned Malice"          );
 
@@ -6413,7 +6471,6 @@ void mage_t::create_buffs()
   buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
                               ->set_default_value_from_effect( 1 )
-                              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                               ->set_chance( talents.rune_of_power->ok() );
   buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
                               ->set_default_value_from_effect( 1 )
@@ -6547,10 +6604,11 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation      = get_gain( "Evocation"      );
-  gains.lucid_dreams   = get_gain( "Lucid Dreams"   );
-  gains.mana_gem       = get_gain( "Mana Gem"       );
-  gains.arcane_barrage = get_gain( "Arcane Barrage" );
+  gains.evocation          = get_gain( "Evocation"          );
+  gains.lucid_dreams       = get_gain( "Lucid Dreams"       );
+  gains.mana_gem           = get_gain( "Mana Gem"           );
+  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
+  gains.mirrors_of_torment = get_gain( "Mirrors of Torment" );
 }
 
 void mage_t::init_procs()
@@ -6575,6 +6633,7 @@ void mage_t::init_procs()
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );
+      procs.brain_freeze_mirrors    = get_proc( "Brain Freeze from Mirrors of Torment" );
       procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
@@ -7269,6 +7328,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
+    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
 
@@ -7641,6 +7701,32 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     { return remaining_winters_chill; } );
   }
 
+  if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )
+  {
+    auto is_hss = [] ( action_t* a )
+    {
+      if ( auto m = dynamic_cast<actions::mage_spell_t*>( a ) )
+        return m->triggers.hot_streak != TT_NONE;
+      else
+        return false;
+    };
+
+    std::vector<action_t*> in_flight_list;
+    for ( auto a : action_list )
+    {
+      if ( is_hss( a ) || range::find_if( a->child_action, is_hss ) != a->child_action.end() )
+        in_flight_list.push_back( a );
+    }
+
+    return make_fn_expr( name, [ in_flight_list ]
+    {
+      size_t spells = 0;
+      for ( auto a : in_flight_list )
+        spells += a->num_travel_events();
+      return spells;
+    } );
+  }
+
   auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
@@ -7894,11 +7980,11 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
   return success;
 }
 
-void mage_t::trigger_brain_freeze( double chance, proc_t* source )
+void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
 {
   assert( source );
 
-  bool success = trigger_delayed_buff( buffs.brain_freeze, chance );
+  bool success = trigger_delayed_buff( buffs.brain_freeze, chance, delay );
   if ( success )
   {
     source->occur();
@@ -8154,7 +8240,7 @@ public:
           "<div class=\"toggle-content\">\n";
 
     auto& d = *p.sample_data.icy_veins_duration;
-    int num_buckets = std::min( 70, as<int>( d.max() - d.min() ) + 1 );
+    int num_buckets = std::min( 70, static_cast<int>( d.max() - d.min() ) + 1 );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );

@@ -406,7 +406,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_cache(),
     options(),
     state_cache(),
-    travel_events()
+    travel_events(),
+    last_used()
 {
   assert( option.cycle_targets == 0 );
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
@@ -1096,7 +1097,7 @@ timespan_t action_t::travel_time() const
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
-  
+
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_crit )
     base_crit_bonus -= 0.5;  // Players in pvp take 150% critical hits baseline.
@@ -1342,7 +1343,7 @@ result_amount_type action_t::report_amount_type( const action_state_t* state ) c
 
 double action_t::composite_attack_power() const
 {
-  return player->composite_melee_attack_power(get_attack_power_type());
+  return player->composite_melee_attack_power_by_type(get_attack_power_type());
 }
 
 double action_t::composite_spell_power() const
@@ -1706,6 +1707,8 @@ void action_t::execute()
 
   if ( repeating && !proc )
     schedule_execute();
+
+  last_used = sim->current_time();
 }
 
 void action_t::tick( dot_t* d )
@@ -2598,6 +2601,7 @@ void action_t::reset()
   interrupt_immediate_occurred = false;
   travel_events.clear();
   target = default_target;
+  last_used = timespan_t::min();
 
   if( player->nth_iteration() == 1 )
   {
@@ -3124,6 +3128,36 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
+  if ( name_str == "last_used" )
+  {
+    std::vector<action_t*> last_used_list;
+    for ( size_t i = 0; i < player->action_list.size(); ++i )
+    {
+      action_t* action = player->action_list[ i ];
+      if ( action->name_str == this->name_str )
+        last_used_list.push_back( action );
+    }
+
+    struct last_used_expr_t : public expr_t
+    {
+      const std::vector<action_t*> action_list;
+      last_used_expr_t( const std::vector<action_t*>& al ) : expr_t( "last_used" ), action_list( al )
+      {
+      }
+      double evaluate() override
+      {
+        timespan_t t = timespan_t::min();
+        for ( size_t i = 0; i < action_list.size(); i++ )
+        {
+          if ( action_list[ i ]->last_used > t )
+            t = action_list[ i ]->last_used;
+        }
+        return t.total_seconds();
+      }
+    };
+    return std::make_unique<last_used_expr_t>( last_used_list );
+  }
+
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( splits.size() == 2 )
@@ -3528,7 +3562,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     std::vector<action_t*> in_flight_list;
     bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
-    auto action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+    auto action_name  = ( in_flight_singleton ) ? this->name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
@@ -4027,6 +4061,9 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
     sim->print_debug( "{} {} ticking cost ends because dot is no longer ticking.", *player, *this );
     return false;
   }
+
+  if ( player->resource_regeneration == regen_type::DYNAMIC )
+    player->do_dynamic_regen();
 
   // Consume resources
   /*
@@ -4877,7 +4914,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             break;
         }
         break;
-      
+
       default:
         break;
     }

@@ -13,6 +13,8 @@
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
+#include <regex>
+
 namespace covenant
 {
 namespace soulbinds
@@ -127,12 +129,27 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   cb->cb_list.push_back( cb_entry );
 }
 
+double get_coefficient_from_desc_vars( special_effect_t& e, bool sp = true )
+{
+  double coef = 0;
+  if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex r( sp ? "\\$SP\\*([0-9]*\\.?[0-9]*)" : "\\$AP\\*([0-9]*\\.?[0-9]*)" );
+    if ( std::regex_search( vars, m, r ) && m.size() >= 2 )
+      coef = std::stod( m.str( 1 ) );
+  }
+  return coef;
+}
+
 struct niyas_tools_proc_t : public unique_gear::proc_spell_t
 {
-  niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod ) : proc_spell_t( n, p, s )
+  niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod, bool direct = true ) : proc_spell_t( n, p, s )
   {
-    spell_power_mod.direct = mod;
-    spell_power_mod.tick   = mod;
+    if ( direct )
+      spell_power_mod.direct = mod;
+    else
+      spell_power_mod.tick   = mod;
   }
 
   double composite_spell_power() const override
@@ -145,7 +162,7 @@ void niyas_tools_burrs( special_effect_t& effect )
 {
   auto action = effect.player->find_action( "spiked_burrs" );
   if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), 0.1 );
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), get_coefficient_from_desc_vars( effect ), false );
 
   effect.execute_action = action;
 
@@ -163,11 +180,11 @@ void niyas_tools_poison( special_effect_t& effect )
     {
       dot = e.player->find_action( "paralytic_poison" );
       if ( !dot )
-        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), 0.1 );
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), get_coefficient_from_desc_vars( e ), false );
 
       direct = e.player->find_action( "paralytic_poison_interrupt" );
       if ( !direct )
-        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), 0.3 );
+        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), get_coefficient_from_desc_vars( e ) );
     }
 
     void execute( action_t* a, action_state_t* s ) override
@@ -213,24 +230,22 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 void grove_invigoration( special_effect_t& effect )
 {
-  struct redirected_anima_buff_t : public buff_t
+  struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
-    {
-      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-      add_invalidate( CACHE_MASTERY );
-    }
+    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ) {}
 
     bool trigger( int, double v, double c, timespan_t d ) override
     {
+      // TODO: does this convert ALL stacks or only up to 4 stacks, as per max_stack of the mastery buff
       int anima_stacks = player->buffs.redirected_anima_stacks->check();
 
       if ( !anima_stacks )
         return false;
 
-      player->buffs.redirected_anima_stacks->expire();
+      anima_stacks = std::min( anima_stacks, as<int>( data().max_stacks() ) );
+      player->buffs.redirected_anima_stacks->decrement( anima_stacks );
 
-      return buff_t::trigger( anima_stacks, v, c, d );
+      return stat_buff_t::trigger( anima_stacks, v, c, d );
     }
   };
 
@@ -238,10 +253,11 @@ void grove_invigoration( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  if ( !effect.player->buffs.redirected_anima )
-    effect.player->buffs.redirected_anima = make_buff<redirected_anima_buff_t>( effect.player );
+  auto buff = buff_t::find( effect.player, "redirected_anima" );
+  if ( !buff )
+    buff = make_buff<redirected_anima_buff_t>( effect.player );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.redirected_anima );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void field_of_blossoms( special_effect_t& effect )
@@ -263,9 +279,11 @@ void field_of_blossoms( special_effect_t& effect )
 
 void social_butterfly( special_effect_t& effect )
 {
+  // ID: 320130 is the buff on player
+  // ID: 320212 is the buff on allies (NYI)
   struct social_butterfly_buff_t : public buff_t
   {
-    social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
+    social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320130 ) )
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
       add_invalidate( CACHE_VERSATILITY );
@@ -338,13 +356,14 @@ void dauntless_duelist( special_effect_t& effect )
   {
     dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void execute( action_t* a, action_state_t* st ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      auto td = a->player->get_target_data( st->target );
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
       td->debuff.adversary->trigger();
 
       deactivate();
-      st->target->callbacks_on_demise.emplace_back( [this]( player_t* ) { activate(); } );
     }
 
     void reset() override
@@ -355,7 +374,22 @@ void dauntless_duelist( special_effect_t& effect )
     }
   };
 
-  new dauntless_duelist_cb_t( effect );
+  auto cb = new dauntless_duelist_cb_t( effect );
+  auto p  = effect.player;
+
+  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->callbacks_on_demise.emplace_back( [ p, cb ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      auto td = p->get_target_data( t );
+      if ( td->debuff.adversary->check() )
+        cb->activate();
+    } );
+  } );
 }
 
 void thrill_seeker( special_effect_t& effect )
@@ -397,9 +431,43 @@ void wasteland_propriety( special_effect_t& effect )
 {
   if ( !effect.player->buffs.wasteland_propriety )
   {
+    double duration_mod;
+    bool icd_enabled;
+
+    // The duration modifier for each class comes from the description variables of Wasteland Propriety (id=319983)
+    switch ( effect.player->type )
+    {
+      case DEATH_KNIGHT: duration_mod = 1.0; break;
+      case DEMON_HUNTER: duration_mod = 1.0; break;
+      case DRUID: duration_mod = 3.0; break;
+      case HUNTER: duration_mod = 0.5; break;
+      case MAGE: duration_mod = 1.5; break;
+      case MONK: duration_mod = 3.0; break;
+      case PALADIN: duration_mod = 4.0; break;
+      case PRIEST: duration_mod = 0.8; break;
+      case ROGUE: duration_mod = 1.0; break;
+      case SHAMAN: duration_mod = 1.5; break;
+      case WARLOCK: duration_mod = 1.0; break;
+      case WARRIOR: duration_mod = 1.0; break;
+      default: duration_mod = 1.0; break;
+    }
+
+    // The ICD of 60 seconds is enabled for some classes in the description of Wasteland Propriety (id=319983)
+    switch ( effect.player->type )
+    {
+      case ROGUE:
+      case WARRIOR:
+        icd_enabled = true;
+        break;
+      default:
+        icd_enabled = false;
+        break;
+    }
+
     effect.player->buffs.wasteland_propriety =
         make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
-            ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
+            ->set_cooldown( icd_enabled ? effect.player->find_spell( 333221 )->duration() : 0_ms )
+            ->set_duration_multiplier( duration_mod )
             ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
             ->add_invalidate( CACHE_VERSATILITY );
   }
@@ -499,6 +567,7 @@ void combat_meditation( special_effect_t& effect )
     {
       set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
+      set_refresh_behavior( buff_refresh_behavior::EXTEND );
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [this]( buff_t*, int, timespan_t ) {
         if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )

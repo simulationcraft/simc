@@ -156,17 +156,24 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 {
   assert( level <= MAX_SCALING_LEVEL );
 
-  double m_scale = 0;
+  if ( level == 0 )
+    level = p -> level();
 
   if ( _m_coeff != 0 && _spell -> scaling_class() != 0 )
   {
-    unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
-    m_scale = p -> dbc->spell_scaling( _spell -> scaling_class(), scaling_level );
+      level = std::min( level, _spell -> max_scaling_level() );
+    return _m_coeff * p -> dbc->spell_scaling( _spell -> scaling_class(), level );
   }
-
-  return scaled_average( m_scale, level );
+  else if ( _real_ppl != 0 )
+  {
+    if ( _spell -> max_level() > 0 )
+      return _base_value + ( std::min( level, _spell -> max_level() ) - _spell -> level() ) * _real_ppl;
+    else
+      return _base_value + ( level - _spell -> level() ) * _real_ppl;
+  }
+  else
+    return _base_value;
 }
 
 double spelleffect_data_t::average( const item_t* item ) const
@@ -192,21 +199,6 @@ double spelleffect_data_t::average( const item_t* item ) const
   }
 
   return _m_coeff * budget;
-}
-
-double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
-{
-  if ( _m_coeff != 0 && _spell -> scaling_class() != 0 )
-    return _m_coeff * budget;
-  else if ( _real_ppl != 0 )
-  {
-    if ( _spell -> max_level() > 0 )
-      return _base_value + ( std::min( level, _spell -> max_level() ) - _spell -> level() ) * _real_ppl;
-    else
-      return _base_value + ( level - _spell -> level() ) * _real_ppl;
-  }
-  else
-    return _base_value;
 }
 
 double spelleffect_data_t::scaled_delta( double budget ) const
