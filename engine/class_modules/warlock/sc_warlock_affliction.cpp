@@ -375,11 +375,11 @@ struct summon_darkglare_t : public affliction_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-
-    //Disabling this Azerite Essence for now. If someone desperately wants to do a prepatch sim with both, they'll need to test the interaction.
-    //cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
     
     cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+
+    //PTR for prepatch presumably does additive CDR, then multiplicative
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
