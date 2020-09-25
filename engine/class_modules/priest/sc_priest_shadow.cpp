@@ -1031,19 +1031,20 @@ struct devouring_plague_t final : public priest_spell_t
       double old_multiplier   = cast_state( old_s )->rolling_multiplier;
 
       // figure out how many old ticks to roll over
-      double num_ticks_remaining = std::floor( ( old_remains - time_to_tick ) / old_tick );
+      // TODO: this doesn't return the proper amount of ticks if less than 1 full tick
+      double num_ticks_remaining = ( old_remains - time_to_tick + old_tick ) / old_tick;
 
       // find number of ticks in new DP
-      double new_num_ticks = new_remains / new_tick;
+      double new_num_ticks = composite_dot_duration( new_s ) / new_tick;
 
-      sim->print_debug( "{} {} calculations - num_ticks_remaining: {}, new_num_ticks: {}", *player, *this, num_ticks_remaining,
-                        new_num_ticks );
+      sim->print_debug( "{} {} calculations - num_ticks_remaining: {}, new_num_ticks: {}", *player, *this,
+                        num_ticks_remaining, new_num_ticks );
 
       // figure out the increase for each new tick of DP
       double total_coefficient     = num_ticks_remaining * old_multiplier;
-      double increase_per_new_tick = total_coefficient / new_num_ticks;
+      double increase_per_new_tick = ( total_coefficient + new_num_ticks ) / ( new_num_ticks + 1 );
 
-      multiplier = 1 + increase_per_new_tick;
+      multiplier = increase_per_new_tick;
 
       sim->print_debug( "{} {} modifier updated per tick from previous dot. Modifier per tick went from {} to {}.",
                         *player, *this, old_multiplier, multiplier );
