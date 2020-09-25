@@ -107,16 +107,16 @@ public:
            td->dots.devouring_plague->is_ticking();
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
-    if ( talbadars_stratagem_active( state->target ) )
+    if ( talbadars_stratagem_active( t ) )
     {
-      d *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
+      tdm *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
     }
 
-    return d;
+    return tdm;
   }
 
   void impact( action_state_t* s ) override
@@ -331,7 +331,7 @@ struct mind_flay_t final : public priest_spell_t
     priest_spell_t::execute();
 
     // Dissonant Echoes can proc on tick or on initial execute
-    // since it doesnt have a tick_zero we put it in both places
+    // since it doesn't have a tick_zero we put it in both places
     trigger_mind_flay_dissonant_echoes();
   }
 
@@ -422,21 +422,21 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
-    if ( target->health_percentage() < execute_percent )
+    if ( t->health_percentage() < execute_percent )
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}. Increasing Shadow Word: Death damage by {}", state->target->name_str,
-                          execute_percent, execute_modifier );
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}", t->name_str, execute_percent, *this,
+                          execute_modifier );
       }
-      d *= 1 + execute_modifier;
+      tdm *= 1 + execute_modifier;
     }
 
-    return d;
+    return tdm;
   }
 
   void impact( action_state_t* s ) override
@@ -1437,23 +1437,23 @@ struct shadow_crash_damage_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
-    const priest_td_t* td = find_td( state->target );
+    const priest_td_t* td = find_td( t );
 
     if ( td && td->buffs.shadow_crash_debuff->check() )
     {
       int stack             = td->buffs.shadow_crash_debuff->check();
       double increase       = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
       double stack_increase = increase * stack;
-      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}", *target,
-                                stack, stack_increase );
-      d *= 1 + stack_increase;
+      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}",
+                                t->name_str, stack, stack_increase );
+      tdm *= 1 + stack_increase;
     }
 
-    return d;
+    return tdm;
   }
 };
 
@@ -1543,18 +1543,18 @@ struct searing_nightmare_t final : public priest_spell_t
     return false;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
-    const priest_td_t* td = find_td( state->target );
+    const priest_td_t* td = find_td( t );
 
     if ( td && td->dots.shadow_word_pain->is_ticking() )
     {
-      d *= data().effectN( 1 ).percent();
+      tdm *= data().effectN( 1 ).percent();
     }
 
-    return d;
+    return tdm;
   }
 
   void impact( action_state_t* s ) override
