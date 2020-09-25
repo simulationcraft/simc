@@ -8387,6 +8387,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
   cooldowns -> add_action( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<(3+talent.cold_heart.enabled*1)" );
   cooldowns -> add_action( this, "Frostwyrm's Fury", "if=active_enemies>=2&cooldown.pillar_of_frost.remains+15>target.time_to_die|target.1.time_to_die<gcd" );
+  cooldowns -> add_talent( this, "Hypothermic Presenece", "if=talent.breath_of_sindragosa.enabled&runic_power.defecit>40&rune>=3|!talent.breath_of_sindragosa.enabled&runic_power.deficit>=25" );
   
   // Raise Dead and Sacrificial Pact
   // WIP, not added to the module yet
@@ -8455,7 +8456,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
-  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)|buff.hypothermic_presence.active&talent.hypothermic_presence.active" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&rune.time_to_4>=gcd" );
   standard -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   standard -> add_action( this, "Frost Strike" );
@@ -8504,23 +8505,23 @@ void death_knight_t::default_apl_unholy()
   // def -> add_action( this, "Mind Freeze" );
 
   //  Variables
-  // WIP, Gargoyle being Baseline (not baseline?) needs to be accounted for before this line will work, or any lines that utilize its variable for that matter. 
-  // def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5", "Variables" );
+  // WIP, May change if gargoyle goes back to baseline.
+  def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled", "Variables" );
   def -> add_action( "variable,name=disable_aotd,value=(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
 
 
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>65&pet.gargoyle.active&rune.deficit>=5", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood_fury,if=pet.gargoyle.active" );
-  def -> add_action( "berserking,if=pet.gargoyle.active" );
+  def -> add_action( "blood_fury,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled|target.time_to_die<(cooldown.unholy_assault.remains|cooldown.summon_gargoyle.remains|cooldown.army_of_the_dead.remains)" );
+  def -> add_action( "berserking,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled|target.time_to_die<(cooldown.unholy_assault.remains|cooldown.summon_gargoyle.remains|cooldown.army_of_the_dead.remains)" );
   def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
-  def -> add_action( "ancestral_call,if=pet.gargoyle.active" );
+  def -> add_action( "ancestral_call,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled|target.time_to_die<(cooldown.unholy_assault.remains|cooldown.summon_gargoyle.remains|cooldown.army_of_the_dead.remains)" );
   def -> add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
-  def -> add_action( "fireblood,if=pet.gargoyle.active" );
+  def -> add_action( "fireblood,if=pet.gargoyle.active&talent.summon_gargoyle.enabled|buff.unholy_assault.active&talent.unholy_assault.enabled|pet.army_ghoul.active&talent.army_of_the_damned.enabled|target.time_to_die<(cooldown.unholy_assault.remains|cooldown.summon_gargoyle.remains|cooldown.army_of_the_dead.remains)" );
   def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
   // Items and In Combat Potion
   def -> add_action( "use_items" );
-  def -> add_action( "potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up" );
+  def -> add_action( "potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_assault.up" );
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "target_if=dot.virulent_plague.remains<=(8-talent.ebon_fever.enabled*4)&!talent.unholy_blight.enabled", "Maintaining Virulent Plague is a priority" );
   // Action Lists
@@ -8531,17 +8532,10 @@ void death_knight_t::default_apl_unholy()
 
 
   // Cooldowns
-
-  // WIP, A lot of conditionals are based upon army of the dead being on cooldown, trying to figure out how to cleanly get this to work after a pull will be a high priority.
-  // cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound<2|target.time_to_die<=30" "Cooldowns" );
-
-  // WIP, this line is going to be tricky, apocalypse has a lot of variable CDR effects causing inconsisntant useage player by player. 
-  // cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&((talent.unholy_blight.enabled&debuff.unholy_blight.active)|!talent.unholy_blight.enabled)" );
-
-  cooldowns -> add_talent( this, "Unholy Blight", "if=cooldown.apocalypse.ready&debuff.festering_wound.stack>=4|buff.dark_transformation.active" );
-
-  // WIP, based upon runeforges and conduits, may need modification when these are added to sims
-  // cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&((cooldown.apocalypse.remains&runeforge.frenzied_monstrosity.enabled)|(runeforge.deadliest_coil.enabled&!buff.dark_transformation.active))|raid_event.adds.in>15" );
+  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound<2|target.time_to_die<=30" "Cooldowns" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=buff.dark_transformation.active" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&((runeforge.frenzied_monstrosity.enabled)|(runeforge.deadliest_coil.enabled&!buff.dark_transformation.active))|raid_event.adds.in>15" );
   cooldowns -> add_action( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&buff.dark_transformation.remains>12" );
@@ -8560,15 +8554,10 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd&!variable.pooling_for_gargoyle|pet.gargoyle.active", "General Rotation" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&rune.time_to_4>gcd&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile" );
-
-  // WIP, Scourge Strike, Clawing Shadows and Festering Strike may need a rework to accomedate for variable apocalypse cooldown if we are to utilize apocalypse for blight. 
-  // generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
-  // generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
-  
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-
-  // generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1&variable.disable_aotd" );
-
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done
