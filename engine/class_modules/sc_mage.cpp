@@ -1826,6 +1826,22 @@ public:
     if ( current_resource() == RESOURCE_MANA )
       p()->trigger_lucid_dreams( target, last_resource_cost );
   }
+
+  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 2 )
+  {
+    if ( ready->check() )
+      return;
+
+    if ( counter->at_max_stacks( offset ) )
+    {
+      counter->expire();
+      ready->trigger();
+    }
+    else
+    {
+      counter->trigger();
+    }
+  }
 };
 
 using residual_action_t = residual_action::residual_periodic_action_t<mage_spell_t>;
@@ -2072,6 +2088,21 @@ struct fire_mage_spell_t : public mage_spell_t
     else
       return target->health_percentage() > p()->talents.firestarter->effectN( 1 ).base_value();
   }
+
+  void trigger_molten_skyfall()
+  {
+    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready );
+  }
+
+  void consume_molten_skyfall( player_t* target )
+  {
+    if ( p()->buffs.molten_skyfall_ready->check() )
+    {
+      p()->buffs.molten_skyfall_ready->expire();
+      p()->action.legendary_meteor->set_target( target );
+      p()->action.legendary_meteor->execute();
+    }
+  }
 };
 
 struct hot_streak_state_t : public mage_spell_state_t
@@ -2160,18 +2191,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.pyroclasm->trigger();
       p()->buffs.firemind->trigger();
 
-      if ( !p()->buffs.sun_kings_blessing_ready->check() )
-      {
-        if ( p()->buffs.sun_kings_blessing->check() == p()->buffs.sun_kings_blessing->max_stack() )
-        {
-          p()->buffs.sun_kings_blessing->expire();
-          p()->buffs.sun_kings_blessing_ready->trigger();
-        }
-        else
-        {
-          p()->buffs.sun_kings_blessing->trigger();
-        }
-      }
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 0 );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2362,6 +2382,21 @@ struct frost_mage_spell_t : public mage_spell_t
           p()->procs.winters_chill_consumed->occur();
         }
       }
+    }
+  }
+
+  void trigger_cold_front()
+  {
+    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready );
+  }
+
+  void consume_cold_front( player_t* target )
+  {
+    if ( p()->buffs.cold_front_ready->check() )
+    {
+      p()->buffs.cold_front_ready->expire();
+      p()->action.legendary_frozen_orb->set_target( target );
+      p()->action.legendary_frozen_orb->execute();
     }
   }
 };
@@ -3492,22 +3527,8 @@ struct fireball_t : public fire_mage_spell_t
       else
         p()->buffs.fireball->trigger();
 
-      if ( p()->buffs.molten_skyfall_ready->check() )
-      {
-        p()->buffs.molten_skyfall_ready->expire();
-        p()->action.legendary_meteor->set_target( s->target );
-        p()->action.legendary_meteor->execute();
-      }
-      else
-      {
-        p()->buffs.molten_skyfall->trigger();
-      }
-
-      if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
-      {
-        p()->buffs.molten_skyfall->expire();
-        p()->buffs.molten_skyfall_ready->trigger();
-      }
+      consume_molten_skyfall( s->target );
+      trigger_molten_skyfall();
     }
   }
 
@@ -3645,14 +3666,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
         .action( p()->action.glacial_assault ) );
     }
 
-    if ( !p()->buffs.cold_front_ready->check() )
-      p()->buffs.cold_front->trigger();
-
-    if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
-    {
-      p()->buffs.cold_front->expire();
-      p()->buffs.cold_front_ready->trigger();
-    }
+    trigger_cold_front();
   }
 
   double action_multiplier() const override
@@ -3717,12 +3731,7 @@ struct flurry_t : public frost_mage_spell_t
       p()->procs.brain_freeze_used->occur();
     }
 
-    if ( p()->buffs.cold_front_ready->check() )
-    {
-      p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->set_target( target );
-      p()->action.legendary_frozen_orb->execute();
-    }
+    consume_cold_front( target );
   }
 
   void impact( action_state_t* s ) override
@@ -3810,12 +3819,7 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( p()->buffs.freezing_winds->check() == 0 )
       p()->cooldowns.frozen_orb->adjust( -p()->runeforge.freezing_winds->effectN( 1 ).time_value(), false );
 
-    if ( p()->buffs.cold_front_ready->check() )
-    {
-      p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->set_target( target );
-      p()->action.legendary_frozen_orb->execute();
-    }
+    consume_cold_front( target );
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
@@ -3828,15 +3832,7 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.tunnel_of_ice->trigger();
-
-      if ( !p()->buffs.cold_front_ready->check() )
-        p()->buffs.cold_front->trigger();
-
-      if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
-      {
-        p()->buffs.cold_front->expire();
-        p()->buffs.cold_front_ready->trigger();
-      }
+      trigger_cold_front();
     }
   }
 
@@ -4897,8 +4893,8 @@ struct pyroblast_t : public hot_streak_spell_t
     // an instant cast Pyroblast without Hot Streak is used
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
       p()->buffs.sun_kings_blessing_ready->expire();
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
     hot_streak_spell_t::execute();
@@ -4935,22 +4931,8 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->buffs.molten_skyfall_ready->check() )
-      {
-        p()->buffs.molten_skyfall_ready->expire();
-        p()->action.legendary_meteor->set_target( s->target );
-        p()->action.legendary_meteor->execute();
-      }
-      else
-      {
-        p()->buffs.molten_skyfall->trigger();
-      }
-
-      if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
-      {
-        p()->buffs.molten_skyfall->expire();
-        p()->buffs.molten_skyfall_ready->trigger();
-      }
+      consume_molten_skyfall( s->target );
+      trigger_molten_skyfall();
     }
   }
 
