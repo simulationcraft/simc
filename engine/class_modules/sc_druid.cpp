@@ -7215,6 +7215,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     druid_spell_t::tick( d );
 
+    if ( d->time_to_tick < base_tick_time )
+      return;
+
     if ( d->current_tick == ultimate_tick )
     {
       if ( p()->buff.moonkin_form->check() )
