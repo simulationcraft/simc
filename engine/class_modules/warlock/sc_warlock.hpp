@@ -173,7 +173,7 @@ public:
     const spell_data_t* drain_soul;
 
     // tier 25
-    const spell_data_t* writhe_in_agony; //TODO: SL Beta - SUDDEN ONSET PORTION (INITIAL STACK AMOUNT) HAS NOT BEEN IMPLEMENTED AS A TALENT YET AND REMAINS AS AZERITE IN THE MODULE. FIX THIS!
+    const spell_data_t* writhe_in_agony; //Note: there is an unimplemented bug for SL prepatch
     const spell_data_t* absolute_corruption;
     const spell_data_t* siphon_life;
 
