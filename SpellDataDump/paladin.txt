@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -358,7 +358,7 @@ Proc Chance      : 100%
 Mechanic         : Turn
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Wrench Evil (339292 effect#1), 
+Affecting spells : Wrench Evil (339292 effects: #1, #2)
 Family Flags     : 96
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -384,7 +384,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#11), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3), Sanctuary (105805 effect#5), Selfless Healer (114250 effects: #1, #2), Retribution Paladin (137027 effects: #8, #9), Protection Paladin (137028 effects: #11, #12), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -445,7 +445,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -543,7 +543,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1895: Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#7), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Ashen Hallow (330382 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3, #7), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 27, 39, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -617,7 +617,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effect#1), Focused Light (339984 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3, #6), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1)
 Family Flags     : 21, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -639,7 +639,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 19
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Focused Light (339984 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Focused Light (339984 effect#1)
 Family Flags     : 46, 48
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -665,7 +665,7 @@ Duration         : 12 seconds
 Cooldown         : 9 seconds
 Category         : 932
 Category Cooldown: 9 seconds
-Affecting spells : Retribution Paladin (137027 effect#13), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Consecrated Ground (204054 effect#1), Consecration (327980 effect#1)
+Affecting spells : Retribution Paladin (137027 effect#13), Protection Paladin (137028 effects: #6, #14), Holy Paladin (137029 effects: #4, #12), Consecrated Ground (204054 effect#1), Consecration (327980 effect#1)
 Family Flags     : 5, 58
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -814,7 +814,7 @@ Spell Level      : 37
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (327979 effect#1), 
+Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (327979 effects: #1, #2, #3, #4, #5)
 Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -866,7 +866,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), First Avenger (203776 effect#1), Ferren Marcus's Strength (207614 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Moment of Glory (327193 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6), Holy Paladin (137029 effect#4), First Avenger (203776 effect#1), Ferren Marcus's Strength (207614 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Moment of Glory (327193 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 14, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -957,7 +957,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Crusader Strike (231667 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), Crusader Strike (342348 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effects: #1, #2, #3, #4, #12, #14), Protection Paladin (137028 effects: #1, #2, #6, #7), Holy Paladin (137029 effects: #4, #5, #10), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Crusader Strike (342348 effect#1)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1027,7 +1027,7 @@ Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 23
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Empyrean Power (286393 effect#1), Empyrean Power (326733 effect#1), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 49, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1114,7 +1114,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Charges          : 1 (6 seconds cooldown)
 Category         : 1570: Paladin (137026 effect#3), Hammer of the Righteous (317854 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6, #7), Holy Paladin (137029 effects: #4, #5), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 50, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1145,7 +1145,7 @@ Resource         : 3 Holy Power (9) (id=192485)
 Spell Level      : 2
 Range            : 5 yards
 Cooldown         : 1 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (197277 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Bulwark of Righteous Fury (337848 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6, #7), Holy Paladin (137029 effects: #4, #5), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 52, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1218,7 +1218,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
-Affecting spells : Item - Paladin T19 Holy 4P Bonus (211438 effect#1), Divine Revelations (275463 effect#2), Inflorescence of the Sunwell (337777 effect#1), 
+Affecting spells : Item - Paladin T19 Holy 4P Bonus (211438 effect#1), Divine Revelations (275463 effect#2), Inflorescence of the Sunwell (337777 effects: #1, #2, #3)
 Triggered by     : Infusion of Light (53576)
 Family Flags     : 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1540,7 +1540,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Consecrated Ground (204054 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Consecration (327980 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #13), Protection Paladin (137028 effects: #1, #2, #6, #14), Holy Paladin (137029 effects: #4, #12), Consecrated Ground (204054 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Consecration (327980 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 5, 27, 65
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
@@ -1585,7 +1585,7 @@ Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1632,7 +1632,7 @@ Spell Type       : None
 Resource         : 3 Holy Power (9) (id=3994)
 Spell Level      : 34
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#2), Divine Purpose (223819 effect#1), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
+Affecting spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
 Family Flags     : 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1661,7 +1661,7 @@ Range            : 5 yards
 Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), Final Verdict (337247 effect#1), The Magistrate's Judgment (337682 effect#1)
+Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Final Verdict (337247 effect#1), The Magistrate's Judgment (337682 effect#1)
 Family Flags     : 77
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1714,7 +1714,7 @@ Resource         : 3 Holy Power (9) (id=4098)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Sanctuary (105805 effect#5), Holy Paladin (137029 effect#1), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1930,7 +1930,7 @@ School           : Holy
 Spell Type       : Melee
 Range            : 50000 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65, 83
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : x....... ........ ........ ........   ........ .x...... ..x..... ......x. 
@@ -2234,7 +2234,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effect#1), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 65, 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -2263,7 +2263,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effect#1), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 65, 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   ........ .x...... ........ ........ 
@@ -2310,7 +2310,7 @@ Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, G
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
@@ -2397,7 +2397,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Sanctuary (105805 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 46, 101
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
@@ -2901,7 +2901,7 @@ Resource         : 3 Holy Power (9) (id=192465)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Affecting spells : Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), The Magistrate's Judgment (337682 effect#1)
+Affecting spells : Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), The Magistrate's Judgment (337682 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,7 +3011,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Holy Shield (152261)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3304,7 +3304,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Triggered by     : Judgment of Light (196941)
 Family Flags     : 32, 46
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
@@ -3347,7 +3347,7 @@ Resource         : 7% Base Mana (0) (id=10087)
 Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Untempered Dedication (339990 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Untempered Dedication (339990 effect#1)
 Family Flags     : 46, 124
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3373,7 +3373,7 @@ Range            : 12 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 12 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Crusade (231895 effect#1), Righteous Verdict (238996 effect#1), Item - Paladin T20 Retribution 2P Bonus (242266 effect#1), Sacred Judgment (246973 effect#1), Wake of Ashes (255937 effect#4), Blade of Wrath (281178 effect#1), Blade of Justice (327981 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #6, #7), Holy Paladin (137029 effects: #4, #5), Crusade (231895 effects: #1, #2), Righteous Verdict (238996 effect#1), Item - Paladin T20 Retribution 2P Bonus (242266 effect#1), Sacred Judgment (246973 effects: #1, #2), Wake of Ashes (255937 effect#4), Blade of Wrath (281178 effect#1), Blade of Justice (327981 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65, 126
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3545,7 +3545,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...x.. .x.x.... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -3573,7 +3573,7 @@ GCD              : 1.5 seconds
 Duration         : 9 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 25 seconds
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Item - Paladin T20 Retribution 2P Bonus (242266 effect#2)
+Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effects: #6, #7), Holy Paladin (137029 effects: #4, #5), Item - Paladin T20 Retribution 2P Bonus (242266 effect#2)
 Family Flags     : 108
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3599,7 +3599,7 @@ School           : Holy
 Spell Type       : Melee
 Range            : 50000 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Sacred Judgment (246973 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Sacred Judgment (246973 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Divine Hammer (198034)
 Family Flags     : 25, 27, 65
 Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ ........ ........ 
@@ -4048,7 +4048,7 @@ School           : Holy
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65, 117
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4076,7 +4076,7 @@ Cooldown         : 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 54, 65
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4101,7 +4101,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 54, 65
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4395,7 +4395,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. ........ .x...... ........ 
                  : Yellow Melee Taken, Magic Hostile Spell Taken
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Judgment (327977 effect#1)
+Affecting spells : Retribution Paladin (137027 effects: #4, #11), Protection Paladin (137028 effects: #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Judgment (327977 effect#1)
 Family Flags     : 23
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4422,7 +4422,7 @@ Range            : 5 yards
 Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 65, 88
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4599,7 +4599,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 46, 97
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4684,7 +4684,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : Unlimited(-1)
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4709,7 +4709,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effect#1), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effects: #1, #2, #4), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
 Family Flags     : 46, 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -5258,7 +5258,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Ashes to Dust (236106 effect#1), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 27, 65, 68
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6081,7 +6081,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Range            : 30 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Zeal (269571)
 Family Flags     : 27, 65, 80
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6608,7 +6608,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6658,7 +6658,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6686,7 +6686,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#5), Protection Paladin (137028 effect#8), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #7, #13), Holy Paladin (137029 effects: #5, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 3, 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7758,7 +7758,7 @@ Name             : Light's Decree (id=286232) [Scaling Spell (-1), Spell Family 
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7868,7 +7868,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 30 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Glimmer of Light (287269)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8235,7 +8235,7 @@ Resource         : 15% Base Mana (0) (id=192315)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Paladin (137026 effect#9), Fires of Justice (209785 effect#3), Rule of Law (214202 effect#1), Divine Purpose (223819 effect#4)
+Affecting spells : Paladin (137026 effect#9), Fires of Justice (209785 effect#3), Rule of Law (214202 effects: #1, #2), Divine Purpose (223819 effect#4)
 Family Flags     : 92
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8364,7 +8364,7 @@ Class            : Paladin
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8384,7 +8384,7 @@ Class            : Paladin
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 41, 46
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8620,7 +8620,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 41, 46
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8643,7 +8643,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8684,7 +8684,7 @@ Name             : Sanctified Wrath (id=326731) [Scaling Spell (-1), Spell Famil
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8942,7 +8942,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....x.. ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Trap Triggered
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Judgment (214222 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), Righteous Might (340192 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Judgment (214222 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Righteous Might (340192 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 65, 123
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9521,7 +9521,7 @@ Spell Level      : 24
 Range            : 60 yards
 Max Targets      : 3
 Duration         : 18 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Shock Barrier (337825)
 Family Flags     : 46
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -9945,7 +9945,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : Unlimited(-1)
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -10355,7 +10355,7 @@ Cooldown         : 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Fires of Justice (209785 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#2), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #6), Holy Paladin (137029 effect#4), Fires of Justice (209785 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#2), Divine Purpose (223819 effect#1), Crusade (231895 effects: #1, #2), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 31, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -10403,7 +10403,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10459,7 +10459,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Final Reckoning (343723)
 Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -40,7 +40,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025 effect#4), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Roots Range Increase (96148 effect#1), Nature's Swiftness (132158 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Cat Form (3025 effect#4), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Roots Range Increase (96148 effect#1), Nature's Swiftness (132158 effects: #1, #3, #4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2)
 Family Flags     : 9
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
@@ -73,7 +73,7 @@ Cooldown         : 180 seconds
 Category         : 46
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Starfall (191034 effect#2), Inner Peace (197073 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Inner Peace (197073 effect#1), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7)
 Family Flags     : 53
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -149,7 +149,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -215,7 +215,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effects: #1, #2), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effects: #1, #2), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 85, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -284,7 +284,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effects: #5, #7), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Feral Affinity (202157 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -457,7 +457,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -543,7 +543,7 @@ Spell Type       : None
 Spell Level      : 12
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Predator (202021 effect#1), Stellar Drift (202461 effect#1), Tiger's Fury (231055 effect#1), Jungle Fury (274425 effect#2), Carnivorous Instinct (340705 effect#1), 
+Affecting spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Predator (202021 effect#1), Stellar Drift (202461 effect#1), Tiger's Fury (231055 effect#1), Jungle Fury (274425 effect#2), Carnivorous Instinct (340705 effects: #1, #2, #3)
 Family Flags     : 75
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -579,7 +579,7 @@ Spell Level      : 5
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 15, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -780,7 +780,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Tooth and Claw (135286 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Savage Combatant (340613 effect#1)
+Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Tooth and Claw (135286 effect#1), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1)
 Family Flags     : 11, 77
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -839,7 +839,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#3), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effects: #1, #2), Clearcasting (16870 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Nature's Swiftness (132158 effects: #1, #2, #3, #4), Guardian Druid (137010 effects: #3, #4, #5), Feral Druid (137011 effects: #4, #5, #6), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #4, #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effects: #1, #2), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effects: #2, #3), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
@@ -871,7 +871,7 @@ Spell Level      : 33
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effect#1), Flash of Clarity (340616 effect#1)
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effects: #1, #4, #5), Flash of Clarity (340616 effect#1)
 Family Flags     : 114
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -896,7 +896,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effect#1), Flash of Clarity (340616 effect#1)
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effects: #1, #4, #5), Flash of Clarity (340616 effect#1)
 Triggered by     : Omen of Clarity (113043)
 Family Flags     : 114
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ......x. 
@@ -1074,7 +1074,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1576: Item - Druid T17 Restoration 2P Bonus (165437 effect#1)
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1101,7 +1101,7 @@ GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
 Category Cooldown: 600 seconds
-Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#2), Cheaper Druid Shapeshifting (38314 effect#1), Nature's Swiftness (132158 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rebirth (328024 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effects: #2, #9), Cheaper Druid Shapeshifting (38314 effect#1), Nature's Swiftness (132158 effects: #1, #3, #4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rebirth (328024 effect#1)
 Family Flags     : 28
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
@@ -1206,7 +1206,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Apex Predator's Craving (339140 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effects: #1, #3), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Apex Predator's Craving (339140 effects: #1, #2, #3)
 Family Flags     : 98, 108
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1242,7 +1242,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Maim Damage (61252 effect#1), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effects: #2, #3), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 39, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1314,7 +1314,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Frenzied Regeneration (273048 effect#1)
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Natural Defenses (211160 effect#1), Frenzied Regeneration (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1)
+Affecting spells : Berserk (50334 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Natural Defenses (211160 effect#1), Frenzied Regeneration (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1)
 Family Flags     : 62
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1430,7 +1430,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), The Dark Titan's Lesson (338831 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effect#1)
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1456,7 +1456,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 26
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), The Dark Titan's Lesson (338831 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effect#1)
 Family Flags     : 36, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ ........ ........ 
@@ -1549,7 +1549,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#1), Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Soul of the Forest (158477 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Berserk (50334 effects: #1, #5, #6), Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effects: #1, #6, #7, #8), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Soul of the Forest (158477 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 38, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1696,7 +1696,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Wild Growth (328025 effect#1), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Nature's Wisdom (167715 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -1744,7 +1744,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Affecting spells : Soul of the Forest (114107 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effect#1), Eclipse (328021 effect#1), Umbral Intensity (340719 effect#1)
+Affecting spells : Soul of the Forest (114107 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effects: #1, #2), Eclipse (328021 effect#1), Umbral Intensity (340719 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1788,7 +1788,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Affecting spells : Soul of the Forest (114107 effect#2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effect#1), Eclipse (328021 effect#1), Umbral Intensity (340719 effect#1)
+Affecting spells : Soul of the Forest (114107 effect#2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effects: #1, #2), Eclipse (328021 effect#1), Umbral Intensity (340719 effect#1)
 Family Flags     : 42
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1881,7 +1881,7 @@ School           : Astral
 Spell Type       : None
 Spell Level      : 29
 Max Targets      : 20
-Affecting spells : Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
+Affecting spells : Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202354 effects: #1, #2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
 Family Flags     : 55
 Attributes       : .......x x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -1932,7 +1932,7 @@ Cooldown         : 180 seconds
 Category         : 1208
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effects: #1, #2)
 Family Flags     : 84
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1982,7 +1982,7 @@ Resource         : 18% Base Mana (0) (id=2290)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 81, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2157,7 +2157,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 Duration         : 6 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7)
 Triggered by     : Typhoon (132469)
 Family Flags     : 56
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -2363,7 +2363,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Luffa-Infused Embrace (339060 effect#1), 
+Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effects: #1, #5, #6), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #1, #7, #8), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2, #8, #9), Restoration Druid (137012 effects: #5, #6), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effects: #1, #2, #3, #4), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #3)
 Family Flags     : 77, 86, 91
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2393,7 +2393,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Starsurge (328022 effect#1), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Starsurge (328022 effects: #1, #2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
 Family Flags     : 18, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2484,7 +2484,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Druid (137009 effect#4), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Druid (137009 effect#4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 77, 123
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2590,7 +2590,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Blossoming Efflorescence (242315 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Blossoming Efflorescence (242315 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 65, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2779,7 +2779,7 @@ Spell Level      : 23
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effects: #1, #2)
 Family Flags     : 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2964,7 +2964,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,7 +3192,7 @@ Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effect#1), 
+Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effects: #1, #2)
 Family Flags     : 30, 43, 96
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3334,7 +3334,7 @@ Resource         : 35 Energy (3) (id=9341)
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#3), Astral Influence (197524 effects: #1, #3), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 74, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3367,7 +3367,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Luffa-Infused Embrace (339060 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Clearcasting (135700 effects: #1, #3, #4), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effects: #1, #2, #3, #4), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effects: #1, #2), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #3)
 Family Flags     : 86, 98, 126
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3395,7 +3395,7 @@ Spell Type       : None
 Spell Level      : 11
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#3), Luffa-Infused Embrace (339060 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effects: #3, #4), Luffa-Infused Embrace (339060 effects: #1, #2)
 Family Flags     : 26
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4044,7 +4044,7 @@ GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Category         : 1217
 Category Cooldown: 30 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7)
 Family Flags     : 56
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4147,7 +4147,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effect#1), Flash of Clarity (340616 effect#1)
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effects: #1, #4, #5), Flash of Clarity (340616 effect#1)
 Triggered by     : Omen of Clarity (16864)
 Family Flags     : 114
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ......x. 
@@ -4448,7 +4448,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 27
 Range            : 100 yards
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2), Oath of the Elder Druid (338608 effect#1)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2), Oath of the Elder Druid (338608 effect#1)
 Family Flags     : 82, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4469,7 +4469,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
@@ -4491,7 +4491,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
@@ -4640,7 +4640,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 16 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Twin Moonfire (200818 effects: #1, #2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 98, 120
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4711,7 +4711,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effects: #5, #7), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Feral Affinity (202157 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Triggered by     : Rake (1822)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -4829,7 +4829,7 @@ Max Targets      : 60
 Duration         : 8 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Triggered by     : Tranquility (740)
 Family Flags     : 7, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5099,7 +5099,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339946 effect#1), Fury of the Skies (340708 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Overrides Passive (197692 effects: #1, #2), Twin Moonfire (200818 effects: #1, #2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effects: #2, #3), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339946 effect#1), Fury of the Skies (340708 effect#1)
 Family Flags     : 18, 92
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -5133,7 +5133,7 @@ Spell Level      : 13
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Fury of the Skies (340708 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Fury of the Skies (340708 effect#1)
 Family Flags     : 18, 127
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
@@ -5387,7 +5387,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), The Dark Titan's Lesson (338831 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effect#1)
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -5441,7 +5441,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5469,7 +5469,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Astral Influence (197524 effect#3), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Adaptive Swarm (325733 effect#2), Oneth's Perception (339800 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
+Affecting spells : Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Astral Influence (197524 effect#3), Stellar Drift (202354 effects: #1, #2), Stellar Drift (202461 effect#1), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Adaptive Swarm (325733 effect#2), Oneth's Perception (339800 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
 Family Flags     : 55, 119
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -5505,7 +5505,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Range            : 200 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202354 effects: #1, #2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
 Family Flags     : 18, 55
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   x....... .x...... ....x... .x....x. 
@@ -5558,7 +5558,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#1), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Luffa-Infused Embrace (339060 effect#1), 
+Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effects: #1, #2, #3), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effects: #3, #4), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #4)
 Family Flags     : 40, 77
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -5627,7 +5627,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Moonfire (164812 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Lunar) (48518 effects: #1, #2, #3, #4, #5), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Owlkin Frenzy (157228 effect#1), Moonfire (164812 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Warrior of Elune (202425 effects: #1, #2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339946 effect#1)
 Family Flags     : 2, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5966,7 +5966,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Starsurge (328022 effect#1), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Starsurge (328022 effects: #1, #2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effect#1)
 Family Flags     : 18, 89
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5990,7 +5990,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Moonfire (164812 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Lunar) (48518 effects: #1, #2, #3, #4, #5), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Owlkin Frenzy (157228 effect#1), Moonfire (164812 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Warrior of Elune (202425 effects: #1, #2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339946 effect#1)
 Family Flags     : 2, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6015,7 +6015,7 @@ Resource         : 12% Base Mana (0) (id=10709)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 18, 102
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6150,7 +6150,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 20, 118
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -6273,7 +6273,7 @@ GCD              : 1 seconds
 Charges          : 3 (8 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 98, 99
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6477,7 +6477,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 105
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6609,7 +6609,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 116
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
@@ -6693,7 +6693,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 23
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6778,7 +6778,7 @@ Resource         : 30% Base Mana (0) (id=10902)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
 Family Flags     : 54
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6819,7 +6819,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ......x. 
@@ -7066,7 +7066,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effect#2), 
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4)
 Family Flags     : 118, 121
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -7531,7 +7531,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effects: #3, #4), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 23
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -7674,7 +7674,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -7722,7 +7722,7 @@ Spell Type       : Melee
 Range            : 8 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 52, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8187,7 +8187,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Tooth and Claw (135286 effect#1), Druid (137009 effect#3), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Savage Combatant (340613 effect#1)
+Affecting spells : Tooth and Claw (135286 effect#1), Druid (137009 effects: #3, #4), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Savage Combatant (340613 effect#1)
 Family Flags     : 11
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -9258,7 +9258,7 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9509,7 +9509,7 @@ GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9540,7 +9540,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9571,7 +9571,7 @@ GCD              : 1.5 seconds
 Velocity         : 0.9 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effects: #3, #4), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effect#3), Sunfire (164815 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9668,7 +9668,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Adaptive Swarm (325733 effect#2)
 Family Flags     : 94
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9693,7 +9693,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
 Duration         : 6 seconds
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 94, 98
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10127,7 +10127,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10983,7 +10983,7 @@ Resource         : 1 - 5 Combo Points (4) (id=191998)
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#5), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effect#7), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #5, #6), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: King of the Jungle (102543 effect#2), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Heart of the Wild (108292 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Soul of the Forest (158476 effects: #2, #3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 54, 93, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11579,7 +11579,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Cooldown         : 0.5 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), 
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3)
 Family Flags     : 18
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ ........ ......x. ....x...   ........ ........ ........ ......x. 
@@ -11608,7 +11608,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -11789,7 +11789,7 @@ Cooldown         : 120 seconds
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x40000011
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Conflux of Elements (341446 effect#1), 
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Conflux of Elements (341446 effects: #1, #2)
 Family Flags     : 16
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -11859,7 +11859,7 @@ Velocity         : 12 yards/sec
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Evolved Swarm (341447 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Berserk (50334 effects: #5, #6), Incarnation: Guardian of Ursoc (102558 effects: #7, #8), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Evolved Swarm (341447 effect#1)
 Family Flags     : 18, 22
 Attributes       : ........ ........ .......x x.......   .....x.. ..x..... ........ ........ 
                  : x....... ......x. ........ ........   .......x .x...... ....x... ......x. 
@@ -11890,7 +11890,7 @@ Velocity         : 12 yards/sec
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Circle of Life and Death (338657 effect#2), Evolved Swarm (341447 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #5, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1)
 Family Flags     : 22, 118
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -11966,7 +11966,7 @@ Max Targets      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Deep Allegiance (341378 effect#1)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effects: #1, #2), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ....x... ........ 
@@ -11998,7 +11998,7 @@ Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
 Category Cooldown: 60 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Deep Allegiance (341378 effect#1)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effects: #1, #2), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -12026,7 +12026,7 @@ Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
 Category Cooldown: 60 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Deep Allegiance (341378 effect#1)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effects: #1, #2), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -12075,7 +12075,7 @@ Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
 Category Cooldown: 60 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Deep Allegiance (341378 effect#1)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effects: #1, #2), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -12427,7 +12427,7 @@ Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1885
 Category Cooldown: 60 seconds
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Deep Allegiance (341378 effect#1)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effects: #1, #2), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
