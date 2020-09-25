@@ -469,6 +469,9 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
 
+    // SL
+    propagate_const<buff_t*> decimating_bolt;
+
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
@@ -508,6 +511,13 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
+<<<<<<< HEAD
+=======
+
+    // SL
+    gain_t* scouring_tithe;
+    gain_t* decimating_bolt;
+>>>>>>> 5d32ef9dc3... added skeleton of spell, implemented spell velocity
   } gains;
 
   // Procs

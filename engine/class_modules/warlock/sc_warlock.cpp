@@ -55,6 +55,42 @@ struct drain_life_t : public warlock_spell_t
   }
 };
 
+struct decimating_bolt_dmg_t : public warlock_spell_t
+{
+  decimating_bolt_dmg_t( warlock_t* p ) : warlock_spell_t( "decimating_bolt_tick_t", p, p->find_spell( 327059 ) )
+  {
+    background = true;
+    may_miss   = false;
+    dual       = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+  };
+};
+
+struct decimating_bolt_t : public warlock_spell_t
+{
+  action_t* decimating_bolt_damage;
+
+  decimating_bolt_t( warlock_t* p, util::string_view options_str ) 
+    : warlock_spell_t( "decimating_bolt", p, p->covenant.decimating_bolt )
+  {
+    parse_options( options_str );
+    // can_havoc = true; NYI
+    travel_speed = p->find_spell( 327072 )->missile_speed();
+  }
+
+    void impact( action_state_t* s ) override
+  {
+      p()->buffs.decimating_bolt->value();
+      warlock_spell_t::impact( s );
+
+  };
+
+};
+
 // TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
@@ -483,6 +519,9 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new drain_life_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
+  if ( action_name == "decimating_bolt" )
+    return new decimating_bolt_t( this, options_str );
+
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -543,6 +582,11 @@ void warlock_t::create_buffs()
   buffs.grimoire_of_sacrifice =
       make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() )
           ->set_chance( 1.0 );
+
+  // 4.0 is the multiplier for a 0% health mob
+  buffs.decimating_bolt = make_buff( this, "decimating_bolt", find_spell( 325299 ) )
+                              ->set_duration( find_spell( 325299 )->duration() )
+                              ->set_default_value( 4.0 );
 }
 
 void warlock_t::init_spells()
