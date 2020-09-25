@@ -8536,7 +8536,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=buff.dark_transformation.active" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&((runeforge.frenzied_monstrosity.enabled)|(runeforge.deadliest_coil.enabled&!buff.dark_transformation.active))|raid_event.adds.in>15" );
-  cooldowns -> add_action( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
+  cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&buff.dark_transformation.remains>12" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.health.pct<35&target.time_to_die>5" );
@@ -8563,8 +8563,8 @@ void death_knight_t::default_apl_unholy()
   // Generic AOE actions to be done
   aoe -> add_action( this, "Death and Decay", "if=cooldown.apocalypse.remains", "AoE Rotation" );
   aoe -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<(14+death_knight.fwounded_targets*3)&!variable.pooling_for_gargoyle" );
-  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<(14+death_knight.fwounded_targets*3)&!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
