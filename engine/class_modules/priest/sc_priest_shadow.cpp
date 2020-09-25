@@ -1122,6 +1122,11 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension = new void_bolt_extension_t( player, rank2 );
     }
+
+    if ( priest().conduits.dissonant_echoes->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.dissonant_echoes->effectN( 2 ).percent() );
+    }
   }
 
   void execute() override
