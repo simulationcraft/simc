@@ -56,7 +56,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
 
-  propagate_const<buff_t*> debuffs_from_the_shadows;
+  propagate_const<buff_t*> debuffs_from_the_shadows; //TODO: Refactor handling for this - see PR 5294
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -184,7 +184,7 @@ public:
 
     // tier 45
     const spell_data_t* dark_caller;
-    const spell_data_t* haunt; //TODO: SL Beta - Haunt currently is not applying Shadow Embrace in the sim. Fix this!
+    const spell_data_t* haunt;
     // grimoire of sacrifice
 
     // tier 50
@@ -204,7 +204,7 @@ public:
     const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
-    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). Consider rebuilding this.
+    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). See PR 5294.
     const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
     const spell_data_t* summon_vilefiend;
 

@@ -640,7 +640,6 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    // TODO - Add Shadow Embrace
     td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
