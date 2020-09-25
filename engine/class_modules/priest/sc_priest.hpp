@@ -414,6 +414,8 @@ public:
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
 
+    // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
+    int priest_ascended_eruption_targets = 0;
   } options;
 
   struct actions_t

@@ -603,6 +603,13 @@ struct ascended_eruption_t final : public priest_spell_t
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = priest_spell_t::composite_aoe_multiplier( state );
+    int targets = state->n_targets;
+
+    if ( priest().options.priest_ascended_eruption_targets )
+    {
+      sim->print_debug( "{} {} sets damage multiplier as if it hit {} targets.", *player, *this, priest().options.priest_ascended_eruption_targets );
+      targets = priest().options.priest_ascended_eruption_targets;
+    }
     return cam / std::sqrt( state->n_targets );
   }
 };
@@ -2083,7 +2090,6 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_deprecated( "double_dot", "action_list=double_dot" ) );
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
@@ -2097,6 +2103,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
   add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
+  add_option( opt_int( "priest_ascended_eruption_targets", options.priest_ascended_eruption_targets ) );
 }
 
 std::string priest_t::create_profile( save_e type )
