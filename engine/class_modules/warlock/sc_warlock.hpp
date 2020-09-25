@@ -380,7 +380,6 @@ public:
     const spell_data_t* affliction; //Spec aura
     const spell_data_t* agony; //This is the primary active ability
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
-    //TODO: SL Beta - These corruption passives are not currently implemented in the spell, fix this!
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
     const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
     const spell_data_t* nightfall;  // TODO: SL Beta - There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)

@@ -277,6 +277,14 @@ struct corruption_t : public affliction_spell_t
     may_crit                   = false;
     tick_zero                  = false;
     pandemic_invocation_usable = false;  // BFA - Azerite
+
+    
+    if ( !p->spec.corruption_3->ok() )
+    {
+      spell_power_mod.direct = 0; //Rank 3 is required for direct damage
+    }
+    
+
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
 
