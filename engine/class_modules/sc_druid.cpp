@@ -6442,7 +6442,7 @@ struct druid_interrupt_t : public druid_spell_t
   druid_interrupt_t( util::string_view n, druid_t* p, const spell_data_t* s, const std::string& options_str )
     : druid_spell_t( n, p, s, options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = harmful = false;
     ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
