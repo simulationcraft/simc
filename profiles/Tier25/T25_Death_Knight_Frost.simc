@@ -1,7 +1,7 @@
 deathknight="T25_Death_Knight_Frost"
 source=default
 spec=frost
-level=120
+level=50
 race=blood_elf
 role=attack
 position=back
@@ -191,12 +191,12 @@ main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_raz
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=474.88
-# gear_strength=9486
-# gear_stamina=19226
-# gear_crit_rating=1605
-# gear_haste_rating=1498
-# gear_mastery_rating=1287
+# gear_ilvl=137.25
+# gear_strength=397
+# gear_stamina=842
+# gear_crit_rating=307
+# gear_haste_rating=295
+# gear_mastery_rating=259
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=8063
+# gear_armor=538
