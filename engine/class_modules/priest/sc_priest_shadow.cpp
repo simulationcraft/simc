@@ -1005,11 +1005,13 @@ struct devouring_plague_t final : public priest_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
-    // when you refresh, you lose the partial tick
+    // In game this is always calculating time to next and adding duration as if you always had a full tick left minus
+    // that time_to_next_tick. This creates more duration of the DoT and adds a tick of damage. Publik - 2020-09-26
     if ( priest().bugs )
     {
       return duration + tick_time( d->state ) - ( d->time_to_tick - d->time_to_next_tick() );
     }
+    // when you refresh, you lose the partial tick
     else
     {
       return duration + d->time_to_next_tick();
