@@ -295,6 +295,8 @@ void sinful_revelation( special_effect_t& effect )
 
 namespace items
 {
+// Trinkets
+
 void darkmoon_deck_shuffle( special_effect_t& effect )
 {
   // Disable the effect, as we handle shuffling within the on-use effect
@@ -526,6 +528,43 @@ void hateful_chain( special_effect_t& effect )
 {
 
 }
+
+// Runecarves
+void echo_of_eonar( special_effect_t& effect )
+{
+
+}
+
+void judgment_of_the_artbiter( special_effect_t& effect )
+{
+
+}
+
+void maw_rattle( special_effect_t& effect )
+{
+
+}
+
+void norgannons_sagacity( special_effect_t& effect )
+{
+
+}
+
+void sephuzs_proclamation( special_effect_t& effect )
+{
+
+}
+
+void third_eye_of_the_jailer( special_effect_t& effect )
+{
+
+}
+
+void vitality_sacrifice( special_effect_t& effect )
+{
+
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -564,6 +603,15 @@ void register_special_effects()
     unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
     unique_gear::register_special_effect( 344063, items::gluttonous_spike );
     unique_gear::register_special_effect( 345357, items::hateful_chain );
+
+    // Runecarves
+    unique_gear::register_special_effect( 338477, items::echo_of_eonar );
+    unique_gear::register_special_effect( 339344, items::judgment_of_the_artbiter );
+    unique_gear::register_special_effect( 340197, items::maw_rattle );
+    unique_gear::register_special_effect( 339340, items::norgannons_sagacity );
+    unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
+    unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
+    unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
 }
 
 void register_target_data_initializers( sim_t& sim )
