@@ -552,7 +552,21 @@ void norgannons_sagacity( special_effect_t& effect )
 
 void sephuzs_proclamation( special_effect_t& effect )
 {
+  auto buff = buff_t::find( effect.player, "sephuzs_proclamation" );
+  if ( !buff )
+  {
+    auto val = effect.trigger()->effectN( 1 ).average( effect.player );
+    buff     = make_buff<stat_buff_t>( effect.player, "sephuzs_proclamation", effect.trigger() )
+               ->add_stat( STAT_HASTE_RATING, val )
+               ->add_stat( STAT_CRIT_RATING, val )
+               ->add_stat( STAT_MASTERY_RATING, val )
+               ->add_stat( STAT_VERSATILITY_RATING, val );
+  }
 
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void third_eye_of_the_jailer( special_effect_t& effect )
