@@ -64,30 +64,60 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
     dual       = true;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+
+    m *= 2.0 - target->health_percentage() * 0.01;
+
+    return m;
+  };
+
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
   };
+
+
 };
 
 struct decimating_bolt_t : public warlock_spell_t
 {
-  action_t* decimating_bolt_damage;
+  action_t* decimating_bolt_dmg;
 
-  decimating_bolt_t( warlock_t* p, util::string_view options_str ) 
-    : warlock_spell_t( "decimating_bolt", p, p->covenant.decimating_bolt )
+  decimating_bolt_t( warlock_t* p, util::string_view options_str ) : 
+    warlock_spell_t( "decimating_bolt", p, p->covenant.decimating_bolt ),
+    decimating_bolt_dmg( new decimating_bolt_dmg_t( p ) )
+
   {
     parse_options( options_str );
     // can_havoc = true; NYI
     travel_speed = p->find_spell( 327072 )->missile_speed();
+
+    add_child( decimating_bolt_dmg );
   }
 
-    void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
-    //p()->buffs.decimating_bolt->trigger(
-    //    1, ( (s->target->health_percentage() * 0.01) * -2 + p()->buffs.decimating_bolt->default_value ) );
-     //p()->buffs.decimating_bolt->value();
-      warlock_spell_t::impact( s );
+    if ( p()->talents.fire_and_brimstone->ok() )
+    {
+        p()->buffs.decimating_bolt->trigger(
+          3, ( ( -0.8 * (s->target->health_percentage() * 0.01) + 1.6 )));
+    }
+    else
+    {
+      p()->buffs.decimating_bolt->trigger(
+          3, ( ( s->target->health_percentage() * 0.01 ) * -2 + p()->buffs.decimating_bolt->default_value ) );
+    }
+    
+    sim->out_log.print( "decimating bolt buff value: {}", p()->buffs.decimating_bolt->value() );
+    warlock_spell_t::impact( s );
+    
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( 0.1_s )
+      .target( s->target )
+      .n_pulses( 4 )
+      .action( decimating_bolt_dmg ), true );
 
   };
 
@@ -586,9 +616,9 @@ void warlock_t::create_buffs()
           ->set_chance( 1.0 );
 
   // 4.0 is the multiplier for a 0% health mob
-  buffs.decimating_bolt = make_buff( this, "decimating_bolt", find_spell( 325299 ) )
-                              ->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value( buffs.decimating_bolt->default_value )
+  buffs.decimating_bolt =
+      make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
+                              ->set_default_value(4)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 }
 
