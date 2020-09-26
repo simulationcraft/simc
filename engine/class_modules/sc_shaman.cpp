@@ -443,7 +443,7 @@ public:
   struct legendary_t
   {
     // Shared
-    item_runeforge_t ancestral_reminder;     // NYI
+    item_runeforge_t ancestral_reminder;
     item_runeforge_t chains_of_devastation;
     item_runeforge_t deeptremor_stone;       // NYI
     item_runeforge_t deeply_rooted_elements; // NYI
@@ -6838,6 +6838,15 @@ void shaman_t::create_buffs()
   buff.elemental_blast_mastery->set_max_stack( 1 );
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
+
+  if ( legendary.ancestral_reminder->ok() )
+  {
+      
+    auto legendary_spell = find_spell( 336741 );
+    auto buff            = buffs.bloodlust;
+    buffs.bloodlust->modify_duration( timespan_t::from_millis(legendary_spell->effectN( 1 ).base_value()) );
+    buffs.bloodlust->modify_default_value( legendary_spell->effectN( 2 ).percent() * buff->value() );
+  }
 
   // Covenants
   buff.primordial_wave = make_buff( this, "primordial_wave", covenant.necrolord )->set_duration( find_spell( 327164 )->duration() );
