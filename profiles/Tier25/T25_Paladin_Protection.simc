@@ -1,7 +1,7 @@
 paladin="T25_Paladin_Protection"
 source=default
 spec=protection
-level=120
+level=50
 race=lightforged_draenei
 role=tank
 position=front
@@ -9,10 +9,10 @@ talents=3200003
 azerite_essences=12:3/13:3/32:3/37:3
 
 # Default consumables
-potion=potion_of_unbridled_fury
-flask=greater_flask_of_the_undertow
-food=mechdowels_big_mech
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -57,7 +57,6 @@ actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=(debuff.razor_coral_de
 actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
 actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
 actions.cooldowns+=/memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up
-actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 actions.cooldowns+=/use_item,name=grongs_primal_rage,if=cooldown.judgment.full_recharge_time>4&cooldown.avengers_shield.remains>4&(buff.seraphim.up|cooldown.seraphim.remains+4+gcd>expected_combat_length-time)&consecration.up
@@ -83,13 +82,13 @@ main_hand=gift_of_the_void,id=172194,bonus_id=4824/1517,enchant=force_multiplier
 off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 
 # Gear Summary
-# gear_ilvl=480.50
-# gear_strength=9793
-# gear_stamina=19792
-# gear_crit_rating=1416
-# gear_haste_rating=1803
-# gear_mastery_rating=428
-# gear_versatility_rating=817
+# gear_ilvl=139.75
+# gear_strength=407
+# gear_stamina=849
+# gear_crit_rating=281
+# gear_haste_rating=338
+# gear_mastery_rating=130
+# gear_versatility_rating=122
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=12251
+# gear_armor=827
