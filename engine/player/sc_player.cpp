@@ -3335,8 +3335,8 @@ void player_t::create_buffs()
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
       buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
-        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-          if ( new_ >= b->max_stack() )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+          if ( b->at_max_stacks() )
           {
             buffs.euphoria->trigger();
             b->expire();
@@ -3346,8 +3346,8 @@ void player_t::create_buffs()
       buffs.embody_the_construct = make_buff( this, "embody_the_construct", find_spell( 342174 ) );
       buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
         ->modify_max_stack( 1 )
-        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-          if ( new_ >= b->max_stack() )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+          if ( b->at_max_stacks() )
           {
             buffs.marrowed_gemstone_enhancement->trigger();
             b->expire();
