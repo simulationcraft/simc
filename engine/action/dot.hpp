@@ -93,7 +93,7 @@ public:
   timespan_t get_extended_time() const { return extended_time; }
   double get_last_tick_factor() const { return last_tick_factor; }
   int current_stack() const { return ticking ? stack : 0; }
-  bool at_max_stacks( int mod = 0 ) const { return current_stack() + mod == max_stack; }
+  bool at_max_stacks( int mod = 0 ) const { return current_stack() + mod >= max_stack; }
 
   void tick();
   void last_tick();
