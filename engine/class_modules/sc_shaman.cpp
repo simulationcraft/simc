@@ -6844,8 +6844,8 @@ void shaman_t::create_buffs()
       
     auto legendary_spell = find_spell( 336741 );
     auto buff            = buffs.bloodlust;
-    buffs.bloodlust->modify_duration( timespan_t::from_millis(legendary_spell->effectN( 1 ).base_value()) );
-    buffs.bloodlust->modify_default_value( legendary_spell->effectN( 2 ).percent() + buff->value() );
+    buff->modify_duration( timespan_t::from_millis(legendary_spell->effectN( 1 ).base_value()) );
+    buff->modify_default_value( legendary_spell->effectN( 2 ).percent() + buff->value() );
   }
 
   // Covenants
