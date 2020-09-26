@@ -301,6 +301,8 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.demonic_calling->trigger();
 
     p()->buffs.balespiders_burning_core->expire();
+
+    p()->buffs.decimating_bolt->decrement();
   }
 
   double action_multiplier() const override
@@ -318,6 +320,8 @@ struct demonbolt_t : public demonology_spell_t
     }
 
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
+
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }

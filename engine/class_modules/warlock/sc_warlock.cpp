@@ -110,7 +110,6 @@ struct decimating_bolt_t : public warlock_spell_t
           3, ( ( s->target->health_percentage() * 0.01 ) * -2 + p()->buffs.decimating_bolt->default_value ) );
     }
     
-    sim->out_log.print( "decimating bolt buff value: {}", p()->buffs.decimating_bolt->value() );
     warlock_spell_t::impact( s );
     
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()

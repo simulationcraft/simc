@@ -584,6 +584,7 @@ struct incinerate_t : public destruction_spell_t
     double m = destruction_spell_t::action_multiplier();
 
     m *= 1 + p()->buffs.decimating_bolt->check_value();
+
     return m;
   }
 
