@@ -7169,7 +7169,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     int heals_int = as<int>( util::ceil( p->convoke_the_spirits_heals ) );
     heal_chance = heals_int - p->convoke_the_spirits_heals;
 
-    max_ticks = as<int>( util::ceil( dot_duration / base_tick_time ) );
+    max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
     deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, max_ticks );
 
     // Balance
@@ -7190,6 +7190,19 @@ struct convoke_the_spirits_t : public druid_spell_t
     auto a = p()->get_secondary_action<T>( n, std::forward<Ts>( args )... );
     stats->add_child( a->init_free_cast_stats( free_cast_e::CONVOKE ) );
     return a;
+  }
+
+  void execute_convoke_action( action_t* action, player_t* target )
+  {
+    if ( auto a = dynamic_cast<druid_action_t<spell_t>*>( action ) )
+      a->free_cast = free_cast_e::CONVOKE;
+    else if ( auto a = dynamic_cast<druid_action_t<melee_attack_t>*>( action ) )
+      a->free_cast = free_cast_e::CONVOKE;
+    else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
+      a->free_cast = free_cast_e::CONVOKE;
+
+    action->set_target( target );
+    action->execute();
   }
 
   double composite_haste() const override { return 1.0; }
@@ -7312,15 +7325,12 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( conv_cast == conv_mf )
           conv_tar = mf_tar;
       }
-
-      debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
     }
 
     if ( !conv_cast || !conv_tar )
       return;
 
-    conv_cast->set_target( conv_tar );
-    conv_cast->execute();
+    execute_convoke_action( conv_cast, conv_tar );
   }
 
   void last_tick( dot_t* d ) override
