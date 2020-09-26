@@ -547,7 +547,10 @@ void maw_rattle( special_effect_t& effect )
 
 void norgannons_sagacity( special_effect_t& effect )
 {
+  effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.custom_buff = effect.player->buffs.norgannons_sagacity_stacks;
 
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void sephuzs_proclamation( special_effect_t& effect )

@@ -3353,6 +3353,10 @@ void player_t::create_buffs()
             b->expire();
           }
         } );
+
+      // Runecarves
+      buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
+      buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
     }
   }
   // .. for enemies
