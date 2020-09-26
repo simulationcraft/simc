@@ -4786,7 +4786,6 @@ struct epidemic_t : public death_knight_spell_t
 {
   epidemic_damage_main_t* main_damage;
   epidemic_damage_aoe_t* aoe_damage;
-  int enemy_cap;
 
   epidemic_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "epidemic", p, p -> spec.epidemic ),
@@ -4797,11 +4796,8 @@ struct epidemic_t : public death_knight_spell_t
 
     add_child( main_damage );
     add_child( aoe_damage );
-
-    // Set the aoe cap somewhere else as targetting is handled directly in execute()
-    // and the rest of the spell doesn't need to worry about aoe components
-    enemy_cap = aoe;
-    aoe = 0;
+    impact_action = main_damage;
+    impact_action -> impact_action = aoe_damage;
   }
 
   double cost() const override
@@ -4812,27 +4808,22 @@ struct epidemic_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    // Remove enemies that are not affected by virulent plague
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ] ( player_t* t ) { return ! this -> td( t ) -> dot.virulent_plague -> is_ticking(); } ), tl.end() );
+
+    return tl.size();
+  }
+
   void execute() override
   {
-    death_knight_spell_t::execute();
+    // Reset target cache because of smart targetting
+    target_cache.is_valid = false;
 
-    int hit_count = 0;
-    for ( const auto target : sim -> target_non_sleeping_list )
-    {
-      // Epidemic can't hit more than 20 targets at once
-      if ( td( target ) -> dot.virulent_plague -> is_ticking() && hit_count < enemy_cap )
-      {
-        hit_count++;
-        main_damage -> set_target( target );
-        main_damage -> execute();
-        // Don't need to flare-up if there's only a single enemy in the simulation
-        if ( sim -> target_non_sleeping_list.size() > 1 )
-        {
-          aoe_damage -> set_target( target );
-          aoe_damage -> execute();
-        }
-      }
-    }
+    death_knight_spell_t::execute();
 
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
@@ -6317,7 +6308,7 @@ struct unholy_assault_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    p()->trigger_festering_wound( s, p() -> talent.unholy_assault -> effectN( 3 ).base_value(),
+    p()->trigger_festering_wound( s, as<int>( p() -> talent.unholy_assault -> effectN( 3 ).base_value() ),
                                   p() -> procs.fw_unholy_assault );
   }
 };
