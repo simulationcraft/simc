@@ -290,7 +290,7 @@ public:
   int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
   bool catweave_bear;
   bool affinity_resources;  // activate resources tied to affinities
-  double kindred_empowerment_ratio;
+  double kindred_spirits_partner_dps;
   double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
@@ -861,7 +861,7 @@ public:
       lively_spirit_stacks( 9 ),  // set a usually fitting default value
       catweave_bear( false ),
       affinity_resources( false ),
-      kindred_empowerment_ratio( 1.0 ),
+      kindred_spirits_partner_dps( 1.0 ),
       convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.2 ),
       adaptive_swarm_jump_distance( 5.0 ),
@@ -1769,7 +1769,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   double partner_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), partner_pool( 0.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), partner_pool( 1.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1786,16 +1786,18 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     trigger();
 
+    // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
+    // apply it to partner_pool, which is meant to represent the damage the other person does.
     double partner_amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
-    double amount         = partner_amount * p().kindred_empowerment_ratio;
+    double amount         = partner_amount * p().kindred_spirits_partner_dps;
 
     sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
 
-    // since kindred_empowerment_ratio is meant to apply to the pool you RECEIVE and not to the pool you send, don't
-    // apply it to partner_pool, which is meant to represent the damage the other person does.
     pool += amount;
-    partner_pool += partner_amount;
 
+    // only dps specs give a pool to the partner
+    if ( p().specialization() == DRUID_BALANCE || p().specialization() == DRUID_FERAL )
+      partner_pool += partner_amount;
   }
 
   void use_pool( const action_state_t* s )
@@ -9961,7 +9963,7 @@ void druid_t::create_options()
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
-  add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
+  add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
@@ -10437,7 +10439,7 @@ void druid_t::copy_from( player_t* source )
   initial_moon_stage           = p->initial_moon_stage;
   lively_spirit_stacks         = p->lively_spirit_stacks;
   affinity_resources           = p->affinity_resources;
-  kindred_empowerment_ratio    = p->kindred_empowerment_ratio;
+  kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
