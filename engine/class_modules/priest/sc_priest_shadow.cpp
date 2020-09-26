@@ -1006,7 +1006,14 @@ struct devouring_plague_t final : public priest_spell_t
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
     // when you refresh, you lose the partial tick
-    return duration + d->time_to_next_tick();
+    if ( priest().bugs )
+    {
+      return duration + tick_time( d->state ) - ( d->time_to_tick - d->time_to_next_tick() );
+    }
+    else
+    {
+      return duration + d->time_to_next_tick();
+    }
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
