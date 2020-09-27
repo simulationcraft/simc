@@ -5707,7 +5707,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
-      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
+      am *= 1 + p()->buff.dance_of_chiji_hidden->value();
 
     return am;
   }
@@ -5827,17 +5827,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.dance_of_chiji->up() )
+    {
+      p()->buff.dance_of_chiji->expire();
+      p()->buff.dance_of_chiji_hidden->trigger();
+    }
+
     monk_melee_attack_t::execute();
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-
-    if ( p()->buff.dance_of_chiji->up() )
-    {
-      p()->buff.dance_of_chiji->expire();
-      p()->buff.dance_of_chiji_hidden->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-    }
 
     if ( p()->buff.dance_of_chiji_azerite->up() )
     {
@@ -5865,6 +5865,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      p()->buff.dance_of_chiji_hidden->expire();
   }
 };
 /*
@@ -10235,13 +10238,13 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
-                            ->set_trigger_spell( find_spell( 325201 ) )
+                            ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
-                                   ->set_trigger_spell( find_spell( 325201 ) )
-                                   ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
+                                   ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
