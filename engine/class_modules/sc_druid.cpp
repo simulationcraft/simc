@@ -5538,8 +5538,8 @@ struct bear_form_t : public druid_spell_t
     if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
          p()->talent.guardian_affinity->ok() )
     {
+      p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
-          1, buff_t::DEFAULT_VALUE(), 1.0,
           timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
     }
 
@@ -5611,8 +5611,8 @@ struct cat_form_t : public druid_spell_t
     if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
          p()->talent.feral_affinity->ok() )
     {
+      p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
-          1, buff_t::DEFAULT_VALUE(), 1.0,
           timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
     }
   }
@@ -6394,8 +6394,8 @@ struct moonkin_form_t : public druid_spell_t
     if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
          p()->talent.balance_affinity->ok() )
     {
+      p()->buff.oath_of_the_elder_druid->trigger();
       p()->buff.heart_of_the_wild->trigger(
-          1, buff_t::DEFAULT_VALUE(), 1.0,
           timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
     }
   }
