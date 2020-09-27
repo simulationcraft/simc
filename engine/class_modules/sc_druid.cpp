@@ -7717,30 +7717,36 @@ struct lycaras_fleeting_glimpse_t : public action_t
     return a;
   }
 
+  void execute_lycaras_action( action_t* action, player_t* target )
+  {
+    if ( !action || !target )
+      return;
+
+    if ( auto a = dynamic_cast<druid_action_t<spell_t>*>( action ) )
+      a->free_cast = free_cast_e::LYCARAS;
+    else if ( auto a = dynamic_cast<druid_action_t<melee_attack_t>*>( action ) )
+      a->free_cast = free_cast_e::LYCARAS;
+    else if ( auto a = dynamic_cast<druid_action_t<heal_t>*>( action ) )
+      a->free_cast = free_cast_e::LYCARAS;
+
+    action->set_target( target );
+    action->execute();
+  }
+
   void execute() override
   {
     action_t* a;
 
     if ( d->buff.moonkin_form->check() )
-    {
       a = moonkin;
-      debug_cast<spells::starfall_t*>( a )->free_cast = free_cast_e::LYCARAS;
-    }
     else if ( d->buff.cat_form->check() )
-    {
       a = cat;
-      debug_cast<cat_attacks::primal_wrath_t*>( a )->free_cast = free_cast_e::LYCARAS;
-    }
     else if ( d->buff.bear_form->check() )
       a = bear;
     else
       a = tree;
 
-    if ( a )
-    {
-      a->set_target( d->target );
-      a->execute();
-    }
+    execute_lycaras_action( a, d->target );
 
     make_event( *sim, timespan_t::from_seconds( d->buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
       d->buff.lycaras_fleeting_glimpse->trigger();
