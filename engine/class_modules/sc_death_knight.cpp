@@ -4023,50 +4023,32 @@ struct dark_transformation_t : public death_knight_spell_t
 
 // Death and Decay and Defile ===============================================
 
-// Damage spells
+// Death and Decay direct damage spells
 
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  death_and_decay_damage_base_t( death_knight_spell_t* parent,
-                                 const std::string& name, const spell_data_t* spell ) :
-    death_knight_spell_t( name, parent -> p(), spell )
+  death_and_decay_damage_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_spell_t( name, p, spell )
   {
-    aoe              = -1;
-    ground_aoe       = true;
-    background       = true;
-    dual             = true;
-    // Combine results to parent
-    stats            = parent -> stats;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
-    {
-      sim -> print_debug( "Ground effect {} can not hit flying target {}",
-        name(), s -> target -> name() );
-    }
-    else
-    {
-      death_knight_spell_t::impact( s );
-    }
+    aoe = -1;
+    background = dual = true;
   }
 };
 
 struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
-  int pestilence_hits_per_tick;
-  int pestilence_hits_per_cast;
+  int pestilence_procs_per_tick;
+  int pestilence_procs_per_cast;
 
-  death_and_decay_damage_t( death_knight_spell_t* parent ) :
-    death_and_decay_damage_base_t( parent, "death_and_decay_damage", parent -> p() -> find_spell( 52212 ) ),
-    pestilence_hits_per_tick( 0 ),
-    pestilence_hits_per_cast( 0 )
+  death_and_decay_damage_t( death_knight_t* p ) :
+    death_and_decay_damage_base_t( "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
   { }
 
   void execute() override
   {
-    pestilence_hits_per_tick = 0;
+    pestilence_procs_per_tick = 0;
 
     death_and_decay_damage_base_t::execute();
   }
@@ -4076,14 +4058,14 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
     death_and_decay_damage_base_t::impact( s );
 
     if ( p() -> talent.pestilence -> ok() &&
-         pestilence_hits_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_hits_per_cast < PESTILENCE_CAP_PER_CAST )
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
     {
       if ( rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
       {
         p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_hits_per_tick++;
-        pestilence_hits_per_cast++;
+        pestilence_procs_per_tick++;
+        pestilence_procs_per_cast++;
       }
     }
   }
@@ -4091,9 +4073,36 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 
 struct defile_damage_t : public death_and_decay_damage_base_t
 {
-  defile_damage_t( death_knight_spell_t* parent ) :
-    death_and_decay_damage_base_t( parent, "defile_damage", parent -> p() -> find_spell( 156000 ) )
+  double active_defile_multiplier;
+  const double defile_tick_multiplier;
+
+  defile_damage_t( death_knight_t* p ) :
+    death_and_decay_damage_base_t( "defile_damage", p, p -> find_spell( 156000 ) ),
+    active_defile_multiplier( 1.0 ),
+    // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
+    // Can't seem to find it anywhere in defile's spelldata
+    defile_tick_multiplier( 1.06 )
   { }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= active_defile_multiplier;
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_and_decay_damage_base_t::execute();
+    // Increase damage of next ticks if it damages at least an enemy
+    // Yes, it is multiplicative
+    if ( result_is_hit( execute_state ->result ) )
+    {
+      active_defile_multiplier *= defile_tick_multiplier;
+    }
+  }
 };
 
 // Bone Spike Graveyard azerite trait
@@ -4143,18 +4152,13 @@ struct relish_in_blood_t : public death_knight_heal_t
   {
     double m = death_knight_heal_t::action_multiplier();
 
-    // Melekus - 2020-09-06: If Bone shield isn't up, this still heals as if you had one stack
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
-    if ( p() -> bugs && ! p() -> buffs.bone_shield -> up() )
-      return m;
-
     m *= p() -> buffs.bone_shield -> stack();
 
     return m;
   }
 };
 
-// Main spell
+// Main Death and Decay spells
 
 struct death_and_decay_base_t : public death_knight_spell_t
 {
@@ -4165,11 +4169,18 @@ struct death_and_decay_base_t : public death_knight_spell_t
     damage( nullptr )
   {
     base_tick_time = dot_duration = 0_ms; // Handled by event
-    ignore_false_positive = true;
+    ignore_false_positive = true; // TODO: Is this necessary?
     may_crit              = false;
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
+  }
+
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+    // Merge stats with the damage object
+    damage -> stats = stats;
   }
 
   double cost() const override
@@ -4207,10 +4218,15 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.relish_in_blood -> ok() )
     {
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p() -> gains.relish_in_blood );
+      // Melekus - 2020-09-27: Bug? If bone shield isn't up, there's no RP generation at all
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
+      if ( p() -> buffs.bone_shield -> up() || ! p() -> bugs )
+      {
+        p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                             p() -> gains.relish_in_blood );
 
-      p() -> active_spells.relish_in_blood -> execute();
+        p() -> active_spells.relish_in_blood -> execute();
+      }
     }
 
     p() -> buffs.crimson_scourge -> decrement();
@@ -4235,10 +4251,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
             p() -> active_dnd = event;
             break;
           case ground_aoe_params_t::EVENT_DESTRUCTED:
-          {
             p() -> active_dnd = nullptr;
             break;
-          }
           default:
             break;
         }
@@ -4260,14 +4274,14 @@ struct death_and_decay_t : public death_and_decay_base_t
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "death_and_decay", p -> spec.death_and_decay )
   {
-    damage = new death_and_decay_damage_t( this );
+    damage = new death_and_decay_damage_t( p );
 
     parse_options( options_str );
   }
 
   void execute() override
   {
-    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_hits_per_cast = 0;
+    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
 
     death_and_decay_base_t::execute();
   }
@@ -4288,9 +4302,17 @@ struct defile_t : public death_and_decay_base_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
-    damage = new defile_damage_t( this );
+    damage = new defile_damage_t( p );
 
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    // Reset the damage component's increasing multiplier
+    static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
+
+    death_and_decay_base_t::execute();
   }
 };
 
@@ -4843,7 +4865,8 @@ struct bursting_sores_t : public death_knight_spell_t
     death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores )
   {
     background = true;
-    aoe = -1;
+    // Value is 9, -1 is hardcoded in tooltip. Probably because it counts the initial target of the wound burst
+    aoe = as<int> ( data().effectN( 3 ).base_value() - 1 );
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
