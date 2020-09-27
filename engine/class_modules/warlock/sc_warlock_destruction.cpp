@@ -185,7 +185,7 @@ struct internal_combustion_t : public destruction_spell_t
     this->base_dd_min = this->base_dd_max = total_damage;
 
     destruction_spell_t::execute();
-    td->dots_immolate->reduce_duration( remaining );
+    td->dots_immolate->adjust_duration( -remaining );
   }
 };
 

@@ -822,7 +822,7 @@ public:
   {
     if ( dot->is_ticking() )
     {
-      dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
+      dot->adjust_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
     }
   }
 

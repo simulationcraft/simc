@@ -3070,7 +3070,7 @@ void synaptic_spark_capacitor( special_effect_t& effect )
       proc_spell_t::tick( d );
 
       // TODO: The 6th (partial) tick never happens in game.
-      if ( d->get_last_tick_factor() < 1.0 )
+      if ( d->get_tick_factor() < 1.0 )
         return;
 
       damage->set_target( d->target );

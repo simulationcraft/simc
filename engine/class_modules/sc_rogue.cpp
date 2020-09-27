@@ -1882,9 +1882,10 @@ struct deadly_poison_t : public rogue_poison_t
     {
       // 12/29/2017 - Deadly Poison uses an older style of refresh, adding the origial duration worth of ticks up to 50% more than the base number of ticks
       //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
-      const int additional_ticks = (int)(data().duration() / dot->time_to_tick);
+      timespan_t tt = tick_time( dot->state );
+      const int additional_ticks = (int)(data().duration() / tt);
       const int max_ticks = (int)(additional_ticks * 1.5);
-      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
+      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * tt;
     }
   };
 
@@ -5648,7 +5649,7 @@ struct vendetta_debuff_t : public damage_buff_t
     rogue_td_t* td = rogue->get_target_data( player );
     if ( td->dots.nothing_personal->is_ticking() )
     {
-      td->dots.nothing_personal->extend_duration( duration );
+      td->dots.nothing_personal->adjust_duration( duration );
     }
     else
     {

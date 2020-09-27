@@ -4354,7 +4354,7 @@ struct harrowing_decay_t :
   void tick( dot_t* d ) override
   {
     // The last tick doesn't happen if it's partial
-    if ( d -> current_tick == d -> num_ticks && d -> last_tick_factor < 1 )
+    if ( d -> current_tick == d -> num_ticks() && d -> get_tick_factor() < 1 )
       return;
 
     residual_periodic_action_t<death_knight_spell_t>::tick( d );

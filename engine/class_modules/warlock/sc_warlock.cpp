@@ -941,12 +941,12 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     {
       continue;
     }
-    td->dots_agony->extend_duration( darkglare_extension );
-    td->dots_corruption->extend_duration( darkglare_extension );
-    td->dots_siphon_life->extend_duration( darkglare_extension );
-    td->dots_phantom_singularity->extend_duration( darkglare_extension );
-    td->dots_vile_taint->extend_duration( darkglare_extension );
-    td->dots_unstable_affliction->extend_duration( darkglare_extension );
+    td->dots_agony->adjust_duration( darkglare_extension );
+    td->dots_corruption->adjust_duration( darkglare_extension );
+    td->dots_siphon_life->adjust_duration( darkglare_extension );
+    td->dots_phantom_singularity->adjust_duration( darkglare_extension );
+    td->dots_vile_taint->adjust_duration( darkglare_extension );
+    td->dots_unstable_affliction->adjust_duration( darkglare_extension );
   }
 }
 

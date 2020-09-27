@@ -4019,7 +4019,7 @@ struct ferocious_bite_t : public cat_attack_t
     {
       auto ext = timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points );
 
-      td( s->target )->dots.rip->extend_duration( ext, max_sabertooth_refresh, 0 );
+      td( s->target )->dots.rip->adjust_duration( ext, max_sabertooth_refresh, 0 );
     }
   }
 
@@ -6706,8 +6706,8 @@ struct starfall_t : public druid_spell_t
       {
         player_t* t = tl[ i ];
 
-        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
-        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
 
@@ -7242,7 +7242,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     druid_spell_t::tick( d );
 
-    if ( d->time_to_tick < base_tick_time )
+    if ( d->time_to_tick() < base_tick_time )
       return;
 
     if ( d->current_tick == ultimate_tick )
