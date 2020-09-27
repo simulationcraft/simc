@@ -1,7 +1,7 @@
 demonhunter="T25_Demon_Hunter_Havoc"
 source=default
 spec=havoc
-level=120
+level=50
 race=night_elf
 timeofday=night
 role=attack
@@ -28,29 +28,31 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/metamorphosis,if=!azerite.chaotic_transformation.enabled
 actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)
-actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
-actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)
+actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
 actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
-actions+=/variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up
+actions+=/variable,name=waiting_for_essence_break,value=talent.essence_break.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.essence_break.up
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
+actions+=/pick_up_fragment,if=demon_soul_fragments>0
 actions+=/pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)
-actions+=/call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)
+actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
+actions+=/call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)
 actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
 
-actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25
+actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta)|target.time_to_die<25
 actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))
-actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
-actions.cooldown+=/nemesis,if=!raid_event.adds.exists
+actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking
+actions.cooldown+=/the_hunt
+actions.cooldown+=/fodder_to_the_flame
+actions.cooldown+=/elysian_decree
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
 actions.cooldown+=/use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled|cooldown.fel_barrage.ready
 actions.cooldown+=/use_item,effect_name=cyclotronic_blast,if=buff.metamorphosis.up&buff.memory_of_lucid_dreams.down&(!variable.blade_dance|!cooldown.blade_dance.ready)
@@ -60,13 +62,11 @@ actions.cooldown+=/use_item,name=azsharas_font_of_power,if=cooldown.metamorphosi
 actions.cooldown+=/use_items,if=buff.metamorphosis.up
 actions.cooldown+=/call_action_list,name=essences
 
-actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
-actions.dark_slash+=/annihilation,if=debuff.dark_slash.up
-actions.dark_slash+=/chaos_strike,if=debuff.dark_slash.up
-
-actions.demonic=death_sweep,if=variable.blade_dance
+actions.demonic=fel_rush,if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/death_sweep,if=variable.blade_dance
+actions.demonic+=/glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10
+actions.demonic+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
 actions.demonic+=/eye_beam,if=raid_event.adds.up|raid_event.adds.in>25
-actions.demonic+=/fel_barrage,if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets
 actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
 actions.demonic+=/immolation_aura
 actions.demonic+=/annihilation,if=!variable.pooling_for_blade_dance
@@ -78,6 +78,12 @@ actions.demonic+=/throw_glaive,if=buff.out_of_range.up
 actions.demonic+=/fel_rush,if=movement.distance>15|buff.out_of_range.up
 actions.demonic+=/vengeful_retreat,if=movement.distance>15
 actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
+
+actions.essence_break=essence_break,if=fury>=80&(cooldown.blade_dance.ready|!variable.blade_dance)
+actions.essence_break+=/death_sweep,if=variable.blade_dance&debuff.essence_break.up
+actions.essence_break+=/blade_dance,if=variable.blade_dance&debuff.essence_break.up
+actions.essence_break+=/annihilation,if=debuff.essence_break.up
+actions.essence_break+=/chaos_strike,if=debuff.essence_break.up
 
 actions.essences=variable,name=fel_barrage_sync,if=talent.fel_barrage.enabled,value=cooldown.fel_barrage.ready&(((!talent.demonic.enabled|buff.metamorphosis.up)&!variable.waiting_for_momentum&raid_event.adds.in>30)|active_enemies>desired_targets)
 actions.essences+=/concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
@@ -96,16 +102,18 @@ actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_
 actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
 
 actions.normal=vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down&time>1
-actions.normal+=/fel_rush,if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
-actions.normal+=/fel_barrage,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions.normal+=/fel_rush,if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.normal+=/fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
 actions.normal+=/death_sweep,if=variable.blade_dance
 actions.normal+=/immolation_aura
+actions.normal+=/glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)
+actions.normal+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
 actions.normal+=/eye_beam,if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum
 actions.normal+=/blade_dance,if=variable.blade_dance
 actions.normal+=/felblade,if=fury.deficit>=40
-actions.normal+=/eye_beam,if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown
-actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
-actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
+actions.normal+=/eye_beam,if=!talent.blind_fury.enabled&!variable.waiting_for_essence_break&raid_event.adds.in>cooldown
+actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break
+actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break
 actions.normal+=/eye_beam,if=talent.blind_fury.enabled&raid_event.adds.in>cooldown
 actions.normal+=/demons_bite
 actions.normal+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
@@ -132,13 +140,13 @@ main_hand=the_allseeing_eye,id=172192,bonus_id=4824/1517,enchant=deadly_navigati
 off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=478.00
-# gear_agility=10416
-# gear_stamina=19902
-# gear_crit_rating=1235
-# gear_haste_rating=914
-# gear_mastery_rating=799
-# gear_versatility_rating=1090
+# gear_ilvl=151.31
+# gear_agility=462
+# gear_stamina=938
+# gear_crit_rating=335
+# gear_haste_rating=202
+# gear_mastery_rating=187
+# gear_versatility_rating=208
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=3923
+# gear_armor=288

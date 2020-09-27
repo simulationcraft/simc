@@ -16,8 +16,6 @@
 TODO:
 
 GENERAL:
-- Covenants
-- Covenant Conduits
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
 - Convert Pet base abilities to somethign more generic
@@ -192,6 +190,7 @@ public:
     action_t* rushing_jade_wind;
 
     // Brewmaster
+    action_t* breath_of_fire;
     heal_t* celestial_fortune;
     heal_t* gift_of_the_ox_trigger;
     heal_t* gift_of_the_ox_expire;
@@ -4084,19 +4083,17 @@ public:
     return c;
   }
 
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    timespan_t cd = cd_duration;
-    // Only adjust cooldown (through serenity) if it's non zero.
-    if ( cd_duration == timespan_t::min() )
-    {
-      cd = ab::cooldown->duration;
-    }
+    double rm = ab::recharge_multiplier( cd );
 
     // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
-      cd *= ( 1 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() ) );  // saved as 100
-    ab::update_ready( cd );
+    if ( p()->buff.serenity->up() && current_resource() == RESOURCE_CHI && ab::cost() > 0 )
+    {
+      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
+    }
+
+    return rm;
   }
 
   void consume_resource() override
@@ -4636,17 +4633,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     base_t::init_finished();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = base_t::recharge_multiplier( cd );
-    if ( p()->buff.serenity->up() )
-    {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-    }
-
-    return rm;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -5492,7 +5478,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           // Reduce the cooldown of Rising Sun Kick and Fists of Fury
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           if ( p()->buff.weapons_of_order->up() )
-            cd_reduction += timespan_t::from_seconds( -1 );
+            cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
 
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -5644,38 +5630,6 @@ struct chi_explosion_t : public monk_spell_t
   }
 };
 
-struct breath_of_fire_celestial_flames_t : public monk_spell_t
-{
-  breath_of_fire_celestial_flames_t( monk_t& p )
-    : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
-  {
-    background    = true;
-    tick_may_crit = may_crit = true;
-    hasted_ticks             = false;
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_ta( s );
-
-    if ( p()->azerite.boiling_brew.ok() )
-      b += p()->azerite.boiling_brew.value( 2 );
-
-    return b;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
-
-    if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
-    {
-      p()->proc.boiling_brew_healing_sphere->occur();
-      p()->buff.gift_of_the_ox->trigger();
-    }
-  }
-};
-
 struct sck_tick_action_t : public monk_melee_attack_t
 {
   flaming_kicks_t* flaming_kicks;
@@ -5740,7 +5694,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
-      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
+      am *= 1 + p()->buff.dance_of_chiji_hidden->value();
 
     return am;
   }
@@ -5788,7 +5742,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   chi_explosion_t* chi_x;
-  breath_of_fire_celestial_flames_t* breath_of_fire;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
@@ -5808,7 +5761,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
     chi_x = new chi_explosion_t( p );
-    breath_of_fire = new breath_of_fire_celestial_flames_t( *p );
   }
 
   // N full ticks, but never additional ones.
@@ -5862,17 +5814,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.dance_of_chiji->up() )
+    {
+      p()->buff.dance_of_chiji->expire();
+      p()->buff.dance_of_chiji_hidden->trigger();
+    }
+
     monk_melee_attack_t::execute();
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-
-    if ( p()->buff.dance_of_chiji->up() )
-    {
-      p()->buff.dance_of_chiji->expire();
-      p()->buff.dance_of_chiji_hidden->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-    }
 
     if ( p()->buff.dance_of_chiji_azerite->up() )
     {
@@ -5884,7 +5836,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       chi_x->execute();
 
     if ( p()->buff.celestial_flames->up() )
-      breath_of_fire->execute();
+    {
+      p()->active_actions.breath_of_fire->target = execute_state->target;
+      p()->active_actions.breath_of_fire->execute();
+    }
 
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
@@ -5897,6 +5852,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      p()->buff.dance_of_chiji_hidden->expire();
   }
 };
 /*
@@ -7017,50 +6975,49 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // Breath of Fire
 // ==========================================================================
 
+  struct breath_of_fire_dot_t : public monk_spell_t
+{
+    breath_of_fire_dot_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
+  {
+    background    = true;
+    tick_may_crit = may_crit = true;
+    hasted_ticks             = false;
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_ta( s );
+
+    if ( p()->azerite.boiling_brew.ok() )
+      b += p()->azerite.boiling_brew.value( 2 );
+
+    return b;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
+    {
+      p()->proc.boiling_brew_healing_sphere->occur();
+      p()->buff.gift_of_the_ox->trigger();
+    }
+  }
+};
+
 struct breath_of_fire_t : public monk_spell_t
 {
-  struct periodic_t : public monk_spell_t
-  {
-    periodic_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
-    {
-      background    = true;
-      tick_may_crit = may_crit = true;
-      hasted_ticks             = false;
-    }
-
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double b = base_t::bonus_ta( s );
-
-      if ( p()->azerite.boiling_brew.ok() )
-        b += p()->azerite.boiling_brew.value( 2 );
-
-      return b;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      monk_spell_t::impact( s );
-
-      if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
-      {
-        p()->proc.boiling_brew_healing_sphere->occur();
-        p()->buff.gift_of_the_ox->trigger();
-      }
-    }
-  };
-
-  periodic_t* dot_action;
 
   breath_of_fire_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ), dot_action( new periodic_t( p ) )
+    : monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire )
   {
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
     trigger_gcd = timespan_t::from_seconds( 1 );
 
-    add_child( dot_action );
+    add_child( p.active_actions.breath_of_fire );
   }
 
   void update_ready( timespan_t ) override
@@ -7097,8 +7054,8 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() )
     {
-      dot_action->target = s->target;
-      dot_action->execute();
+      p()->active_actions.breath_of_fire->target = s->target;
+      p()->active_actions.breath_of_fire->execute();
     }
   }
 };
@@ -7903,19 +7860,31 @@ struct faeline_stomp_t : public monk_spell_t
     aoe = 5; // Currently hard-coded
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    monk_spell_t::execute();
+    monk_spell_t::impact( s );
 
-    damage->set_target( target );
+    damage->set_target( s->target );
     damage->execute();
 
     p()->buff.faeline_stomp->trigger();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    switch ( p()->specialization() )
     {
-      ww_damage->set_target( target );
-      ww_damage->execute();
+      case MONK_WINDWALKER:
+      {
+        ww_damage->set_target( s->target );
+        ww_damage->execute();
+        break;
+      }
+      case MONK_BREWMASTER:
+      {
+        p()->active_actions.breath_of_fire->target = s->target;
+        p()->active_actions.breath_of_fire->execute();
+        break;
+      }
+      default:
+        break;
     }
   }
 };
@@ -10024,6 +9993,7 @@ void monk_t::init_spells()
 
   // Active Action Spells
   // Brewmaster
+  active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t( *this );
   active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t( *this );
   active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
   active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t( *this );
@@ -10255,13 +10225,13 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
-                            ->set_trigger_spell( find_spell( 325201 ) )
+                            ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
-                                   ->set_trigger_spell( find_spell( 325201 ) )
-                                   ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
+                                   ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 

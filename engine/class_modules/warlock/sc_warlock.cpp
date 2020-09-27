@@ -589,6 +589,7 @@ void warlock_t::init_spells()
   conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
   conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
+  conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
   covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord

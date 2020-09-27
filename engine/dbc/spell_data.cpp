@@ -157,20 +157,26 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
   assert( level <= MAX_SCALING_LEVEL );
 
   if ( level == 0 )
-    level = p -> level();
+    level = p->level();
 
-  if ( _m_coeff != 0 && _spell -> scaling_class() != 0 )
+  auto scale = _spell->scaling_class();
+
+  if ( scale == PLAYER_NONE && _spell->max_scaling_level() > 0 )
+    scale = PLAYER_SPECIAL_SCALE8;
+
+  if ( _m_coeff != 0 && scale != PLAYER_NONE )
   {
-    if ( _spell -> max_scaling_level() > 0 )
-      level = std::min( level, _spell -> max_scaling_level() );
-    return _m_coeff * p -> dbc->spell_scaling( _spell -> scaling_class(), level );
+    if ( _spell->max_scaling_level() > 0 )
+      level = std::min( level, _spell->max_scaling_level() );
+
+    return _m_coeff * p->dbc->spell_scaling( scale, level );
   }
   else if ( _real_ppl != 0 )
   {
-    if ( _spell -> max_level() > 0 )
-      return _base_value + ( std::min( level, _spell -> max_level() ) - _spell -> level() ) * _real_ppl;
+    if ( _spell->max_level() > 0 )
+      return _base_value + ( std::min( level, _spell->max_level() ) - _spell->level() ) * _real_ppl;
     else
-      return _base_value + ( level - _spell -> level() ) * _real_ppl;
+      return _base_value + ( level - _spell->level() ) * _real_ppl;
   }
   else
     return _base_value;

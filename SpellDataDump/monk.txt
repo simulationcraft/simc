@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -29,7 +29,7 @@ Cooldown         : 8 seconds
 Category         : 82
 Category Cooldown: 8 seconds
 Mechanic         : Heal
-Affecting spells : Aspect of the Beast (191384 effect#1), 
+Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ........ ........ x....... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -336,7 +336,7 @@ Spell Type       : None
 Spell Level      : 10
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Affecting spells : Aspect of the Beast (191384 effect#1), 
+Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -428,7 +428,7 @@ Resource         : 50 Energy (3) (id=5167)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #18), Windwalker Monk (137025 effects: #1, #2, #4, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Heightened Senses (165692 effects: #1, #2), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -478,7 +478,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -549,7 +549,7 @@ Resource         : 40 Energy (3) (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
 Triggered by     : Cyclone Strikes (220358)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
@@ -598,7 +598,7 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), Dance of Chi-Ji (286587 effect#3), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Tear of Morning (337993 effect#2)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -628,7 +628,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#5), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Swift Roundhouse (278710 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Swift Roundhouse (278710 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -698,7 +698,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, Staff, Fist Weapon
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : ........ ........ x....... ........   ..x...x. .xx..... ........ .....x.. 
@@ -945,7 +945,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1517: Renewing Mist (281231 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 23, 97
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
@@ -998,7 +998,7 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 24, 48
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ......x.   ........ ........ ........ ........ 
@@ -1027,7 +1027,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Fundamental Observation (208878 effect#1), Zen Meditation (328682 effect#1)
+Affecting spells : Fundamental Observation (208878 effects: #1, #2), Zen Meditation (328682 effect#1)
 Family Flags     : 45
 Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...... .....x.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
@@ -1056,7 +1056,7 @@ Spell Type       : Magic
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Combo (228563 effect#2), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effects: #1, #2), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 19, 67, 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1131,7 +1131,7 @@ Spell Level      : 14
 Cooldown         : 1 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1), Purifying Brew (343743 effect#1)
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effects: #1, #2)
 Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1156,7 +1156,7 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 60
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1489,7 +1489,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1516,7 +1516,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. ........ ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Heal
-Affecting spells : Focused Thunder (197895 effect#1), Thunder Focus Tea (231876 effect#1), 
+Affecting spells : Focused Thunder (197895 effects: #1, #2), Thunder Focus Tea (231876 effects: #1, #2)
 Family Flags     : 31, 53
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
@@ -1717,7 +1717,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #14, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
 Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1782,7 +1782,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Tear of Morning (337993 effect#2)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1869,7 +1869,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), The Emperor's Capacitor (337291 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 32, 70, 103
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1973,7 +1973,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Mechanic         : Stun
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Tiger Tail Sweep (264348 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Tiger Tail Sweep (264348 effects: #1, #2)
 Family Flags     : 41
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2044,7 +2044,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
@@ -2257,7 +2257,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), Stormstout's Last Keg (337288 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effects: #1, #2), Stormstout's Last Keg (337288 effect#1), Tear of Morning (337993 effect#2)
 Family Flags     : 57, 103
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2466,7 +2466,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 69, 103
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2503,7 +2503,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Proc Chance      : 101%
-Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1)
+Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effects: #1, #2), Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1)
 Family Flags     : 125
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2565,7 +2565,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -2881,7 +2881,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), Enveloping Mist (344008 effect#2)
+Affecting spells : Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -3232,7 +3232,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #7, #14, #19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 38, 48, 77, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3254,7 +3254,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#19), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effects: #1, #2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -3276,7 +3276,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effects: #1, #2)
 Family Flags     : 27
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
@@ -3301,7 +3301,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 0.1 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 27, 103
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -3686,7 +3686,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#2), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14), Windwalker Monk (137025 effects: #1, #2, #13), Storm, Earth, and Fire (137639 effect#2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3706,7 +3706,7 @@ Name             : Rushing Jade Wind (id=148187) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #14, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -3772,7 +3772,7 @@ Spell Type       : Melee
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effects: #1, #2)
 Family Flags     : 122
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3882,7 +3882,7 @@ Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3903,7 +3903,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4122,7 +4122,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -4172,7 +4172,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Triggered by     : Essence Font (191837)
 Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4198,7 +4198,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4348,7 +4348,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : 2
 Duration         : 8 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #8), Windwalker Monk (137025 effects: #1, #2, #7), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Triggered by     : Eye of the Tiger (196607)
 Family Flags     : 44, 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4433,7 +4433,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4762,7 +4762,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4790,7 +4790,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -4912,7 +4912,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, S
 Charges          : 1 (4 seconds cooldown)
 Category         : 1561
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
 Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -5096,7 +5096,7 @@ Spell Type       : None
 Spell Level      : 16
 Duration         : 5 seconds
 Labels           : 824: Will to Survive (312922 effect#1)
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effects: #1, #2)
 Family Flags     : 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5293,7 +5293,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 25, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5395,7 +5395,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -5957,7 +5957,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Tear of Morning (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -6065,7 +6065,7 @@ Resource         : 40 Energy (3) (id=79673) w/ Windwalker Monk (id=137025)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -6092,7 +6092,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Triggered by     : Fist of the White Tiger (261947)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -7011,7 +7011,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7093,7 +7093,7 @@ Name             : Rising Mist (id=274912) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Triggered by     : Rising Mist (274909)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8771,7 +8771,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9100,7 +9100,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9175,7 +9175,7 @@ Spell Level      : 8
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effects: #1, #2), Enveloping Mist (344008 effect#2)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -9482,7 +9482,7 @@ Spell Type       : Melee
 Resource         : 25 Energy (3) (id=192645) w/ Brewmaster Monk (id=137023)
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9813,7 +9813,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Clouded Focus (337476 effect#1), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -10039,7 +10039,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10062,7 +10062,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 4 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -10162,7 +10162,7 @@ Class            : Monk
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -10188,7 +10188,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 24 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -10236,7 +10236,7 @@ Resource         : 25 Energy (3) (id=215197) w/ Brewmaster Monk (id=137023)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10264,7 +10264,7 @@ Name             : Spinning Crane Kick (id=330903) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Triggered by     : Spinning Crane Kick (330901)
 Family Flags     : 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -10292,7 +10292,7 @@ Spell Level      : 19
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10341,7 +10341,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11484,7 +11484,7 @@ Spell Type       : Magic
 Spell Level      : 42
 Range            : 60 yards
 Duration         : 4.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -11573,7 +11573,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -11625,7 +11625,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), 
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Extend Life (185158 effect#2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -11772,7 +11772,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -11798,7 +11798,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Tear of Morning (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

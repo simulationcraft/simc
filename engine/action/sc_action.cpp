@@ -2042,6 +2042,9 @@ bool action_t::usable_moving() const
   if ( player->buffs.norgannons_foresight_ready && player->buffs.norgannons_foresight_ready->check() )
     return true;
 
+  if ( player->buffs.norgannons_sagacity && player->buffs.norgannons_sagacity->check() )
+    return true;
+
   if ( execute_time() > timespan_t::zero() )
     return false;
 

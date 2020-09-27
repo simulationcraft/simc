@@ -1389,6 +1389,7 @@ class SpellDataGenerator(DataGenerator):
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
+            ( 345452, 0 ),          # Fae Fermata target Debuff
         ),
 
         # Death Knight:
@@ -1732,6 +1733,7 @@ class SpellDataGenerator(DataGenerator):
           ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
           ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
+          ( 340060, 0 ),       # Lycara's Fleeting Glimpse coming soon buff
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS

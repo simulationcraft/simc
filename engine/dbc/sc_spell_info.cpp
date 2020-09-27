@@ -1665,26 +1665,38 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> class_family() > 0 )
   {
     auto affecting_effects = dbc.effects_affecting_spell( spell );
-    std::vector<unsigned> spell_ids;
     if ( affecting_effects.size() > 0 )
     {
-      s << "Affecting spells : ";
+      const auto spell_string = []( util::span<const spelleffect_data_t* const> effects ) {
+        const spell_data_t* spell = effects.front()->spell();
+        if ( effects.size() == 1 )
+          return fmt::format( "{} ({} effect#{})", spell->name_cstr(), spell->id(), effects.front()->index() + 1 );
 
-      for ( size_t i = 0, end = affecting_effects.size(); i < end; i++ )
+        fmt::memory_buffer s;
+        fmt::format_to( s, "{} ({} effects: ", spell->name_cstr(), spell->id() );
+        for ( size_t i = 0; i < effects.size(); i++ )
+          fmt::format_to( s, "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
+        fmt::format_to( s, ")" );
+        return to_string( s );
+      };
+
+      range::sort( affecting_effects, []( const spelleffect_data_t* lhs, const spelleffect_data_t* rhs ) {
+          return std::make_tuple( lhs->spell_id(), lhs->index() ) < std::make_tuple( rhs->spell_id(), rhs->index() );
+        } );
+
+      std::vector<std::string> spell_strings;
+      auto effects = util::make_span( affecting_effects );
+      while ( !effects.empty() )
       {
-        const spelleffect_data_t* effect = affecting_effects[ i ];
-        if ( std::find( spell_ids.begin(), spell_ids.end(), effect -> spell() -> id() ) != spell_ids.end() )
-          continue;
-
-        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << " effect#"
-          << ( effect -> index() + 1 ) << ")";
-        if ( i < end - 1 )
-          s << ", ";
-
-        spell_ids.push_back( effect -> spell() -> id() );
+        size_t count = 1;
+        const unsigned spell_id = effects.front()->spell_id();
+        while ( count < effects.size() && effects[ count ]->spell_id() == spell_id )
+          count++;
+        spell_strings.push_back( spell_string( effects.first( count ) ) );
+        effects = effects.subspan( count );
       }
 
-      s << std::endl;
+      fmt::print( s, "Affecting spells : {}\n", fmt::join( spell_strings, ", " ) );
     }
   }
 

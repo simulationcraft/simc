@@ -1,7 +1,7 @@
 shaman="T25_Shaman_Restoration"
 source=default
 spec=restoration
-level=120
+level=50
 race=tauren
 role=spell
 position=ranged_back
@@ -9,10 +9,10 @@ talents=1111111
 azerite_essences=4:3/32:3/12:3/37:3
 
 # Default consumables
-potion=potion_of_unbridled_fury
-flask=greater_flask_of_endless_fathoms
-food=baked_port_tato
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -46,6 +46,7 @@ actions+=/concentrated_flame,if=dot.concentrated_flame_burn.remains=0
 actions+=/ripple_in_space
 actions+=/earth_elemental
 actions+=/bag_of_tricks
+actions+=/fae_transfusion
 actions+=/lightning_bolt,if=spell_targets.chain_lightning<2
 actions+=/chain_lightning,if=spell_targets.chain_lightning>1
 actions+=/flame_shock,moving=1
@@ -68,14 +69,14 @@ main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517,enchant=machinists_brilliance
 off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 
 # Gear Summary
-# gear_ilvl=479.25
-# gear_strength=380
-# gear_stamina=19890
-# gear_intellect=13284
-# gear_crit_rating=1290
-# gear_haste_rating=1302
-# gear_mastery_rating=637
-# gear_versatility_rating=943
+# gear_ilvl=139.50
+# gear_strength=17
+# gear_stamina=853
+# gear_intellect=561
+# gear_crit_rating=263
+# gear_haste_rating=262
+# gear_mastery_rating=161
+# gear_versatility_rating=141
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=9664
+# gear_armor=662

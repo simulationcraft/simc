@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -173,7 +173,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Insatiable Hunger (258876 effect#2), Chaotic Transformation (288754 effect#2), Mark of the Ogre (326486 effect#3)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Insatiable Hunger (258876 effect#2), Chaotic Transformation (288754 effect#2), Mark of the Ogre (326486 effect#3)
 Triggered by     : Demon's Bite (344859)
 Family Flags     : 0, 16, 32, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -290,7 +290,7 @@ Resource         : 40 Fury (17) (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
-Affecting spells : Metamorphosis (162264 effect#5), Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#2), Chaos Strike (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2)
+Affecting spells : Metamorphosis (162264 effect#5), Mastery: Demonic Presence (185164 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#2), Chaos Strike (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2)
 Family Flags     : 32, 43, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -414,7 +414,7 @@ Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Unleashed Power (206477 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 17, 32, 43
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -493,7 +493,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Master of the Glaive (203556 effect#2), Havoc Demon Hunter (212612 effect#5)
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -642,7 +642,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive
 Cooldown         : 15 seconds
 Category         : 1640
 Category Cooldown: 15 seconds
-Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 25, 32, 42, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -737,7 +737,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), Infernal Strike (343016 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Infernal Strike (343016 effect#1)
 Family Flags     : 1, 70, 72
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
@@ -808,7 +808,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1), Fel Rush (343017 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon's Touch (339153 effect#1), Fel Rush (343017 effect#1)
 Family Flags     : 16, 18, 43
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -991,7 +991,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1582
 Category Cooldown: 30 seconds
-Affecting spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Blind Fury (203550 effects: #1, #2), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 10
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1021,7 +1021,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2), Eye Beam (320415 effect#1), Demon's Touch (339153 effect#1), Exposed Wound (339229 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Soul Flame of Insight (226334 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2), Eye Beam (320415 effect#1), Demon's Touch (339153 effect#1), Exposed Wound (339229 effect#1)
 Family Flags     : 8, 10, 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -1098,7 +1098,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Duration         : 3 seconds
-Affecting spells : Demon Soul (163073 effect#1), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Triggered by     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1123,7 +1123,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1), Chaos Strike (343206 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1), Chaos Strike (343206 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1145,7 +1145,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1169,7 +1169,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Duration         : 3 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Family Flags     : 16, 43, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1194,7 +1194,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1245,7 +1245,7 @@ Resource         : 40 Fury (17) (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Thirsting Blades (278736 effect#2)
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Thirsting Blades (278736 effect#2)
 Family Flags     : 32, 43, 53
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -1271,7 +1271,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1427,7 +1427,7 @@ Duration         : 2 seconds
 Cooldown         : 120 seconds
 Category         : 1608
 Category Cooldown: 120 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Silence (320417 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Silence (320417 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1457,7 +1457,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Category         : 1606
 Category Cooldown: 90 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1486,7 +1486,7 @@ Duration         : 2 seconds
 Cooldown         : 180 seconds
 Category         : 1607
 Category Cooldown: 180 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1832,7 +1832,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4)
 Family Flags     : 22, 32, 70, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1937,7 +1937,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Chaotic Transformation (288754 effect#2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Chaotic Transformation (288754 effect#2)
 Triggered by     : Demon Blades (203555)
 Family Flags     : 16, 32, 42, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1995,7 +1995,7 @@ GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1541
 Category Cooldown: 1 seconds
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1), Fiery Brand (343010 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1), Fiery Brand (343010 effect#1)
 Family Flags     : 32, 36, 70, 72
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2024,7 +2024,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 9 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2152,7 +2152,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1605
 Category Cooldown: 30 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2180,7 +2180,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1605
 Category Cooldown: 30 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2207,7 +2207,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2)
 Family Flags     : 33, 70, 72
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
@@ -2517,7 +2517,7 @@ Duration         : 2 seconds
 Cooldown         : 120 seconds
 Category         : 1606
 Category Cooldown: 120 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2573,7 +2573,7 @@ Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1608
 Category Cooldown: 60 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2601,7 +2601,7 @@ Duration         : 2 seconds
 Cooldown         : 180 seconds
 Category         : 1607
 Category Cooldown: 180 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2759,7 +2759,7 @@ Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1), Fiery Brand (343010 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1), Fiery Brand (343010 effect#1)
 Family Flags     : 36, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -3018,7 +3018,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 9 seconds
 Category         : 1640
 Category Cooldown: 9 seconds
-Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 32, 37, 42, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3050,7 +3050,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3074,7 +3074,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3117,7 +3117,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 30 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3138,7 +3138,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 30 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2)
 Triggered by     : Chaos Blades (247938)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3165,7 +3165,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 43
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3218,7 +3218,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Devastation (212084)
 Family Flags     : 67, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3457,7 +3457,7 @@ Spell Type       : Melee
 Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Chaos Blades (247938 effects: #2, #3), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3735,7 +3735,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1), Chaos Strike (343206 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1), Chaos Strike (343206 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3887,7 +3887,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3948,7 +3948,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effect#1), Vengeance Demon Hunter (212613 effect#1), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Soul Cleave (343207 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Soul Cleave (343207 effect#1)
 Triggered by     : Soul Cleave (228477)
 Family Flags     : 31, 34, 70
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3995,7 +3995,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
-Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4, #7), Demon's Touch (339153 effect#1)
 Family Flags     : 30, 32, 85
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4045,7 +4045,7 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 3 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2)
 Family Flags     : 43, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4372,7 +4372,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 20 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3)
 Family Flags     : 16, 32, 43, 71
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -4441,7 +4441,7 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 8 yards
 Duration         : 4 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Triggered by     : Trail of Ruin (258881)
 Family Flags     : 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4485,7 +4485,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Category         : 1676
-Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4530,7 +4530,7 @@ Name             : Immolation Aura (id=258921) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 16, 49
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4549,7 +4549,7 @@ Name             : Immolation Aura (id=258922) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
@@ -4601,7 +4601,7 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Barrage (258925)
 Family Flags     : 16, 43, 47
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4648,7 +4648,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1552: Vengeance Demon Hunter (212613 effect#6)
-Affecting spells : Metamorphosis (187827 effect#8), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Mark of the Ogre (326486 effect#3)
+Affecting spells : Metamorphosis (187827 effects: #8, #9), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Mark of the Ogre (326486 effect#3)
 Family Flags     : 32, 73
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -5675,7 +5675,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Family Flags     : 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7034,7 +7034,7 @@ Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
 Category Cooldown: 60 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7060,7 +7060,7 @@ Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
@@ -7087,7 +7087,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), Increased Scrutiny (340028 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -7173,7 +7173,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effect#1), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2)
 Family Flags     : 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7218,7 +7218,7 @@ School           : Fire
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demon Soul (163073 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3)
 Family Flags     : 32, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8020,7 +8020,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 30 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Triggered by     : The Hunt (323639)
 Family Flags     : 16, 42, 70, 87
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -8121,7 +8121,7 @@ Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
 Category Cooldown: 60 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
+Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8703,7 +8703,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 40 yards/sec
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -9117,7 +9117,7 @@ Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Triggered by     : Elysian Decree (307046)
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -9142,7 +9142,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1074: Repeat Decree (339895 effect#1)
-Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Chaos Blades (247938 effects: #2, #3)
 Triggered by     : Elysian Decree (339893)
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -9249,7 +9249,7 @@ Duration         : 3 seconds
 Cooldown         : 20 seconds
 Category         : 1908
 Category Cooldown: 20 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3)
 Family Flags     : 16, 32, 85, 88
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9631,7 +9631,7 @@ Spell Type       : Magic
 Resource         : 30 Fury (17) (id=232101)
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Unleashed Power (206477 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 17, 32, 43
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

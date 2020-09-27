@@ -28,7 +28,6 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/cat_form
-actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack

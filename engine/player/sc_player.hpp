@@ -539,6 +539,10 @@ struct player_t : public actor_t
 
     // 9.0 Enchants and Consumables
     buff_t* celestial_guidance;
+
+    // 9.0 Runecarves
+    buff_t* norgannons_sagacity_stacks;  // stacks on every cast
+    buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
   } buffs;
 
   struct debuffs_t
