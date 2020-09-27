@@ -3751,7 +3751,7 @@ public:
 
 struct cat_melee_t : public cat_attack_t
 {
-  cat_melee_t( druid_t* player ) : cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
+  cat_melee_t( druid_t* player ) : cat_attack_t( "cat_melee", player )
   {
     form_mask  = CAT_FORM;
     may_glance = background = repeating = is_auto_attack = true;
@@ -3867,8 +3867,7 @@ struct brutal_slash_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    if ( hit_any_target )
-      p()->buff.bt_brutal_slash->trigger();
+    p()->buff.bt_brutal_slash->trigger();
   }
 };
 
@@ -4638,8 +4637,7 @@ struct swipe_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    if ( hit_any_target )
-      p()->buff.bt_swipe->trigger();
+    p()->buff.bt_swipe->trigger();
   }
 };
 
@@ -4716,8 +4714,7 @@ struct thrash_cat_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    if ( hit_any_target )
-      p()->buff.bt_thrash->trigger();
+    p()->buff.bt_thrash->trigger();
   }
 };
 
@@ -8852,7 +8849,12 @@ void druid_t::apl_default()
 void druid_t::apl_feral()
 {
   action_priority_list_t* def = get_action_priority_list( "default" );
-
+//    Good              Okay        Stinky
+//   ------            ----         -----
+//  Night Fae  /\_/\   Kyria      Necrolords
+//  Venthyr  _| . . |_
+//           >_  W  _<
+//             |   |
   def->add_action( "auto_attack" );
   def->add_action( this, "Shred" );
 }
