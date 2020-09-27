@@ -535,9 +535,72 @@ void echo_of_eonar( special_effect_t& effect )
 
 }
 
-void judgment_of_the_artbiter( special_effect_t& effect )
+void judgment_of_the_arbiter( special_effect_t& effect )
 {
+  struct judgment_of_the_arbiter_arc_t : public proc_spell_t
+  {
+    judgment_of_the_arbiter_arc_t( const special_effect_t& e )
+      : proc_spell_t( "judgment_of_the_arbiter_arc", e.player, e.player->find_spell( 339675 ) )
+    {
+      aoe    = -1;
+      radius = 20.0;  // hardcoded here as decription says arcing happens to ally 'within 5-20 yards of you'
+    }
 
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      proc_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return !rng().roll( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance );
+      }), tl.end() );
+
+      return tl.size();
+    }
+
+    void execute() override
+    {
+      // Calling available_targets here to forces regeneration of target_cache every execute, since we're using a random
+      // roll to model targets getting hit by the arc. Also prevents executes when rolls result in no targets, so we
+      // don't get inaccurate execute count reporting.
+      if ( available_targets( target_cache.list ) )
+        proc_spell_t::execute();
+      else
+      {
+        // sanity check, but this shouldn't be required for normal execution as no state is passed to schedule_execute()
+        if ( pre_execute_state )
+          action_state_t::release( pre_execute_state );
+      }
+    }
+  };
+
+  struct judgment_of_the_arbiter_proc_t : public proc_spell_t
+  {
+    action_t* arc;
+
+    judgment_of_the_arbiter_proc_t( const special_effect_t& e ) : proc_spell_t( e ), arc( nullptr )
+    {
+      if ( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance > 0.0 )
+      {
+        arc = create_proc_action<judgment_of_the_arbiter_arc_t>( "judgment_of_the_arbiter_arc", e );
+        add_child( arc );
+      }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( arc )
+      {
+        arc->set_target( execute_state->target );
+        arc->schedule_execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<judgment_of_the_arbiter_proc_t>( "judgment_of_the_arbiter", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void maw_rattle( special_effect_t& effect )
@@ -623,7 +686,7 @@ void register_special_effects()
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
-    unique_gear::register_special_effect( 339344, items::judgment_of_the_artbiter );
+    unique_gear::register_special_effect( 339344, items::judgment_of_the_arbiter );
     unique_gear::register_special_effect( 340197, items::maw_rattle );
     unique_gear::register_special_effect( 339340, items::norgannons_sagacity );
     unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );

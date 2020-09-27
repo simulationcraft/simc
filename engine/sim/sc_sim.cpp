@@ -3785,6 +3785,8 @@ void sim_t::create_options()
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",
     shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
+  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
+    shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
