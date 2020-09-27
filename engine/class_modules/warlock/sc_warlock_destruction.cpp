@@ -34,18 +34,6 @@ public:
     destro_mastery    = true;
   }
 
-  void init() override
-  {
-    warlock_spell_t::init();
-
-    if ( can_havoc )
-    {
-      // SL - Conduit
-      base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent() + p()->conduit.duplicitous_havoc.percent();
-      p()->havoc_spells.push_back( this );
-    }
-  }
-
   void consume_resource() override
   {
     warlock_spell_t::consume_resource();
@@ -1147,8 +1135,8 @@ void warlock_t::init_spells_destruction()
   // Conduits
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
   conduit.combusting_engine = find_conduit_spell( "Combusting Engine" );
-  conduit.duplicitous_havoc = find_conduit_spell( "Duplicitous Havoc" );
   conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
+  //conduit.duplicitous_havoc is done in main module
 }
 
 void warlock_t::init_gains_destruction()

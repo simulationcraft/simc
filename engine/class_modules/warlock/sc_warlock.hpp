@@ -868,6 +868,18 @@ public:
     return tl.size();
   }
 
+  void init() override
+  {
+    spell_t::init();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
+    {
+        // SL - Conduit
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        p()->havoc_spells.push_back(this);
+    }
+  }
+
   //End Destruction specific things
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
