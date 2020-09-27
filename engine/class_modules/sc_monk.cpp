@@ -4083,19 +4083,17 @@ public:
     return c;
   }
 
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    timespan_t cd = cd_duration;
-    // Only adjust cooldown (through serenity) if it's non zero.
-    if ( cd_duration == timespan_t::min() )
-    {
-      cd = ab::cooldown->duration;
-    }
+    double rm = ab::recharge_multiplier( cd );
 
     // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
-      cd *= ( 1 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() ) );  // saved as 100
-    ab::update_ready( cd );
+    if ( p()->buff.serenity->up() && current_resource() == RESOURCE_CHI && ab::cost() > 0 )
+    {
+      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
+    }
+
+    return rm;
   }
 
   void consume_resource() override
@@ -4635,17 +4633,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     base_t::init_finished();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = base_t::recharge_multiplier( cd );
-    if ( p()->buff.serenity->up() )
-    {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-    }
-
-    return rm;
   }
 
   double composite_target_multiplier( player_t* t ) const override
