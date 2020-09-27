@@ -16,8 +16,6 @@
 TODO:
 
 GENERAL:
-- Covenants
-- Covenant Conduits
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
 - Convert Pet base abilities to somethign more generic
