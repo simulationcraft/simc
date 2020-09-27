@@ -513,7 +513,6 @@ public:
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
 
     // SL
-    gain_t* scouring_tithe;
     gain_t* decimating_bolt;
   } gains;
 
