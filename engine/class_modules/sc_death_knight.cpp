@@ -939,17 +939,17 @@ public:
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
-    buffs( buffs_t() ),
-    runeforge( runeforge_t() ),
-    active_spells( active_spells_t() ),
-    gains( gains_t() ),
-    spec( specialization_t() ),
-    mastery( mastery_t() ),
-    talent( talents_t() ),
-    spell( spells_t() ),
-    pets( pets_t( this ) ),
-    procs( procs_t() ),
-    options( options_t() ),
+    buffs(),
+    runeforge(),
+    active_spells(),
+    gains(),
+    spec(),
+    mastery(),
+    talent(),
+    spell(),
+    pets( this ),
+    procs(),
+    options(),
     _runes( this )
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
@@ -2402,7 +2402,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "dancing_rune_weapon", true, true )
+    death_knight_pet_t( owner, "dancing_rune_weapon", true, true ),
+    ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner -> main_hand_weapon.type;
@@ -2410,8 +2411,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration = regen_type::DISABLED;
-
-    memset( &ability, 0, sizeof( ability ) );
   }
 
   void init_spells() override
@@ -5213,8 +5212,9 @@ struct glacial_advance_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    // Only applies the razorice debuff without the damage, and doesn't apply if no weapon is runeforged with razorice
-    if ( p() -> active_spells.razorice_mh || p() -> active_spells.razorice_oh )
+    // Only applies the razorice debuff without the damage, regardless of runeforge equipped (bug?)
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/663
+    if ( p() -> bugs || p() -> active_spells.razorice_mh || p() -> active_spells.razorice_oh )
     {
       td( state -> target ) -> debuff.razorice -> trigger();
     }
@@ -5927,9 +5927,17 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // If the action is done in precombat, assume the player used it long enough before pull that the cooldown is ready.
+    if ( action_list -> name_str == "precombat" )
+    {
+      cooldown -> reset( false );
+    }
+
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
     p() -> pets.ghoul_pet -> summon( data().duration() );
-    if ( p() -> talent.all_will_serve -> ok() )
+
+    // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up
+    if ( p() -> talent.all_will_serve -> ok() && p() -> pets.risen_skulker -> is_sleeping() )
     {
       p() -> pets.risen_skulker -> summon( 0_ms );
     }
