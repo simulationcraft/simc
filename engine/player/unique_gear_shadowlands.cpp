@@ -543,9 +543,51 @@ void hateful_chain( special_effect_t& effect )
 }
 
 // Runecarves
+
 void echo_of_eonar( special_effect_t& effect )
 {
+  struct echo_of_eonar_proc_t : public proc_spell_t
+  {
+    echo_of_eonar_proc_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      quiet    = true;
+      may_miss = may_crit = false;
+    }
 
+    // TODO: only debuff on target implemented - buff to allies NYI
+    /*void execute() override
+    {
+      proc_spell_t::execute();
+    }*/
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      if ( s->target->is_enemy() )
+      {
+        auto td = player->get_target_data( s->target );
+        td->debuff.echo_of_eonar->trigger();
+      }
+    }
+  };
+
+  // TODO: only debuff on target implemented - buff to allies NYI. buffs.echo_of_eonar will need to be added as
+  // appropriate to sc_player.cpp & sc_player.hpp when implemented
+  /*if ( !effect.player->buffs.echo_of_eonar )
+  {
+    effect.player->buffs.echo_of_eonar =
+        make_buff( effect.player, "echo_of_eonar", effect.player->find_spell( 338489 ) )
+            ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }*/
+
+  // Buff spell/buff ID is 338489. Both buff & debuff spells have the same velocity, so we can use either as the
+  // trigger_spell_id for now.
+  effect.trigger_spell_id = 338494;
+  effect.execute_action   = create_proc_action<echo_of_eonar_proc_t>( "echo_of_eonar", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void judgment_of_the_arbiter( special_effect_t& effect )
@@ -735,6 +777,20 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
+  } );
+
+  // Echo of Eonar
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 338477 ) )
+    {
+      assert( !td->debuff.echo_of_eonar );
+
+      td->debuff.echo_of_eonar = make_buff<buff_t>( *td, "echo_of_eonar", td->source->find_spell( 338494 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.echo_of_eonar->reset();
+    }
+    else
+      td->debuff.echo_of_eonar = make_buff( *td, "echo_of_eonar" )->set_quiet( true );
   } );
 }
 
