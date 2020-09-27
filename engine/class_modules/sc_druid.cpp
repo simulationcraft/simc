@@ -2890,7 +2890,7 @@ private:
 
 public:
   druid_spell_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() )
+                 util::string_view options = std::string() )
     : base_t( token, p, s )
   {
     parse_options( options );
@@ -3215,7 +3215,7 @@ struct moonfire_t : public druid_spell_t
 
   moonfire_damage_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
 
-  moonfire_t( druid_t* p, const std::string& options_str )
+  moonfire_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "moonfire", p, p->find_class_spell( "Moonfire" ), options_str )
   {
     may_miss = may_crit = triggers_galactic_guardian = false;
@@ -3293,7 +3293,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   bool target_self;
 
   druid_heal_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options_str = std::string() )
+                util::string_view options_str = std::string() )
     : base_t( token, p, s ), target_self( false )
   {
     add_option( opt_bool( "target_self", target_self ) );
@@ -3409,7 +3409,7 @@ public:
   std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
   cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() )
+                util::string_view options = std::string() )
     : base_t( token, p, s ),
       requires_stealth( false ),
       consumes_combo_points( false ),
@@ -3809,7 +3809,7 @@ struct rip_state_t : public druid_action_state_t
 
 struct berserk_cat_t : public cat_attack_t
 {
-  berserk_cat_t( druid_t* player, const std::string& options_str )
+  berserk_cat_t( druid_t* player, util::string_view options_str )
     : cat_attack_t( "berserk", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -3836,7 +3836,7 @@ struct berserk_cat_t : public cat_attack_t
 
 struct brutal_slash_t : public cat_attack_t
 {
-  brutal_slash_t( druid_t* p, const std::string& options_str )
+  brutal_slash_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
     aoe = as<int>( data().effectN( 3 ).base_value() );
@@ -3920,7 +3920,7 @@ struct feral_frenzy_driver_t : public cat_attack_t
   double tick_ap_ratio;
 
   // use hardcoded spell id so feral frenzy can be used as a secondary action
-  feral_frenzy_driver_t( druid_t* p, const std::string& options_str )
+  feral_frenzy_driver_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "feral_frenzy", p, p->find_spell( 274837 ) )
   {
     parse_options( options_str );
@@ -3950,7 +3950,7 @@ struct ferocious_bite_t : public cat_attack_t
   bool max_energy;
   timespan_t max_sabertooth_refresh;
 
-  ferocious_bite_t( druid_t* p, const std::string& options_str )
+  ferocious_bite_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "ferocious_bite", p, p->find_class_spell( "Ferocious Bite" ) ),
       excess_energy( 0 ),
       max_excess_energy( 0 ),
@@ -4101,7 +4101,7 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
 
 struct lunar_inspiration_t : public cat_attack_t
 {
-  lunar_inspiration_t( druid_t* player, const std::string& options_str )
+  lunar_inspiration_t( druid_t* player, util::string_view options_str )
     : cat_attack_t( "lunar_inspiration", player, player->find_spell( 155625 ), options_str )
   {
     may_dodge = may_parry = may_block = may_glance = false;
@@ -4143,7 +4143,7 @@ struct lunar_inspiration_t : public cat_attack_t
 
 struct maim_t : public cat_attack_t
 {
-  maim_t( druid_t* player, const std::string& options_str )
+  maim_t( druid_t* player, util::string_view options_str )
     : cat_attack_t( "maim", player, player->find_affinity_spell( "Maim" ), options_str ) {}
 
   double action_multiplier() const override
@@ -4234,11 +4234,9 @@ struct rake_t : public cat_attack_t
   action_t* bleed;
   bool stealth_mul;
 
-  rake_t( druid_t* p, const std::string& options_str )
+  rake_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "rake", p, p->find_affinity_spell( "Rake" ) ), stealth_mul( 0.0 )
   {
-    parse_options( options_str );
-
     if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
@@ -4304,7 +4302,7 @@ struct rip_t : public cat_attack_t
 {
   double combo_point_on_tick_proc_rate;
 
-  rip_t( druid_t* p, const std::string& options_str ) : cat_attack_t( "rip", p, p->spec.rip, options_str )
+  rip_t( druid_t* p, util::string_view options_str ) : cat_attack_t( "rip", p, p->spec.rip, options_str )
   {
     special      = true;
     may_crit     = false;
@@ -4374,11 +4372,11 @@ struct primal_wrath_t : public cat_attack_t
   int combo_points;
   rip_t* rip;
 
-  primal_wrath_t( druid_t* p, const std::string& options_str )
+  primal_wrath_t( druid_t* p, util::string_view options_str )
     : primal_wrath_t( p, p->talent.primal_wrath, options_str )
   {}
 
-  primal_wrath_t( druid_t* p, const spell_data_t* sd, const std::string& options_str )
+  primal_wrath_t( druid_t* p, const spell_data_t* sd, util::string_view options_str )
     : cat_attack_t( "primal_wrath", p, sd, options_str ), combo_points( 0 )
   {
     parse_options( options_str );
@@ -4467,7 +4465,7 @@ struct primal_wrath_t : public cat_attack_t
 
 struct savage_roar_t : public cat_attack_t
 {
-  savage_roar_t( druid_t* p, const std::string& options_str )
+  savage_roar_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "savage_roar", p, p->talent.savage_roar, options_str )
   {
     may_crit = may_miss = harmful = false;
@@ -4517,7 +4515,7 @@ struct shred_t : public cat_attack_t
   double stealth_mul;
   double stealth_cp;
 
-  shred_t( druid_t* p, const std::string& options_str )
+  shred_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
     if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() )
@@ -4598,7 +4596,7 @@ struct shred_t : public cat_attack_t
 
 struct swipe_cat_t : public cat_attack_t
 {
-  swipe_cat_t( druid_t* player, const std::string& options_str )
+  swipe_cat_t( druid_t* player, util::string_view options_str )
     : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
   {
     aoe = as<int>( data().effectN( 4 ).base_value() );
@@ -4651,7 +4649,7 @@ struct tigers_fury_t : public cat_attack_t
 {
   timespan_t duration;
 
-  tigers_fury_t( druid_t* p, const std::string& options_str )
+  tigers_fury_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "tigers_fury", p, p->spec.tigers_fury, options_str ), duration( p->buff.tigers_fury->buff_duration() )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -4688,7 +4686,7 @@ struct tigers_fury_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
-  thrash_cat_t( druid_t* p, const std::string& options_str )
+  thrash_cat_t( druid_t* p, util::string_view options_str )
     : cat_attack_t( "thrash_cat", p, p->spec.thrash_cat, options_str )
   {
     aoe    = -1;
@@ -4736,7 +4734,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   bool proc_gore;
 
   bear_attack_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options_str = std::string() )
+                 util::string_view options_str = std::string() )
     : base_t( n, p, s ), proc_gore( false )
   {
     parse_options( options_str );
@@ -4818,7 +4816,7 @@ struct berserk_bear_t : public bear_attack_t
 
 struct growl_t : public bear_attack_t
 {
-  growl_t( druid_t* player, const std::string& options_str )
+  growl_t( druid_t* player, util::string_view options_str )
     : bear_attack_t( "growl", player, player->find_class_spell( "Growl" ), options_str )
   {
     ignore_false_positive = use_off_gcd =true;
@@ -4838,7 +4836,7 @@ struct growl_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
-  mangle_t( druid_t* player, const std::string& options_str )
+  mangle_t( druid_t* player, util::string_view options_str )
     : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str )
   {
     if ( p()->find_rank_spell( "Mangle", "Rank 2" )->ok() )
@@ -4893,7 +4891,7 @@ struct mangle_t : public bear_attack_t
 
 struct maul_t : public bear_attack_t
 {
-  maul_t( druid_t* player, const std::string& options_str )
+  maul_t( druid_t* player, util::string_view options_str )
     : bear_attack_t( "maul", player, player->find_specialization_spell( "Maul" ), options_str )
   {
     proc_gore = true;
@@ -4946,7 +4944,7 @@ struct pulverize_t : public bear_attack_t
   int consume;
 
   // use hardcoded spell id so pulverize can be used as a secondary action
-  pulverize_t( druid_t* p, const std::string& options_str )
+  pulverize_t( druid_t* p, util::string_view options_str )
     : bear_attack_t( "pulverize", p, p->find_spell( 80313 ), options_str )
   {
     consume = as<int>( data().effectN( 3 ).base_value() );
@@ -4986,7 +4984,7 @@ struct pulverize_t : public bear_attack_t
 
 struct swipe_bear_t : public bear_attack_t
 {
-  swipe_bear_t( druid_t* p, const std::string& options_str )
+  swipe_bear_t( druid_t* p, util::string_view options_str )
     : bear_attack_t( "swipe_bear", p, p->spec.swipe_bear, options_str )
   {
     // target hit data stored in spec.swipe_cat
@@ -5049,7 +5047,7 @@ struct thrash_bear_t : public bear_attack_t
 
   action_t* dot;
 
-  thrash_bear_t( druid_t* p, const std::string& options_str )
+  thrash_bear_t( druid_t* p, util::string_view options_str )
     : bear_attack_t( "thrash_bear", p, p->spec.thrash_bear, options_str )
   {
     aoe       = -1;
@@ -5119,7 +5117,7 @@ struct cenarion_ward_hot_t : public druid_heal_t
 
 struct cenarion_ward_t : public druid_heal_t
 {
-  cenarion_ward_t( druid_t* p, const std::string& options_str )
+  cenarion_ward_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "cenarion_ward", p, p->talent.cenarion_ward, options_str ) {}
   
   void execute() override
@@ -5142,7 +5140,7 @@ struct cenarion_ward_t : public druid_heal_t
 
 struct frenzied_regeneration_t : public heals::druid_heal_t
 {
-  frenzied_regeneration_t( druid_t* p, const std::string& options_str )
+  frenzied_regeneration_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "frenzied_regeneration", p, p->find_affinity_spell( "Frenzied Regeneration" ), options_str )
   {
     /* use_off_gcd = quiet = true; */
@@ -5202,7 +5200,7 @@ struct lifebloom_t : public druid_heal_t
 {
   lifebloom_bloom_t* bloom;
 
-  lifebloom_t( druid_t* p, const std::string& options_str )
+  lifebloom_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "lifebloom", p, p->find_class_spell( "Lifebloom" ), options_str ),
       bloom( new lifebloom_bloom_t( p ) )
   {
@@ -5265,7 +5263,7 @@ struct natures_guardian_t : public druid_heal_t
 
 struct regrowth_t : public druid_heal_t
 {
-  regrowth_t( druid_t* p, const std::string& options_str )
+  regrowth_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), options_str )
   {
     form_mask             = NO_FORM | MOONKIN_FORM;
@@ -5329,7 +5327,7 @@ struct regrowth_t : public druid_heal_t
 
 struct rejuvenation_t : public druid_heal_t
 {
-  rejuvenation_t( druid_t* p, const std::string& options_str )
+  rejuvenation_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "rejuvenation", p, p->find_class_spell( "Rejuvenation" ), options_str )
   {
     tick_zero = true;
@@ -5340,7 +5338,7 @@ struct rejuvenation_t : public druid_heal_t
 
 struct renewal_t : public druid_heal_t
 {
-  renewal_t( druid_t* p, const std::string& options_str )
+  renewal_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "renewal", p, p->find_talent_spell( "Renewal" ), options_str )
   {
     may_crit = false;
@@ -5359,7 +5357,7 @@ struct renewal_t : public druid_heal_t
 // TODO: in game, you can swiftmend other druids' hots, which is not supported here
 struct swiftmend_t : public druid_heal_t
 {
-  swiftmend_t( druid_t* p, const std::string& options_str )
+  swiftmend_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "swiftmend", p, p->find_class_spell( "Swiftmend" ), options_str ) {}
 
   void impact( action_state_t* state ) override
@@ -5378,7 +5376,7 @@ struct swiftmend_t : public druid_heal_t
 
 struct tranquility_t : public druid_heal_t
 {
-  tranquility_t( druid_t* p, const std::string& options_str )
+  tranquility_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "tranquility", p, p->find_specialization_spell( "Tranquility" ), options_str )
   {
     aoe               = -1;
@@ -5394,7 +5392,7 @@ struct tranquility_t : public druid_heal_t
 
 struct wild_growth_t : public druid_heal_t
 {
-  wild_growth_t( druid_t* p, const std::string& options_str )
+  wild_growth_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "wild_growth", p, p->find_class_spell( "Wild Growth" ), options_str )
   {
     ignore_false_positive = true;
@@ -5462,7 +5460,7 @@ namespace spells
 
 struct auto_attack_t : public melee_attack_t
 {
-  auto_attack_t( druid_t* player, const std::string& options_str )
+  auto_attack_t( druid_t* player, util::string_view options_str )
     : melee_attack_t( "auto_attack", player, spell_data_t::nil() )
   {
     parse_options( options_str );
@@ -5495,7 +5493,7 @@ struct auto_attack_t : public melee_attack_t
 
 struct barkskin_t : public druid_spell_t
 {
-  barkskin_t( druid_t* p, const std::string& options_str )
+  barkskin_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), options_str )
   {
     harmful      = false;
@@ -5518,7 +5516,7 @@ struct barkskin_t : public druid_spell_t
 
 struct bear_form_t : public druid_spell_t
 {
-  bear_form_t( druid_t* player, const std::string& options_str )
+  bear_form_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "bear_form", player, player->find_class_spell( "Bear Form" ), options_str )
   {
     form_mask       = NO_FORM | CAT_FORM | MOONKIN_FORM;
@@ -5572,7 +5570,7 @@ struct brambles_pulse_t : public druid_spell_t
 
 struct bristling_fur_t : public druid_spell_t
 {
-  bristling_fur_t( druid_t* player, const std::string& options_str )
+  bristling_fur_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "bristling_fur", player, player->talent.bristling_fur, options_str )
   {
     harmful     = false;
@@ -5591,7 +5589,7 @@ struct bristling_fur_t : public druid_spell_t
 
 struct cat_form_t : public druid_spell_t
 {
-  cat_form_t( druid_t* player, const std::string& options_str )
+  cat_form_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "cat_form", player, player->find_class_spell( "Cat Form" ), options_str )
   {
     form_mask       = NO_FORM | BEAR_FORM | MOONKIN_FORM;
@@ -5622,7 +5620,7 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
-  celestial_alignment_t( druid_t* player, const std::string& options_str )
+  celestial_alignment_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str )
   {
     harmful = false;
@@ -5695,7 +5693,7 @@ struct fury_of_elune_t : public druid_spell_t
 
   action_t* damage;
 
-  fury_of_elune_t( druid_t* p, const std::string& options_str )
+  fury_of_elune_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "fury_of_elune", p, p->talent.fury_of_elune, options_str )
   {
     damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
@@ -5722,7 +5720,7 @@ struct fury_of_elune_t : public druid_spell_t
 
 struct dash_t : public druid_spell_t
 {
-  dash_t( druid_t* player, const std::string& options_str )
+  dash_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "dash", player,
                      player->talent.tiger_dash->ok() ? player->talent.tiger_dash : player->find_class_spell( "Dash" ),
                      options_str )
@@ -5758,7 +5756,7 @@ struct dash_t : public druid_spell_t
 
 struct tiger_dash_t : public druid_spell_t
 {
-  tiger_dash_t( druid_t* player, const std::string& options_str )
+  tiger_dash_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "tiger_dash", player, player->talent.tiger_dash, options_str )
   {
     autoshift = form_mask = CAT_FORM;
@@ -5791,7 +5789,7 @@ struct full_moon_t : public druid_spell_t
 {
   cooldown_t* orig_cd;
 
-  full_moon_t( druid_t* p, const std::string& options_str )
+  full_moon_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "full_moon", p, p->spec.full_moon, options_str )
   {
     aoe                = -1;
@@ -5843,7 +5841,7 @@ struct full_moon_t : public druid_spell_t
 
 struct half_moon_t : public druid_spell_t
 {
-  half_moon_t( druid_t* player, const std::string& options_str )
+  half_moon_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "half_moon", player, player->spec.half_moon, options_str )
   {
     cooldown = player->cooldown.moon_cd;
@@ -5878,7 +5876,7 @@ struct thrash_proxy_t : public druid_spell_t
   action_t* thrash_cat;
   action_t* thrash_bear;
 
-  thrash_proxy_t( druid_t* p, const std::string& options_str )
+  thrash_proxy_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "thrash", p, p->find_specialization_spell( "Thrash" ), options_str )
   {
     thrash_cat  = new cat_attacks::thrash_cat_t( p, options_str );
@@ -5965,7 +5963,7 @@ struct swipe_proxy_t : public druid_spell_t
   action_t* swipe_cat;
   action_t* swipe_bear;
 
-  swipe_proxy_t( druid_t* p, const std::string& options_str )
+  swipe_proxy_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "swipe", p, p->find_class_spell( "Swipe" ), options_str )
   {
     swipe_cat  = new cat_attacks::swipe_cat_t( p, options_str );
@@ -6027,7 +6025,7 @@ struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
 
-  incarnation_t( druid_t* p, const std::string& options_str ) :
+  incarnation_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "incarnation", p,
       p->specialization() == DRUID_BALANCE ? p->talent.incarnation_moonkin :
       p->specialization() == DRUID_FERAL ? p->talent.incarnation_cat :
@@ -6076,7 +6074,7 @@ struct incarnation_t : public druid_spell_t
 
 struct heart_of_the_wild_t : public druid_spell_t
 {
-  heart_of_the_wild_t( druid_t* p, const std::string& options_str )
+  heart_of_the_wild_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
   {
     harmful = may_crit = may_miss = false;
@@ -6093,7 +6091,7 @@ struct heart_of_the_wild_t : public druid_spell_t
 // Entangling Roots =========================================================
 struct entangling_roots_t : public druid_spell_t
 {
-  entangling_roots_t( druid_t* p, const std::string& options_str )
+  entangling_roots_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
@@ -6122,7 +6120,7 @@ struct entangling_roots_t : public druid_spell_t
 // Innervate ================================================================
 struct innervate_t : public druid_spell_t
 {
-  innervate_t( druid_t* p, const std::string& options_str )
+  innervate_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "innervate", p, p->spec.innervate, options_str )
   {
     harmful = false;
@@ -6140,7 +6138,7 @@ struct innervate_t : public druid_spell_t
 
 struct ironfur_t : public druid_spell_t
 {
-  ironfur_t( druid_t* p, const std::string& options_str ) : druid_spell_t( "ironfur", p, p->spec.ironfur, options_str )
+  ironfur_t( druid_t* p, util::string_view options_str ) : druid_spell_t( "ironfur", p, p->spec.ironfur, options_str )
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -6192,7 +6190,7 @@ struct ironfur_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  starfire_t( druid_t* player, const std::string& options_str )
+  starfire_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "starfire", player, player->find_affinity_spell( "Starfire" ), options_str )
   {
     aoe = -1;
@@ -6259,7 +6257,7 @@ struct starfire_t : public druid_spell_t
 
 struct new_moon_t : public druid_spell_t
 {
-  new_moon_t( druid_t* player, const std::string& options_str )
+  new_moon_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "new_moon", player, player->talent.new_moon, options_str )
   {
     cooldown           = player->cooldown.moon_cd;
@@ -6337,7 +6335,7 @@ struct sunfire_t : public druid_spell_t
 
   action_t* damage;  // Add damage modifiers in sunfire_damage_t, not sunfire_t
 
-  sunfire_t( druid_t* p, const std::string& options_str )
+  sunfire_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "sunfire", p, p->find_affinity_spell( "Sunfire" ), options_str )
   {
     may_miss = may_crit = false;
@@ -6375,7 +6373,7 @@ struct sunfire_t : public druid_spell_t
 
 struct moonkin_form_t : public druid_spell_t
 {
-  moonkin_form_t( druid_t* player, const std::string& options_str )
+  moonkin_form_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "moonkin_form", player, player->spec.moonkin_form, options_str )
   {
     form_mask       = NO_FORM | CAT_FORM | BEAR_FORM;
@@ -6405,7 +6403,7 @@ struct moonkin_form_t : public druid_spell_t
 
 struct prowl_t : public druid_spell_t
 {
-  prowl_t( druid_t* player, const std::string& options_str )
+  prowl_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "prowl", player, player->find_class_spell( "Prowl" ), options_str )
   {
     autoshift = form_mask = CAT_FORM;
@@ -6439,7 +6437,7 @@ struct prowl_t : public druid_spell_t
 
 struct druid_interrupt_t : public druid_spell_t
 {
-  druid_interrupt_t( util::string_view n, druid_t* p, const spell_data_t* s, const std::string& options_str )
+  druid_interrupt_t( util::string_view n, druid_t* p, const spell_data_t* s, util::string_view options_str )
     : druid_spell_t( n, p, s, options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = harmful = false;
@@ -6457,7 +6455,7 @@ struct druid_interrupt_t : public druid_spell_t
 
 struct solar_beam_t : public druid_interrupt_t
 {
-  solar_beam_t( druid_t* p, const std::string& options_str )
+  solar_beam_t( druid_t* p, util::string_view options_str )
     : druid_interrupt_t( "solar_beam", p, p->find_specialization_spell( "Solar Beam" ), options_str )
   {
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
@@ -6468,7 +6466,7 @@ struct solar_beam_t : public druid_interrupt_t
 
 struct skull_bash_t : public druid_interrupt_t
 {
-  skull_bash_t( druid_t* p, const std::string& options_str )
+  skull_bash_t( druid_t* p, util::string_view options_str )
     : druid_interrupt_t( "skull_bash", p, p->find_specialization_spell( "Skull Bash" ), options_str )
   {}
 };
@@ -6478,7 +6476,7 @@ struct wrath_t : public druid_spell_t
   unsigned count;
   double gcd_mul;
 
-  wrath_t( druid_t* p, const std::string& options_str )
+  wrath_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str )
   {
     form_mask       = NO_FORM | MOONKIN_FORM;
@@ -6579,7 +6577,7 @@ struct wrath_t : public druid_spell_t
 
 struct stampeding_roar_t : public druid_spell_t
 {
-  stampeding_roar_t( druid_t* p, const std::string& options_str )
+  stampeding_roar_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "stampeding_roar", p, p->find_class_spell( "Stampeding Roar" ), options_str )
   {
     form_mask = BEAR_FORM | CAT_FORM;
@@ -6661,7 +6659,7 @@ struct starfall_t : public druid_spell_t
 {
   action_t* starfall_tick;
 
-  starfall_t( druid_t* p, const std::string& options_str )
+  starfall_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "starfall", p, p->spec.starfall, options_str )
   {
     may_miss = may_crit = false;
@@ -6739,7 +6737,7 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
-  starsurge_t( druid_t* p, const std::string& options_str )
+  starsurge_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "starsurge", p, p->find_affinity_spell( "Starsurge" ), options_str )
   {
     if ( p->legendary.oneths_clear_vision->ok() )
@@ -6850,7 +6848,7 @@ struct starsurge_t : public druid_spell_t
 
 struct stellar_flare_t : public druid_spell_t
 {
-  stellar_flare_t( druid_t* p, const std::string& options_str )
+  stellar_flare_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "stellar_flare", p, p->talent.stellar_flare, options_str )
   {}
 
@@ -6866,7 +6864,7 @@ struct stellar_flare_t : public druid_spell_t
 
 struct survival_instincts_t : public druid_spell_t
 {
-  survival_instincts_t( druid_t* player, const std::string& options_str )
+  survival_instincts_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "survival_instincts", player, player->find_specialization_spell( "Survival Instincts" ),
                      options_str )
   {
@@ -6949,7 +6947,7 @@ struct thorns_t : public druid_spell_t
   bool available             = false;
   thorns_proc_t* thorns_proc = nullptr;
 
-  thorns_t( druid_t* player, const std::string& options_str )
+  thorns_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "thorns", player, player->find_spell( 305497 ), options_str )
   {
     available = p()->azerite.conflict_and_strife.is_major();
@@ -6988,7 +6986,7 @@ struct thorns_t : public druid_spell_t
 
 struct warrior_of_elune_t : public druid_spell_t
 {
-  warrior_of_elune_t( druid_t* player, const std::string& options_str )
+  warrior_of_elune_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "warrior_of_elune", player, player->talent.warrior_of_elune, options_str )
   {
     harmful = may_crit = may_miss = false;
@@ -7018,7 +7016,7 @@ struct wild_charge_t : public druid_spell_t
 {
   double movement_speed_increase;
 
-  wild_charge_t( druid_t* p, const std::string& options_str )
+  wild_charge_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "wild_charge", p, p->talent.wild_charge, options_str ), movement_speed_increase( 5.0 )
   {
     harmful = may_crit = may_miss = false;
@@ -7065,7 +7063,6 @@ struct force_of_nature_t : public druid_spell_t
   force_of_nature_t( druid_t* p, const std::string options )
     : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature ), summon_duration( 0_ms )
   {
-    parse_options( options );
     harmful = may_crit = false;
     summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
   }
@@ -7100,7 +7097,7 @@ struct force_of_nature_t : public druid_spell_t
 
 struct kindred_spirits_t : public druid_spell_t
 {
-  kindred_spirits_t( druid_t* p, const std::string& options_str )
+  kindred_spirits_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "empower_bond", p, p->covenant.empower_bond, options_str )
   {
     if ( !p->covenant.kyrian->ok() )
@@ -7155,13 +7152,11 @@ struct convoke_the_spirits_t : public druid_spell_t
   // Guardian
   // Restoration
 
-  convoke_the_spirits_t( druid_t* p, const std::string& options_str )
+  convoke_the_spirits_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
-
-    parse_options( options_str );
 
     harmful = channeled = true;
     may_miss = may_crit = false;
@@ -7346,7 +7341,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
 struct ravenous_frenzy_t : public druid_spell_t
 {
-  ravenous_frenzy_t( druid_t* player, const std::string& options_str )
+  ravenous_frenzy_t( druid_t* player, util::string_view options_str )
     : druid_spell_t( "ravenous_frenzy", player, player->covenant.venthyr, options_str )
   {
     if ( !player->covenant.venthyr->ok() )
@@ -7586,11 +7581,9 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
 
-  adaptive_swarm_t( druid_t* p, const std::string& options_str )
+  adaptive_swarm_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str )
   {
-    parse_options( options_str );
-
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
     damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
     heal   = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
