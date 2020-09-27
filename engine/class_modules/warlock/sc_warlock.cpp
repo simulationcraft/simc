@@ -72,13 +72,6 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
 
     return m;
   };
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-  };
-
-
 };
 
 struct decimating_bolt_t : public warlock_spell_t
@@ -99,16 +92,10 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
+    double value = p()->buffs.decimating_bolt->default_value - 0.02 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
-    {
-        p()->buffs.decimating_bolt->trigger(
-          3, ( ( -0.8 * (s->target->health_percentage() * 0.01) + 1.6 )));
-    }
-    else
-    {
-      p()->buffs.decimating_bolt->trigger(
-          3, ( ( s->target->health_percentage() * 0.01 ) * -2 + p()->buffs.decimating_bolt->default_value ) );
-    }
+      value *= 0.4;
+    p()->buffs.decimating_bolt->trigger( 3, value );
     
     warlock_spell_t::impact( s );
     

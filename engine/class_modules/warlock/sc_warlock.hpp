@@ -511,9 +511,6 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
-
-    // SL
-    gain_t* decimating_bolt;
   } gains;
 
   // Procs
