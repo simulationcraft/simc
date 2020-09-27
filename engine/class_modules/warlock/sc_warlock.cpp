@@ -671,6 +671,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
   gains.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams" );
