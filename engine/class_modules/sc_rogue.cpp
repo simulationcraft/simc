@@ -7098,6 +7098,7 @@ void rogue_t::init_action_list()
     precombat->add_action( this, "Stealth" );
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
+    precombat->add_action( this, "Shadow Blades", "if=runeforge.mark_of_the_master_assassin.equipped" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
@@ -7134,7 +7135,7 @@ void rogue_t::init_action_list()
     cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( this, "Shadow Blades", "if=!stealthed.all&variable.snd_condition&combo_points.deficit>=2" );
+    cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2" );
     cds->add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up", "With SF, if not already done, use Tornado with SoD up." );
     cds->add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
 
@@ -7168,7 +7169,7 @@ void rogue_t::init_action_list()
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
     stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
-    stealth_cds->add_action( this, "Vanish", "if=!variable.shd_threshold&combo_points.deficit>1", "Vanish unless we are about to cap on Dance charges." );
+    stealth_cds->add_action( this, "Vanish", "if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin.equipped", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
     stealth_cds->add_action( "sepsis" );
     stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
@@ -7183,10 +7184,10 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
-    stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike." );
+    stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
     stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
-    stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|runeforge.akaaris_soul_fragment.equipped)" );
+    stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)" );
     stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
     stealthed->add_action( "pool_resource,for_next=1" );
     stealthed->add_talent( this, "Gloomblade", "if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=13-(9*conduit.deeper_dagger.enabled+conduit.deeper_dagger.rank)" );
@@ -7196,7 +7197,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( this, "Slice and Dice", "if=spell_targets.shuriken_storm<6&(!talent.premeditation.enabled|!buff.shadow_dance.up)&buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-    finish->add_action( "variable,name=skip_rupture,value=spell_targets.shuriken_storm>=5-(conduit.deeper_daggers.rank>5)", "Helper Variable for Rupture" );
+    finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=5", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
