@@ -6425,38 +6425,38 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion            = make_buff<buffs::combustion_buff_t>( this );
-  buffs.fireball              = make_buff( this, "fireball", find_spell( 157644 ) )
-                                  ->set_chance( spec.fireball_2->ok() )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                    {
-                                      if ( cur > old )
-                                      {
-                                        buffs.flames_of_alacrity->trigger( cur - old );
-                                        buffs.flame_accretion->trigger( cur - old );
-                                      }
-                                      else
-                                      {
-                                        buffs.flames_of_alacrity->decrement( old - cur );
-                                        buffs.flame_accretion->decrement( old - cur );
-                                      }
-                                    } );
-  buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak            = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
-                                  ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                                    { if ( old == 0 ) buffs.firestorm->trigger(); } );
+  buffs.combustion        = make_buff<buffs::combustion_buff_t>( this );
+  buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
+                              ->set_chance( spec.fireball_2->ok() )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+                                {
+                                  if ( cur > old )
+                                  {
+                                    buffs.flames_of_alacrity->trigger( cur - old );
+                                    buffs.flame_accretion->trigger( cur - old );
+                                  }
+                                  else
+                                  {
+                                    buffs.flames_of_alacrity->decrement( old - cur );
+                                    buffs.flame_accretion->decrement( old - cur );
+                                  }
+                                } );
+  buffs.heating_up        = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak        = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                              ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                                { if ( old == 0 ) buffs.firestorm->trigger(); } );
 
-  buffs.alexstraszas_fury     = make_buff( this, "alexstraszas_fury", find_spell( 334277 ) )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->set_chance( talents.alexstraszas_fury->ok() );
-  buffs.frenetic_speed        = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->add_invalidate( CACHE_RUN_SPEED )
-                                  ->set_chance( talents.frenetic_speed->ok() );
-  buffs.pyroclasm             = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
+  buffs.alexstraszas_fury = make_buff( this, "alexstraszas_fury", find_spell( 334277 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_chance( talents.alexstraszas_fury->ok() );
+  buffs.frenetic_speed    = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->add_invalidate( CACHE_RUN_SPEED )
+                              ->set_chance( talents.frenetic_speed->ok() );
+  buffs.pyroclasm         = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
 
   // Frost
@@ -6480,16 +6480,16 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_chance( talents.rune_of_power->ok() );
-  buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-  buffs.focus_magic_int   = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->add_invalidate( CACHE_INTELLECT );
+  buffs.incanters_flow   = make_buff<buffs::incanters_flow_t>( this );
+  buffs.rune_of_power    = make_buff( this, "rune_of_power", find_spell( 116014 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_chance( talents.rune_of_power->ok() );
+  buffs.focus_magic_crit = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+  buffs.focus_magic_int  = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->add_invalidate( CACHE_INTELLECT );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
