@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36037 shadowlands-BETA (hotfix 2020-09-27/36037)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2382,6 +2382,36 @@ Effects          :
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
+
+Name             : Stampeding Roar (id=77764) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : Magic
+Spell Level      : 22
+GCD              : 1 seconds
+Duration         : 8 seconds
+Cooldown         : 120 seconds
+Category         : 1257
+Category Cooldown: 120 seconds
+Proc Chance      : 101%
+Affecting spells : Incarnation: King of the Jungle (102543 effect#2), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Berserk (279526 effect#1), Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
+Family Flags     : 87
+Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .x...... ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
+                 : ........ ...x...x ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ .......x ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=68172)    : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+#2 (id=104800)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+Description      : Let loose a wild roar, increasing the movement speed of all friendly players within $A1 yards by $s1% for $d.
+Tooltip          : Movement speed increased by $s1%.
 
 Name             : Starsurge (id=78674) [Spell Family (7)] 
 Class            : Balance Druid
@@ -13090,6 +13120,7 @@ Description      : Combo point-generating abilities reduce the cooldown of $?s10
 During $?s102543[Incarnation: King of the Jungle][Berserk], they cause the target to bleed for an additonal $s2% of their damage over $340056d.
 
 Name             : Lycara's Fleeting Glimpse (id=340059) [Spell Family (7), Passive] 
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -13114,6 +13145,25 @@ Cat Form: $@spellname285381
 Bear Form: $@spellname22812
 Moonkin Form: $@spellname191034
 Travel Form: $@spellname77764
+
+Name             : Lycara's Fleeting Glimpse (id=340060) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Type       : None
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=839683)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc340059
+Tooltip          : You feel Lycara's inspiration arriving.
 
 Name             : Tough as Bark (id=340529) [Spell Family (7), Passive, Hidden] 
 School           : Physical
