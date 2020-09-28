@@ -946,18 +946,25 @@ void dot_t::adjust_full_ticks( double coefficient )
   // Always at least 1 tick left (even if we would round down before the last partial)
   int rounded_full_ticks_left = std::max( static_cast<int>( std::round( current_duration / current_action -> tick_time( state ) ) ) - current_tick, 1 );
 
+  timespan_t elapsed     = tick_time - time_to_next_full_tick();
+  timespan_t tick_occurs = tick_event->occurs();
+  timespan_t end_occurs  = end_event->occurs();
+
   timespan_t new_dot_remains  = remains() * coefficient;
   timespan_t new_duration     = current_duration * coefficient;
   timespan_t new_tick_time    = tick_time * coefficient;
   timespan_t new_tick_remains = new_dot_remains - ( rounded_full_ticks_left - 1 ) * new_tick_time;
 
+  event_t::cancel( tick_event );
   if ( new_tick_remains <= 0_ms )
   {
+    tick_time = elapsed;
     current_tick++;
     tick();
     new_tick_remains += new_tick_time;
     rounded_full_ticks_left--;
   }
+  event_t::cancel( end_event );
 
   if ( sim.debug )
   {
@@ -966,14 +973,11 @@ void dot_t::adjust_full_ticks( double coefficient )
         "%.3f, ends=%.3f -> %.3f",
         current_action->player->name(), current_action->name(), target->name(),
         current_duration.total_seconds(), new_duration.total_seconds(),
-        tick_event->occurs().total_seconds(),
+        tick_occurs.total_seconds(),
         ( sim.current_time() + new_tick_remains ).total_seconds(),
-        end_event->occurs().total_seconds(),
+        end_occurs.total_seconds(),
         ( sim.current_time() + new_dot_remains ).total_seconds() );
   }
-
-  event_t::cancel( tick_event );
-  event_t::cancel( end_event );
 
   current_duration = new_duration;
   tick_time        = new_tick_time;
