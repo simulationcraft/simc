@@ -371,6 +371,7 @@ struct wrathful_faerie_t final : public priest_spell_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+    background        = true;
 
     cooldown->duration = data().internal_cooldown();
   }
@@ -388,24 +389,24 @@ struct wrathful_faerie_t final : public priest_spell_t
 struct wrathful_faerie_fermata_t final : public priest_spell_t
 {
   double insanity_gain;
-@
   wrathful_faerie_fermata_t( priest_t& p )
     : priest_spell_t( "wrathful_faerie_fermata", p, p.find_spell( 345452 ) ),
-      insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+    background        = true;
 
     cooldown->duration = data().internal_cooldown();
   }
 
   void trigger()
   {
-    if ( priest().cooldowns.wrathful_faerie->is_ready() )
+    if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
     {
       execute();
-      priest().cooldowns.wrathful_faerie->start();
+      priest().cooldowns.wrathful_faerie_fermata->start();
     }
   }
 };
