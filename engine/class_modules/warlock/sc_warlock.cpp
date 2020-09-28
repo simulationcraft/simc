@@ -257,6 +257,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
+    corruption_accumulator( 0.0 ),
     memory_of_lucid_dreams_accumulator( 0.0 ),  // BFA - Essence
     strive_for_perfection_multiplier(),         // BFA - Essence
     vision_of_perfection_multiplier(),          // BFA - Essence
@@ -869,6 +870,7 @@ void warlock_t::reset()
   havoc_target                       = nullptr;
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
+  corruption_accumulator             = rng().range( 0.0, 0.99 ); // TOCHECK - Unsure if it procs on application
   memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
 }

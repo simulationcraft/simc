@@ -80,6 +80,7 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   bool wracking_brilliance;             // BFA - Azerite
   double agony_accumulator;
+  double corruption_accumulator;
   double memory_of_lucid_dreams_accumulator;  // BFA - Essences
   double strive_for_perfection_multiplier;    // BFA - Essences
   double vision_of_perfection_multiplier;     // BFA - Essences

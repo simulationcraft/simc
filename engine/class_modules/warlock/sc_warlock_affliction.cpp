@@ -314,13 +314,26 @@ struct corruption_t : public affliction_spell_t
   {
     if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
     {
-      auto success = p()->buffs.nightfall->trigger();
-      if ( success )
+      // TOCHECK regularly. 
+      // Blizzard did not publicly release how nightfall was changed. 
+      // We determined this is the probable functionality copied from Agony by first confirming the 
+      // DR formula was the same and then confirming that you can get procs on 1st tick.
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm. 
+      // Last checked 09-28-2020.
+      double increment_max = 0.13;
+
+      double active_corruptions = p()->get_active_dots( internal_id );
+      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+      p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->corruption_accumulator >= 1 )
       {
         p()->procs.nightfall->occur();
+        p()->corruption_accumulator -= 1.0;
+
       }
     }
-
     affliction_spell_t::tick( d );
   }
 
