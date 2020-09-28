@@ -685,6 +685,7 @@ struct warlock_spell_t : public spell_t
 {
 public:
   gain_t* gain;
+  bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -702,6 +703,7 @@ public:
     tick_may_crit     = true;
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
+    can_havoc         = false;
   }
 
   warlock_t* p()
@@ -825,6 +827,60 @@ public:
       dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
     }
   }
+
+  //Destruction specific things for Havoc that unfortunately need to be in main module
+
+  bool use_havoc() const
+  {
+    // Ensure we do not try to hit the same target twice.
+    return can_havoc && p()->havoc_target && p()->havoc_target != target;
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && use_havoc() )
+    {
+      assert(spell_t::n_targets() == 0);
+      return 2;
+    }
+    else
+      return spell_t::n_targets();
+  }
+
+  size_t available_targets(std::vector<player_t*>& tl) const override
+  {
+    spell_t::available_targets(tl);
+
+    // Check target list size to prevent some silly scenarios where Havoc target
+    // is the only target in the list.
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && tl.size() > 1 && use_havoc())
+    {
+      // We need to make sure that the Havoc target ends up second in the target list,
+      // so that Havoc spells can pick it up correctly.
+      auto it = range::find(tl, p()->havoc_target);
+      if (it != tl.end())
+      {
+        tl.erase(it);
+        tl.insert(tl.begin() + 1, p()->havoc_target);
+      }
+    }
+
+    return tl.size();
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
+    {
+        // SL - Conduit
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        p()->havoc_spells.push_back(this);
+    }
+  }
+
+  //End Destruction specific things
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {

@@ -9,10 +9,10 @@ talents=2220022
 azerite_essences=12:4:1/37:4:0/32:4:0/4:4:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_undertow
+food=mechdowels_big_mech
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -64,7 +64,7 @@ actions.standard=death_strike,if=runic_power.deficit<=10
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
 actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&runic_power.deficit>=15
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
 actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
@@ -94,12 +94,12 @@ trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=148.33
-# gear_strength=551
-# gear_stamina=1002
-# gear_crit_rating=355
-# gear_haste_rating=332
-# gear_mastery_rating=198
+# gear_ilvl=144.67
+# gear_strength=482
+# gear_stamina=932
+# gear_crit_rating=304
+# gear_haste_rating=281
+# gear_mastery_rating=147
 # gear_versatility_rating=49
 # gear_corruption=95
 # gear_corruption_resistance=50

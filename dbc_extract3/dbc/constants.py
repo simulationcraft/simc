@@ -15,6 +15,11 @@ class Class(enum.IntEnum):
   DRUID        = 11
   DEMON_HUNTER = 12
 
+class HotfixType(enum.IntEnum):
+  DISABLED = 0
+  ENABLED  = 1
+  REMOVED  = 2
+
 CONSUMABLE_ITEM_WHITELIST = {
   # Food
   5: [

@@ -295,6 +295,8 @@ void sinful_revelation( special_effect_t& effect )
 
 namespace items
 {
+// Trinkets
+
 void darkmoon_deck_shuffle( special_effect_t& effect )
 {
   // Disable the effect, as we handle shuffling within the on-use effect
@@ -352,6 +354,18 @@ struct SL_darkmoon_deck_proc_t : public proc_spell_t
   }
 
   ~SL_darkmoon_deck_proc_t() { delete deck; }
+
+  // Shadowlands Darkmoon Decks utilize spells which are flagged to scale with item level, but instead return a value as
+  // if scaled to item level = max scaling level. As darkmoon decks so far are all item level 200, whether there is any
+  // actual item level scaling is unknown atm.
+  double get_effect_value( const spell_data_t* spell = nullptr, int index = 1 )
+  {
+    if ( !spell )
+      spell = s_data;
+
+    return spell->effectN( index ).m_coefficient() *
+           player->dbc->random_property( spell->max_scaling_level() ).damage_secondary;
+  }
 };
 
 void darkmoon_deck_putrescence( special_effect_t& effect )
@@ -363,6 +377,7 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
                                  {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
     {
       split_aoe_damage = true;
+      base_dd_max = base_dd_min = get_effect_value();
     }
 
     void impact( action_state_t* s ) override
@@ -526,6 +541,165 @@ void hateful_chain( special_effect_t& effect )
 {
 
 }
+
+// Runecarves
+
+void echo_of_eonar( special_effect_t& effect )
+{
+  struct echo_of_eonar_proc_t : public proc_spell_t
+  {
+    echo_of_eonar_proc_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      quiet    = true;
+      may_miss = may_crit = false;
+    }
+
+    // TODO: only debuff on target implemented - buff to allies NYI
+    /*void execute() override
+    {
+      proc_spell_t::execute();
+    }*/
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      if ( s->target->is_enemy() )
+      {
+        auto td = player->get_target_data( s->target );
+        td->debuff.echo_of_eonar->trigger();
+      }
+    }
+  };
+
+  // TODO: only debuff on target implemented - buff to allies NYI. buffs.echo_of_eonar will need to be added as
+  // appropriate to sc_player.cpp & sc_player.hpp when implemented
+  /*if ( !effect.player->buffs.echo_of_eonar )
+  {
+    effect.player->buffs.echo_of_eonar =
+        make_buff( effect.player, "echo_of_eonar", effect.player->find_spell( 338489 ) )
+            ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }*/
+
+  // Buff spell/buff ID is 338489. Both buff & debuff spells have the same velocity, so we can use either as the
+  // trigger_spell_id for now.
+  effect.trigger_spell_id = 338494;
+  effect.execute_action   = create_proc_action<echo_of_eonar_proc_t>( "echo_of_eonar", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void judgment_of_the_arbiter( special_effect_t& effect )
+{
+  struct judgment_of_the_arbiter_arc_t : public proc_spell_t
+  {
+    judgment_of_the_arbiter_arc_t( const special_effect_t& e )
+      : proc_spell_t( "judgment_of_the_arbiter_arc", e.player, e.player->find_spell( 339675 ) )
+    {
+      aoe    = -1;
+      radius = 20.0;  // hardcoded here as decription says arcing happens to ally 'within 5-20 yards of you'
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      proc_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return !rng().roll( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance );
+      }), tl.end() );
+
+      return tl.size();
+    }
+
+    void execute() override
+    {
+      // Calling available_targets here to forces regeneration of target_cache every execute, since we're using a random
+      // roll to model targets getting hit by the arc. Also prevents executes when rolls result in no targets, so we
+      // don't get inaccurate execute count reporting.
+      if ( available_targets( target_cache.list ) )
+        proc_spell_t::execute();
+      else
+      {
+        // sanity check, but this shouldn't be required for normal execution as no state is passed to schedule_execute()
+        if ( pre_execute_state )
+          action_state_t::release( pre_execute_state );
+      }
+    }
+  };
+
+  struct judgment_of_the_arbiter_proc_t : public proc_spell_t
+  {
+    action_t* arc;
+
+    judgment_of_the_arbiter_proc_t( const special_effect_t& e ) : proc_spell_t( e ), arc( nullptr )
+    {
+      if ( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance > 0.0 )
+      {
+        arc = create_proc_action<judgment_of_the_arbiter_arc_t>( "judgment_of_the_arbiter_arc", e );
+        add_child( arc );
+      }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( arc )
+      {
+        arc->set_target( execute_state->target );
+        arc->schedule_execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<judgment_of_the_arbiter_proc_t>( "judgment_of_the_arbiter", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void maw_rattle( special_effect_t& effect )
+{
+
+}
+
+void norgannons_sagacity( special_effect_t& effect )
+{
+  effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.custom_buff = effect.player->buffs.norgannons_sagacity_stacks;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void sephuzs_proclamation( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "sephuzs_proclamation" );
+  if ( !buff )
+  {
+    auto val = effect.trigger()->effectN( 1 ).average( effect.player );
+    buff     = make_buff<stat_buff_t>( effect.player, "sephuzs_proclamation", effect.trigger() )
+               ->add_stat( STAT_HASTE_RATING, val )
+               ->add_stat( STAT_CRIT_RATING, val )
+               ->add_stat( STAT_MASTERY_RATING, val )
+               ->add_stat( STAT_VERSATILITY_RATING, val );
+  }
+
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void third_eye_of_the_jailer( special_effect_t& effect )
+{
+
+}
+
+void vitality_sacrifice( special_effect_t& effect )
+{
+
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -564,6 +738,15 @@ void register_special_effects()
     unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
     unique_gear::register_special_effect( 344063, items::gluttonous_spike );
     unique_gear::register_special_effect( 345357, items::hateful_chain );
+
+    // Runecarves
+    unique_gear::register_special_effect( 338477, items::echo_of_eonar );
+    unique_gear::register_special_effect( 339344, items::judgment_of_the_arbiter );
+    unique_gear::register_special_effect( 340197, items::maw_rattle );
+    unique_gear::register_special_effect( 339340, items::norgannons_sagacity );
+    unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
+    unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
+    unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -594,6 +777,20 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
+  } );
+
+  // Echo of Eonar
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 338477 ) )
+    {
+      assert( !td->debuff.echo_of_eonar );
+
+      td->debuff.echo_of_eonar = make_buff<buff_t>( *td, "echo_of_eonar", td->source->find_spell( 338494 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.echo_of_eonar->reset();
+    }
+    else
+      td->debuff.echo_of_eonar = make_buff( *td, "echo_of_eonar" )->set_quiet( true );
   } );
 }
 

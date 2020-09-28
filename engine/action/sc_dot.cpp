@@ -820,6 +820,24 @@ int dot_t::ticks_left() const
     1 + std::ceil( ( remains() - next_tick ) / current_action->tick_time( state ) ) );
 }
 
+double dot_t::ticks_left_fractional() const
+{
+  if ( !current_action )
+    return 0;
+  if ( !ticking )
+    return 0;
+
+  timespan_t tick_time = current_action->tick_time( state );
+  timespan_t next_tick = tick_event ? tick_event->remains() : 0_ms;
+  // Remaining duration after the next tick.
+  timespan_t remaining = remains() - next_tick;
+
+  if ( remaining == 0_ms )
+    return time_to_tick / tick_time;
+  else
+    return 1 + remaining / tick_time;
+}
+
 /* Called on Dot start if dot action has tick_zero = true set.
  */
 void dot_t::tick_zero()

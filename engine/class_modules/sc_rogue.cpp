@@ -472,22 +472,24 @@ public:
   // Spell Data
   struct spells_t
   {
-    const spell_data_t* poison_bomb_driver;
     const spell_data_t* critical_strikes;
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
+    const spell_data_t* killing_spree_mh;
+    const spell_data_t* killing_spree_oh;
     const spell_data_t* master_of_shadows;
     const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* nightstalker_dmg_amp;
-    const spell_data_t* sprint;
-    const spell_data_t* sprint_2;
+    const spell_data_t* nightstalker_dmg_amp;    
+    const spell_data_t* poison_bomb_driver;
     const spell_data_t* relentless_strikes_energize;
     const spell_data_t* ruthlessness_cp_driver;
     const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
-    const spell_data_t* subterfuge;
     const spell_data_t* slice_and_dice;
+    const spell_data_t* sprint;
+    const spell_data_t* sprint_2;
+    const spell_data_t* subterfuge;
   } spell;
 
   // Talents
@@ -1315,6 +1317,10 @@ public:
   virtual bool procs_combat_potency() const
   { return ab::callbacks && !ab::proc && ab::weapon != nullptr && ab::weapon->slot == SLOT_OFF_HAND; }
 
+  // Generic rules for proccing Blade Flurry, used by rogue_t::trigger_blade_flurry()
+  virtual bool procs_blade_flurry() const
+  { return true; }
+
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
@@ -1683,6 +1689,15 @@ public:
 
     if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       trigger_seal_fate( state );
+
+    if ( ab::result_is_hit( state->result ) )
+    {
+      if ( procs_poison() && p()->active.lethal_poison )
+        p()->active.lethal_poison->trigger( state );
+
+      if ( procs_poison() && p()->active.nonlethal_poison )
+        p()->active.nonlethal_poison->trigger( state );
+    }
   }
 
   bool ready() override
@@ -1740,7 +1755,16 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     special = true;
   }
 
-  void impact( action_state_t* state ) override;
+  void impact( action_state_t* state ) override
+  {
+    base_t::impact( state );
+
+    trigger_main_gauche( state );
+    trigger_combat_potency( state );
+    trigger_blade_flurry( state );
+    trigger_shadow_blades_attack( state );
+    trigger_bloodfang( state );
+  }
 };
 
 // ==========================================================================
@@ -1830,6 +1854,9 @@ struct rogue_poison_t : public rogue_attack_t
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
   }
+
+  bool procs_blade_flurry() const override
+  { return false; }
 };
 
 // Deadly Poison ============================================================
@@ -2045,28 +2072,6 @@ struct apply_poison_t : public action_t
     return !executed;
   }
 };
-
-// rogue_attack_t ===========================================================
-
-void rogue_attack_t::impact( action_state_t* state )
-{
-  base_t::impact( state );
-
-  trigger_main_gauche( state );
-  trigger_combat_potency( state );
-  trigger_blade_flurry( state );
-  trigger_shadow_blades_attack( state );
-  trigger_bloodfang( state );
-
-  if ( result_is_hit( state->result ) )
-  {
-    if ( procs_poison() && p()->active.lethal_poison )
-      p()->active.lethal_poison->trigger( state );
-
-    if ( procs_poison() && p()->active.nonlethal_poison )
-      p()->active.nonlethal_poison->trigger( state );
-  }
-}
 
 // ==========================================================================
 // Attacks
@@ -2473,6 +2478,9 @@ struct blade_flurry_attack_t : public rogue_attack_t
   bool procs_main_gauche() const override
   { return false; }
 
+  bool procs_blade_flurry() const override
+  { return false; }
+
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
@@ -2500,6 +2508,9 @@ struct blade_flurry_t : public rogue_attack_t
     }
 
     bool procs_main_gauche() const override
+    { return false; }
+
+    bool procs_blade_flurry() const override
     { return false; }
   };
 
@@ -2875,22 +2886,6 @@ struct fan_of_knives_t: public rogue_attack_t
     echoing_blades_crit_count = 0;
   }
 
-  void schedule_travel( action_state_t* state ) override
-  {
-    rogue_attack_t::schedule_travel( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      // 2018-01-25: Poisons are applied on cast as well
-      // Note: Usual application on impact will not happen because this attack has no weapon assigned
-      if ( p()->active.lethal_poison )
-        p()->active.lethal_poison->trigger( state );
-
-      if ( p()->active.nonlethal_poison )
-        p()->active.nonlethal_poison->trigger( state );
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -2901,6 +2896,9 @@ struct fan_of_knives_t: public rogue_attack_t
       echoing_blades_attack->execute();
     }
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Feint ====================================================================
@@ -3159,19 +3157,18 @@ struct killing_spree_t : public rogue_attack_t
   melee_attack_t* attack_oh;
 
   killing_spree_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p -> talent.killing_spree, options_str ),
+    rogue_attack_t( name, p, p->talent.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
     interrupt_auto_attack = false;
 
-    attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->find_spell( 57841 ) );
+    attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spell.killing_spree_mh );
     add_child( attack_mh );  
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
-      attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh",
-                                                                  p->find_spell( 57841 )->effectN( 1 ).trigger() );
+      attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spell.killing_spree_oh );
       add_child( attack_oh );
     }
   }
@@ -4079,6 +4076,9 @@ struct shadow_vault_t: public rogue_attack_t
       bonus_attack->execute();
     }
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Shuriken Storm ===========================================================
@@ -4112,6 +4112,9 @@ struct shuriken_storm_t: public rogue_attack_t
       trigger_find_weakness( state, duration );
     }
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Shuriken Tornado =========================================================
@@ -6067,6 +6070,9 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* state )
 {
+  if ( !procs_blade_flurry() )
+    return;
+
   if ( state->result_total <= 0 )
     return;
 
@@ -6076,9 +6082,6 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   if ( !ab::result_is_hit( state->result ) )
     return;
 
-  if ( ab::is_aoe() )
-    return;
-
   if ( p()->sim->active_enemies == 1 )
     return;
 
@@ -6086,7 +6089,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
 
   // Compute Blade Flurry modifier
   double multiplier = 1.0;
-  if ( ab::name_str == "killing_spree_mh" || ab::name_str == "killing_spree_oh" )
+  if ( ab::data().id() == p()->spell.killing_spree_mh->id() || ab::data().id() == p()->spell.killing_spree_oh->id() )
   {
     // 3/27/2020 -- Killing Spree no longer procs Wits twice per teleport
     if ( state->action->weapon == &( p()->off_hand_weapon ) )
@@ -7774,20 +7777,23 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.poison_bomb_driver            = find_spell( 255545 );
+  
   spell.critical_strikes              = find_spell( 157442 );
   spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
   spell.fleet_footed                  = find_spell( 31209 );
+  spell.killing_spree_mh              = find_spell( 57841 );
+  spell.killing_spree_oh              = spell.killing_spree_mh->effectN( 1 ).trigger();
   spell.master_of_shadows             = find_spell( 196980 );
   spell.nightstalker_dmg_amp          = find_spell( 130493 );
-  spell.sprint                        = find_class_spell( "Sprint" );
-  spell.sprint_2                      = find_spell( 231691 );
+  spell.poison_bomb_driver            = find_spell( 255545 );
   spell.ruthlessness_driver           = find_spell( 14161 );
   spell.ruthlessness_cp               = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus                  = find_spell( 112942 );
+  spell.slice_and_dice                = find_class_spell( "Slice and Dice" ); 
+  spell.sprint                        = find_class_spell( "Sprint" );
+  spell.sprint_2                      = find_spell( 231691 );
   spell.subterfuge                    = find_spell( 115192 );
   spell.relentless_strikes_energize   = find_spell( 98440 );
-  spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
 
   // Talents ================================================================
 

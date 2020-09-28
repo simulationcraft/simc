@@ -1,7 +1,7 @@
 warrior="T25_Warrior_Fury"
 source=default
 spec=fury
-level=120
+level=50
 race=gnome
 role=attack
 position=back
@@ -9,10 +9,10 @@ talents=2133123
 azerite_essences=14:3/12:3/32:3/35:3
 
 # Default consumables
-potion=potion_of_unbridled_fury
-flask=greater_flask_of_the_undertow
-food=mechdowels_big_mech
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -39,7 +39,6 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
-actions+=/potion,if=buff.guardian_of_azeroth.up|(!essence.condensed_lifeforce.major&target.time_to_die=60)
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/blood_of_the_enemy,if=buff.recklessness.up
 actions+=/purifying_blast,if=!buff.recklessness.up&!buff.siegebreaker.up
@@ -67,14 +66,12 @@ actions.movement=heroic_leap
 actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=(buff.recklessness.up|buff.memory_of_lucid_dreams.up)|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute
-actions.single_target+=/furious_slash,if=!buff.bloodlust.up&buff.furious_slash.remains<3
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
 actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
-actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=437/176/21/13
@@ -95,13 +92,13 @@ main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=masterful_navig
 off_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=deadly_navigation
 
 # Gear Summary
-# gear_ilvl=476.75
-# gear_strength=10382
-# gear_stamina=21005
-# gear_crit_rating=1677
-# gear_haste_rating=1886
-# gear_mastery_rating=734
-# gear_versatility_rating=124
+# gear_ilvl=151.06
+# gear_strength=567
+# gear_stamina=1162
+# gear_crit_rating=326
+# gear_haste_rating=359
+# gear_mastery_rating=174
+# gear_versatility_rating=18
 # gear_corruption=800
 # gear_corruption_resistance=50
-# gear_armor=8230
+# gear_armor=672

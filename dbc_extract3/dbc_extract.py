@@ -2,6 +2,8 @@
 
 import argparse, sys, os, glob, logging, importlib, json
 
+from dbc.constants import HotfixType
+
 try:
     from bitarray import bitarray
 except Exception as error:
@@ -188,8 +190,8 @@ elif options.type == 'view':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     logging.debug(dbc_file)
     if id == 0:
@@ -197,7 +199,11 @@ elif options.type == 'view':
         # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
             if not options.raw and record.id in entries:
-                print('{} [hotfix]'.format(str(entries[record.id])))
+                entry, hotfix = entries[record.id]
+                if hotfix['state'] == HotfixType.REMOVED:
+                    print('{} [hotfix/remove]'.format(str(record)))
+                else:
+                    print('{} [hotfix/modify]'.format(str(entry)))
                 replaced_ids.append(record.id)
             else:
                 print('{}'.format(str(record)))
@@ -206,7 +212,7 @@ elif options.type == 'view':
             if id in replaced_ids:
                 continue
 
-            print('{} [hotfix]'.format(entry))
+            print('{} [hotfix/add]'.format(entry))
     else:
         if id in entries:
             record = entries[id]

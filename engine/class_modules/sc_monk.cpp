@@ -16,8 +16,6 @@
 TODO:
 
 GENERAL:
-- Covenants
-- Covenant Conduits
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
 - Convert Pet base abilities to somethign more generic
@@ -4085,19 +4083,17 @@ public:
     return c;
   }
 
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    timespan_t cd = cd_duration;
-    // Only adjust cooldown (through serenity) if it's non zero.
-    if ( cd_duration == timespan_t::min() )
-    {
-      cd = ab::cooldown->duration;
-    }
+    double rm = ab::recharge_multiplier( cd );
 
     // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
-      cd *= ( 1 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() ) );  // saved as 100
-    ab::update_ready( cd );
+    if ( p()->buff.serenity->up() && current_resource() == RESOURCE_CHI && ab::cost() > 0 )
+    {
+      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
+    }
+
+    return rm;
   }
 
   void consume_resource() override
@@ -4637,17 +4633,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     base_t::init_finished();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = base_t::recharge_multiplier( cd );
-    if ( p()->buff.serenity->up() )
-    {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-    }
-
-    return rm;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -5493,7 +5478,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           // Reduce the cooldown of Rising Sun Kick and Fists of Fury
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           if ( p()->buff.weapons_of_order->up() )
-            cd_reduction += timespan_t::from_seconds( -1 );
+            cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
 
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -5709,7 +5694,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
-      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
+      am *= 1 + p()->buff.dance_of_chiji_hidden->value();
 
     return am;
   }
@@ -5829,17 +5814,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.dance_of_chiji->up() )
+    {
+      p()->buff.dance_of_chiji->expire();
+      p()->buff.dance_of_chiji_hidden->trigger();
+    }
+
     monk_melee_attack_t::execute();
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-
-    if ( p()->buff.dance_of_chiji->up() )
-    {
-      p()->buff.dance_of_chiji->expire();
-      p()->buff.dance_of_chiji_hidden->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-    }
 
     if ( p()->buff.dance_of_chiji_azerite->up() )
     {
@@ -5867,6 +5852,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      p()->buff.dance_of_chiji_hidden->expire();
   }
 };
 /*
@@ -10237,13 +10225,13 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
-                            ->set_trigger_spell( find_spell( 325201 ) )
+                            ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
-                                   ->set_trigger_spell( find_spell( 325201 ) )
-                                   ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
+                                   ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 

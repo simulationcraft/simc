@@ -1248,7 +1248,7 @@ struct incanters_flow_t : public buff_t
 
   void bump( int stacks, double value ) override
   {
-    if ( check() == max_stack() )
+    if ( at_max_stacks() )
       reverse = true;
     else
       buff_t::bump( stacks, value );
@@ -1782,15 +1782,15 @@ public:
       if ( triggers.radiant_spark && spark_dot->is_ticking() )
       {
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
-        if ( spark_debuff->check() < spark_debuff->max_stack() )
-        {
-          spark_debuff->trigger();
-        }
-        else
+        if ( spark_debuff->at_max_stacks() )
         {
           spark_debuff->expire();
           // Prevent new applications of the vulnerability debuff until the DoT finishes ticking.
-          spark_debuff->cooldown->start( nullptr, spark_dot->remains() );
+          spark_debuff->cooldown->start( spark_dot->remains() );
+        }
+        else
+        {
+          spark_debuff->trigger();
         }
       }
 
@@ -4054,7 +4054,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   bool ready() override
   {
     // Glacial Spike doesn't check the Icicles buff after it started executing.
-    if ( p()->executing != this && p()->buffs.icicles->check() < p()->buffs.icicles->max_stack() )
+    if ( p()->executing != this && !p()->buffs.icicles->at_max_stacks() )
       return false;
 
     return frost_mage_spell_t::ready();

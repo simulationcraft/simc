@@ -939,17 +939,17 @@ public:
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
-    buffs( buffs_t() ),
-    runeforge( runeforge_t() ),
-    active_spells( active_spells_t() ),
-    gains( gains_t() ),
-    spec( specialization_t() ),
-    mastery( mastery_t() ),
-    talent( talents_t() ),
-    spell( spells_t() ),
-    pets( pets_t( this ) ),
-    procs( procs_t() ),
-    options( options_t() ),
+    buffs(),
+    runeforge(),
+    active_spells(),
+    gains(),
+    spec(),
+    mastery(),
+    talent(),
+    spell(),
+    pets( this ),
+    procs(),
+    options(),
     _runes( this )
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
@@ -2402,7 +2402,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "dancing_rune_weapon", true, true )
+    death_knight_pet_t( owner, "dancing_rune_weapon", true, true ),
+    ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner -> main_hand_weapon.type;
@@ -2410,8 +2411,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration = regen_type::DISABLED;
-
-    memset( &ability, 0, sizeof( ability ) );
   }
 
   void init_spells() override
@@ -2630,6 +2629,7 @@ struct death_knight_action_t : public Base
       this -> energize_resource = RESOURCE_NONE;
     }
 
+    // Inits to false if the spec doesn't have that mastery
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
@@ -4022,50 +4022,32 @@ struct dark_transformation_t : public death_knight_spell_t
 
 // Death and Decay and Defile ===============================================
 
-// Damage spells
+// Death and Decay direct damage spells
 
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  death_and_decay_damage_base_t( death_knight_spell_t* parent,
-                                 const std::string& name, const spell_data_t* spell ) :
-    death_knight_spell_t( name, parent -> p(), spell )
+  death_and_decay_damage_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_spell_t( name, p, spell )
   {
-    aoe              = -1;
-    ground_aoe       = true;
-    background       = true;
-    dual             = true;
-    // Combine results to parent
-    stats            = parent -> stats;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
-    {
-      sim -> print_debug( "Ground effect {} can not hit flying target {}",
-        name(), s -> target -> name() );
-    }
-    else
-    {
-      death_knight_spell_t::impact( s );
-    }
+    aoe = -1;
+    background = dual = true;
   }
 };
 
 struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
-  int pestilence_hits_per_tick;
-  int pestilence_hits_per_cast;
+  int pestilence_procs_per_tick;
+  int pestilence_procs_per_cast;
 
-  death_and_decay_damage_t( death_knight_spell_t* parent ) :
-    death_and_decay_damage_base_t( parent, "death_and_decay_damage", parent -> p() -> find_spell( 52212 ) ),
-    pestilence_hits_per_tick( 0 ),
-    pestilence_hits_per_cast( 0 )
+  death_and_decay_damage_t( death_knight_t* p ) :
+    death_and_decay_damage_base_t( "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
   { }
 
   void execute() override
   {
-    pestilence_hits_per_tick = 0;
+    pestilence_procs_per_tick = 0;
 
     death_and_decay_damage_base_t::execute();
   }
@@ -4075,14 +4057,14 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
     death_and_decay_damage_base_t::impact( s );
 
     if ( p() -> talent.pestilence -> ok() &&
-         pestilence_hits_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_hits_per_cast < PESTILENCE_CAP_PER_CAST )
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
     {
       if ( rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
       {
         p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_hits_per_tick++;
-        pestilence_hits_per_cast++;
+        pestilence_procs_per_tick++;
+        pestilence_procs_per_cast++;
       }
     }
   }
@@ -4090,9 +4072,36 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 
 struct defile_damage_t : public death_and_decay_damage_base_t
 {
-  defile_damage_t( death_knight_spell_t* parent ) :
-    death_and_decay_damage_base_t( parent, "defile_damage", parent -> p() -> find_spell( 156000 ) )
+  double active_defile_multiplier;
+  const double defile_tick_multiplier;
+
+  defile_damage_t( death_knight_t* p ) :
+    death_and_decay_damage_base_t( "defile_damage", p, p -> find_spell( 156000 ) ),
+    active_defile_multiplier( 1.0 ),
+    // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
+    // Can't seem to find it anywhere in defile's spelldata
+    defile_tick_multiplier( 1.06 )
   { }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= active_defile_multiplier;
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_and_decay_damage_base_t::execute();
+    // Increase damage of next ticks if it damages at least an enemy
+    // Yes, it is multiplicative
+    if ( result_is_hit( execute_state ->result ) )
+    {
+      active_defile_multiplier *= defile_tick_multiplier;
+    }
+  }
 };
 
 // Bone Spike Graveyard azerite trait
@@ -4142,18 +4151,13 @@ struct relish_in_blood_t : public death_knight_heal_t
   {
     double m = death_knight_heal_t::action_multiplier();
 
-    // Melekus - 2020-09-06: If Bone shield isn't up, this still heals as if you had one stack
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
-    if ( p() -> bugs && ! p() -> buffs.bone_shield -> up() )
-      return m;
-
     m *= p() -> buffs.bone_shield -> stack();
 
     return m;
   }
 };
 
-// Main spell
+// Main Death and Decay spells
 
 struct death_and_decay_base_t : public death_knight_spell_t
 {
@@ -4164,11 +4168,18 @@ struct death_and_decay_base_t : public death_knight_spell_t
     damage( nullptr )
   {
     base_tick_time = dot_duration = 0_ms; // Handled by event
-    ignore_false_positive = true;
+    ignore_false_positive = true; // TODO: Is this necessary?
     may_crit              = false;
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
+  }
+
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+    // Merge stats with the damage object
+    damage -> stats = stats;
   }
 
   double cost() const override
@@ -4206,10 +4217,15 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.relish_in_blood -> ok() )
     {
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p() -> gains.relish_in_blood );
+      // Melekus - 2020-09-27: Bug? If bone shield isn't up, there's no RP generation at all
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
+      if ( p() -> buffs.bone_shield -> up() || ! p() -> bugs )
+      {
+        p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                             p() -> gains.relish_in_blood );
 
-      p() -> active_spells.relish_in_blood -> execute();
+        p() -> active_spells.relish_in_blood -> execute();
+      }
     }
 
     p() -> buffs.crimson_scourge -> decrement();
@@ -4234,10 +4250,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
             p() -> active_dnd = event;
             break;
           case ground_aoe_params_t::EVENT_DESTRUCTED:
-          {
             p() -> active_dnd = nullptr;
             break;
-          }
           default:
             break;
         }
@@ -4259,14 +4273,14 @@ struct death_and_decay_t : public death_and_decay_base_t
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "death_and_decay", p -> spec.death_and_decay )
   {
-    damage = new death_and_decay_damage_t( this );
+    damage = new death_and_decay_damage_t( p );
 
     parse_options( options_str );
   }
 
   void execute() override
   {
-    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_hits_per_cast = 0;
+    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
 
     death_and_decay_base_t::execute();
   }
@@ -4287,9 +4301,17 @@ struct defile_t : public death_and_decay_base_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
-    damage = new defile_damage_t( this );
+    damage = new defile_damage_t( p );
 
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    // Reset the damage component's increasing multiplier
+    static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
+
+    death_and_decay_base_t::execute();
   }
 };
 
@@ -4785,7 +4807,6 @@ struct epidemic_t : public death_knight_spell_t
 {
   epidemic_damage_main_t* main_damage;
   epidemic_damage_aoe_t* aoe_damage;
-  int enemy_cap;
 
   epidemic_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "epidemic", p, p -> spec.epidemic ),
@@ -4796,11 +4817,8 @@ struct epidemic_t : public death_knight_spell_t
 
     add_child( main_damage );
     add_child( aoe_damage );
-
-    // Set the aoe cap somewhere else as targetting is handled directly in execute()
-    // and the rest of the spell doesn't need to worry about aoe components
-    enemy_cap = aoe;
-    aoe = 0;
+    impact_action = main_damage;
+    impact_action -> impact_action = aoe_damage;
   }
 
   double cost() const override
@@ -4811,27 +4829,22 @@ struct epidemic_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    // Remove enemies that are not affected by virulent plague
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ] ( player_t* t ) { return ! this -> td( t ) -> dot.virulent_plague -> is_ticking(); } ), tl.end() );
+
+    return tl.size();
+  }
+
   void execute() override
   {
-    death_knight_spell_t::execute();
+    // Reset target cache because of smart targetting
+    target_cache.is_valid = false;
 
-    int hit_count = 0;
-    for ( const auto target : sim -> target_non_sleeping_list )
-    {
-      // Epidemic can't hit more than 20 targets at once
-      if ( td( target ) -> dot.virulent_plague -> is_ticking() && hit_count < enemy_cap )
-      {
-        hit_count++;
-        main_damage -> set_target( target );
-        main_damage -> execute();
-        // Don't need to flare-up if there's only a single enemy in the simulation
-        if ( sim -> target_non_sleeping_list.size() > 1 )
-        {
-          aoe_damage -> set_target( target );
-          aoe_damage -> execute();
-        }
-      }
-    }
+    death_knight_spell_t::execute();
 
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
@@ -4851,7 +4864,8 @@ struct bursting_sores_t : public death_knight_spell_t
     death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores )
   {
     background = true;
-    aoe = -1;
+    // Value is 9, -1 is hardcoded in tooltip. Probably because it counts the initial target of the wound burst
+    aoe = as<int> ( data().effectN( 3 ).base_value() - 1 );
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -5198,8 +5212,9 @@ struct glacial_advance_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    // Only applies the razorice debuff without the damage, and doesn't apply if no weapon is runeforged with razorice
-    if ( p() -> active_spells.razorice_mh || p() -> active_spells.razorice_oh )
+    // Only applies the razorice debuff without the damage, regardless of runeforge equipped (bug?)
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/663
+    if ( p() -> bugs || p() -> active_spells.razorice_mh || p() -> active_spells.razorice_oh )
     {
       td( state -> target ) -> debuff.razorice -> trigger();
     }
@@ -5912,9 +5927,17 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // If the action is done in precombat, assume the player used it long enough before pull that the cooldown is ready.
+    if ( action_list -> name_str == "precombat" )
+    {
+      cooldown -> reset( false );
+    }
+
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
     p() -> pets.ghoul_pet -> summon( data().duration() );
-    if ( p() -> talent.all_will_serve -> ok() )
+
+    // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up
+    if ( p() -> talent.all_will_serve -> ok() && p() -> pets.risen_skulker -> is_sleeping() )
     {
       p() -> pets.risen_skulker -> summon( 0_ms );
     }
@@ -6316,7 +6339,7 @@ struct unholy_assault_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    p()->trigger_festering_wound( s, p() -> talent.unholy_assault -> effectN( 3 ).base_value(),
+    p()->trigger_festering_wound( s, as<int>( p() -> talent.unholy_assault -> effectN( 3 ).base_value() ),
                                   p() -> procs.fw_unholy_assault );
   }
 };
@@ -9243,8 +9266,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 {
   double m = player_t::composite_player_pet_damage_multiplier( state );
 
-  auto school = state -> action -> get_school();
-  if ( dbc::is_school( school, SCHOOL_SHADOW ) && mastery.dreadblade -> ok() )
+  if ( mastery.dreadblade -> ok() )
   {
     m *= 1.0 + cache.mastery_value();
   }
