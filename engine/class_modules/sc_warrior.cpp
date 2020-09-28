@@ -3473,7 +3473,7 @@ struct overpower_t : public warrior_attack_t
   warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
   overpower_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr )
+    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr ), dreadnaught( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
