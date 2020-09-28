@@ -1908,6 +1908,8 @@ void priest_t::apply_affecting_auras( action_t& action )
 
 void priest_t::invalidate_cache( cache_e cache )
 {
+  player_t::invalidate_cache( cache );
+
   switch ( cache )
   {
     case CACHE_MASTERY:
