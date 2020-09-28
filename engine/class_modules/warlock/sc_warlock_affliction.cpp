@@ -574,8 +574,6 @@ struct malefic_rapture_t : public affliction_spell_t
         // Scouring Tithe - awaiting merge
         // Impending catastrophe
         // Soul Rot
-
-
         return mult;
       }
 
