@@ -5490,8 +5490,10 @@ struct auto_attack_t : public melee_attack_t
 
 struct barkskin_t : public druid_spell_t
 {
+  cooldown_t* orig_cd;
+
   barkskin_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), options_str )
+    : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), options_str ), orig_cd( cooldown )
   {
     harmful      = false;
     use_off_gcd  = true;
@@ -5503,7 +5505,16 @@ struct barkskin_t : public druid_spell_t
 
   void execute() override
   {
-    druid_spell_t::execute();
+    if ( free_cast )
+    {
+      cooldown = nullptr;
+      druid_spell_t::execute();
+      cooldown = orig_cd;
+    }
+    else
+    {
+      druid_spell_t::execute();
+    }
 
     p()->buff.barkskin->trigger();
   }
@@ -6713,8 +6724,9 @@ struct starfall_t : public druid_spell_t
     p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
     p()->buff.starfall->trigger();
 
-    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE || get_state_free_cast( execute_state ) == free_cast_e::LYCARAS )
-      return;  // convoke doesn't process any further
+    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE ||
+         get_state_free_cast( execute_state ) == free_cast_e::LYCARAS )
+      return;  // convoke/lycaras doesn't process any further
 
     if ( p()->buff.oneths_free_starfall->check() )
       p()->buff.oneths_free_starfall->expire();
@@ -7692,24 +7704,29 @@ struct persistent_buff_delay_event_t : public event_t
 
 struct lycaras_fleeting_glimpse_t : public action_t
 {
-  druid_t* d;
+  druid_t* druid;
   action_t* moonkin;
   action_t* cat;
   action_t* bear;
   action_t* tree;
 
   lycaras_fleeting_glimpse_t( druid_t* p )
-    : action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", p, p->legendary.lycaras_fleeting_glimpse ), d( p ),
-      moonkin( nullptr ), cat( nullptr ), bear( nullptr ), tree( nullptr )
+    : action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", p, p->legendary.lycaras_fleeting_glimpse ),
+      druid( p ),
+      moonkin( nullptr ),
+      cat( nullptr ),
+      bear( nullptr ),
+      tree( nullptr )
   {
     moonkin = get_lycaras_action<spells::starfall_t>( "starfall", "" );
-    cat = get_lycaras_action<cat_attacks::primal_wrath_t>( "primal_wrath", d->find_spell( 285381 ), "" );
+    cat     = get_lycaras_action<cat_attacks::primal_wrath_t>( "primal_wrath", druid->find_spell( 285381 ), "" );
+    bear    = get_lycaras_action<spells::barkskin_t>( "barkskin", "" );
   }
 
   template <typename T, typename... Ts>
   T* get_lycaras_action( util::string_view n, Ts&&... args )
   {
-    auto a = d->get_secondary_action<T>( n, std::forward<Ts>( args )... );
+    auto a = druid->get_secondary_action<T>( n, std::forward<Ts>( args )... );
     stats->add_child( a->init_free_cast_stats( free_cast_e::LYCARAS ) );
     return a;
   }
@@ -7734,19 +7751,19 @@ struct lycaras_fleeting_glimpse_t : public action_t
   {
     action_t* a;
 
-    if ( d->buff.moonkin_form->check() )
+    if ( druid->buff.moonkin_form->check() )
       a = moonkin;
-    else if ( d->buff.cat_form->check() )
+    else if ( druid->buff.cat_form->check() )
       a = cat;
-    else if ( d->buff.bear_form->check() )
+    else if ( druid->buff.bear_form->check() )
       a = bear;
     else
       a = tree;
 
-    execute_lycaras_action( a, d->target );
+    execute_lycaras_action( a, druid->target );
 
-    make_event( *sim, timespan_t::from_seconds( d->buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
-      d->buff.lycaras_fleeting_glimpse->trigger();
+    make_event( *sim, timespan_t::from_seconds( druid->buff.lycaras_fleeting_glimpse->default_value ), [ this ]() {
+      druid->buff.lycaras_fleeting_glimpse->trigger();
     } );
   }
 };
@@ -8516,6 +8533,7 @@ void druid_t::create_buffs()
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2" ) );
   if ( talent.brambles->ok() )
