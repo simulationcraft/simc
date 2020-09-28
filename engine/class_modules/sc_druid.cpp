@@ -1562,10 +1562,14 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
 
+    // Empowerment value for both spec & affinity starsurge is hardcoded into spec starsurge. Both eclipse use the same
+    // value, but parse them separately in case this changes in the future, as it was different in the past.
+    auto ss = p.find_spell( 78674 );
+
     if ( s->id() == p.spec.eclipse_solar->id() )
-      empowerment = p.spec.starsurge->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
+      empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
     else if ( s->id() == p.spec.eclipse_lunar->id() )
-      empowerment = p.spec.starsurge->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
+      empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
   }
 
   double value() override
@@ -6749,8 +6753,10 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
-  starsurge_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "starsurge", p, p->find_affinity_spell( "Starsurge" ), options_str )
+  // hardcoded for convoke (for now)
+  starsurge_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "starsurge", p,
+                     p->talent.balance_affinity->ok() ? p->find_spell( 197626 ) : p->find_spell( 78674 ), opt )
   {
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
@@ -6763,6 +6769,9 @@ struct starsurge_t : public druid_spell_t
 
   bool ready() override
   {
+    if ( !p()->spec.starsurge->ok() )
+      return false;
+
     if ( p()->in_combat )
       return druid_spell_t::ready();
 
@@ -8174,7 +8183,7 @@ void druid_t::init_spells()
   spec.eclipse_lunar           = find_spell( 48518 );
   spec.sunfire_dmg             = check_id( find_affinity_spell( "Sunfire" )->ok(), 164815 );  // dot for sunfire
   spec.moonfire_dmg            = check_id( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot for moonfire
-  spec.starsurge               = find_spell( 78674 );  // do NOT use find_affinity_spell. empowerment data is here.
+  spec.starsurge               = find_affinity_spell( "Starsurge" );
   spec.starsurge_2             = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
   spec.starfall                = find_affinity_spell( "Starfall" );
   spec.starfall_2              = find_rank_spell( "Starfall", "Rank 2" );
