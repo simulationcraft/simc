@@ -37,6 +37,7 @@ struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct wrathful_faerie_t;
+struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -83,6 +84,7 @@ public:
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
+    propagate_const<buff_t*> wrathful_faerie_fermata;
   } buffs;
 
   priest_t& priest()
@@ -301,6 +303,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> wrathful_faerie;
+    propagate_const<cooldown_t*> wrathful_faerie_fermata;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -377,6 +380,7 @@ public:
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
+    propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
   } active_spells;
 
   // Items
@@ -592,7 +596,9 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
+  void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
+  void remove_wrathful_faerie_fermata();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
@@ -1408,6 +1414,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
         if ( td && td->buffs.wrathful_faerie->check() )
         {
           priest().trigger_wrathful_faerie();
+        }
+        if ( td && td->buffs.wrathful_faerie_fermata->check() )
+        {
+          priest().trigger_wrathful_faerie_fermata();
         }
       }
     }

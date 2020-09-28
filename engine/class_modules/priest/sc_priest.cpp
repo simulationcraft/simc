@@ -371,6 +371,7 @@ struct wrathful_faerie_t final : public priest_spell_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+    background        = true;
 
     cooldown->duration = data().internal_cooldown();
   }
@@ -381,6 +382,31 @@ struct wrathful_faerie_t final : public priest_spell_t
     {
       execute();
       priest().cooldowns.wrathful_faerie->start();
+    }
+  }
+};
+
+struct wrathful_faerie_fermata_t final : public priest_spell_t
+{
+  double insanity_gain;
+  wrathful_faerie_fermata_t( priest_t& p )
+    : priest_spell_t( "wrathful_faerie_fermata", p, p.find_spell( 345452 ) ),
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+    background        = true;
+
+    cooldown->duration = data().internal_cooldown();
+  }
+
+  void trigger()
+  {
+    if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
+    {
+      execute();
+      priest().cooldowns.wrathful_faerie_fermata->start();
     }
   }
 };
@@ -794,11 +820,6 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
       shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) ),
       mindbender_cooldown( p.get_cooldown( "mindbender" ) )
   {
-    if ( priest().conduits.fae_fermata->ok() )
-    {
-      set_duration( data().duration() + priest().conduits.fae_fermata.time_value() );
-    }
-
     set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       if ( priest().talents.mindbender->ok() )
       {
@@ -816,6 +837,7 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     priest().remove_wrathful_faerie();
+    priest().remove_wrathful_faerie_fermata();
   }
 };
 
@@ -1152,6 +1174,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   buffs.shadow_crash_debuff = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
   buffs.wrathful_faerie     = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
+  buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1212,12 +1235,13 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.wrathful_faerie    = get_cooldown( "wrathful_faerie" );
-  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
+  cooldowns.wrathful_faerie         = get_cooldown( "wrathful_faerie" );
+  cooldowns.wrathful_faerie_fermata = get_cooldown( "wrathful_faerie_fermata" );
+  cooldowns.holy_fire               = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity      = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt               = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast              = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption           = get_cooldown( "void_eruption" );
 }
 
 /** Construct priest gains */
@@ -1654,6 +1678,11 @@ void priest_t::trigger_wrathful_faerie()
   active_spells.wrathful_faerie->trigger();
 }
 
+void priest_t::trigger_wrathful_faerie_fermata()
+{
+  active_spells.wrathful_faerie_fermata->trigger();
+}
+
 void priest_t::init_base_stats()
 {
   if ( base.distance < 1 )
@@ -1825,6 +1854,8 @@ void priest_t::init_background_actions()
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 
   active_spells.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
+
+  active_spells.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
 
   init_background_actions_shadow();
 }
@@ -2204,6 +2235,30 @@ void priest_t::remove_wrathful_faerie()
     if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
     {
       priest_td->buffs.wrathful_faerie->expire();
+
+      // If you have the conduit enabled, clear out the conduit buff and trigger it on the old Wrathful Faerie target
+      if ( conduits.fae_fermata && buffs.fae_guardians->check() )
+      {
+        remove_wrathful_faerie_fermata();
+        priest_td->buffs.wrathful_faerie_fermata->trigger();
+      }
+    }
+  }
+}
+
+// Fae Guardian Wrathful Faerie conduit buff helper
+void priest_t::remove_wrathful_faerie_fermata()
+{
+  if ( !conduits.fae_fermata )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
+    {
+      priest_td->buffs.wrathful_faerie_fermata->expire();
     }
   }
 }
