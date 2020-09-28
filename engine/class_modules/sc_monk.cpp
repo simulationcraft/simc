@@ -9274,7 +9274,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
 
-  debuff.weapons_of_order = make_buff( *this, "weapons_of_order", p->find_spell( 312106 ) )
+  debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
