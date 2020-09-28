@@ -4234,7 +4234,7 @@ struct rake_t : public cat_attack_t
   bool stealth_mul;
 
   rake_t( druid_t* p, util::string_view options_str )
-    : cat_attack_t( "rake", p, p->find_affinity_spell( "Rake" ) ), stealth_mul( 0.0 )
+    : cat_attack_t( "rake", p, p->find_affinity_spell( "Rake" ), options_str ), stealth_mul( 0.0 )
   {
     if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
@@ -7057,8 +7057,8 @@ struct force_of_nature_t : public druid_spell_t
 {
   timespan_t summon_duration;
 
-  force_of_nature_t( druid_t* p, const std::string options )
-    : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature ), summon_duration( 0_ms )
+  force_of_nature_t( druid_t* p, util::string_view options_str )
+    : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature, options_str ), summon_duration( 0_ms )
   {
     harmful = may_crit = false;
     summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
