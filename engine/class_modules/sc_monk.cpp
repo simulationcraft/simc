@@ -4487,7 +4487,6 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_type  = gcd_haste_type::ATTACK_HASTE;
@@ -6859,7 +6858,6 @@ struct serenity_t : public monk_spell_t
   {
     parse_options( options_str );
     harmful     = false;
-    trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
