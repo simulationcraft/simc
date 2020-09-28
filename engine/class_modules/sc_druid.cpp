@@ -8204,7 +8204,7 @@ void druid_t::init_spells()
   spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
   spec.thrash_cat              = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
-  spec.rake_dmg                = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
+  spec.rake_dmg                = find_spell( 1822 )->effectN( 3 ).trigger();
   spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
   spec.tigers_fury_2           = find_rank_spell( "Tiger's Fury", "Rank 2" );
   spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
