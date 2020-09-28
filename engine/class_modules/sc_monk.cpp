@@ -6594,7 +6594,6 @@ struct spear_hand_strike_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    trigger_gcd           = timespan_t::zero();
     is_interrupt          = true;
     may_miss = may_block = may_dodge = may_parry = false;
   }
@@ -6745,7 +6744,7 @@ struct energizing_elixir_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    dot_duration = trigger_gcd = timespan_t::zero();
+    dot_duration = timespan_t::zero();
     may_miss = may_crit = harmful = false;
     energize_type                 = action_energize::NONE;  // disable resource gain from spell data
   }
@@ -6774,7 +6773,6 @@ struct black_ox_brew_t : public monk_spell_t
 
     harmful       = false;
     use_off_gcd   = true;
-    trigger_gcd   = timespan_t::zero();
     energize_type = action_energize::NONE;  // disable resource gain from spell data
   }
 
@@ -7014,8 +7012,6 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
-    trigger_gcd = timespan_t::from_seconds( 1 );
-
     add_child( p.active_actions.breath_of_fire );
   }
 
@@ -7112,7 +7108,6 @@ struct fortifying_brew_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = may_crit = false;
-    trigger_gcd        = timespan_t::zero();
 
     if ( p.spec.fortifying_brew_2_mw )
       cooldown->duration +=
@@ -7403,8 +7398,7 @@ struct purifying_brew_t : public monk_spell_t
     parse_options( options_str );
 
     harmful     = false;
-    trigger_gcd = timespan_t::zero();
-
+    
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent(); // -20
 
@@ -7489,7 +7483,6 @@ struct mana_tea_t : public monk_spell_t
     parse_options( options_str );
 
     harmful     = false;
-    trigger_gcd = timespan_t::zero();
   }
 
   void execute() override
@@ -7512,7 +7505,6 @@ struct thunder_focus_tea_t : public monk_spell_t
     parse_options( options_str );
 
     harmful     = false;
-    trigger_gcd = timespan_t::zero();
   }
 
   void execute() override
@@ -7532,7 +7524,6 @@ struct dampen_harm_t : public monk_spell_t
   dampen_harm_t( monk_t& p, const std::string& options_str ) : monk_spell_t( "dampen_harm", &p, p.talent.dampen_harm )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7556,7 +7547,6 @@ struct diffuse_magic_t : public monk_spell_t
     : monk_spell_t( "diffuse_magic", &p, p.talent.diffuse_magic )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -8731,7 +8721,6 @@ struct healing_elixir_t : public monk_heal_t
   {
     harmful = may_crit = false;
     target             = &p;
-    trigger_gcd        = timespan_t::zero();
     base_pct_heal      = p.talent.healing_elixir->effectN( 1 ).percent();
   }
 };
