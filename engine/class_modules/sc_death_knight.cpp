@@ -474,7 +474,6 @@ public:
     // Unholy
     buff_t* dark_transformation;
     buff_t* runic_corruption;
-    buff_t* soul_reaper;
     buff_t* sudden_doom;
     buff_t* unholy_assault;
     buff_t* unholy_pact;
@@ -589,7 +588,6 @@ public:
     // Unholy
     gain_t* apocalypse;
     gain_t* festering_wound;
-    gain_t* soul_reaper;
   } gains;
 
   // Specialization
@@ -784,7 +782,7 @@ public:
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* festering_wound_damage;
     const spell_data_t* runic_corruption;
-    const spell_data_t* soul_reaper;
+    const spell_data_t* soul_reaper_execute;
     const spell_data_t* virulent_eruption;
     const spell_data_t* virulent_plague;
 
@@ -1109,15 +1107,16 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) ); // Effect not implemented
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                           -> set_default_value( p -> find_spell( 327092 ) -> effectN( 1 ).percent() );
+                           -> set_default_value_from_effect( 1 );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
-                           -> set_default_value( p -> find_spell( 327096 ) -> effectN( 1 ).percent() );
+                           -> set_default_value_from_effect( 1 );
 
   debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.biting_cold.percent() );
 
   debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> find_spell( 115994 ) )
-                           -> set_default_value( p -> find_spell( 115994 ) -> effectN( 2 ).percent() );
+                           -> set_default_value_from_effect( 2 );
+
 }
 
 // ==========================================================================
@@ -3966,6 +3965,7 @@ struct unholy_pact_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     damage -> execute();
+    damage -> execute();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -6147,8 +6147,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     // first target, the action target, needs to be left in place
     std::sort( current_targets.begin() + 1, current_targets.end(),
       [this]( player_t* a, player_t* b) {
-        int a_stacks = p()->get_target_data( a )->debuff.festering_wound->check();
-        int b_stacks = p()->get_target_data( b )->debuff.festering_wound->check();
+        int a_stacks = td( a ) -> debuff.festering_wound->check();
+        int b_stacks = td( b ) -> debuff.festering_wound->check();
         return a_stacks > b_stacks; 
       } );
   
@@ -6235,22 +6235,35 @@ struct scourge_strike_t : public scourge_strike_base_t
 
 // Soul Reaper ==============================================================
 
-struct soul_reaper_t : public death_knight_spell_t
+struct soul_reaper_execute_t : public death_knight_spell_t
 {
-  soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper )
+  soul_reaper_execute_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "soul_reaper_execute", p, p -> spell.soul_reaper_execute )
   {
     parse_options( options_str );
+  }
+};
 
-    tick_may_crit = tick_zero = true;
-    may_miss = may_crit = hasted_ticks = false;
+struct soul_reaper_t : public death_knight_spell_t
+{
+  soul_reaper_execute_t* soul_reaper_execute;
+
+  soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    soul_reaper_execute( new soul_reaper_execute_t( p, options_str ) )
+  {
+    parse_options( options_str );
+    add_child( soul_reaper_execute );
+
+    hasted_ticks = false;
   }
 
-  void execute() override
+  void last_tick( dot_t* dot ) override
   {
-    death_knight_spell_t::execute();
-
-    p() -> replenish_rune( as<unsigned int>( p() -> talent.soul_reaper -> effectN( 2 ).base_value() ), p() -> gains.soul_reaper );
+    if (dot -> target -> health_percentage() < data().effectN( 3 ).base_value())
+    {
+      soul_reaper_execute -> execute();
+    }    
   }
 };
 
@@ -7057,10 +7070,10 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
 
   if ( td -> dot.soul_reaper -> is_ticking() )
   {
-    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Soul Reaper buff.",
+    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                       target -> name(), name() );
 
-    buffs.soul_reaper -> trigger();
+    buffs.runic_corruption -> trigger();
   }
 }
 
@@ -7846,8 +7859,6 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
-
   haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
@@ -7865,8 +7876,6 @@ double death_knight_t::composite_melee_haste() const
 double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
-
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
 
@@ -8107,7 +8116,7 @@ void death_knight_t::init_spells()
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.festering_wound_damage = find_spell( 194311 );
   spell.runic_corruption       = find_spell( 51460 );
-  spell.soul_reaper            = find_spell( 215711 );
+  spell.soul_reaper_execute    = find_spell( 343295 );
   spell.virulent_eruption      = find_spell( 191685 );
   spell.virulent_plague        = find_spell( 191587 );
 
@@ -8823,10 +8832,6 @@ void death_knight_t::create_buffs()
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
 
-  buffs.soul_reaper = make_buff( this, "soul_reaper", spell.soul_reaper )
-        -> set_default_value( spell.soul_reaper -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_HASTE );
-
   buffs.sudden_doom = make_buff( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
         -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", spec.sudden_doom ) -> get_frequency(), 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent())
         -> set_trigger_spell( spec.sudden_doom )
@@ -8838,6 +8843,8 @@ void death_knight_t::create_buffs()
         -> set_default_value( talent.unholy_assault -> effectN( 1 ).percent() )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
+
+  buffs.unholy_pact = new unholy_pact_buff_t( this );
 
   // Azerite Traits
   buffs.bones_of_the_damned = make_buff<stat_buff_t>( this, "bones_of_the_damned",
@@ -8863,9 +8870,7 @@ void death_knight_t::create_buffs()
     -> set_cooldown( azerite.bloody_runeblade.spell() -> effectN( 1 ).trigger() -> internal_cooldown() );
 
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
-    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
-
-  buffs.unholy_pact = new unholy_pact_buff_t( this );
+    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );  
 
   player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
   {
@@ -8924,7 +8929,6 @@ void death_knight_t::init_gains()
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
-  gains.soul_reaper                      = get_gain( "Soul Reaper" );
 }
 
 // death_knight_t::init_procs ===============================================
