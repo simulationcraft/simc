@@ -1045,17 +1045,16 @@ struct devouring_plague_t final : public priest_spell_t
           *player, *this, time_to_next_tick, old_remains, new_remains, old_tick, new_tick, old_multiplier );
 
       // figure out how many old ticks to roll over
-      int num_full_ticks = as<int>( std::floor( ( old_remains - time_to_next_tick ) / old_tick ) );
+      double num_ticks = ( old_remains - time_to_next_tick ) / old_tick;
 
       // find number of ticks in new DP
-      // composite_dot_duration( new_s ) / new_tick;
       double new_num_ticks = ( new_remains - time_to_next_tick ) / new_tick;
 
-      sim->print_debug( "{} {} calculations - num_full_ticks: {}, new_num_ticks: {}", *player, *this, num_full_ticks,
+      sim->print_debug( "{} {} calculations - num_ticks: {}, new_num_ticks: {}", *player, *this, num_ticks,
                         new_num_ticks );
 
       // figure out the increase for each new tick of DP
-      double total_coefficient     = num_full_ticks * old_multiplier;
+      double total_coefficient     = num_ticks * old_multiplier;
       double increase_per_new_tick = total_coefficient / ( new_num_ticks + 1 );
 
       multiplier = 1 + increase_per_new_tick;
