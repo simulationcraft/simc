@@ -1009,7 +1009,7 @@ struct devouring_plague_t final : public priest_spell_t
     // that time_to_next_tick. This creates more duration of the DoT and adds a tick of damage. Publik - 2020-09-26
     if ( priest().bugs )
     {
-      return duration + d->time_to_next_tick() + tick_time( d->state) - std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
+      return duration + d->time_to_next_tick() + tick_time( d->state ) - std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
     }
     // when you refresh, you lose the partial tick
     else

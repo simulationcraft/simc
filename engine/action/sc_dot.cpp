@@ -743,7 +743,7 @@ void dot_t::tick()
     }
   }
 
-  sim.print_debug( "{} ticks ({} of {}).  duration={} time_to_tick={}", *this, current_tick, num_ticks(),
+  sim.print_debug( "{} ticks ({} of {}). duration={} time_to_tick={}", *this, current_tick, num_ticks(),
                    current_duration, time_to_tick() );
 
   current_action->tick( this );
@@ -962,7 +962,6 @@ void dot_t::adjust_full_ticks( double coefficient )
     current_tick++;
     tick();
     new_tick_remains += new_tick_time;
-    rounded_full_ticks_left--;
   }
   event_t::cancel( end_event );
 
