@@ -1948,7 +1948,7 @@ void priest_t::create_apl_precombat()
 std::string priest_t::default_potion() const
 {
   std::string lvl60_potion =
-      ( specialization() == PRIEST_SHADOW ) ? "potion_of_spectral_intellect" : "potion_of_spectral_intellect";
+      ( specialization() == PRIEST_SHADOW ) ? "potion_of_deathly_fixation" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
   return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
@@ -1961,7 +1961,7 @@ std::string priest_t::default_flask() const
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 50 ) ? "crawler_ravioli_with_apple_sauce" : "baked_port_tato";
+  return ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "baked_port_tato";
 }
 
 std::string priest_t::default_rune() const
