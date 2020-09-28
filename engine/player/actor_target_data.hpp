@@ -49,6 +49,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* plagueys_preemptive_strike;  // necro/marileth
     buff_t* sinful_revelation;           // enchant
     buff_t* putrid_burst;                // darkmoon deck: putrescence
+    buff_t* echo_of_eonar;               // echo of eonar runecarve
   } debuff;
 
   struct atd_dot_t

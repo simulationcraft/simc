@@ -589,6 +589,7 @@ void warlock_t::init_spells()
   conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
   conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
+  conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
   covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
@@ -1176,26 +1177,19 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
   if ( splits.size() == 3 && splits[ 0 ] == "time_to_imps" && splits[ 2 ] == "remains" )
   {
-    auto amt = splits[ 1 ];
+    auto amt = splits[ 1 ] == "all" ? -1 : util::to_int( splits[ 1 ] );
 
     return make_fn_expr( name_str, [ this, amt ]() {
-      if ( amt == "all" )
-      {
-        return this->time_to_imps( -1 );
-      }
-      else
-      {
-        return this->time_to_imps( util::to_int( amt ) );
-      }
+      return this->time_to_imps( amt );
     } );
   }
   else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "imps_spawned_during" ) )
   {
-    auto period = splits[ 1 ];
+    auto period = util::to_double( splits[ 1 ] );
 
     return make_fn_expr( name_str, [ this, period ]() {
       // Add a custom split .summon_demonic_tyrant which returns its cast time.
-      return this->imps_spawned_during( timespan_t::from_millis( util::to_double( period ) ) );
+      return this->imps_spawned_during( timespan_t::from_millis( period ) );
     } );
   }
 

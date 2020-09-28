@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36037 shadowlands-BETA (hotfix 2020-09-27/36037)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -9292,16 +9292,13 @@ Class            : Rogue
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : Melee
-Resource         : 50 Energy (3) (id=192664)
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 45 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 25 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : -1 initial, 25 maximum
 Proc Chance      : 100%
-Stance Mask      : 0x20000000
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Between the Eyes (315341 effect#2), Deathly Shadows (341202 effects: #1, #2), Slaughter Scars (341310 effect#1)

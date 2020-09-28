@@ -125,12 +125,13 @@ jobs:
     needs: [ubuntu-clang-10-build]
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - type: spell_query
             simc_flags: spell_query=spell > /dev/null
           - type: log_debug
-            simc_flags: $SIMC_PROFILE log=1 debug=1
+            simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
           - type: patchwerk
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
@@ -152,7 +153,7 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
 
   build-docker:

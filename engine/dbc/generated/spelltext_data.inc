@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.35978
-static const std::array<spelltext_data_t, 15612> __spelltext_data { {
+// Spell text, wow build 9.0.2.36037
+static const std::array<spelltext_data_t, 15615> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14206,6 +14206,7 @@ static const std::array<spelltext_data_t, 15612> __spelltext_data { {
   { 327257, "$@spelldesc327104", 0, "Night Fae" },
   { 327264, "$@spelldesc327104", 0, "Night Fae" },
   { 327273, "When you cast your Barrier and while it's active, the next Fire, Frost or Arcane source of damage you take increases your Fire, Frost, and Arcane damage by $327282s1%.", 0, 0 },
+  { 327276, "$@spelldesc327104", 0, "Night Fae" },
   { 327277, "$@spelldesc327273", 0, 0 },
   { 327282, "$@spelldesc327273", "Fire, Frost and Arcane damage increased by $w1%.", 0 },
   { 327284, "Casting $s1 Frostbolts or Flurries calls down a Frozen Orb toward your target. Hitting an enemy player counts as double.", 0, 0 },
@@ -15201,6 +15202,7 @@ static const std::array<spelltext_data_t, 15612> __spelltext_data { {
   { 340053, "Combo point-generating abilities reduce the cooldown of $?s102543[Incarnation: King of the Jungle by ${$s1/1000}.1][Berserk by ${$s1/1000}.1] sec.\r\n\r\nDuring $?s102543[Incarnation: King of the Jungle][Berserk], they cause the target to bleed for an additonal $s2% of their damage over $340056d.", 0, 0 },
   { 340056, "$@spelldesc340053", "Bleeding for $w1 damage every $t sec.", 0 },
   { 340059, "Every $s1 sec while in combat, cast a spell based on your form:\r\n\r\nNo Form: $@spellname48438\r\nCat Form: $@spellname285381\r\nBear Form: $@spellname22812\r\nMoonkin Form: $@spellname191034\r\nTravel Form: $@spellname77764", 0, 0 },
+  { 340060, "$@spelldesc340059", "You feel Lycara's inspiration arriving.", 0 },
   { 340063, "Increases the duration of Fodder to the Flame by |cFFFFFFFF${$s1/1000} sec|r.", 0, 0 },
   { 340067, "Insert into mouth and blow to start fisticuffs.", 0, 0 },
   { 340076, "While Stealth is active and for $s1 sec after breaking Stealth, your Critical Strike chance is increased by $340094s1%.", 0, 0 },
@@ -15594,6 +15596,7 @@ static const std::array<spelltext_data_t, 15612> __spelltext_data { {
   { 345417, "$@spelldesc314793", 0, 0 },
   { 345432, "Four dance partners appear in a random pattern around you. Moving to each grants $345431s1 Haste and $345431s2 Speed for $345439d.", 0, 0 },
   { 345439, 0, "Haste increased by $w1. Speed increased by $w2.", 0 },
+  { 345452, "$@spelldesc338305\r\n", "Direct damage on this target restores ${$w2/100}.1% Mana or ${$w3/100} Insanity to $@auracaster.", "Night Fae" },
   { 345464, 0, "$@spelldesc345466", 0 },
   { 345465, "$@spelldesc345466", 0, 0 },
   { 345466, "Every $345465t1 sec., your next ability applies Liquefying Ooze to the first target you hit, dealing ${$s1*$t} Nature damage over $d. Liquefying Ooze stacks up to $u times.", "Suffering $w1 Nature damage every $t1 sec.", 0 },
@@ -15614,7 +15617,7 @@ static const std::array<spelltext_data_t, 15612> __spelltext_data { {
   { 345727, "$@spelldesc327104", 0, "Night Fae" },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.35978
+// spelltext hotfix entries, wow build 9.0.2.36037
 static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
   {  123904,  0, "Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.$?s335913[\r\n\r\nEvery $323999s1 sec, the effigy of Xuen strikes your enemies with Empowered Tiger Lightning dealing $323999s2% of the damage you have dealt to those targets in the last $323999s1 sec.][]", "Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.$?s323999[\r\n\r\nEvery $323999s1 sec, Xuen strikes your enemies with Empowered Tiger Lightning dealing $323999s2% of the damage you have dealt to those targets in the last $323999s1 sec.][]" },
   {  310454,  0, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}]%. Additionally, $?a137025[Rising Sun Kick cooldown is reset instantly and your Rising Sun Kick reduces the cost of your Chi Abilities by $311054s1 for $311054d.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]" },
@@ -15626,7 +15629,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix
   {  345285,  1, nullptr, "$?$W2>0[Nearby Rogue is tormenting the target, dealing $s1 Shadow damage for each Combo Point spent.][Combo points spent deal $s1 Shadow damage to the Rogue's tormented target.]" },
 } };
 
-// Spell description variables, wow build 9.0.2.35978
+// Spell description variables, wow build 9.0.2.36037
 static const std::array<spelldesc_vars_data_t, 281> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.36}][${1}]\r\n$shield=${$SP*2*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15911,7 +15914,7 @@ static const std::array<spelldesc_vars_data_t, 281> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.35978
+// spelldesc_vars hotfix entries, wow build 9.0.2.36037
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

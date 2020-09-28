@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36037 shadowlands-BETA (hotfix 2020-09-27/36037)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -10053,6 +10053,25 @@ Effects          :
 #1 (id=818673)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Hotfixed         : AP Coefficient (0.91 -> 2.1)
+Description      : $@spelldesc327104
+
+Name             : Faeline Stomp (desc=Night Fae) (id=327276) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Duration         : 5 seconds
+Proc Chance      : 100%
+Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=818688)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc327104
 
 Name             : Soothing Mist (id=328283) [Spell Family (53)] 

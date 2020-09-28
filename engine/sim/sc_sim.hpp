@@ -351,6 +351,8 @@ struct sim_t : private sc_thread_t
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
     unsigned crimson_choir_in_party = 0;
+    /// Chance for each target to be hit by a Judgment of the Arbiter arc
+    double judgment_of_the_arbiter_arc_chance = 0.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs

@@ -1,7 +1,7 @@
 warrior="T25_Warrior_Arms"
 source=default
 spec=arms
-level=120
+level=50
 race=troll
 role=attack
 position=back
@@ -9,10 +9,10 @@ talents=3122211
 azerite_essences=27:3/5:4/32:3/35:3
 
 # Default consumables
-potion=potion_of_focused_resolve
-flask=greater_flask_of_the_undertow
-food=baked_port_tato
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -35,7 +35,6 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=charge
 actions+=/auto_attack
-actions+=/potion,if=target.health.pct<21&buff.memory_of_lucid_dreams.up|!essence.memory_of_lucid_dreams.major
 actions+=/blood_fury,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
 actions+=/berserking,if=buff.memory_of_lucid_dreams.up|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
 actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&buff.memory_of_lucid_dreams.down&rage<50
@@ -138,13 +137,13 @@ trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517/6448
 main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=galeforce_striking
 
 # Gear Summary
-# gear_ilvl=478.20
-# gear_strength=9801
-# gear_stamina=19966
-# gear_crit_rating=1450
-# gear_haste_rating=2112
-# gear_mastery_rating=741
-# gear_versatility_rating=117
+# gear_ilvl=146.87
+# gear_strength=518
+# gear_stamina=1074
+# gear_crit_rating=293
+# gear_haste_rating=392
+# gear_mastery_rating=175
+# gear_versatility_rating=18
 # gear_corruption=800
 # gear_corruption_resistance=50
-# gear_armor=8318
+# gear_armor=735

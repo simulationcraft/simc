@@ -3,6 +3,8 @@ from collections import defaultdict
 
 import dbc
 
+from dbc.constants import HotfixType
+
 # Global data store for the extractor invocation
 __DBSTORE = None
 
@@ -46,6 +48,20 @@ class DBCDB(dict):
 
     def __add_reference_entry(self, parent_db, parent_id, value):
         self.__references[parent_db][parent_id][value.id] = value
+
+    def __delitem__(self, key):
+        super().__delitem__(key)
+
+        # Delete entry from parent record mappings
+        for parent_id, values in self.__parent.items():
+            if key in values:
+                del values[key]
+
+        # Delete references to this record from other databases
+        for parent_db, parent_ids in self.__references.items():
+            for parent_id, values in parent_ids.items():
+                if key in values:
+                    del values[key]
 
     # Collects parent information if we can
     def __setitem__(self, key, value):
@@ -128,7 +144,16 @@ class DataStore:
         return hotfix_fields
 
     def __apply_hotfixes(self, dbc_parser, database):
-        for record in self.cache.entries(dbc_parser):
+        for record, hotfix_header in self.cache.entries(dbc_parser):
+            if hotfix_header['state'] == HotfixType.REMOVED and database[hotfix_header['record_id']].id:
+                if self.options.debug:
+                    logging.debug('%s REMOVE: %s', dbc_parser.file_name(),
+                            database[hotfix_header['record_id']])
+
+                del database[hotfix_header['record_id']]
+
+                continue
+
             try:
                 hotfix_data = self.__hotfix_fields(database[record.id], record)
                 # Add some additional information for debugging purposes
