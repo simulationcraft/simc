@@ -54,30 +54,30 @@ off_hand=bilestained_crawg_tusks,id=159653,bonus_id=6536/1637/4786,enchant=versa
 
 save=T25_Monk_Windwalker_Serenity.simc
 
-monk="T25_Monk_Brewmaster"
-level=50
-race=undead
-spec=brewmaster
-role=tank
-position=front
-talents=1010021
+# monk="T25_Monk_Brewmaster"
+# level=50
+# race=undead
+# spec=brewmaster
+# role=tank
+# position=front
+# talents=1010021
 
-azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
+# azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 
-head=stygian_guise,id=174132,bonus_id=4824/1517,azerite_powers=383/582/22/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4786/5480/4775,azerite_powers=384/193/459/87/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=116/582/31/85/13
-wrist=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517
-hands=grips_of_electrified_defense,id=159337,bonus_id=1674/5010/1637
-waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=1674/5010/1637
-legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517/6550
-feet=besiegers_deckstalkers,id=159320,bonus_id=1674/5010/1637/6552
-finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_versatility
-finger2=lord_waycrests_signet,id=158362,bonus_id=1674/5010/1637,enchant=accord_of_versatility
-trinket1=writhing_segment_of_drestagath,id=173946,bonus_id=4824/1517
-trinket2=psyche_shredder,id=174060,bonus_id=4824/1517
-main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=versatile_navigation
+# head=stygian_guise,id=174132,bonus_id=4824/1517,azerite_powers=383/582/22/83/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+# shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4786/5480/4775,azerite_powers=384/193/459/87/13
+# back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+# chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=116/582/31/85/13
+# wrist=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517
+# hands=grips_of_electrified_defense,id=159337,bonus_id=1674/5010/1637
+# waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=1674/5010/1637
+# legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517/6550
+# feet=besiegers_deckstalkers,id=159320,bonus_id=1674/5010/1637/6552
+# finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_versatility
+# finger2=lord_waycrests_signet,id=158362,bonus_id=1674/5010/1637,enchant=accord_of_versatility
+# trinket1=writhing_segment_of_drestagath,id=173946,bonus_id=4824/1517
+# trinket2=psyche_shredder,id=174060,bonus_id=4824/1517
+# main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=versatile_navigation
 
-save=T25_Monk_Brewmaster.simc
+# save=T25_Monk_Brewmaster.simc
