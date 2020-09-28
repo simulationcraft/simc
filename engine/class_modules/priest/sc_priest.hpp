@@ -544,6 +544,7 @@ public:
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;
   void apply_affecting_auras( action_t& ) override;
+  void invalidate_cache( cache_e ) override;
 
 private:
   void create_cooldowns();

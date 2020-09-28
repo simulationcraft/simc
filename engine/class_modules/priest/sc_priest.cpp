@@ -1906,6 +1906,19 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
 }
 
+void priest_t::invalidate_cache( cache_e cache )
+{
+  switch ( cache )
+  {
+    case CACHE_MASTERY:
+      if ( mastery_spells.grace->ok() )
+        player_t::invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+      break;
+    default:
+      break;
+  }
+}
+
 /// ALL Spec Pre-Combat Action Priority List
 void priest_t::create_apl_precombat()
 {
