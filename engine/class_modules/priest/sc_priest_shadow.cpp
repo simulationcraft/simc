@@ -1032,25 +1032,30 @@ struct devouring_plague_t final : public priest_spell_t
       action_state_t* old_s = dot->state;
       action_state_t* new_s = s;
 
-      timespan_t time_to_tick = dot->time_to_next_tick();
-      timespan_t old_remains  = dot->remains();
-      timespan_t new_remains  = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
-      timespan_t old_tick     = tick_time( old_s );
-      timespan_t new_tick     = tick_time( new_s );
-      double old_multiplier   = cast_state( old_s )->rolling_multiplier;
+      timespan_t time_to_next_tick = dot->time_to_next_tick();
+      timespan_t old_remains       = dot->remains();
+      timespan_t new_remains       = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
+      timespan_t old_tick          = tick_time( old_s );
+      timespan_t new_tick          = tick_time( new_s );
+      double old_multiplier        = cast_state( old_s )->rolling_multiplier;
+
+      sim->print_debug(
+          "{} {} calculations - time_to_next_tick: {}, old_remains: {}, new_remains: {}, old_tick: {}, new_tick: {}, "
+          "old_multiplier: {}",
+          *player, *this, time_to_next_tick, old_remains, new_remains, old_tick, new_tick, old_multiplier );
 
       // figure out how many old ticks to roll over
-      int num_full_ticks = as<int>( std::floor( ( old_remains - time_to_tick ) / old_tick ) );
+      double num_ticks = ( old_remains - time_to_next_tick ) / old_tick;
 
       // find number of ticks in new DP
-      double new_num_ticks = new_remains / new_tick;
+      double new_num_ticks = ( new_remains - time_to_next_tick ) / new_tick;
 
-      sim->print_debug( "{} {} calculations - num_full_ticks: {}, new_num_ticks: {}", *player, *this, num_full_ticks,
+      sim->print_debug( "{} {} calculations - num_ticks: {}, new_num_ticks: {}", *player, *this, num_ticks,
                         new_num_ticks );
 
       // figure out the increase for each new tick of DP
-      double total_coefficient     = num_full_ticks * old_multiplier;
-      double increase_per_new_tick = total_coefficient / new_num_ticks;
+      double total_coefficient     = num_ticks * old_multiplier;
+      double increase_per_new_tick = total_coefficient / ( new_num_ticks + 1 );
 
       multiplier = 1 + increase_per_new_tick;
 
