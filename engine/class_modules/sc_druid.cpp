@@ -6636,43 +6636,47 @@ struct lunar_shrapnel_t : public druid_spell_t
   }
 };
 
-struct starfall_tick_t : public druid_spell_t
-{
-  starfall_tick_t( druid_t* p ) : druid_spell_t( "starfall_tick", p, p->spec.starfall_dmg )
-  {
-    background = dual = direct_tick = true;
-    aoe    = -1;
-    // TODO: pull hardcoded id out of here and into spec.X
-    radius = p->find_spell( 50286 )->effectN( 1 ).radius();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // seems to have a random travel time between 1x - 2x missile speed
-    return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    if ( p()->azerite.lunar_shrapnel.ok() && td( target )->dots.moonfire->is_ticking() )
-    {
-      p()->active.lunar_shrapnel->set_target( s->target );
-      p()->active.lunar_shrapnel->execute();
-    }
-  }
-};
-
 struct starfall_t : public druid_spell_t
 {
-  action_t* starfall_tick;
+  struct starfall_damage_t : public druid_spell_t
+  {
+    starfall_damage_t( druid_t* p ) : druid_spell_t( "starfall_dmg", p, p->spec.starfall_dmg )
+    {
+      background = dual = true; //direct_tick = true;
+      aoe        = -1;
+      // TODO: pull hardcoded id out of here and into spec.X
+      radius     = p->find_spell( 50286 )->effectN( 1 ).radius();
+    }
+
+    timespan_t travel_time() const override
+    {
+      // seems to have a random travel time between 1x - 2x missile speed
+      return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      druid_spell_t::impact( s );
+      if ( p()->azerite.lunar_shrapnel.ok() && td( s->target )->dots.moonfire->is_ticking() )
+      {
+        p()->active.lunar_shrapnel->set_target( s->target );
+        p()->active.lunar_shrapnel->execute();
+      }
+    }
+  };
+
+  action_t* damage;
 
   starfall_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "starfall", p, p->spec.starfall, options_str )
   {
     may_miss = may_crit = false;
-    starfall_tick = p->get_secondary_action<starfall_tick_t>( "starfall_tick" );
-    starfall_tick->stats = stats;
+
+    damage        = p->get_secondary_action<starfall_damage_t>( "starfall_dmg" );
+    damage->stats = stats;
+    p->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      damage->schedule_execute();
+    } );
 
     if ( p->azerite.lunar_shrapnel.ok() )
       add_child( p->active.lunar_shrapnel );
@@ -6695,9 +6699,9 @@ struct starfall_t : public druid_spell_t
       free_cast = free_cast_e::ONETHS;
 
     if ( free_cast )
-      starfall_tick->stats = get_free_cast_stats( free_cast );
+      damage->stats = get_free_cast_stats( free_cast );
     else
-      starfall_tick->stats = orig_stats;
+      damage->stats = orig_stats;
 
     if ( p()->spec.starfall_2->ok() )
     {
@@ -6721,7 +6725,6 @@ struct starfall_t : public druid_spell_t
 
     streaking_stars_trigger( SS_STARFALL, nullptr );
 
-    p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
     p()->buff.starfall->trigger();
 
     if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE ||
