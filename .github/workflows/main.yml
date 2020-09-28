@@ -125,6 +125,7 @@ jobs:
     needs: [ubuntu-clang-10-build]
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - type: spell_query
