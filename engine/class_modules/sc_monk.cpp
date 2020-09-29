@@ -11582,27 +11582,24 @@ void monk_t::apl_combat_brewmaster()
     if ( racial_actions[ i ] != "arcane_torrent" )
       def->add_action( racial_actions[ i ] );
   }
-  // Ironskin Brew
   def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
-/*  def->add_action(
-      this, "Ironskin Brew",
-      "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
-      "brawler.stack<2&!buff.ironskin_brew.up",
-      "Ironskin Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
-      "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
+  // Celestial Brew
   def->add_action(
-      this, "Ironskin Brew",
-      "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3&buff.ironskin_brew.remains<15" );
-      */
+      this, "Celestial Brew",
+      "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
+      "brawler.stack<2",
+      "Celestial Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
+      "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
+
   // Purifying Brew
   def->add_action( this, "Purifying Brew",
-                   "if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0."
-                   "001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))",
+                   "if=stagger.pct>(6*(1-(cooldown.purifying_brew.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0."
+                   "001*(1-cooldown.purifying_brew.charges_fractional))*stagger.last_tick_damage_30))",
                    "Purifying behaviour is based on normalization (iE the late expression triggers if stagger size "
                    "increased over the last 30 ticks or 15 seconds)." );
 
   // Black Ox Brew
-  def->add_talent( this, "Black Ox Brew", "if=cooldown.brews.charges_fractional<0.5",
+  def->add_talent( this, "Black Ox Brew", "if=cooldown.purifying_brew.charges_fractional<0.5",
                    "Black Ox Brew is currently used to either replenish brews based on less than half a brew charge "
                    "available, or low energy to enable Keg Smash" );
   def->add_talent(
