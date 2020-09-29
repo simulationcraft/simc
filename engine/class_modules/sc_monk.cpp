@@ -5088,7 +5088,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         if ( p()->buff.thunder_focus_tea->up() )
         {
           if ( p()->spec.thunder_focus_tea_2->ok() )
-            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
+            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
 
           if ( p()->azerite.secret_infusion.ok() )
             p()->buff.secret_infusion_vers->trigger();
@@ -12002,6 +12002,7 @@ void monk_t::apl_combat_mistweaver()
   def->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
   def->add_action( "call_action_list,name=st,if=active_enemies<4" );
 
+  st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
   st->add_action( this, "Blackout Kick",
                   "if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains<12" );
