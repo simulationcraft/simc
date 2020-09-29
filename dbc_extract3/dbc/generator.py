@@ -1312,7 +1312,7 @@ class SpellDataGenerator(DataGenerator):
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
-          ( 328757, 0 ), # Wild Spirits (Covenenat)
+          ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
@@ -1975,6 +1975,8 @@ class SpellDataGenerator(DataGenerator):
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
+        345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
+        345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
     ]
 
     _spell_families = {

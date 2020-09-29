@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36037
-static const std::array<spelltext_data_t, 15615> __spelltext_data { {
+static const std::array<spelltext_data_t, 15616> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14281,6 +14281,7 @@ static const std::array<spelltext_data_t, 15615> __spelltext_data { {
   { 328265, "Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.", 0, 0 },
   { 328266, "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1% for $328908d and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by $328913m2 sec.", 0, 0 },
   { 328273, "Increase your Leech by $s1, but reduces your Stamina by $s2.", "Increase your Leech by $w1, but reduces your Stamina by $w2.", 0 },
+  { 328275, "$@spelldesc328231", "Damage taken from the hunter increased by $s2%.", "Night Fae" },
   { 328278, " ", 0, "Night Fae" },
   { 328281, "Bless an ally for $d. Their attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.", "Attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.", "Night Fae" },
   { 328282, "Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Summer after use.", "Healing done increased by $w1% and healing received increased by $w2%.", "Night Fae" },
