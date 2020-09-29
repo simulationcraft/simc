@@ -9734,7 +9734,7 @@ void monk_t::init_spells()
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
   spec.shuffle             = find_specialization_spell( "Shuffle" );
   spec.stagger             = find_specialization_spell( "Stagger" );
-  spec.stagger             = find_rank_spell( "Stagger", "Rank 2" );
+  spec.stagger_2           = find_rank_spell( "Stagger", "Rank 2" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
 
   // Mistweaver Specialization
@@ -11305,7 +11305,13 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew->up() )
-    s->result_amount *= 1.0 - spec.fortifying_brew_brm->effectN( 2 ).percent();
+  {
+    double reduction = spec.fortifying_brew_mw_ww->effectN( 2 ).percent(); // Saved as -15%
+    if ( spec.fortifying_brew_2_brm->ok() )
+      reduction -= 0.05;
+
+    s->result_amount *= ( 1.0 + reduction );
+  }
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
@@ -11525,12 +11531,6 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-  pre->add_action(
-      "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|"
-      "fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10",
-      "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
-  pre->add_action(
-      "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20" );
   pre->add_action( "use_item,name=azsharas_font_of_power" );
   pre->add_talent( this, "Chi Wave", "if=!talent.energizing_elixer.enabled" );
 }
@@ -11657,6 +11657,10 @@ void monk_t::apl_combat_windwalker()
 
   def->add_action( "auto_attack", "Executed every time the actor is available." );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
+  def->add_action(
+      "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|"
+      "fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10",
+      "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
   if ( sim->allow_potions )
   {
       def->add_action(
@@ -11719,7 +11723,11 @@ void monk_t::apl_combat_windwalker()
       "prev_gcd.1.tiger_palm&chi<4))" );
 
   // Serenity Cooldowns
-  cd_serenity->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25", "Serenity Cooldowns" );
+  cd_serenity->add_action(
+      "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown."
+      "serenity.remains>30|fight_remains<20",
+      "Serenity Cooldowns" );
+  cd_serenity->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25" );
 
   // Serenity On-use w/ Azshara's Font of Power
   // TODO: Remove come 9.0.2

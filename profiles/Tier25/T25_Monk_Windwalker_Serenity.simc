@@ -27,9 +27,6 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-# Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore
-actions.precombat+=/variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10
-actions.precombat+=/variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/chi_wave,if=!talent.energizing_elixer.enabled
 
@@ -37,6 +34,8 @@ actions.precombat+=/chi_wave,if=!talent.energizing_elixer.enabled
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
+# Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore
+actions+=/variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10
 # Use potion if Serenity is up, or both SEF and ToD are up, or the target will die within 60 seconds
 actions+=/potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60
 # Call the Serenity action list if Serenity is currently up
@@ -97,7 +96,8 @@ actions.cd_sef+=/ripple_in_space
 actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
 
 # Serenity Cooldowns
-actions.cd_serenity=invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
+actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
+actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
 # This line will be remove in 9.0.2
 actions.cd_serenity+=/guardian_of_azeroth,if=variable.serenity_burst
 actions.cd_serenity+=/blood_fury,if=variable.serenity_burst
