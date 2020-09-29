@@ -6161,15 +6161,15 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if (current_targets.size() < 2 || !p() -> in_death_and_decay()) {
       return current_targets;
     }
-    
+
     // first target, the action target, needs to be left in place
     std::sort( current_targets.begin() + 1, current_targets.end(),
       [this]( player_t* a, player_t* b) {
-        int a_stacks = td( a ) -> debuff.festering_wound->check();
-        int b_stacks = td( b ) -> debuff.festering_wound->check();
+        int a_stacks = td( a ) -> debuff.festering_wound -> up() ? 1 : 0;
+        int b_stacks = td( b ) -> debuff.festering_wound -> up() ? 1 : 0;
         return a_stacks > b_stacks; 
       } );
-  
+
     return current_targets;
   }
 
