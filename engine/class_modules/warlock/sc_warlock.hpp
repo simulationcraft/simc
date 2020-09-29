@@ -471,6 +471,7 @@ public:
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
+    propagate_const<buff_t*> malefic_wrath;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -516,6 +517,8 @@ public:
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer;
+    proc_t* malefic_wrath;
+
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;
