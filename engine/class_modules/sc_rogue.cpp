@@ -804,8 +804,6 @@ public:
   double    temporary_movement_modifier() const override;
   void      apply_affecting_auras( action_t& action ) override;
 
-  bool is_target_poisoned( player_t* target, bool deadly_fade = false ) const;
-
   void break_stealth();
   void cancel_auto_attack();
 
@@ -1876,16 +1874,6 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
       rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger(), true )
     {
-    }
-
-    timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
-    {
-      // 12/29/2017 - Deadly Poison uses an older style of refresh, adding the origial duration worth of ticks up to 50% more than the base number of ticks
-      //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
-      timespan_t tt = tick_time( dot->state );
-      const int additional_ticks = (int)(data().duration() / tt);
-      const int max_ticks = (int)(additional_ticks * 1.5);
-      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * tt;
     }
   };
 
@@ -8783,28 +8771,6 @@ void rogue_t::activate()
   player_t::activate();
 
   sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
-}
-
-// rogue_t::is_target_poisoned ==============================================
-// Due to how our DOT system functions, at the time when last_tick() is called
-// for Deadly Poison, is_ticking() for the dot object will still return true.
-// This breaks the is_ticking() check below, creating an inconsistent state in
-// the sim, if Deadly Poison was the only poison up on the target. As a
-// workaround, deliver the "Deadly Poison fade event" as an extra parameter.
-bool rogue_t::is_target_poisoned( player_t* target, bool deadly_fade ) const
-{
-  const rogue_td_t* td = get_target_data( target );
-
-  if ( !deadly_fade && td->dots.deadly_poison->is_ticking() )
-    return true;
-
-  if ( td->debuffs.wound_poison->check() )
-    return true;
-
-  if ( td->debuffs.crippling_poison->check() )
-    return true;
-
-  return false;
 }
 
 // rogue_t::break_stealth ===================================================
