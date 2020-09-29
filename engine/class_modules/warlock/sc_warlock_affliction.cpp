@@ -134,7 +134,7 @@ struct shadow_bolt_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
     if ( time_to_execute == 0_ms )
-      p()->buffs.nightfall->expire();
+      p()->buffs.nightfall->decrement();
 
     p()->buffs.decimating_bolt->decrement();
   }
@@ -146,7 +146,7 @@ struct agony_t : public affliction_spell_t
   double chance;
   bool pandemic_invocation_usable;  // BFA - Azerite
 
-  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( p, "Agony" )
+  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->spec.agony )
   {
     parse_options( options_str );
     may_crit                   = false;
@@ -190,7 +190,16 @@ struct agony_t : public affliction_spell_t
       pandemic_invocation_usable = false;
     }
 
-    if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
+    //There is TECHNICALLY a prepatch bug on PTR (as of 9/23) where having both the talent and the azerite starts at 3 stacks
+    //Making a note of it here in this comment but not going to implement it at this time
+    if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() < 
+      (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
+    {
+      td ( execute_state->target )
+        ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() - 
+          td( execute_state->target )->dots_agony->current_stack() );
+    }
+    else if ( p()->azerite.sudden_onset.ok() && td( execute_state->target )->dots_agony->current_stack() <
                                                (int)p()->azerite.sudden_onset.spell_ref().effectN( 2 ).base_value() )
     {
       td( execute_state->target )
@@ -226,6 +235,9 @@ struct agony_t : public affliction_spell_t
     {
       increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
     }
+
+    if ( p()->legendary.perpetual_agony_of_azjaqir->ok() )
+      increment_max *= 1.0 + p()->legendary.perpetual_agony_of_azjaqir->effectN( 1 ).percent();
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -272,6 +284,14 @@ struct corruption_t : public affliction_spell_t
     may_crit                   = false;
     tick_zero                  = false;
     pandemic_invocation_usable = false;  // BFA - Azerite
+
+    
+    if ( !p->spec.corruption_3->ok() )
+    {
+      spell_power_mod.direct = 0; //Rank 3 is required for direct damage
+    }
+    
+
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
 
@@ -301,13 +321,27 @@ struct corruption_t : public affliction_spell_t
   {
     if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
     {
-      auto success = p()->buffs.nightfall->trigger();
-      if ( success )
+      // TOCHECK regularly. 
+      // Blizzard did not publicly release how nightfall was changed. 
+      // We determined this is the probable functionality copied from Agony by first confirming the 
+      // DR formula was the same and then confirming that you can get procs on 1st tick.
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm. 
+      // Last checked 09-28-2020.
+      double increment_max = 0.13;
+
+      double active_corruptions = p()->get_active_dots( internal_id );
+      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+      p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->corruption_accumulator >= 1 )
       {
         p()->procs.nightfall->occur();
+        p()->buffs.nightfall->trigger();
+        p()->corruption_accumulator -= 1.0;
+
       }
     }
-
     affliction_spell_t::tick( d );
   }
 
@@ -347,7 +381,7 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void execute() override
   {
-    if ( p()->ua_target )
+    if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
@@ -379,11 +413,11 @@ struct summon_darkglare_t : public affliction_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-
-    //Disabling this Azerite Essence for now. If someone desperately wants to do a prepatch sim with both, they'll need to test the interaction.
-    //cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
     
     cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
+
+    //PTR for prepatch presumably does additive CDR, then multiplicative
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -534,6 +568,7 @@ struct malefic_rapture_t : public affliction_spell_t
         aoe = 1;
         background = true;
         spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+        base_costs[ RESOURCE_SOUL_SHARD ] = 0;
 
         p->spells.malefic_rapture_aoe = this;
       }
@@ -554,9 +589,13 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_vile_taint->is_ticking() )
           mult += 1.0;
 
-        if ( td->dots_siphon_life->is_ticking() )
+        if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        // TODO:
+        // Scouring Tithe - awaiting merge
+        // Impending catastrophe
+        // Soul Rot
         return mult;
       }
 
@@ -565,6 +604,17 @@ struct malefic_rapture_t : public affliction_spell_t
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
         return m;
+      }
+
+      void execute() override
+      {
+        if ( p()->legendary.malefic_wrath->ok() )
+        {
+          p()->buffs.malefic_wrath->trigger();
+          p()->procs.malefic_wrath->occur();
+        }
+
+          affliction_spell_t::execute();
       }
 
     };
@@ -625,6 +675,7 @@ struct drain_soul_t : public affliction_spell_t
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
     m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
     return m;
   }
@@ -653,7 +704,6 @@ struct haunt_t : public affliction_spell_t
       td( s->target )->debuffs_haunt->trigger();
     }
 
-    // TODO - Add Shadow Embrace
     td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
@@ -843,6 +893,7 @@ void warlock_t::create_buffs_affliction()
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
  
 void warlock_t::vision_of_perfection_proc_aff()
@@ -902,7 +953,7 @@ void warlock_t::init_spells_affliction()
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
-  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Ajz'Aqir" );
+  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
   legendary.wrath_of_consumption       = find_runeforge_legendary( "Wrath of Consumption" );
 
   // Conduits
@@ -933,6 +984,7 @@ void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.malefic_wrath   = get_proc( "malefic_wrath" );
 }
 
 void warlock_t::create_apl_affliction()

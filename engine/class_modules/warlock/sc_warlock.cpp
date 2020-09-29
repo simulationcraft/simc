@@ -53,6 +53,28 @@ struct drain_life_t : public warlock_spell_t
 
     warlock_spell_t::last_tick( d );
   }
+};  
+
+struct scouring_tithe_t : public warlock_spell_t
+{
+  scouring_tithe_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
+
+  {
+    parse_options( options_str );
+    //can_havoc = true; NYI
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warlock_spell_t::last_tick( d );
+
+    if ( !d->target->is_sleeping() )
+    {
+      p()->cooldowns.scouring_tithe->reset( true );
+    }
+    warlock_spell_t::last_tick( d );
+  }
 };
 
 struct decimating_bolt_dmg_t : public warlock_spell_t
@@ -156,6 +178,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
+  dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
@@ -230,6 +253,14 @@ void warlock_td_t::target_demise()
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
+  }
+
+  if ( dots_scouring_tithe->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains 5 shards from scouring tithe.", target->name(),
+                            warlock.name() );
+
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 5, warlock.gains.scouring_tithe );
   }
 
   if ( debuffs_haunt->check() )
@@ -311,6 +342,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
+    corruption_accumulator( 0.0 ),
     memory_of_lucid_dreams_accumulator( 0.0 ),  // BFA - Essence
     strive_for_perfection_multiplier(),         // BFA - Essence
     vision_of_perfection_multiplier(),          // BFA - Essence
@@ -338,6 +370,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
+  cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -539,7 +572,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "decimating_bolt" )
     return new decimating_bolt_t( this, options_str );
-
+  if ( action_name == "scouring_tithe" )
+    return new scouring_tithe_t( this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -652,6 +686,7 @@ void warlock_t::init_spells()
   conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
   conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
+  conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
   covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
@@ -700,6 +735,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
   gains.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams" );
@@ -931,6 +967,7 @@ void warlock_t::reset()
   havoc_target                       = nullptr;
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
+  corruption_accumulator             = rng().range( 0.0, 0.99 ); // TOCHECK - Unsure if it procs on application
   memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
 }
@@ -1004,12 +1041,12 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     {
       continue;
     }
-    td->dots_agony->extend_duration( darkglare_extension );
-    td->dots_corruption->extend_duration( darkglare_extension );
-    td->dots_siphon_life->extend_duration( darkglare_extension );
-    td->dots_phantom_singularity->extend_duration( darkglare_extension );
-    td->dots_vile_taint->extend_duration( darkglare_extension );
-    td->dots_unstable_affliction->extend_duration( darkglare_extension );
+    td->dots_agony->adjust_duration( darkglare_extension );
+    td->dots_corruption->adjust_duration( darkglare_extension );
+    td->dots_siphon_life->adjust_duration( darkglare_extension );
+    td->dots_phantom_singularity->adjust_duration( darkglare_extension );
+    td->dots_vile_taint->adjust_duration( darkglare_extension );
+    td->dots_unstable_affliction->adjust_duration( darkglare_extension );
   }
 }
 
@@ -1239,26 +1276,19 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
   if ( splits.size() == 3 && splits[ 0 ] == "time_to_imps" && splits[ 2 ] == "remains" )
   {
-    auto amt = splits[ 1 ];
+    auto amt = splits[ 1 ] == "all" ? -1 : util::to_int( splits[ 1 ] );
 
     return make_fn_expr( name_str, [ this, amt ]() {
-      if ( amt == "all" )
-      {
-        return this->time_to_imps( -1 );
-      }
-      else
-      {
-        return this->time_to_imps( util::to_int( amt ) );
-      }
+      return this->time_to_imps( amt );
     } );
   }
   else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "imps_spawned_during" ) )
   {
-    auto period = splits[ 1 ];
+    auto period = util::to_double( splits[ 1 ] );
 
     return make_fn_expr( name_str, [ this, period ]() {
       // Add a custom split .summon_demonic_tyrant which returns its cast time.
-      return this->imps_spawned_during( timespan_t::from_millis( util::to_double( period ) ) );
+      return this->imps_spawned_during( timespan_t::from_millis( period ) );
     } );
   }
 

@@ -2,12 +2,12 @@ optimal_raid=1
 default_actions=1
 bfa.worldvein_allies=5
 
-# T25_Death_Knight_Blood.simc
-# T25_Death_Knight_Frost.simc
-# T25_Death_Knight_Unholy.simc
+T25_Death_Knight_Blood.simc
+T25_Death_Knight_Frost.simc
+T25_Death_Knight_Unholy.simc
 
-# T25_Demon_Hunter_Havoc.simc
-# T25_Demon_Hunter_Vengeance.simc
+T25_Demon_Hunter_Havoc.simc
+T25_Demon_Hunter_Vengeance.simc
 
 T25_Druid_Balance.simc
 T25_Druid_Feral.simc
@@ -27,7 +27,7 @@ T25_Mage_Frost.simc
 # T25_Monk_Windwalker_Serenity.simc
 
 # T25_Paladin_Protection.simc
-# T25_Paladin_Retribution.simc
+T25_Paladin_Retribution.simc
 
 T25_Priest_Shadow.simc
 T25_Priest_Discipline.simc
@@ -36,14 +36,14 @@ T25_Rogue_Assassination.simc
 T25_Rogue_Outlaw.simc
 T25_Rogue_Subtlety.simc
 
-# T25_Shaman_Elemental.simc
-# T25_Shaman_Enhancement.simc
-# T25_Shaman_Restoration.simc
+T25_Shaman_Elemental.simc
+T25_Shaman_Enhancement.simc
+T25_Shaman_Restoration.simc
 
 # T25_Warlock_Affliction.simc
 # T25_Warlock_Demonology.simc
 # T25_Warlock_Destruction.simc
 
-# T25_Warrior_Arms.simc
-# T25_Warrior_Fury.simc
+T25_Warrior_Arms.simc
+T25_Warrior_Fury.simc
 # T25_Warrior_Protection.simc

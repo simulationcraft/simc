@@ -1312,7 +1312,7 @@ class SpellDataGenerator(DataGenerator):
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
-          ( 328757, 0 ), # Wild Spirits (Covenenat)
+          ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
@@ -1389,6 +1389,7 @@ class SpellDataGenerator(DataGenerator):
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
+            ( 345452, 0 ),          # Fae Fermata target Debuff
         ),
 
         # Death Knight:
@@ -1732,6 +1733,7 @@ class SpellDataGenerator(DataGenerator):
           ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
           ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
+          ( 340060, 0 ),       # Lycara's Fleeting Glimpse coming soon buff
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
@@ -1973,6 +1975,8 @@ class SpellDataGenerator(DataGenerator):
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
+        345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
+        345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
     ]
 
     _spell_families = {

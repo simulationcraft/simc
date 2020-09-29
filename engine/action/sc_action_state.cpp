@@ -185,6 +185,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " proc_type=" << util::proc_type_string( proc_type() );
   s << " exec_proc_type=" << util::proc_type2_string( execute_proc_type2() );
   s << " impact_proc_type=" << util::proc_type2_string( impact_proc_type2() );
+  s << " interrupt_proc_type=" << util::proc_type2_string( interrupt_proc_type2() );
 
   s << std::dec;
 

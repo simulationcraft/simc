@@ -25,6 +25,7 @@ struct warlock_td_t : public actor_target_data_t
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_scouring_tithe;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -56,7 +57,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
 
-  propagate_const<buff_t*> debuffs_from_the_shadows;
+  propagate_const<buff_t*> debuffs_from_the_shadows; //TODO: Refactor handling for this - see PR 5294
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -80,6 +81,7 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   bool wracking_brilliance;             // BFA - Azerite
   double agony_accumulator;
+  double corruption_accumulator;
   double memory_of_lucid_dreams_accumulator;  // BFA - Essences
   double strive_for_perfection_multiplier;    // BFA - Essences
   double vision_of_perfection_multiplier;     // BFA - Essences
@@ -173,7 +175,7 @@ public:
     const spell_data_t* drain_soul;
 
     // tier 25
-    const spell_data_t* writhe_in_agony; //TODO: SL Beta - SUDDEN ONSET PORTION (INITIAL STACK AMOUNT) HAS NOT BEEN IMPLEMENTED AS A TALENT YET AND REMAINS AS AZERITE IN THE MODULE. FIX THIS!
+    const spell_data_t* writhe_in_agony; //Note: there is an unimplemented bug for SL prepatch
     const spell_data_t* absolute_corruption;
     const spell_data_t* siphon_life;
 
@@ -184,7 +186,7 @@ public:
 
     // tier 45
     const spell_data_t* dark_caller;
-    const spell_data_t* haunt; //TODO: SL Beta - Haunt currently is not applying Shadow Embrace in the sim. Fix this!
+    const spell_data_t* haunt;
     // grimoire of sacrifice
 
     // tier 50
@@ -204,7 +206,7 @@ public:
     const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
-    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). Consider rebuilding this.
+    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). See PR 5294.
     const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
     const spell_data_t* summon_vilefiend;
 
@@ -364,6 +366,7 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
+    propagate_const<cooldown_t*> scouring_tithe;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -378,16 +381,15 @@ public:
 
     // Affliction only
     const spell_data_t* affliction; //Spec aura
-    const spell_data_t* agony; //TODO: SL Beta - This is the primary active ability, but is not currently being used. Fix this.
+    const spell_data_t* agony; //This is the primary active ability
     const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
-    //TODO: SL Beta - These corruption passives are not currently implemented in the spell, fix this!
     const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
     const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
     const spell_data_t* nightfall;  // TODO: SL Beta - There is no specialization data for this spell, remove or fix. (Potential duplicate of talents.nightfall)
     const spell_data_t* shadow_bite; //TODO: SL Beta - Pet spell? Does not appear in specialization data
     const spell_data_t* shadow_bolt; //TODO: SL Beta - This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
-    const spell_data_t* unstable_affliction;  //This is the primary active ability (should be 316099)
+    const spell_data_t* unstable_affliction;  //This is the primary active ability
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
 
@@ -475,6 +477,7 @@ public:
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
+    propagate_const<buff_t*> malefic_wrath;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -511,6 +514,9 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
+
+    // SL
+    gain_t* scouring_tithe;
   } gains;
 
   // Procs
@@ -520,6 +526,8 @@ public:
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer;
+    proc_t* malefic_wrath;
+
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;
@@ -689,6 +697,7 @@ struct warlock_spell_t : public spell_t
 {
 public:
   gain_t* gain;
+  bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -706,6 +715,7 @@ public:
     tick_may_crit     = true;
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
+    can_havoc         = false;
   }
 
   warlock_t* p()
@@ -826,9 +836,63 @@ public:
   {
     if ( dot->is_ticking() )
     {
-      dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
+      dot->adjust_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
     }
   }
+
+  //Destruction specific things for Havoc that unfortunately need to be in main module
+
+  bool use_havoc() const
+  {
+    // Ensure we do not try to hit the same target twice.
+    return can_havoc && p()->havoc_target && p()->havoc_target != target;
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && use_havoc() )
+    {
+      assert(spell_t::n_targets() == 0);
+      return 2;
+    }
+    else
+      return spell_t::n_targets();
+  }
+
+  size_t available_targets(std::vector<player_t*>& tl) const override
+  {
+    spell_t::available_targets(tl);
+
+    // Check target list size to prevent some silly scenarios where Havoc target
+    // is the only target in the list.
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && tl.size() > 1 && use_havoc())
+    {
+      // We need to make sure that the Havoc target ends up second in the target list,
+      // so that Havoc spells can pick it up correctly.
+      auto it = range::find(tl, p()->havoc_target);
+      if (it != tl.end())
+      {
+        tl.erase(it);
+        tl.insert(tl.begin() + 1, p()->havoc_target);
+      }
+    }
+
+    return tl.size();
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
+    {
+        // SL - Conduit
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        p()->havoc_spells.push_back(this);
+    }
+  }
+
+  //End Destruction specific things
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {

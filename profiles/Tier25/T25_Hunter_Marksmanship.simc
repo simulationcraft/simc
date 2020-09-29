@@ -75,11 +75,7 @@ actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.st+=/rapid_fire,if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time
 actions.st+=/blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11
 actions.st+=/focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5
-actions.st+=/arcane_shot,if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up
-actions.st+=/chimaera_shot,if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up
 actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_active)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains
-actions.st+=/arcane_shot,if=buff.trueshot.up&buff.memory_of_lucid_dreams.up
-actions.st+=/chimaera_shot,if=buff.trueshot.up&buff.memory_of_lucid_dreams.up
 actions.st+=/purifying_blast,if=!buff.trueshot.up|target.time_to_die<8
 actions.st+=/concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5
 actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5
