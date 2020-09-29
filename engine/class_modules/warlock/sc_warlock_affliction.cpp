@@ -602,6 +602,17 @@ struct malefic_rapture_t : public affliction_spell_t
         return m;
       }
 
+      void execute() override
+      {
+        if ( p()->legendary.malefic_wrath->ok() )
+        {
+          p()->buffs.malefic_wrath->trigger();
+          p()->procs.malefic_wrath->occur();
+        }
+
+          affliction_spell_t::execute();
+      }
+
     };
 
     malefic_rapture_damage_instance_t* damage_instance;
@@ -649,6 +660,8 @@ struct drain_soul_t : public affliction_spell_t
 
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
+
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
     return m;
   }
@@ -859,6 +872,7 @@ void warlock_t::create_buffs_affliction()
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
  
 void warlock_t::vision_of_perfection_proc_aff()
@@ -949,6 +963,7 @@ void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.malefic_wrath   = get_proc( "malefic_wrath" );
 }
 
 void warlock_t::create_apl_affliction()
