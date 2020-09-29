@@ -27,6 +27,7 @@ private:
   double whispers_bonus_insanity;
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
+  bool only_cwc;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -43,8 +44,10 @@ public:
                                    ->effectN( 1 )
                                    .resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
-      mind_sear_spell( player.find_class_spell( "Mind Sear" ) )
+      mind_sear_spell( player.find_class_spell( "Mind Sear" ) ),
+      only_cwc( false )
   {
+    add_option( opt_bool( "only_cwc", only_cwc ) );
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
@@ -61,7 +64,7 @@ public:
     }
 
     cooldown->hasted     = true;
-    usable_while_casting = use_while_casting;
+    usable_while_casting = use_while_casting = only_cwc;
 
     base_dd_adder += whispers_of_the_damned_value;
 
@@ -69,18 +72,23 @@ public:
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
-  bool usable_during_current_cast() const override
+  bool ready() override
   {
-    if ( !priest().buffs.dark_thoughts->check() )
+    if ( only_cwc )
+    {
+      if ( !priest().buffs.dark_thoughts->check() )
+        return false;
+      if ( player->channeling == nullptr )
+        return false;
+      if ( player->channeling->data().id() == mind_flay_spell->id() ||
+           player->channeling->data().id() == mind_sear_spell->id() )
+        return priest_spell_t::ready();
       return false;
-    if ( player->channeling == nullptr )
-      return false;
-    if ( !priest_spell_t::usable_during_current_cast() )
-      return false;
-    if ( player->channeling->data().id() == mind_flay_spell->id() ||
-         player->channeling->data().id() == mind_sear_spell->id() )
-      return true;
-    return false;
+    }
+    else
+    {
+      return priest_spell_t::ready();
+    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -1548,13 +1556,11 @@ struct searing_nightmare_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
   }
 
-  bool usable_during_current_cast() const override
+  bool ready() override
   {
-    if ( player->channeling == nullptr || !priest_spell_t::usable_during_current_cast() )
+    if ( player->channeling == nullptr || player->channeling->data().id() != mind_sear_spell->id() )
       return false;
-    if ( player->channeling->data().id() == mind_sear_spell->id() )
-      return true;
-    return false;
+    return priest_spell_t::ready();
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -1876,7 +1882,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [this]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
@@ -2464,7 +2470,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    return make_fn_expr( name_str, [ this ]() {
+    return make_fn_expr( name_str, [this]() {
       if ( !active_spells.shadowy_apparitions )
       {
         return 0.0;
@@ -2478,7 +2484,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
   {
     // Current Insanity Drain for the next 1.0 sec.
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    return make_fn_expr( name_str, [ this ]() { return ( insanity.insanity_drain_per_second() ); } );
+    return make_fn_expr( name_str, [this]() { return ( insanity.insanity_drain_per_second() ); } );
   }
 
   return nullptr;
@@ -2488,6 +2494,7 @@ void priest_t::generate_apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* main         = get_action_priority_list( "main" );
+  action_priority_list_t* cwc          = get_action_priority_list( "cwc" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
   action_priority_list_t* boon         = get_action_priority_list( "boon" );
   action_priority_list_t* essences     = get_action_priority_list( "essences" );
@@ -2526,6 +2533,7 @@ void priest_t::generate_apl_shadow()
   if ( race == RACE_VULPERA )
     default_list->add_action( "bag_of_tricks" );
 
+  default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
 
   // BfA Essences for Pre-patch
@@ -2559,6 +2567,14 @@ void priest_t::generate_apl_shadow()
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova",
                     "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent."
                     "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
+
+  cwc->add_talent( this, "Searing Nightmare",
+                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
+                   "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
+                   "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not "
+                   "ready, or to refresh SW:P on two or more targets." );
+  cwc->add_action( this, "Mind Blast", "only_cwc=1",
+                   "Only_cwc makes the action only usable during channeling and not as a regular action." );
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
@@ -2615,13 +2631,6 @@ void priest_t::generate_apl_shadow()
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
-  main->add_talent( this, "Searing Nightmare",
-                    "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
-                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-                    "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not "
-                    "ready, or to refresh SW:P on two or more targets." );
-  main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
-                    "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
                     "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                     "TODO Verify target cap" );
