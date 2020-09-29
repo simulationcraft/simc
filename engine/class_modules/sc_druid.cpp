@@ -8678,7 +8678,7 @@ void druid_t::create_actions()
   using namespace bear_attacks;
   using namespace spells;
 
-  // Generic
+  // Melee Attacks
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
 
   if ( !cat_melee_attack )
@@ -8692,9 +8692,6 @@ void druid_t::create_actions()
     init_beast_weapon( bear_weapon, 2.5 );
     bear_melee_attack = new bear_melee_t( this );
   }
-
-  if ( legendary.lycaras_fleeting_glimpse->ok() )
-    active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
 
   // Balance
   if ( azerite.lunar_shrapnel.ok() )
@@ -8736,6 +8733,10 @@ void druid_t::create_actions()
 
   if ( spec.yseras_gift->ok() )
     active.yseras_gift = new heals::yseras_gift_t( this );
+
+  // Generic
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+    active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
 
   player_t::create_actions();
 }
