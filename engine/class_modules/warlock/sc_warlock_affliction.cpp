@@ -132,7 +132,7 @@ struct shadow_bolt_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
     if ( time_to_execute == 0_ms )
-      p()->buffs.nightfall->expire();
+      p()->buffs.nightfall->decrement();
   }
 };
 
@@ -330,6 +330,7 @@ struct corruption_t : public affliction_spell_t
       if ( p()->corruption_accumulator >= 1 )
       {
         p()->procs.nightfall->occur();
+        p()->buffs.nightfall->trigger();
         p()->corruption_accumulator -= 1.0;
 
       }
