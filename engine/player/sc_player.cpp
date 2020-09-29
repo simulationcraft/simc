@@ -2974,7 +2974,7 @@ void player_t::init_assessors()
         {
           dot_t* dot = state->action->get_dot( state->target );
           sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
-                               dot->current_tick, dot->num_ticks, *state->target, state->result_amount,
+                               dot->current_tick, dot->num_ticks(), *state->target, state->result_amount,
                                state->action->get_school(), state->result );
         }
       }

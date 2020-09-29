@@ -1807,7 +1807,7 @@ struct bladestorm_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
-    if ( d->ticks_left() > 1 )
+    if ( d->ticks_left() > 0 )
     {
       p()->buff.tornados_eye->trigger();
       p()->buff.gathering_storm->trigger();

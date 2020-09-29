@@ -1741,13 +1741,13 @@ void action_t::tick( dot_t* d )
 
     // Apply the last tick factor from the DoT to the base damage multipliers for partial ticks
     // 6/23/2018 -- Revert the previous logic of overwriting the da modifiers with ta modifiers
-    tick_state->da_multiplier *= d->get_last_tick_factor();
-    tick_state->ta_multiplier *= d->get_last_tick_factor();
+    tick_state->da_multiplier *= d->get_tick_factor();
+    tick_state->ta_multiplier *= d->get_tick_factor();
 
     tick_action->schedule_execute( tick_state );
 
     sim->print_log("{} {} ticks ({} of {}) {}",
-        *player, *this, d->current_tick, d->num_ticks, *d->target );
+        *player, *this, d->current_tick, d->num_ticks(), *d->target );
   }
   else
   {
@@ -1756,7 +1756,7 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( d->state->composite_crit_chance() ) )
       d->state->result = RESULT_CRIT;
 
-    d->state->result_amount = calculate_tick_amount( d->state, d->get_last_tick_factor() * d->current_stack() );
+    d->state->result_amount = calculate_tick_amount( d->state, d->get_tick_factor() * d->current_stack() );
 
     assess_damage( amount_type( d->state, true ), d->state );
 
@@ -1764,13 +1764,13 @@ void action_t::tick( dot_t* d )
       d->state->debug();
   }
 
-  if ( energize_type_() == action_energize::PER_TICK && d->get_last_tick_factor() >= 1.0)
+  if ( energize_type_() == action_energize::PER_TICK && d->get_tick_factor() >= 1.0)
   {
     // Partial tick is not counted for resource gain
     gain_energize_resource( energize_resource_(), composite_energize_amount( d->state ), gain );
   }
 
-  stats->add_tick( d->time_to_tick, d->state->target );
+  stats->add_tick( d->time_to_tick(), d->state->target );
 
   player->trigger_ready();
 }
@@ -2899,26 +2899,6 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
   if ( auto q = dot_t::create_expression( nullptr, this, this, name_str, true ) )
     return q;
-
-  if ( name_str == "miss_react" )
-  {
-    struct miss_react_expr_t : public action_expr_t
-    {
-      miss_react_expr_t( action_t& a ) : action_expr_t( "miss_react", a )
-      {
-      }
-      double evaluate() override
-      {
-        dot_t* dot = action.find_dot( action.target );
-        if ( dot && ( dot->miss_time < timespan_t::zero() || action.sim->current_time() >= ( dot->miss_time ) ) )
-          return true;
-        else
-          return false;
-      }
-    };
-    return std::make_unique<miss_react_expr_t>( *this );
-
-  }
 
   if ( name_str == "cooldown_react" )
   {

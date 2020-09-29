@@ -380,8 +380,8 @@ struct painbreaker_psalm_t final : public priest_spell_t
 
     priest_spell_t::impact( s );
 
-    swp->reduce_duration( consume_time );
-    vt->reduce_duration( consume_time );
+    swp->adjust_duration( -consume_time );
+    vt->adjust_duration( -consume_time );
   }
 };
 
@@ -1009,7 +1009,7 @@ struct devouring_plague_t final : public priest_spell_t
     // that time_to_next_tick. This creates more duration of the DoT and adds a tick of damage. Publik - 2020-09-26
     if ( priest().bugs )
     {
-      return duration + tick_time( d->state ) - ( d->time_to_tick - d->time_to_next_tick() );
+      return duration + d->time_to_next_tick() + tick_time( d->state ) - std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
     }
     // when you refresh, you lose the partial tick
     else
@@ -1094,8 +1094,8 @@ struct void_bolt_t final : public priest_spell_t
 
       priest_td_t& td = get_td( s->target );
 
-      td.dots.shadow_word_pain->extend_duration( dot_extension, true );
-      td.dots.vampiric_touch->extend_duration( dot_extension, true );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+      td.dots.vampiric_touch->adjust_duration( dot_extension, true );
 
       if ( priest().talents.legacy_of_the_void->ok() )
       {

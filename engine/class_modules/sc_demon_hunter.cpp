@@ -2562,7 +2562,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           demon_hunter_td_t* target_data = td( s->target );
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
-            target_data->dots.fiery_brand->extend_duration( p()->talent.charred_flesh->effectN( 1 ).time_value() );
+            target_data->dots.fiery_brand->adjust_duration( p()->talent.charred_flesh->effectN( 1 ).time_value() );
           }
         }
 

@@ -4738,8 +4738,8 @@ struct nether_tempest_t : public arcane_mage_spell_t
     nether_tempest_aoe->snapshot_state( aoe_state, nether_tempest_aoe->amount_type( aoe_state ) );
 
     aoe_state->persistent_multiplier *= d->state->persistent_multiplier;
-    aoe_state->da_multiplier *= d->get_last_tick_factor();
-    aoe_state->ta_multiplier *= d->get_last_tick_factor();
+    aoe_state->da_multiplier *= d->get_tick_factor();
+    aoe_state->ta_multiplier *= d->get_tick_factor();
 
     nether_tempest_aoe->schedule_execute( aoe_state );
   }
