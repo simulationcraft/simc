@@ -547,6 +547,7 @@ struct malefic_rapture_t : public affliction_spell_t
         aoe = 1;
         background = true;
         spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+        base_costs[ RESOURCE_SOUL_SHARD ] = 0;
 
         p->spells.malefic_rapture_aoe = this;
       }
