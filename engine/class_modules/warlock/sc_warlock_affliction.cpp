@@ -899,7 +899,7 @@ void warlock_t::init_spells_affliction()
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
-  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Ajz'Aqir" );
+  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
   legendary.wrath_of_consumption       = find_runeforge_legendary( "Wrath of Consumption" );
 
   // Conduits
