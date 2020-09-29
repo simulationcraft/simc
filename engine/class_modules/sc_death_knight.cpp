@@ -477,6 +477,7 @@ public:
     buff_t* sudden_doom;
     buff_t* unholy_assault;
     buff_t* unholy_pact;
+    buff_t* unholy_blight;
 
     // Azerite Traits
     buff_t* bloody_runeblade;
@@ -1572,6 +1573,20 @@ struct death_knight_pet_t : public pet_t
     player_t::apply_affecting_auras( action );
 
     o()->apply_affecting_auras(action);
+  }
+
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
+  {
+    double m = pet_t::composite_player_target_multiplier( target, school );
+
+    const death_knight_td_t* td = o() -> get_target_data( target );
+    
+    if ( td -> debuff.unholy_blight -> check() )
+    {
+      m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
+    }    
+
+    return m;
   }
 };
 
@@ -3953,6 +3968,7 @@ struct unholy_pact_buff_t : public buff_t
     damage( new unholy_pact_damage_t( p ) )
   {
     set_default_value( data().effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+    add_invalidate( CACHE_STRENGTH );
     tick_zero = true;
     buff_period = 1.0_s;
     set_tick_behavior( buff_tick_behavior::CLIP );
@@ -6326,11 +6342,33 @@ struct unholy_blight_dot_t : public death_knight_spell_t
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
+    aoe = -1;
   }
 
   void impact(action_state_t* state) override
   {
+    death_knight_spell_t::impact( state );
+
     td( state->target ) -> debuff.unholy_blight -> trigger();
+  }
+};
+
+struct unholy_blight_buff_t : public buff_t
+{
+  unholy_blight_dot_t* dot;
+  virulent_plague_t* vp;
+
+  unholy_blight_buff_t( death_knight_t* p ) :
+    buff_t( p, "unholy_blight", p -> talent.unholy_blight ),
+    dot( new unholy_blight_dot_t( p ) ),
+    vp( new virulent_plague_t( p ) ) 
+  {
+    cooldown -> duration = 0_ms;
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+    {
+      dot -> execute();
+      vp -> execute();
+    } );
   }
 };
 
@@ -6344,7 +6382,18 @@ struct unholy_blight_t : public death_knight_spell_t
     parse_options( options_str );
 
     aoe = -1;
-    tick_action = new unholy_blight_dot_t( p );
+
+    if ( action_t* dot_damage = p -> find_action( "unholy_blight_dot" ) )
+    {
+      add_child( dot_damage );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.unholy_blight -> trigger();
   }
 };
 
@@ -8849,6 +8898,8 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
+  buffs.unholy_blight = new unholy_blight_buff_t( this );
+
   // Azerite Traits
   buffs.bones_of_the_damned = make_buff<stat_buff_t>( this, "bones_of_the_damned",
                                 azerite.bones_of_the_damned.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
@@ -9293,8 +9344,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   {
     m *= 1.0 + cache.mastery_value();
   }
-
-  m *= 1.0 + get_target_data( state->target )->debuff.unholy_blight->stack_value();
 
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
