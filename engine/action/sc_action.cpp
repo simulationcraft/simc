@@ -2803,6 +2803,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
 
+  if ( name_str == "ready" )
+    return make_mem_fn_expr( name_str, *this, &action_t::ready );
+
   if ( name_str == "usable" )
     return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::is_ready );
 
