@@ -2511,18 +2511,12 @@ namespace death_chakram
 /**
  * A whole namespace for a single spell...
  *
- * 2020.08.10 9.0.1.35432
- * YUGE DISCLAIMER! VERY WIP!
  * The spell consists of at least 3 spells:
  *   325028 - main spell, does all damage on multiple targets
- *   325037 - additional damage done on single target
+ *   325037 - additional periodic damage done on single target
  *   325553 - energize (amount is in 325028)
  *
- * Below analysis is done based on this log from beta:
- *   https://www.warcraftlogs.com/reports/rFh9gLHqZya2YmRv
- *
- * The spell behaves very differently when it can hit multiple or only a
- * single target.
+ * The behavior is different when it hits multiple or only a single target.
  *
  * Observations when it hits multiple targets:
  *   - only 325028 is in play
@@ -2532,14 +2526,14 @@ namespace death_chakram
  *
  * Observations when there is a single target involved:
  *   - 325028 is only the initial hit
- *   - 325037 starts hitting ~1 after the initial hit, doing 6 hits total
- *     every ~745ms [*]
+ *   - 325037 starts hitting ~850ms after the initial hit, doing 6 hits total
+ *     every ~630ms [*]
  *   - only 1 325553 energize happens on cast, all others happen when 325037
  *     hit (sometimes with a slight desync)
  *
  * [*] period data for 325037 hitting the main target:
  *        Min    Max  Median    Avg  Stddev
- *      0.643  0.809   0.745  0.744  0.0357
+ *       0.59  0.711   0.631  0.635  0.0242
  *
  * 2020.08.11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
  *   https://www.warcraftlogs.com/reports/F9ZKyQf7LWxD4vqJ
@@ -2561,15 +2555,17 @@ namespace death_chakram
  * time, but there is no sane pattern to the delays (there are 3 mostly discrete
  * delays though: 0, 100 & 200 ms).
  * If there is only 1 available target, it hits it as usual, once, and schedules
- * 6 hits of 325037, first hit in ~1s, 745ms period after (it may actually even
- * be driven by a hidden dot internally)
+ * 6 hits of 325037.
  *
  * Somewhat simplified (in multi-target) modeling of the theory for now:
  *  - in single-target case - let the main spell hit as usual (once), then
- *    schedule 1 "secondary" hit after 1s which schedules another 5 repeating
- *    hits with a 745ms period
+ *    schedule 1 "secondary" hit after the initial delay which schedules
+ *    another 5 repeating hits
  *  - in multi-target case - just model at as a simple "instant" chained aoe
  */
+
+static constexpr timespan_t ST_FIRST_HIT_DELAY = 850_ms;
+static constexpr timespan_t ST_HIT_DELAY = 630_ms;
 
 struct base_t : hunter_ranged_attack_t
 {
@@ -2578,7 +2574,7 @@ struct base_t : hunter_ranged_attack_t
   {
     chain_multiplier = p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
 
-    energize_type = action_energize::ON_HIT;
+    energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> covenants.death_chakram -> effectN( 4 ).base_value() +
                       p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
@@ -2588,11 +2584,15 @@ struct base_t : hunter_ranged_attack_t
 struct single_target_t final : base_t
 {
   int hit_number = 0;
+  int max_hit_number;
 
   single_target_t( util::string_view n, hunter_t* p ):
-    base_t( n, p, p -> find_spell( 325037 ) )
+    base_t( n, p, p -> find_spell( 325037 ) ),
+    max_hit_number( p -> covenants.death_chakram -> effectN( 1 ).chain_target() )
   {
     dual = true;
+    // XXX 2020-09-28: Single Target damage does not proc Master Marksman
+    triggers_master_marksman = false;
   }
 
   double action_multiplier() const override
@@ -2633,10 +2633,10 @@ struct single_target_event_t final : public event_t
     action.trigger( target, hit_number );
 
     hit_number += 1;
-    if ( hit_number == action.p() -> covenants.death_chakram -> effectN( 1 ).chain_target() )
+    if ( hit_number == action.max_hit_number )
       return;
 
-    make_event<single_target_event_t>( sim(), action, target, 745_ms, hit_number );
+    make_event<single_target_event_t>( sim(), action, target, ST_HIT_DELAY, hit_number );
   }
 };
 
@@ -2667,12 +2667,14 @@ struct death_chakram_t : death_chakram::base_t
 
   void impact( action_state_t* s ) override
   {
+    using namespace death_chakram;
+
     base_t::impact( s );
 
     if ( s -> n_targets == 1 )
     {
       // Hit only a single target, schedule the repeating single target hitter
-      make_event<death_chakram::single_target_event_t>( *sim, *single_target, s -> target, 1_s );
+      make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
     }
   }
 
