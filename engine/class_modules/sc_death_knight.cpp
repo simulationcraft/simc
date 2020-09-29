@@ -849,6 +849,7 @@ public:
 
     proc_t* pp_runic_corruption; // from pestilent pustules
     proc_t* rp_runic_corruption; // from RP spent
+    proc_t* sr_runic_corruption; // from soul reaper
 
     proc_t* fw_festering_strike;
     proc_t* fw_infected_claws;
@@ -1114,7 +1115,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.biting_cold.percent() );
 
-  debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> find_spell( 115994 ) )
+  debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
 
 }
@@ -3947,10 +3948,11 @@ struct unholy_pact_buff_t : public buff_t
   unholy_pact_damage_t* damage;
 
   unholy_pact_buff_t( death_knight_t* p ) :
-    buff_t( p, "unholy_pact",
-            p -> talent.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
+    buff_t( p, "unholy_pact", 
+      p -> talent.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
     damage( new unholy_pact_damage_t( p ) )
   {
+    set_default_value( data().effectN( 4 ).trigger() -> effectN( 1 ).percent() );
     tick_zero = true;
     buff_period = 1.0_s;
     set_tick_behavior( buff_tick_behavior::CLIP );
@@ -6237,10 +6239,10 @@ struct scourge_strike_t : public scourge_strike_base_t
 
 struct soul_reaper_execute_t : public death_knight_spell_t
 {
-  soul_reaper_execute_t( death_knight_t* p, const std::string& options_str ) :
+  soul_reaper_execute_t( death_knight_t* p ) :
     death_knight_spell_t( "soul_reaper_execute", p, p -> spell.soul_reaper_execute )
   {
-    parse_options( options_str );
+    background = true;
   }
 };
 
@@ -6250,7 +6252,7 @@ struct soul_reaper_t : public death_knight_spell_t
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
-    soul_reaper_execute( new soul_reaper_execute_t( p, options_str ) )
+    soul_reaper_execute( new soul_reaper_execute_t( p ) )
   {
     parse_options( options_str );
     add_child( soul_reaper_execute );
@@ -6260,8 +6262,9 @@ struct soul_reaper_t : public death_knight_spell_t
 
   void last_tick( dot_t* dot ) override
   {
-    if (dot -> target -> health_percentage() < data().effectN( 3 ).base_value())
+    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
+      soul_reaper_execute -> set_target ( dot -> target );
       soul_reaper_execute -> execute();
     }    
   }
@@ -7073,7 +7076,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                       target -> name(), name() );
 
-    buffs.runic_corruption -> trigger();
+    trigger_runic_corruption( 0, -1.0, procs.sr_runic_corruption );
   }
 }
 
@@ -8956,6 +8959,7 @@ void death_knight_t::init_procs()
 
   procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
   procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
+  procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
 
@@ -9190,6 +9194,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
+
+    m *= 1.0 + buffs.unholy_pact -> value();
   }
 
   else if ( attr == ATTR_STAMINA )
