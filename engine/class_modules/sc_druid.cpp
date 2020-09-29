@@ -2553,7 +2553,7 @@ public:
 
   bool verify_actor_spec() const override
   {
-    if ( p()->find_affinity_spell( ab::name() )->found() || free_cast )
+    if ( p()->find_affinity_spell( ab::name() )->found() || range::contains( p()->secondary_action_list, this ) )
       return true;
 #ifndef NDEBUG
     else if ( p()->sim->debug || p()->sim->log )
@@ -3925,10 +3925,8 @@ struct feral_frenzy_driver_t : public cat_attack_t
   {}
 
   feral_frenzy_driver_t( druid_t* p, const spell_data_t* s, util::string_view opt )
-    : cat_attack_t( "feral_frenzy", p, s )
+    : cat_attack_t( "feral_frenzy", p, s, opt )
   {
-    parse_options( opt );
-
     tick_action = p->get_secondary_action<feral_frenzy_dot_t>( "feral_frenzy_tick" );
     tick_action->stats = stats;
     dynamic_tick_action = true;
@@ -4314,12 +4312,6 @@ struct rip_t : public cat_attack_t
       combo_point_on_tick_proc_rate = p->find_spell( 279468 )->proc_chance();
   }
 
-  // TODO: fix logic on this when rip is created as child action of primal wrath
-  bool verify_actor_spec() const override
-  {
-    return true;
-  }
-
   action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4381,15 +4373,12 @@ struct primal_wrath_t : public cat_attack_t
   primal_wrath_t( druid_t* p, util::string_view opt ) : primal_wrath_t( p, p->talent.primal_wrath, opt ) {}
 
   primal_wrath_t( druid_t* p, const spell_data_t* s, util::string_view opt )
-    : cat_attack_t( "primal_wrath", p, s ), combo_points( 0 )
+    : cat_attack_t( "primal_wrath", p, s, opt ), combo_points( 0 )
   {
-    parse_options( opt );
-
     special = true;
     aoe     = -1;
 
-    // TODO: consolidate into single object instead of new rip_t for every time
-    rip = new rip_t( p, p->find_spell( 1079 ), "" );
+    rip = p->get_secondary_action<rip_t>( "Rip", p->find_spell( 1079 ), "" );
     rip->stats = stats;
   }
 
