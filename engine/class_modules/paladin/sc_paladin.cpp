@@ -1843,6 +1843,16 @@ void paladin_t::init_action_list()
     return;
   }
 
+  // Protection isn't supported atm
+  if ( !sim->allow_experimental_specializations && specialization() == PALADIN_PROTECTION )
+  {
+    if ( !quiet )
+      sim->error( "Specialization Protection Paladin for {} is currently not supported.", *this );
+
+    quiet = true;
+    return;
+  }
+
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
