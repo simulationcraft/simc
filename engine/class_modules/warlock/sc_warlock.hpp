@@ -478,6 +478,7 @@ public:
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
     propagate_const<buff_t*> malefic_wrath;
+    propagate_const<buff_t*> wrath_of_consumption;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -698,6 +699,7 @@ struct warlock_spell_t : public spell_t
 public:
   gain_t* gain;
   bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
+  bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -716,6 +718,9 @@ public:
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
     can_havoc         = false;
+
+    //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
+    affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -830,6 +835,16 @@ public:
     double pm = spell_t::action_multiplier();
 
     return pm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_ta_multiplier( s );
+
+    if ( p()->legendary.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && affected_by_woc )
+      m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
+
+    return m;
   }
 
   void extend_dot( dot_t* dot, timespan_t extend_duration )

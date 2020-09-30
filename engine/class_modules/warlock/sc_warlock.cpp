@@ -278,6 +278,13 @@ void warlock_td_t::target_demise()
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
                            warlock.gains.shadowburn_refund );
   }
+
+  if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
+  }
 }
 
 static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
@@ -642,6 +649,9 @@ void warlock_t::create_buffs()
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
                               ->set_default_value(4)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
+
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
+                               ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells()
