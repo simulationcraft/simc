@@ -6601,51 +6601,35 @@ void hunter_t::init_assessors()
   }
 }
 
-// hunter_t::default_potion =================================================
+// Default Consumbales ======================================================
 
 std::string hunter_t::default_potion() const
 {
-  return ( true_level >  110 ) ? "unbridled_fury" :
-         ( true_level >= 100 ) ? "prolonged_power" :
-         ( true_level >= 90  ) ? "draenic_agility" :
-         ( true_level >= 85  ) ? "virmens_bite":
+  // TODO: update for Shadowlands
+  return ( true_level >  50 ) ? "disabled" :
+         ( true_level >= 40 ) ? "unbridled_fury" :
          "disabled";
 }
-
-// hunter_t::default_flask ==================================================
 
 std::string hunter_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "greater_flask_of_the_currents" :
-         ( true_level >  100 ) ? "seventh_demon" :
-         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
-         ( true_level >= 85  ) ? "spring_blossoms" :
-         ( true_level >= 80  ) ? "winds" :
+  return ( true_level >= 51 ) ? "spectral_flask_of_power" :
+         ( true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
 }
-
-// hunter_t::default_food ===================================================
 
 std::string hunter_t::default_food() const
 {
-
-  std::string bfa_food = ( specialization() == HUNTER_SURVIVAL ) ? "baked_port_tato" :
-    ( specialization() == HUNTER_MARKSMANSHIP ) ? "abyssalfried_rissole" : "mechdowels_big_mech";
-
-  return ( true_level >  110 ) ? bfa_food :
-         ( true_level >  100 ) ? "lavish_suramar_feast" :
-         ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
-         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+  return ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
+         ( true_level >= 45 ) ? "bountiful_captains_feast" :
          "disabled";
 }
 
-// hunter_t::default_rune ===================================================
-
 std::string hunter_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
-         ( true_level >= 100 ) ? "hyper" :
+  // TODO: update for Shadowlands
+  return ( true_level >= 60 ) ? "disabled" :
+         ( true_level >= 50 ) ? "battle_scarred" :
          "disabled";
 }
 
