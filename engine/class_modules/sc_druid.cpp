@@ -8818,6 +8818,7 @@ void druid_t::apl_precombat()
     precombat->add_action(this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
     precombat->add_action(this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
     precombat->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+    precombat->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
   }
 
   if ( specialization() == DRUID_RESTORATION )
