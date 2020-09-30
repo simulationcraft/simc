@@ -542,6 +542,8 @@ struct sim_t : private sc_thread_t
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
+  // Which actor to use as the base for computing relative difference.
+  std::string relative_difference_base;
   double chart_boxplot_percentile;
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to
