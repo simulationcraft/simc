@@ -314,7 +314,7 @@ struct corruption_t : public affliction_spell_t
       base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
     }
     
-
+    affected_by_woc = true; //Hardcoding this in for now because of how this spell is hacked together!
   }
 
   void tick( dot_t* d ) override
