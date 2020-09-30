@@ -289,6 +289,8 @@ public:
   int initial_moon_stage;
   int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
   bool catweave_bear;
+  bool owlweave_bear;
+
   bool affinity_resources;  // activate resources tied to affinities
   double kindred_spirits_partner_dps;
   double convoke_the_spirits_heals;
@@ -859,6 +861,7 @@ public:
       initial_moon_stage( NEW_MOON ),
       lively_spirit_stacks( 9 ),  // set a usually fitting default value
       catweave_bear( false ),
+      owlweave_bear( false ),
       affinity_resources( false ),
       kindred_spirits_partner_dps( 1.0 ),
       convoke_the_spirits_heals( 3.5 ),
@@ -8303,6 +8306,7 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN ||
                                                      ( talent.guardian_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION ||
+                                                     ( talent.balance_affinity->ok() && (affinity_resources || owlweave_bear ) );
                                                      ( talent.restoration_affinity->ok() && affinity_resources );
   resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
                                                      ( talent.feral_affinity->ok() && ( affinity_resources || catweave_bear ) );
@@ -8811,14 +8815,10 @@ void druid_t::apl_precombat()
 
   if ( specialization() == DRUID_GUARDIAN )
   {
-    if ( catweave_bear && talent.feral_affinity->ok() )
-    {
-      precombat->add_action( this, "Cat Form" );
-    }
-    else
-    {
-      precombat->add_action( this, "Bear Form" );
-    }
+    precombat->add_action(this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+    precombat->add_action(this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+    precombat->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+    precombat->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
   }
 
   if ( specialization() == DRUID_RESTORATION )
@@ -9726,6 +9726,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
+  if ( util::str_compare_ci( splits[ 0 ], "druid" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "catweave_bear" ) && splits.size() == 2 )
+      return make_fn_expr( "catweave_bear", [ this ]() { return catweave_bear && talent.feral_affinity->ok(); } );
+    if ( util::str_compare_ci( splits[ 1 ], "owlweave_bear" ) && splits.size() == 2 )
+      return make_fn_expr( "owlweave_bear", [ this ]() { return owlweave_bear && talent.balance_affinity->ok(); } );
+  }
   if ( splits[ 0 ] == "druid" &&
        ( splits[ 2 ] == "ticks_gained_on_refresh" || splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" ) )
   {
@@ -9778,6 +9785,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
       } );
     throw std::invalid_argument( "invalid action" );
   }
+
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
   {
@@ -9982,6 +9990,7 @@ void druid_t::create_options()
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int( "lively_spirit_stacks", lively_spirit_stacks ) );
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
+  add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
@@ -10461,6 +10470,8 @@ void druid_t::copy_from( player_t* source )
   initial_moon_stage           = p->initial_moon_stage;
   lively_spirit_stacks         = p->lively_spirit_stacks;
   affinity_resources           = p->affinity_resources;
+  owlweave_bear                = p->owlweave_bear;
+  catweave_bear                = p->catweave_bear;
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
