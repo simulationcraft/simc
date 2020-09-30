@@ -842,7 +842,7 @@ public:
     // Guardian
     item_runeforge_t luffainfused_embrace;     // 7092
     item_runeforge_t the_natural_orders_will;  // 7093
-    item_runeforge_t ursocs_lingering_spirit;  // 7094
+    item_runeforge_t ursocs_fury_remembered;   // 7094
     item_runeforge_t legacy_of_the_sleeper;    // 7095
   } legendary;
 
@@ -5062,8 +5062,8 @@ struct thrash_bear_t : public bear_attack_t
     dot->target = execute_state->target;
     dot->schedule_execute();
 
-    if ( p()->legendary.ursocs_lingering_spirit->ok() &&
-         rng().roll( p()->legendary.ursocs_lingering_spirit->effectN( 1 ).percent() ) )
+    if ( p()->legendary.ursocs_fury_remembered->ok() &&
+         rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
     {
       execute();
     }
@@ -8141,7 +8141,7 @@ void druid_t::init_spells()
   // Guardian
   legendary.luffainfused_embrace      = find_runeforge_legendary( "Luffa-Infused Embrace" );
   legendary.the_natural_orders_will   = find_runeforge_legendary( "The Natural Order's Will" );
-  legendary.ursocs_lingering_spirit   = find_runeforge_legendary( "Ursoc's Lingering Spirit" );
+  legendary.ursocs_fury_remembered    = find_runeforge_legendary( "Ursoc's Fury Remembered" );
   legendary.legacy_of_the_sleeper     = find_runeforge_legendary( "Legacy of the Sleeper" );
 
   // Restoration
