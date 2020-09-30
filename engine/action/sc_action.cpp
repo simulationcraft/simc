@@ -2606,6 +2606,8 @@ void action_t::reset()
   target = default_target;
   last_used = timespan_t::min();
 
+  target_cache.is_valid = false;
+
   if( player->nth_iteration() == 1 )
   {
     if ( if_expr )
