@@ -3439,6 +3439,14 @@ public:
       }
     }
 
+    // Initial damage does Square Root damage
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double cam = melee_attack_t::composite_aoe_multiplier( state );
+
+      return cam / std::sqrt( state->n_targets );
+    }
+
     double action_multiplier() const override
     {
       double am = melee_attack_t::action_multiplier();
@@ -3490,6 +3498,14 @@ public:
             this->stats = ( *it )->get_stats( this->name(), this );
           }
         }
+      }
+
+      // Initial damage does Square Root damage
+      double composite_aoe_multiplier( const action_state_t* state ) const override
+      {
+        double cam = spell_t::composite_aoe_multiplier( state );
+
+        return cam / std::sqrt( state->n_targets );
       }
     };
 
@@ -5088,7 +5104,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         if ( p()->buff.thunder_focus_tea->up() )
         {
           if ( p()->spec.thunder_focus_tea_2->ok() )
-            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
+            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
 
           if ( p()->azerite.secret_infusion.ok() )
             p()->buff.secret_infusion_vers->trigger();
@@ -6338,6 +6354,14 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
+  // Initial damage does Square Root damage
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+
+    return cam / std::sqrt( state->n_targets );
+  }
+
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -7032,6 +7056,14 @@ struct breath_of_fire_t : public monk_spell_t
     }
 
     monk_spell_t::update_ready( cd );
+  }
+
+  // Initial damage does Square Root damage
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam  = monk_spell_t::composite_aoe_multiplier( state );
+
+    return cam / std::sqrt( state->n_targets );
   }
 
   void execute() override
@@ -9242,7 +9274,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
 
-  debuff.weapons_of_order = make_buff( *this, "weapons_of_order", p->find_spell( 312106 ) )
+  debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
@@ -10274,11 +10306,11 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.secret_infusion_crit = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287835 ) )
                                   ->add_stat( STAT_CRIT_RATING, azerite.secret_infusion.value() );
-  buff.secret_infusion_haste = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287831 ) )
+  buff.secret_infusion_haste = make_buff<stat_buff_t>( this, "secret_infusion_haste", find_spell( 287831 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.secret_infusion.value() );
-  buff.secret_infusion_mastery = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287836 ) )
+  buff.secret_infusion_mastery = make_buff<stat_buff_t>( this, "secret_infusion_mastery", find_spell( 287836 ) )
                                   ->add_stat( STAT_MASTERY_RATING, azerite.secret_infusion.value() );
-  buff.secret_infusion_vers = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287837 ) )
+  buff.secret_infusion_vers = make_buff<stat_buff_t>( this, "secret_infusion_vers", find_spell( 287837 ) )
                                   ->add_stat( STAT_VERSATILITY_RATING, azerite.secret_infusion.value() );
 
   // Windwalker
@@ -11587,14 +11619,6 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] );
   }
   def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
-  // Celestial Brew
-  def->add_action(
-      this, "Celestial Brew",
-      "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
-      "brawler.stack<2",
-      "Celestial Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
-      "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
-
   // Purifying Brew
   def->add_action( this, "Purifying Brew",
                    "if=stagger.pct>(6*(1-(cooldown.purifying_brew.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0."
@@ -11613,6 +11637,15 @@ void monk_t::apl_combat_brewmaster()
   def->add_action(
       this, "Keg Smash", "if=spell_targets>=2",
       "Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below" );
+
+  // Celestial Brew
+  def->add_action(
+      this, "Celestial Brew",
+      "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
+      "brawler.stack<2",
+      "Celestial Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
+      "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
+
   def->add_action( this, "Tiger Palm",
                    "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
   def->add_action(
@@ -12002,6 +12035,7 @@ void monk_t::apl_combat_mistweaver()
   def->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
   def->add_action( "call_action_list,name=st,if=active_enemies<4" );
 
+  st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
   st->add_action( this, "Blackout Kick",
                   "if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains<12" );

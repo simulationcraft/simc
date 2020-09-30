@@ -120,6 +120,8 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
+
     return m;
   }
 
@@ -133,6 +135,8 @@ struct shadow_bolt_t : public affliction_spell_t
     affliction_spell_t::execute();
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
+
+    p()->buffs.decimating_bolt->decrement();
   }
 };
 
@@ -599,6 +603,12 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
+
+        if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
+        {
+          m *= 1 + p()->conduit.focused_malignancy.percent(); 
+        }
+
         return m;
       }
 
@@ -644,6 +654,15 @@ struct drain_soul_t : public affliction_spell_t
     hasted_ticks = may_crit = true;
   }
 
+  void execute() override
+  {
+    dot_t* dot = get_dot( target );
+    if ( dot->is_ticking() )
+      p()->buffs.decimating_bolt->decrement();
+
+    affliction_spell_t::execute();
+  }
+
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
@@ -661,10 +680,18 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
     m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
     return m;
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    affliction_spell_t::last_tick( d );
+    p()->buffs.decimating_bolt->decrement();
+  }
+
 };
 
 struct haunt_t : public affliction_spell_t
@@ -938,7 +965,7 @@ void warlock_t::init_spells_affliction()
   // Conduits
   conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
-  conduit.focused_malignancy = find_conduit_spell( "Focused Malginancy" );
+  conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
 
   // Actives

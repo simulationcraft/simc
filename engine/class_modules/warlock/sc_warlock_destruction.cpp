@@ -497,6 +497,7 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->set_target( target );
       fnb_action->execute();
     }
+    p()->buffs.decimating_bolt->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -525,7 +526,19 @@ struct incinerate_t : public destruction_spell_t
 
     return m;
   }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
+
 };
+
+
 
 struct chaos_bolt_t : public destruction_spell_t
 {

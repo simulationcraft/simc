@@ -21,19 +21,6 @@ namespace soulbinds
 {
 namespace
 {
-struct covenant_cb_base_t
-{
-  bool trigger_on_class; // proc off class ability
-  bool trigger_on_base;  // proc off base ability
-
-  covenant_cb_base_t( bool on_class = true, bool on_base = false )
-    : trigger_on_class( on_class ), trigger_on_base( on_base )
-  {
-  }
-  virtual void trigger( action_t*, action_state_t* s ) = 0;
-  virtual ~covenant_cb_base_t() { }
-};
-
 struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
@@ -69,64 +56,17 @@ struct covenant_cb_action_t : public covenant_cb_base_t
   }
 };
 
-struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
-{
-  unsigned class_ability;
-  unsigned base_ability;
-  auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
-
-  covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ),
-      class_ability( p->covenant->get_covenant_ability_spell_id() ),
-      base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
-      cb_list()
-  {
-    // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
-    if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
-      class_ability = 326446;
-  }
-
-  void initialize() override
-  {
-    listener->sim->print_debug( "Initializing covenant ability cast handler..." );
-    listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
-  }
-
-  void trigger( action_t* a, action_state_t* s ) override
-  {
-    if ( a->data().id() != class_ability && a->data().id() != base_ability )
-      return;
-
-    for ( const auto& cb : cb_list )
-    {
-      if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
-           ( cb->trigger_on_base && a->data().id() == base_ability ) )
-        cb->trigger( a, s );
-    }
-  }
-};
-
 // Add an effect to be triggered when covenant ability is cast. Currently has has templates for buff_t & action_t, and
 // can be expanded via additional subclasses to covenant_cb_base_t.
 template <typename T, typename... S>
 void add_covenant_cast_callback( player_t* p, S&&... args )
 {
-  if ( !p->covenant->enabled() )
-    return;
-
-  if ( !p->covenant->cast_callback )
+  auto callback = get_covenant_callback( p );
+  if ( callback )
   {
-    auto eff                   = new special_effect_t( p );
-    eff->name_str              = "covenant_cast_callback";
-    eff->proc_flags_           = PF_ALL_DAMAGE;
-    eff->proc_flags2_          = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    p->special_effects.push_back( eff );
-    p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
+    auto cb_entry = new T( std::forward<S>( args )... );
+    callback->cb_list.push_back( cb_entry );
   }
-
-  auto cb_entry = new T( std::forward<S>( args )... );
-  auto cb       = debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
-  cb->cb_list.push_back( cb_entry );
 }
 
 double get_coefficient_from_desc_vars( special_effect_t& e, bool sp = true )

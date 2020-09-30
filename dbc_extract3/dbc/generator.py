@@ -1673,6 +1673,10 @@ class SpellDataGenerator(DataGenerator):
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
+          ( 343249, 0 ), # Escape from Reality Buff
+          ( 343250, 0 ), # Escape from Reality
+          ( 343539, 0 ), # Escape from Reality Mana Refund
+          ( 343543, 0 ), # Escape from Reality Energy Refund
         ),
 
         # Druid:
