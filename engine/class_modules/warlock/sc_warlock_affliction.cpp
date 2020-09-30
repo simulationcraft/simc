@@ -965,7 +965,7 @@ void warlock_t::init_spells_affliction()
   // Conduits
   conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
-  conduit.focused_malignancy = find_conduit_spell( "Focused Malginancy" );
+  conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
 
   // Actives
