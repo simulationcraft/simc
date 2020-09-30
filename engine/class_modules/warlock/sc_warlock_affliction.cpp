@@ -583,7 +583,7 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_corruption->is_ticking() )
           mult += 1.0;
 
-		if ( td->dots_unstable_affliction->is_ticking() )
+        if ( td->dots_unstable_affliction->is_ticking() )
           mult += 1.0;
 
         if ( td->dots_vile_taint->is_ticking() )
@@ -591,9 +591,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
-		
-		if ( td->dots_phantom_singularity->is_ticking() )
-		  mult += 1.0;
 
         // TODO:
         // Scouring Tithe - awaiting merge
@@ -606,10 +603,12 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
-	    if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
-	    {
-	      m *= 1 + p()->conduit.focused_malignancy.percent(); 
-	    }
+
+        if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
+        {
+          m *= 1 + p()->conduit.focused_malignancy.percent(); 
+        }
+
         return m;
       }
 
