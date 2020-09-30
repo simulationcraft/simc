@@ -4953,8 +4953,8 @@ struct pulverize_t : public bear_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      // consumes x stacks of Thrash on the target
-      td( s->target )->dots.thrash_bear->decrement( consume );
+      if ( !free_cast )
+        td( s->target )->dots.thrash_bear->decrement( consume );
 
       // and reduce damage taken by x% for y sec.
       p()->buff.pulverize->trigger();
@@ -4965,7 +4965,7 @@ struct pulverize_t : public bear_attack_t
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    return bear_attack_t::target_ready( t ) && td( t )->dots.thrash_bear->current_stack() >= consume;
+    return bear_attack_t::target_ready( t ) && ( free_cast || td( t )->dots.thrash_bear->current_stack() >= consume );
   }
 };
 
