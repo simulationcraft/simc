@@ -2806,22 +2806,22 @@ struct wild_spirits_t : hunter_spell_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_state_t : public action_state_t
-{
-  auto_shot_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target )
-  { }
-
-  proc_types2 cast_proc_type2() const override
-  {
-    // Auto shot seems to trigger Meticulous Scheming (and possibly other
-    // effects that care about casts).
-    return PROC2_CAST_DAMAGE;
-  }
-};
-
 struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 {
+  struct state_t : public action_state_t
+  {
+    state_t( action_t* action, player_t* target ) :
+      action_state_t( action, target )
+    { }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Auto shot seems to trigger Meticulous Scheming (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_DAMAGE;
+    }
+  };
+
   double wild_call_chance = 0;
 
   auto_shot_t( hunter_t* p ) :
@@ -2834,7 +2834,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
   action_state_t* new_state() override
   {
-    return new auto_shot_state_t( this, target );
+    return new state_t( this, target );
   }
 
   void impact( action_state_t* s ) override
@@ -2862,9 +2862,9 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
 struct barrage_t: public hunter_spell_t
 {
-  struct barrage_damage_t final : public hunter_ranged_attack_t
+  struct damage_t final : public hunter_ranged_attack_t
   {
-    barrage_damage_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
     {
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
@@ -2881,7 +2881,7 @@ struct barrage_t: public hunter_spell_t
     channeled = true;
     triggers_wild_spirits = false;
 
-    tick_action = p -> get_background_action<barrage_damage_t>( "barrage_damage" );
+    tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
   }
 
@@ -3625,10 +3625,10 @@ struct steady_shot_t: public hunter_ranged_attack_t
 struct rapid_fire_t: public hunter_spell_t
 {
   // this is required because Double Tap 'snapshots' on channel start
-  struct rapid_fire_state_t : public action_state_t
+  struct state_t : public action_state_t
   {
     bool double_tapped = false;
-    rapid_fire_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
+    state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
 
     void initialize() override
     {
@@ -3646,11 +3646,11 @@ struct rapid_fire_t: public hunter_spell_t
     void copy_state( const action_state_t* o ) override
     {
       action_state_t::copy_state( o );
-      double_tapped = debug_cast<const rapid_fire_state_t*>( o ) -> double_tapped;
+      double_tapped = debug_cast<const state_t*>( o ) -> double_tapped;
     }
   };
 
-  struct rapid_fire_damage_t final : public hunter_ranged_attack_t
+  struct damage_t final : public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
     struct {
@@ -3663,7 +3663,7 @@ struct rapid_fire_t: public hunter_spell_t
       int max_num_ticks = 0;
     } surging_shots;
 
-    rapid_fire_damage_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 257045 ) ),
       trick_shots_targets( as<int>( p -> specs.trick_shots -> effectN( 3 ).base_value() ) )
     {
@@ -3731,7 +3731,7 @@ struct rapid_fire_t: public hunter_spell_t
     }
   };
 
-  rapid_fire_damage_t* damage;
+  damage_t* damage;
   int base_num_ticks;
   struct {
     proc_t* double_tap;
@@ -3739,8 +3739,8 @@ struct rapid_fire_t: public hunter_spell_t
 
   rapid_fire_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "rapid_fire", p, p -> specs.rapid_fire ),
-    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
-    base_num_ticks( as<int>(data().effectN( 1 ).base_value()) )
+    damage( p -> get_background_action<damage_t>( "rapid_fire_damage" ) ),
+    base_num_ticks( as<int>( data().effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -3812,7 +3812,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     timespan_t t = hunter_spell_t::tick_time( s );
 
-    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+    if ( debug_cast<const state_t*>( s ) -> double_tapped )
       t *= 1 + p() -> talents.double_tap -> effectN( 1 ).percent();
 
     return t;
@@ -3833,7 +3833,7 @@ struct rapid_fire_t: public hunter_spell_t
   int num_ticks( const action_state_t* s ) const
   {
     int num_ticks_ = base_num_ticks;
-    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+    if ( debug_cast<const state_t*>( s ) -> double_tapped )
       num_ticks_ = as<int>(num_ticks_ * (1 + p() -> talents.double_tap -> effectN( 3 ).percent()));
     return num_ticks_;
   }
@@ -3853,13 +3853,13 @@ struct rapid_fire_t: public hunter_spell_t
 
   action_state_t* new_state() override
   {
-    return new rapid_fire_state_t( this, target );
+    return new state_t( this, target );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type type ) override
   {
     hunter_spell_t::snapshot_state( s, type );
-    debug_cast<rapid_fire_state_t*>( s ) -> double_tapped = p() -> buffs.double_tap -> check();
+    debug_cast<state_t*>( s ) -> double_tapped = p() -> buffs.double_tap -> check();
   }
 };
 
@@ -3867,9 +3867,9 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct explosive_shot_t: public hunter_ranged_attack_t
 {
-  struct explosive_shot_aoe_t final : hunter_ranged_attack_t
+  struct damage_t final : hunter_ranged_attack_t
   {
-    explosive_shot_aoe_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
     {
       background = true;
@@ -3885,7 +3885,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     may_miss = may_crit = false;
     triggers_wild_spirits = false;
 
-    tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
+    tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
   }
 };
 
@@ -3925,20 +3925,20 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
 struct internal_bleeding_t
 {
-  struct internal_bleeding_action_t final : hunter_ranged_attack_t
+  struct action_t final : hunter_ranged_attack_t
   {
-    internal_bleeding_action_t( util::string_view n, hunter_t* p ):
+    action_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 270343 ) )
     {
       dual = true;
     }
   };
-  internal_bleeding_action_t* action = nullptr;
+  action_t* action = nullptr;
 
   internal_bleeding_t( hunter_t* p )
   {
     if ( p -> talents.wildfire_infusion.ok() )
-      action = p -> get_background_action<internal_bleeding_action_t>( "internal_bleeding" );
+      action = p -> get_background_action<action_t>( "internal_bleeding" );
   }
 
   void trigger( const action_state_t* s )
@@ -4157,20 +4157,20 @@ struct mongoose_bite_eagle_t : mongoose_bite_base_t
 
 struct flanking_strike_t: hunter_melee_attack_t
 {
-  struct flanking_strike_damage_t final : hunter_melee_attack_t
+  struct damage_t final : hunter_melee_attack_t
   {
-    flanking_strike_damage_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_melee_attack_t( n, p, p -> find_spell( 269752 ) )
     {
       background = true;
       dual = true;
     }
   };
-  flanking_strike_damage_t* damage;
+  damage_t* damage;
 
   flanking_strike_t( hunter_t* p, util::string_view options_str ):
     hunter_melee_attack_t( "flanking_strike", p, p -> talents.flanking_strike ),
-    damage( p -> get_background_action<flanking_strike_damage_t>( "flanking_strike_damage" ) )
+    damage( p -> get_background_action<damage_t>( "flanking_strike_damage" ) )
   {
     parse_options( options_str );
 
@@ -4502,9 +4502,9 @@ struct chakrams_t : public hunter_ranged_attack_t
    * Fortunately Survival is melee, so the impact of this should be pretty low.
    */
 
-  struct chakrams_damage_t final : public hunter_ranged_attack_t
+  struct damage_t final : public hunter_ranged_attack_t
   {
-    chakrams_damage_t( util::string_view n, hunter_t* p ):
+    damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.chakrams -> effectN( 1 ).trigger() )
     {
       dual = true;
@@ -4518,14 +4518,14 @@ struct chakrams_t : public hunter_ranged_attack_t
       base_aoe_multiplier = 0.5;
     }
   };
-  chakrams_damage_t* damage = nullptr;
+  damage_t* damage = nullptr;
 
   chakrams_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "chakrams", p, p -> talents.chakrams )
   {
     parse_options( options_str );
 
-    damage = p -> get_background_action<chakrams_damage_t>( "chakrams_damage" );
+    damage = p -> get_background_action<damage_t>( "chakrams_damage" );
     add_child( damage );
   }
 
@@ -5036,9 +5036,9 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 
 struct stampede_t: public hunter_spell_t
 {
-  struct stampede_tick_t: public hunter_spell_t
+  struct damage_t : public hunter_spell_t
   {
-    stampede_tick_t( hunter_t* p ):
+    damage_t( hunter_t* p ):
       hunter_spell_t( "stampede_tick", p, p -> find_spell( 201594 ) )
     {
       aoe = -1;
@@ -5058,7 +5058,7 @@ struct stampede_t: public hunter_spell_t
     school = SCHOOL_PHYSICAL;
     triggers_wild_spirits = false;
 
-    tick_action = new stampede_tick_t( p );
+    tick_action = new damage_t( p );
   }
 };
 
@@ -5272,9 +5272,9 @@ struct coordinated_assault_t: public hunter_spell_t
 
 struct steel_trap_t: public hunter_spell_t
 {
-  struct steel_trap_impact_t final : public hunter_spell_t
+  struct impact_t final : public hunter_spell_t
   {
-    steel_trap_impact_t( util::string_view n, hunter_t* p ):
+    impact_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 162487 ) )
     {
       background = true;
@@ -5296,7 +5296,7 @@ struct steel_trap_t: public hunter_spell_t
 
     harmful = false;
 
-    impact_action = p -> get_background_action<steel_trap_impact_t>( "steel_trap_impact" );
+    impact_action = p -> get_background_action<impact_t>( "steel_trap_impact" );
     add_child( impact_action );
   }
 };
