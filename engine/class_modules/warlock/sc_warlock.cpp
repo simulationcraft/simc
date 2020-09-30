@@ -682,6 +682,8 @@ void warlock_t::init_spells()
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
+  //Wrath is implemented here to catch any potential cross-spec periodic effects
+  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
