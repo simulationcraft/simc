@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36037 shadowlands-BETA (hotfix 2020-09-27/36037)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1506,7 +1506,7 @@ School           : Physical
 Spell Type       : None
 Resource         : 20 Energy (3) (id=1189)
 Spell Level      : 14
-Range            : 8 - 25 yards
+Range            : 6 - 25 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 15 seconds
@@ -3083,7 +3083,7 @@ Effects          :
 #1 (id=124455)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=124456)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17252 | Misc Value 2: 0xcf1 | Target: Unknown(32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17252 | Misc Value 2: 0xcf1 | Radius: 10 yards | Target: Unknown(47)
 Description      : Summons a Felguard who attacks the target for $d that deals $216187s1% increased damage.
 
 This Felguard will stun their target when summoned.
@@ -4267,7 +4267,7 @@ Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Silence | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Silence | Target: Unknown(25)
 Description      : $@spelldesc316099
 Tooltip          : Silenced.
 
@@ -6135,7 +6135,7 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Power Siphon (334581 effect#1), Wrath of Consumption (337130 effect#1), Balespider's Burning Core (337161 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#3), Power Siphon (334581 effect#1), Wrath of Consumption (337130 effect#1), Balespider's Burning Core (337161 effect#1)
 Family Flags     : 49, 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9697,9 +9697,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=793902)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=793903)   : Apply Aura (6) | Periodic Damage (3): arcane every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=871508)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #4 (id=871509)   : Dummy (3)
@@ -9806,7 +9806,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
-Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
+Description      : Your secondary stats are all increased by $s1.
 
 Name             : Unending Resolve (desc=Rank 2) (id=317138) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -9876,7 +9876,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=810354)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc321792
 
 Name             : Impending Catastrophe (id=322170) [Spell Family (5)] 
@@ -9898,7 +9898,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=810357)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc321792
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -9950,7 +9950,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=815472)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=815483)   : Trigger Spell (64): Decimating Bolt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 100 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=819800)   : Trigger Spell (64): Decimating Bolt
@@ -9959,9 +9959,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 300 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Enemy (6)
 #5 (id=819802)   : Trigger Spell (64): Decimating Bolt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 400 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Enemy (6)
-Description      : 196Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next$?s198590[][ $325299u] $?s137046[Incinerates]?s198590[Drain Soul][Shadow Bolts]$?a137044[ or Demonbolts][] by $325299s1%.$?a196408[ This value is reduced while using Fire and Brimstone.][]
+Description      : Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next$?s198590[][ $325299u] $?s137046[Incinerates]?s198590[Drain Soul]?a137044&?!s137046[Demonbolts]?!a137044[Shadow Bolts][] by $325299s1%.$?a196408[ This value is reduced while using Fire and Brimstone.][]
 
-Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt]$?a137044[ and Demonbolt][] both increase as your target's health decreases.
+Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul]?a137044[Demonobolt]?!s137046&!a137044[Shadow Bolt][] both increase as your target's health decreases.
 Variables        : $damage=${4*$327059s1}
 
 Name             : Decimating Bolt (desc=Necrolord) (id=325299) [Spell Family (5)] 
@@ -9985,15 +9985,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=815488)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670), Demonbolt (264178)
-                   Family Flags: 0, 38, 70
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670)
+                   Family Flags: 0, 38
 #2 (id=815492)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
+#3 (id=872229)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Demonbolt (264178)
+                   Family Flags: 70
 Description      : $@spelldesc325289
-Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt]$?a137044[ and Demonbolt][] increased by $w2%.
+Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt] increased by $w2%.
 
 Name             : Soul Rot (desc=Night Fae) (id=325640) [Spell Family (5)] 
 Class            : Warlock
@@ -10049,7 +10053,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=818373)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325289
 
 Name             : Decimating Bolt (desc=Necrolord) (id=327070) [Spell Family (5)] 
@@ -10274,8 +10278,8 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
-Duration         : 15 seconds
-Stacks           : 2 initial, 2 maximum
+Duration         : 20 seconds
+Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -11338,7 +11342,7 @@ Description      : Soul Rot's damage and radius is increased by |cFFFFFFFF${$s1}
 Name             : Diabolic Bloodstone (id=340562) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 222 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 222 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
