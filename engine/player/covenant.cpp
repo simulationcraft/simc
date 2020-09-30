@@ -542,6 +542,58 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   return root;
 }
 
+covenant_cb_base_t::covenant_cb_base_t( bool on_class, bool on_base )
+  : trigger_on_class( on_class ), trigger_on_base( on_base )
+{}
+
+covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
+  : dbc_proc_callback_t( p, e ),
+    class_ability( p->covenant->get_covenant_ability_spell_id() ),
+    base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
+    cb_list()
+{
+  // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
+  if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
+    class_ability = 326446;
+}
+
+void covenant_ability_cast_cb_t::initialize()
+{
+  listener->sim->print_debug( "Initializing covenant ability cast handler..." );
+  listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
+}
+
+void covenant_ability_cast_cb_t::trigger( action_t* a, action_state_t* s )
+{
+  if ( a->data().id() != class_ability && a->data().id() != base_ability )
+    return;
+
+  for ( const auto& cb : cb_list )
+  {
+    if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
+         ( cb->trigger_on_base && a->data().id() == base_ability ) )
+      cb->trigger( a, s );
+  }
+}
+
+covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
+{
+  if ( !p->covenant->enabled() )
+    return nullptr;
+
+  if ( !p->covenant->cast_callback )
+  {
+    auto eff          = new special_effect_t( p );
+    eff->name_str     = "covenant_cast_callback";
+    eff->proc_flags_  = PF_ALL_DAMAGE;
+    eff->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    p->special_effects.push_back( eff );
+    p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
+  }
+
+  return debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
+}
+
 struct fleshcraft_t : public spell_t
 {
   struct embody_pulse_t : public spell_t

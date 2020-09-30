@@ -164,6 +164,30 @@ public:
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
 
+struct covenant_cb_base_t
+{
+  bool trigger_on_class;  // proc off class ability
+  bool trigger_on_base;   // proc off base ability
+
+  covenant_cb_base_t( bool on_class = true, bool on_base = false );
+  virtual ~covenant_cb_base_t() {}
+  virtual void trigger( action_t*, action_state_t* ) = 0;
+};
+
+struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
+{
+  unsigned class_ability;
+  unsigned base_ability;
+  auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
+
+  covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e );
+
+  void initialize() override;
+  void trigger( action_t* a, action_state_t* s ) override;
+};
+
+covenant_ability_cast_cb_t* get_covenant_callback( player_t* p );
+
 action_t* create_action( player_t* player, util::string_view name, const std::string& options );
 
 } // Namespace covenant ends
