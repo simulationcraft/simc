@@ -3439,6 +3439,14 @@ public:
       }
     }
 
+    // Initial damage does Square Root damage
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double cam = melee_attack_t::composite_aoe_multiplier( state );
+
+      return cam / std::sqrt( state->n_targets );
+    }
+
     double action_multiplier() const override
     {
       double am = melee_attack_t::action_multiplier();
@@ -3490,6 +3498,14 @@ public:
             this->stats = ( *it )->get_stats( this->name(), this );
           }
         }
+      }
+
+      // Initial damage does Square Root damage
+      double composite_aoe_multiplier( const action_state_t* state ) const override
+      {
+        double cam = spell_t::composite_aoe_multiplier( state );
+
+        return cam / std::sqrt( state->n_targets );
       }
     };
 
@@ -6336,6 +6352,14 @@ struct keg_smash_t : public monk_melee_attack_t
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
+  }
+
+  // Initial damage does Square Root damage
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+
+    return cam / std::sqrt( state->n_targets );
   }
 
   double action_multiplier() const override
