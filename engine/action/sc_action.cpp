@@ -4318,6 +4318,12 @@ rng::rng_t& action_t::rng() const
  */
 void action_t::acquire_target( retarget_source /* event */, player_t* /* context */, player_t* candidate_target )
 {
+  // Reset target cache every time target acquisition occurs for AOE spells
+  if ( n_targets() != 0 )
+  {
+    target_cache.is_valid = false;
+  }
+
   // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
   if ( target && candidate_target && target->is_enemy() != candidate_target->is_enemy() )
   {
@@ -4346,7 +4352,6 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
                              target ? target->name() : "(none)", candidate_target->name() );
     }
     target                = candidate_target;
-    target_cache.is_valid = false;
   }
 }
 
