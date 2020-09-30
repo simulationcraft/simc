@@ -543,6 +543,9 @@ struct player_t : public actor_t
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
+
+    // 9.0 Trinkets
+    buff_t* overflowing_anima_prison;  // needed to allow usage of buff expr even when not equipped
   } buffs;
 
   struct debuffs_t

@@ -3357,6 +3357,9 @@ void player_t::create_buffs()
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
+
+      // Trinkets
+      buffs.overflowing_anima_prison = make_buff<stat_buff_t>( this, "overflowing_anima_prison", find_spell( 343385 ) );
     }
   }
   // .. for enemies
