@@ -8953,6 +8953,7 @@ void druid_t::apl_guardian()
   catweave->add_action( this, "Cat form" );
   catweave->add_action( this, "Rake", "if=buff.prowl.up" );
   catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
+  catweave->add_action( "empower_bond,if=druid.catweave_bear" );
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
   catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points=5" );
   catweave->add_action( "ferocious_bite,if=combo_points=5" );
