@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.2.36037
-static const std::array<specialization_spell_entry_t, 924> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.2.36086
+static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -289,7 +289,6 @@ static const std::array<specialization_spell_entry_t, 924> __specialization_spel
   {  4,  261, 197835,      0, "Shuriken Storm"                    , 0 },
   {  4,  261, 212283,      0, "Symbols of Death"                  , 0 },
   {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },
-  {  4,  261, 231718,      0, "Shadowstrike"                      , "Rank 2" },
   {  4,  261, 245751,      0, "Sprint"                            , "Rank 3" },
   {  4,  261, 316219,      0, "Find Weakness"                     , 0 },
   {  4,  261, 319175,      0, "Shadow Vault"                      , 0 },
@@ -698,6 +697,7 @@ static const std::array<specialization_spell_entry_t, 924> __specialization_spel
   { 10,  270, 231633,      0, "Essence Font"                      , "Rank 2" },
   { 10,  270, 231876,      0, "Thunder Focus Tea"                 , "Rank 2" },
   { 10,  270, 243435, 115203, "Fortifying Brew"                   , 0 },
+  { 10,  270, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
   { 10,  270, 274586,      0, "Vivify"                            , "Rank 2" },
   { 10,  270, 281231,      0, "Renewing Mist"                     , "Rank 2" },
   { 10,  270, 322104,      0, "Expel Harm"                        , "Rank 2" },
@@ -731,6 +731,7 @@ static const std::array<specialization_spell_entry_t, 924> __specialization_spel
   { 10,  269, 243435, 115203, "Fortifying Brew"                   , 0 },
   { 10,  269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10,  269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
+  { 10,  269, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
   { 10,  269, 322106,      0, "Expel Harm"                        , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   { 10,  269, 323999,      0, "Invoke Xuen, the White Tiger"      , "Rank 2" },

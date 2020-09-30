@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.2.36037
-static const std::array<item_name_description_t, 544> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.2.36086
+static const std::array<item_name_description_t, 560> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -352,7 +352,7 @@ static const std::array<item_name_description_t, 544> __item_name_description_da
   { 13592, "Queen's Conservatory"                        },
   { 13593, "Prestige"                                    },
   { 13594, "Abominable Stitching"                        },
-  { 13595, "Necrolord Prestige"                          },
+  { 13595, "Prestige"                                    },
   { 13596, "Travel Network"                              },
   { 13597, "Ethereal"                                    },
   { 13599, "Measured Contemplation"                      },
@@ -544,5 +544,21 @@ static const std::array<item_name_description_t, 544> __item_name_description_da
   { 13785, "Fel Flame Fortification"                     },
   { 13786, "Fiery Soul"                                  },
   { 13787, "Winterborn"                                  },
+  { 13789, "Celerity"                                    },
+  { 13790, "Mark of the Master Assassin"                 },
+  { 13791, "Toxic Bladed Girdle"                         },
+  { 13792, "Blood-Fanged Hood"                           },
+  { 13793, "Shadowdust Locket"                           },
+  { 13794, "Dashing Scoundrel"                           },
+  { 13795, "Bloodstained Doomblade Gloves"               },
+  { 13796, "Zoldyck Famil Training Shackles"             },
+  { 13797, "Duskwalker's Patch"                          },
+  { 13798, "Greenskin Wickers"                           },
+  { 13799, "Bandit's Guile"                              },
+  { 13800, "Concealed Blunderbuss"                       },
+  { 13801, "Finality"                                    },
+  { 13802, "Akaari's Soul Fragment"                      },
+  { 13803, "the Rotten"                                  },
+  { 13804, "Deathly Shadows"                             },
 } };
 

@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.2.36037
-static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
+// Rank class spells, wow build 9.0.2.36086
+static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -239,6 +239,8 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 270, 281231,      0, "Renewing Mist"                     , "Rank 2" },
   {  2,   0, 317906,      0, "Retribution Aura"                  , "Rank 2" },
   {  6, 251, 316838,      0, "Rime"                              , "Rank 2" },
+  { 10, 269, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
+  { 10, 270, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
   { 10,   0, 328669,      0, "Roll"                              , "Rank 2" },
   {  6, 250, 316616,      0, "Rune Tap"                          , "Rank 2" },
   {  6, 252, 317234,      0, "Scourge Strike"                    , "Rank 2" },
@@ -247,7 +249,6 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   {  5,   0, 327820,      0, "Shadow Word: Pain"                 , "Rank 2" },
   {  5, 256, 343726,      0, "Shadowfiend"                       , "Rank 2" },
   {  5, 258, 319904,      0, "Shadowfiend"                       , "Rank 2" },
-  {  4, 261, 231718,      0, "Shadowstrike"                      , "Rank 2" },
   {  8,  64, 231582,      0, "Shatter"                           , "Rank 2" },
   {  1,   0, 231847,      0, "Shield Block"                      , "Rank 2" },
   {  1,  73, 316523,      0, "Shield Slam"                       , "Rank 2" },
