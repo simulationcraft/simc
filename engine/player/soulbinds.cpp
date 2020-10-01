@@ -834,6 +834,45 @@ void gnashing_chompers( special_effect_t& effect )
   } );
 }
 
+void lead_by_example( special_effect_t& effect )
+{
+  if ( !effect.player->buffs.lead_by_example )
+  {
+    auto s_data     = effect.player->find_spell( 342181 );
+    double duration = effect.driver()->effectN( 3 ).base_value();
+
+    // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
+    if ( const char* vars = effect.player->dbc->spell_desc_vars( effect.spell_id ).desc_vars() )
+    {
+      // The description variables string contains instances of "?a137005[${1.0}]", where the class is
+      // defined by the class aura spell ID and the floating point number represents the duration modifier.
+      std::regex r( "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" );
+      std::cregex_iterator begin( vars, vars + std::strlen( vars ), r );
+      for ( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
+      {
+        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
+        if ( spell->is_class( effect.player->type ) )
+        {
+          duration *= std::stod( ( *i ).str( 2 ) );
+          break;
+        }
+      }
+    }
+
+    // TODO: does 'up to X%' include the base value or refers only to extra per ally?
+    effect.player->buffs.lead_by_example =
+        make_buff( effect.player, "lead_by_example", s_data )
+            ->set_default_value_from_effect( 2 )
+            ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
+            ->set_duration( timespan_t::from_seconds( duration ) )
+            ->add_invalidate( CACHE_STRENGTH )
+            ->add_invalidate( CACHE_AGILITY )
+            ->add_invalidate( CACHE_INTELLECT );
+  }
+
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.lead_by_example );
+}
+
 void serrated_spaulders( special_effect_t& effect )
 {
 
@@ -901,6 +940,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
+  register_soulbind_special_effect( 342156, soulbinds::lead_by_example );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }

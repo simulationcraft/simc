@@ -4380,6 +4380,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( buffs.built_for_war )
     m *= 1.0 + buffs.built_for_war->check_stack_value();
 
+  if ( buffs.lead_by_example )
+    m *= 1.0 + buffs.lead_by_example->check_value();
+
   if ( buffs.celestial_guidance )
     m *= 1.0 + buffs.celestial_guidance->check_value();
 
