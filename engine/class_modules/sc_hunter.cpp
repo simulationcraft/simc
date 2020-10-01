@@ -6882,19 +6882,19 @@ void hunter_t::apl_mm()
     precombat -> add_action( "aimed_shot,if=active_enemies=1" );
 
     default_list -> add_action( "auto_shot" );
-    default_list -> add_action( "use_items,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<20" );
+    default_list -> add_action( "use_items,if=buff.trueshot.remains>14|!talent.calling_the_shots.enabled|target.time_to_die<20" );
     default_list -> add_action( "call_action_list,name=cds" );
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
     default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
     cds -> add_action( "hunters_mark,if=debuff.hunters_mark.down&!buff.trueshot.up" );
-    cds -> add_action( "berserking,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
-    cds -> add_action( "blood_fury,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
-    cds -> add_action( "ancestral_call,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
-    cds -> add_action( "fireblood,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
+    cds -> add_action( "berserking,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
+    cds -> add_action( "blood_fury,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
+    cds -> add_action( "ancestral_call,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
+    cds -> add_action( "fireblood,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
     cds -> add_action( "lights_judgment,if=buff.trueshot.down" );
     cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
-    cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|prev_gcd.1.trueshot&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
+    cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
     trickshots -> add_action( "double_tap,if=cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains" );
     trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
@@ -6928,18 +6928,13 @@ void hunter_t::apl_mm()
     st -> add_action( "a_murder_of_crows" );
     st -> add_action( "resonating_arrow,if=buff.precise_shots.down|!talent.chimaera_shot.enabled" );
     st -> add_action( "trueshot,if=buff.precise_shots.down|!talent.chimaera_shot.enabled" );
-    st -> add_action( "aimed_shot,if=(full_recharge_time<cast_time+gcd|buff.trueshot.up)&(buff.precise_shots.down|!talent.chimaera_shot.enabled|ca_active)|buff.trick_shots.remains>execute_time&(active_enemies>1|runeforge.serpentstalkers_trickery.equipped)" );
+    st -> add_action( "aimed_shot,if=buff.precise_shots.down|(!talent.chimaera_shot.enabled|ca_active)&buff.trueshot.up|buff.trick_shots.remains>execute_time&(active_enemies>1|runeforge.serpentstalkers_trickery.equipped)" );
     st -> add_action( "rapid_fire,if=buff.double_tap.down&focus+cast_regen<focus.max" );
-    st -> add_action( "chimaera_shot,if=buff.precise_shots.up&(buff.trueshot.down|active_enemies>1|!ca_active)" );
+    st -> add_action( "chimaera_shot,if=(buff.precise_shots.up|focus>cost+action.aimed_shot.cost)&(buff.trueshot.down|active_enemies>1|!ca_active)" );
+    st -> add_action( "arcane_shot,if=(buff.precise_shots.up|focus>cost+action.aimed_shot.cost)&(buff.trueshot.down|!ca_active)" );
     st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
     st -> add_action( "barrage,if=active_enemies>1" );
-    st -> add_action( "arcane_shot,if=buff.precise_shots.up&(buff.trueshot.down|!ca_active)" );
-    st -> add_action( "aimed_shot,if=buff.precise_shots.down" );
-    st -> add_action( "chimaera_shot,if=focus>cost+action.aimed_shot.cost&(buff.trueshot.down|!ca_active)" );
-    st -> add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost&(buff.trueshot.down|!ca_active)" );
-    st -> add_action( "steady_shot,if=focus+cast_regen<focus.max" );
-    st -> add_action( "chimaera_shot" );
-    st -> add_action( "arcane_shot" );
+    st -> add_action( "steady_shot" );
   }
   else
   {
@@ -6964,10 +6959,10 @@ void hunter_t::apl_mm()
     default_list -> add_action( "use_item,name=lurkers_insidious_gift,if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" );
     default_list -> add_action( "use_item,name=azsharas_font_of_power,if=(target.time_to_die>cooldown+34|target.health.pct<20|target.time_to_pct_20<15)&cooldown.trueshot.remains_guess<15|target.time_to_die<35" );
     default_list -> add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" );
-    default_list -> add_action( "use_item,name=galecallers_boon,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<10" );
-    default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=prev_gcd.1.trueshot&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&ca_active)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
+    default_list -> add_action( "use_item,name=galecallers_boon,if=buff.trueshot.remains>14|!talent.calling_the_shots.enabled|target.time_to_die<10" );
+    default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.trueshot.remains>14&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&ca_active)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
     default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
-    default_list -> add_action( "use_items,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<20",
+    default_list -> add_action( "use_items,if=buff.trueshot.remains>14|!talent.calling_the_shots.enabled|target.time_to_die<20",
           "Try to line up activated trinkets with Trueshot" );
     default_list -> add_action( "call_action_list,name=cds" );
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
@@ -6975,10 +6970,10 @@ void hunter_t::apl_mm()
 
     cds -> add_action( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
     cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20" );
-    cds -> add_action( "berserking,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
-    cds -> add_action( "blood_fury,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
-    cds -> add_action( "ancestral_call,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
-    cds -> add_action( "fireblood,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
+    cds -> add_action( "berserking,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
+    cds -> add_action( "blood_fury,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
+    cds -> add_action( "ancestral_call,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
+    cds -> add_action( "fireblood,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
     cds -> add_action( "lights_judgment,if=buff.trueshot.down" );
     cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
     cds -> add_action( "reaping_flames,if=buff.trueshot.down&(target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30)" );
@@ -6986,7 +6981,7 @@ void hunter_t::apl_mm()
     cds -> add_action( "guardian_of_azeroth,if=(ca_active|target.time_to_die>cooldown+30)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
     cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
     cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
-    cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|prev_gcd.1.trueshot&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
+    cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
     cds -> add_action( this, "Trueshot", "if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15" );
 
     st -> add_action( this, "Kill Shot" );
