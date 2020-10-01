@@ -88,6 +88,14 @@ public:
     if ( player->is_moving() && !usable_moving() )
       return false;
 
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.surrender_to_madness->ok() )
+    {
+      if ( priest().buffs.surrender_to_madness_death->check() )
+      {
+        return false;
+      }
+    }
+
     auto resource = current_resource();
     if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
     {
