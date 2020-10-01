@@ -5422,7 +5422,7 @@ void demon_hunter_t::init_spells()
   // Legendary Items ========================================================
 
   legendary.half_giant_empowerment        = find_runeforge_legendary( "Half-Giant Empowerment" );
-  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Boon" );
+  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Medallion" ); // Note: Blizzard typo in item runeforge data
   legendary.collective_anguish            = find_runeforge_legendary( "Collective Anguish" );
   legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
 
