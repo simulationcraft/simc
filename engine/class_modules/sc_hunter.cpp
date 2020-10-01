@@ -4043,6 +4043,10 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p() -> buffs.vipers_venom -> trigger();
+    p() -> buffs.primeval_intuition -> trigger();
+    p() -> buffs.butchers_bone_fragments -> trigger();
+
+    p() -> trigger_birds_of_prey( target );
 
     if ( p() -> buffs.coordinated_assault -> check() )
     {
@@ -4064,20 +4068,16 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       }
     }
 
-    p() -> buffs.primeval_intuition -> trigger();
-
-    p() -> trigger_birds_of_prey( target );
-
     if ( wilderness_survival_reduction != 0_ms )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
-
-    p() -> buffs.butchers_bone_fragments -> trigger();
 
     if ( rng().roll( rylakstalkers_strikes.chance ) )
     {
       p() -> cooldowns.wildfire_bomb -> reset( true );
       rylakstalkers_strikes.proc -> occur();
     }
+
+    p() -> buffs.tip_of_the_spear -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4091,6 +4091,15 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( latent_poison_injection )
       latent_poison_injection -> trigger( s -> target );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> buffs.tip_of_the_spear -> stack_value();
+
+    return am;
   }
 
   bool ready() override
@@ -4300,22 +4309,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
     base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
 
     background = p -> talents.mongoose_bite.ok();
-  }
-
-  void execute() override
-  {
-    melee_focus_spender_t::execute();
-
-    p() -> buffs.tip_of_the_spear -> expire();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = melee_focus_spender_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.tip_of_the_spear -> stack_value();
-
-    return am;
   }
 };
 
