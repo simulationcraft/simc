@@ -1106,6 +1106,7 @@ struct void_bolt_t final : public priest_spell_t
           priest().cooldowns.void_bolt->reset( true );
           priest().procs.dissonant_echoes->occur();
         }
+      }
     }
   };
 
@@ -1908,12 +1909,9 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 
 // ==========================================================================
 // Insanity tracking
-// Handles the resource gaining from abilities, and insanity draining and
-// manages an event that forcibly punts the actor out of Voidform the exact
-// moment insanity hits zero (millisecond resolution).
+// Handles the resource gaining from abilities
 // ==========================================================================
-priest_t::insanity_state_t::insanity_state_t( priest_t& a )
-  : actor( a )
+priest_t::insanity_state_t::insanity_state_t( priest_t& a ) : actor( a )
 {
 }
 
@@ -1941,11 +1939,11 @@ void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t*
 void priest_t::create_buffs_shadow()
 {
   // Baseline
-  buffs.shadowform            = make_buff<buffs::shadowform_t>( *this );
-  buffs.shadowform_state      = make_buff<buffs::shadowform_state_t>( *this );
-  buffs.voidform              = make_buff<buffs::voidform_t>( *this );
-  buffs.vampiric_embrace      = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.dark_thoughts         = make_buff<buffs::dark_thoughts_t>( *this );
+  buffs.shadowform       = make_buff<buffs::shadowform_t>( *this );
+  buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
+  buffs.voidform         = make_buff<buffs::voidform_t>( *this );
+  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
+  buffs.dark_thoughts    = make_buff<buffs::dark_thoughts_t>( *this );
 
   // Talents
   buffs.void_torrent           = make_buff( this, "void_torrent", find_talent_spell( "Void Torrent" ) );

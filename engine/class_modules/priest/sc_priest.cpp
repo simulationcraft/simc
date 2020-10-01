@@ -2302,8 +2302,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   void_lasher.set_default_duration( p.find_spell( 336216 )->duration() + timespan_t::from_millis( 1 ) );
 }
 
-buffs::dispersion_t::dispersion_t( priest_t& p )
-  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
+buffs::dispersion_t::dispersion_t( priest_t& p ) : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
 {
   auto rank2 = p.find_specialization_spell( 322108, PRIEST_SHADOW );
 }
