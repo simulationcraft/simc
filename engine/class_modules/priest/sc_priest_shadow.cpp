@@ -74,44 +74,45 @@ public:
 
   bool ready() override
   {
-    if ( only_cwc )
+    // Check conditions that do NOT pertain to the target before cycle_targets
+    if ( cooldown->is_ready() == false && !priest().buffs.dark_thoughts->check() )
+      return false;
+
+    if ( internal_cooldown->down() && !priest().buffs.dark_thoughts->check() )
+      return false;
+
+    if ( only_cwc && (!priest().buffs.dark_thoughts->check() || player->channeling == nullptr || player->channeling->data().id() != mind_flay_spell->id() &&
+         player->channeling->data().id() != mind_sear_spell->id() ))
+      return false;
+
+    if ( player->is_moving() && !usable_moving() )
+      return false;
+
+    auto resource = current_resource();
+    if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
     {
-      if ( !priest().buffs.dark_thoughts->check() )
-        return false;
+      if ( starved_proc )
+        starved_proc->occur();
+      return false;
+    }
 
-      if ( player->channeling == nullptr )
-        return false;
-
-      if ( player->channeling->data().id() != mind_flay_spell->id() &&
-           player->channeling->data().id() != mind_sear_spell->id() )
-        return false;
-
-      if ( player->is_moving() && !usable_moving() )
-        return false;
-
-      auto resource = current_resource();
-      if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
+    if ( usable_while_casting )
+    {
+      if ( execute_time() > timespan_t::zero() )
       {
-        if ( starved_proc )
-          starved_proc->occur();
         return false;
       }
-
-      if ( execute_time() > timespan_t::zero() )
-        return false;
 
       // Don't allow cast-while-casting spells that trigger the GCD to be ready if the GCD is still
       // ongoing (during the cast)
       if ( ( player->executing || player->channeling ) && gcd() > timespan_t::zero() &&
            player->gcd_ready > sim->current_time() )
+      {
         return false;
+      }
+    }
 
-      return true;
-    }
-    else
-    {
-      return priest_spell_t::ready();
-    }
+    return true;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
