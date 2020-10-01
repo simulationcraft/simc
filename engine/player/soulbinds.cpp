@@ -502,19 +502,26 @@ void let_go_of_the_past( special_effect_t& effect )
 
 void combat_meditation( special_effect_t& effect )
 {
+  // id:328908 buff spell
+  // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
+  // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
+  // id:345861 lockout buff (buff->eff#3->trigger)
   struct combat_meditation_buff_t : public buff_t
   {
     timespan_t ext_dur;
 
-    combat_meditation_buff_t( player_t* p )
-      : buff_t( p, "combat_meditation", p->find_spell( 328908 ) ),
-        ext_dur( timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() ) )
+    combat_meditation_buff_t( player_t* p ) : buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
+      set_cooldown( data().effectN( 3 ).trigger()->duration() );
       set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
+      ext_dur =
+          timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
+
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
-      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
           extend_duration( player, ext_dur );
       } );
