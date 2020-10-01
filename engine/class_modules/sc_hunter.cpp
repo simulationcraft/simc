@@ -1216,8 +1216,6 @@ struct hunter_pet_t: public pet_t
 
     m *= 1 + o() -> buffs.wild_spirits -> check_value();
 
-    // TODO: check Resonating Arrow w/ Enfeebled Mark
-
     return m;
   }
 
@@ -1568,6 +1566,9 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     const hunter_main_pet_td_t* td = find_target_data( target );
     if ( td && td -> dots.bloodshed -> is_ticking() )
       m *= 1 + spells.bloodshed -> effectN( 2 ).percent();
+
+    if ( o() -> conduits.enfeebled_mark.ok() && o() -> buffs.resonating_arrow -> check() )
+      m *= 1 + o() -> conduits.enfeebled_mark.percent();
 
     return m;
   }
