@@ -377,7 +377,8 @@ public:
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
-  } active_spells;
+    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+  } background_actions;
 
   // Items
   struct
@@ -424,11 +425,6 @@ public:
     // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
     int priest_ascended_eruption_additional_targets = 10;
   } options;
-
-  struct actions_t
-  {
-    actions::spells::ascended_eruption_t* ascended_eruption;
-  } action;
 
   // Azerite
   struct azerite_t

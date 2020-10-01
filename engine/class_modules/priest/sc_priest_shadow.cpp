@@ -2122,12 +2122,12 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
     return make_fn_expr( name_str, [ this ]() {
-      if ( !active_spells.shadowy_apparitions )
+      if ( !background_actions.shadowy_apparitions )
       {
         return 0.0;
       }
 
-      return static_cast<double>( active_spells.shadowy_apparitions->num_travel_events() );
+      return static_cast<double>( background_actions.shadowy_apparitions->num_travel_events() );
     } );
   }
 
@@ -2304,12 +2304,12 @@ void priest_t::init_background_actions_shadow()
 {
   if ( specs.shadowy_apparitions->ok() )
   {
-    active_spells.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
+    background_actions.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
   }
 
   if ( talents.psychic_link->ok() )
   {
-    active_spells.psychic_link = new actions::spells::psychic_link_t( *this );
+    background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
 }
 
@@ -2331,7 +2331,7 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s )
     {
       for ( int i = 0; i < number_of_apparitions_to_trigger; ++i )
       {
-        active_spells.shadowy_apparitions->trigger( priest_td->target );
+        background_actions.shadowy_apparitions->trigger( priest_td->target );
       }
     }
   }
@@ -2351,7 +2351,7 @@ void priest_t::trigger_psychic_link( action_state_t* s )
   {
     if ( priest_td && ( priest_td->target != s->target ) && priest_td->dots.vampiric_touch->is_ticking() )
     {
-      active_spells.psychic_link->trigger( priest_td->target, s->result_amount );
+      background_actions.psychic_link->trigger( priest_td->target, s->result_amount );
     }
   }
 }
