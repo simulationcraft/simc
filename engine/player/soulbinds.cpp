@@ -100,10 +100,10 @@ double class_value_from_desc_vars( special_effect_t& e, util::string_view var, u
     std::regex r_line( "\\$" + std::string( var ) + ".*[\\r\\n]?" );
     if ( std::regex_search( vars, m, r_line ) )
     {
-      auto line = m.str( 0 ).c_str();
+      const std::string line = m.str( 0 );
       std::regex r( regex_string.data() );
-      std::cregex_iterator begin( line, line + std::strlen( line ), r );
-      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
+      std::sregex_iterator begin( line.begin(), line.end(), r );
+      for( std::sregex_iterator i = begin; i != std::sregex_iterator(); i++ )
       {
         auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
         if ( spell->is_class( e.player->type ) )
