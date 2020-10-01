@@ -2459,7 +2459,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
   }
 
   bool procs_poison() const override
-  { return false; }
+  { return true; }
 
   bool procs_main_gauche() const override
   { return false; }
@@ -2528,9 +2528,6 @@ struct blade_flurry_t : public rogue_attack_t
       instant_attack->execute();
     }
   }
-
-  bool procs_poison() const override
-  { return true; }
 };
 
 // Blade Rush ===============================================================
@@ -7153,7 +7150,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( this, "Slice and Dice", "if=spell_targets.shuriken_storm<6&(!talent.premeditation.enabled|!buff.shadow_dance.up)&buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-    finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=5", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
+    finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=6", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
