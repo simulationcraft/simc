@@ -584,8 +584,6 @@ void hammer_of_genesis( special_effect_t& effect )
             ->add_invalidate( CACHE_HASTE );
   }
 
-  // TODO: confirm that spell_data proc flags are correct (doesn't proc from white hits)
-  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.custom_buff = effect.player->buffs.hammer_of_genesis;
 
   new hammer_of_genesis_cb_t( effect );
