@@ -4154,7 +4154,6 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       trigger_guile_charm( execute_state );
-      // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
       p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
     }
   };
@@ -4163,11 +4162,16 @@ struct sinister_strike_t : public rogue_attack_t
   {
     sinister_strike_extra_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 197834 ) )
-    {
-      // CP generation is not in the spell data for some reason
+    {     
       energize_type = action_energize::ON_HIT;
-      energize_amount = 1;
       energize_resource = RESOURCE_COMBO_POINT;
+    }
+
+    double composite_energize_amount( const action_state_t* ) const override
+    {
+      // CP generation is not in the spell data and the extra SS procs seem script-driven
+      // Triple Threat procs of this spell don't give combo points, however
+      return ( secondary_trigger == TRIGGER_SINISTER_STRIKE ) ? 1 : 0;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -4186,7 +4190,6 @@ struct sinister_strike_t : public rogue_attack_t
       p()->buffs.snake_eyes->decrement();
       trigger_guile_charm( execute_state );
 
-      // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
       if ( p()->active.triple_threat_oh && p()->rng().roll( p()->conduit.triple_threat.percent() ) )
       {
         p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 0, 300_ms );
@@ -4243,6 +4246,7 @@ struct sinister_strike_t : public rogue_attack_t
     if ( !result_is_hit( execute_state->result ) )
       return;
 
+    // Only trigger secondary hits on initial casts of Sinister Strike
     if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
       extra_attack->trigger_secondary_action( execute_state->target, 0, 300_ms );
@@ -5442,8 +5446,8 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     {
       // TOCHECK: Double check what all this does not apply to
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
-        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades, r->cooldowns.garrote,
-        r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades, r->cooldowns.flagellation,
+        r->cooldowns.garrote, r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
         r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
@@ -7950,7 +7954,7 @@ void rogue_t::init_spells()
 
   if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW )
   {
-    active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
+    active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
     active.triple_threat_oh = get_secondary_trigger_action<actions::sinister_strike_t::triple_threat_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_oh" );
   }
 
