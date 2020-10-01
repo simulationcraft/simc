@@ -223,7 +223,10 @@ void social_butterfly( special_effect_t& effect )
   // ID: 320212 is the buff on allies (NYI)
   struct social_butterfly_buff_t : public buff_t
   {
-    social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320130 ) )
+    timespan_t ally_buff_dur;
+
+    social_butterfly_buff_t( player_t* p )
+      : buff_t( p, "social_butterfly", p->find_spell( 320130 ) ), ally_buff_dur( p->find_spell( 320212 )->duration() )
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
       add_invalidate( CACHE_VERSATILITY );
@@ -233,7 +236,7 @@ void social_butterfly( special_effect_t& effect )
     {
       buff_t::expire_override( s, d );
 
-      make_event( *sim, data().duration(), [this]() { trigger(); } );
+      make_event( *sim, ally_buff_dur, [ this ]() { trigger(); } );
     }
   };
 
