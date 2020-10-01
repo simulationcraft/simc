@@ -77,6 +77,28 @@ struct scouring_tithe_t : public warlock_spell_t
   }
 };
 
+struct soul_rot_t : public warlock_spell_t
+{
+  soul_rot_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "soul_rot", p, p->covenant.soul_rot )
+
+  {
+    parse_options( options_str );
+    aoe = 4;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_ta_multiplier( s );
+    if ( s->chain_target == 0 )
+    {
+      pm *= pm * 2;
+    }
+
+    return pm;
+  }
+};
+
 struct decimating_bolt_dmg_t : public warlock_spell_t
 {
   decimating_bolt_dmg_t( warlock_t* p ) : warlock_spell_t( "decimating_bolt_tick_t", p, p->find_spell( 327059 ) )
@@ -576,6 +598,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new decimating_bolt_t( this, options_str );
   if ( action_name == "scouring_tithe" )
     return new scouring_tithe_t( this, options_str );
+  if ( action_name == "soul_rot" )
+    return new soul_rot_t( this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
