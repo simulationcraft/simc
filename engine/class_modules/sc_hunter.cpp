@@ -3057,92 +3057,6 @@ struct arcane_shot_t: public arcane_shot_base_t
   }
 };
 
-// Chimaera Shot (Base) ===============================================================
-
-struct chimaera_shot_base_t: public hunter_ranged_attack_t
-{
-  struct impact_t final : public hunter_ranged_attack_t
-  {
-    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-      hunter_ranged_attack_t( n, p, s )
-    {
-      dual = true;
-
-      // Beast Mastery focus gain
-      if ( p -> specs.beast_mastery_hunter.ok() )
-        parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
-    }
-  };
-
-  std::array<impact_t*, 2> damage;
-  unsigned current_damage_action = 0;
-
-  chimaera_shot_base_t( util::string_view n, hunter_t* p ):
-    hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot )
-  {
-    aoe = 2;
-    radius = 5;
-
-    constexpr std::array<unsigned, 2> bm_spells { { 171454, 171457 } };
-    constexpr std::array<unsigned, 2> mm_spells { { 344121, 344120 } };
-    const auto spells = p -> specialization() == HUNTER_MARKSMANSHIP ? mm_spells : bm_spells;
-    damage[ 0 ] = p -> get_background_action<impact_t>( fmt::format( "{}_frost", n ), p -> find_spell( spells[ 0 ] ) );
-    damage[ 1 ] = p -> get_background_action<impact_t>( fmt::format( "{}_nature", n ), p -> find_spell( spells[ 1 ] ) );
-    for ( auto a : damage )
-      add_child( a );
-
-    school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p() -> trigger_calling_the_shots();
-    p() -> trigger_lethal_shots();
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    damage[ current_damage_action ] -> set_target( s -> target );
-    damage[ current_damage_action ] -> execute();
-    current_damage_action = ( current_damage_action + 1 ) % damage.size();
-    action_state_t::release( s );
-  }
-
-  // Don't bother, the results will be discarded anyway.
-  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
-  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
-};
-
-// Chimaera Shot ======================================================================
-
-struct chimaera_shot_t : chimaera_shot_base_t
-{
-  chimaera_shot_t( hunter_t* p, util::string_view options_str ):
-    chimaera_shot_base_t( "chimaera_shot", p )
-  {
-    parse_options( options_str );
-
-    triggers_wild_spirits = false;
-  }
-
-  void execute() override
-  {
-    chimaera_shot_base_t::execute();
-
-    p() -> buffs.precise_shots -> up(); // benefit tracking
-    p() -> buffs.precise_shots -> decrement();
-  }
-
-  double cast_regen( const action_state_t* s ) const override
-  {
-    const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
-    return chimaera_shot_base_t::cast_regen( s ) +
-           ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
-  }
-};
-
 //==============================
 // Beast Mastery attacks
 //==============================
@@ -3173,6 +3087,60 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       p() -> pets.spitting_cobra -> cobra_shot_count++;
 
     p() -> buffs.flamewakers_cobra_sting -> trigger();
+  }
+};
+
+// Chimaera Shot =============================================================
+
+struct chimaera_shot_bm_t: public hunter_ranged_attack_t
+{
+  struct impact_t final : public hunter_ranged_attack_t
+  {
+    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+      hunter_ranged_attack_t( n, p, s )
+    {
+      dual = true;
+      // Beast Mastery focus gain
+      parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
+    }
+  };
+
+  std::array<impact_t*, 2> damage;
+  unsigned current_damage_action = 0;
+
+  chimaera_shot_bm_t( hunter_t* p, util::string_view options_str ):
+    hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot )
+  {
+    parse_options( options_str );
+
+    aoe = 2;
+    radius = 5;
+
+    damage[ 0 ] = p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
+    damage[ 1 ] = p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
+    for ( auto a : damage )
+      add_child( a );
+
+    school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    damage[ current_damage_action ] -> set_target( s -> target );
+    damage[ current_damage_action ] -> execute();
+    current_damage_action = ( current_damage_action + 1 ) % damage.size();
+    action_state_t::release( s );
+  }
+
+  // Don't bother, the results will be discarded anyway.
+  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
+  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
+
+  double cast_regen( const action_state_t* s ) const override
+  {
+    const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
+    return hunter_ranged_attack_t::cast_regen( s ) +
+           ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
 };
 
@@ -3244,6 +3212,79 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 // Marksmanship attacks
 //==============================
 
+// Chimaera Shot (Base) ===============================================================
+
+struct chimaera_shot_mm_base_t: public hunter_ranged_attack_t
+{
+  struct impact_t final : public hunter_ranged_attack_t
+  {
+    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+      hunter_ranged_attack_t( n, p, s )
+    {
+      dual = true;
+
+      if ( s -> id() == 344121 ) // Secondary frost damage multiplier
+        base_multiplier *= p -> talents.chimaera_shot -> effectN( 1 ).percent();
+    }
+  };
+
+  impact_t* nature;
+  impact_t* frost;
+
+  chimaera_shot_mm_base_t( util::string_view n, hunter_t* p ):
+    hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot ),
+    nature( p -> get_background_action<impact_t>( fmt::format( "{}_nature", n ), p -> find_spell( 344120 ) ) ),
+    frost( p -> get_background_action<impact_t>( fmt::format( "{}_frost", n ), p -> find_spell( 344121 ) ) )
+  {
+    aoe = 2;
+    radius = 5;
+
+    add_child( nature );
+    add_child( frost );
+
+    school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> trigger_calling_the_shots();
+    p() -> trigger_lethal_shots();
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    impact_t* damage = ( s -> chain_target == 0 ) ? nature : frost;
+    damage -> set_target( s -> target );
+    damage -> execute();
+    action_state_t::release( s );
+  }
+
+  // Don't bother, the results will be discarded anyway.
+  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
+  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
+};
+
+// Chimaera Shot ======================================================================
+
+struct chimaera_shot_mm_t : chimaera_shot_mm_base_t
+{
+  chimaera_shot_mm_t( hunter_t* p, util::string_view options_str ):
+    chimaera_shot_mm_base_t( "chimaera_shot", p )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    chimaera_shot_mm_base_t::execute();
+
+    p() -> buffs.precise_shots -> up(); // benefit tracking
+    p() -> buffs.precise_shots -> decrement();
+  }
+};
+
 // Master Marksman ====================================================================
 
 struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
@@ -3285,10 +3326,10 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
-  struct chimaera_shot_sst_t final : public chimaera_shot_base_t
+  struct chimaera_shot_sst_t final : public chimaera_shot_mm_base_t
   {
     chimaera_shot_sst_t( util::string_view n, hunter_t* p ):
-      chimaera_shot_base_t( n, p )
+      chimaera_shot_mm_base_t( n, p )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -3347,6 +3388,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       /* [2020-09-04] Extra shots consume Precise Shots, but all of them
        * are affected by the damage amp. Double Tap also procs extra shots
        * but they are not affected by Precise Shots.
+       * XXX 2020-10-01 TODO: Chims do not consume it on beta rn
        */
       p() -> buffs.precise_shots -> up(); // benefit tracking
       p() -> buffs.precise_shots -> decrement( target_count );
@@ -3463,11 +3505,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    // trigger Precise Shots before execute so that Arcane Shots from
-    // Serpenstalker's Trickery get affected by it
-    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
-
     aimed_shot_base_t::execute();
+
+    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
 
     if ( double_tap.action && p() -> buffs.double_tap -> check() )
     {
@@ -5795,7 +5835,6 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
-  if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
@@ -5830,6 +5869,13 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "wild_spirits"          ) return new           wild_spirits_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
+  if ( name == "chimaera_shot" )
+  {
+    if ( specialization() == HUNTER_MARKSMANSHIP )
+      return new chimaera_shot_mm_t( this, options_str );
+    if ( specialization() == HUNTER_BEAST_MASTERY )
+      return new chimaera_shot_bm_t( this, options_str );
+  }
   if ( name == "serpent_sting" )
   {
     if ( specialization() == HUNTER_MARKSMANSHIP )
