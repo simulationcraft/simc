@@ -1720,6 +1720,12 @@ void priest_t::init_resources( bool force )
 void priest_t::init_scaling()
 {
   base_t::init_scaling();
+
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    // Just hook insanity init in here when actor set bonuses are ready
+    insanity.init();
+  }
 }
 
 void priest_t::init_spells()
