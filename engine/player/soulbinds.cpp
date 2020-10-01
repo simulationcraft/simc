@@ -101,7 +101,7 @@ double class_value_from_desc_vars( special_effect_t& e, util::string_view var, u
     if ( std::regex_search( vars, m, r_line ) )
     {
       const std::string line = m.str( 0 );
-      std::regex r( regex_string.data() );
+      std::regex r( regex_string.data(), regex_string.size() );
       std::sregex_iterator begin( line.begin(), line.end(), r );
       for( std::sregex_iterator i = begin; i != std::sregex_iterator(); i++ )
       {
