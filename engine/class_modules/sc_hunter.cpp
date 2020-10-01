@@ -781,6 +781,7 @@ public:
     bool thrill_of_the_hunt = false;
     // mm
     damage_affected_by lone_wolf;
+    bool precise_shots = false;
     damage_affected_by sniper_training;
     // surv
     damage_affected_by coordinated_assault;
@@ -1092,10 +1093,13 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   bool breaks_steady_focus = true;
   maybe_bool triggers_master_marksman;
 
-  hunter_ranged_attack_t( util::string_view n, hunter_t* player,
+  hunter_ranged_attack_t( util::string_view n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
-                          hunter_action_t( n, player, s )
-  {}
+                          hunter_action_t( n, p, s )
+  {
+    affected_by.precise_shots = p -> specs.precise_shots.ok() &&
+                                parse_damage_affecting_aura( this, p -> find_spell( 260242 ) ).direct;
+  }
 
   void init() override
   {
@@ -1136,6 +1140,16 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       if ( amount > 0 )
         residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_action_t::composite_da_multiplier( s );
+
+    if ( affected_by.precise_shots )
+      am *= 1 + p() -> buffs.precise_shots -> check_value();
+
+    return am;
   }
 };
 
@@ -2925,15 +2939,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.precise_shots -> check_value();
-
-    return am;
-  }
-
   void execute() override
   {
     hunter_ranged_attack_t::execute();
@@ -3028,15 +3033,6 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
     p() -> trigger_lethal_shots();
     p() -> trigger_calling_the_shots();
   }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.precise_shots -> check_value();
-
-    return am;
-  }
 };
 
 // Arcane Shot ========================================================================
@@ -3075,15 +3071,6 @@ struct chimaera_shot_base_t: public hunter_ranged_attack_t
       // Beast Mastery focus gain
       if ( p -> specs.beast_mastery_hunter.ok() )
         parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
-    }
-
-    double action_multiplier() const override
-    {
-      double am = hunter_ranged_attack_t::action_multiplier();
-
-      am *= 1 + p() -> buffs.precise_shots -> check_value();
-
-      return am;
     }
   };
 
