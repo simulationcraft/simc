@@ -1231,7 +1231,6 @@ class SpellDataGenerator(DataGenerator):
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 

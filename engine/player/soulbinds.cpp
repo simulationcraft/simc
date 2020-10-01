@@ -831,15 +831,6 @@ void gnashing_chompers( special_effect_t& effect )
   } );
 }
 
-void embody_the_construct( special_effect_t& effect )
-{
-  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.custom_buff  = effect.player->buffs.embody_the_construct;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 void serrated_spaulders( special_effect_t& effect )
 {
 
@@ -907,7 +898,6 @@ void register_special_effects()
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  register_soulbind_special_effect( 342156, soulbinds::embody_the_construct );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }
