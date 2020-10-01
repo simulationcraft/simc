@@ -1017,7 +1017,8 @@ struct devouring_plague_t final : public priest_spell_t
     // that time_to_next_tick. This creates more duration of the DoT and adds a tick of damage. Publik - 2020-09-26
     if ( priest().bugs )
     {
-      return duration + d->time_to_next_tick() + tick_time( d->state ) - std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
+      return duration + d->time_to_next_tick() + tick_time( d->state ) -
+             std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
     }
     // when you refresh, you lose the partial tick
     else
@@ -1882,7 +1883,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
-    set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
@@ -2470,7 +2471,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    return make_fn_expr( name_str, [this]() {
+    return make_fn_expr( name_str, [ this ]() {
       if ( !active_spells.shadowy_apparitions )
       {
         return 0.0;
@@ -2484,7 +2485,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
   {
     // Current Insanity Drain for the next 1.0 sec.
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    return make_fn_expr( name_str, [this]() { return ( insanity.insanity_drain_per_second() ); } );
+    return make_fn_expr( name_str, [ this ]() { return ( insanity.insanity_drain_per_second() ); } );
   }
 
   return nullptr;
@@ -2515,7 +2516,7 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
-  default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2" );
+  default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3" );
 
   // Racials
   // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
@@ -2571,8 +2572,12 @@ void priest_t::generate_apl_shadow()
   cwc->add_talent( this, "Searing Nightmare",
                    "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-                   "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not "
+                   "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
                    "ready, or to refresh SW:P on two or more targets." );
+  cwc->add_talent(
+      this, "Searing Nightmare",
+      "use_while_casting=1,if=dot.shadow_word_pain.refreshable&!dot.shadow_word_pain.ticking&spell_targets.mind_sear>2",
+      "Short Circuit Searing Nightmare condition to keep SW:P up in AoE" );
   cwc->add_action( this, "Mind Blast", "only_cwc=1",
                    "Only_cwc makes the action only usable during channeling and not as a regular action." );
 
@@ -2587,6 +2592,10 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
+  main->add_action( this, "Mind Sear",
+                    "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
+                    "dot.shadow_word_pain.ticking&!cooldown.mindbender.up",
+                    "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action( this, "Devouring Plague",
