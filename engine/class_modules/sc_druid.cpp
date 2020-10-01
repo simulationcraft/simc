@@ -294,6 +294,7 @@ public:
   bool affinity_resources;  // activate resources tied to affinities
   double kindred_spirits_partner_dps;
   bool kindred_spirits_hide_partner;
+  double kindred_spirits_absorbed;
   double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
@@ -866,6 +867,7 @@ public:
       affinity_resources( false ),
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
+      kindred_spirits_absorbed( 0.2 ),
       convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.2 ),
       adaptive_swarm_jump_distance( 5.0 ),
@@ -1794,9 +1796,10 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     trigger();
 
+    double initial = s->result_amount * ( 1.0 - p().kindred_spirits_absorbed );
     // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
     // apply it to partner_pool, which is meant to represent the damage the other person does.
-    double partner_amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+    double partner_amount = initial * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
     double amount         = partner_amount * p().kindred_spirits_partner_dps;
 
     sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
@@ -10061,6 +10064,7 @@ void druid_t::create_options()
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
+  add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
   add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
@@ -10540,6 +10544,7 @@ void druid_t::copy_from( player_t* source )
   catweave_bear                = p->catweave_bear;
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
+  kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
   convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
