@@ -203,6 +203,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
+  dots_soul_rot       = target->get_dot( "soul_rot", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
