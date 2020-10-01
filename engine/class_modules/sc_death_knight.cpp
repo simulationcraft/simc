@@ -721,7 +721,7 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* unholy_pact;
+    const spell_data_t* unholy_pact; // The ingame implementation is a mess with multiple unholy pact buffs on the player and multiple unholy pact damage spells. The simc version is simplified
     const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
@@ -746,7 +746,7 @@ public:
     const spell_data_t* mark_of_blood;
 
     const spell_data_t* voracious;
-    const spell_data_t* death_pact; // The ingame implementation is a mess with multiple unholy pact buffs on the player and multiple unholy pact damage spells. The simc version is simplified
+    const spell_data_t* death_pact; // NYI
     const spell_data_t* bloodworms;
 
     const spell_data_t* purgatory; // NYI
