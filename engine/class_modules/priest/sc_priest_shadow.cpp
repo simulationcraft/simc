@@ -72,6 +72,44 @@ public:
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
+  bool _ready()
+  {
+    // Check conditions that do NOT pertain to the target before cycle_targets
+    if ( cooldown->is_ready() == false && !priest().buffs.dark_thoughts->check() )
+      return false;
+
+    if ( internal_cooldown->down() && !priest().buffs.dark_thoughts->check() )
+      return false;
+
+    if ( player->is_moving() && !usable_moving() )
+      return false;
+
+    auto resource = current_resource();
+    if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
+    {
+      if ( starved_proc )
+        starved_proc->occur();
+      return false;
+    }
+
+    if ( usable_while_casting )
+    {
+      if ( execute_time() > timespan_t::zero() )
+      {
+        return false;
+      }
+
+      // Don't allow cast-while-casting spells that trigger the GCD to be ready if the GCD is still
+      // ongoing (during the cast)
+      if ( ( player->executing || player->channeling ) && gcd() > timespan_t::zero() &&
+           player->gcd_ready > sim->current_time() )
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
   bool ready() override
   {
     if ( only_cwc )
@@ -82,12 +120,12 @@ public:
         return false;
       if ( player->channeling->data().id() == mind_flay_spell->id() ||
            player->channeling->data().id() == mind_sear_spell->id() )
-        return priest_spell_t::ready();
+        return _ready();
       return false;
     }
     else
     {
-      return priest_spell_t::ready();
+      return _ready();
     }
   }
 
@@ -1017,7 +1055,8 @@ struct devouring_plague_t final : public priest_spell_t
     // that time_to_next_tick. This creates more duration of the DoT and adds a tick of damage. Publik - 2020-09-26
     if ( priest().bugs )
     {
-      return duration + d->time_to_next_tick() + tick_time( d->state ) - std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
+      return duration + d->time_to_next_tick() + tick_time( d->state ) -
+             std::max( 0_ms, d->time_to_next_full_tick() - d->remains() );
     }
     // when you refresh, you lose the partial tick
     else
@@ -1836,7 +1875,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     this->reactable = true;
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  /*bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
@@ -1844,7 +1883,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     priest().cooldowns.mind_blast->reset( true, 1 );
 
     return r;
-  }
+  }*/
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -1882,7 +1921,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
-    set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
@@ -2470,7 +2509,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    return make_fn_expr( name_str, [this]() {
+    return make_fn_expr( name_str, [ this ]() {
       if ( !active_spells.shadowy_apparitions )
       {
         return 0.0;
@@ -2484,7 +2523,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
   {
     // Current Insanity Drain for the next 1.0 sec.
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    return make_fn_expr( name_str, [this]() { return ( insanity.insanity_drain_per_second() ); } );
+    return make_fn_expr( name_str, [ this ]() { return ( insanity.insanity_drain_per_second() ); } );
   }
 
   return nullptr;
