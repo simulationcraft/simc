@@ -761,7 +761,7 @@ void warlock_t::init_procs()
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
-
+  procs.prolonged_decimation = get_proc( "prolonged_decimation" );
 }
 
 void warlock_t::init_base_stats()
@@ -1059,6 +1059,16 @@ void warlock_t::malignancy_reduction_helper()
     procs.corrupting_leer->occur();
     cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
+}
+
+bool warlock_t::prolonged_decimation_trigger()
+{
+  if ( rng().roll( conduit.prolonged_decimation.percent() ) )
+  {
+    procs.prolonged_decimation->occur();
+    return true;
+  }
+  return false;
 }
 
 // Function for returning the the number of imps that will spawn in a specified time period.

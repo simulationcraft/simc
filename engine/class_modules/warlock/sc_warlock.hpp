@@ -523,6 +523,7 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
+    proc_t* prolonged_decimation;
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer;
@@ -581,6 +582,7 @@ public:
   void vision_of_perfection_proc_demo();
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   void malignancy_reduction_helper();
+  bool prolonged_decimation_trigger();
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;

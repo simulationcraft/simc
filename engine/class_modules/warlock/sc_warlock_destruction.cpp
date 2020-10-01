@@ -497,7 +497,8 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->set_target( target );
       fnb_action->execute();
     }
-    p()->buffs.decimating_bolt->decrement();
+    if ( !p()->prolonged_decimation_trigger() )
+      p()->buffs.decimating_bolt->decrement();
   }
 
   void impact( action_state_t* s ) override
