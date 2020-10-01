@@ -592,8 +592,13 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_siphon_life->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_scouring_tithe->is_ticking() )
+          mult += 1.0;
+
         // TODO:
-        // Scouring Tithe - awaiting merge
         // Impending catastrophe
         // Soul Rot
         return mult;

@@ -114,7 +114,7 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    double value = p()->buffs.decimating_bolt->default_value - 0.02 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -647,7 +647,7 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(4)
+                              ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
