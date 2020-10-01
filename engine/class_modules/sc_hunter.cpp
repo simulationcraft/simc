@@ -3607,8 +3607,11 @@ struct steady_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> state.steady_focus_counter += 1;
-    if ( p() -> state.steady_focus_counter >= 2 )
+    if ( p() -> state.steady_focus_counter == 2 )
+    {
       p() -> buffs.steady_focus -> trigger();
+      p() -> state.steady_focus_counter = 0;
+    }
   }
 
   void impact( action_state_t* s ) override
