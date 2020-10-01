@@ -7469,6 +7469,8 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   m *= 1 + talents.animal_companion -> effectN( 2 ).percent();
 
+  m *= 1 + buffs.strength_of_the_pack -> check_value();
+
   return m;
 }
 
