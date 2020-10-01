@@ -8172,7 +8172,7 @@ void druid_t::init_spells()
   spec.moonfire_dmg            = find_spell( 164812 );  // dot for moonfire
   spec.starsurge               = find_affinity_spell( "Starsurge" );
   spec.starsurge_2             = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
-  spec.starfall                = find_specialization_spell( "Starfall" );
+  spec.starfall                = find_affinity_spell( "Starfall" );
   spec.starfall_2              = find_rank_spell( "Starfall", "Rank 2" );
   spec.starfall_dmg            = find_spell( 191037 );
   spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
@@ -10005,7 +10005,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "buff.starfall.refreshable" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
-      return !buff.starfall->check() || buff.starfall->remains() <= spec.starfall->duration() * 0.3;
+      return !buff.starfall->check() || buff.starfall->remains() <= buff.starfall->buff_duration() * 0.3;
     } );
   }
 
