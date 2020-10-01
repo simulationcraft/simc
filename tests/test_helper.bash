@@ -2,6 +2,12 @@ function sim() {
   PROFILE_NAME="$(basename ${SIMC_PROFILE})"
   OPTIONS="$@"
   run "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} threads=${SIMC_THREADS} fight_style=${SIMC_FIGHT_STYLE} output=/dev/null cleanup_threads=1 $@
+  if [ ! "${status}" -eq 0 ]; then
+    echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} threads=${SIMC_THREADS} fight_style=${SIMC_FIGHT_STYLE} output=/dev/null cleanup_threads=1 ${OPTIONS}"
+    echo "=== Output begins here ==="
+    echo "${output}"
+    echo "=== Output ends here ==="
+  fi 
 }
 
 function class_sim() {
@@ -23,16 +29,21 @@ function talent_sim() {
     SIMC_PROFILE=${spec}
     for talent in ${PROFILE_TALENTS[@]}; do
       sim talents=${talent} default_actions=1
-      if [ ! "${status}" -eq 0 ]; then
-        echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} threads=${SIMC_THREADS} fight_style=${SIMC_FIGHT_STYLE} output=/dev/null cleanup_threads=1 talents=${talent} default_actions=1"
-        echo "=== Output begins here ==="
-        echo "${output}"
-        echo "=== Output ends here ==="
-      fi 
       [ "${status}" -eq 0 ]
     done
   done
 }
+
+function covenant_sim() {
+  PROFILE_DIR=${SIMC_PROFILE_DIR}
+  PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
+  for spec in ${PROFILES[@]}; do
+    SIMC_PROFILE=${spec}
+    sim covenant="$2" default_actions=1 level=60
+    [ "${status}" -eq 0 ]
+  done
+}
+
 
 teardown() {
   if [ ! "${status}" -eq 0 ]; then

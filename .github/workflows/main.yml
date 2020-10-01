@@ -164,6 +164,11 @@ jobs:
         tier: [ Tier25 ]
         class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
         fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
+        
+        include:
+          - test: covenants
+            covenants: [ Kyrian, Venthyr, Night Fae, Necrolord ]
+
 
     steps:
       - uses: actions/cache@v2
@@ -186,6 +191,7 @@ jobs:
           SIMC_CLASS: ${{ matrix.class }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
+          SIMC_COVENANT: ${{ matrix.covenants }}
         run: |
           cd tests
           bats --tap ${{ matrix.test }}.bats
