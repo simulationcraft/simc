@@ -5489,10 +5489,8 @@ struct auto_attack_t : public melee_attack_t
 
 struct barkskin_t : public druid_spell_t
 {
-  cooldown_t* orig_cd;
-
-  barkskin_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), options_str ), orig_cd( cooldown )
+  barkskin_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), opt )
   {
     harmful      = false;
     use_off_gcd  = true;
@@ -5502,18 +5500,14 @@ struct barkskin_t : public druid_spell_t
       add_child( p->active.brambles_pulse );
   }
 
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : druid_spell_t::cooldown_duration();
+  }
+
   void execute() override
   {
-    if ( free_cast )
-    {
-      cooldown = nullptr;
-      druid_spell_t::execute();
-      cooldown = orig_cd;
-    }
-    else
-    {
-      druid_spell_t::execute();
-    }
+    druid_spell_t::execute();
 
     p()->buff.barkskin->trigger();
   }
@@ -5794,15 +5788,13 @@ struct tiger_dash_t : public druid_spell_t
 
 struct full_moon_t : public druid_spell_t
 {
-  cooldown_t* orig_cd;
-
   full_moon_t( druid_t* p, util::string_view opt ) : full_moon_t( p, p->spec.full_moon, opt ) {}
 
   full_moon_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : druid_spell_t( "full_moon", p, s, opt )
   {
     aoe                = -1;
     reduced_aoe_damage = true;
-    cooldown = orig_cd = p->cooldown.moon_cd;
+    cooldown           = p->cooldown.moon_cd;
 
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
@@ -5815,19 +5807,17 @@ struct full_moon_t : public druid_spell_t
     streaking_stars_trigger( SS_FULL_MOON, s );  // proc munching shenanigans, munch tracking NYI
   }
 
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : druid_spell_t::cooldown_duration();
+  }
+
   void execute() override
   {
-    if ( free_cast )
-    {
-      cooldown = nullptr;
-      druid_spell_t::execute();
-      cooldown = orig_cd;
-    }
-    else
-    {
-      druid_spell_t::execute();
+    druid_spell_t::execute();
+
+    if ( !free_cast)
       p()->moon_stage = moon_stage_e::NEW_MOON;
-    }
   }
 
   timespan_t travel_time() const override
