@@ -5629,6 +5629,32 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied automatically.
+    if ( p() -> spec.killing_machine_2 -> ok() && p() -> buffs.killing_machine -> up() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    death_knight_td_t* td = p() -> get_target_data( target );
+    // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
+    if ( p() -> spec.killing_machine_2 -> ok() && p() -> buffs.killing_machine -> up() )
+    {
+      m *= 1.0 + td -> debuff.razorice -> check_stack_value();
+    }
+
+    return m;
+  }
+
   double composite_crit_chance() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit_chance();
