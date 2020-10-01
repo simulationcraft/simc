@@ -6,6 +6,7 @@
 #include "action/sc_action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+#include "util/generic.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -28,6 +29,8 @@ private:
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   bool only_cwc;
+  cooldown_t* dark_thought_dummy_cooldown;
+  cooldown_t* action_cooldown;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -45,7 +48,9 @@ public:
                                    .resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
       mind_sear_spell( player.find_class_spell( "Mind Sear" ) ),
-      only_cwc( false )
+      only_cwc( false ),
+      dark_thought_dummy_cooldown( player.get_cooldown( "dark_thought_dummy_cooldown" ) ),
+      action_cooldown( player.get_cooldown( "mind_blast" ) )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );
     parse_options( options_str );
@@ -70,6 +75,31 @@ public:
 
     // Cooldown reduction
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
+  }
+
+  // Returns either mind blasts action cooldown, or when dark thoughts is up a dummy cooldown
+  cooldown_t* active_cooldown() const
+  {
+    if ( priest().buffs.dark_thoughts->check() )
+    {
+      return dark_thought_dummy_cooldown;
+    }
+    return action_cooldown;
+  }
+
+  bool action_ready() override
+  {
+    cooldown   = active_cooldown();
+    auto ready = priest_spell_t::action_ready();
+    cooldown   = action_cooldown;
+    return ready;
+  }
+
+  void execute() override
+  {
+    cooldown = active_cooldown();
+    priest_spell_t::execute();
+    cooldown = action_cooldown;
   }
 
   bool ready() override
