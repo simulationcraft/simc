@@ -1112,15 +1112,6 @@ struct void_bolt_t final : public priest_spell_t
         // Assuming how this works based on the blue post
         td.dots.devouring_plague->refresh_duration();
       }
-
-      if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-      {
-        if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-        {
-          priest().cooldowns.void_bolt->reset( true );
-          priest().procs.dissonant_echoes->occur();
-        }
-      }
     }
   };
 
@@ -1159,6 +1150,15 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest().buffs.dissonant_echoes->check() )
     {
       priest().buffs.dissonant_echoes->expire();
+    }
+
+    if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
+    {
+      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
+      {
+        priest().cooldowns.void_bolt->reset( true );
+        priest().procs.dissonant_echoes->occur();
+      }
     }
   }
 
