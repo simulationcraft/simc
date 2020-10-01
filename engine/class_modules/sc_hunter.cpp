@@ -414,8 +414,6 @@ public:
     buff_t* trueshot;
     buff_t* volley;
 
-    buff_t* _test_bfa_master_marksman;
-
     // Survival
     buff_t* aspect_of_the_eagle;
     buff_t* coordinated_assault;
@@ -632,8 +630,6 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.15;
-    // enable BfA Master Marksman for testing of its effect in Shadowlands
-    bool test_enable_bfa_master_marksman = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -2938,14 +2934,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     return am;
   }
 
-  double cost() const override
-  {
-    if ( p() -> buffs._test_bfa_master_marksman -> check() )
-      return 0;
-
-    return hunter_ranged_attack_t::cost();
-  }
-
   void execute() override
   {
     hunter_ranged_attack_t::execute();
@@ -2968,8 +2956,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.aspect_of_the_wild -> adjust( - ( rapid_reload.reduction * num_targets_hit ) );
       rapid_reload.action -> execute();
     }
-
-    p() -> buffs._test_bfa_master_marksman -> expire();
   }
 };
 
@@ -3066,22 +3052,12 @@ struct arcane_shot_t: public arcane_shot_base_t
       background = p -> talents.chimaera_shot.ok();
   }
 
-  double cost() const override
-  {
-    if ( p() -> buffs._test_bfa_master_marksman -> check() )
-      return 0;
-
-    return arcane_shot_base_t::cost();
-  }
-
   void execute() override
   {
     arcane_shot_base_t::execute();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
-
-    p() -> buffs._test_bfa_master_marksman -> expire();
   }
 };
 
@@ -3164,22 +3140,12 @@ struct chimaera_shot_t : chimaera_shot_base_t
     triggers_wild_spirits = false;
   }
 
-  double cost() const override
-  {
-    if ( p() -> buffs._test_bfa_master_marksman -> check() )
-      return 0;
-
-    return chimaera_shot_base_t::cost();
-  }
-
   void execute() override
   {
     chimaera_shot_base_t::execute();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
-
-    p() -> buffs._test_bfa_master_marksman -> expire();
   }
 
   double cast_regen( const action_state_t* s ) const override
@@ -3513,9 +3479,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     // trigger Precise Shots before execute so that Arcane Shots from
     // Serpenstalker's Trickery get affected by it
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
-
-    if ( p() -> options.test_enable_bfa_master_marksman )
-      p() -> buffs._test_bfa_master_marksman -> trigger();
 
     aimed_shot_base_t::execute();
 
@@ -5941,12 +5904,6 @@ void hunter_t::create_pets()
 void hunter_t::init()
 {
   player_t::init();
-
-  if ( options.test_enable_bfa_master_marksman )
-  {
-    sim -> error( "Player {} using a test option 'hunter.test_enable_bfa_master_marksman'. "
-                  "RESULTS WILL NOT REFLECT IN-GAME BEHAVIOUR", name_str );
-  }
 }
 
 // hunter_t::init_spells ====================================================
@@ -6345,11 +6302,6 @@ void hunter_t::create_buffs()
     make_buff( this, "volley", talents.volley )
       -> set_period( 0_ms ) // disable ticks as an optimization
       -> set_activated( true );
-
-  buffs._test_bfa_master_marksman =
-    make_buff( this, "_test_bfa_master_marksman" )
-      -> set_duration( 12_s )
-      -> set_chance( options.test_enable_bfa_master_marksman );
 
   // Survival
 
@@ -7566,7 +7518,6 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
-  add_option( opt_bool( "hunter.test_enable_bfa_master_marksman", options.test_enable_bfa_master_marksman ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
