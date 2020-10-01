@@ -95,6 +95,8 @@ struct soul_rot_t : public warlock_spell_t
       pm *= pm * 2;
     }
 
+    pm *= 1.0 + p()->conduit.soul_eater.percent();
+
     return pm;
   }
 };
@@ -709,7 +711,7 @@ void warlock_t::init_spells()
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
-  conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
+  conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
   conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
@@ -1073,6 +1075,9 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_phantom_singularity->adjust_duration( darkglare_extension );
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
+    td->dots_scouring_tithe->adjust_duration( darkglare_extension );
+    td->dots_soul_rot->adjust_duration( darkglare_extension );
+    // TODO - impending catastrophe
   }
 }
 
