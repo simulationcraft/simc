@@ -136,7 +136,8 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
 
-    p()->buffs.decimating_bolt->decrement();
+    if ( !p()->prolonged_decimation_trigger() )
+      p()->buffs.decimating_bolt->decrement();
   }
 };
 
