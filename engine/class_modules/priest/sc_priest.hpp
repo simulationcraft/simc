@@ -1032,7 +1032,18 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   {
     background = true;
     // This is hard coded in the spell, base SP is 3.0
-    spell_power_mod.direct *= 0.6;
+    // Depending on Mindbender or Shadowfiend this hits differently
+    switch ( p.pet_type )
+    {
+      case PET_MINDBENDER:
+      {
+        spell_power_mod.direct *= 0.442;
+      }
+      break;
+      default:
+        spell_power_mod.direct *= 0.408;
+        break;
+    }
   }
 };
 
