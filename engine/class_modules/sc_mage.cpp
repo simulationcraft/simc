@@ -5250,9 +5250,19 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::init();
 
-    // TODO: Touch of the Magi explosion seems to completely ignore taraget
-    // multipliers, which is most likely a bug. Double check later.
     snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
   }
 };
 
