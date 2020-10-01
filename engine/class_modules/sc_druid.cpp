@@ -8332,7 +8332,7 @@ void druid_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( covenant.kyrian->ok() )
+  if ( active.kindred_empowerment )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [this]( result_amount_type, action_state_t* s ) {
       auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
