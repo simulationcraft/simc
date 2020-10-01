@@ -6755,7 +6755,7 @@ void hunter_t::apl_bm()
     cleave -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
     cleave -> add_action( "dire_beast" );
     cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9" );
-    cleave -> add_action( "arcane_shot,if=focus.time_to_max<gcd*2" );
+    cleave -> add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
 
     st -> add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood.enabled" );
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
