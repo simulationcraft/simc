@@ -69,17 +69,77 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   }
 }
 
-double get_coefficient_from_desc_vars( special_effect_t& e, bool sp = true )
+double value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
 {
-  double coef = 0;
+  double value = 0;
+
   if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
   {
     std::cmatch m;
-    std::regex r( sp ? "\\$SP\\*([0-9]*\\.?[0-9]*)" : "\\$AP\\*([0-9]*\\.?[0-9]*)" );
-    if ( std::regex_search( vars, m, r ) && m.size() >= 2 )
-      coef = std::stod( m.str( 1 ) );
+    std::regex r( "\\$" + std::string( var ) + ".*" + std::string( prefix ) + "(\\d*\\.?\\d+)" + std::string( postfix ) );
+    if ( std::regex_search( vars, m, r ) )
+      value = std::stod( m.str( 1 ) );
   }
-  return coef;
+
+  e.player->sim->print_debug( "parsed value for special effect '{}': variable={} value={}", e.name(), var, value );
+
+  return value;
+}
+
+// Default behavior is where the description variables string contains instances of "?a137005[${1.0}]" defined
+// by a spell ID belonging to the target class and the floating point number represents the duration modifier.
+// This can be changed to any regex such that the first capture group gives the class spell ID and second
+// capture group gives the value to return.
+double class_value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
+{
+  double value = 0;
+
+  if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex r_line( "\\$" + std::string( var ) + ".*[\\r\\n]?" );
+    if ( std::regex_search( vars, m, r_line ) )
+    {
+      auto line = m.str( 0 ).c_str();
+      std::regex r( regex_string.data() );
+      std::cregex_iterator begin( line, line + std::strlen( line ), r );
+      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
+      {
+        auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
+        if ( spell->is_class( e.player->type ) )
+        {
+          value = std::stod( ( *i ).str( 2 ) );
+          break;
+        }
+      }
+    }
+  }
+
+  e.player->sim->print_debug( "parsed class-specific value for special effect '{}': variable={} value={}", e.name(), var, value );
+
+  return value;
+}
+
+bool extra_desc_lines_for_class( special_effect_t& e )
+{
+  if ( const char* desc = e.player->dbc->spell_text( e.spell_id ).desc() )
+  {
+    // The relevant part of the description is formatted as a '|' delimited list of the
+    // letter 'a' followed by class aura spell IDs until we reach a '[' and a new line.
+    std::regex r( "(?=(?:a\\d+\\|?)*\\[[\r\n])a(\\d+)" );
+    std::cregex_iterator begin( desc, desc + std::strlen( desc ), r );
+    for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
+    {
+      auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
+      if ( spell->is_class( e.player->type ) )
+      {
+        e.player->sim->print_debug( "description for special effect '{}': has extra lines for this class", e.name() );
+        return true;
+      }
+    }
+  }
+  e.player->sim->print_debug( "description for special effect '{}': does not have extra lines for this class", e.name() );
+  return false;
 }
 
 struct niyas_tools_proc_t : public unique_gear::proc_spell_t
@@ -102,7 +162,7 @@ void niyas_tools_burrs( special_effect_t& effect )
 {
   auto action = effect.player->find_action( "spiked_burrs" );
   if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), get_coefficient_from_desc_vars( effect ), false );
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), value_from_desc_vars( effect, "points", "\\$SP\\*" ), false );
 
   effect.execute_action = action;
 
@@ -120,11 +180,11 @@ void niyas_tools_poison( special_effect_t& effect )
     {
       dot = e.player->find_action( "paralytic_poison" );
       if ( !dot )
-        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), get_coefficient_from_desc_vars( e ), false );
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), value_from_desc_vars( e, "pointsA", "\\$SP\\*" ), false );
 
       direct = e.player->find_action( "paralytic_poison_interrupt" );
       if ( !direct )
-        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), get_coefficient_from_desc_vars( e ) );
+        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), value_from_desc_vars( e, "pointsB", "\\$SP\\*" ) );
     }
 
     void execute( action_t* a, action_state_t* s ) override
@@ -374,41 +434,11 @@ void wasteland_propriety( special_effect_t& effect )
 {
   if ( !effect.player->buffs.wasteland_propriety )
   {
-    double duration_mod = 1.0;
-    bool icd_enabled = false;
-
     // The duration modifier for each class comes from the description variables of Wasteland Propriety (id=319983)
-    if ( const char* vars = effect.player->dbc->spell_desc_vars( effect.spell_id ).desc_vars() )
-    {
-      // The description variables string contains instances of "?a137005[${1.0}]", where the class is
-      // defined by the class aura spell ID and the floating point number represents the duration modifier.
-      std::regex r( "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" );
-      std::cregex_iterator begin( vars, vars + std::strlen( vars ), r );
-      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
-      {
-        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
-        if ( spell->is_class( effect.player->type ) )
-        {
-          duration_mod = std::stod( ( *i ).str( 2 ) );
-          break;
-        }
-      }
-    }
+    double duration_mod = class_value_from_desc_vars( effect, "mod" );
 
     // The ICD of 60 seconds is enabled for some classes in the description of Wasteland Propriety (id=319983)
-    if ( const char* desc = effect.player->dbc->spell_text( effect.spell_id ).desc() )
-    {
-      // The relevant part of the description is formatted as a '|' delimited list of the
-      // letter 'a' followed by class aura spell IDs until we reach a '[' and a new line.
-      std::regex r( "(?=(?:a\\d+\\|?)*\\[[\r\n])a(\\d+)" );
-      std::cregex_iterator begin( desc, desc + std::strlen( desc ), r );
-      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
-      {
-        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
-        if ( icd_enabled = spell->is_class( effect.player->type ) )
-          break;
-      }
-    }
+    bool icd_enabled = extra_desc_lines_for_class( effect );
 
     effect.player->sim->print_debug( "class-specific properties for wasteland_propriety: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
 
@@ -842,22 +872,7 @@ void lead_by_example( special_effect_t& effect )
     double duration = effect.driver()->effectN( 3 ).base_value();
 
     // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
-    if ( const char* vars = effect.player->dbc->spell_desc_vars( effect.spell_id ).desc_vars() )
-    {
-      // The description variables string contains instances of "?a137005[${1.0}]", where the class is
-      // defined by the class aura spell ID and the floating point number represents the duration modifier.
-      std::regex r( "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" );
-      std::cregex_iterator begin( vars, vars + std::strlen( vars ), r );
-      for ( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
-      {
-        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
-        if ( spell->is_class( effect.player->type ) )
-        {
-          duration *= std::stod( ( *i ).str( 2 ) );
-          break;
-        }
-      }
-    }
+    duration *= class_value_from_desc_vars( effect, "mod" );
 
     // TODO: does 'up to X%' include the base value or refers only to extra per ally?
     effect.player->buffs.lead_by_example =
