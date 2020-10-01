@@ -240,8 +240,8 @@ elif options.type == 'json':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     str_ = '[\n'
     logging.debug(dbc_file)
@@ -249,7 +249,8 @@ elif options.type == 'json':
         replaced_ids = []
         for record in dbc_file:
             if not options.raw and record.id in entries:
-                data_ = entries[record.id].obj()
+                entry, hotfix = entries[record.id]
+                data_ = entry.obj()
                 data_['hotfixed'] = True
                 replaced_ids.append(record.id)
                 str_ += '\t{},\n'.format(json.dumps(data_))
@@ -300,8 +301,8 @@ elif options.type == 'csv':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     first = True
     logging.debug(dbc_file)
@@ -312,7 +313,8 @@ elif options.type == 'csv':
                 print('{}'.format(record.field_names(options.delim)))
 
             if not options.raw and record.id in entries:
-                print('{}'.format(entries[record.id].csv(options.delim, first)))
+                entry, hotfix = entries[record.id]
+                print('{}'.format(entry.csv(options.delim, first)))
                 replaced_ids.append(record.id)
             else:
                 print('{}'.format(record.csv(options.delim, first)))

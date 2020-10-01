@@ -1231,7 +1231,6 @@ class SpellDataGenerator(DataGenerator):
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 
@@ -2503,6 +2502,10 @@ class SpellDataGenerator(DataGenerator):
         # Souldbind conduits
         for spell_id in ConduitSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
+
+        # Explicitly add Shadowlands legendaries
+        for entry in self.db('RuneforgeLegendaryAbility').values():
+            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]

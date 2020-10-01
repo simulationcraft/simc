@@ -3343,7 +3343,6 @@ void player_t::create_buffs()
           }
         } );
       buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
-      buffs.embody_the_construct = make_buff( this, "embody_the_construct", find_spell( 342174 ) );
       buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
         ->modify_max_stack( 1 )
         ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
@@ -4380,6 +4379,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( buffs.built_for_war )
     m *= 1.0 + buffs.built_for_war->check_stack_value();
+
+  if ( buffs.lead_by_example )
+    m *= 1.0 + buffs.lead_by_example->check_value();
 
   if ( buffs.celestial_guidance )
     m *= 1.0 + buffs.celestial_guidance->check_value();

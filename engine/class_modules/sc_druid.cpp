@@ -293,6 +293,8 @@ public:
 
   bool affinity_resources;  // activate resources tied to affinities
   double kindred_spirits_partner_dps;
+  bool kindred_spirits_hide_partner;
+  double kindred_spirits_absorbed;
   double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
@@ -842,7 +844,7 @@ public:
     // Guardian
     item_runeforge_t luffainfused_embrace;     // 7092
     item_runeforge_t the_natural_orders_will;  // 7093
-    item_runeforge_t ursocs_lingering_spirit;  // 7094
+    item_runeforge_t ursocs_fury_remembered;   // 7094
     item_runeforge_t legacy_of_the_sleeper;    // 7095
   } legendary;
 
@@ -864,6 +866,8 @@ public:
       owlweave_bear( false ),
       affinity_resources( false ),
       kindred_spirits_partner_dps( 1.0 ),
+      kindred_spirits_hide_partner( false ),
+      kindred_spirits_absorbed( 0.15 ),
       convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.2 ),
       adaptive_swarm_jump_distance( 5.0 ),
@@ -1792,9 +1796,10 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     trigger();
 
+    double initial = s->result_amount * ( 1.0 - p().kindred_spirits_absorbed );
     // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
     // apply it to partner_pool, which is meant to represent the damage the other person does.
-    double partner_amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+    double partner_amount = initial * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
     double amount         = partner_amount * p().kindred_spirits_partner_dps;
 
     sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
@@ -1802,7 +1807,8 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     pool += amount;
 
     // only dps specs give a pool to the partner
-    if ( p().specialization() == DRUID_BALANCE || p().specialization() == DRUID_FERAL )
+    if ( !p().kindred_spirits_hide_partner &&
+         ( p().specialization() == DRUID_BALANCE || p().specialization() == DRUID_FERAL ) )
       partner_pool += partner_amount;
   }
 
@@ -4953,8 +4959,8 @@ struct pulverize_t : public bear_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      // consumes x stacks of Thrash on the target
-      td( s->target )->dots.thrash_bear->decrement( consume );
+      if ( !free_cast )
+        td( s->target )->dots.thrash_bear->decrement( consume );
 
       // and reduce damage taken by x% for y sec.
       p()->buff.pulverize->trigger();
@@ -4965,7 +4971,7 @@ struct pulverize_t : public bear_attack_t
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    return bear_attack_t::target_ready( t ) && td( t )->dots.thrash_bear->current_stack() >= consume;
+    return bear_attack_t::target_ready( t ) && ( free_cast || td( t )->dots.thrash_bear->current_stack() >= consume );
   }
 };
 
@@ -5062,8 +5068,8 @@ struct thrash_bear_t : public bear_attack_t
     dot->target = execute_state->target;
     dot->schedule_execute();
 
-    if ( p()->legendary.ursocs_lingering_spirit->ok() &&
-         rng().roll( p()->legendary.ursocs_lingering_spirit->effectN( 1 ).percent() ) )
+    if ( p()->legendary.ursocs_fury_remembered->ok() &&
+         rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
     {
       execute();
     }
@@ -8141,7 +8147,7 @@ void druid_t::init_spells()
   // Guardian
   legendary.luffainfused_embrace      = find_runeforge_legendary( "Luffa-Infused Embrace" );
   legendary.the_natural_orders_will   = find_runeforge_legendary( "The Natural Order's Will" );
-  legendary.ursocs_lingering_spirit   = find_runeforge_legendary( "Ursoc's Lingering Spirit" );
+  legendary.ursocs_fury_remembered    = find_runeforge_legendary( "Ursoc's Fury Remembered" );
   legendary.legacy_of_the_sleeper     = find_runeforge_legendary( "Legacy of the Sleeper" );
 
   // Restoration
@@ -8172,7 +8178,7 @@ void druid_t::init_spells()
   spec.moonfire_dmg            = find_spell( 164812 );  // dot for moonfire
   spec.starsurge               = find_affinity_spell( "Starsurge" );
   spec.starsurge_2             = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
-  spec.starfall                = find_specialization_spell( "Starfall" );
+  spec.starfall                = find_affinity_spell( "Starfall" );
   spec.starfall_2              = find_rank_spell( "Starfall", "Rank 2" );
   spec.starfall_dmg            = find_spell( 191037 );
   spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
@@ -8329,7 +8335,7 @@ void druid_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( covenant.kyrian->ok() )
+  if ( active.kindred_empowerment )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [this]( result_amount_type, action_state_t* s ) {
       auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
@@ -10005,7 +10011,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "buff.starfall.refreshable" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
-      return !buff.starfall->check() || buff.starfall->remains() <= spec.starfall->duration() * 0.3;
+      return !buff.starfall->check() || buff.starfall->remains() <= buff.starfall->buff_duration() * 0.3;
     } );
   }
 
@@ -10057,6 +10063,8 @@ void druid_t::create_options()
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
+  add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
+  add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
   add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
@@ -10535,6 +10543,8 @@ void druid_t::copy_from( player_t* source )
   owlweave_bear                = p->owlweave_bear;
   catweave_bear                = p->catweave_bear;
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
+  kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
+  kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
   convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;

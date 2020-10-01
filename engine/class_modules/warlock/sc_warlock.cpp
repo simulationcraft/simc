@@ -114,7 +114,7 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    double value = p()->buffs.decimating_bolt->default_value - 0.02 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -277,6 +277,13 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
                            warlock.gains.shadowburn_refund );
+  }
+
+  if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
   }
 }
 
@@ -640,8 +647,11 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(4)
+                              ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
+
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
+                               ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells()
@@ -682,6 +692,8 @@ void warlock_t::init_spells()
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
+  //Wrath is implemented here to catch any potential cross-spec periodic effects
+  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr

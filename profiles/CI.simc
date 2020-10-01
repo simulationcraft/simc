@@ -22,7 +22,7 @@ T25_Mage_Arcane.simc
 T25_Mage_Fire.simc
 T25_Mage_Frost.simc
 
-# T25_Monk_Brewmaster.simc
+T25_Monk_Brewmaster.simc
 T25_Monk_Windwalker.simc
 T25_Monk_Windwalker_Serenity.simc
 
@@ -41,7 +41,7 @@ T25_Shaman_Enhancement.simc
 T25_Shaman_Restoration.simc
 
 # T25_Warlock_Affliction.simc
-# T25_Warlock_Demonology.simc
+T25_Warlock_Demonology.simc
 # T25_Warlock_Destruction.simc
 
 T25_Warrior_Arms.simc

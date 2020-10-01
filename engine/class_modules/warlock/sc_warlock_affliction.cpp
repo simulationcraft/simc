@@ -314,7 +314,7 @@ struct corruption_t : public affliction_spell_t
       base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
     }
     
-
+    affected_by_woc = true; //Hardcoding this in for now because of how this spell is hacked together!
   }
 
   void tick( dot_t* d ) override
@@ -592,8 +592,13 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_siphon_life->is_ticking() )
+          mult += 1.0;
+
+        if ( td->dots_scouring_tithe->is_ticking() )
+          mult += 1.0;
+
         // TODO:
-        // Scouring Tithe - awaiting merge
         // Impending catastrophe
         // Soul Rot
         return mult;
@@ -960,7 +965,7 @@ void warlock_t::init_spells_affliction()
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
   legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
-  legendary.wrath_of_consumption       = find_runeforge_legendary( "Wrath of Consumption" );
+  //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
   conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
