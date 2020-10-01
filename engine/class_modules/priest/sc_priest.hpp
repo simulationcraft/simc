@@ -381,7 +381,8 @@ public:
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
-  } active_spells;
+    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+  } background_actions;
 
   // Items
   struct
@@ -428,11 +429,6 @@ public:
     // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
     int priest_ascended_eruption_additional_targets = 10;
   } options;
-
-  struct actions_t
-  {
-    actions::spells::ascended_eruption_t* ascended_eruption;
-  } action;
 
   // Azerite
   struct azerite_t
@@ -615,7 +611,7 @@ public:
    */
   struct insanity_state_t final
   {
-    event_t* end;             // End event for dropping out of voidform (insanity reaches 0)
+    propagate_const<event_t*> end;             // End event for dropping out of voidform (insanity reaches 0)
     timespan_t last_drained;  // Timestamp when insanity was last drained
     priest_t& actor;
 

@@ -862,7 +862,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 
     if ( priest().options.priest_use_ascended_eruption )
     {
-      priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
+      priest().background_actions.ascended_eruption->trigger_eruption( expiration_stacks );
     }
   }
 };
@@ -1212,11 +1212,10 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     benefits(),
     procs(),
-    active_spells(),
+    background_actions(),
     active_items(),
     pets( *this ),
     options(),
-    action(),
     azerite(),
     azerite_essence(),
     legendary(),
@@ -1675,12 +1674,12 @@ void priest_t::trigger_lucid_dreams( double cost )
 
 void priest_t::trigger_wrathful_faerie()
 {
-  active_spells.wrathful_faerie->trigger();
+  background_actions.wrathful_faerie->trigger();
 }
 
 void priest_t::trigger_wrathful_faerie_fermata()
 {
-  active_spells.wrathful_faerie_fermata->trigger();
+  background_actions.wrathful_faerie_fermata->trigger();
 }
 
 void priest_t::init_base_stats()
@@ -1851,11 +1850,11 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+  background_actions.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 
-  active_spells.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
+  background_actions.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
 
-  active_spells.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
+  background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
 
   init_background_actions_shadow();
 }
