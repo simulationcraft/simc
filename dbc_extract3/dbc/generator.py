@@ -2504,6 +2504,10 @@ class SpellDataGenerator(DataGenerator):
         for spell_id in ConduitSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
 
+        # Explicitly add Shadowlands legendaries
+        for entry in self.db('RuneforgeLegendaryAbility').values():
+            self.process_spell(entry.id_spell, ids, 0, 0)
+
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:

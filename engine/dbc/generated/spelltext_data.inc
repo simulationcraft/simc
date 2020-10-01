@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36086
-static const std::array<spelltext_data_t, 15644> __spelltext_data { {
+static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14875,6 +14875,7 @@ static const std::array<spelltext_data_t, 15644> __spelltext_data { {
   { 337295, "Bonedust Brew's Shadow damage or healing is increased by |cFFFFFFFF${$s1}.1%|r, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 337296, "Touch of Death cooldown reduced by ${$s1/-1000}.", "Touch of Death cooldown reduced by ${$s1/-1000}.", 0 },
   { 337297, "Spending Holy Power grants you $s1% haste per finisher for $337315d, stacking up to $337315u times.", 0, 0 },
+  { 337298, "You gain $338321m1% haste for $338321d after summoning your Celestial. ", 0, 0 },
   { 337299, "$@spelldesc337293", "Absorbs $w1 damage.", 0 },
   { 337301, "Fallen Order monks deal |cFFFFFFFF${$s1}.1%|r more damage and healing.", 0, 0 },
   { 337302, "Bloodthirst deals |cFFFFFFFF$s1%|r increased damage to enemies who are below 20% health.", 0, 0 },
@@ -14993,6 +14994,7 @@ static const std::array<spelltext_data_t, 15644> __spelltext_data { {
   { 338315, "Mindgames lasts an additional ${$s3/1000}.1 sec and deals an additional |cFFFFFFFF${$s1}.1%|r damage or healing.", 0, 0 },
   { 338318, "Windfury Weapon has a |cFFFFFFFF$s1%|r chance to trigger a third attack.", 0, 0 },
   { 338319, "Your Shadowy Apparitions deal |cFFFFFFFF${$s1}.1%|r more damage.", 0, 0 },
+  { 338321, "$@spelldesc337298", "Haste increased by $w1%.", 0 },
   { 338322, "Maelstrom Weapon increases the damage or healing of your next spell by an additional |cFFFFFFFF${$s1}.1%|r per stack.", 0, 0 },
   { 338325, "Frost Shock has a |cFFFFFFFF$s1%|r chance to grant $s2 $Lstack:stacks; of Maelstrom Weapon.", 0, 0 },
   { 338329, "Earth Shield increases your healing done to the target by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
