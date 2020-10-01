@@ -9111,6 +9111,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2020-10-01", "Shadowstrike Rank 2 Issue", 269259 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6988 )
+      .verification_value( 0.8735 );
   }
 
   void init( player_t* ) const override {}
