@@ -2974,7 +2974,7 @@ void player_t::init_assessors()
         {
           dot_t* dot = state->action->get_dot( state->target );
           sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
-                               dot->current_tick, dot->num_ticks, *state->target, state->result_amount,
+                               dot->current_tick, dot->num_ticks(), *state->target, state->result_amount,
                                state->action->get_school(), state->result );
         }
       }
@@ -3335,24 +3335,30 @@ void player_t::create_buffs()
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
       buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
-        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-          if ( new_ >= b->max_stack() )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+          if ( b->at_max_stacks() )
           {
             buffs.euphoria->trigger();
             b->expire();
           }
         } );
       buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
-      buffs.embody_the_construct = make_buff( this, "embody_the_construct", find_spell( 342174 ) );
       buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
         ->modify_max_stack( 1 )
-        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-          if ( new_ >= b->max_stack() )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+          if ( b->at_max_stacks() )
           {
             buffs.marrowed_gemstone_enhancement->trigger();
             b->expire();
           }
         } );
+
+      // Runecarves
+      buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
+      buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
+
+      // Trinkets
+      buffs.overflowing_anima_prison = make_buff<stat_buff_t>( this, "overflowing_anima_prison", find_spell( 343385 ) );
     }
   }
   // .. for enemies
@@ -3548,7 +3554,7 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_melee_attack_power( attack_power_type type ) const
+double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
   double base_ap = cache.attack_power();
   double ap = 0;
@@ -4194,6 +4200,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
+    m *= 1.0 + td->debuff.echo_of_eonar->check_value();
   }
 
   return m;
@@ -4280,8 +4287,8 @@ double player_t::temporary_movement_modifier() const
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.stampeding_roar->check() )
-      temporary = std::max( buffs.stampeding_roar->data().effectN( 1 ).percent(), temporary );
+    if ( buffs.stampeding_roar )
+      temporary = std::max( buffs.stampeding_roar->check_value(), temporary );
   }
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
@@ -4372,6 +4379,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( buffs.built_for_war )
     m *= 1.0 + buffs.built_for_war->check_stack_value();
+
+  if ( buffs.lead_by_example )
+    m *= 1.0 + buffs.lead_by_example->check_value();
 
   if ( buffs.celestial_guidance )
     m *= 1.0 + buffs.celestial_guidance->check_value();
@@ -8193,24 +8203,15 @@ struct use_item_t : public action_t
     if ( e && e->type == SPECIAL_EFFECT_USE )
     {
       // Create a buff
-      if ( e->buff_type() != SPECIAL_EFFECT_BUFF_NONE )
-      {
-        buff = buff_t::find( player, e->name() );
-        if ( !buff )
-        {
-          buff = e->create_buff();
-        }
+      buff = e->create_buff();
 
-        // On-use buff cooldowns are unconditionally handled by the action, so as a precaution,
-        // reset any cooldown associated with the buff itself
-        buff->set_cooldown( timespan_t::zero() );
-      }
+      // On-use buff cooldowns are unconditionally handled by the action, so as a precaution, reset any cooldown
+      // associated with the buff itself
+      if ( buff )
+        buff->set_cooldown( 0_ms );
 
       // Create an action
-      if ( e->action_type() != SPECIAL_EFFECT_ACTION_NONE )
-      {
-        action = e->create_action();
-      }
+      action = e->create_action();
 
       stats = player->get_stats( name_str, this );
 

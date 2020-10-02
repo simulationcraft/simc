@@ -1534,6 +1534,7 @@ sim_t::sim_t() :
   pause_mutex( nullptr ),
   paused( false ),
   chart_show_relative_difference( false ),
+  relative_difference_base(),
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
@@ -3612,6 +3613,7 @@ void sim_t::create_options()
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_string( "relative_difference_base", relative_difference_base ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
@@ -3781,10 +3783,14 @@ void sim_t::create_options()
     shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby",
     shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
+  add_option( opt_uint( "shadowlands.lead_by_example_nearby",
+    shadowlands_opts.lead_by_example_nearby, 0, 3 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",
     shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
+  add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
+    shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================

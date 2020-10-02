@@ -1,10 +1,14 @@
 import os, struct, logging, io, codecs
 
+from collections import defaultdict
+
 import dbc
 
 from dbc import DBCRecordInfo, HeaderFieldInfo
 
 from dbc.parser import DBCParserBase
+
+from dbc.constants import HotfixType
 
 class XFTHParser(DBCParserBase):
     __XFTH_HEADER_FIELDS = [
@@ -24,6 +28,7 @@ class XFTHParser(DBCParserBase):
         self.header_format = self.__XFTH_HEADER_FIELDS
 
         self.entries = {}
+        self.entry_map = {}
         self.parsers = {}
 
     # Never consider hotfix cache "empty"
@@ -40,6 +45,14 @@ class XFTHParser(DBCParserBase):
             return None
 
         return self.data[offset:end_offset].decode('utf-8')
+
+    def get_hotfix_record(self, record_id, wdb_parser):
+        sig = wdb_parser.table_hash
+
+        if sig not in self.entry_map:
+            return None
+
+        return self.entry_map[sig][record_id]
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id, wdb_parser):
@@ -118,9 +131,12 @@ class XFTHParser(DBCParserBase):
 
             if sig not in self.entries:
                 self.entries[sig] = []
+                self.entry_map[sig] = defaultdict()
 
-            if state == 1 and length > 0:
+            if state in [HotfixType.ENABLED, HotfixType.REMOVED]:
                 self.entries[sig].append(entry)
+                self.entry_map[sig][entry['record_id']] = entry
+
             all_entries.append(entry)
 
             # Skip data

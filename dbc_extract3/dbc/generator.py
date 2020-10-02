@@ -1226,10 +1226,11 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
+         # Sunblod Amethyst Trinket
+         343395, 343396,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 
@@ -1312,7 +1313,7 @@ class SpellDataGenerator(DataGenerator):
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
-          ( 328757, 0 ), # Wild Spirits (Covenenat)
+          ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
@@ -1369,6 +1370,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340431, 0 ),          # Doomblade legendary debuff
             ( 343173, 0 ),          # Premeditation buff
             ( 319190, 0 ),          # Shadow Vault shadow damage spell
+            ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
         ),
 
         # Priest:
@@ -1388,6 +1390,7 @@ class SpellDataGenerator(DataGenerator):
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
+            ( 345452, 0 ),          # Fae Fermata target Debuff
         ),
 
         # Death Knight:
@@ -1420,6 +1423,7 @@ class SpellDataGenerator(DataGenerator):
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
+          ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
 
         ),
 
@@ -1588,6 +1592,8 @@ class SpellDataGenerator(DataGenerator):
         # Monk:
         (
           # General
+          ( 138311, 0 ), # Energy Sphere energy refund
+          ( 163272, 0 ), # Chi Sphere chi refund
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -1643,22 +1649,35 @@ class SpellDataGenerator(DataGenerator):
           ( 288636, 3 ), # Glory of the Dawn proc
 
           # Covenant
+          ( 325217, 0 ), # Necrolord Bonedust Brew damage
+          ( 325218, 0 ), # Necrolord Bonedust Brew heal
+          ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
+          ( 327264, 0 ), # Ardenweald Faeline Stomp damage
+          ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
+          ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
-          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick Damage
+          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick damage
           ( 330907, 0 ), # Venthyr Fallen Monk Breath of Fire
           ( 330909, 0 ), # Venthyr Fallen Monk Clash
           ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
           ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
           ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
+          ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
 
           # Shadowland Legendaries
+          ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
+          ( 343249, 0 ), # Escape from Reality Buff
+          ( 343250, 0 ), # Escape from Reality
+          ( 343539, 0 ), # Escape from Reality Mana Refund
+          ( 343543, 0 ), # Escape from Reality Energy Refund
         ),
 
         # Druid:
@@ -1719,6 +1738,7 @@ class SpellDataGenerator(DataGenerator):
           ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
           ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
+          ( 340060, 0 ),       # Lycara's Fleeting Glimpse coming soon buff
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
@@ -1960,6 +1980,8 @@ class SpellDataGenerator(DataGenerator):
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
+        345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
+        345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
     ]
 
     _spell_families = {
@@ -2480,6 +2502,10 @@ class SpellDataGenerator(DataGenerator):
         # Souldbind conduits
         for spell_id in ConduitSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
+
+        # Explicitly add Shadowlands legendaries
+        for entry in self.db('RuneforgeLegendaryAbility').values():
+            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]

@@ -125,12 +125,13 @@ jobs:
     needs: [ubuntu-clang-10-build]
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - type: spell_query
             simc_flags: spell_query=spell > /dev/null
           - type: log_debug
-            simc_flags: $SIMC_PROFILE log=1 debug=1
+            simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
           - type: patchwerk
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
@@ -152,8 +153,51 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
+  ubuntu-clang-10-simc-tests:
+    name: ${{ matrix.test }}-${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
+    runs-on: ubuntu-18.04
+    needs: [ubuntu-clang-10-build]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [ talents ]
+        tier: [ Tier25 ]
+        class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
+        fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+          key: ubuntu-clang-10-for_run-${{ github.sha }}
+      
+      - name: Install deps
+        run: |
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+          sudo apt-get install -y libclang-common-10-dev llvm-10
+
+      - name: Setup BATS
+        uses: mig4/setup-bats@v1.0.1
+
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
+          SIMC_FIGHT_STYLE: ${{ matrix.fight_style }}
+          SIMC_CLASS: ${{ matrix.class }}
+          SIMC_THREADS: 2
+          SIMC_ITERATIONS: 2
+        run: |
+          cd tests
+          bats --tap ${{ matrix.test }}.bats
 
   build-docker:
     name: docker

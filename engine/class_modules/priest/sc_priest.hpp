@@ -37,6 +37,7 @@ struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct wrathful_faerie_t;
+struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -83,6 +84,7 @@ public:
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
+    propagate_const<buff_t*> wrathful_faerie_fermata;
   } buffs;
 
   priest_t& priest()
@@ -278,8 +280,15 @@ public:
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
     const spell_data_t* dark_thoughts;
-
   } specs;
+
+  // DoT Spells
+  struct
+  {
+    const spell_data_t* shadow_word_pain;
+    const spell_data_t* vampiric_touch;
+    const spell_data_t* devouring_plague;
+  } dot_spells;
 
   // Mastery Spells
   struct
@@ -294,6 +303,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> wrathful_faerie;
+    propagate_const<cooldown_t*> wrathful_faerie_fermata;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -370,7 +380,9 @@ public:
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
-  } active_spells;
+    propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
+    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+  } background_actions;
 
   // Items
   struct
@@ -414,12 +426,9 @@ public:
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
 
+    // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
+    int priest_ascended_eruption_additional_targets = 10;
   } options;
-
-  struct actions_t
-  {
-    actions::spells::ascended_eruption_t* ascended_eruption;
-  } action;
 
   // Azerite
   struct azerite_t
@@ -535,6 +544,7 @@ public:
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;
   void apply_affecting_auras( action_t& ) override;
+  void invalidate_cache( cache_e ) override;
 
 private:
   void create_cooldowns();
@@ -568,10 +578,6 @@ private:
   void generate_apl_holy_h();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
-
-  int shadow_weaving_active_dots( const player_t* target ) const;
-  double shadow_weaving_multiplier( const player_t* target ) const;
-
   target_specific_t<priest_td_t> _target_data;
 
 public:
@@ -586,7 +592,11 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
+  void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
+  void remove_wrathful_faerie_fermata();
+  int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
+  double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
   const priest_td_t* find_target_data( const player_t* target ) const
   {
@@ -601,7 +611,7 @@ public:
    */
   struct insanity_state_t final
   {
-    event_t* end;             // End event for dropping out of voidform (insanity reaches 0)
+    propagate_const<event_t*> end;             // End event for dropping out of voidform (insanity reaches 0)
     timespan_t last_drained;  // Timestamp when insanity was last drained
     priest_t& actor;
 
@@ -756,7 +766,10 @@ struct priest_pet_melee_t : public melee_attack_t
 
 struct priest_pet_spell_t : public spell_t
 {
-  priest_pet_spell_t( priest_pet_t& p, util::string_view n ) : spell_t( n, &p, p.find_pet_spell( n ) )
+  bool affected_by_shadow_weaving;
+
+  priest_pet_spell_t( priest_pet_t& p, util::string_view n )
+    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
   }
@@ -774,6 +787,30 @@ struct priest_pet_spell_t : public spell_t
   const priest_pet_t& p() const
   {
     return static_cast<priest_pet_t&>( *player );
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      tdm *= p().o().shadow_weaving_multiplier( t, id );
+    }
+
+    return tdm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = action_t::composite_target_ta_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      ttm *= p().o().shadow_weaving_multiplier( t, id );
+    }
+
+    return ttm;
   }
 };
 
@@ -991,7 +1028,18 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   {
     background = true;
     // This is hard coded in the spell, base SP is 3.0
-    spell_power_mod.direct *= 0.6;
+    // Depending on Mindbender or Shadowfiend this hits differently
+    switch ( p.pet_type )
+    {
+      case PET_MINDBENDER:
+      {
+        spell_power_mod.direct *= 0.442;
+      }
+      break;
+      default:
+        spell_power_mod.direct *= 0.408;
+        break;
+    }
   }
 };
 
@@ -1306,8 +1354,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
+  bool affected_by_shadow_weaving;
+
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1372,8 +1422,36 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_wrathful_faerie();
         }
+        if ( td && td->buffs.wrathful_faerie_fermata->check() )
+        {
+          priest().trigger_wrathful_faerie_fermata();
+        }
       }
     }
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      tdm *= priest().shadow_weaving_multiplier( t, id );
+    }
+
+    return tdm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = action_t::composite_target_ta_multiplier( t );
+
+    if ( affected_by_shadow_weaving )
+    {
+      ttm *= priest().shadow_weaving_multiplier( t, id );
+    }
+
+    return ttm;
   }
 
   double get_death_throes_bonus() const

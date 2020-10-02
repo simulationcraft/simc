@@ -27,11 +27,26 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/bear_form
-actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/swipe
+actions+=/ravenous_frenzy
+actions+=/empower_bond
+actions+=/adaptive_swarm
+actions+=/potion,if=buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up
+actions+=/use_items
+actions+=/berserk_bear,if=buff.ravenous_frenzy.up|!covenant.venthyr
+actions+=/incarnation,if=buff.ravenous_frenzy.up|!covenant.venthyr
+actions+=/pulverize,target_if=dot.thrash_bear.stack>2
+actions+=/thrash_bear,if=spell_targets>3
+actions+=/moonfire,target_if=refreshable
+actions+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<1.5
+actions+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped
+actions+=/mangle,if=talent.soul_of_the_forest.enabled|rage<80|!buff.berserk_bear.up&!buff.incarnation_guardian_of_ursoc.up
+actions+=/thrash_bear
+actions+=/maul,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5
+actions+=/maul,if=rage>=80
+actions+=/swipe_bear
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=44/459/582/241/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80

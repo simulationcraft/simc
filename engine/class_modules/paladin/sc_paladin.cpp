@@ -30,6 +30,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
+  active_hallow = nullptr;
 
   cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
@@ -84,19 +85,29 @@ namespace buffs {
     damage_modifier = data().effectN( 1 ).percent();
 
     // Lengthen duration if Sanctified Wrath is taken
+    bool took_sw = false;
     switch ( p -> specialization() )
     {
     case PALADIN_HOLY:
       if ( p -> talents.holy_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p -> talents.ret_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     case PALADIN_PROTECTION:
       if ( p -> talents.prot_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     default:
       break;
@@ -104,7 +115,8 @@ namespace buffs {
 
     // ... or if we have Light's Decree
     // TODO(mserrano): is this the right ordering?
-    if ( p -> azerite.lights_decree.ok() )
+    //    apparently currently this just doesn't work at all with SW
+    if ( p -> azerite.lights_decree.ok() && !( p -> bugs && took_sw ) )
       base_buff_duration += p -> spells.lights_decree -> effectN( 2 ).time_value();
 
     // let the ability handle the cooldown
@@ -805,7 +817,14 @@ void holy_power_consumer_t::execute()
   if ( p() -> buffs.crusade -> check() )
   {
     int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-    p() -> buffs.crusade -> trigger( num_stacks );
+    if ( p() -> bugs && is_divine_storm && ( p() -> buffs.empyrean_power_azerite -> up() || p() -> buffs.empyrean_power -> up() ) )
+    {
+      num_stacks = 0;
+    }
+    else
+    {
+      p() -> buffs.crusade -> trigger( num_stacks );
+    }
   }
 
   if ( p() -> azerite.relentless_inquisitor.ok() )
@@ -817,23 +836,47 @@ void holy_power_consumer_t::execute()
 
   // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
   // Cost reduction is still in divine_storm_t
-  if ( p() -> buffs.empyrean_power_azerite -> up() && is_divine_storm )
+  bool should_continue = true;
+  if ( is_divine_storm && p() -> bugs )
   {
-    p() -> buffs.empyrean_power_azerite -> expire();
+    if ( p() -> buffs.empyrean_power_azerite -> up() )
+    {
+      p() -> buffs.empyrean_power_azerite -> expire();
+      should_continue = false;
+    }
+
+    if ( p() -> buffs.empyrean_power -> up() )
+    {
+      p() -> buffs.empyrean_power -> expire();
+      should_continue = false;
+    }
   }
-  else if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
+  else if ( is_divine_storm )
   {
-    p() -> buffs.empyrean_power -> expire();
+    if ( p() -> buffs.empyrean_power_azerite -> up() )
+    {
+      p() -> buffs.empyrean_power_azerite -> expire();
+      should_continue = false;
+    }
+    else if ( p() -> buffs.empyrean_power -> up() )
+    {
+      p() -> buffs.empyrean_power -> expire();
+      should_continue = false;
+    }
   }
+
   // Divine Purpose isn't consumed on DS if EP was consumed
-  else if ( p() -> buffs.divine_purpose -> up() )
+  if ( should_continue )
   {
-    p() -> buffs.divine_purpose -> expire();
-  }
-  // FoJ isn't consumed if EP or DP were consumed
-  else if ( p() -> buffs.fires_of_justice -> up() )
-  {
-    p() -> buffs.fires_of_justice -> expire();
+    if ( should_continue && p() -> buffs.divine_purpose -> up() )
+    {
+      p() -> buffs.divine_purpose -> expire();
+    }
+    // FoJ isn't consumed if EP or DP were consumed
+    else if ( p() -> buffs.fires_of_justice -> up() )
+    {
+      p() -> buffs.fires_of_justice -> expire();
+    }
   }
 
   // Roll for Divine Purpose
@@ -1045,6 +1088,169 @@ struct divine_toll_t : public paladin_spell_t
   }
 };
 
+// TODO: fix AoE scaling once the formula is found, implement healing as well
+struct ashen_hallow_tick_t : public paladin_spell_t
+{
+  ashen_hallow_tick_t( paladin_t* p ) :
+    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
+  {
+    aoe = -1;
+    dual = true;
+    direct_tick = true;
+    background = true;
+    may_crit = true;
+    ground_aoe = true;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = paladin_spell_t::composite_aoe_multiplier( state );
+
+    // Thanks Melekus & pao for this formula
+    // There's gotta be a cleaner way to do this
+    // TODO: confirm this
+    if ( state -> n_targets <= 5 )
+    {
+      return cam;
+    }
+    else if ( state -> n_targets <= 10 )
+    {
+      return cam * (20.0 - state -> n_targets) / 15.0;
+    }
+    else if ( state -> n_targets <= 12 )
+    {
+      return cam * 2.0 / 3;
+    }
+    else // if ( state -> n_targets > 12 )
+    {
+      return cam * ( 8.0 / state -> n_targets );
+    }
+  }
+};
+
+struct ashen_hallow_t : public paladin_spell_t
+{
+  ashen_hallow_tick_t* damage_tick;
+  ground_aoe_params_t hallow_params;
+
+  ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr ),
+    damage_tick( new ashen_hallow_tick_t( p ) )
+  {
+    parse_options( options_str );
+
+    dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
+    may_miss = harmful = false;
+
+    add_child( damage_tick );
+  }
+
+  void init_finished() override
+  {
+    paladin_spell_t::init_finished();
+
+    timespan_t hallow_duration = data().duration();
+
+    hallow_params = ground_aoe_params_t()
+      .duration( hallow_duration )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .action( damage_tick )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      switch ( type )
+      {
+      case ground_aoe_params_t::EVENT_CREATED:
+        p() -> active_hallow = event;
+        break;
+      case ground_aoe_params_t::EVENT_DESTRUCTED:
+        p() -> active_hallow = nullptr;
+        break;
+      default:
+        break;
+      } } );
+  }
+
+  void execute() override
+  {
+    // Cancel the current hallow if it exists (this ... should be impossible)
+    if ( p() -> active_hallow != nullptr )
+      event_t::cancel( p() -> active_hallow );
+
+    paladin_spell_t::execute();
+
+    // Some parameters must be updated on each cast
+    hallow_params.target( execute_state -> target )
+               .start_time( sim -> current_time() );
+
+    if ( sim -> distance_targeting_enabled )
+      hallow_params.x( p() -> x_position )
+                 .y( p() -> y_position );
+
+    make_event<ground_aoe_event_t>( *sim, p(), hallow_params, false /* No immediate pulse */ );
+  }
+};
+
+
+// Hammer of Wrath
+
+struct hammer_of_wrath_t : public paladin_melee_attack_t
+{
+  hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
+    paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ) )
+  {
+    parse_options( options_str );
+
+    if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
+
+    if ( p -> legendary.vanguards_momentum -> ok() )
+    {
+      cooldown -> charges += p -> legendary.vanguards_momentum -> effectN( 1 ).base_value();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( ! p() -> get_how_availability( candidate_target ) )
+    {
+      return false;
+    }
+
+    return paladin_melee_attack_t::target_ready( candidate_target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( p() -> legendary.badge_of_the_mad_paragon -> ok() )
+    {
+      if ( p() -> buffs.avenging_wrath -> up() )
+      {
+        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+      else if ( p() -> buffs.crusade -> up() )
+      {
+        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+    }
+
+    if ( p() -> legendary.vanguards_momentum -> ok() )
+    {
+      p() -> buffs.vanguards_momentum -> trigger();
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    if ( p() -> standing_in_hallow() )
+      am *= 1.0 + p() -> spells.ashen_hallow_how -> effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -1219,9 +1425,11 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
+  if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
+  if ( name == "ashen_hallow"              ) return new ashen_hallow_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1370,6 +1578,7 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
+  active_hallow = nullptr;
 }
 
 // paladin_t::init_gains ====================================================
@@ -1634,6 +1843,16 @@ void paladin_t::init_action_list()
     return;
   }
 
+  // Protection isn't supported atm
+  if ( !sim->allow_experimental_specializations && specialization() == PALADIN_PROTECTION )
+  {
+    if ( !quiet )
+      sim->error( "Specialization Protection Paladin for {} is currently not supported.", *this );
+
+    quiet = true;
+    return;
+  }
+
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
@@ -1717,8 +1936,9 @@ void paladin_t::init_spells()
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
   spells.avenging_wrath = find_class_spell( "Avenging Wrath" );
-  spells.judgment_2 = find_spell( 327977 );
-  spells.avenging_wrath_2 = find_spell( 317872 );
+  spells.judgment_2 = find_rank_spell( "Judgment", "Rank 2" ); // 327977
+  spells.avenging_wrath_2 = find_rank_spell( "Avenging Wrath", "Rank 2" ); // 317872
+  spells.hammer_of_wrath_2 = find_rank_spell( "Hammer of Wrath", "Rank 2" ); // 326730
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
@@ -1742,6 +1962,8 @@ void paladin_t::init_spells()
   covenant.venthyr = find_covenant_spell( "Ashen Hollow" );
   covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
   covenant.night_fae = find_covenant_spell( "Blessing of the Seasons" ); // TODO: fix
+
+  spells.ashen_hallow_how = find_spell( 330382 );
 
   // Conduits
   // TODO: non-damage conduits
@@ -1845,6 +2067,20 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   }
 
   return s;
+}
+
+// paladin_t::composite_player_multiplier ===================================
+
+double paladin_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.vanguards_momentum -> up() )
+  {
+    m *= 1.0 + buffs.vanguards_momentum -> stack_value();
+  }
+
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier ================================
@@ -1988,10 +2224,10 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
   case PALADIN_PROTECTION:
-    sp = spec.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
+    sp = spec.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
     break;
   case PALADIN_RETRIBUTION:
-    sp = spec.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
+    sp = spec.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
     break;
   default:
     break;
@@ -2011,9 +2247,9 @@ double paladin_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double paladin_t::composite_melee_attack_power( attack_power_type ap_type) const
+double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type) const
 {
-  return player_t::composite_melee_attack_power( ap_type );
+  return player_t::composite_melee_attack_power_by_type( ap_type );
 }
 
 // paladin_t::composite_attack_power_multiplier =============================
@@ -2311,12 +2547,39 @@ void paladin_t::combat_begin()
   lucid_dreams_accumulator = 0;
 }
 
+// paladin_t::standing_in_hallow ============================================
+
+bool paladin_t::standing_in_hallow() const
+{
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return active_hallow != nullptr;
+  }
+
+  // new
+  if ( active_hallow != nullptr )
+  {
+    // calculate current distance to each consecration
+    ground_aoe_event_t* hallow_to_test = active_hallow;
+
+    double distance = get_position_distance( hallow_to_test -> params -> x(), hallow_to_test -> params -> y() );
+
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= covenant.venthyr -> effectN( 1 ).radius() )
+      return true;
+  }
+
+  // if we're not in range of any of them
+  return false;
+}
+
 // paladin_t::get_how_availability ==========================================
 
 bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
-  return ( buffs.avenging_wrath -> up() || buffs.crusade -> up() || t -> health_percentage() <= 20 );
+  bool buffs_ok = spells.hammer_of_wrath_2 -> ok() && ( buffs.avenging_wrath -> up() || buffs.crusade -> up() );
+  return ( buffs_ok || standing_in_hallow() || t -> health_percentage() <= 20 );
 }
 
 // player_t::create_expression ==============================================

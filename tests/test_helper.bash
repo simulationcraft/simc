@@ -1,10 +1,7 @@
 function sim() {
   PROFILE_NAME="$(basename ${SIMC_PROFILE})"
   OPTIONS="$@"
-  cd "${SIMC_PROFILES_PATH}"
-#  run ${SIMC_TIMEOUT} 300 "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} output=/dev/null $@
-  run "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} $@
-  cd -
+  run "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} threads=${SIMC_THREADS} fight_style=${SIMC_FIGHT_STYLE} output=/dev/null cleanup_threads=1 $@
 }
 
 function class_sim() {
@@ -18,16 +15,16 @@ function class_sim() {
   done
 }
 
-function class_sim2() {
+function talent_sim() {
   PROFILE_DIR=${SIMC_PROFILE_DIR}
   PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
   PROFILE_TALENTS=( $("${BATS_TEST_DIRNAME}"/talent_options $1) )
   for spec in ${PROFILES[@]}; do
     SIMC_PROFILE=${spec}
     for talent in ${PROFILE_TALENTS[@]}; do
-      sim talents=${talent} threads=2 default_actions=1
+      sim talents=${talent} default_actions=1
       if [ ! "${status}" -eq 0 ]; then
-        echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} talents=${talent} threads=2 default_actions=1"
+        echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} threads=${SIMC_THREADS} fight_style=${SIMC_FIGHT_STYLE} output=/dev/null cleanup_threads=1 talents=${talent} default_actions=1"
         echo "=== Output begins here ==="
         echo "${output}"
         echo "=== Output ends here ==="
@@ -48,7 +45,7 @@ teardown() {
     if [ "${#lines[@]}" -gt 0 ]; then
       BATS_TEST_DESCRIPTION+="<br/>Test output:"
       for line in ${lines[@]}; do
-        BATS_TEST_DESCRIPTION+="<br/>${line}"
+	      BATS_TEST_DESCRIPTION+="<br/>${line}"
       done
     fi
   fi

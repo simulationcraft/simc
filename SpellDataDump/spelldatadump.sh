@@ -24,3 +24,10 @@ FILE=SpellDataDump/allspells.txt
 # convert unix line endings to windows since that's been the standard
 sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE
 rm $FILE.unix
+
+FILE=SpellDataDump/soulbind.txt
+./engine/simc spell_query="soulbind_spell" > $FILE.unix
+
+# convert unix line endings to windows since that's been the standard
+sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE
+rm $FILE.unix

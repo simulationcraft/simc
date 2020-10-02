@@ -68,8 +68,9 @@ ground_aoe_event_t::ground_aoe_event_t(player_t* p, const ground_aoe_params_t* p
   // Make a state object that persists for this ground aoe event throughout its lifetime
   if (!pulse_state)
   {
-    pulse_state = params->action()->get_state();
     action_t* spell_ = params->action();
+    pulse_state = spell_->get_state();
+    pulse_state->target = params->target();
     spell_->snapshot_state(pulse_state, spell_->amount_type(pulse_state));
   }
 
@@ -189,10 +190,10 @@ void ground_aoe_event_t::execute()
   // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
   // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
   // use the ground object's x, y coordinates, instead of the source actor's.
-  spell_->update_state(pulse_state, spell_->amount_type(pulse_state));
   pulse_state->target = params->target();
   pulse_state->original_x = params->x();
   pulse_state->original_y = params->y();
+  spell_->update_state(pulse_state, spell_->amount_type(pulse_state));
 
   // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
   // for the last (partial) time. Note that pulse-based ground aoe events do not have a concept of

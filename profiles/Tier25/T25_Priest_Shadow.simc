@@ -29,7 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=1+runeforge.eternal_call_to_the_void.equipped
+actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=1
 actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
@@ -57,24 +57,26 @@ actions.essences+=/the_unbound_force
 
 # Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting.
 actions.main=void_eruption,if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&dot.devouring_plague.ticking))
+# Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
+actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
 # Only use Void Bolt if Devouring Plague doesn't need refreshed.
 actions.main+=/void_bolt,if=!dot.devouring_plague.refreshable
 actions.main+=/call_action_list,name=cds
-# Prefer to use Damnation ASAP if any DoT is not up
+# Prefer to use Damnation ASAP if any DoT is not up.
 actions.main+=/damnation,target_if=!variable.all_dots_up
 # Use Devouring Plague right before you go into a LotV Voidform.
 actions.main+=/devouring_plague,if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100
 # Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets.
 actions.main+=/devouring_plague,target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))
-# Use Shadow Word: Death if the target is about to die.
-actions.main+=/shadow_word_death,target_if=target.health.pct<20
+# Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with Mindbender or Shadowfiend active.
+actions.main+=/shadow_word_death,target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)
 # Use Surrender to Madness on a target that is going to die at the right time.
 actions.main+=/surrender_to_madness,target_if=target.time_to_die<25&buff.voidform.down
 actions.main+=/mindbender
 # Use Void Torrent only if all DoTs are active and the target won't die during the channel.
-actions.main+=/void_torrent,target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4
-# Use SW:D above 30% HP when Painbreaker Psalm power is active
-actions.main+=/shadow_word_death,if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30
+actions.main+=/void_torrent,target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4
+# Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back
+actions.main+=/shadow_word_death,if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)
 # Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die.
 actions.main+=/shadow_crash,if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30
 # Use Shadow Crash on CD unless there are adds incoming.
@@ -89,11 +91,11 @@ actions.main+=/searing_nightmare,use_while_casting=1,target_if=(variable.searing
 actions.main+=/mind_blast,use_while_casting=1,if=variable.dots_up
 # TODO Verify target cap
 actions.main+=/mind_blast,if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4
+actions.main+=/vampiric_touch,target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up
 # Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and using Psychic Link and NOT Misery.
 actions.main+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2
 # Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.
 actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))
-actions.main+=/vampiric_touch,target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up
 actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up
 actions.main+=/shadow_word_pain

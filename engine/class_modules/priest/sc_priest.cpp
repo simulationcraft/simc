@@ -371,6 +371,7 @@ struct wrathful_faerie_t final : public priest_spell_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+    background        = true;
 
     cooldown->duration = data().internal_cooldown();
   }
@@ -381,6 +382,31 @@ struct wrathful_faerie_t final : public priest_spell_t
     {
       execute();
       priest().cooldowns.wrathful_faerie->start();
+    }
+  }
+};
+
+struct wrathful_faerie_fermata_t final : public priest_spell_t
+{
+  double insanity_gain;
+  wrathful_faerie_fermata_t( priest_t& p )
+    : priest_spell_t( "wrathful_faerie_fermata", p, p.find_spell( 345452 ) ),
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+    background        = true;
+
+    cooldown->duration = data().internal_cooldown();
+  }
+
+  void trigger()
+  {
+    if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
+    {
+      execute();
+      priest().cooldowns.wrathful_faerie_fermata->start();
     }
   }
 };
@@ -579,6 +605,8 @@ struct ascended_eruption_t final : public priest_spell_t
     aoe        = -1;
     background = true;
     radius     = data().effectN( 1 ).radius_max();
+    // By default the spell tries to use the healing SP Coeff
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
   }
 
   void trigger_eruption( int stacks )
@@ -596,6 +624,16 @@ struct ascended_eruption_t final : public priest_spell_t
     m *= 1 + base_da_increase * trigger_stacks;
 
     return m;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam  = priest_spell_t::composite_aoe_multiplier( state );
+    int targets = state->n_targets;
+    sim->print_debug( "{} {} sets damage multiplier as if it hit an additional {} targets.", *player, *this,
+                      priest().options.priest_ascended_eruption_additional_targets );
+    targets += priest().options.priest_ascended_eruption_additional_targets;
+    return cam / std::sqrt( targets );
   }
 };
 
@@ -782,11 +820,6 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
       shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) ),
       mindbender_cooldown( p.get_cooldown( "mindbender" ) )
   {
-    if ( priest().conduits.fae_fermata->ok() )
-    {
-      set_duration( data().duration() + priest().conduits.fae_fermata.time_value() );
-    }
-
     set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       if ( priest().talents.mindbender->ok() )
       {
@@ -804,6 +837,7 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     priest().remove_wrathful_faerie();
+    priest().remove_wrathful_faerie_fermata();
   }
 };
 
@@ -828,7 +862,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 
     if ( priest().options.priest_use_ascended_eruption )
     {
-      priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
+      priest().background_actions.ascended_eruption->trigger_eruption( expiration_stacks );
     }
   }
 };
@@ -984,8 +1018,9 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "mind_flay", &p, p.o().find_spell( 193473 ) ),
       void_tendril_insanity( p.o().find_spell( 336214 ) )
   {
-    channeled    = true;
-    hasted_ticks = false;
+    channeled                  = true;
+    hasted_ticks               = false;
+    affected_by_shadow_weaving = true;
 
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
@@ -1023,12 +1058,12 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     return base_tick_time;
   }
 
-  void impact( action_state_t* s ) override
+  void tick( dot_t* d ) override
   {
-    priest_pet_spell_t::impact( s );
+    priest_pet_spell_t::tick( d );
 
     p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, s->action );
+                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, d->state->action );
   }
 };
 
@@ -1042,17 +1077,49 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
   return priest_pet_t::create_action( name, options_str );
 }
 
+struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
+{
+  const double void_lasher_insanity;
+
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
+    : priest_pet_spell_t( "mind_sear_tick", &p, s ),
+      void_lasher_insanity( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+  {
+    background = true;
+    dual       = true;
+    aoe        = -1;
+    radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
+    affected_by_shadow_weaving = true;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    // Not hasted
+    return dot_duration;
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    // Not hasted
+    return base_tick_time;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                               s->action );
+  }
+};
+
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
-  const spell_data_t* void_lasher_insanity;
-
-  void_lasher_mind_sear_t( void_lasher_t& p )
-    : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344752 ) ),
-      void_lasher_insanity( p.o().find_spell( 336214 ) )
+  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344754 ) )
   {
     channeled    = true;
     hasted_ticks = false;
-    aoe          = -1;
+    tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
 
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
@@ -1076,26 +1143,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
         }
       }
     }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    p().o().generate_insanity( void_lasher_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_sear, s->action );
   }
 };
 
@@ -1127,6 +1174,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   buffs.shadow_crash_debuff = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
   buffs.wrathful_faerie     = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
+  buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1157,17 +1205,17 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     talents(),
     specs(),
+    dot_spells(),
     mastery_spells(),
     cooldowns(),
     rppm(),
     gains(),
     benefits(),
     procs(),
-    active_spells(),
+    background_actions(),
     active_items(),
     pets( *this ),
     options(),
-    action(),
     azerite(),
     azerite_essence(),
     legendary(),
@@ -1186,12 +1234,13 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.wrathful_faerie    = get_cooldown( "wrathful_faerie" );
-  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
+  cooldowns.wrathful_faerie         = get_cooldown( "wrathful_faerie" );
+  cooldowns.wrathful_faerie_fermata = get_cooldown( "wrathful_faerie_fermata" );
+  cooldowns.holy_fire               = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity      = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt               = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast              = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption           = get_cooldown( "void_eruption" );
 }
 
 /** Construct priest gains */
@@ -1447,8 +1496,6 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
     m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
   }
 
-  m *= shadow_weaving_multiplier( t );
-
   return m;
 }
 
@@ -1627,7 +1674,12 @@ void priest_t::trigger_lucid_dreams( double cost )
 
 void priest_t::trigger_wrathful_faerie()
 {
-  active_spells.wrathful_faerie->trigger();
+  background_actions.wrathful_faerie->trigger();
+}
+
+void priest_t::trigger_wrathful_faerie_fermata()
+{
+  background_actions.wrathful_faerie_fermata->trigger();
 }
 
 void priest_t::init_base_stats()
@@ -1701,6 +1753,11 @@ void priest_t::init_spells()
   specs.holy       = dbc::get_class_passive( *this, PRIEST_HOLY );
   specs.discipline = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
+
+  // DoT Spells
+  dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
+  dot_spells.vampiric_touch   = find_class_spell( "Vampiric Touch" );
+  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -1793,9 +1850,11 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+  background_actions.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 
-  active_spells.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
+  background_actions.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
+
+  background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
 
   init_background_actions_shadow();
 }
@@ -1877,6 +1936,21 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
 }
 
+void priest_t::invalidate_cache( cache_e cache )
+{
+  player_t::invalidate_cache( cache );
+
+  switch ( cache )
+  {
+    case CACHE_MASTERY:
+      if ( mastery_spells.grace->ok() )
+        player_t::invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+      break;
+    default:
+      break;
+  }
+}
+
 /// ALL Spec Pre-Combat Action Priority List
 void priest_t::create_apl_precombat()
 {
@@ -1919,7 +1993,7 @@ void priest_t::create_apl_precombat()
 std::string priest_t::default_potion() const
 {
   std::string lvl60_potion =
-      ( specialization() == PRIEST_SHADOW ) ? "potion_of_spectral_intellect" : "potion_of_spectral_intellect";
+      ( specialization() == PRIEST_SHADOW ) ? "potion_of_deathly_fixation" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
   return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
@@ -1932,7 +2006,7 @@ std::string priest_t::default_flask() const
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 50 ) ? "crawler_ravioli_with_apple_sauce" : "baked_port_tato";
+  return ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "baked_port_tato";
 }
 
 std::string priest_t::default_rune() const
@@ -2064,7 +2138,6 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_deprecated( "double_dot", "action_list=double_dot" ) );
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
@@ -2078,6 +2151,8 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
   add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
+  add_option(
+      opt_int( "priest_ascended_eruption_additional_targets", options.priest_ascended_eruption_additional_targets ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -2159,11 +2234,35 @@ void priest_t::remove_wrathful_faerie()
     if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
     {
       priest_td->buffs.wrathful_faerie->expire();
+
+      // If you have the conduit enabled, clear out the conduit buff and trigger it on the old Wrathful Faerie target
+      if ( conduits.fae_fermata && buffs.fae_guardians->check() )
+      {
+        remove_wrathful_faerie_fermata();
+        priest_td->buffs.wrathful_faerie_fermata->trigger();
+      }
     }
   }
 }
 
-int priest_t::shadow_weaving_active_dots( const player_t* target ) const
+// Fae Guardian Wrathful Faerie conduit buff helper
+void priest_t::remove_wrathful_faerie_fermata()
+{
+  if ( !conduits.fae_fermata )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
+    {
+      priest_td->buffs.wrathful_faerie_fermata->expire();
+    }
+  }
+}
+
+int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
 {
   int dots = 0;
 
@@ -2179,20 +2278,26 @@ int priest_t::shadow_weaving_active_dots( const player_t* target ) const
       const dot_t* vt  = td->dots.vampiric_touch;
       const dot_t* dp  = td->dots.devouring_plague;
 
-      dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      // You get mastery benefit for a DoT as if it was active, if you are actively putting that DoT up
+      // So to get the mastery benefit you either have that DoT ticking, or you are casting it
+      bool swp_ticking = ( spell_id == dot_spells.shadow_word_pain->id() ) || swp->is_ticking();
+      bool vt_ticking  = ( spell_id == dot_spells.vampiric_touch->id() ) || vt->is_ticking();
+      bool dp_ticking  = ( spell_id == dot_spells.devouring_plague->id() ) || dp->is_ticking();
+
+      dots = swp_ticking + vt_ticking + dp_ticking;
     }
   }
 
   return dots;
 }
 
-double priest_t::shadow_weaving_multiplier( const player_t* target ) const
+double priest_t::shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const
 {
   double multiplier = 1.0;
 
   if ( mastery_spells.shadow_weaving->ok() )
   {
-    auto dots = shadow_weaving_active_dots( target );
+    auto dots = shadow_weaving_active_dots( target, spell_id );
 
     if ( dots > 0 )
     {

@@ -2,6 +2,8 @@ import os, logging, io
 
 import dbc, dbc.wdc1, dbc.xfth, dbc.wdc2, dbc.wdc3
 
+from dbc.constants import HotfixType
+
 _PARSERS = {
     b'WDC1': dbc.wdc1.WDC1Parser,
     b'WDC2': dbc.wdc2.WDC2Parser,
@@ -33,23 +35,27 @@ class HotfixIterator:
             raise StopIteration
 
         dbc_id, offset, size, key_id, _ = self._parser.get_record_info(self._record, self._wdb_parser)
-        data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
-
-        if self._wdb_parser.has_key_block():
-            # If the key block id is not duplicated in the record, it'll be at
-            # the end of the hotfix entry
-            if not self._key_field_name:
-                # Replace parent key id if it makes sense
-                if data[-1] > 0 and key_id != data[-1]:
-                    key_id = data[-1]
-                data = data[:-1]
-            # Duplicated, just grab it from the record index
-            else:
-                key_id = data[self._key_field_index]
-
+        hotfix_entry = self._parser.get_hotfix_record(dbc_id, self._wdb_parser)
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data, key_id)
+        if hotfix_entry['state'] == HotfixType.REMOVED:
+            return self._data_class.default(self._wdb_parser), hotfix_entry
+        else:
+            data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
+
+            if self._wdb_parser.has_key_block():
+                # If the key block id is not duplicated in the record, it'll be at
+                # the end of the hotfix entry
+                if not self._key_field_name:
+                    # Replace parent key id if it makes sense
+                    if data[-1] > 0 and key_id != data[-1]:
+                        key_id = data[-1]
+                    data = data[:-1]
+                # Duplicated, just grab it from the record index
+                else:
+                    key_id = data[self._key_field_index]
+
+            return self._data_class(self._parser, dbc_id, data, key_id), hotfix_entry
 
 class HotfixFile:
     def __init__(self, options):

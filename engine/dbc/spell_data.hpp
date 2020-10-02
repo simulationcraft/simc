@@ -354,7 +354,6 @@ struct spelleffect_data_t
 private:
   static util::span<spelleffect_data_t> _data( bool ptr );
 
-  double scaled_average( double budget, unsigned level ) const;
   double scaled_delta( double budget ) const;
   double scaled_min( double avg, double delta ) const;
   double scaled_max( double avg, double delta ) const;
