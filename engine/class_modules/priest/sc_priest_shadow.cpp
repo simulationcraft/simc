@@ -1867,16 +1867,6 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     this->reactable = true;
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool r = base_t::trigger( stacks, value, chance, duration );
-
-    // Currently dark thoughts also resets your mind blast.
-    priest().cooldowns.mind_blast->reset( true, 1 );
-
-    return r;
-  }
-
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( remaining_duration == timespan_t::zero() )
