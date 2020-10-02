@@ -1181,8 +1181,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void_tracking = make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )
                                       ->set_quiet( true )
-                                      ->set_duration( timespan_t::from_seconds( 99 ) )
-                                      ->set_max_stack( 99 );
+                                      ->set_duration( timespan_t::from_seconds( 99 ) );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );

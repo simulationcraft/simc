@@ -1139,12 +1139,18 @@ struct void_bolt_t final : public priest_spell_t
   void_bolt_extension_t* void_bolt_extension;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
   propagate_const<cooldown_t*> mindbender_cooldown;
+  timespan_t hungering_void_base_seconds;
+  timespan_t hungering_void_crit_seconds;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       void_bolt_extension( nullptr ),
       shadowfiend_cooldown( player.get_cooldown( "mindbender" ) ),
-      mindbender_cooldown( player.get_cooldown( "shadowfiend" ) )
+      mindbender_cooldown( player.get_cooldown( "shadowfiend" ) ),
+      hungering_void_base_seconds(
+          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() ) ),
+      hungering_void_crit_seconds(
+          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() ) )
   {
     parse_options( options_str );
     use_off_gcd                = true;
@@ -1223,12 +1229,9 @@ struct void_bolt_t final : public priest_spell_t
       // Check if this buff is active, every Void Bolt after the first should get this
       if ( td.buffs.hungering_void_tracking->up() )
       {
-        timespan_t seconds_to_add_to_voidform =
-            timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() );
-        seconds_to_add_to_voidform +=
-            s->result == RESULT_CRIT
-                ? timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() )
-                : timespan_t::from_seconds( 0 );
+        timespan_t seconds_to_add_to_voidform = s->result == RESULT_CRIT
+                                                    ? hungering_void_base_seconds + hungering_void_crit_seconds
+                                                    : hungering_void_base_seconds;
         sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
         // TODO: add some type of tracking for this increase
         priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
@@ -2265,7 +2268,8 @@ void priest_t::generate_apl_shadow()
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
   main->add_action( this, "Void Bolt", "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85",
-                    "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 with conduit)." );
+                    "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
+                    "with conduit)." );
   main->add_action( this, "Shadow Word: Death",
                     "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
