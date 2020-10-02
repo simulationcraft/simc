@@ -26,6 +26,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_scouring_tithe;
+  propagate_const<dot_t*> dots_impending_catastrophe;
 
   // Aff
   propagate_const<dot_t*> dots_agony;

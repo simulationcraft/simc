@@ -55,6 +55,68 @@ struct drain_life_t : public warlock_spell_t
   }
 };  
 
+struct impending_catastrophe_dot_t : public warlock_spell_t
+{
+  impending_catastrophe_dot_t( warlock_t* p )
+    : warlock_spell_t( "impending_catastrophe_dot_t", p, p->find_spell( 322170 ) )
+  {
+    background = true;
+    may_miss   = false;
+    dual       = true;
+    aoe        = -1;
+    dot_duration *= 1 + p->conduit.catastrophic_origin.percent();
+  }
+};
+
+struct impending_catastrophe_impact_t : public warlock_spell_t
+{
+  impending_catastrophe_impact_t( warlock_t* p )
+    : warlock_spell_t( "impending_catastrophe_impact_t", p, p->find_spell( 322167 ) )
+  {
+    background = true;
+    may_miss   = false;
+    dual       = true;
+  }
+};
+
+struct impending_catastrophe_t : public warlock_spell_t
+{
+  action_t* impending_catastrophe_dot;
+  action_t* impending_catastrophe_impact;
+
+  impending_catastrophe_t( warlock_t* p, util::string_view options_str ) : 
+    warlock_spell_t( "impending_catastrophe", p, p->covenant.impending_catastrophe ),
+    impending_catastrophe_impact( new impending_catastrophe_impact_t(p) ),
+    impending_catastrophe_dot( new impending_catastrophe_dot_t( p ) )
+  {
+    parse_options( options_str );
+    travel_speed = 16;
+   
+    add_child( impending_catastrophe_impact );
+    add_child( impending_catastrophe_dot );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    // This is where we would implement Curse of Weakness/Tongues
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .n_pulses(1)
+        .target( s->target )
+        .action( impending_catastrophe_dot ),
+        true );
+
+    auto targets = target_list();
+    for ( auto t : targets )
+    {
+      impending_catastrophe_impact->set_target( t );
+      impending_catastrophe_impact->execute();
+    }
+  }
+
+};
+
 struct scouring_tithe_t : public warlock_spell_t
 {
   scouring_tithe_t( warlock_t* p, util::string_view options_str )
@@ -179,6 +241,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
+  dots_impending_catastrophe = target->get_dot( "impending_catastrophe", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
@@ -583,6 +646,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new decimating_bolt_t( this, options_str );
   if ( action_name == "scouring_tithe" )
     return new scouring_tithe_t( this, options_str );
+  if ( action_name == "impending_catastrophe" )
+    return new impending_catastrophe_t( this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -1061,6 +1126,7 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_phantom_singularity->adjust_duration( darkglare_extension );
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
+    td->dots_impending_catastrophe->adjust_duration( darkglare_extension );
   }
 }
 
