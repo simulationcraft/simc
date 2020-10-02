@@ -679,6 +679,42 @@ private:
 
 namespace actions
 {
+  //Event for triggering delayed refunds from Soul Conduit
+  //Delay prevents instant reaction time issues for rng refunds
+  struct sc_event_t : public player_event_t
+  {
+    gain_t* shard_gain;
+    warlock_t* pl;
+    int shards_used;
+
+    sc_event_t(warlock_t* p, int c)
+      : player_event_t(*p, timespan_t::from_millis(100)),
+      shard_gain(p->gains.soul_conduit),
+      pl(p),
+      shards_used(c)
+    {
+    }
+
+    virtual const char* name() const override
+    {
+      return "sc_event";
+    }
+
+    virtual void execute() override
+    {
+      double soul_conduit_rng = pl->talents.soul_conduit->effectN(1).percent();
+
+      for (int i = 0; i < shards_used; i++)
+      {
+        if (rng().roll(soul_conduit_rng))
+        {
+          pl->resource_gain(RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit);
+          pl->procs.soul_conduit->occur();
+        }
+      }
+    }
+  };
+
 struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
@@ -782,41 +818,7 @@ public:
       // lets try making all lock specs not react instantly to shard gen
       if ( p()->talents.soul_conduit->ok() )
       {
-        struct sc_event : public player_event_t
-        {
-          gain_t* shard_gain;
-          warlock_t* pl;
-          int shards_used;
-
-          sc_event( warlock_t* p, int c )
-            : player_event_t( *p, timespan_t::from_millis( 100 ) ),
-              shard_gain( p->gains.soul_conduit ),
-              pl( p ),
-              shards_used( c )
-          {
-          }
-
-          virtual const char* name() const override
-          {
-            return "sc_event";
-          }
-
-          virtual void execute() override
-          {
-            double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
-
-            for ( int i = 0; i < shards_used; i++ )
-            {
-              if ( rng().roll( soul_conduit_rng ) )
-              {
-                pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit );
-                pl->procs.soul_conduit->occur();
-              }
-            }
-          }
-        };
-
-        make_event<sc_event>( *p()->sim, p(), as<int>( last_resource_cost ) );
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
       }
     }
   }
