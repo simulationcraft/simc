@@ -29,7 +29,7 @@ jobs:
           - cc: gcc-9
             cxx: g++-9
             packages: gcc-9 g++-9
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -72,7 +72,7 @@ jobs:
 
   ubuntu-clang-10-build:
     name: ubuntu-clang-10-build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -86,8 +86,8 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache clang-10 lld-10
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
 
       - name: Configure
         env:
@@ -121,8 +121,8 @@ jobs:
 
   ubuntu-clang-10-run:
     name: ubuntu-clang-10-${{ matrix.type }}
-    runs-on: ubuntu-18.04
-    needs: [ubuntu-clang-10-build]
+    runs-on: ubuntu-20.04
+    needs: [ ubuntu-clang-10-build ]
 
     strategy:
       fail-fast: false
@@ -145,11 +145,6 @@ jobs:
             profiles
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
-      - name: Install deps
-        run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libclang-common-10-dev llvm-10
-
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
@@ -157,8 +152,8 @@ jobs:
 
   ubuntu-clang-10-simc-tests:
     name: ${{ matrix.test }}-${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
-    runs-on: ubuntu-18.04
-    needs: [ubuntu-clang-10-build]
+    runs-on: ubuntu-20.04
+    needs: [ ubuntu-clang-10-build ]
 
     strategy:
       fail-fast: false
@@ -177,11 +172,6 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
           key: ubuntu-clang-10-for_run-${{ github.sha }}
-      
-      - name: Install deps
-        run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libclang-common-10-dev llvm-10
 
       - name: Setup BATS
         uses: mig4/setup-bats@v1.0.1
@@ -223,7 +213,7 @@ jobs:
 
       - name: Smoke Test
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
-        
+
   windows-VS:
     name: windows-VS-${{ matrix.vs }}
     runs-on: windows-latest
