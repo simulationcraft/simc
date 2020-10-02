@@ -468,6 +468,8 @@ struct mindgames_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    affected_by_shadow_weaving = true;
+
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
