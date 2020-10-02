@@ -1224,8 +1224,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     azerite_essence(),
     legendary(),
     conduits(),
-    covenant(),
-    insanity( *this )
+    covenant()
 {
   create_cooldowns();
   create_gains();
@@ -1253,8 +1252,6 @@ void priest_t::create_gains()
   gains.mindbender                      = get_gain( "Mana Gained from Mindbender" );
   gains.power_word_solace               = get_gain( "Mana Gained from Power Word: Solace" );
   gains.insanity_auspicious_spirits     = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_dispersion             = get_gain( "Insanity Saved by Dispersion" );
-  gains.insanity_drain                  = get_gain( "Insanity Drained by Voidform" );
   gains.insanity_pet                    = get_gain( "Insanity Gained from Shadowfiend" );
   gains.insanity_surrender_to_madness   = get_gain( "Insanity Gained from Surrender to Madness" );
   gains.vampiric_touch_health           = get_gain( "Health from Vampiric Touch" );
@@ -1419,22 +1416,12 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.dark_passion->check() )
-  {
-    h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
-  }
-
   return h;
 }
 
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.dark_passion->check() )
-  {
-    h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
-  }
 
   return h;
 }
@@ -1657,12 +1644,11 @@ void priest_t::trigger_lucid_dreams( double cost )
 
   if ( rng().roll( proc_chance ) )
   {
-    double current_drain;
     switch ( specialization() )
     {
       case PRIEST_SHADOW:
-        current_drain = insanity.insanity_drain_per_second();
-        generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
+        // TODO: Figure this out for prepatch?
+        // generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
         break;
       case PRIEST_HOLY:
       case PRIEST_DISCIPLINE:
@@ -1736,12 +1722,6 @@ void priest_t::init_resources( bool force )
 void priest_t::init_scaling()
 {
   base_t::init_scaling();
-
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    // Just hook insanity init in here when actor set bonuses are ready
-    insanity.init();
-  }
 }
 
 void priest_t::init_spells()
@@ -1923,10 +1903,6 @@ pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
 void priest_t::do_dynamic_regen()
 {
   player_t::do_dynamic_regen();
-
-  // Drain insanity, and adjust the time when all insanity is depleted from the actor
-  insanity.drain();
-  insanity.adjust_end_event();
 }
 
 void priest_t::apply_affecting_auras( action_t& action )
@@ -2124,8 +2100,6 @@ void priest_t::reset()
       td->reset();
     }
   }
-
-  insanity.reset();
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
@@ -2249,6 +2223,7 @@ void priest_t::remove_wrathful_faerie()
 }
 
 // Fae Guardian Wrathful Faerie conduit buff helper
+// TODO: this might not be needed anymore
 void priest_t::remove_wrathful_faerie_fermata()
 {
   if ( !conduits.fae_fermata->ok() )
@@ -2323,14 +2298,9 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   void_lasher.set_default_duration( p.find_spell( 336216 )->duration() + timespan_t::from_millis( 1 ) );
 }
 
-buffs::dispersion_t::dispersion_t( priest_t& p )
-  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ), no_insanity_drain()
+buffs::dispersion_t::dispersion_t( priest_t& p ) : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
 {
   auto rank2 = p.find_specialization_spell( 322108, PRIEST_SHADOW );
-  if ( rank2->ok() )
-  {
-    no_insanity_drain = true;
-  }
 }
 
 }  // namespace priestspace
