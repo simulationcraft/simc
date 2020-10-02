@@ -1174,7 +1174,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   buffs.shadow_crash_debuff = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
   buffs.wrathful_faerie     = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
-  buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) );
+  buffs.wrathful_faerie_fermata =
+      make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )->set_cooldown( timespan_t::zero() );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -2238,7 +2239,6 @@ void priest_t::remove_wrathful_faerie()
       // If you have the conduit enabled, clear out the conduit buff and trigger it on the old Wrathful Faerie target
       if ( conduits.fae_fermata && buffs.fae_guardians->check() )
       {
-        remove_wrathful_faerie_fermata();
         priest_td->buffs.wrathful_faerie_fermata->trigger();
       }
     }
