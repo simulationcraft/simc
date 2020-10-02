@@ -1220,8 +1220,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     azerite_essence(),
     legendary(),
     conduits(),
-    covenant(),
-    insanity( *this )
+    covenant()
 {
   create_cooldowns();
   create_gains();
@@ -1719,12 +1718,6 @@ void priest_t::init_resources( bool force )
 void priest_t::init_scaling()
 {
   base_t::init_scaling();
-
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    // Just hook insanity init in here when actor set bonuses are ready
-    insanity.init();
-  }
 }
 
 void priest_t::init_spells()

@@ -443,6 +443,7 @@ public:
     azerite_power_t whispers_of_the_damned;
   } azerite;
 
+  // Essences
   struct
   {
     const spell_data_t* lucid_dreams;
@@ -452,6 +453,7 @@ public:
     const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
 
+  // Legendaries
   struct
   {
     // Generic Priest
@@ -469,6 +471,7 @@ public:
     item_runeforge_t talbadars_stratagem;
   } legendary;
 
+  // Conduits
   struct
   {
     // Generic Priest
@@ -489,6 +492,7 @@ public:
     conduit_data_t shattered_perceptions;
   } conduits;
 
+  // Covenants
   struct
   {
     const spell_data_t* fae_guardians;
@@ -496,8 +500,6 @@ public:
     const spell_data_t* mindgames;
     const spell_data_t* boon_of_the_ascended;
   } covenant;
-
-  struct insanity_end_event_t;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -549,7 +551,6 @@ private:
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();
-
   void create_buffs_shadow();
   void init_rng_shadow();
   void init_spells_shadow();
@@ -596,23 +597,6 @@ public:
   {
     return _target_data[ target ];
   }
-
-  /**
-   * Insanity tracking
-   *
-   * Handles the resource gaining from abilities
-   */
-  struct insanity_state_t final
-  {
-    priest_t& actor;
-
-    insanity_state_t( priest_t& a );
-
-    void init();
-
-    // Gain some insanity
-    void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
-  } insanity;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -959,7 +943,7 @@ struct fiend_melee_t : public priest_pet_melee_t
               ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 2 ).percent() ) ) - amount,
               p().o().gains.insanity_surrender_to_madness );
         }
-        p().o().insanity.gain( amount, p().gains.fiend, nullptr );
+        p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
       }
       else
       {

@@ -1894,46 +1894,18 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
       assert( total_amount == amount + amount_from_memory_of_lucid_dreams );
     }
 
-    insanity.gain( amount, g, action );
+    resource_gain( RESOURCE_INSANITY, amount, g, action );
 
     if ( amount_from_surrender_to_madness > 0.0 )
     {
-      insanity.gain( amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
+      resource_gain( RESOURCE_INSANITY, amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
     }
     if ( amount_from_memory_of_lucid_dreams > 0.0 )
     {
-      insanity.gain( amount_from_memory_of_lucid_dreams, gains.insanity_memory_of_lucid_dreams, action );
+      resource_gain( RESOURCE_INSANITY, amount_from_memory_of_lucid_dreams, gains.insanity_memory_of_lucid_dreams,
+                     action );
     }
   }
-}
-
-// ==========================================================================
-// Insanity tracking
-// Handles the resource gaining from abilities
-// ==========================================================================
-priest_t::insanity_state_t::insanity_state_t( priest_t& a ) : actor( a )
-{
-}
-
-void priest_t::insanity_state_t::init()
-{
-}
-
-// ==========================================================================
-// Insanity gain
-// ==========================================================================
-void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t* source_action )
-{
-  if ( actor.sim->debug )
-  {
-    auto current = actor.resources.current[ RESOURCE_INSANITY ];
-    auto max     = actor.resources.max[ RESOURCE_INSANITY ];
-
-    actor.sim->print_debug( "{} insanity-track gain, value={}, current={}/{}, new={}/{}", actor, value, current, max,
-                            clamp( current + value, 0.0, max ), max );
-  }
-
-  actor.resource_gain( RESOURCE_INSANITY, value, gain_obj, source_action );
 }
 
 void priest_t::create_buffs_shadow()
