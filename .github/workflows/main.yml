@@ -203,7 +203,7 @@ jobs:
         tier: [ Tier25 ]
         class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
         fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
-        covenant: [ Kyrian, Venthyr, Night Fae, Necrolord ]
+        covenant: [ kyrian, venthyr, night_fae, necrolord ]
 
 
     steps:
