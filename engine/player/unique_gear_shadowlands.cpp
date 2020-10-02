@@ -460,20 +460,12 @@ void dreadfire_vessel( special_effect_t& effect )
 {
   struct dreadfire_vessel_proc_t : public proc_spell_t
   {
-    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e )
-    {
-      // TODO: determine if the damage in the spell_data is for each flame or all 3 combined
-      base_multiplier = 1.0 / 3.0;
-      // TODO: determine actual travel speed of the flames (data has 1.5yd/s)
-      travel_speed = 0.0;
-    }
+    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e ) {}
 
-    void execute() override
+    timespan_t travel_time() const override
     {
-      // TODO: determine the how the three flames are fired
-      proc_spell_t::execute();
-      proc_spell_t::execute();
-      proc_spell_t::execute();
+      // seems to have a set 1.5s travel time
+      return timespan_t::from_seconds( data().missile_speed() );
     }
   };
 
