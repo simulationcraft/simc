@@ -312,6 +312,9 @@ public:
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
+  // Treat the buff's value as stat % increase and apply it automatically
+  // in the relevant player_t functions.
+  buff_t* set_pct_buff_type( stat_pct_buff_type );
   buff_t* set_default_value( double, size_t = 0 );
   virtual buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   virtual buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,

@@ -402,6 +402,7 @@ struct player_t : public actor_t
 
   struct buffs_t
   {
+    std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
     buff_t* angelic_feather;
     buff_t* beacon_of_light;
     buff_t* blood_fury;

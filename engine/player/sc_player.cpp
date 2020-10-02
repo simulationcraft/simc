@@ -3482,6 +3482,9 @@ double player_t::composite_melee_haste() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
+      h /= 1.0 + b->check_stack_value();
+
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
 
@@ -3625,6 +3628,9 @@ double player_t::composite_melee_crit_chance() const
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
+
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
+    ac += b->check_stack_value();
 
   // The Unbound Force crit bonus from 20 stack proc
   if (buffs.reckless_force)
@@ -3852,6 +3858,9 @@ double player_t::composite_spell_haste() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
+      h /= 1.0 + b->check_stack_value();
+
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
 
@@ -3944,6 +3953,9 @@ double player_t::composite_spell_crit_chance() const
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
+    sc += b->check_stack_value();
+
   // reckless force (The Unbound Force) crit bonus from 20 stack proc
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
@@ -3992,6 +4004,9 @@ double player_t::composite_mastery() const
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
+    cm += b->check_stack_value();
+
   if ( buffs.combat_meditation )
     cm += buffs.combat_meditation->check_value();
 
@@ -4007,6 +4022,9 @@ double player_t::composite_damage_versatility() const
 {
   double cdv = apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
       composite_damage_versatility_rating() / current.rating.damage_versatility );
+
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    cdv += b->check_stack_value();
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -4037,6 +4055,9 @@ double player_t::composite_heal_versatility() const
   double chv = apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
       composite_heal_versatility_rating() / current.rating.heal_versatility );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    chv += b->check_stack_value();
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
@@ -4065,6 +4086,9 @@ double player_t::composite_mitigation_versatility() const
 {
   double cmv = apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
       composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
+
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    cmv += b->check_stack_value() / 2;
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -4386,21 +4410,25 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( buffs.celestial_guidance )
     m *= 1.0 + buffs.celestial_guidance->check_value();
 
+  stat_pct_buff_type pct_type = STAT_PCT_BUFF_MAX;
   switch ( attr )
   {
     case ATTR_STRENGTH:
+      pct_type = STAT_PCT_BUFF_STRENGTH;
       if ( buffs.archmages_greater_incandescence_str->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_str->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_str->check() )
         m *= 1.0 + buffs.archmages_incandescence_str->data().effectN( 1 ).percent();
       break;
     case ATTR_AGILITY:
+      pct_type = STAT_PCT_BUFF_AGILITY;
       if ( buffs.archmages_greater_incandescence_agi->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_agi->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_agi->check() )
         m *= 1.0 + buffs.archmages_incandescence_agi->data().effectN( 1 ).percent();
       break;
     case ATTR_INTELLECT:
+      pct_type = STAT_PCT_BUFF_INTELLECT;
       if ( buffs.archmages_greater_incandescence_int->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_int->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_int->check() )
@@ -4409,12 +4437,14 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + sim->auras.arcane_intellect->value();
       break;
     case ATTR_SPIRIT:
+      pct_type = STAT_PCT_BUFF_SPIRIT;
       if ( buffs.amplification )
         m *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
+      pct_type = STAT_PCT_BUFF_STAMINA;
       if ( sim->auras.power_word_fortitude->check() )
       {
         m *= 1.0 + sim->auras.power_word_fortitude->value();
@@ -4422,6 +4452,12 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     default:
       break;
+  }
+
+  if ( pct_type != STAT_PCT_BUFF_MAX )
+  {
+    for ( auto b : buffs.stat_pct_buffs[ pct_type ] )
+      m *= 1.0 + b->check_stack_value();
   }
 
   return m;

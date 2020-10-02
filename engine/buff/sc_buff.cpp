@@ -850,6 +850,19 @@ buff_t* buff_t::add_invalidate( cache_e c )
   return this;
 }
 
+buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
+{
+  if ( !player || type == STAT_PCT_BUFF_MAX )
+    return this;
+
+  auto& buffs = player->buffs.stat_pct_buffs[ type ];
+  if ( range::find( buffs, this ) == buffs.end() )
+    buffs.push_back( this );
+  add_invalidate( cache_from_stat_pct_buff( type ) );
+
+  return this;
+}
+
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
   // Ensure we are not errantly overwriting a value that is already set to a given effect
