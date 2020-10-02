@@ -297,7 +297,7 @@ public:
     // Affliction
     item_runeforge_t malefic_wrath;
     item_runeforge_t perpetual_agony_of_azjaqir;
-    item_runeforge_t sacrolashs_dark_strike;
+    item_runeforge_t sacrolashs_dark_strike; //TODO: SL Beta - Check if slow effect (unimplemented atm) can proc anything important
     item_runeforge_t wrath_of_consumption;
     // Demonology
     item_runeforge_t balespiders_burning_core;
