@@ -542,6 +542,38 @@ void hateful_chain( special_effect_t& effect )
 
 }
 
+void bottled_chimera_toxin( special_effect_t& effect )
+{
+  // Assume the player keeps the buff up on its own as the item is off-gcd and
+  // the buff has a 60 minute duration which is enough for any encounter.
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  struct chimeric_poison_t : public proc_spell_t
+  {
+    chimeric_poison_t( const special_effect_t& e )
+      : proc_spell_t( "chimeric_poison", e.player, e.trigger(), e.item )
+    {
+      // Tick damage value lives in a different spell for some reason
+      base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  auto secondary      = new special_effect_t( effect.item );
+  secondary->type     = SPECIAL_EFFECT_EQUIP;
+  secondary->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary->spell_id = effect.spell_id;
+  secondary->execute_action = create_proc_action<chimeric_poison_t>( "chimeric_poison", *secondary );
+  effect.player->special_effects.push_back( secondary );
+
+  auto callback = new dbc_proc_callback_t( effect.item, *secondary );
+  callback->initialize();
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -820,6 +852,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345357, items::hateful_chain );
     unique_gear::register_special_effect( 343385, items::overflowing_anima_prison );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
+    unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
