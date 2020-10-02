@@ -116,6 +116,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
 
@@ -143,6 +144,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
       - name: Run
@@ -164,13 +166,12 @@ jobs:
         fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
 
     steps:
-      - uses: actions/checkout@v2
-
       - uses: actions/cache@v2
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
       - name: Setup BATS
