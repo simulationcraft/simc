@@ -2590,24 +2590,26 @@ void priest_t::generate_apl_shadow()
   cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
+  // APL to use when Boon of the Ascended is active
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova",
                     "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent."
                     "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
 
+  // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( this, "Searing Nightmare",
                    "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
                    "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
                    "ready, or to refresh SW:P on two or more targets." );
-  cwc->add_talent(
-      this, "Searing Nightmare",
-      "use_while_casting=1,if=dot.shadow_word_pain.refreshable&!dot.shadow_word_pain.ticking&spell_targets.mind_sear>2",
-      "Short Circuit Searing Nightmare condition to keep SW:P up in AoE" );
+  cwc->add_talent( this, "Searing Nightmare",
+                   "use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&"
+                   "spell_targets.mind_sear>2",
+                   "Short Circuit Searing Nightmare condition to keep SW:P up in AoE" );
   cwc->add_action( this, "Mind Blast", "only_cwc=1",
                    "Only_cwc makes the action only usable during channeling and not as a regular action." );
 
-  // single APL
+  // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action( this, "Void Eruption",
                     "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
