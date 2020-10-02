@@ -4979,7 +4979,7 @@ struct static_discharge_tick_t : public shaman_spell_t
   }
 
   void execute() override
-  { 
+  {
     target_cache.is_valid          = false;
     std::vector<player_t*> targets = target_list();
     auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
@@ -4988,8 +4988,11 @@ struct static_discharge_tick_t : public shaman_spell_t
 
     targets.erase( it, targets.end() );
     if ( targets.size() == 0 )
+    {
+      sim->print_debug( "Static Discharge Tick without an active FS" );
       return;
-    player_t* target = targets[ static_cast<int>( p()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+    }
+    player_t* target = targets[p()->rng().range(targets.size())];
     this->set_target( target );
     shaman_spell_t::execute();
   }
