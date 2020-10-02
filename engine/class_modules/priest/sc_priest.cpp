@@ -1179,6 +1179,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
+  buffs.hungering_void_tracking = make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )
+                                      ->set_quiet( true )
+                                      ->set_duration( timespan_t::from_seconds( 99 ) )
+                                      ->set_max_stack( 99 );
+  buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1265,6 +1270,7 @@ void priest_t::create_gains()
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
   gains.insanity_mind_sear = get_gain( "Insanity Gained from Mind Sear" );
+  gains.hungering_void_voidform_duration = get_gain( "Duration added to Voidform from Hungering Void" );
 }
 
 /** Construct priest procs */

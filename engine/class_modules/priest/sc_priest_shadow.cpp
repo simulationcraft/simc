@@ -1133,15 +1133,6 @@ struct void_bolt_t final : public priest_spell_t
 
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
-
-      if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-      {
-        if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-        {
-          priest().cooldowns.void_bolt->reset( true );
-          priest().procs.dissonant_echoes->occur();
-        }
-      }
     }
   };
 
@@ -1202,6 +1193,18 @@ struct void_bolt_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( priest().hungering_void_active( t ) )
+    {
+      tdm *= 1 + priest().talents.hungering_void->effectN( 1 ).percent();
+    }
+
+    return tdm;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1212,6 +1215,27 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
+    }
+
+    if ( priest().talents.hungering_void->ok() && priest().buffs.voidform->check() )
+    {
+      priest_td_t& td = get_td( s->target );
+      // Check if this buff is active, every Void Bolt after the first should get this
+      if ( td.buffs.hungering_void_tracking->up() )
+      {
+        timespan_t seconds_to_add_to_voidform =
+            timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() );
+        seconds_to_add_to_voidform +=
+            s->result == RESULT_CRIT
+                ? timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() )
+                : timespan_t::from_seconds( 0 );
+        sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
+        // TODO: add some type of tracking for this increase
+        priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
+
+        td.buffs.hungering_void->trigger();
+      }
+      td.buffs.hungering_void_tracking->trigger();
     }
   }
 };
@@ -2353,4 +2377,16 @@ void priest_t::trigger_psychic_link( action_state_t* s )
     }
   }
 }
+
+bool priest_t::hungering_void_active( player_t* target ) const
+{
+  if ( !talents.hungering_void->ok() )
+    return false;
+  const priest_td_t* td = find_target_data( target );
+  if ( !td )
+    return false;
+
+  return td->buffs.hungering_void->check();
+}
+
 }  // namespace priestspace
