@@ -267,9 +267,14 @@ void field_of_blossoms( special_effect_t& effect )
 
   if ( !effect.player->buffs.field_of_blossoms )
   {
+    // The ICD of 60 seconds is enabled for some classes in the description of Field of Blossoms (id=319191)
+    bool icd_enabled = extra_desc_lines_for_class( effect );
+
+    effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: icd_enabled={}", icd_enabled );
+
     effect.player->buffs.field_of_blossoms =
         make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
-            ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
+            ->set_cooldown( icd_enabled ? effect.player->find_spell( 342781 )->duration() : 0_ms )
             ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->add_invalidate( CACHE_HASTE );
   }
