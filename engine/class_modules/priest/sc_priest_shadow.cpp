@@ -2555,7 +2555,8 @@ void priest_t::generate_apl_shadow()
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
-  cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
+  cds->add_action( this, covenant.mindgames, "Mindgames",
+                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
