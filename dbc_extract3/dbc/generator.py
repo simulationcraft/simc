@@ -1391,6 +1391,7 @@ class SpellDataGenerator(DataGenerator):
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
             ( 345452, 0 ),          # Fae Fermata target Debuff
+            ( 345219, 0 ),          # Hungering Void target Debuff
         ),
 
         # Death Knight:

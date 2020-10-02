@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-02/36086)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -11116,6 +11116,27 @@ Effects          :
 #4 (id=870322)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Your second Void Bolt cast on the same target will deal $m1% more damage, cause the target to receive $m2% more damage from you for $d, and extend the duration of your Void Form by $m3 sec. If your Void Bolt critically hits, your Void Form is extended by $m4 sec.
+
+Name             : Hungering Void (id=345219) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=870296)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc345218
+Tooltip          : Damage taken from the Priest increased by $w1%.
 
 Name             : Wrathful Faerie Fermata (desc=Night Fae) (id=345452) [Spell Family (6)] 
 Class            : Priest

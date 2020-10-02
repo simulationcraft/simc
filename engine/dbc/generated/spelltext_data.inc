@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36086
-static const std::array<spelltext_data_t, 15646> __spelltext_data { {
+static const std::array<spelltext_data_t, 15645> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13375,7 +13375,6 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -15370,7 +15369,6 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 342132, "$@spelldesc327661\r\n", "Direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity to $@auracaster.\r\n\r\nFollows your Shadow Word: Pain.", "Night Fae" },
   { 342156, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>} sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.", 0, 0 },
   { 342181, "$@spelldesc342156", "$pri increased by $w1%.", 0 },
-  { 342183, "$@spelldesc342156", 0, 0 },
   { 342216, "Throw a ball of gooey gorm gunk at a target slowing their movement for $d. Only usable on creatures outdoors in the Shadowlands. ", "Movement speed slowed by $s1%.", 0 },
   { 342231, "Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to $s1 nearby enemies.", 0, 0 },
   { 342232, "$@spelldesc342231", 0, 0 },
@@ -15590,6 +15588,7 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 345211, "Activate Soul Igniter, sacrificing up to $345214s1 health over $345211d to empower Blazing Surge.\r\n\r\nReactivate to cast Blazing Surge, dealing ${$345214s2*(1+$@versadmg)} Fire damage to enemies in a $345215a1 yard cone, plus up to $345214s4% additional damage, based on how long Soul Igniter was active. (1 Min Cooldown)", "Reactivate Soul Igniter to cast Blazing Surge.", 0 },
   { 345215, "$@spelldesc345211", 0, 0 },
   { 345218, "Your second Void Bolt cast on the same target will deal $m1% more damage, cause the target to receive $m2% more damage from you for $d, and extend the duration of your Void Form by $m3 sec. If your Void Bolt critically hits, your Void Form is extended by $m4 sec.", 0, 0 },
+  { 345219, "$@spelldesc345218", "Damage taken from the Priest increased by $w1%.", 0 },
   { 345228, "Increases primary stat by $s1 for $d.\r\n", "Primary stat increased by $s1.", 0 },
   { 345229, "Your spells and abilities have a chance to grant $345230s1 primary stat for $345230d.", 0, 0 },
   { 345230, "Increases primary stat by $s1 for $d.", "Increases primary stat by $s1.", 0 },

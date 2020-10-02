@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-02/36086)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -11056,6 +11056,26 @@ Effects          :
 Description      : Touch of Death cooldown reduced by ${$s1/-1000}.
 Tooltip          : Touch of Death cooldown reduced by ${$s1/-1000}.
 
+Name             : Invoker's Delight (id=337298) [Spell Family (53), Passive] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=835246)   : Apply Aura (6) | Proc Trigger Spell (42): Invoker's Delight
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 338321 | Target: Self (1)
+Description      : You gain $338321m1% haste for $338321d after summoning your Celestial. 
+
 Name             : Imbued Reflections (id=337301) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11388,6 +11408,26 @@ Effects          :
 #1 (id=836565)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc338138
+
+Name             : Invoker's Delight (id=338321) [Spell Family (53)] 
+School           : Nature
+Spell Type       : None
+Duration         : 15 seconds
+Triggered by     : Invoker's Delight (337298)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=836835)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc337298
+Tooltip          : Haste increased by $w1%.
 
 Name             : Reverse Harm (id=342928) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
