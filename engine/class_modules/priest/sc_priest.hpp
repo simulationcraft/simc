@@ -341,7 +341,6 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
-    propagate_const<gain_t*> hungering_void_voidform_duration;
   } gains;
 
   // Benefits

@@ -1270,7 +1270,6 @@ void priest_t::create_gains()
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
   gains.insanity_mind_sear = get_gain( "Insanity Gained from Mind Sear" );
-  gains.hungering_void_voidform_duration = get_gain( "Duration added to Voidform from Hungering Void" );
 }
 
 /** Construct priest procs */
