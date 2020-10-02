@@ -612,9 +612,6 @@ public:
 
     // Gain some insanity
     void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
-
-    // Lose some insanity
-    void lose( double value, gain_t* gain_obj, action_t* source_action = nullptr );
   } insanity;
 
   std::string default_potion() const override;
