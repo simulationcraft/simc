@@ -2252,8 +2252,6 @@ void priest_t::generate_apl_shadow()
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
-  main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
-                    "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
@@ -2266,6 +2264,8 @@ void priest_t::generate_apl_shadow()
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
+  main->add_action( this, "Void Bolt", "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85",
+                    "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 with conduit)." );
   main->add_action( this, "Shadow Word: Death",
                     "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
