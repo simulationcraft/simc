@@ -4,14 +4,14 @@ load test_helper
 	covenant_sim "${SIMC_CLASS}" kyrian
 }
 
-@test "Kyrian" {
+@test "Venthyr" {
 	covenant_sim "${SIMC_CLASS}" venthyr
 }
 
-@test "Kyrian" {
+@test "Night Fae" {
 	covenant_sim "${SIMC_CLASS}" night_fae
 }
 
-@test "Kyrian" {
+@test "Necrolord" {
 	covenant_sim "${SIMC_CLASS}" necrolord
 }
