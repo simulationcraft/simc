@@ -37,9 +37,10 @@ function talent_sim() {
 function covenant_sim() {
   PROFILE_DIR=${SIMC_PROFILE_DIR}
   PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
+  COVENANT=$2
   for spec in ${PROFILES[@]}; do
     SIMC_PROFILE=${spec}
-    sim covenant="$2" default_actions=1 level=60
+    sim covenant="${COVENANT}" default_actions=1 level=60
     [ "${status}" -eq 0 ]
   done
 }

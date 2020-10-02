@@ -187,7 +187,6 @@ jobs:
           SIMC_CLASS: ${{ matrix.class }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-          SIMC_COVENANT: ${{ matrix.covenants }}
         run: |
           cd tests
           bats --tap ${{ matrix.test }}.bats
