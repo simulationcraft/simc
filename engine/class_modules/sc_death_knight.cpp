@@ -3982,8 +3982,8 @@ struct unholy_pact_buff_t : public buff_t
   // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    damage -> execute();
-    damage -> execute();
+    damage -> schedule_execute();
+    damage -> schedule_execute();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
