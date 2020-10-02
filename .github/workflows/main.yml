@@ -189,49 +189,8 @@ jobs:
           SIMC_ITERATIONS: 2
         run: |
           cd tests
-          bats --tap ${{ matrix.test }}.bats
-
-  simc-tests-shadowlands:
-    name: ${{ matrix.test }}-${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.covenant }}-${{ matrix.fight_style }}
-    runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-10-build ]
-
-    strategy:
-      fail-fast: false
-      matrix:
-        test: [ covenants ]
-        tier: [ Tier25 ]
-        class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
-        fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
-        covenant: [ kyrian, venthyr, night_fae, necrolord ]
-
-
-    steps:
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-          key: ubuntu-clang-10-for_run-${{ github.sha }}
-
-      - name: Setup BATS
-        uses: mig4/setup-bats@v1.0.1
-
-      - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_FIGHT_STYLE: ${{ matrix.fight_style }}
-          SIMC_CLASS: ${{ matrix.class }}
-          SIMC_THREADS: 2
-          SIMC_ITERATIONS: 2
-          SIMC_COVENANT: ${{ matrix.covenant }}
-        run: |
-          cd tests
-          bats --tap ${{ matrix.test }}.bats
-
+          bats --tap talents.bats covenants.bats
+          
   build-docker:
     name: docker
     runs-on: ubuntu-latest
