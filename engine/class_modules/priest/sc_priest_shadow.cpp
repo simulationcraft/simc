@@ -1013,11 +1013,12 @@ struct devouring_plague_t final : public priest_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
+    // if you only have the partial tick, roll that damage over
     if ( d->ticks_left_fractional() < 1 )
     {
-      return duration + d->time_to_next_full_tick() - tick_time(d->state);
+      return duration + d->time_to_next_full_tick() - tick_time( d->state );
     }
-    // when you refresh, you lose the partial tick
+    // otherwise lose the partial tick
     else
     {
       return duration + d->time_to_next_full_tick();
@@ -1056,10 +1057,11 @@ struct devouring_plague_t final : public priest_spell_t
       // find number of ticks in new DP
       double new_num_ticks = ( new_remains - time_to_next_tick ) / new_tick;
 
+      // if just a partial is left roll that over with the reduced dot duration
       if ( dot->ticks_left_fractional() < 1 )
       {
-        num_ticks     = dot->ticks_left_fractional() - dot->ticks_left() + 1;
-        new_num_ticks = new_remains / new_tick;
+        num_ticks = dot->ticks_left_fractional() - dot->ticks_left() + 1;
+        new_num_ticks += dot->ticks_left_fractional() - 1;
       }
 
       sim->print_debug( "{} {} calculations - num_ticks: {}, new_num_ticks: {}", *player, *this, num_ticks,
