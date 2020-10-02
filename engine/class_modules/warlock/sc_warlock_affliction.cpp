@@ -120,6 +120,8 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
+
     return m;
   }
 
@@ -132,7 +134,9 @@ struct shadow_bolt_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
     if ( time_to_execute == 0_ms )
-      p()->buffs.nightfall->expire();
+      p()->buffs.nightfall->decrement();
+
+    p()->buffs.decimating_bolt->decrement();
   }
 };
 
@@ -232,6 +236,9 @@ struct agony_t : public affliction_spell_t
       increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
     }
 
+    if ( p()->legendary.perpetual_agony_of_azjaqir->ok() )
+      increment_max *= 1.0 + p()->legendary.perpetual_agony_of_azjaqir->effectN( 1 ).percent();
+
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
     if ( p()->agony_accumulator >= 1 )
@@ -307,20 +314,34 @@ struct corruption_t : public affliction_spell_t
       base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
     }
     
-
+    affected_by_woc = true; //Hardcoding this in for now because of how this spell is hacked together!
   }
 
   void tick( dot_t* d ) override
   {
     if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
     {
-      auto success = p()->buffs.nightfall->trigger();
-      if ( success )
+      // TOCHECK regularly. 
+      // Blizzard did not publicly release how nightfall was changed. 
+      // We determined this is the probable functionality copied from Agony by first confirming the 
+      // DR formula was the same and then confirming that you can get procs on 1st tick.
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm. 
+      // Last checked 09-28-2020.
+      double increment_max = 0.13;
+
+      double active_corruptions = p()->get_active_dots( internal_id );
+      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+      p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->corruption_accumulator >= 1 )
       {
         p()->procs.nightfall->occur();
+        p()->buffs.nightfall->trigger();
+        p()->corruption_accumulator -= 1.0;
+
       }
     }
-
     affliction_spell_t::tick( d );
   }
 
@@ -342,6 +363,17 @@ struct corruption_t : public affliction_spell_t
     }
 
 
+  }
+
+  double composite_ta_multiplier(const action_state_t* s) const override
+  {
+    double m = affliction_spell_t::composite_ta_multiplier( s );
+
+    // SL - Legendary
+    if ( p()->legendary.sacrolashs_dark_strike->ok() )
+      m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -547,6 +579,7 @@ struct malefic_rapture_t : public affliction_spell_t
         aoe = 1;
         background = true;
         spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+        base_costs[ RESOURCE_SOUL_SHARD ] = 0;
 
         p->spells.malefic_rapture_aoe = this;
       }
@@ -567,9 +600,18 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_vile_taint->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_phantom_singularity->is_ticking() )
+          mult += 1.0;
+
         if ( td->dots_siphon_life->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_scouring_tithe->is_ticking() )
+          mult += 1.0;
+
+        // TODO:
+        // Impending catastrophe
+        // Soul Rot
         return mult;
       }
 
@@ -577,7 +619,24 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
+
+        if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
+        {
+          m *= 1 + p()->conduit.focused_malignancy.percent(); 
+        }
+
         return m;
+      }
+
+      void execute() override
+      {
+        if ( p()->legendary.malefic_wrath->ok() )
+        {
+          p()->buffs.malefic_wrath->trigger();
+          p()->procs.malefic_wrath->occur();
+        }
+
+          affliction_spell_t::execute();
       }
 
     };
@@ -611,6 +670,15 @@ struct drain_soul_t : public affliction_spell_t
     hasted_ticks = may_crit = true;
   }
 
+  void execute() override
+  {
+    dot_t* dot = get_dot( target );
+    if ( dot->is_ticking() )
+      p()->buffs.decimating_bolt->decrement();
+
+    affliction_spell_t::execute();
+  }
+
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
@@ -628,8 +696,18 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
+
     return m;
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    affliction_spell_t::last_tick( d );
+    p()->buffs.decimating_bolt->decrement();
+  }
+
 };
 
 struct haunt_t : public affliction_spell_t
@@ -837,6 +915,7 @@ void warlock_t::create_buffs_affliction()
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
 }
  
 void warlock_t::vision_of_perfection_proc_aff()
@@ -896,13 +975,13 @@ void warlock_t::init_spells_affliction()
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
-  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Ajz'Aqir" );
-  legendary.wrath_of_consumption       = find_runeforge_legendary( "Wrath of Consumption" );
+  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
+  //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
   conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
   conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
-  conduit.focused_malignancy = find_conduit_spell( "Focused Malginancy" );
+  conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
   conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
 
   // Actives
@@ -927,6 +1006,7 @@ void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.malefic_wrath   = get_proc( "malefic_wrath" );
 }
 
 void warlock_t::create_apl_affliction()

@@ -9,10 +9,10 @@ talents=1010021
 azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
+potion=unbridled_fury
+flask=currents
 food=disabled
-augmentation=disabled
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -46,15 +46,18 @@ actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
 # Purifying behaviour is based on normalization (iE the late expression triggers if stagger size increased over the last 30 ticks or 15 seconds).
-actions+=/purifying_brew,if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))
+actions+=/purifying_brew,if=stagger.pct>(6*(1-(cooldown.purifying_brew.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(1-cooldown.purifying_brew.charges_fractional))*stagger.last_tick_damage_30))
 # Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
-actions+=/black_ox_brew,if=cooldown.brews.charges_fractional<0.5
+actions+=/black_ox_brew,if=cooldown.purifying_brew.charges_fractional<0.5
 actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
 # Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below
 actions+=/keg_smash,if=spell_targets>=2
+# Celestial Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB.
+actions+=/celestial_brew,if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2
 actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
 actions+=/tiger_palm,if=(1|talent.special_delivery.enabled)&buff.blackout_combo.up
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
+actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/concentrated_flame,if=dot.concentrated_flame.remains=0
 actions+=/heart_essence,if=!essence.the_crucible_of_flame.major
@@ -86,13 +89,13 @@ trinket2=psyche_shredder,id=174060,bonus_id=4824/1517
 main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=175.40
-# gear_agility=659
-# gear_stamina=1375
+# gear_ilvl=171.73
+# gear_agility=590
+# gear_stamina=1100
 # gear_intellect=31
-# gear_crit_rating=486
-# gear_haste_rating=261
-# gear_mastery_rating=181
+# gear_crit_rating=435
+# gear_haste_rating=210
+# gear_mastery_rating=130
 # gear_versatility_rating=376
 # gear_corruption=90
 # gear_corruption_resistance=50

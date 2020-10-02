@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -22,7 +22,7 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=43)       : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Hardened by battle, your Stamina is increased by $s2%, and your armor is increased by $s1% of your Strength.
@@ -552,9 +552,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 12
 Duration         : 6 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, Generic Hostile Spell
 Triggered by     : Revenge Trigger (5301)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1801,15 +1798,17 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Requires main-hand weapon (106), Requires off-hand weapon (120)
 Effects          :
 #1 (id=68623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #2 (id=128449)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 9
 #3 (id=229541)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=872260)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While dual-wielding a pair of one-handed weapons, your damage done is increased by $s1% and your movement speed is increased by $s3%.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
@@ -3610,7 +3609,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Resource         : 40 Rage (1) (id=10534) w/ Arms Warrior (id=137049)
-Resource         : 80 Rage (1) (id=192514) w/ Fury Warrior (id=137050)
+Resource         : 60 Rage (1) (id=192514) w/ Fury Warrior (id=137050)
 Resource         : 40 Rage (1) (id=192515) w/ Protection Warrior (id=137048)
 Resource         : 40 Rage (1) (id=192743) w/ Initial Warrior (id=325446)
 Spell Level      : 17
@@ -4878,7 +4877,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=320538)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : $@spelldesc215571
 
 Name             : Inner Rage (id=215573) [Spell Family (4), Passive, Hidden] 
@@ -5917,7 +5916,7 @@ School           : Physical
 Spell Type       : Melee
 Duration         : 8 seconds
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
-Triggered by     : War Machine (262231), War Machine (316733)
+Triggered by     : War Machine (262231), War Machine (316733), War Machine (346002)
 Family Flags     : 39
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -9242,7 +9241,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
                    Family Flags: 17
-Description      : Reduces the damage enemies deal  to you by an additional $s1%.
+Description      : Reduces the damage enemies deal to you by an additional $s1%.
 
 Name             : Enraged Regeneration (desc=Rank 2) (id=316474) [Spell Family (4), Passive] 
 Class            : Fury Warrior
@@ -9569,7 +9568,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
-Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
+Description      : Your secondary stats are all increased by $s1.
 
 Name             : Condemn (desc=Venthyr) (id=317320) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -9652,7 +9651,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=802659)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.92200 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc317349
 
 Name             : Condemn (desc=Venthyr) (id=317485) [Spell Family (4)] 
@@ -9709,7 +9708,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=802667)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82900 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc317485
 
 Name             : Condemn Off-Hand (desc=Venthyr) (id=317489) [Spell Family (4)] 
@@ -9732,7 +9731,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Always hits (114), Requires off-hand weapon (120)
 Effects          :
 #1 (id=802668)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93300 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc317485
 
 Name             : Charge (desc=Rank 2) (id=319157) [Spell Family (4), Passive] 
@@ -10686,17 +10685,18 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=831737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Spell Reflection (23920), Spell Reflection (335255)
                    Family Flags: 33
 #2 (id=831738)   : Apply Aura (6) | Proc Trigger Spell (42): Spell Reflection
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335255 | Target: Self (1)
-Description      : Spell Reflection lasts $s1% longer, and applies to your party.
-Tooltip          : Spell Reflection lasts $s1% longer, and applies to your party.
+Description      : Spell Reflection lasts $s1% longer, and applies to your nearest ally.
+Tooltip          : Spell Reflection lasts $s1% longer, and applies to your nearest ally.
 
 Name             : Spell Reflection (id=335255) [Spell Family (4)] 
 School           : Physical
 Spell Type       : None
+Max Targets      : 1
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
@@ -10718,9 +10718,9 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ...x.
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=831740)   : Apply Aura (6) | Spell Reflection (28)
-                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Custom (18) -> Unknown(34)
+                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=831741)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Radius: 0 - 60 yards | Target: Custom (18) -> Unknown(34)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Raise your $?c3[shield][weapon], reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
@@ -10783,7 +10783,7 @@ Proc Chance      : 30%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11001,7 +11001,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832499)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The first Intercepted attack grants you Ignore Pain and makes your next Revenge cost no Rage.
+Description      : The first attack you intercept with Intervene grants you Ignore Pain and makes your next Revenge cost no Rage.
 
 Name             : Seismic Reverberation (id=335758) [Spell Family (4), Passive] 
 School           : Physical
@@ -11436,5 +11436,28 @@ Effects          :
 #2 (id=845744)   : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343666 | Target: Self (1)
 Description      : $@spelldesc343672
+
+Name             : War Machine (id=346002) [Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=872263)   : Apply Aura (6) | Proc Trigger Spell (42): War Machine
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 262232 | Target: Self (1)
+#2 (id=872264)   : Apply Aura (6) | Unknown(213)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your auto attacks generate $s2% more Rage.
+
+Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your movement speed by $262232s2% for $262232d.
 
 

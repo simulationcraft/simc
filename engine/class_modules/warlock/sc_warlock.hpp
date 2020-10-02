@@ -25,6 +25,7 @@ struct warlock_td_t : public actor_target_data_t
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_scouring_tithe;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -80,6 +81,7 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   bool wracking_brilliance;             // BFA - Azerite
   double agony_accumulator;
+  double corruption_accumulator;
   double memory_of_lucid_dreams_accumulator;  // BFA - Essences
   double strive_for_perfection_multiplier;    // BFA - Essences
   double vision_of_perfection_multiplier;     // BFA - Essences
@@ -295,7 +297,7 @@ public:
     // Affliction
     item_runeforge_t malefic_wrath;
     item_runeforge_t perpetual_agony_of_azjaqir;
-    item_runeforge_t sacrolashs_dark_strike;
+    item_runeforge_t sacrolashs_dark_strike; //TODO: SL Beta - Check if slow effect (unimplemented atm) can proc anything important
     item_runeforge_t wrath_of_consumption;
     // Demonology
     item_runeforge_t balespiders_burning_core;
@@ -364,6 +366,7 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
+    propagate_const<cooldown_t*> scouring_tithe;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -468,9 +471,14 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
 
+    // SL
+    propagate_const<buff_t*> decimating_bolt;
+
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
+    propagate_const<buff_t*> malefic_wrath;
+    propagate_const<buff_t*> wrath_of_consumption;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -507,6 +515,9 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
+
+    // SL
+    gain_t* scouring_tithe;
   } gains;
 
   // Procs
@@ -516,6 +527,8 @@ public:
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer;
+    proc_t* malefic_wrath;
+
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;
@@ -685,6 +698,8 @@ struct warlock_spell_t : public spell_t
 {
 public:
   gain_t* gain;
+  bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
+  bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -702,6 +717,10 @@ public:
     tick_may_crit     = true;
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
+    can_havoc         = false;
+
+    //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
+    affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -818,13 +837,77 @@ public:
     return pm;
   }
 
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_ta_multiplier( s );
+
+    if ( p()->legendary.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && affected_by_woc )
+      m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
+
+    return m;
+  }
+
   void extend_dot( dot_t* dot, timespan_t extend_duration )
   {
     if ( dot->is_ticking() )
     {
-      dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
+      dot->adjust_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
     }
   }
+
+  //Destruction specific things for Havoc that unfortunately need to be in main module
+
+  bool use_havoc() const
+  {
+    // Ensure we do not try to hit the same target twice.
+    return can_havoc && p()->havoc_target && p()->havoc_target != target;
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && use_havoc() )
+    {
+      assert(spell_t::n_targets() == 0);
+      return 2;
+    }
+    else
+      return spell_t::n_targets();
+  }
+
+  size_t available_targets(std::vector<player_t*>& tl) const override
+  {
+    spell_t::available_targets(tl);
+
+    // Check target list size to prevent some silly scenarios where Havoc target
+    // is the only target in the list.
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && tl.size() > 1 && use_havoc())
+    {
+      // We need to make sure that the Havoc target ends up second in the target list,
+      // so that Havoc spells can pick it up correctly.
+      auto it = range::find(tl, p()->havoc_target);
+      if (it != tl.end())
+      {
+        tl.erase(it);
+        tl.insert(tl.begin() + 1, p()->havoc_target);
+      }
+    }
+
+    return tl.size();
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
+    {
+        // SL - Conduit
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        p()->havoc_spells.push_back(this);
+    }
+  }
+
+  //End Destruction specific things
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {

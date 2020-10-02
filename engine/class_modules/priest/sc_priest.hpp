@@ -37,6 +37,7 @@ struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct wrathful_faerie_t;
+struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -83,6 +84,7 @@ public:
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
+    propagate_const<buff_t*> wrathful_faerie_fermata;
   } buffs;
 
   priest_t& priest()
@@ -301,6 +303,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> wrathful_faerie;
+    propagate_const<cooldown_t*> wrathful_faerie_fermata;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -377,7 +380,9 @@ public:
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
-  } active_spells;
+    propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
+    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+  } background_actions;
 
   // Items
   struct
@@ -424,11 +429,6 @@ public:
     // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
     int priest_ascended_eruption_additional_targets = 10;
   } options;
-
-  struct actions_t
-  {
-    actions::spells::ascended_eruption_t* ascended_eruption;
-  } action;
 
   // Azerite
   struct azerite_t
@@ -544,6 +544,7 @@ public:
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;
   void apply_affecting_auras( action_t& ) override;
+  void invalidate_cache( cache_e ) override;
 
 private:
   void create_cooldowns();
@@ -591,7 +592,9 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
+  void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
+  void remove_wrathful_faerie_fermata();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
@@ -608,7 +611,7 @@ public:
    */
   struct insanity_state_t final
   {
-    event_t* end;             // End event for dropping out of voidform (insanity reaches 0)
+    propagate_const<event_t*> end;             // End event for dropping out of voidform (insanity reaches 0)
     timespan_t last_drained;  // Timestamp when insanity was last drained
     priest_t& actor;
 
@@ -1025,7 +1028,18 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   {
     background = true;
     // This is hard coded in the spell, base SP is 3.0
-    spell_power_mod.direct *= 0.6;
+    // Depending on Mindbender or Shadowfiend this hits differently
+    switch ( p.pet_type )
+    {
+      case PET_MINDBENDER:
+      {
+        spell_power_mod.direct *= 0.442;
+      }
+      break;
+      default:
+        spell_power_mod.direct *= 0.408;
+        break;
+    }
   }
 };
 
@@ -1407,6 +1421,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
         if ( td && td->buffs.wrathful_faerie->check() )
         {
           priest().trigger_wrathful_faerie();
+        }
+        if ( td && td->buffs.wrathful_faerie_fermata->check() )
+        {
+          priest().trigger_wrathful_faerie_fermata();
         }
       }
     }

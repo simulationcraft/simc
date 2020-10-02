@@ -13,7 +13,6 @@ struct destruction_spell_t : public warlock_spell_t
 public:
   gain_t* gain;
 
-  bool can_havoc;
   bool destro_mastery;
 
   destruction_spell_t( warlock_t* p, util::string_view n ) : destruction_spell_t( n, p, p->find_class_spell( n ) )
@@ -32,58 +31,7 @@ public:
     tick_may_crit     = true;
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
-    can_havoc         = false;
     destro_mastery    = true;
-  }
-
-  bool use_havoc() const
-  {
-    // Ensure we do not try to hit the same target twice.
-    return can_havoc && p()->havoc_target && p()->havoc_target != target;
-  }
-
-  int n_targets() const override
-  {
-    if ( use_havoc() )
-    {
-      assert( warlock_spell_t::n_targets() == 0 );
-      return 2;
-    }
-    else
-      return warlock_spell_t::n_targets();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    warlock_spell_t::available_targets( tl );
-
-    // Check target list size to prevent some silly scenarios where Havoc target
-    // is the only target in the list.
-    if ( tl.size() > 1 && use_havoc() )
-    {
-      // We need to make sure that the Havoc target ends up second in the target list,
-      // so that Havoc spells can pick it up correctly.
-      auto it = range::find( tl, p()->havoc_target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-        tl.insert( tl.begin() + 1, p()->havoc_target );
-      }
-    }
-
-    return tl.size();
-  }
-
-  void init() override
-  {
-    warlock_spell_t::init();
-
-    if ( can_havoc )
-    {
-      // SL - Conduit
-      base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent() + p()->conduit.duplicitous_havoc.percent();
-      p()->havoc_spells.push_back( this );
-    }
   }
 
   void consume_resource() override
@@ -185,7 +133,7 @@ struct internal_combustion_t : public destruction_spell_t
     this->base_dd_min = this->base_dd_max = total_damage;
 
     destruction_spell_t::execute();
-    td->dots_immolate->reduce_duration( remaining );
+    td->dots_immolate->adjust_duration( -remaining );
   }
 };
 
@@ -549,6 +497,7 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->set_target( target );
       fnb_action->execute();
     }
+    p()->buffs.decimating_bolt->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -577,7 +526,19 @@ struct incinerate_t : public destruction_spell_t
 
     return m;
   }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    m *= 1 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
+
 };
+
+
 
 struct chaos_bolt_t : public destruction_spell_t
 {
@@ -1187,8 +1148,8 @@ void warlock_t::init_spells_destruction()
   // Conduits
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
   conduit.combusting_engine = find_conduit_spell( "Combusting Engine" );
-  conduit.duplicitous_havoc = find_conduit_spell( "Duplicitous Havoc" );
   conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
+  //conduit.duplicitous_havoc is done in main module
 }
 
 void warlock_t::init_gains_destruction()

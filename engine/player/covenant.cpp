@@ -542,61 +542,75 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   return root;
 }
 
+covenant_cb_base_t::covenant_cb_base_t( bool on_class, bool on_base )
+  : trigger_on_class( on_class ), trigger_on_base( on_base )
+{}
+
+covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
+  : dbc_proc_callback_t( p, e ),
+    class_ability( p->covenant->get_covenant_ability_spell_id() ),
+    base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
+    cb_list()
+{
+  // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
+  if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
+    class_ability = 326446;
+}
+
+void covenant_ability_cast_cb_t::initialize()
+{
+  listener->sim->print_debug( "Initializing covenant ability cast handler..." );
+  listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
+}
+
+void covenant_ability_cast_cb_t::trigger( action_t* a, action_state_t* s )
+{
+  if ( a->data().id() != class_ability && a->data().id() != base_ability )
+    return;
+
+  for ( const auto& cb : cb_list )
+  {
+    if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
+         ( cb->trigger_on_base && a->data().id() == base_ability ) )
+      cb->trigger( a, s );
+  }
+}
+
+covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
+{
+  if ( !p->covenant->enabled() )
+    return nullptr;
+
+  if ( !p->covenant->cast_callback )
+  {
+    auto eff          = new special_effect_t( p );
+    eff->name_str     = "covenant_cast_callback";
+    eff->proc_flags_  = PF_ALL_DAMAGE;
+    eff->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    p->special_effects.push_back( eff );
+    p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
+  }
+
+  return debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
+}
+
 struct fleshcraft_t : public spell_t
 {
-  struct embody_pulse_t : public spell_t
-  {
-    embody_pulse_t( player_t* p, double divisor ) : spell_t( "embody_the_construct", p, p->find_spell( 342181 ) )
-    {
-      background = true;
-      aoe = -1;
-      spell_power_mod.direct = 1.8 / divisor;
-    }
-
-    double composite_spell_power() const override
-    {
-      return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
-    }
-  };
-
-  bool do_pulse;
-  action_t* embody_pulse;
-
   fleshcraft_t( player_t* p, util::string_view opt )
-    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) ), do_pulse( false ), embody_pulse( nullptr )
+    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
   {
     harmful = may_crit = may_miss = false;
     channeled = true;
 
     parse_options( opt );
-
-    if ( data().ok() && p->find_soulbind_spell( "Embody the Construct" )->ok() )
-    {
-      embody_pulse = p->find_action( "embody_the_construct" );
-      if ( !embody_pulse )
-        embody_pulse = new embody_pulse_t( p, data().duration() / data().effectN( 1 ).period() );
-    }
   }
 
   double composite_haste() const override { return 1.0; }
-
-  void execute() override
-  {
-    do_pulse = player->buffs.embody_the_construct->at_max_stacks();
-
-    if ( do_pulse )
-      player->buffs.embody_the_construct->expire();
-
-    spell_t::execute();
-  }
 
   void tick( dot_t* d ) override
   {
     // TODO: add shielding
     spell_t::tick( d );
-
-    if ( do_pulse && embody_pulse )
-      embody_pulse->schedule_execute();
   }
 };
 

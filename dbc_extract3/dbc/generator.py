@@ -1226,10 +1226,11 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
+         # Sunblod Amethyst Trinket
+         343395, 343396,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 
@@ -1312,7 +1313,7 @@ class SpellDataGenerator(DataGenerator):
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
-          ( 328757, 0 ), # Wild Spirits (Covenenat)
+          ( 328275, 0 ), ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
@@ -1673,6 +1674,10 @@ class SpellDataGenerator(DataGenerator):
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
+          ( 343249, 0 ), # Escape from Reality Buff
+          ( 343250, 0 ), # Escape from Reality
+          ( 343539, 0 ), # Escape from Reality Mana Refund
+          ( 343543, 0 ), # Escape from Reality Energy Refund
         ),
 
         # Druid:
@@ -1975,6 +1980,8 @@ class SpellDataGenerator(DataGenerator):
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
+        345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
+        345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
     ]
 
     _spell_families = {
@@ -2495,6 +2502,10 @@ class SpellDataGenerator(DataGenerator):
         # Souldbind conduits
         for spell_id in ConduitSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
+
+        # Explicitly add Shadowlands legendaries
+        for entry in self.db('RuneforgeLegendaryAbility').values():
+            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]

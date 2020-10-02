@@ -1094,12 +1094,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( affected_spells.size() > 0 )
   {
     s << "                   Affected Spells: ";
-    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-    {
-      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
-      if ( i < end - 1 )
-        s << ", ";
-    }
+    s << concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+          } );
     s << std::endl;
   }
 
@@ -1108,12 +1106,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
     s << "                   Affected Spells (Label): ";
-    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-    {
-      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
-      if ( i < end - 1 )
-        s << ", ";
-    }
+    s << concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+          } );
     s << std::endl;
   }
 
@@ -1125,7 +1121,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       s << "                   Affected Spells (Category): ";
       s << concatenate( affected_spells,
           []( std::stringstream& s, const spell_data_t* spell ) {
-            s << spell -> name_cstr() << " (" << spell -> id() << ")";
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
           } );
       s << std::endl;
     }
@@ -1133,30 +1129,18 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( spell->class_family() > 0 )
   {
-    std::stringstream flags_s;
-
+    std::vector<unsigned> flags;
     for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
     {
       for ( size_t bit = 0; bit < 32; ++bit )
       {
         if ( ( 1 << bit ) & e->_class_flags[ i ] )
-        {
-          if ( flags_s.tellp() )
-          {
-            flags_s << ", ";
-          }
-
-          flags_s << ( i * 32 + bit );
-        }
+          flags.push_back( static_cast<unsigned>( i * 32 + bit ) );
       }
     }
 
-    if ( flags_s.tellp() )
-    {
-      s << "                   Family Flags: ";
-      s << flags_s.str();
-      s << std::endl;
-    }
+    if ( flags.size() )
+      fmt::print( s, "                   Family Flags: {}\n", fmt::join( flags, ", " ) );
   }
 
   const auto hotfixes = spelleffect_data_t::hotfixes( *e, dbc.ptr );
@@ -1255,24 +1239,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> race_mask() )
   {
-    s << "Race             : ";
-
+    std::vector<util::string_view> races;
     for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      uint64_t mask = (uint64_t(1) << i );
-      if ( spell -> race_mask() & mask && _race_map.contains( i ) )
+      uint64_t mask = uint64_t( 1 ) << i;
+      if ( spell -> race_mask() & mask )
       {
         auto it = _race_map.find( i );
         if ( it != _race_map.end() )
-        {
-          fmt::print( s, "{}, ", it -> second );
-        }
+          races.push_back( it -> second );
       }
     }
 
-    s.seekp( -2, std::ios_base::cur );
-    s << " (0x" << std::hex << spell -> race_mask() << std::dec << ")";
-    s << std::endl;
+    fmt::print( s, "Race             : {} (0x{:0x})\n", fmt::join( races, ", " ), spell -> race_mask() );
   }
 
   const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
@@ -1589,11 +1568,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> stance_mask() > 0 )
   {
-    s << "Stance Mask      : 0x";
-    std::streamsize ss = s.width();
-    s.width( 8 );
-    s << std::hex << std::setfill('0') << spell -> stance_mask() << std::endl << std::dec;
-    s.width( ss );
+    fmt::print( s, "Stance Mask      : 0x{:08x}\n", spell -> stance_mask() );
   }
 
   if ( spell -> mechanic() > 0 )
@@ -1629,7 +1604,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( ranks.size() )
     {
-      s << fmt::format( " (values={})", util::string_join( rank_str, ", " ) );
+      fmt::print( s, " (values={})", fmt::join( rank_str, ", " ) );
     }
 
     s << std::endl;
@@ -1712,30 +1687,18 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->class_family() > 0 )
   {
-    std::stringstream flags_s;
-
+    std::vector<unsigned> flags;
     for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
     {
       for ( size_t bit = 0; bit < 32; ++bit )
       {
         if ( ( 1 << bit ) & spell->_class_flags[ i ] )
-        {
-          if ( flags_s.tellp() )
-          {
-            flags_s << ", ";
-          }
-
-          flags_s << ( i * 32 + bit );
-        }
+          flags.push_back( static_cast<unsigned>( i * 32 + bit ) );
       }
     }
 
-    if ( flags_s.tellp() )
-    {
-      s << "Family Flags     : ";
-      s << flags_s.str();
-      s << std::endl;
-    }
+    if ( flags.size() )
+      fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 
   s << "Attributes       : ";

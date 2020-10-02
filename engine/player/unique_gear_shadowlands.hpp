@@ -45,7 +45,17 @@ void skulkers_wing( special_effect_t& );
 void memory_of_past_sins( special_effect_t& );
 void gluttonous_spike( special_effect_t& );
 void hateful_chain( special_effect_t& );
+void overflowing_anima_prison( special_effect_t& );
+void sunblood_amethyst( special_effect_t& );
 
+// Runecarves
+void echo_of_eonar( special_effect_t& );
+void judgment_of_the_arbiter( special_effect_t& );
+void maw_rattle( special_effect_t& );
+void norgannons_sagacity( special_effect_t& );
+void sephuzs_proclamation( special_effect_t& );
+void third_eye_of_the_jailer( special_effect_t& );
+void vitality_sacrifice( special_effect_t& );
 }  // namespace items
 
 void register_hotfixes();

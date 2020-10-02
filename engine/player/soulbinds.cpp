@@ -21,19 +21,6 @@ namespace soulbinds
 {
 namespace
 {
-struct covenant_cb_base_t
-{
-  bool trigger_on_class; // proc off class ability
-  bool trigger_on_base;  // proc off base ability
-
-  covenant_cb_base_t( bool on_class = true, bool on_base = false )
-    : trigger_on_class( on_class ), trigger_on_base( on_base )
-  {
-  }
-  virtual void trigger( action_t*, action_state_t* s ) = 0;
-  virtual ~covenant_cb_base_t() { }
-};
-
 struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
@@ -69,77 +56,90 @@ struct covenant_cb_action_t : public covenant_cb_base_t
   }
 };
 
-struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
-{
-  unsigned class_ability;
-  unsigned base_ability;
-  auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
-
-  covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ),
-      class_ability( p->covenant->get_covenant_ability_spell_id() ),
-      base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
-      cb_list()
-  {
-    // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
-    if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
-      class_ability = 326446;
-  }
-
-  void initialize() override
-  {
-    listener->sim->print_debug( "Initializing covenant ability cast handler..." );
-    listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
-  }
-
-  void trigger( action_t* a, action_state_t* s ) override
-  {
-    if ( a->data().id() != class_ability && a->data().id() != base_ability )
-      return;
-
-    for ( const auto& cb : cb_list )
-    {
-      if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
-           ( cb->trigger_on_base && a->data().id() == base_ability ) )
-        cb->trigger( a, s );
-    }
-  }
-};
-
 // Add an effect to be triggered when covenant ability is cast. Currently has has templates for buff_t & action_t, and
 // can be expanded via additional subclasses to covenant_cb_base_t.
 template <typename T, typename... S>
 void add_covenant_cast_callback( player_t* p, S&&... args )
 {
-  if ( !p->covenant->enabled() )
-    return;
-
-  if ( !p->covenant->cast_callback )
+  auto callback = get_covenant_callback( p );
+  if ( callback )
   {
-    auto eff                   = new special_effect_t( p );
-    eff->name_str              = "covenant_cast_callback";
-    eff->proc_flags_           = PF_ALL_DAMAGE;
-    eff->proc_flags2_          = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    p->special_effects.push_back( eff );
-    p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
+    auto cb_entry = new T( std::forward<S>( args )... );
+    callback->cb_list.push_back( cb_entry );
   }
-
-  auto cb_entry = new T( std::forward<S>( args )... );
-  auto cb       = debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
-  cb->cb_list.push_back( cb_entry );
 }
 
-double get_coefficient_from_desc_vars( special_effect_t& e, bool sp = true )
+double value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
 {
-  double coef = 0;
+  double value = 0;
+
   if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
   {
     std::cmatch m;
-    std::regex r( sp ? "\\$SP\\*([0-9]*\\.?[0-9]*)" : "\\$AP\\*([0-9]*\\.?[0-9]*)" );
-    if ( std::regex_search( vars, m, r ) && m.size() >= 2 )
-      coef = std::stod( m.str( 1 ) );
+    std::regex r( "\\$" + std::string( var ) + ".*" + std::string( prefix ) + "(\\d*\\.?\\d+)" + std::string( postfix ) );
+    if ( std::regex_search( vars, m, r ) )
+      value = std::stod( m.str( 1 ) );
   }
-  return coef;
+
+  e.player->sim->print_debug( "parsed value for special effect '{}': variable={} value={}", e.name(), var, value );
+
+  return value;
+}
+
+// Default behavior is where the description variables string contains instances of "?a137005[${1.0}]" defined
+// by a spell ID belonging to the target class and the floating point number represents the duration modifier.
+// This can be changed to any regex such that the first capture group gives the class spell ID and second
+// capture group gives the value to return.
+double class_value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
+{
+  double value = 0;
+
+  if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex r_line( "\\$" + std::string( var ) + ".*[\\r\\n]?" );
+    if ( std::regex_search( vars, m, r_line ) )
+    {
+      const std::string line = m.str( 0 );
+      std::regex r( regex_string.data(), regex_string.size() );
+      std::sregex_iterator begin( line.begin(), line.end(), r );
+      for( std::sregex_iterator i = begin; i != std::sregex_iterator(); i++ )
+      {
+        auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
+        if ( spell->is_class( e.player->type ) )
+        {
+          value = std::stod( ( *i ).str( 2 ) );
+          break;
+        }
+      }
+    }
+  }
+
+  e.player->sim->print_debug( "parsed class-specific value for special effect '{}': variable={} value={}", e.name(), var, value );
+
+  return value;
+}
+
+bool extra_desc_lines_for_class( special_effect_t& e )
+{
+  if ( const char* desc = e.player->dbc->spell_text( e.spell_id ).desc() )
+  {
+    // The relevant part of the description is formatted as a '|' delimited list of the
+    // letter 'a' followed by class aura spell IDs until we reach a '[' and a new line.
+    std::regex r( "(?=(?:a\\d+\\|?)*\\[[\r\n])a(\\d+)" );
+    std::cregex_iterator begin( desc, desc + std::strlen( desc ), r );
+    for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
+    {
+      auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
+      if ( spell->is_class( e.player->type ) )
+      {
+        e.player->sim->print_debug( "description for special effect '{}': has extra lines for this class", e.name() );
+        return true;
+      }
+    }
+  }
+  e.player->sim->print_debug( "description for special effect '{}': does not have extra lines for this class", e.name() );
+  return false;
 }
 
 struct niyas_tools_proc_t : public unique_gear::proc_spell_t
@@ -162,7 +162,7 @@ void niyas_tools_burrs( special_effect_t& effect )
 {
   auto action = effect.player->find_action( "spiked_burrs" );
   if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), get_coefficient_from_desc_vars( effect ), false );
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), value_from_desc_vars( effect, "points", "\\$SP\\*" ), false );
 
   effect.execute_action = action;
 
@@ -180,11 +180,11 @@ void niyas_tools_poison( special_effect_t& effect )
     {
       dot = e.player->find_action( "paralytic_poison" );
       if ( !dot )
-        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), get_coefficient_from_desc_vars( e ), false );
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), value_from_desc_vars( e, "pointsA", "\\$SP\\*" ), false );
 
       direct = e.player->find_action( "paralytic_poison_interrupt" );
       if ( !direct )
-        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), get_coefficient_from_desc_vars( e ) );
+        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), value_from_desc_vars( e, "pointsB", "\\$SP\\*" ) );
     }
 
     void execute( action_t* a, action_state_t* s ) override
@@ -283,7 +283,10 @@ void social_butterfly( special_effect_t& effect )
   // ID: 320212 is the buff on allies (NYI)
   struct social_butterfly_buff_t : public buff_t
   {
-    social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320130 ) )
+    timespan_t ally_buff_dur;
+
+    social_butterfly_buff_t( player_t* p )
+      : buff_t( p, "social_butterfly", p->find_spell( 320130 ) ), ally_buff_dur( p->find_spell( 320212 )->duration() )
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
       add_invalidate( CACHE_VERSATILITY );
@@ -293,7 +296,7 @@ void social_butterfly( special_effect_t& effect )
     {
       buff_t::expire_override( s, d );
 
-      make_event( *sim, data().duration(), [this]() { trigger(); } );
+      make_event( *sim, ally_buff_dur, [ this ]() { trigger(); } );
     }
   };
 
@@ -431,41 +434,11 @@ void wasteland_propriety( special_effect_t& effect )
 {
   if ( !effect.player->buffs.wasteland_propriety )
   {
-    double duration_mod = 1.0;
-    bool icd_enabled = false;
-
     // The duration modifier for each class comes from the description variables of Wasteland Propriety (id=319983)
-    if ( const char* vars = effect.player->dbc->spell_desc_vars( effect.spell_id ).desc_vars() )
-    {
-      // The description variables string contains instances of "?a137005[${1.0}]", where the class is
-      // defined by the class aura spell ID and the floating point number represents the duration modifier.
-      std::regex r( "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" );
-      std::cregex_iterator begin( vars, vars + std::strlen( vars ), r );
-      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
-      {
-        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
-        if ( spell->is_class( effect.player->type ) )
-        {
-          duration_mod = std::stod( ( *i ).str( 2 ) );
-          break;
-        }
-      }
-    }
+    double duration_mod = class_value_from_desc_vars( effect, "mod" );
 
     // The ICD of 60 seconds is enabled for some classes in the description of Wasteland Propriety (id=319983)
-    if ( const char* desc = effect.player->dbc->spell_text( effect.spell_id ).desc() )
-    {
-      // The relevant part of the description is formatted as a '|' delimited list of the
-      // letter 'a' followed by class aura spell IDs until we reach a '[' and a new line.
-      std::regex r( "(?=(?:a\\d+\\|?)*\\[[\r\n])a(\\d+)" );
-      std::cregex_iterator begin( desc, desc + std::strlen( desc ), r );
-      for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
-      {
-        auto spell = effect.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
-        if ( icd_enabled = spell->is_class( effect.player->type ) )
-          break;
-      }
-    }
+    bool icd_enabled = extra_desc_lines_for_class( effect );
 
     effect.player->sim->print_debug( "class-specific properties for wasteland_propriety: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
 
@@ -562,19 +535,26 @@ void let_go_of_the_past( special_effect_t& effect )
 
 void combat_meditation( special_effect_t& effect )
 {
+  // id:328908 buff spell
+  // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
+  // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
+  // id:345861 lockout buff (buff->eff#3->trigger)
   struct combat_meditation_buff_t : public buff_t
   {
     timespan_t ext_dur;
 
-    combat_meditation_buff_t( player_t* p )
-      : buff_t( p, "combat_meditation", p->find_spell( 328908 ) ),
-        ext_dur( timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() ) )
+    combat_meditation_buff_t( player_t* p ) : buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
+      set_cooldown( data().effectN( 3 ).trigger()->duration() );
       set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
+      ext_dur =
+          timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
+
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
-      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
           extend_duration( player, ext_dur );
       } );
@@ -637,8 +617,6 @@ void hammer_of_genesis( special_effect_t& effect )
             ->add_invalidate( CACHE_HASTE );
   }
 
-  // TODO: confirm that spell_data proc flags are correct (doesn't proc from white hits)
-  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.custom_buff = effect.player->buffs.hammer_of_genesis;
 
   new hammer_of_genesis_cb_t( effect );
@@ -886,13 +864,28 @@ void gnashing_chompers( special_effect_t& effect )
   } );
 }
 
-void embody_the_construct( special_effect_t& effect )
+void lead_by_example( special_effect_t& effect )
 {
-  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.custom_buff  = effect.player->buffs.embody_the_construct;
+  if ( !effect.player->buffs.lead_by_example )
+  {
+    auto s_data     = effect.player->find_spell( 342181 );
+    double duration = effect.driver()->effectN( 3 ).base_value();
 
-  new dbc_proc_callback_t( effect.player, effect );
+    // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
+    duration *= class_value_from_desc_vars( effect, "mod" );
+
+    // TODO: does 'up to X%' include the base value or refers only to extra per ally?
+    effect.player->buffs.lead_by_example =
+        make_buff( effect.player, "lead_by_example", s_data )
+            ->set_default_value_from_effect( 2 )
+            ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
+            ->set_duration( timespan_t::from_seconds( duration ) )
+            ->add_invalidate( CACHE_STRENGTH )
+            ->add_invalidate( CACHE_AGILITY )
+            ->add_invalidate( CACHE_INTELLECT );
+  }
+
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.lead_by_example );
 }
 
 void serrated_spaulders( special_effect_t& effect )
@@ -962,7 +955,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  register_soulbind_special_effect( 342156, soulbinds::embody_the_construct );
+  register_soulbind_special_effect( 342156, soulbinds::lead_by_example );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }

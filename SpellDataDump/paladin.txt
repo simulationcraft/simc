@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (hotfix 2020-09-24/35978, git build shadowlands 071bbba4fa)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -474,7 +474,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 892
 Category Cooldown: 9 seconds
-Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Holy Shock (272906 effect#1), Focused Light (339984 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Holy Shock (272906 effect#1), Focused Light (339984 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xxx..... ........ 
@@ -617,7 +617,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3, #6), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3, #6), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #6), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1)
 Family Flags     : 21, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -882,7 +882,7 @@ Effects          :
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Silence | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 127 | Mechanic: Silence | Target: Enemy (6)
 #4 (id=737804)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
@@ -914,8 +914,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Radius: 40 yards | Target: Self (1)
 #4 (id=803410)   : Apply Aura (6) | Unknown(285)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 344219 | Target: Self (1)
-#5 (id=838198)   : Apply Raid Aura (65) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Radius: 40 yards | Target: Self (1)
 Description      : Increases mounted speed by $s1% for all party and raid members with $a1 yards.
 Tooltip          : Mounted speed increased by $w1%.$?$w5>0[
 Incoming fear duration reduced by $w5%.][]
@@ -1580,7 +1578,7 @@ Name             : Holy Light (id=82326) [Spell Family (10)]
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 16% Base Mana (0) (id=3855)
+Resource         : 15% Base Mana (0) (id=3855)
 Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -1597,7 +1595,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2030,7 +2028,7 @@ Name             : Rebuke (id=96231) [Spell Family (10)]
 Class            : Protection Retribution Paladin
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 23
+Spell Level      : 27
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
@@ -2627,7 +2625,7 @@ Effects          :
 #3 (id=191089)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #4 (id=191090)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #5 (id=191091)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
@@ -3347,7 +3345,7 @@ Resource         : 7% Base Mana (0) (id=10087)
 Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Untempered Dedication (339990 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1)
 Family Flags     : 46, 124
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4483,6 +4481,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
+#8 (id=872228)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Holy Shock (20473), Holy Shock (25912)
+                   Family Flags: 21
 Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s1%.
 
 Crusader Strike and Judgment cool down $s2% faster and heal up to $s6 injured allies for $s5% of the damage they deal. Lasts $d.
@@ -5254,7 +5256,7 @@ Name             : Wake of Ashes (id=255937) [Spell Family (10)]
 Class            : Retribution Paladin
 School           : Holyfire
 Spell Type       : Magic
-Spell Level      : 34
+Spell Level      : 39
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
@@ -5575,7 +5577,7 @@ Name             : Art of War (id=267344) [Spell Family (10), Passive]
 Class            : Retribution Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 39
+Spell Level      : 24
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -6664,7 +6666,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : x....... ........ ........ ........   
@@ -6692,7 +6694,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : x....... ........ ........ ........   
@@ -8357,7 +8359,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
-Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
+Description      : Your secondary stats are all increased by $s1.
 
 Name             : Ashen Hallow (id=317221) [Spell Family (10)] 
 Class            : Paladin
@@ -8570,8 +8572,10 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 9 | Radius: 40 yards | Target: Self (1)
 #3 (id=868382)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 344220 | Target: Self (1)
-Description      : Interrupt and Silence effects on party and raid members within $a1 yards are $s1% shorter.
-Tooltip          : Interrupt and Silence effects reduced by $w1%.
+#4 (id=871959)   : Apply Raid Aura (65) | Modify Mechanic Duration% (Stacking) (232)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Radius: 40 yards | Target: Self (1)
+Description      : Interrupt and Silence effects on party and raid members within $a1 yards are $s1% shorter. $?s339124[Fear effects are also reduced.][]
+Tooltip          : Interrupt and Silence effects reduced by $w1%. $?s339124[Fear effects are reduced by $w4%.][]
 
 Name             : Shining Light (id=321136) [Spell Family (10), Passive] 
 Class            : Protection Paladin
@@ -8910,7 +8914,7 @@ Name             : Blade of Justice (desc=Rank 2) (id=327981) [Spell Family (10)
 Class            : Retribution Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 27
+Spell Level      : 34
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8954,7 +8958,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=820203)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=820204)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous].
@@ -9735,10 +9739,11 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every $26573t1 sec while standing within it.
 
-Name             : Stalwart as a Crusader (id=339124) [Spell Family (10), Passive, Hidden] 
+Name             : Pure Concentration (id=339124) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
 School           : Physical
 Spell Type       : None
-Conduit Id       : 142 (values=30.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0, 52.0, 54.0, 56.0, 58.0, 60.0)
+Conduit Id       : 142 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9751,7 +9756,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838200)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Crusader Aura reduces the duration of incoming Fear effects on your allies by |cFFFFFFFF${$s1}.1%|r.
+Description      : Concentration Aura reduces the duration of incoming Fear effects on your allies by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Light's Barding (id=339268) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9854,7 +9859,10 @@ Name             : Truth's Wake (id=339374) [Spell Family (10), Passive, Hidden]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Conduit Id       : 167 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9873,23 +9881,24 @@ Description      : Wake of Ashes burns the target for an additional |cFFFFFFFF${
 
 Name             : Truth's Wake (id=339376) [Spell Family (10)] 
 Class            : Paladin
-School           : Holy
+School           : Holyfire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ .....x..   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   
+                 : Cannot crit (93)
 Effects          :
-#1 (id=838619)   : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
+#1 (id=838619)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52500 | PvP Coefficient: 0.75000 | Target: Enemy (6)
 Description      : $@spelldesc339374
-Tooltip          : Suffering $w1 Holy damage every $t1 sec.
+Tooltip          : Suffering $w1 Radiant damage every $t1 sec.
 
 Name             : Virtuous Command (id=339518) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -10299,7 +10308,7 @@ Effects          :
 Description      : Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast $s2 extra $ltime:times; on the main target.
 
 Name             : Enkindled Spirit (id=341741) [Spell Family (10)] 
-School           : Physical
+School           : Holy
 Spell Type       : None
 Duration         : 60 seconds
 Internal Cooldown: 0.1 seconds

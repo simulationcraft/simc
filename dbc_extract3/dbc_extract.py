@@ -2,6 +2,8 @@
 
 import argparse, sys, os, glob, logging, importlib, json
 
+from dbc.constants import HotfixType
+
 try:
     from bitarray import bitarray
 except Exception as error:
@@ -188,8 +190,8 @@ elif options.type == 'view':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     logging.debug(dbc_file)
     if id == 0:
@@ -197,7 +199,11 @@ elif options.type == 'view':
         # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
             if not options.raw and record.id in entries:
-                print('{} [hotfix]'.format(str(entries[record.id])))
+                entry, hotfix = entries[record.id]
+                if hotfix['state'] == HotfixType.REMOVED:
+                    print('{} [hotfix/remove]'.format(str(record)))
+                else:
+                    print('{} [hotfix/modify]'.format(str(entry)))
                 replaced_ids.append(record.id)
             else:
                 print('{}'.format(str(record)))
@@ -206,7 +212,7 @@ elif options.type == 'view':
             if id in replaced_ids:
                 continue
 
-            print('{} [hotfix]'.format(entry))
+            print('{} [hotfix/add]'.format(entry))
     else:
         if id in entries:
             record = entries[id]
@@ -234,8 +240,8 @@ elif options.type == 'json':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     str_ = '[\n'
     logging.debug(dbc_file)
@@ -243,7 +249,8 @@ elif options.type == 'json':
         replaced_ids = []
         for record in dbc_file:
             if not options.raw and record.id in entries:
-                data_ = entries[record.id].obj()
+                entry, hotfix = entries[record.id]
+                data_ = entry.obj()
                 data_['hotfixed'] = True
                 replaced_ids.append(record.id)
                 str_ += '\t{},\n'.format(json.dumps(data_))
@@ -294,8 +301,8 @@ elif options.type == 'csv':
         sys.exit(1)
     else:
         entries = {}
-        for entry in cache.entries(dbc_file.parser):
-            entries[entry.id] = entry
+        for entry, hotfix in cache.entries(dbc_file.parser):
+            entries[hotfix['record_id']] = (entry, hotfix)
 
     first = True
     logging.debug(dbc_file)
@@ -306,7 +313,8 @@ elif options.type == 'csv':
                 print('{}'.format(record.field_names(options.delim)))
 
             if not options.raw and record.id in entries:
-                print('{}'.format(entries[record.id].csv(options.delim, first)))
+                entry, hotfix = entries[record.id]
+                print('{}'.format(entry.csv(options.delim, first)))
                 replaced_ids.append(record.id)
             else:
                 print('{}'.format(record.csv(options.delim, first)))

@@ -533,12 +533,19 @@ struct player_t : public actor_t
     buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
     buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
     buff_t* gnashing_chompers;        // necrolord/emeni - haste on enemy death
-    buff_t* embody_the_construct;     // necrolord/emeni - cast counter
+    buff_t* lead_by_example;          // necrolord/emeni - primary% on covenant ability use
     buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
     buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
 
     // 9.0 Enchants and Consumables
     buff_t* celestial_guidance;
+
+    // 9.0 Runecarves
+    buff_t* norgannons_sagacity_stacks;  // stacks on every cast
+    buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
+
+    // 9.0 Trinkets
+    buff_t* overflowing_anima_prison;  // needed to allow usage of buff expr even when not equipped
   } buffs;
 
   struct debuffs_t

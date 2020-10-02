@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "dbc/specialization.hpp"
 #include "simulationcraft.hpp"
 
 namespace
@@ -1807,7 +1808,7 @@ struct bladestorm_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
-    if ( d->ticks_left() > 1 )
+    if ( d->ticks_left() > 0 )
     {
       p()->buff.tornados_eye->trigger();
       p()->buff.gathering_storm->trigger();
@@ -2417,7 +2418,7 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
 struct deep_wounds_PROT_t : public warrior_attack_t
 {
   deep_wounds_PROT_t( warrior_t* p )
-    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_PROT->effectN( 2 ).trigger() )
+    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_PROT->effectN( 1 ).trigger() )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -3473,7 +3474,7 @@ struct overpower_t : public warrior_attack_t
   warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
   overpower_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr )
+    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr ), dreadnaught( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -7287,6 +7288,16 @@ std::string warrior_t::default_rune() const
 
 void warrior_t::init_action_list()
 {
+  // Protection isn't supported atm
+  if ( !sim->allow_experimental_specializations && specialization() == WARRIOR_PROTECTION )
+  {
+    if ( !quiet )
+      sim->error( "Specialization Protection Warrior for {} is currently not supported.", *this );
+
+    quiet = true;
+    return;
+  }
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();

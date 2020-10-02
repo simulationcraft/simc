@@ -2562,7 +2562,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           demon_hunter_td_t* target_data = td( s->target );
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
-            target_data->dots.fiery_brand->extend_duration( p()->talent.charred_flesh->effectN( 1 ).time_value() );
+            target_data->dots.fiery_brand->adjust_duration( p()->talent.charred_flesh->effectN( 1 ).time_value() );
           }
         }
 
@@ -5422,7 +5422,7 @@ void demon_hunter_t::init_spells()
   // Legendary Items ========================================================
 
   legendary.half_giant_empowerment        = find_runeforge_legendary( "Half-Giant Empowerment" );
-  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Boon" );
+  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Medallion" ); // Note: Blizzard typo in item runeforge data
   legendary.collective_anguish            = find_runeforge_legendary( "Collective Anguish" );
   legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
 

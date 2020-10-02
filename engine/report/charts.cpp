@@ -1044,7 +1044,22 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
 
     // Sort list of actors in the chart based on the value metric (and metric)
     range::sort( player_list, player_list_comparator_t( chart_metric, vm ) );
-    double lowest_value = get_data_value( player_list.back() -> collected_data, chart_metric, vm );
+    double base_value = 0.0;
+    if ( !s.relative_difference_base.empty() )
+    {
+      for ( auto p : player_list )
+      {
+        if ( p->name_str == s.relative_difference_base )
+        {
+          base_value = get_data_value( p->collected_data, chart_metric, vm );
+          break;
+        }
+      }
+    }
+    if ( base_value == 0.0 )
+    {
+      base_value = get_data_value( player_list.back()->collected_data, chart_metric, vm );
+    }
 
     bool candlebars = false;
     // Iterate over the players and output data
@@ -1071,11 +1086,11 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
       e.set( "y", util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
 
-      // If lowest_value is defined, add relative difference (in percent) to the data
-      if ( lowest_value > 0 )
+      // If base_value is defined, add relative difference (in percent) to the data
+      if ( base_value > 0 )
       {
         has_diff = true;
-        e.set( "reldiff", 100.0 * value / lowest_value - 100.0 );
+        e.set( "reldiff", 100.0 * value / base_value - 100.0 );
       }
 
       bc.add( "__data." + series_id_str + ".series.0.data", e );
