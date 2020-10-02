@@ -10264,7 +10264,8 @@ void monk_t::create_buffs()
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
-                           ->set_default_value_from_effect( 1 );
+                           ->set_default_value_from_effect( 1 )
+                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
