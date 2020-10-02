@@ -773,6 +773,7 @@ void warlock_t::init_procs()
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
 

@@ -639,6 +639,16 @@ struct malefic_rapture_t : public affliction_spell_t
           affliction_spell_t::execute();
       }
 
+      void consume_resource() override
+      {
+        if ( p()->legendary.mark_of_borrowed_power->ok() && rng().roll( p()->legendary.mark_of_borrowed_power->effectN( 1 ).percent() ) )
+        {
+          p()->procs.mark_of_borrowed_power->occur();
+          //TODO: Schedule a refund event from here maybe?
+        }
+
+        affliction_spell_t::consume_resource();
+      }
     };
 
     malefic_rapture_damage_instance_t* damage_instance;
