@@ -58,7 +58,7 @@ struct drain_life_t : public warlock_spell_t
 struct impending_catastrophe_dot_t : public warlock_spell_t
 {
   impending_catastrophe_dot_t( warlock_t* p )
-    : warlock_spell_t( "impending_catastrophe_dot_t", p, p->find_spell( 322170 ) )
+    : warlock_spell_t( "impending_catastrophe_dot", p, p->find_spell( 322170 ) )
   {
     background = true;
     may_miss   = false;
@@ -71,11 +71,12 @@ struct impending_catastrophe_dot_t : public warlock_spell_t
 struct impending_catastrophe_impact_t : public warlock_spell_t
 {
   impending_catastrophe_impact_t( warlock_t* p )
-    : warlock_spell_t( "impending_catastrophe_impact_t", p, p->find_spell( 322167 ) )
+    : warlock_spell_t( "impending_catastrophe_impact", p, p->find_spell( 322167 ) )
   {
     background = true;
     may_miss   = false;
     dual       = true;
+
   }
 };
 
@@ -98,6 +99,8 @@ struct impending_catastrophe_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
+    auto targets = target_list();
+
     warlock_spell_t::impact( s );
 
     // This is where we would implement Curse of Weakness/Tongues
@@ -107,7 +110,6 @@ struct impending_catastrophe_t : public warlock_spell_t
         .action( impending_catastrophe_dot ),
         true );
 
-    auto targets = target_list();
     for ( auto t : targets )
     {
       impending_catastrophe_impact->set_target( t );
@@ -241,7 +243,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
-  dots_impending_catastrophe = target->get_dot( "impending_catastrophe", &p );
+  dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
