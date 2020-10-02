@@ -367,7 +367,7 @@ struct corruption_t : public affliction_spell_t
 
   double composite_ta_multiplier(const action_state_t* s) const override
   {
-    double m = warlock_spell_t::composite_ta_multiplier( s );
+    double m = affliction_spell_t::composite_ta_multiplier( s );
 
     // SL - Legendary
     if ( p()->legendary.sacrolashs_dark_strike->ok() )
