@@ -1133,27 +1133,24 @@ struct void_bolt_t final : public priest_spell_t
 
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
-
-      if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-      {
-        if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-        {
-          priest().cooldowns.void_bolt->reset( true );
-          priest().procs.dissonant_echoes->occur();
-        }
-      }
     }
   };
 
   void_bolt_extension_t* void_bolt_extension;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
   propagate_const<cooldown_t*> mindbender_cooldown;
+  timespan_t hungering_void_base_seconds;
+  timespan_t hungering_void_crit_seconds;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       void_bolt_extension( nullptr ),
       shadowfiend_cooldown( player.get_cooldown( "mindbender" ) ),
-      mindbender_cooldown( player.get_cooldown( "shadowfiend" ) )
+      mindbender_cooldown( player.get_cooldown( "shadowfiend" ) ),
+      hungering_void_base_seconds(
+          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() ) ),
+      hungering_void_crit_seconds(
+          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() ) )
   {
     parse_options( options_str );
     use_off_gcd                = true;
@@ -1202,6 +1199,18 @@ struct void_bolt_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = action_t::composite_target_da_multiplier( t );
+
+    if ( priest().hungering_void_active( t ) )
+    {
+      tdm *= 1 + priest().talents.hungering_void->effectN( 1 ).percent();
+    }
+
+    return tdm;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1212,6 +1221,24 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
+    }
+
+    if ( priest().talents.hungering_void->ok() && priest().buffs.voidform->check() )
+    {
+      priest_td_t& td = get_td( s->target );
+      // Check if this buff is active, every Void Bolt after the first should get this
+      if ( td.buffs.hungering_void_tracking->up() )
+      {
+        timespan_t seconds_to_add_to_voidform = s->result == RESULT_CRIT
+                                                    ? hungering_void_base_seconds + hungering_void_crit_seconds
+                                                    : hungering_void_base_seconds;
+        sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
+        // TODO: add some type of tracking for this increase
+        priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
+
+        td.buffs.hungering_void->trigger();
+      }
+      td.buffs.hungering_void_tracking->trigger();
     }
   }
 };
@@ -2228,8 +2255,6 @@ void priest_t::generate_apl_shadow()
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
-  main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
-                    "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
@@ -2242,6 +2267,9 @@ void priest_t::generate_apl_shadow()
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
+  main->add_action( this, "Void Bolt", "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85",
+                    "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
+                    "with conduit)." );
   main->add_action( this, "Shadow Word: Death",
                     "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
@@ -2353,4 +2381,16 @@ void priest_t::trigger_psychic_link( action_state_t* s )
     }
   }
 }
+
+bool priest_t::hungering_void_active( player_t* target ) const
+{
+  if ( !talents.hungering_void->ok() )
+    return false;
+  const priest_td_t* td = find_target_data( target );
+  if ( !td )
+    return false;
+
+  return td->buffs.hungering_void->check();
+}
+
 }  // namespace priestspace
