@@ -280,7 +280,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
     priest().trigger_eternal_call_to_the_void( s );
 
-    trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
+    trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear, s );
   }
 };
 
@@ -360,7 +360,7 @@ struct mind_flay_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
-    trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
+    trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
     trigger_mind_flay_dissonant_echoes();
   }
 
