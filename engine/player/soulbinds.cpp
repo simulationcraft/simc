@@ -867,11 +867,19 @@ void gnashing_chompers( special_effect_t& effect )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
-  range::for_each( effect.player->sim->actor_list, [buff]( player_t* p ) {
+  range::for_each( effect.player->sim->actor_list, [ buff ]( player_t* p ) {
     if ( !p->is_enemy() )
       return;
 
-    p->callbacks_on_demise.emplace_back( [buff]( player_t* ) { buff->trigger(); } );
+    p->callbacks_on_demise.emplace_back( [ buff ]( player_t* ) {
+      if ( buff->sim->event_mgr.canceled )
+        return;
+
+      if ( buff->sim->single_actor_batch && buff->sim->current_index != buff->player->actor_index )
+        return;
+
+      buff->trigger();
+    } );
   } );
 }
 
