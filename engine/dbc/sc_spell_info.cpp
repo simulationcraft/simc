@@ -341,6 +341,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
   { 265, "Periodic effect can crit"          },
+  { 292, "Fixed travel time"                 },
   { 354, "Scales with item level"            }
 } );
 
@@ -1382,7 +1383,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "GCD              : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
-    s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  {
+    if ( spell -> flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+      s << "Travel Time      : " << spell -> missile_speed() << " seconds"  << std::endl;
+    else
+      s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  }
 
   if ( spell -> duration() != timespan_t::zero() )
   {
