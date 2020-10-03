@@ -1139,17 +1139,17 @@ struct void_bolt_t final : public priest_spell_t
   void_bolt_extension_t* void_bolt_extension;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
   propagate_const<cooldown_t*> mindbender_cooldown;
-  timespan_t hungering_void_base_seconds;
-  timespan_t hungering_void_crit_seconds;
+  timespan_t hungering_void_base_duration;
+  timespan_t hungering_void_crit_duration;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       void_bolt_extension( nullptr ),
       shadowfiend_cooldown( player.get_cooldown( "mindbender" ) ),
       mindbender_cooldown( player.get_cooldown( "shadowfiend" ) ),
-      hungering_void_base_seconds(
+      hungering_void_base_duration(
           timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() ) ),
-      hungering_void_crit_seconds(
+      hungering_void_crit_duration(
           timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() ) )
   {
     parse_options( options_str );
@@ -1230,8 +1230,8 @@ struct void_bolt_t final : public priest_spell_t
       if ( td.buffs.hungering_void_tracking->up() )
       {
         timespan_t seconds_to_add_to_voidform = s->result == RESULT_CRIT
-                                                    ? hungering_void_base_seconds + hungering_void_crit_seconds
-                                                    : hungering_void_base_seconds;
+                                                    ? hungering_void_base_duration + hungering_void_crit_duration
+                                                    : hungering_void_base_duration;
         sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
         // TODO: add some type of tracking for this increase
         priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
@@ -1743,6 +1743,14 @@ struct voidform_t final : public priest_buff_t<buff_t>
     {
       priest().buffs.chorus_of_insanity->expire();
       priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
+    }
+
+    // It is expected that this tracking buff resets after each voidform, right now this is just universal and will
+    // count every subsequent void bolt after the first for the increase
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/703
+    if ( priest().talents.hungering_void->ok() && !priest().bugs )
+    {
+      priest().remove_hungering_void_tracking();
     }
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -2382,6 +2390,9 @@ void priest_t::trigger_psychic_link( action_state_t* s )
   }
 }
 
+// ==========================================================================
+// Check for the Hungering Void talent and find the debuff on that target
+// ==========================================================================
 bool priest_t::hungering_void_active( player_t* target ) const
 {
   if ( !talents.hungering_void->ok() )
@@ -2391,6 +2402,25 @@ bool priest_t::hungering_void_active( player_t* target ) const
     return false;
 
   return td->buffs.hungering_void->check();
+}
+
+// ==========================================================================
+// Helper function to expire all tracking debuffs after Voidform expires
+// ==========================================================================
+void priest_t::remove_hungering_void_tracking()
+{
+  if ( !talents.hungering_void->ok() )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.hungering_void_tracking->check() )
+    {
+      priest_td->buffs.hungering_void_tracking->expire();
+    }
+  }
 }
 
 }  // namespace priestspace

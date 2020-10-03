@@ -593,6 +593,7 @@ public:
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
   void remove_wrathful_faerie_fermata();
+  void remove_hungering_void_tracking();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
