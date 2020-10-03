@@ -814,7 +814,10 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
     warlock_pet_melee_t::execute();
 
     if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
+    {
       p()->dreadbite_executes++;
+      p()->o()->procs.carnivorous_stalkers->occur();
+    }
   }
 };
 

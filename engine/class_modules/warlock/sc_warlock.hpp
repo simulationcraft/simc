@@ -539,6 +539,8 @@ public:
     proc_t* dreadstalker_debug;
     proc_t* summon_random_demon;
     proc_t* portal_summon;
+    proc_t* carnivorous_stalkers; // SL - Conduit
+
     // destro
     proc_t* reverse_entropy;
   } procs;
