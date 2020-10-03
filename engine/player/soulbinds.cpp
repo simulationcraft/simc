@@ -214,16 +214,16 @@ void niyas_tools_poison( special_effect_t& effect )
 
 void niyas_tools_herbs( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.invigorating_herbs )
+  effect.custom_buff = buff_t::find( effect.player, "invigorating_herbs" );
+  if ( !effect.custom_buff )
   {
-    effect.player->buffs.invigorating_herbs = make_buff( effect.player, "invigorating_herbs", effect.trigger() )
+    effect.custom_buff = make_buff( effect.player, "invigorating_herbs", effect.trigger() )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->add_invalidate( CACHE_HASTE );
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
   // TODO: confirm proc flags
   effect.proc_flags2_ = PF2_CAST_HEAL;
-  effect.custom_buff  = effect.player->buffs.invigorating_herbs;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -265,21 +265,21 @@ void field_of_blossoms( special_effect_t& effect )
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
     return;
 
-  if ( !effect.player->buffs.field_of_blossoms )
+  auto buff = buff_t::find( effect.player, "field_of_blossoms" );
+  if ( !buff )
   {
     // The ICD of 60 seconds is enabled for some classes in the description of Field of Blossoms (id=319191)
     bool icd_enabled = extra_desc_lines_for_class( effect );
 
     effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: icd_enabled={}", icd_enabled );
 
-    effect.player->buffs.field_of_blossoms =
-        make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
-            ->set_cooldown( icd_enabled ? effect.player->find_spell( 342781 )->duration() : 0_ms )
-            ->set_default_value_from_effect_type( A_HASTE_ALL )
-            ->add_invalidate( CACHE_HASTE );
+    buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+      ->set_cooldown( icd_enabled ? effect.player->find_spell( 342781 )->duration() : 0_ms )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.field_of_blossoms );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void social_butterfly( special_effect_t& effect )
@@ -294,7 +294,7 @@ void social_butterfly( special_effect_t& effect )
       : buff_t( p, "social_butterfly", p->find_spell( 320130 ) ), ally_buff_dur( p->find_spell( 320212 )->duration() )
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
-      add_invalidate( CACHE_VERSATILITY );
+      set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
 
     void expire_override( int s, timespan_t d ) override
@@ -305,10 +305,10 @@ void social_butterfly( special_effect_t& effect )
     }
   };
 
-  if ( !effect.player->buffs.social_butterfly )
-    effect.player->buffs.social_butterfly = make_buff<social_butterfly_buff_t>( effect.player );
-
-  effect.player->register_combat_begin( []( player_t* p ) { p->buffs.social_butterfly->trigger(); } );
+  auto buff = buff_t::find( effect.player, "social_butterfly" );
+  if ( !buff )
+    buff = make_buff<social_butterfly_buff_t>( effect.player );
+  effect.player->register_combat_begin( [ buff ]( player_t* p ) { buff->trigger(); } );
 }
 
 void first_strike( special_effect_t& effect )
@@ -335,14 +335,13 @@ void first_strike( special_effect_t& effect )
     }
   };
 
-  if ( !effect.player->buffs.first_strike )
+  effect.custom_buff = buff_t::find( effect.player, "first_strike" );
+  if ( !effect.custom_buff )
   {
-    effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
+    effect.custom_buff = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-      ->add_invalidate( CACHE_CRIT_CHANCE );
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
-
-  effect.custom_buff = effect.player->buffs.first_strike;
 
   new first_strike_cb_t( effect );
 }
@@ -402,11 +401,21 @@ void dauntless_duelist( special_effect_t& effect )
 
 void thrill_seeker( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.euphoria )
+  auto buff = buff_t::find( effect.player, "euphoria" );
+  if ( !buff )
   {
-    effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
+    buff = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->add_invalidate( CACHE_HASTE );
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+    effect.player->buffs.thrill_seeker->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
+    {
+      if ( b->at_max_stacks() )
+      {
+        buff->trigger();
+        b->expire();
+      }
+    } );
   }
 
   auto eff_data = &effect.driver()->effectN( 1 );
@@ -437,7 +446,8 @@ void soothing_shade( special_effect_t& effect )
 
 void wasteland_propriety( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.wasteland_propriety )
+  auto buff = buff_t::find( effect.player, "wasteland_propriety" );
+  if ( !buff )
   {
     // The duration modifier for each class comes from the description variables of Wasteland Propriety (id=319983)
     double duration_mod = class_value_from_desc_vars( effect, "mod" );
@@ -447,35 +457,34 @@ void wasteland_propriety( special_effect_t& effect )
 
     effect.player->sim->print_debug( "class-specific properties for wasteland_propriety: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
 
-    effect.player->buffs.wasteland_propriety =
-        make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
-            ->set_cooldown( icd_enabled ? effect.player->find_spell( 333221 )->duration() : 0_ms )
-            ->set_duration_multiplier( duration_mod )
-            ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-            ->add_invalidate( CACHE_VERSATILITY );
+    buff = make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
+      ->set_cooldown( icd_enabled ? effect.player->find_spell( 333221 )->duration() : 0_ms )
+      ->set_duration_multiplier( duration_mod )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
   }
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.wasteland_propriety );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void built_for_war( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.built_for_war )
+  auto buff = buff_t::find( effect.player, "built_for_war" );
+  if ( !buff )
   {
-    effect.player->buffs.built_for_war =
-        make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
-            ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-            ->add_invalidate( CACHE_STRENGTH )
-            ->add_invalidate( CACHE_AGILITY )
-            ->add_invalidate( CACHE_INTELLECT );
+    buff = make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
+      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
   }
 
   auto eff_data = &effect.driver()->effectN( 1 );
 
-  effect.player->register_combat_begin( [eff_data]( player_t* p ) {
-    make_repeating_event( *p->sim, eff_data->period(), [p, eff_data]() {
+  effect.player->register_combat_begin( [ eff_data, buff ]( player_t* p ) {
+    make_repeating_event( *p->sim, eff_data->period(), [ p, eff_data, buff ]() {
       if ( p->health_percentage() > eff_data->base_value() )
-        p->buffs.built_for_war->trigger();
+        buff->trigger();
     } );
   } );
 
@@ -484,17 +493,17 @@ void built_for_war( special_effect_t& effect )
 
 void superior_tactics( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.superior_tactics )
-  {
-    effect.player->buffs.superior_tactics = make_buff( effect.player, "superior_tactics", effect.trigger() )
-      ->set_cooldown( effect.trigger()->effectN( 2 ).trigger()->duration() )
-      ->set_default_value_from_effect( A_MOD_ALL_CRIT_CHANCE )
-      ->add_invalidate( CACHE_CRIT_CHANCE );
-  }
-
   // TODO: implement proc'ing from dispels
   effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
-  effect.custom_buff = effect.player->buffs.superior_tactics;
+
+  effect.custom_buff = buff_t::find( effect.player, "superior_tactics" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff( effect.player, "superior_tactics", effect.trigger() )
+      ->set_cooldown( effect.trigger()->effectN( 2 ).trigger()->duration() )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -523,17 +532,16 @@ void let_go_of_the_past( special_effect_t& effect )
     }
   };
 
-  if ( !effect.player->buffs.let_go_of_the_past )
-  {
-    effect.player->buffs.let_go_of_the_past =
-        make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
-            ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-            ->add_invalidate( CACHE_VERSATILITY );
-  }
-
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.custom_buff = effect.player->buffs.let_go_of_the_past;
+
+  effect.custom_buff = buff_t::find( effect.player, "let_go_of_the_past" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+  }
 
   new let_go_of_the_past_cb_t( effect );
 }
@@ -552,7 +560,7 @@ void combat_meditation( special_effect_t& effect )
     {
       set_cooldown( data().effectN( 3 ).trigger()->duration() );
       set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-      add_invalidate( CACHE_MASTERY );
+      set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
       ext_dur =
@@ -566,27 +574,27 @@ void combat_meditation( special_effect_t& effect )
     }
   };
 
-  if ( !effect.player->buffs.combat_meditation )
-    effect.player->buffs.combat_meditation = make_buff<combat_meditation_buff_t>( effect.player );
-
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.combat_meditation );
+  auto buff = buff_t::find( effect.player, "combat_meditation" );
+  if ( !buff )
+    buff = make_buff<combat_meditation_buff_t>( effect.player );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void pointed_courage( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.pointed_courage )
+  auto buff = buff_t::find( effect.player, "pointed_courage" );
+  if ( !buff )
   {
-    effect.player->buffs.pointed_courage =
-        make_buff( effect.player, "pointed_courage", effect.player->find_spell( 330511 ) )
-            ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-            ->add_invalidate( CACHE_CRIT_CHANCE )
-            // TODO: add better handling of allies/enemies nearby mechanic which is checked every tick. tick is disabled
-            // for now
-            ->set_period( 0_ms );
+    buff = make_buff( effect.player, "pointed_courage", effect.player->find_spell( 330511 ) )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      // TODO: add better handling of allies/enemies nearby mechanic which is checked every tick. tick is disabled
+      // for now
+      ->set_period( 0_ms );
   }
 
-  effect.player->register_combat_begin( []( player_t* p ) {
-    p->buffs.pointed_courage->trigger( p->sim->shadowlands_opts.pointed_courage_nearby );
+  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
+    buff->trigger( p->sim->shadowlands_opts.pointed_courage_nearby );
   } );
 }
 
@@ -614,15 +622,13 @@ void hammer_of_genesis( special_effect_t& effect )
     }
   };
 
-  if ( !effect.player->buffs.hammer_of_genesis )
+  effect.custom_buff = buff_t::find( effect.player, "hammer_of_genesis" );
+  if ( !effect.custom_buff )
   {
-    effect.player->buffs.hammer_of_genesis =
-        make_buff( effect.player, "hammer_of_genesis", effect.player->find_spell( 333943 ) )
-            ->set_default_value_from_effect_type( A_HASTE_ALL )
-            ->add_invalidate( CACHE_HASTE );
+    effect.custom_buff = make_buff( effect.player, "hammer_of_genesis", effect.player->find_spell( 333943 ) )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
-
-  effect.custom_buff = effect.player->buffs.hammer_of_genesis;
 
   new hammer_of_genesis_cb_t( effect );
 }
@@ -851,12 +857,12 @@ void plagueys_preemptive_strike( special_effect_t& effect )
 
 void gnashing_chompers( special_effect_t& effect )
 {
-  auto buff = effect.player->buffs.gnashing_chompers;
+  auto buff = buff_t::find( effect.player, "gnashing_chompers" );
   if ( !buff )
   {
     buff = make_buff( effect.player, "gnashing_chompers", effect.player->find_spell( 324242 ) )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->add_invalidate( CACHE_HASTE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       ->set_period( 0_ms )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -871,26 +877,26 @@ void gnashing_chompers( special_effect_t& effect )
 
 void lead_by_example( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.lead_by_example )
+  auto buff = buff_t::find( effect.player, "lead_by_example" );
+  if ( !buff )
   {
-    auto s_data     = effect.player->find_spell( 342181 );
+    auto s_data = effect.player->find_spell( 342181 );
     double duration = effect.driver()->effectN( 3 ).base_value();
 
     // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
     duration *= class_value_from_desc_vars( effect, "mod" );
 
     // TODO: does 'up to X%' include the base value or refers only to extra per ally?
-    effect.player->buffs.lead_by_example =
-        make_buff( effect.player, "lead_by_example", s_data )
-            ->set_default_value_from_effect( 2 )
-            ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
-            ->set_duration( timespan_t::from_seconds( duration ) )
-            ->add_invalidate( CACHE_STRENGTH )
-            ->add_invalidate( CACHE_AGILITY )
-            ->add_invalidate( CACHE_INTELLECT );
+    buff = make_buff( effect.player, "lead_by_example", s_data )
+      ->set_default_value_from_effect( 2 )
+      ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
+      ->set_duration( timespan_t::from_seconds( duration ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
   }
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.lead_by_example );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void serrated_spaulders( special_effect_t& effect )
@@ -900,16 +906,22 @@ void serrated_spaulders( special_effect_t& effect )
 
 void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.marrowed_gemstone_enhancement )
+  auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
+  if ( !buff )
   {
-    effect.player->buffs.marrowed_gemstone_enhancement =
-        make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
-            ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-            ->add_invalidate( CACHE_CRIT_CHANCE );
+    buff = make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
-    effect.player->buffs.marrowed_gemstone_enhancement->set_cooldown(
-        effect.player->buffs.marrowed_gemstone_enhancement->buff_duration() +
-        effect.player->find_spell( 327073 )->duration() );
+    buff->set_cooldown( buff->buff_duration() + effect.player->find_spell( 327073 )->duration() );
+    effect.player->buffs.marrowed_gemstone_charging->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
+    {
+      if ( b->at_max_stacks() )
+      {
+        buff->trigger();
+        b->expire();
+      }
+    } );
   }
 
   effect.proc_flags2_ = PF2_CRIT;

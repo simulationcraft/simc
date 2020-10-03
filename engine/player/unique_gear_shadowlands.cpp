@@ -245,17 +245,15 @@ namespace enchants
 {
 void celestial_guidance( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.celestial_guidance )
+  effect.custom_buff = buff_t::find( effect.player, "celestial_guidance" );
+  if ( !effect.custom_buff )
   {
-    effect.player->buffs.celestial_guidance =
-        make_buff<SL_buff_t>( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
-            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-            ->add_invalidate( CACHE_AGILITY )
-            ->add_invalidate( CACHE_INTELLECT )
-            ->add_invalidate( CACHE_STRENGTH );
+    effect.custom_buff = make_buff<SL_buff_t>( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
   }
-
-  effect.custom_buff = effect.player->buffs.celestial_guidance;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
