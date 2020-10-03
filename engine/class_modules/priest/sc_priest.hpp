@@ -251,6 +251,7 @@ public:
   struct
   {
     const spell_data_t* priest;  // General priest data
+    const spell_data_t* mind_sear;
 
     // Discipline
     const spell_data_t* discipline;  // General discipline data
@@ -279,6 +280,7 @@ public:
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
     const spell_data_t* dark_thoughts;
+    const spell_data_t* mind_flay;
   } specs;
 
   // DoT Spells
@@ -1305,12 +1307,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
-  unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      affected_by_shadow_weaving( false ),
-      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1445,7 +1444,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     // Currently Mind-Sear has half the proc rate of Mind Flay
     // https://github.com/WarcraftPriests/sl-shadow-priest/issues/101
-    if ( priest().bugs && action_id == mind_sear_id )
+    if ( priest().bugs && action_id == priest().specs.mind_sear->effectN( 1 ).trigger()->id() )
     {
       dark_thoughts_proc_percent /= 2;
     }

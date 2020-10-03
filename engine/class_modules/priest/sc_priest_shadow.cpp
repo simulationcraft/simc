@@ -26,8 +26,6 @@ private:
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
-  const spell_data_t* mind_flay_spell;
-  const spell_data_t* mind_sear_spell;
   bool only_cwc;
   cooldown_t* dark_thought_dummy_cooldown;
   cooldown_t* action_cooldown;
@@ -46,8 +44,6 @@ public:
                                    .trigger()
                                    ->effectN( 1 )
                                    .resource( RESOURCE_INSANITY ) ),
-      mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
-      mind_sear_spell( player.find_class_spell( "Mind Sear" ) ),
       only_cwc( false ),
       dark_thought_dummy_cooldown( player.get_cooldown( "dark_thought_dummy_cooldown" ) ),
       action_cooldown( player.get_cooldown( "mind_blast" ) )
@@ -110,8 +106,8 @@ public:
         return false;
       if ( player->channeling == nullptr )
         return false;
-      if ( player->channeling->data().id() == mind_flay_spell->id() ||
-           player->channeling->data().id() == mind_sear_spell->id() )
+      if ( player->channeling->data().id() == priest().specs.mind_flay->id() ||
+           player->channeling->data().id() == priest().specs.mind_sear->id() )
         return priest_spell_t::ready();
       return false;
     }
@@ -1597,12 +1593,10 @@ struct shadow_crash_t final : public priest_spell_t
 struct searing_nightmare_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
-  const spell_data_t* mind_sear_spell;
 
   searing_nightmare_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "searing_nightmare", p, p.find_talent_spell( "Searing Nightmare" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
-      mind_sear_spell( p.find_class_spell( "Mind Sear" ) )
+      child_swp( new shadow_word_pain_t( priest(), false ) )
   {
     parse_options( options_str );
     child_swp->background = true;
@@ -1616,7 +1610,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( player->channeling == nullptr || player->channeling->data().id() != mind_sear_spell->id() )
+    if ( player->channeling == nullptr || player->channeling->data().id() != priest().specs.mind_sear->id() )
       return false;
     return priest_spell_t::ready();
   }
