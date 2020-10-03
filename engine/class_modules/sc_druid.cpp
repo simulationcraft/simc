@@ -951,20 +951,20 @@ public:
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_block() const override { return 0; }
   double composite_crit_avoidance() const override;
-  double composite_dodge() const override;
+  //double composite_dodge() const override;
   double composite_dodge_rating() const override;
-  double composite_damage_versatility_rating() const override;
-  double composite_heal_versatility_rating() const override;
-  double composite_mitigation_versatility_rating() const override;
+  //double composite_damage_versatility_rating() const override;
+  //double composite_heal_versatility_rating() const override;
+  //double composite_mitigation_versatility_rating() const override;
   double composite_leech() const override;
   double composite_melee_crit_chance() const override;
-  double composite_melee_haste() const override;
+  //double composite_melee_haste() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double composite_parry() const override { return 0; }
-  double composite_player_multiplier( school_e school ) const override;
-  double composite_rating_multiplier( rating_e ) const override;
+  //double composite_player_multiplier( school_e school ) const override;
+  //double composite_rating_multiplier( rating_e ) const override;
   double composite_spell_crit_chance() const override;
-  double composite_spell_haste() const override;
+  //double composite_spell_haste() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
   double temporary_movement_modifier() const override;
@@ -1520,7 +1520,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     set_cooldown( 0_ms );
     set_default_value_from_effect_type( A_HASTE_ALL );
     modify_duration( p.conduit.precise_alignment.time_value() );
-    add_invalidate( CACHE_HASTE );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
     if ( inc )
     {
@@ -1719,7 +1719,11 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     set_cooldown( 0_ms );
 
     if ( p.conduit.unchecked_aggression->ok() )
-      add_invalidate( CACHE_HASTE );
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      apply_affecting_conduit( p.conduit.unchecked_aggression );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
 
     if ( p.legendary.legacy_of_the_sleeper->ok() )
       add_invalidate( CACHE_LEECH );
@@ -8459,7 +8463,7 @@ void druid_t::create_buffs()
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->add_invalidate( CACHE_HASTE );
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
     ->set_cooldown( 0_ms )
@@ -8629,8 +8633,8 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_period( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->add_invalidate( CACHE_HASTE )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
@@ -9520,23 +9524,23 @@ double druid_t::passive_movement_modifier() const
 }
 
 // druid_t::composite_player_multiplier =====================================
-
+/*
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
   return m;
 }
-
+*/
 // druid_t::composite_rating_multiplier ====================================
-
+/*
 double druid_t::composite_rating_multiplier( rating_e rating ) const
 {
   double rm = player_t::composite_rating_multiplier( rating );
 
   return rm;
 }
-
+*/
 // druid_t::composite_melee_expertise( weapon_t* ) ==========================
 
 double druid_t::composite_melee_expertise( const weapon_t* ) const
@@ -9572,45 +9576,23 @@ double druid_t::composite_spell_crit_chance() const
 }
 
 // druid_t::composite_spell_haste ===========================================
-
+/*
 double druid_t::composite_spell_haste() const
 {
   double sh = player_t::composite_spell_haste();
 
-  sh *= 1.0 / ( 1.0 + buff.starlord->stack_value() );
-
-  sh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
-
-  sh *= 1.0 / ( 1.0 + buff.celestial_alignment->stack_value() );
-
-  sh *= 1.0 / ( 1.0 + buff.incarnation_moonkin->stack_value() );
-
-  if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    sh *= 1.0 / ( 1.0 + conduit.unchecked_aggression.percent() );
-
   return sh;
 }
-
+*/
 // druid_t::composite_meele_haste ===========================================
-
+/*
 double druid_t::composite_melee_haste() const
 {
   double mh = player_t::composite_melee_haste();
 
-  mh *= 1.0 / ( 1.0 + buff.starlord->stack_value() );
-
-  mh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
-
-  mh *= 1.0 / ( 1.0 + buff.celestial_alignment->stack_value() );
-
-  mh *= 1.0 / ( 1.0 + buff.incarnation_moonkin->stack_value() );
-
-  if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    mh *= 1.0 / ( 1.0 + conduit.unchecked_aggression.percent() );
-
   return mh;
 }
-
+*/
 // druid_t::composite_spell_power ===========================================
 
 double druid_t::composite_spell_power( school_e school ) const
@@ -9718,14 +9700,14 @@ double druid_t::composite_crit_avoidance() const
 }
 
 // druid_t::composite_dodge =================================================
-
+/*
 double druid_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
   return d;
 }
-
+*/
 // druid_t::composite_dodge_rating ==========================================
 
 double druid_t::composite_dodge_rating() const
@@ -9740,32 +9722,32 @@ double druid_t::composite_dodge_rating() const
 }
 
 // druid_t::composite_damage_versatility_rating ==========================================
-
+/*
 double druid_t::composite_damage_versatility_rating() const
 {
   double cdvr = player_t::composite_damage_versatility_rating();
 
   return cdvr;
 }
-
+*/
 // druid_t::composite_heal_versatility_rating ==========================================
-
+/*
 double druid_t::composite_heal_versatility_rating() const
 {
   double chvr = player_t::composite_heal_versatility_rating();
 
   return chvr;
 }
-
+*/
 // druid_t::composite_mitigation_versatility_rating ==========================================
-
+/*
 double druid_t::composite_mitigation_versatility_rating() const
 {
   double cmvr = player_t::composite_mitigation_versatility_rating();
 
   return cmvr;
 }
-
+*/
 // druid_t::composite_leech =================================================
 
 double druid_t::composite_leech() const
