@@ -7816,24 +7816,6 @@ void druid_t::activate()
         }
       } );
     } );
-
-    register_on_demise_callback( this, [this]( player_t* target ) -> void {
-      if ( sim->active_player->specialization() != DRUID_FERAL )
-        return;
-
-      if ( get_target_data( target )->dots.thrash_cat->is_ticking() ||
-           get_target_data( target )->dots.rip->is_ticking() ||
-           get_target_data( target )->dots.rake->is_ticking() )
-      {
-        auto p = ( (druid_t*)sim->active_player );
-
-        if ( !p->cooldown.tigers_fury->down() )
-          p->proc.predator_wasted->occur();
-
-        p->cooldown.tigers_fury->reset( true );
-        p->proc.predator->occur();
-      }
-    } );
   }
 
    player_t::activate();
