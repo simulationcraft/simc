@@ -479,6 +479,7 @@ public:
     propagate_const<buff_t*> balespiders_burning_core;
     propagate_const<buff_t*> malefic_wrath;
     propagate_const<buff_t*> wrath_of_consumption;
+    propagate_const<buff_t*> implosive_potential;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?

@@ -484,6 +484,9 @@ struct implosion_t : public demonology_spell_t
     // BFA - Azerite
     if ( p()->azerite.explosive_potential.ok() && imps_consumed >= 3 )
       p()->buffs.explosive_potential->trigger();
+
+    if ( p()->legendary.implosive_potential.ok() && imps_consumed >= p()->legendary.implosive_potential->effectN( 1 ).base_value() )
+      p()->buffs.implosive_potential->trigger( imps_consumed );
   }
 };
 
@@ -1074,6 +1077,12 @@ void warlock_t::create_buffs_demonology()
       make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.balespiders_burning_core )
           ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+
+  //TODO: SL Beta - check max stacks, refresh behavior, etc
+  buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
+          ->set_max_stack( 40 ); //Using the other wild imp simc max for now
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
