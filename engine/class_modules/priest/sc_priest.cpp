@@ -1179,9 +1179,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.hungering_void_tracking = make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )
-                                      ->set_quiet( true )
-                                      ->set_duration( timespan_t::from_seconds( 99 ) );
+  buffs.hungering_void_tracking =
+      make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )->set_quiet( true )->set_duration( 0_ms );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
