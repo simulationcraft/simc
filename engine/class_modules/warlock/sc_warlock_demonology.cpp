@@ -247,7 +247,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   timespan_t travel_time() const override
   {
-    return 1_ms; //Should be ostensibly be instant, but we need to enforce that impact() happens after consume_resource()
+    return 0_ms;
   }
 
   bool ready() override
@@ -261,6 +261,8 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
+    impact_spell->shards_used = cost();
+
     demonology_spell_t::execute();
 
     if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
@@ -271,11 +273,8 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     demonology_spell_t::consume_resource();
 
-    int spent = as<int>(last_resource_cost);
-    impact_spell->shards_used = spent;
-
     // BFA - Azerite
-    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * spent ) )
+    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * as<int>(last_resource_cost)) )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
 
     if ( last_resource_cost == 1.0 )
