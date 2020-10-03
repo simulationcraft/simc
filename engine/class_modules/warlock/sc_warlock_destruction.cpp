@@ -692,6 +692,17 @@ struct chaos_bolt_t : public destruction_spell_t
 
     return state->result_total;
   }
+
+  void consume_resource() override
+  {
+    destruction_spell_t::consume_resource();
+
+    if ( p()->legendary.mark_of_borrowed_power->ok() )
+    {
+      double chance = p()->legendary.mark_of_borrowed_power->effectN( 3 ).percent();
+      make_event<borrowed_power_event_t>( *p()->sim, p(), as<int>( last_resource_cost ), chance );
+    }
+  }
 };
 
 struct infernal_awakening_t : public destruction_spell_t

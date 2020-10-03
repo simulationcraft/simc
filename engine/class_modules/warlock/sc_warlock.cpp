@@ -749,6 +749,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
@@ -774,6 +775,7 @@ void warlock_t::init_procs()
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
 
