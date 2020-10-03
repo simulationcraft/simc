@@ -174,7 +174,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   timespan_t travel_time() const override
   {
-    return timespan_t::from_millis( 700 );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 
   bool ready() override
