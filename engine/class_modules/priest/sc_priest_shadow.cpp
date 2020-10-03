@@ -2222,7 +2222,7 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
   cds->add_action( this, covenant.mindgames, "Mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
-  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
+  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>20" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
                    "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
