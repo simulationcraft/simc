@@ -152,18 +152,18 @@ jobs:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
-  ubuntu-clang-10-simc-tests:
-    name: ${{ matrix.test }}-${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
+  simc-tests:
+    name: ${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-10-build ]
 
     strategy:
       fail-fast: false
       matrix:
-        test: [ talents ]
         tier: [ Tier25 ]
         class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
         fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
+
 
     steps:
       - uses: actions/cache@v2
@@ -188,7 +188,7 @@ jobs:
           SIMC_ITERATIONS: 2
         run: |
           cd tests
-          bats --tap ${{ matrix.test }}.bats
+          bats --tap talents.bats covenants.bats
 
   build-docker:
     name: docker
