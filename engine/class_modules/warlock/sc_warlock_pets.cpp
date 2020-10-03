@@ -802,6 +802,25 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   }
 };
 
+// SL - Soulbind conduit (Carnivorous Stalkers) handling requires special version of melee attack
+struct dreadstalker_melee_t : warlock_pet_melee_t
+{
+  dreadstalker_melee_t(warlock_pet_t* p, double wm, const char* name = "melee") :
+    warlock_pet_melee_t (p, wm, name)
+  {  }
+
+  void execute() override
+  {
+    warlock_pet_melee_t::execute();
+
+    if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
+    {
+      p()->dreadbite_executes++;
+      p()->o()->procs.carnivorous_stalkers->occur();
+    }
+  }
+};
+
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
 {
   action_list_str        = "travel/dreadbite";
@@ -817,7 +836,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[ RESOURCE_ENERGY ]                  = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack                                       = new warlock_pet_melee_t( this, 0.83 );
+  melee_attack                                       = new dreadstalker_melee_t( this, 0.83 );
 }
 
 void dreadstalker_t::arise()
