@@ -836,7 +836,6 @@ public:
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
-  double composite_attribute_multiplier( attribute_e ) const override;
   double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
@@ -844,7 +843,6 @@ public:
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
-  double composite_spell_haste() const override;
   double matching_gear_multiplier( attribute_e ) const override;
   void update_movement( timespan_t ) override;
   void teleport( double, timespan_t ) override;
@@ -1210,7 +1208,7 @@ struct icy_veins_buff_t : public buff_t
   {
     set_default_value_from_effect( 1 );
     set_cooldown( 0_ms );
-    add_invalidate( CACHE_SPELL_HASTE );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     modify_duration( p->spec.icy_veins_2->effectN( 1 ).time_value() );
     modify_duration( p->talents.thermal_void->effectN( 2 ).time_value() );
   }
@@ -6431,7 +6429,7 @@ void mage_t::create_buffs()
                                  ->set_chance( talents.rule_of_threes->ok() );
   buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
                                  ->set_default_value_from_effect( 1 )
-                                 ->add_invalidate( CACHE_SPELL_HASTE );
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
 
   // Fire
@@ -6499,7 +6497,7 @@ void mage_t::create_buffs()
                              ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.focus_magic_int  = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
                              ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_INTELLECT );
+                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
@@ -6538,11 +6536,11 @@ void mage_t::create_buffs()
                            ->set_chance( runeforge.arcane_harmony.ok() );
   buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( 332934 ) )
                            ->set_default_value_from_effect( 1 )
-                           ->add_invalidate( CACHE_INTELLECT )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                            ->set_chance( runeforge.siphon_storm.ok() );
   buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 327355 ) )
                            ->set_default_value_from_effect( 1 )
-                           ->add_invalidate( CACHE_SPELL_HASTE )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_chance( runeforge.temporal_warp.ok() );
 
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 333049 ) )
@@ -6598,7 +6596,7 @@ void mage_t::create_buffs()
   buffs.flame_accretion  = make_buff( this, "flame_accretion", find_spell( 157644 ) )
                              ->set_default_value( conduits.flame_accretion.value() )
                              ->set_chance( conduits.flame_accretion.ok() )
-                             ->add_invalidate( CACHE_MASTERY );
+                             ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buffs.infernal_cascade = make_buff( this, "infernal_cascade", find_spell( 336832 ) )
                              ->set_default_value( conduits.infernal_cascade.percent() )
                              ->set_chance( conduits.infernal_cascade.ok() )
@@ -7259,24 +7257,10 @@ void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
   }
 }
 
-double mage_t::composite_attribute_multiplier( attribute_e attr ) const
-{
-  double m = player_t::composite_attribute_multiplier( attr );
-
-  if ( attr == ATTR_INTELLECT )
-  {
-    m *= 1.0 + buffs.focus_magic_int->check_stack_value();
-    m *= 1.0 + buffs.siphon_storm->check_stack_value();
-  }
-
-  return m;
-}
-
 double mage_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  m += buffs.flame_accretion->check_stack_value();
   m += state.from_the_ashes_mastery;
 
   return m;
@@ -7359,17 +7343,6 @@ double mage_t::composite_spell_crit_chance() const
   c += buffs.focus_magic_crit->check_value();
 
   return c;
-}
-
-double mage_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  h /= 1.0 + buffs.icy_veins->check_value();
-  h /= 1.0 + buffs.time_warp->check_value();
-  h /= 1.0 + buffs.temporal_warp->check_value();
-
-  return h;
 }
 
 double mage_t::matching_gear_multiplier( attribute_e attr ) const
