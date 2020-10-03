@@ -12873,7 +12873,7 @@ bool player_t::is_active() const
   {
     if ( is_enemy() || is_pet() )
     {
-      return is_sleeping();
+      return !is_sleeping();
     }
     else
     {
@@ -12882,7 +12882,7 @@ bool player_t::is_active() const
   }
   else
   {
-    return is_sleeping();
+    return !is_sleeping();
   }
 }
 
