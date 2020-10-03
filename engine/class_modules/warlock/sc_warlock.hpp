@@ -301,7 +301,7 @@ public:
     item_runeforge_t wrath_of_consumption;
     // Demonology
     item_runeforge_t balespiders_burning_core;
-    item_runeforge_t forces_of_horned_nightmare;
+    item_runeforge_t forces_of_the_horned_nightmare;
     item_runeforge_t grim_inquisitors_dread_calling;
     item_runeforge_t implosive_potential;
     // Destruction
@@ -543,6 +543,7 @@ public:
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // SL - Conduit
+    proc_t* horned_nightmare; // SL - Legendary
 
     // destro
     proc_t* reverse_entropy;

@@ -166,8 +166,9 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       demonology_spell_t::execute();
 
-      if ( p()->legendary.forces_of_horned_nightmare.ok() && rng().roll( p()->legendary.forces_of_horned_nightmare->effectN( 1 ).percent() ) )
+      if ( p()->legendary.forces_of_the_horned_nightmare.ok() && rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
       {
+        p()->procs.horned_nightmare->occur();
         execute(); //TOCHECK: can the proc spawn additional procs? currently implemented as YES
       }
     }
@@ -190,8 +191,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       double m = demonology_spell_t::action_multiplier();
 
       m *= shards_used;
-
-      p()->sim->print_log("shards_used: {}, multiplier: {}", shards_used, m);
 
       return m;
     }
@@ -250,7 +249,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
-    impact_spell->shards_used = cost();
+    impact_spell->shards_used = as<int>(cost());
 
     demonology_spell_t::execute();
 
@@ -1212,7 +1211,7 @@ void warlock_t::init_spells_demonology()
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
-  legendary.forces_of_horned_nightmare     = find_runeforge_legendary( "Forces of Horned Nighhtmare" );
+  legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
   legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
   legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
 

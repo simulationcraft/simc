@@ -775,6 +775,7 @@ void warlock_t::init_procs()
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+  procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
