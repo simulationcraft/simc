@@ -76,12 +76,6 @@ public:
     {
       m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
     }
-    else if (td->debuffs_from_the_shadows->check() && data().id() == 105174)
-    {
-      //Hand of Gul'dan spell data is structured weirdly, so 105174 doesn't contain the affecting spells info (see 86040 for that information)
-      //Hardcoding checks for ID 105174 HoG to automatically go through for now
-      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
-    }
 
     return m;
   }
@@ -143,38 +137,105 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
   };
 
-  int shards_used;
-  umbral_blaze_t* blaze;  // BFA - Azerite
-  const spell_data_t* summon_spell;
-  double borne_of_blood_chance;
+  struct hog_impact_t : public demonology_spell_t
+  {
+    int shards_used;
+    umbral_blaze_t* blaze; // BFA - Azerite
+    const spell_data_t* summon_spell;
+    timespan_t meteor_time;
+
+    hog_impact_t( warlock_t* p, util::string_view options_str )
+      : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->find_spell( 86040 ) ),
+        shards_used( 0 ),
+        blaze( new umbral_blaze_t( p ) ),
+        summon_spell( p->find_spell( 104317 ) ),
+        meteor_time( 700_ms )
+    {
+      parse_options(options_str);
+      aoe = -1;
+      dual = 1;
+
+      parse_effect_data( s_data->effectN( 1 ) );
+
+      // BFA - Azerite
+      if ( p->azerite.umbral_blaze.ok() )
+        add_child( blaze );
+    }
+
+    void execute() override
+    {
+      demonology_spell_t::execute();
+
+      if ( p()->legendary.forces_of_the_horned_nightmare.ok() && rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
+      {
+        p()->procs.horned_nightmare->occur();
+        execute(); //TOCHECK: can the proc spawn additional procs? currently implemented as YES
+      }
+    }
+
+    timespan_t travel_time() const override
+    {
+      return meteor_time;
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double da = demonology_spell_t::bonus_da( s );
+      // BFA - Azerite
+      da += p()->azerite.demonic_meteor.value();
+      return da;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = demonology_spell_t::action_multiplier();
+
+      m *= shards_used;
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demonology_spell_t::impact( s );
+
+      // Only trigger wild imps once for the original target impact.
+      // Still keep it in impact instead of execute because of travel delay.
+      if ( result_is_hit( s->result ) && s->target == target )
+      {
+        // BFA - Trinket
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
+
+        for ( int i = 1; i <= shards_used; i++ )
+        {
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0 * i, 50.0 ), 400.0 * i );
+          this->p()->wild_imp_spawns.push_back( ev );
+        }
+
+        // BFA - Azerite
+        if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
+        {
+          blaze->set_target( target );
+          blaze->execute();
+        }
+      }
+    }
+  };
+
+  hog_impact_t* impact_spell;
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
     : demonology_spell_t( p, "Hand of Gul'dan" ),
-      shards_used( 0 ),
-      blaze( new umbral_blaze_t( p ) ),
-      summon_spell( p->find_spell( 104317 ) ),
-      borne_of_blood_chance( 0 )
+      impact_spell( new hog_impact_t( p, options_str ) )
   {
     parse_options( options_str );
-    aoe = -1;
-    // BFA - Azerite
-    if ( p->azerite.umbral_blaze.ok() )
-    {
-      add_child( blaze );
-    }
-    parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
 
-    //HoG parent spell (105174) is missing affecting spells info (see 86040), so we have to manually apply spec aura.
-    //TODO - potentially rebuild HoG to find a way around this issue, as it also affects From the Shadows
-    base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
-
-    if ( p->conduit.borne_of_blood->ok() )
-      borne_of_blood_chance = p->conduit.borne_of_blood.percent();
+    impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
   }
 
   timespan_t travel_time() const override
   {
-    return timespan_t::from_millis( 700 );
+    return 0_ms;
   }
 
   bool ready() override
@@ -188,37 +249,20 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
+    impact_spell->shards_used = as<int>(cost());
+
     demonology_spell_t::execute();
 
-    if ( p()->conduit.borne_of_blood->ok() && rng().roll( borne_of_blood_chance ) )
+    if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
       p()->buffs.demonic_core->trigger();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = demonology_spell_t::bonus_da( s );
-    // BFA - Azerite
-    da += p()->azerite.demonic_meteor.value();
-    return da;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = demonology_spell_t::action_multiplier();
-
-    m *= cost();
-
-    return m;
   }
 
   void consume_resource() override
   {
     demonology_spell_t::consume_resource();
 
-    shards_used = as<int>( last_resource_cost );
-
     // BFA - Azerite
-    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * shards_used ) )
+    if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * as<int>(last_resource_cost)) )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
 
     if ( last_resource_cost == 1.0 )
@@ -233,27 +277,9 @@ struct hand_of_guldan_t : public demonology_spell_t
   {
     demonology_spell_t::impact( s );
 
-    // BFA - Trinket
-    // Only trigger wild imps once for the original target impact.
-    // Still keep it in impact instead of execute because of travel delay.
-    if ( result_is_hit( s->result ) && s->target == target )
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
-
-      for ( int i = 1; i <= shards_used; i++ )
-      {
-        auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0 * i, 50.0 ), 400.0 * i );
-        this->p()->wild_imp_spawns.push_back( ev );
-      }
-
-      // BFA - Azerite
-      if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
-      {
-        blaze->set_target( target );
-        blaze->execute();
-      }
-    }
+    impact_spell->execute();
   }
+
 };
 
 struct demonbolt_t : public demonology_spell_t
@@ -1194,7 +1220,7 @@ void warlock_t::init_spells_demonology()
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
-  legendary.forces_of_horned_nightmare     = find_runeforge_legendary( "Forces of Horned Nighhtmare" );
+  legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
   legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
   legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
 
