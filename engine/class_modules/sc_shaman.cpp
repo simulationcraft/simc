@@ -62,6 +62,22 @@
 namespace
 {  // UNNAMED NAMESPACE
 
+struct echoing_shock_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+
+  echoing_shock_event_t( action_t* action_, player_t* target_, timespan_t delay_ )
+    : event_t( *action_->player, delay_ ), action( action_ ), target( target_ )
+  { }
+
+  const char* name() const override
+  { return "ehoing_shock_event_t"; }
+
+  // Defined below for ease
+  void execute() override;
+};
+
 /**
   Check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise,
   available_targets is called.  The following code is intended to generate a target list that
@@ -188,6 +204,12 @@ enum class elemental
   FIRE,
   EARTH,
   STORM,
+};
+
+enum class execute_type
+{
+  NORMAL,
+  ECHOING_SHOCK
 };
 
 enum imbue_e
@@ -945,8 +967,6 @@ public:
 
   bool affected_by_molten_weapon;
 
-  // Generic procs
-
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1451,9 +1471,19 @@ public:
   bool affected_by_master_of_the_elements = false;
   bool affected_by_stormkeeper            = false;
 
+  // Echoing shock stuff
+  bool may_proc_echoing_shock;
+  stats_t* echoing_shock_stats;
+
+  // General things
+  execute_type exec_type;
+
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
-    : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr )
+    : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ),
+      may_proc_echoing_shock( false ),
+      echoing_shock_stats( nullptr ),
+      exec_type( execute_type::NORMAL )
   {
     parse_options( options );
 
@@ -1473,6 +1503,23 @@ public:
     }
 
     may_proc_stormbringer = false;
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    may_proc_echoing_shock = !background && p()->talent.echoing_shock->ok() &&
+      id != p()->talent.echoing_shock->id() && ( base_dd_min || spell_power_mod.direct );
+
+    if ( may_proc_echoing_shock )
+    {
+      if ( auto echoing_shock = p()->find_action( "echoing_shock" ) )
+      {
+        echoing_shock_stats = p()->get_stats( this->name_str + "_echo", this );
+        echoing_shock->stats->add_child( echoing_shock_stats );
+      }
+    }
   }
 
   void init_finished() override
@@ -1520,6 +1567,7 @@ public:
     }
 
     p()->trigger_vesper_totem( execute_state );
+    trigger_echoing_shock( execute_state->target );
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1553,6 +1601,9 @@ public:
   {
     return 0;
   }
+
+  bool is_echoed_spell() const
+  { return exec_type == execute_type::ECHOING_SHOCK; }
 
   void trigger_elemental_overload( const action_state_t* source_state ) const
   {
@@ -1628,6 +1679,34 @@ public:
                    p()->cache.mastery() * p()->mastery.enhanced_elements->effectN( 3 ).mastery_value();
 
     return base_chance;
+  }
+
+  void trigger_echoing_shock( player_t* target )
+  {
+    if ( !may_proc_echoing_shock )
+    {
+      return;
+    }
+
+    if ( !p()->buff.echoing_shock->up() )
+    {
+      return;
+    }
+
+    if ( exec_type == execute_type::ECHOING_SHOCK )
+    {
+      return;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} echoes {} (target={})", p()->name(), name(), target->name() );
+    }
+
+    make_event<echoing_shock_event_t>( *sim, this, target,
+        p()->talent.echoing_shock->effectN( 2 ).time_value() );
+
+    p()->buff.echoing_shock->decrement();
   }
 };
 
@@ -4204,7 +4283,8 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.primordial_wave->expire();
     }
 
-    if ( p()->talent.master_of_the_elements->ok() )
+    // Echoed Lava Burst does not generate Master of the Eleemnts
+    if ( !is_echoed_spell() && p()->talent.master_of_the_elements->ok() )
     {
       p()->buff.master_of_the_elements->trigger();
     }
@@ -4724,7 +4804,8 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->talent.surge_of_power->ok() )
+    // Echoed Earth Shock does not generate Surge of Power stacks
+    if ( !is_echoed_spell() && p()->talent.surge_of_power->ok() )
     {
       p()->buff.surge_of_power->trigger();
     }
@@ -4879,7 +4960,11 @@ struct frost_shock_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
-    p()->buff.icefury->decrement();
+    // Echoed Frost Shock does not consume Icefury
+    if ( !is_echoed_spell() )
+    {
+      p()->buff.icefury->decrement();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6375,6 +6460,7 @@ void shaman_t::init_spells()
   // Elemental
   talent.earthen_rage         = find_talent_spell( "Earthen Rage" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
+  talent.echoing_shock        = find_talent_spell( "Echoing Shock" );
   // static discharge
 
   talent.aftershock = find_talent_spell( "Aftershock" );
@@ -6760,6 +6846,7 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
   event_t::cancel( current_event );
 }
 
+
 double shaman_t::composite_maelstrom_gain_coefficient( const action_state_t* /* state */ ) const
 {
   double m = 1.0;
@@ -6986,6 +7073,8 @@ void shaman_t::create_buffs()
                                }
                              } );
                            } );
+
+  buff.echoing_shock = make_buff( this, "echoing_shock", talent.echoing_shock );
 
   //
   // Enhancement
@@ -7778,6 +7867,37 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
     default:
       return s;
   }
+}
+
+// echoing_shock_event_t::execute ===========================================
+
+inline void echoing_shock_event_t::execute()
+{
+  auto spell = static_cast<shaman_spell_t*>( action );
+
+  if ( target->is_sleeping() )
+  {
+    return;
+  }
+
+  // Tweak echoed spell so that it looks like a background cast. During the execute,
+  // shaman_spell_t::is_echoed_spell() will return true.
+  auto orig_stats = spell->stats;
+  auto orig_target = spell->target;
+  auto orig_tte = spell->time_to_execute;
+
+  spell->background = true;
+  spell->stats = spell->echoing_shock_stats;
+  spell->time_to_execute = 0_s;
+  spell->exec_type = execute_type::ECHOING_SHOCK;
+  spell->set_target( target );
+  spell->execute();
+
+  spell->background = false;
+  spell->stats = orig_stats;
+  spell->exec_type = execute_type::NORMAL;
+  spell->time_to_execute = orig_tte;
+  spell->set_target( orig_target );
 }
 
 /* Report Extension Class
