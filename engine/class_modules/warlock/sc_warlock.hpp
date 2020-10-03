@@ -525,7 +525,7 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
-    proc_t* mark_of_borrowed_power; //TODO: Post-SL Launch - is there any advanced tracking we might want about shards gained etc
+    proc_t* mark_of_borrowed_power;
 
     // aff
     proc_t* nightfall;
