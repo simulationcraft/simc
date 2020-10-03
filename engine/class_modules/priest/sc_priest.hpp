@@ -1424,8 +1424,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return 0.0;
   }
 
-  void trigger_dark_thoughts( const player_t* target, proc_t* proc )
+  void trigger_dark_thoughts( const player_t* target, proc_t* proc, action_state_t* s )
   {
+    auto mind_sear_id = priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
+    auto action_id    = s->action->id;
+
     if ( !priest().specs.dark_thoughts->ok() )
       return;
     const priest_td_t* td = find_td( target );
@@ -1435,13 +1438,22 @@ struct priest_spell_t : public priest_action_t<spell_t>
     const dot_t* vt  = td->dots.vampiric_touch;
     const dot_t* dp  = td->dots.devouring_plague;
 
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
+    int dots                          = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+    double dark_thoughts_proc_percent = priest().specs.dark_thoughts->effectN( 1 ).percent();
+
+    // Currently Mind-Sear has half the proc rate of Mind Flay
+    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/101
+    if ( priest().bugs && action_id == mind_sear_id )
+    {
+      dark_thoughts_proc_percent /= 2;
+    }
+
+    if ( rng().roll( dark_thoughts_proc_percent * dots ) )
     {
       if ( sim->debug )
       {
         sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
-                          priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+                          dark_thoughts_proc_percent * dots, dots );
       }
       priest().buffs.dark_thoughts->trigger();
       proc->occur();
