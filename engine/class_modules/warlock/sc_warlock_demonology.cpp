@@ -76,12 +76,6 @@ public:
     {
       m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
     }
-    else if (td->debuffs_from_the_shadows->check() && data().id() == 105174)
-    {
-      //Hand of Gul'dan spell data is structured weirdly, so 105174 doesn't contain the affecting spells info (see 86040 for that information)
-      //Hardcoding checks for ID 105174 HoG to automatically go through for now
-      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
-    }
 
     return m;
   }
@@ -238,11 +232,6 @@ struct hand_of_guldan_t : public demonology_spell_t
     parse_options( options_str );
 
     impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
-    /*
-    //HoG parent spell (105174) is missing affecting spells info (see 86040), so we have to manually apply spec aura.
-    //TODO - potentially rebuild HoG to find a way around this issue, as it also affects From the Shadows
-    base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
-    */
   }
 
   timespan_t travel_time() const override
