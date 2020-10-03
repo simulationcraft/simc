@@ -17,6 +17,7 @@
 // - Healing from Consumption damage done
 // Frost:
 // - Revisit Hypothetic Presence once Blizzard fixes it
+// - Revisit Eradicating Blow, Deaths Due, Koltiras to verify 1H vs 2H behavior, especially with DD cleave
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -400,6 +401,7 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* razorice;
     // Unholy
     buff_t* festering_wound;
+    buff_t* unholy_blight;
 
     // Azerite Traits
     buff_t* deep_cuts;
@@ -472,9 +474,10 @@ public:
     // Unholy
     buff_t* dark_transformation;
     buff_t* runic_corruption;
-    buff_t* soul_reaper;
     buff_t* sudden_doom;
     buff_t* unholy_assault;
+    buff_t* unholy_pact;
+    buff_t* unholy_blight;
 
     // Azerite Traits
     buff_t* bloody_runeblade;
@@ -485,8 +488,7 @@ public:
     buff_t* icy_citadel_builder;
     buff_t* icy_citadel;
 
-    buff_t* festermight;
-    buff_t* helchains;
+    buff_t* festermight;   
 
     // Conduits
     buff_t* eradicating_blow;
@@ -587,7 +589,6 @@ public:
     // Unholy
     gain_t* apocalypse;
     gain_t* festering_wound;
-    gain_t* soul_reaper;
   } gains;
 
   // Specialization
@@ -720,7 +721,7 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* unholy_pact; // NYI
+    const spell_data_t* unholy_pact; // The ingame implementation is a mess with multiple unholy pact buffs on the player and multiple unholy pact damage spells. The simc version is simplified
     const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
@@ -782,7 +783,7 @@ public:
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* festering_wound_damage;
     const spell_data_t* runic_corruption;
-    const spell_data_t* soul_reaper;
+    const spell_data_t* soul_reaper_execute;
     const spell_data_t* virulent_eruption;
     const spell_data_t* virulent_plague;
 
@@ -849,6 +850,7 @@ public:
 
     proc_t* pp_runic_corruption; // from pestilent pustules
     proc_t* rp_runic_corruption; // from RP spent
+    proc_t* sr_runic_corruption; // from soul reaper
 
     proc_t* fw_festering_strike;
     proc_t* fw_infected_claws;
@@ -1107,12 +1109,16 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) ); // Effect not implemented
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                           -> set_default_value( p -> find_spell( 327092 ) -> effectN( 1 ).percent() );
+                           -> set_default_value_from_effect( 1 );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
-                           -> set_default_value( p -> find_spell( 327096 ) -> effectN( 1 ).percent() );
+                           -> set_default_value_from_effect( 1 );
 
   debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.biting_cold.percent() );
+
+  debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
+                           -> set_default_value_from_effect( 2 );
+
 }
 
 // ==========================================================================
@@ -1567,6 +1573,20 @@ struct death_knight_pet_t : public pet_t
     player_t::apply_affecting_auras( action );
 
     o()->apply_affecting_auras(action);
+  }
+
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
+  {
+    double m = pet_t::composite_player_target_multiplier( target, school );
+
+    const death_knight_td_t* td = o() -> get_target_data( target );
+    
+    if ( td -> debuff.unholy_blight -> check() )
+    {
+      m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
+    }    
+
+    return m;
   }
 };
 
@@ -3922,14 +3942,13 @@ struct dark_command_t: public death_knight_spell_t
 
 // Dark Transformation ======================================================
 
-struct helchains_damage_t : public death_knight_spell_t
+struct unholy_pact_damage_t : public death_knight_spell_t
 {
-  helchains_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "helchains", p, p -> find_spell( 290814 ) )
+  unholy_pact_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "unholy_pact", p, p -> find_spell( 319236 ) )
   {
     background = true;
 
-    base_dd_min = base_dd_max = p -> azerite.helchains.value( 1 );
     // TODO: the aoe is a line between the player and its pet, find a better way to translate that into # of targets hit
     // limited target threshold?
     // User inputted value?
@@ -3938,15 +3957,17 @@ struct helchains_damage_t : public death_knight_spell_t
   }
 };
 
-struct helchains_buff_t : public buff_t
+struct unholy_pact_buff_t : public buff_t
 {
-  helchains_damage_t* damage;
+  unholy_pact_damage_t* damage;
 
-  helchains_buff_t( death_knight_t* p ) :
-    buff_t( p, "helchains",
-            p -> azerite.helchains.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
-    damage( new helchains_damage_t( p ) )
+  unholy_pact_buff_t( death_knight_t* p ) :
+    buff_t( p, "unholy_pact", 
+      p -> talent.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
+    damage( new unholy_pact_damage_t( p ) )
   {
+    set_default_value( data().effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+    add_invalidate( CACHE_STRENGTH );
     tick_zero = true;
     buff_period = 1.0_s;
     set_tick_behavior( buff_tick_behavior::CLIP );
@@ -3956,17 +3977,12 @@ struct helchains_buff_t : public buff_t
     } );
   }
 
-  // Helchains ticks twice on buff application and buff expiration, hence the following overrides
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/390
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-    damage -> execute();
-  }
-
+  // Unholy pact ticks twice on buff expiration, hence the following override
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    damage -> execute();
+    damage -> schedule_execute();
+    damage -> schedule_execute();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -4003,9 +4019,9 @@ struct dark_transformation_t : public death_knight_spell_t
                                               p() -> pets.ghoul_pet -> dark_transformation_gain, this );
     }
 
-    if ( p() -> azerite.helchains.enabled() )
+    if ( p() -> talent.unholy_pact -> ok() )
     {
-      p() -> buffs.helchains -> trigger();
+      p() -> buffs.unholy_pact -> trigger();
     }
   }
 
@@ -6173,6 +6189,24 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   int n_targets() const override
   { return p() -> in_death_and_decay() ? as<int>( p() -> spec.scourge_strike -> effectN( 4 ).base_value() ) : 0; }
 
+  std::vector<player_t*>& target_list() const override // smart targeting to targets with wounds when cleaving SS 
+  {
+    std::vector<player_t*>& current_targets = death_knight_melee_attack_t::target_list();
+    if (current_targets.size() < 2 || !p() -> in_death_and_decay()) {
+      return current_targets;
+    }
+
+    // first target, the action target, needs to be left in place
+    std::sort( current_targets.begin() + 1, current_targets.end(),
+      [this]( player_t* a, player_t* b) {
+        int a_stacks = td( a ) -> debuff.festering_wound -> up() ? 1 : 0;
+        int b_stacks = td( b ) -> debuff.festering_wound -> up() ? 1 : 0;
+        return a_stacks > b_stacks; 
+      } );
+
+    return current_targets;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -6253,22 +6287,36 @@ struct scourge_strike_t : public scourge_strike_base_t
 
 // Soul Reaper ==============================================================
 
+struct soul_reaper_execute_t : public death_knight_spell_t
+{
+  soul_reaper_execute_t( death_knight_t* p ) :
+    death_knight_spell_t( "soul_reaper_execute", p, p -> spell.soul_reaper_execute )
+  {
+    background = true;
+  }
+};
+
 struct soul_reaper_t : public death_knight_spell_t
 {
+  soul_reaper_execute_t* soul_reaper_execute;
+
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper )
+    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    soul_reaper_execute( new soul_reaper_execute_t( p ) )
   {
     parse_options( options_str );
+    add_child( soul_reaper_execute );
 
-    tick_may_crit = tick_zero = true;
-    may_miss = may_crit = hasted_ticks = false;
+    hasted_ticks = false;
   }
 
-  void execute() override
+  void last_tick( dot_t* dot ) override
   {
-    death_knight_spell_t::execute();
-
-    p() -> replenish_rune( as<unsigned int>( p() -> talent.soul_reaper -> effectN( 2 ).base_value() ), p() -> gains.soul_reaper );
+    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
+    {
+      soul_reaper_execute -> set_target ( dot -> target );
+      soul_reaper_execute -> execute();
+    }    
   }
 };
 
@@ -6328,6 +6376,33 @@ struct unholy_blight_dot_t : public death_knight_spell_t
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
+    aoe = -1;
+  }
+
+  void impact(action_state_t* state) override
+  {
+    death_knight_spell_t::impact( state );
+
+    td( state->target ) -> debuff.unholy_blight -> trigger();
+  }
+};
+
+struct unholy_blight_buff_t : public buff_t
+{
+  unholy_blight_dot_t* dot;
+  virulent_plague_t* vp;
+
+  unholy_blight_buff_t( death_knight_t* p ) :
+    buff_t( p, "unholy_blight", p -> talent.unholy_blight ),
+    dot( new unholy_blight_dot_t( p ) ),
+    vp( new virulent_plague_t( p ) ) 
+  {
+    cooldown -> duration = 0_ms;
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+    {
+      dot -> execute();
+      vp -> execute();
+    } );
   }
 };
 
@@ -6341,7 +6416,18 @@ struct unholy_blight_t : public death_knight_spell_t
     parse_options( options_str );
 
     aoe = -1;
-    tick_action = new unholy_blight_dot_t( p );
+
+    if ( action_t* dot_damage = p -> find_action( "unholy_blight_dot" ) )
+    {
+      add_child( dot_damage );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.unholy_blight -> trigger();
   }
 };
 
@@ -7070,10 +7156,10 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
 
   if ( td -> dot.soul_reaper -> is_ticking() )
   {
-    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Soul Reaper buff.",
+    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                       target -> name(), name() );
 
-    buffs.soul_reaper -> trigger();
+    trigger_runic_corruption( 0, -1.0, procs.sr_runic_corruption );
   }
 }
 
@@ -7859,8 +7945,6 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
-
   haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
@@ -7878,8 +7962,6 @@ double death_knight_t::composite_melee_haste() const
 double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
-
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
 
@@ -8059,7 +8141,7 @@ void death_knight_t::init_spells()
   talent.spell_eater        = find_talent_spell( "Spell Eater" );
 
   talent.pestilence         = find_talent_spell( "Pestilence" );
-  talent.unholy_pact           = find_talent_spell( "Unholy Pact" );
+  talent.unholy_pact        = find_talent_spell( "Unholy Pact" );
   talent.defile             = find_talent_spell( "Defile" );
 
   talent.army_of_the_damned = find_talent_spell( "Army of the Damned" );
@@ -8120,7 +8202,7 @@ void death_knight_t::init_spells()
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.festering_wound_damage = find_spell( 194311 );
   spell.runic_corruption       = find_spell( 51460 );
-  spell.soul_reaper            = find_spell( 215711 );
+  spell.soul_reaper_execute    = find_spell( 343295 );
   spell.virulent_eruption      = find_spell( 191685 );
   spell.virulent_plague        = find_spell( 191587 );
 
@@ -8836,10 +8918,6 @@ void death_knight_t::create_buffs()
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
 
-  buffs.soul_reaper = make_buff( this, "soul_reaper", spell.soul_reaper )
-        -> set_default_value( spell.soul_reaper -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_HASTE );
-
   buffs.sudden_doom = make_buff( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
         -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", spec.sudden_doom ) -> get_frequency(), 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent())
         -> set_trigger_spell( spec.sudden_doom )
@@ -8851,6 +8929,10 @@ void death_knight_t::create_buffs()
         -> set_default_value( talent.unholy_assault -> effectN( 1 ).percent() )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
+
+  buffs.unholy_pact = new unholy_pact_buff_t( this );
+
+  buffs.unholy_blight = new unholy_blight_buff_t( this );
 
   // Azerite Traits
   buffs.bones_of_the_damned = make_buff<stat_buff_t>( this, "bones_of_the_damned",
@@ -8876,9 +8958,7 @@ void death_knight_t::create_buffs()
     -> set_cooldown( azerite.bloody_runeblade.spell() -> effectN( 1 ).trigger() -> internal_cooldown() );
 
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
-    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
-
-  buffs.helchains = new helchains_buff_t( this );
+    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );  
 
   player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
   {
@@ -8937,7 +9017,6 @@ void death_knight_t::init_gains()
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
-  gains.soul_reaper                      = get_gain( "Soul Reaper" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8965,6 +9044,7 @@ void death_knight_t::init_procs()
 
   procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
   procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
+  procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
 
@@ -9199,6 +9279,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
+
+    m *= 1.0 + buffs.unholy_pact -> value();
   }
 
   else if ( attr == ATTR_STAMINA )
