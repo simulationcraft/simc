@@ -286,8 +286,8 @@ struct player_t : public actor_t
   // Callbacks
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
-  std::vector<std::function<void(player_t*)> > callbacks_on_demise;
-  std::vector<std::function<void(void)>> callbacks_on_arise;
+  std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
+  std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -705,6 +705,8 @@ public:
   bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
+  /// Is the actor active currently
+  bool is_active() const;
   bool in_gcd() const;
   bool recent_cast() const;
   bool dual_wield() const
@@ -1183,6 +1185,9 @@ public:
   void register_combat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
+
+  void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
+  void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

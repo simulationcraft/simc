@@ -5612,7 +5612,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
 
-  target -> callbacks_on_demise.emplace_back(std::bind( &hunter_td_t::target_demise, this ) );
+  target -> register_on_demise_callback( p, std::bind( &hunter_td_t::target_demise, this ) );
 }
 
 void hunter_td_t::target_demise()

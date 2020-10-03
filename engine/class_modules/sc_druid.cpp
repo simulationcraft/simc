@@ -7799,7 +7799,7 @@ void druid_t::activate()
       if ( !target->is_enemy() )
         return;
 
-      target->callbacks_on_demise.emplace_back( [this]( player_t* target ) -> void {
+      target->register_on_demise_callback( this, [this]( player_t* target ) -> void {
         auto p = this;
         if ( p->specialization() != DRUID_FERAL )
           return;
@@ -7817,7 +7817,7 @@ void druid_t::activate()
       } );
     } );
 
-    callbacks_on_demise.emplace_back( [this]( player_t* target ) -> void {
+    register_on_demise_callback( this, [this]( player_t* target ) -> void {
       if ( sim->active_player->specialization() != DRUID_FERAL )
         return;
 

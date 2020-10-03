@@ -23,8 +23,8 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
 
   owner_coeff.health = 0.5;
 
-  callbacks_on_arise.emplace_back( [ owner ]() { owner->active_pets++; } );
-  callbacks_on_demise.emplace_back( [ owner ]( const player_t* ) { owner->active_pets--; } );
+  register_on_arise_callback( this, [ owner ]() { owner->active_pets++; } );
+  register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->active_pets--; } );
 }
 
 warlock_t* warlock_pet_t::o()

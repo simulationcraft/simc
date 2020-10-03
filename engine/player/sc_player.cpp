@@ -5616,7 +5616,13 @@ void player_t::arise()
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
   for ( size_t i = 0; i < callbacks_on_arise.size(); ++i )
-    callbacks_on_arise[ i ]();
+  {
+    auto& cb = callbacks_on_arise[ i ];
+    // If the callback comes from a different actor, execute it only
+    // if that actor is active.
+    if ( this == cb.first || cb.first->is_active() )
+      cb.second();
+  }
 }
 
 /**
@@ -5652,7 +5658,13 @@ void player_t::demise()
   // Requires index-based lookup since on-demise callbacks may
   // insert new on-demise callbacks to the vector.
   for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-    callbacks_on_demise[ i ]( this );
+  {
+    auto& cb = callbacks_on_demise[ i ];
+    // If the callback comes from a different actor, execute it only
+    // if that actor is active.
+    if ( this == cb.first || cb.first->is_active() )
+      cb.second( this );
+  }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -12819,6 +12831,16 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
   });
 }
 
+void player_t::register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn )
+{
+  callbacks_on_demise.emplace_back( source, std::move( fn ) );
+}
+
+void player_t::register_on_arise_callback( player_t* source, std::function<void( void )> fn )
+{
+  callbacks_on_arise.emplace_back( source, std::move( fn ) );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -12845,6 +12867,24 @@ bool player_t::is_my_pet(const player_t* t) const
   return t->is_pet() && t->cast_pet()->owner == this;
 }
 
+bool player_t::is_active() const
+{
+  if ( sim->single_actor_batch )
+  {
+    if ( is_enemy() || is_pet() )
+    {
+      return is_sleeping();
+    }
+    else
+    {
+      return sim->current_index == actor_index;
+    }
+  }
+  else
+  {
+    return is_sleeping();
+  }
+}
 
 /**
  * Perform dynamic resource regeneration

@@ -496,7 +496,7 @@ void glyph_of_assimilation( special_effect_t& effect )
     if ( !t->is_enemy() )
       return;
 
-    t->callbacks_on_demise.emplace_back( [ p, buff ]( player_t* t ) {
+    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
       if ( p->sim->event_mgr.canceled )
         return;
 

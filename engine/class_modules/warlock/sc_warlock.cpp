@@ -227,7 +227,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) );
 
-  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
 void warlock_td_t::target_demise()

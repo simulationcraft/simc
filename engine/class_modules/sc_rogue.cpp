@@ -6575,12 +6575,12 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on death.
   if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
   {
-    target->callbacks_on_demise.emplace_back( std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+    target->register_on_demise_callback( source, std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
   }
 
   if ( source->covenant.sepsis->ok() )
   {
-    target->callbacks_on_demise.emplace_back( [ this, source ]( player_t* ) {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.sepsis->is_ticking() )
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->covenant.sepsis->effectN( 3 ).base_value() ) );
     } );
@@ -6588,7 +6588,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   if ( source->covenant.serrated_bone_spike->ok() )
   {
-    target->callbacks_on_demise.emplace_back( [ this, source ]( player_t* ) {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
         source->cooldowns.serrated_bone_spike->reset( false, 1 );
     } );

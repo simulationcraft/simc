@@ -388,7 +388,7 @@ void dauntless_duelist( special_effect_t& effect )
     if ( !t->is_enemy() )
       return;
 
-    t->callbacks_on_demise.emplace_back( [ p, cb ]( player_t* t ) {
+    t->register_on_demise_callback( p, [ p, cb ]( player_t* t ) {
       if ( p->sim->event_mgr.canceled )
         return;
 
@@ -871,11 +871,8 @@ void gnashing_chompers( special_effect_t& effect )
     if ( !p->is_enemy() )
       return;
 
-    p->callbacks_on_demise.emplace_back( [ buff ]( player_t* ) {
+    p->register_on_demise_callback( buff->player, [ buff ]( player_t* ) {
       if ( buff->sim->event_mgr.canceled )
-        return;
-
-      if ( buff->sim->single_actor_batch && buff->sim->current_index != buff->player->actor_index )
         return;
 
       buff->trigger();
