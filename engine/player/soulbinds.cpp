@@ -817,7 +817,21 @@ void brons_call_to_action( special_effect_t& effect )
 
 void volatile_solvent( special_effect_t& effect )
 {
+  auto buff = buff_t::find( effect.player, "volatile_solvent" );
+  if ( !buff )
+  {
+      //change spell number
 
+    // TODO: does 'up to X%' include the base value or refers only to extra per ally?
+    buff = make_buff( effect.player, "volatile_solvent", effect.player->find_spell(323491 ))
+               ->set_default_value_from_effect( 2 )
+               ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+               ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+               //figure out how to buff spell power by 2% ->a( A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT )
+               ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  }
+
+  buff->trigger();
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
