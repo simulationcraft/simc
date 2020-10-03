@@ -1305,9 +1305,12 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false )
+    : base_t( name, player, s ),
+      affected_by_shadow_weaving( false ),
+      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
   }
@@ -1426,8 +1429,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void trigger_dark_thoughts( const player_t* target, proc_t* proc, action_state_t* s )
   {
-    auto mind_sear_id = priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
-    auto action_id    = s->action->id;
+    auto action_id = s->action->id;
 
     if ( !priest().specs.dark_thoughts->ok() )
       return;
