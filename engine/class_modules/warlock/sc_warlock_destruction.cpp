@@ -695,13 +695,13 @@ struct chaos_bolt_t : public destruction_spell_t
 
   void consume_resource() override
   {
-    if ( p()->legendary.mark_of_borrowed_power->ok() && rng().roll( p()->legendary.mark_of_borrowed_power->effectN( 3 ).percent() ) )
-    {
-      p()->procs.mark_of_borrowed_power->occur();
-      //TODO: Schedule a refund event from here maybe?
-    }
-
     destruction_spell_t::consume_resource();
+
+    if ( p()->legendary.mark_of_borrowed_power->ok() )
+    {
+      double chance = rng().roll( p()->legendary.mark_of_borrowed_power->effectN( 3 ).percent() );
+      make_event<borrowed_power_event_t>( *p()->sim, p(), as<int>( last_resource_cost ), chance );
+    }
   }
 };
 

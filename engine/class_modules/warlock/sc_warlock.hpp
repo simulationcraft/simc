@@ -292,7 +292,7 @@ public:
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t mark_of_borrowed_power;
+    item_runeforge_t mark_of_borrowed_power; //TODO: SL Beta - Confirm with long dummy log that the % chances have no BLP
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
@@ -688,34 +688,37 @@ struct sc_event_t : public player_event_t
   warlock_t* pl;
   int shards_used;
 
-  sc_event_t(warlock_t* p, int c)
-    : player_event_t(*p, timespan_t::from_millis(100)),
-    shard_gain(p->gains.soul_conduit),
-    pl(p),
-    shards_used(c)
+  sc_event_t( warlock_t* p, int c )
+    : player_event_t( *p, 100_ms ),
+    shard_gain( p->gains.soul_conduit ),
+    pl( p ),
+    shards_used( c )
   {
   }
 
   virtual const char* name() const override
   {
-    return "sc_event";
+    return "soul_conduit_event";
   }
 
   virtual void execute() override
   {
-    double soul_conduit_rng = pl->talents.soul_conduit->effectN(1).percent();
+    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
 
-    for (int i = 0; i < shards_used; i++)
+    for ( int i = 0; i < shards_used; i++ )
     {
-      if (rng().roll(soul_conduit_rng))
+      if ( rng().roll( soul_conduit_rng ) )
       {
-        pl->resource_gain(RESOURCE_SOUL_SHARD, 1.0, shard_gain);
+        pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
+        pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
         pl->procs.soul_conduit->occur();
       }
     }
   }
 };
 
+//Event for triggering refunds from Mark of Borrowed Power legendary
+//TOCHECK: Currently, this refund can occur independently of Soul Conduit refunds, granting more shards than originally spent
 struct borrowed_power_event_t : public player_event_t
 {
   gain_t* shard_gain;
@@ -723,12 +726,12 @@ struct borrowed_power_event_t : public player_event_t
   int shards_used;
   double refund_chance;
 
-  borrowed_power_event_t(warlock_t* p, int c, double chance)
-    : player_event_t(*p, timespan_t::from_millis(100)),
-    shard_gain(p->gains.borrowed_power),
-    pl(p),
-    shards_used(c),
-    refund_chance(chance)
+  borrowed_power_event_t( warlock_t* p, int c, double chance )
+    : player_event_t( *p, 100_ms ),
+    shard_gain( p->gains.borrowed_power ),
+    pl( p ),
+    shards_used( c ),
+    refund_chance( chance )
   {
   }
 
@@ -739,9 +742,10 @@ struct borrowed_power_event_t : public player_event_t
 
   virtual void execute() override
   {
-      if ( rng().roll(refund_chance) )
+      if ( rng().roll( refund_chance ) )
       {
-        pl->resource_gain(RESOURCE_SOUL_SHARD, shards_used, shard_gain);
+        pl->sim->print_log( "Borrowed power proc occurred for Warlock {}, refunding {} soul shards.", pl->name(), shards_used );
+        pl->resource_gain( RESOURCE_SOUL_SHARD, shards_used, shard_gain );
         pl->procs.mark_of_borrowed_power->occur();
       } 
   }
