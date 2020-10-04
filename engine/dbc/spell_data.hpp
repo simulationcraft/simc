@@ -738,9 +738,9 @@ struct spell_data_t
 
   std::string to_str() const;
 
-  bool affected_by_all( const dbc_t& dbc, const spelleffect_data_t& effect ) const;
-  bool affected_by_category( const dbc_t& dbc, const spelleffect_data_t& effect ) const;
-  bool affected_by_category( const dbc_t& dbc, int category ) const;
+  bool affected_by_all( const spelleffect_data_t& effect ) const;
+  bool affected_by_category( const spelleffect_data_t& effect ) const;
+  bool affected_by_category( int category ) const;
   bool affected_by_label( const spelleffect_data_t& effect ) const;
   bool affected_by_label( int label ) const;
   bool affected_by( const spell_data_t* ) const;

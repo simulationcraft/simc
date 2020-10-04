@@ -2045,7 +2045,7 @@ public:
       if ( eff.type() != E_APPLY_AURA )
         continue;
 
-      if ( ( base->affected_by_all( *ab::player->dbc, eff ) &&
+      if ( ( base->affected_by_all( eff ) &&
              ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
                ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
                ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
@@ -2104,7 +2104,7 @@ public:
       return;
     }
 
-    if ( !ab::data().affected_by_all( *ab::player->dbc, eff ) )
+    if ( !ab::data().affected_by_all( eff ) )
       return;
 
     if ( !mastery && !val )
@@ -2300,7 +2300,7 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, eff ) ) &&
+      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( eff ) ) &&
            !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
@@ -10379,7 +10379,7 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
   {
     const spelleffect_data_t& effect = aura_spell->effectN( i );
 
-    if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by_all( *dbc, effect ) )
+    if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by_all( effect ) )
       continue;
 
     if ( effect.type() == type && effect.subtype() == subtype )

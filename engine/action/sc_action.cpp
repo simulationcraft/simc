@@ -4691,7 +4691,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   if ( !effect.ok() || effect.type() != E_APPLY_AURA )
     return;
 
-  if ( !data().affected_by_all( *player->dbc, effect ) )
+  if ( !data().affected_by_all( effect ) )
   {
     return;
   }
@@ -4913,7 +4913,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
   // Category-based Auras
-  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  else if ( data().affected_by_category( effect ) )
   {
     switch ( effect.subtype() )
     {
