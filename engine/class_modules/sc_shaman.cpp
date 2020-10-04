@@ -62,6 +62,31 @@
 namespace
 {  // UNNAMED NAMESPACE
 
+struct ascendance_lvb_event_t : public event_t
+{
+    
+};
+
+struct primordial_wave_extra_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  stats_t* primordial_wave_stats;
+
+  primordial_wave_extra_event_t( action_t* pwave_, player_t* target_, action_t* action_, stats_t* primordial_wave_stats_)
+    : event_t( *pwave_->player, 0_ms ), action( action_ ), target( target_ ), primordial_wave_stats(primordial_wave_stats_)
+  {
+      
+  }
+
+  const char* name() const override
+  {
+    return "primordial_wave_extra_event_t";
+  }
+  
+  void execute() override;
+};
+
 struct echoing_shock_event_t : public event_t
 {
   action_t* action;
@@ -209,7 +234,9 @@ enum class elemental
 enum class execute_type
 {
   NORMAL,
-  ECHOING_SHOCK
+  ECHOING_SHOCK,
+  PRIMORDIAL_WAVE,
+  ASCENDANCE
 };
 
 enum imbue_e
@@ -5015,6 +5042,7 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
     p()->buff.ascendance->trigger();
+
   }
 };
 
@@ -5705,8 +5733,12 @@ struct fae_transfusion_t : public shaman_spell_t
 // ==========================================================================
 struct primordial_wave_t : public shaman_spell_t
 {
+  stats_t* primordial_wave_stats;
+  action_t* flame_shock;
+  action_t* lava_burst;
+
   primordial_wave_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str )
+    : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str ), primordial_wave_stats(nullptr)
   {
     if ( !player->covenant.necrolord->ok() )
       return;
@@ -5716,9 +5748,34 @@ struct primordial_wave_t : public shaman_spell_t
     spell_power_mod.direct  = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
   }
 
+  void init() override
+  {
+    
+    if ( auto primordial_wave = p()->find_action( "primordial_wave" ) )
+    {
+      flame_shock           = p()->find_action( "flame_shock" );
+      lava_burst            = p()->find_action( "lava_burst" );
+      primordial_wave_stats = p()->get_stats( this->name_str, this );
+      primordial_wave->stats->add_child( primordial_wave_stats );
+    }
+    shaman_spell_t::init();
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
+    make_event<primordial_wave_extra_event_t>( *sim, this, execute_state->target, flame_shock, flame_shock->stats );
+    target_cache.is_valid          = false;
+    std::vector<player_t*> targets = target_list();
+    auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
+      return !this->td( target )->dot.flame_shock->is_ticking();
+    } );
+
+    targets.erase( it, targets.end() );
+    for ( player_t* tar : targets )
+      make_event<primordial_wave_extra_event_t>( *sim, this, tar, lava_burst,
+                                               primordial_wave_stats );
+
 
     p()->buff.primordial_wave->trigger();
 
@@ -7282,7 +7339,9 @@ void shaman_t::init_action_list_elemental()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   def->add_action( this, "Bloodlust" );
+  def->add_action( "primordial_wave" );
   def->add_action( this, "Lightning Bolt" );
+  def->add_action( this, "Flame Shock" );
 }
 
 // shaman_t::init_action_list_enhancement ===================================
@@ -7882,23 +7941,53 @@ inline void echoing_shock_event_t::execute()
 
   // Tweak echoed spell so that it looks like a background cast. During the execute,
   // shaman_spell_t::is_echoed_spell() will return true.
-  auto orig_stats = spell->stats;
+  auto orig_stats  = spell->stats;
   auto orig_target = spell->target;
-  auto orig_tte = spell->time_to_execute;
+  auto orig_tte    = spell->time_to_execute;
 
-  spell->background = true;
-  spell->stats = spell->echoing_shock_stats;
+  spell->background      = true;
+ // spell->stats           = spell->;
   spell->time_to_execute = 0_s;
-  spell->exec_type = execute_type::ECHOING_SHOCK;
+  spell->exec_type       = execute_type::ECHOING_SHOCK;
   spell->set_target( target );
   spell->execute();
 
-  spell->background = false;
-  spell->stats = orig_stats;
-  spell->exec_type = execute_type::NORMAL;
+  spell->background      = false;
+ // spell->stats           = orig_stats;
+  spell->exec_type       = execute_type::NORMAL;
   spell->time_to_execute = orig_tte;
   spell->set_target( orig_target );
 }
+
+inline void primordial_wave_extra_event_t::execute()
+{
+  
+  auto spell = static_cast<shaman_spell_t*>( action );
+
+  if ( target->is_sleeping() )
+  {
+    return;
+  }
+  
+auto orig_stats  = spell->stats;
+  auto orig_target = spell->target;
+  auto orig_tte    = spell->time_to_execute;
+
+  spell->background      = true;
+  spell->stats           = primordial_wave_stats;
+  spell->time_to_execute = 0_s;
+  spell->exec_type       = execute_type::PRIMORDIAL_WAVE;
+  spell->set_target( target );
+  spell->execute();
+
+  spell->background      = false;
+  spell->stats           = orig_stats;
+  spell->exec_type       = execute_type::NORMAL;
+  spell->time_to_execute = orig_tte;
+  spell->set_target( orig_target );
+  
+}
+
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
