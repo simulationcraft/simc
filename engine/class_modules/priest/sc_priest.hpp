@@ -251,6 +251,7 @@ public:
   struct
   {
     const spell_data_t* priest;  // General priest data
+    const spell_data_t* mind_sear;
 
     // Discipline
     const spell_data_t* discipline;  // General discipline data
@@ -279,6 +280,7 @@ public:
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
     const spell_data_t* dark_thoughts;
+    const spell_data_t* mind_flay;
   } specs;
 
   // DoT Spells

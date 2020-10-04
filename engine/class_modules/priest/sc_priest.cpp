@@ -1735,6 +1735,10 @@ void priest_t::init_spells()
   init_spells_discipline();
   init_spells_holy();
 
+  // Generic Spells
+  specs.mind_flay = find_specialization_spell( "Mind Flay" );
+  specs.mind_sear = find_class_spell( "Mind Sear" );
+
   // Class passives
   specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
   specs.holy       = dbc::get_class_passive( *this, PRIEST_HOLY );
@@ -2186,8 +2190,8 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
-  auto mind_sear_id = find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
-  auto mind_flay_id = find_specialization_spell( "Mind Flay" )->id();
+  auto mind_sear_id = specs.mind_sear->effectN( 1 ).trigger()->id();
+  auto mind_flay_id = specs.mind_flay->id();
   auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
