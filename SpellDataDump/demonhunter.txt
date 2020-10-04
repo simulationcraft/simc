@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-02/36086)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-04/36086, git build shadowlands 2698a17b84)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1314,7 +1314,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 3 yards/sec
+Travel Time      : 3 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1325,7 +1325,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Cannot cancel aura (31), Tick on application (169)
+                 : Cannot cancel aura (31), Tick on application (169), Fixed travel time (292)
 Effects          :
 #1 (id=296820)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5758 | Target: Custom (18)
@@ -3924,7 +3924,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Requires main-hand weapon (106)
+                 : Requires main-hand weapon (106), Fixed travel time (292)
 Effects          :
 #1 (id=344028)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -4241,7 +4241,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 3 yards/sec
+Travel Time      : 3 seconds
 Cooldown         : 150 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4251,6 +4251,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Fixed travel time (292)
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
@@ -9231,7 +9232,7 @@ School           : Magic
 Spell Type       : Magic
 Resource         : 30 Fury (17) (id=215319)
 GCD              : 1.5 seconds
-Velocity         : 3 yards/sec
+Travel Time      : 3 seconds
 Duration         : 3 seconds
 Cooldown         : 20 seconds
 Category         : 1908
@@ -9246,7 +9247,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Tick on application (169)
+                 : Tick on application (169), Fixed travel time (292)
 Effects          :
 #1 (id=844163)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21832 | Target: Custom (18)

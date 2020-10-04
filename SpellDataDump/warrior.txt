@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-02/36086)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-04/36086, git build shadowlands 2698a17b84)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -5480,7 +5480,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 3 yards/sec
+Travel Time      : 3 seconds
 Cooldown         : 150 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5490,6 +5490,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Fixed travel time (292)
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
@@ -8704,7 +8705,7 @@ School           : Arcane
 Spell Type       : None
 Range            : 25 yards
 GCD              : 1.5 seconds
-Velocity         : 0.4 yards/sec
+Travel Time      : 0.4 seconds
 Cooldown         : 60 seconds
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8
@@ -8716,6 +8717,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Fixed travel time (292)
 Effects          :
 #1 (id=786704)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 307871 | Radius: 5 yards | Target: Unknown(87)

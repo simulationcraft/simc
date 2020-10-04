@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-02/36086)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-04/36086, git build shadowlands 2698a17b84)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -411,7 +411,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 6
-Velocity         : 0.2 yards/sec
+Travel Time      : 0.2 seconds
 Duration         : 360 seconds
 Cooldown         : 30 seconds
 Affecting spells : Improved Feign Death (24432 effect#1), Duck and Cover (280169 effect#2), Craven Strategem (336747 effect#1)
@@ -424,7 +424,7 @@ Attributes       : ........ x....... x.x.x... .x......   ........ ..x...x. .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Stop attacks (20), Always hits (114)
+                 : Stop attacks (20), Always hits (114), Fixed travel time (292)
 Effects          :
 #1 (id=1924)     : Apply Aura (6) | Feign Death (66)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2660,7 +2660,7 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
-Velocity         : 1.5 yards/sec
+Travel Time      : 1.5 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #5, #7), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (266779 effects: #1, #2), Eagletalon's True Focus (336851 effect#4)
 Family Flags     : 55, 99, 106
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
@@ -2671,7 +2671,7 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ..x..... ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Cannot dodge/parry/block (21)
+                 : Cannot dodge/parry/block (21), Fixed travel time (292)
 Effects          :
 #1 (id=170318)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -2980,7 +2980,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x..x.... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ranged Ability (1)
+                 : Ranged Ability (1), Fixed travel time (292)
 Effects          :
 #1 (id=199883)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
@@ -5337,7 +5337,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 3 yards/sec
+Travel Time      : 3 seconds
 Cooldown         : 150 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5347,6 +5347,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Fixed travel time (292)
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
@@ -9042,7 +9043,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Velocity         : 0.7 yards/sec
+Travel Time      : 0.7 seconds
 Triggered by     : Wildfire Cluster (272743)
 Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x....... ......x. ...x..x. ....x...   ........ .x...... xx..x... ........ 
@@ -9052,7 +9053,7 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151), Fixed travel time (292)
 Effects          :
 #1 (id=723834)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -10922,7 +10923,7 @@ School           : Arcane
 Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 0.5 yards/sec
+Travel Time      : 0.5 seconds
 Cooldown         : 60 seconds
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 31, 121
@@ -10934,6 +10935,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Fixed travel time (292)
 Effects          :
 #1 (id=787669)   : Trigger Missiles (32)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 308495 | Radius: 15 yards | Target: AOE enemy (instant) (16)
