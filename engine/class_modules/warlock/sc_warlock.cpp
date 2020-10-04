@@ -106,13 +106,6 @@ struct impending_catastrophe_t : public warlock_spell_t
     impending_catastrophe_dot->set_target( target );
     impending_catastrophe_dot->execute();
 
-    // This is where we would implement Curse of Weakness/Tongues
-    //make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-    //    .n_pulses(1)
-    //    .target( s->target )
-    //    .action( impending_catastrophe_dot ),
-    //    true );
-
     for ( auto t : targets )
     {
       impending_catastrophe_impact->set_target( t );
@@ -141,13 +134,6 @@ struct scouring_tithe_t : public warlock_spell_t
       p()->cooldowns.scouring_tithe->reset( true );
     }
     warlock_spell_t::last_tick( d );
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double pm = warlock_spell_t::composite_ta_multiplier( s ) * 0.5;
-
-    return pm;
   }
 
 };
