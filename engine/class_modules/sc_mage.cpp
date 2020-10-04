@@ -49,13 +49,6 @@ enum frozen_flag_e
   FF_ROOT             = 1 << FROZEN_ROOT
 };
 
-enum rotation_type_e
-{
-  ROTATION_STANDARD,
-  ROTATION_NO_ICE_LANCE,
-  ROTATION_FROZEN_ORB
-};
-
 enum ground_aoe_type_e
 {
   AOE_BLIZZARD = 0,
@@ -520,7 +513,6 @@ public:
     timespan_t firestarter_time = 0_ms;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
-    rotation_type_e rotation = ROTATION_STANDARD;
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
@@ -5998,18 +5990,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, util::string_view val )
-  {
-    if ( util::str_compare_ci( val, "standard" ) )
-      options.rotation = ROTATION_STANDARD;
-    else if ( util::str_compare_ci( val, "no_ice_lance" ) )
-      options.rotation = ROTATION_NO_ICE_LANCE;
-    else if ( util::str_compare_ci( val, "frozen_orb" ) )
-      options.rotation = ROTATION_FROZEN_ORB;
-    else
-      return false;
-    return true;
-  } ) );
   add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
   add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
@@ -6031,10 +6011,6 @@ std::string mage_t::create_profile( save_e save_type )
   {
     if ( options.firestarter_time > 0_ms )
       profile += "firestarter_time=" + util::to_string( options.firestarter_time.total_seconds() ) + "\n";
-    if ( options.rotation == ROTATION_NO_ICE_LANCE )
-      profile += "rotation=no_ice_lance\n";
-    if ( options.rotation == ROTATION_FROZEN_ORB )
-      profile += "rotation=frozen_orb\n";
   }
 
   return profile;
