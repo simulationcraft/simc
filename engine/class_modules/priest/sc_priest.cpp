@@ -1082,8 +1082,9 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
   const double void_lasher_insanity;
+  player_t* main_target;
 
-  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s, player_t* _main_target )
     : priest_pet_spell_t( "mind_sear_tick", &p, s ),
       void_lasher_insanity( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
   {
@@ -1092,6 +1093,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
+    main_target                = _main_target;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -1110,8 +1112,21 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
-    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                               s->action );
+    // Currently bugged to only give insanity on the main target
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/687
+    if ( !p().o().bugs )
+    {
+      p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                 s->action );
+    }
+    else
+    {
+      if ( s->target == main_target )
+      {
+        p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                   s->action );
+      }
+    }
   }
 };
 
@@ -1121,7 +1136,7 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   {
     channeled    = true;
     hasted_ticks = false;
-    tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+    tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger(), target );
 
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
