@@ -153,7 +153,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
-    name: ${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
+    name: test-${{ matrix.tier }}-${{ matrix.class }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-10-build ]
 
@@ -161,9 +161,20 @@ jobs:
       fail-fast: false
       matrix:
         tier: [ Tier25 ]
-        class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
-        fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
-
+        class: [
+            Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
+            Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
+            Druid_Balance, Druid_Feral, Druid_Guardian,
+            Hunter_Beast_Mastery, Hunter_Marksmanship, Hunter_Survival
+            Mage_Arcane, Mage_Fire, Mage_Frost,
+            Monk_Brewmaster, Monk_Windwalker,
+            Paladin_Retribution,
+            Priest_Discipline, Priest_Shadow,
+            Rogue_Assasination, Rogue_Outlaw, Rogue_Subtlety,
+            Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,
+            Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
+            Warrior_Arms, Warrior_Fury,
+          ]
 
     steps:
       - uses: actions/cache@v2
@@ -174,21 +185,14 @@ jobs:
             tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
-      - name: Setup BATS
-        uses: mig4/setup-bats@v1.0.1
-
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_FIGHT_STYLE: ${{ matrix.fight_style }}
-          SIMC_CLASS: ${{ matrix.class }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: |
-          cd tests
-          bats --tap talents.bats covenants.bats
+        run: tests/run.py ${{ matrix.class }}
 
   build-docker:
     name: docker
