@@ -16,7 +16,6 @@
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
 // Frost:
-// - Revisit Hypothetic Presence once Blizzard fixes it
 // - Revisit Eradicating Blow, Deaths Due, Koltiras to verify 1H vs 2H behavior, especially with DD cleave
 
 #include "simulationcraft.hpp"
@@ -488,7 +487,7 @@ public:
     buff_t* icy_citadel_builder;
     buff_t* icy_citadel;
 
-    buff_t* festermight;   
+    buff_t* festermight;
 
     // Conduits
     buff_t* eradicating_blow;
@@ -1580,11 +1579,11 @@ struct death_knight_pet_t : public pet_t
     double m = pet_t::composite_player_target_multiplier( target, school );
 
     const death_knight_td_t* td = o() -> get_target_data( target );
-    
+
     if ( td -> debuff.unholy_blight -> check() )
     {
       m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
-    }    
+    }
 
     return m;
   }
@@ -2722,6 +2721,19 @@ struct death_knight_action_t : public Base
     }
 
     return amount;
+  }
+
+  double cost() const override
+  {
+    double c = action_base_t::cost();
+
+    // Hypothermic Presence reduces the cost of runic power spenders while it's up
+    // TODO: Tested with Frost Strike, does it work with BoS correctly?
+    if ( this -> current_resource() == RESOURCE_RUNIC_POWER )
+    {
+      c *= 1.0 + p() -> buffs.hypothermic_presence -> value();
+    }
+     return c;
   }
 
   void init_finished() override
@@ -3962,7 +3974,7 @@ struct unholy_pact_buff_t : public buff_t
   unholy_pact_damage_t* damage;
 
   unholy_pact_buff_t( death_knight_t* p ) :
-    buff_t( p, "unholy_pact", 
+    buff_t( p, "unholy_pact",
       p -> talent.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
     damage( new unholy_pact_damage_t( p ) )
   {
@@ -5534,12 +5546,11 @@ struct howling_blast_t : public death_knight_spell_t
 struct hypothermic_presence_t : public death_knight_spell_t
 {
   hypothermic_presence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "hypothetic_presence", p, p -> talent.hypothermic_presence )
+    death_knight_spell_t( "hypothermic_presence", p, p -> talent.hypothermic_presence )
   { }
 
   void execute() override
   {
-    sim -> print_log( "{} used Hypothetic Presence! Nothing happens!!", p() -> name_str );
     death_knight_spell_t::execute();
     p() -> buffs.hypothermic_presence -> trigger();
   }
@@ -6189,7 +6200,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   int n_targets() const override
   { return p() -> in_death_and_decay() ? as<int>( p() -> spec.scourge_strike -> effectN( 4 ).base_value() ) : 0; }
 
-  std::vector<player_t*>& target_list() const override // smart targeting to targets with wounds when cleaving SS 
+  std::vector<player_t*>& target_list() const override // smart targeting to targets with wounds when cleaving SS
   {
     std::vector<player_t*>& current_targets = death_knight_melee_attack_t::target_list();
     if (current_targets.size() < 2 || !p() -> in_death_and_decay()) {
@@ -6201,7 +6212,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       [this]( player_t* a, player_t* b) {
         int a_stacks = td( a ) -> debuff.festering_wound -> up() ? 1 : 0;
         int b_stacks = td( b ) -> debuff.festering_wound -> up() ? 1 : 0;
-        return a_stacks > b_stacks; 
+        return a_stacks > b_stacks;
       } );
 
     return current_targets;
@@ -6316,7 +6327,7 @@ struct soul_reaper_t : public death_knight_spell_t
     {
       soul_reaper_execute -> set_target ( dot -> target );
       soul_reaper_execute -> execute();
-    }    
+    }
   }
 };
 
@@ -6395,7 +6406,7 @@ struct unholy_blight_buff_t : public buff_t
   unholy_blight_buff_t( death_knight_t* p ) :
     buff_t( p, "unholy_blight", p -> talent.unholy_blight ),
     dot( new unholy_blight_dot_t( p ) ),
-    vp( new virulent_plague_t( p ) ) 
+    vp( new virulent_plague_t( p ) )
   {
     cooldown -> duration = 0_ms;
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
@@ -6976,15 +6987,8 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
-  if ( resource_type == RESOURCE_RUNIC_POWER )
-  {
-    // Nothing changes ingame when the buff is up
-    // What is a resource talent doing on an aoe row anyway?
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/447
-    if ( ! bugs ) amount *= 1.0 + buffs.hypothermic_presence -> value();
-  }
-
   double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
+
   if ( resource_type == RESOURCE_RUNE )
   {
     _runes.consume(as<int>(amount) );
@@ -7074,6 +7078,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( action && action -> name_str != "breath_of_sindragosa_tick" )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
+    // 2020-10-03 - Melekus: After some limited testing (around 200 Frost Strike casts during Hypothermic Presence)
+    // It looks like Runic Empowerment proc chance is based on the ability's base rune cost rather than the actual amount of RP spent
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
@@ -8886,7 +8892,7 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.gathering_storm )
         -> set_default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
 
-  buffs.hypothermic_presence = make_buff( this, "hypothetic_presence", talent.hypothermic_presence )
+  buffs.hypothermic_presence = make_buff( this, "hypothermic_presence", talent.hypothermic_presence )
         -> set_default_value_from_effect( 1 );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
@@ -8958,7 +8964,7 @@ void death_knight_t::create_buffs()
     -> set_cooldown( azerite.bloody_runeblade.spell() -> effectN( 1 ).trigger() -> internal_cooldown() );
 
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
-    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );  
+    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
 
   player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
   {
