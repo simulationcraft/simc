@@ -39,8 +39,6 @@ private:
   unsigned     scales_with;
   blp          blp_state;
 
-  std::vector<timespan_t> recent_trigger_attempts;
-
   real_ppm_t() : player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ), scales_with( 0 ),
     blp_state( BLP_ENABLED )
   { }
