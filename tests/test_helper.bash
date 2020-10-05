@@ -39,7 +39,9 @@ function trinket_sim() {
   PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
   for spec in ${PROFILES[@]}; do
     SIMC_PROFILE=${spec}
-    sim profiles/tests/trinkets_shadowlands_caster.simc profiles/tests/trinkets_shadowlands_hunter.simc profiles/tests/trinkets_shadowlands_melee.simc
+    TRINKET_FILES=( $("${BATS_TEST_DIRNAME}"/trinket_profiles ${SIMC_PROFILE} ${SIMC_PROFILE_DIR}) )
+    sim default_actions=1 ${TRINKET_FILES}
+    [ "${status}" -eq 0 ]
   done
 }
 

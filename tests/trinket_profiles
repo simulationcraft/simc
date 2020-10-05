@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+import sys
+
+if len(sys.argv) < 3:
+    sys.exit(1)
+
+spec = sys.argv[1]
+profile_dir = sys.argv[2]
+
+casters = [
+    "Druid_Balance",
+    "Druid_Restoration",
+    "Mage",
+    "Monk_Mistweaver",
+    "Palading_Holy",
+    "Priest",
+    "Shaman_Elemental",
+    "Shaman_Restoration",
+    "Warlock"]
+
+hunters = [
+    "Hunter"
+]
+
+melees = [
+    "Death_Knight",
+    "Demon_Hunter",
+    "Druid_Feral",
+    "Druid_Guardian",
+    "Monk_Brewmaster",
+    "Monk_Windwalker",
+    "Paladin_Retribution",
+    "Paladin_Protection",
+    "Rogue",
+    "Shaman_Enhancement",
+    "Warrior"
+]
+
+base_path = "../tests/" # base profiles folder is 1 dir up from TierN profile folder.
+caster_trinket_profile = base_path + "trinkets_shadowlands_caster.simc"
+hunter_trinket_profile = base_path + "trinkets_shadowlands_hunter.simc"
+melee_trinket_profile = base_path + "trinkets_shadowlands_melee.simc"
+
+
+def check_if_spec_matches(spec_list, profile):
+    for entry in spec_list:
+        if entry in spec:
+            print(profile_dir + "/" + profile)
+            return True
+
+match = False
+
+if check_if_spec_matches(casters, caster_trinket_profile):
+    match = True
+if check_if_spec_matches(hunters, hunter_trinket_profile):
+    match = True
+if check_if_spec_matches(melees, melee_trinket_profile):
+    match = True
+
+if match == False:
+    raise Exception("Error finding trinket file for profile {0}".format(spec))
+
+sys.exit(0)
+
