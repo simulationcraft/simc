@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+import sys
+
 __max_tiers = 7
 __talents_per_tier = 3
 __class_map = {
@@ -111,28 +115,35 @@ __class_map = {
     ]
 }
 
-def talent_combinations(klass):
-    if klass not in __class_map:
-        klass_split = klass.split('_')
-        for i in range(len(klass_split)):
-            klass = '_'.join(klass_split[0:i])
-            if klass in __class_map:
-                break
+if len(sys.argv) < 2:
+    sys.exit(1)
 
-    # Check untalented
-    combinations = [ '0' * __max_tiers ]
+_class = None
+for class_name in __class_map.keys():
+    if class_name in sys.argv[1]:
+        _class = class_name
+        break
 
-    for talents in __class_map[klass]:
-        talent_arr = [ '0' ] * __max_tiers
-        if talents[1] == -1:
-            for talent in range(0, __talents_per_tier):
-                talent_arr[talents[0]] = str(talent + 1)
-                talent_str = ''.join(talent_arr)
+if not _class:
+    sys.exit(1)
 
-                if talent_str not in combinations:
-                    combinations.append(talent_str)
-        else:
-            talent_arr[talents[0]] = str(talents[1])
-            combinations.append(''.join(talent_arr))
+# Check untalented
+combinations = [ '0' * __max_tiers ]
 
-    return combinations
+for talents in __class_map[_class]:
+    talent_arr = [ '0' ] * __max_tiers
+    if talents[1] == -1:
+        for talent in xrange(0, __talents_per_tier):
+            talent_arr[talents[0]] = str(talent + 1)
+            talent_str = ''.join(talent_arr)
+
+            if talent_str not in combinations:
+                combinations.append(talent_str)
+    else:
+        talent_arr[talents[0]] = str(talents[1])
+        combinations.append(''.join(talent_arr))
+
+print ' '.join(combinations)
+
+sys.exit(0)
+
