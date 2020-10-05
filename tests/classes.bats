@@ -1,5 +1,13 @@
 load test_helper
 
+@test "Talent test" {
+	talent_sim ${SIMC_CLASS}
+}
+
+@test "Trinkets test" {
+	trinket_sim ${SIMC_CLASS}
+}
+
 @test "Kyrian" {
 	covenant_sim "${SIMC_CLASS}" kyrian
 }

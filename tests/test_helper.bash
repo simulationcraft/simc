@@ -34,6 +34,16 @@ function talent_sim() {
   done
 }
 
+function trinket_sim() {
+  PROFILE_DIR=${SIMC_PROFILE_DIR}
+  PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )
+  for spec in ${PROFILES[@]}; do
+    SIMC_PROFILE=${spec}
+    sim profiles/tests/trinkets_shadowlands_caster.simc profiles/tests/trinkets_shadowlands_hunter.simc profiles/tests/trinkets_shadowlands_melee.simc
+  done
+}
+
+
 function covenant_sim() {
   PROFILE_DIR=${SIMC_PROFILE_DIR}
   PROFILES=( $(ls "${PROFILE_DIR}"/*_$1_*.simc) )

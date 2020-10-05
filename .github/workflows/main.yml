@@ -188,7 +188,7 @@ jobs:
           SIMC_ITERATIONS: 2
         run: |
           cd tests
-          bats --tap talents.bats covenants.bats
+          bats --tap classes.bats
 
   build-docker:
     name: docker
