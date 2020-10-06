@@ -1450,7 +1450,7 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
   if ( cost <= 0 )
     return;
 
-  if ( specialization() == PALADIN_RETRIBUTION ) {
+  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) {
     if ( ! rng().roll( options.proc_chance_ret_memory_of_lucid_dreams ) )
       return;
 
@@ -1468,16 +1468,6 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     lucid_dreams_accumulator = total_gain - real_gain;
 
     resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
-  }
-
-  else if ( specialization() == PALADIN_PROTECTION )
-  {
-    if ( ! rng().roll( options.proc_chance_prot_memory_of_lucid_dreams ) )
-      return;
-
-    cooldowns.shield_of_the_righteous -> adjust( -1.0 * cooldown_t::cooldown_duration( cooldowns.shield_of_the_righteous ) * lucid_dreams_minor_refund_coeff );
-
-    procs.prot_lucid_dreams -> occur();
   }
 
   if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
@@ -1544,17 +1534,14 @@ void paladin_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
+  // Boundless Conviction raises max holy power to 5
+  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
+
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
   {
     resources.base[ RESOURCE_MANA ] = 0;
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
-  }
-
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    // Boundless Conviction raises max holy power to 5
-    resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
   }
 
   if ( specialization() == PALADIN_HOLY )
@@ -1598,6 +1585,8 @@ void paladin_t::init_gains()
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams" );
+  gains.hp_avengers_shield             = get_gain( "avengers_shield" );
+  gains.hp_hammer_of_wrath             = get_gain( "hammer_of_wrath");
 }
 
 // paladin_t::init_procs ====================================================
@@ -1939,6 +1928,7 @@ void paladin_t::init_spells()
   spells.judgment_2 = find_rank_spell( "Judgment", "Rank 2" ); // 327977
   spells.avenging_wrath_2 = find_rank_spell( "Avenging Wrath", "Rank 2" ); // 317872
   spells.hammer_of_wrath_2 = find_rank_spell( "Hammer of Wrath", "Rank 2" ); // 326730
+  spells.divine_purpose_buff = find_spell( 223819 );
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
@@ -2413,7 +2403,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   if ( resource_type == RESOURCE_HOLY_POWER )
   {
-    if ( specialization() == PALADIN_RETRIBUTION )
+    if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
     {
       if ( player_t::buffs.memory_of_lucid_dreams -> up() )
       {

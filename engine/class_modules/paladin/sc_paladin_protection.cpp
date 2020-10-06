@@ -333,9 +333,11 @@ struct judgment_prot_t : public judgment_t
       {
         p() -> cooldowns.avengers_shield -> reset( true );
       }
-    }
 
     judgment_t::impact( s );
+      if ( p() -> spec.judgment_3 -> ok() )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, as<int>( p() -> find_spell( 220637 ) -> effectN( 1 ).base_value() ), p() -> gains.judgment );
+    }
   }
 };
 
@@ -455,10 +457,10 @@ bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double c
   return buff_t::trigger( stacks, value, chance, duration );
 }
 
-struct shield_of_the_righteous_t : public paladin_melee_attack_t
+struct shield_of_the_righteous_t : public holy_power_consumer_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
+    holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
   {
     parse_options( options_str );
 
@@ -496,7 +498,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
   void execute() override
   {
-    paladin_melee_attack_t::execute();
+    holy_power_consumer_t::execute();
 
     // Buff granted regardless of combat roll result
     // Duration and armor bonus recalculation handled in the buff
@@ -794,14 +796,13 @@ void paladin_t::init_spells_protection()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
+    spec.judgment_3 = find_specialization_spell( 315867 );
     spec.judgment_4 = find_specialization_spell( 231663 );
 
-    // Prot doesn't have a version of Judgment debuff or Divine Purpose
-    spells.divine_purpose_buff = spell_data_t::nil();
-    spells.judgment_debuff = spell_data_t::nil();
+    spells.judgment_debuff = find_spell( 197277 );
   }
 
-  spec.shield_of_the_righteous = find_specialization_spell( "Shield of the Righteous" );
+  spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
   spells.sotr_buff = find_spell( 132403 );
 
   passives.avengers_valor      = find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger();
