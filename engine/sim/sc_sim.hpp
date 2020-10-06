@@ -355,6 +355,10 @@ struct sim_t : private sc_thread_t
     unsigned crimson_choir_in_party = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
+    /// Whether Volatile Solvent has Mastery buff
+    bool volatile_solvent_crit = false;
+    bool volatile_solvent_primary = false;
+    bool volatile_solvent_mastery = false;
   } shadowlands_opts;
 
   // Auras and De-Buffs

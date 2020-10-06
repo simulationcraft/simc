@@ -818,21 +818,32 @@ void brons_call_to_action( special_effect_t& effect )
 void volatile_solvent( special_effect_t& effect )
 {
     const spell_data_t* volatile_solvent = effect.player->find_spell( 323074 );
-    double amount                  = 0.02;
+    double amount = 0.02;
+    
+    buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_default_value( amount )
+      ->set_duration( timespan_t::from_seconds( 360 ) );
 
-  buff_t* buff = make_buff<buff_t>( effect.player, "Volatile Solvent: Humanoid", volatile_solvent )
-                       // ->add_stat( STAT_CRIT_RATING, amount )
-                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                       ->set_default_value( amount )
-                       ->set_duration( timespan_t::from_seconds( 360 ) );
+    effect.player->register_combat_begin([ buff_crit ]( player_t* p ) { buff_crit->trigger( p->sim->shadowlands_opts.volatile_solvent_crit ); } );
 
 
+    buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beasts", volatile_solvent )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_default_value( amount )
+      ->set_duration( timespan_t::from_seconds( 360 ) );
 
-    effect.player->register_combat_begin(
-      [ buff ]( player_t* p ) { buff->trigger(  ); } );
+    effect.player->register_combat_begin( [ buff_primary ]( player_t* p ) {buff_primary->trigger( p->sim->shadowlands_opts.volatile_solvent_primary ); } );
 
-    //[ buff ]( player_t* p ) { buff->trigger( p->sim->shadowlands_opts.pointed_courage_nearby ); } );
-   
+
+    buff_t* buff_mastery = make_buff( effect.player, "volatile_solvent_humanoid", volatile_solvent )        
+      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+      ->set_default_value( amount ) 
+      ->set_duration( timespan_t::from_seconds( 360 ) );
+
+    effect.player->register_combat_begin( [ buff_mastery ]( player_t* p ) {buff_mastery->trigger( p->sim->shadowlands_opts.volatile_solvent_mastery ); } );
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
