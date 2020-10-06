@@ -621,6 +621,10 @@ struct demonic_strength_t : public demonology_spell_t
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
