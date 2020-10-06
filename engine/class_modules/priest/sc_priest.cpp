@@ -1112,7 +1112,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
     // Currently bugged to only give insanity on the main target
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/687
-    if ( s->target == parent_dot->target || !p().o().bugs )
+    if ( s->target == target || !p().o().bugs )
     {
       p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
                                  s->action );
