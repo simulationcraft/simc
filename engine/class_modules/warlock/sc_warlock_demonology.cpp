@@ -511,7 +511,7 @@ struct implosion_t : public demonology_spell_t
     if ( p()->azerite.explosive_potential.ok() && imps_consumed >= 3 )
       p()->buffs.explosive_potential->trigger();
 
-    if ( p()->legendary.implosive_potential.ok() && imps_consumed >= p()->legendary.implosive_potential->effectN( 1 ).base_value() )
+    if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
   }
 };
