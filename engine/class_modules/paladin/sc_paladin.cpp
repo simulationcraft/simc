@@ -2260,7 +2260,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
-    ap *= 1.0 + cache.mastery() * mastery.divine_bulwark -> effectN( 3 ).mastery_value();
+    ap *= 1.0 + cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value();
 
   return ap;
 }
