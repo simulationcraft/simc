@@ -300,41 +300,31 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
-  timespan_t sotr_cdr; // needed for sotr interaction for protection
-
   judgment_prot_t( paladin_t* p, const std::string& options_str ) :
     judgment_t( p, options_str )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
-    cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
+    cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
 
-    base_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 12 ).percent();
-  }
-
-  void execute() override
-  {
-    judgment_t::execute();
-
-    if ( p() -> talents.fist_of_justice -> ok() )
-    {
-      double cdr = -1.0 * p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> adjust( timespan_t::from_seconds( cdr ) );
-    }
+    //Spell power coefficient
+    base_multiplier *= p -> spec.protection_paladin -> effectN( 9 ).percent();
   }
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
+    judgment_t::impact( s );
+
     if ( result_is_hit( s -> result ) )
     {
-      // Judgment hits/crits reduce SotR recharge time
       if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
            rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
       {
         p() -> cooldowns.avengers_shield -> reset( true );
       }
+      if ( p() -> spec.judgment_4 -> ok() )
+        td( s -> target ) -> debuff.judgment -> trigger();
 
-    judgment_t::impact( s );
       if ( p() -> spec.judgment_3 -> ok() )
         p() -> resource_gain( RESOURCE_HOLY_POWER, as<int>( p() -> find_spell( 220637 ) -> effectN( 1 ).base_value() ), p() -> gains.judgment );
     }

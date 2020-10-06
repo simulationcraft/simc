@@ -938,6 +938,7 @@ void judgment_t::do_ctor_common( paladin_t* p )
     }
   }
 
+  //rank 2 multiplier
   if ( p -> spells.judgment_2 -> ok() )
   {
     base_multiplier *= 1.0 + p -> spells.judgment_2 -> effectN( 1 ).percent();
@@ -945,14 +946,14 @@ void judgment_t::do_ctor_common( paladin_t* p )
 }
 
 judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+    paladin_melee_attack_t( "judgment", p, p -> find_class_spell("Judgment") )
 {
   parse_options( options_str );
   do_ctor_common( p );
 }
 
 judgment_t::judgment_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+    paladin_melee_attack_t( "judgment", p, p -> find_class_spell("Judgment") )
 {
   do_ctor_common( p );
 }
