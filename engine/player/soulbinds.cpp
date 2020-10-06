@@ -817,21 +817,22 @@ void brons_call_to_action( special_effect_t& effect )
 
 void volatile_solvent( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "volatile_solvent" );
-  if ( !buff )
-  {
-      //change spell number
+    const spell_data_t* volatile_solvent = effect.player->find_spell( 323074 );
+    double amount                  = 0.02;
 
-    // TODO: does 'up to X%' include the base value or refers only to extra per ally?
-    buff = make_buff( effect.player, "volatile_solvent", effect.player->find_spell(323491 ))
-               ->set_default_value_from_effect( 2 )
-               ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-               ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-               //figure out how to buff spell power by 2% ->a( A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT )
-               ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
-  }
+  buff_t* buff = make_buff<buff_t>( effect.player, "Volatile Solvent: Humanoid", volatile_solvent )
+                       // ->add_stat( STAT_CRIT_RATING, amount )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                       ->set_default_value( amount )
+                       ->set_duration( timespan_t::from_seconds( 360 ) );
 
-  buff->trigger();
+
+
+    effect.player->register_combat_begin(
+      [ buff ]( player_t* p ) { buff->trigger(  ); } );
+
+    //[ buff ]( player_t* p ) { buff->trigger( p->sim->shadowlands_opts.pointed_courage_nearby ); } );
+   
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
