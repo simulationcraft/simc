@@ -138,13 +138,12 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o()->specialization() == WARLOCK_DEMONOLOGY )
   {
     m *= 1.0 + o()->cache.mastery_value();
+
     if ( o()->buffs.demonic_power->check() )
       m *= 1.0 + o()->buffs.demonic_power->default_value;
 
     if ( o()->buffs.tyrants_soul->check() )
-    {
       m *= 1.0 + o()->buffs.tyrants_soul->current_value;
-    }
   }
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
