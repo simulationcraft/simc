@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
@@ -133,7 +133,7 @@ combinations = [ '0' * __max_tiers ]
 for talents in __class_map[_class]:
     talent_arr = [ '0' ] * __max_tiers
     if talents[1] == -1:
-        for talent in xrange(0, __talents_per_tier):
+        for talent in range(0, __talents_per_tier):
             talent_arr[talents[0]] = str(talent + 1)
             talent_str = ''.join(talent_arr)
 
@@ -143,7 +143,7 @@ for talents in __class_map[_class]:
         talent_arr[talents[0]] = str(talents[1])
         combinations.append(''.join(talent_arr))
 
-print ' '.join(combinations)
+print(' '.join(combinations))
 
 sys.exit(0)
 
