@@ -1072,7 +1072,7 @@ struct divine_toll_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    aoe = data().effectN( 1 ).base_value();
+    aoe = as<int>(data().effectN( 1 ).base_value());
 
     add_child( p -> active.divine_toll );
   }
@@ -1205,7 +1205,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p -> legendary.vanguards_momentum -> ok() )
     {
-      cooldown -> charges += p -> legendary.vanguards_momentum -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p -> legendary.vanguards_momentum -> effectN( 1 ).base_value() );
     }
   }
 
