@@ -5980,8 +5980,9 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // If the action is done in precombat, assume the player used it long enough before pull that the cooldown is ready.
-    if ( action_list -> name_str == "precombat" )
+    // If the action is done in precombat and the pet is permanent
+    // Assume that the player used it long enough before pull that the cooldown is ready again
+    if ( action_list -> name_str == "precombat" && data().duration() == 0_ms )
     {
       cooldown -> reset( false );
     }
