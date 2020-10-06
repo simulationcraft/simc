@@ -747,21 +747,24 @@ void wild_imp_pet_t::arise()
 
 void wild_imp_pet_t::demise()
 {
+  if ( !current.sleeping )
+  {
+    o()->buffs.wild_imps->decrement();
+
+    if ( !power_siphon )
+    {
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 1 ).percent() );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
+    }
+
+    if ( expiration )
+    {
+      event_t::cancel( expiration );
+    }
+  }
+
   warlock_pet_t::demise();
-
-  o()->buffs.wild_imps->decrement();
-
-  if ( !power_siphon )
-  {
-    o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 1 ).percent() );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
-  }
-
-  if ( expiration )
-  {
-    event_t::cancel( expiration );
-  }
 }
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
@@ -853,14 +856,17 @@ void dreadstalker_t::arise()
 
 void dreadstalker_t::demise()
 {
-  warlock_pet_t::demise();
+  if ( !current.sleeping )
+  {
+    o()->buffs.dreadstalkers->decrement();
+    o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 2 ).percent() );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
+    if ( o()->azerite.shadows_bite.ok() )
+      o()->buffs.shadows_bite->trigger();
+  }
 
-  o()->buffs.dreadstalkers->decrement();
-  o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN( 2 ).percent() );
-  expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-  expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
-  if ( o()->azerite.shadows_bite.ok() )
-    o()->buffs.shadows_bite->trigger();
+  warlock_pet_t::demise();
 }
 
 timespan_t dreadstalker_t::available() const
@@ -961,21 +967,24 @@ void demonic_tyrant_t::init_base_stats()
 
 void demonic_tyrant_t::demise()
 {
+  if ( !current.sleeping )
+  {
+    if ( o()->azerite.supreme_commander.ok() )
+    {
+      o()->buffs.demonic_core->trigger( 1 );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
+      o()->buffs.supreme_commander->trigger();
+    }
+
+    if ( o()->conduit.tyrants_soul.value() > 0 )
+    {
+      o()->buffs.demonic_core->trigger( 1 );
+      o()->buffs.tyrants_soul->trigger();
+    }
+  }
+
   warlock_pet_t::demise();
-
-  if ( o()->azerite.supreme_commander.ok() )
-  {
-    o()->buffs.demonic_core->trigger( 1 );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
-    o()->buffs.supreme_commander->trigger();
-  }
-
-  if ( o()->conduit.tyrants_soul.value() > 0 )
-  {
-    o()->buffs.demonic_core->trigger( 1 );
-    o()->buffs.tyrants_soul->trigger();
-  }
 }
 
 action_t* demonic_tyrant_t::create_action( util::string_view name, const std::string& options_str )
@@ -1384,8 +1393,10 @@ void eyes_of_guldan_t::arise()
 
 void eyes_of_guldan_t::demise()
 {
+  if ( !current.sleeping )
+    o()->buffs.eyes_of_guldan->decrement();
+
   warlock_simple_pet_t::demise();
-  o()->buffs.eyes_of_guldan->decrement();
 }
 
 action_t* eyes_of_guldan_t::create_action( util::string_view name, const std::string& options_str )
@@ -1423,8 +1434,10 @@ void prince_malchezaar_t::arise()
 
 void prince_malchezaar_t::demise()
 {
+  if ( !current.sleeping )
+    o()->buffs.prince_malchezaar->decrement();
+
   warlock_simple_pet_t::demise();
-  o()->buffs.prince_malchezaar->decrement();
 }
 
 timespan_t prince_malchezaar_t::available() const
@@ -1492,10 +1505,13 @@ void infernal_t::arise()
 
 void infernal_t::demise()
 {
-  warlock_pet_t::demise();
+  if ( !current.sleeping )
+  {
+    buffs.embers->expire();
+    immolation->expire();
+  }
 
-  buffs.embers->expire();
-  immolation->expire();
+  warlock_pet_t::demise();
 }
 }  // namespace destruction
 
