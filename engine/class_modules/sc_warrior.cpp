@@ -4029,7 +4029,7 @@ struct shield_slam_t : public warrior_attack_t
   double rage_gain;
   shield_slam_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
-      rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) )
+      rage_gain( data().effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
