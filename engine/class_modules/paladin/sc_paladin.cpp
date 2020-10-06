@@ -2197,9 +2197,7 @@ double paladin_t::composite_bonus_armor() const
 
   if ( buffs.shield_of_the_righteous -> check() )
   {
-    shield_of_the_righteous_buff_t* sotr_buff = debug_cast<shield_of_the_righteous_buff_t*>( buffs.shield_of_the_righteous );
-
-    ba += sotr_buff -> value() * cache.strength() * ( 1.0 + sotr_buff -> avengers_valor_increase );
+    ba += buffs.shield_of_the_righteous -> value();
   }
 
   return ba;

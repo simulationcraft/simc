@@ -1106,10 +1106,6 @@ struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  bool trigger( int stacks, double chance, double value, timespan_t duration ) override;
-
-  double default_av_increase;
-  double avengers_valor_increase;
 };
 
 void empyrean_power( special_effect_t& effect );

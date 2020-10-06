@@ -401,10 +401,8 @@ struct hand_of_the_protector_t : public light_of_the_protector_base_t
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-  buff_t( p, "shield_of_the_righteous", p -> spells.sotr_buff ),
-  default_av_increase( p -> passives.avengers_valor -> effectN( 2 ).percent() )
+  buff_t( p, "shield_of_the_righteous", p -> spells.sotr_buff )
 {
-  avengers_valor_increase = 0;
   add_invalidate( CACHE_BONUS_ARMOR );
   set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
@@ -421,30 +419,6 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
   {
     p -> buffs.inner_light -> trigger();
   }
-}
-
-// Custom trigger function to (re-)calculate the increase from avenger's valor
-bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
-{
-  // Shield of the righteous' armor bonus is dynamic with strength, but uses a multiplier that is only updated on sotr cast
-  // avengers_valor_increase varies between 0 and 0.2 based on avenger's valor being up or not, and on the previous buff's remaining duration
-  paladin_t* p = debug_cast< paladin_t* >( player );
-
-  double new_avengers_valor = p -> buffs.avengers_valor -> up() ? default_av_increase : 0;
-
-  if ( this -> up() && new_avengers_valor != avengers_valor_increase )
-  {
-    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() )
-      + new_avengers_valor * buff_duration().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() );
-  }
-  else
-  {
-    avengers_valor_increase = new_avengers_valor;
-  }
-
-  sim -> print_debug( "Shield of the Righteous buff triggered with a {} increase from Avenger's Valor", avengers_valor_increase );
-
-  return buff_t::trigger( stacks, value, chance, duration );
 }
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t
@@ -468,22 +442,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-
-    // links needed for Judgment cooldown reduction and seraphim respectively
-    cooldown = p -> cooldowns.shield_of_the_righteous;
-    if ( ! p -> active.sotr )
-    {
-      p -> active.sotr = this;
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = paladin_melee_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.avengers_valor -> value();
-
-    return m;
   }
 
   void execute() override
@@ -493,18 +451,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
     // Buff granted regardless of combat roll result
     // Duration and armor bonus recalculation handled in the buff
     p() -> buffs.shield_of_the_righteous -> trigger();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // SotR hits reduce Light of the Protector and Avenging Wrath cooldown times if Righteous Protector is talented
-      if ( p() -> talents.righteous_protector -> ok() )
-      {
-        timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> talents.righteous_protector -> effectN( 1 ).base_value() );
-        p() -> cooldowns.avenging_wrath -> adjust( reduction );
-        p() -> cooldowns.light_of_the_protector -> adjust( reduction );
-        p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
-      }
-    }
 
     p() -> buffs.avengers_valor -> expire();
 
