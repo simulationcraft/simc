@@ -529,8 +529,9 @@ struct ascended_nova_t final : public priest_spell_t
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
-    aoe    = -1;
-    radius = data().effectN( 1 ).radius_max();
+    aoe                        = -1;
+    radius                     = data().effectN( 1 ).radius_max();
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -553,6 +554,13 @@ struct ascended_nova_t final : public priest_spell_t
 
     return priest_spell_t::ready();
   }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = priest_spell_t::composite_aoe_multiplier( state );
+
+    return cam / std::sqrt( state->n_targets );
+  }
 };
 
 struct ascended_blast_t final : public priest_spell_t
@@ -569,7 +577,8 @@ struct ascended_blast_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
     }
-    cooldown->hasted = true;
+    cooldown->hasted           = true;
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -608,7 +617,8 @@ struct ascended_eruption_t final : public priest_spell_t
     background = true;
     radius     = data().effectN( 1 ).radius_max();
     // By default the spell tries to use the healing SP Coeff
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.direct     = data().effectN( 1 ).sp_coeff();
+    affected_by_shadow_weaving = true;
   }
 
   void trigger_eruption( int stacks )
