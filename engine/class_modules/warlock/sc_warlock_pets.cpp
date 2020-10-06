@@ -139,8 +139,11 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + o()->cache.mastery_value();
     if ( o()->buffs.demonic_power->check() )
-    {
       m *= 1.0 + o()->buffs.demonic_power->default_value;
+
+    if ( o()->buffs.tyrants_soul->check() )
+    {
+      m *= 1.0 + o()->buffs.tyrants_soul->current_value;
     }
   }
 
@@ -967,6 +970,12 @@ void demonic_tyrant_t::demise()
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
     o()->buffs.supreme_commander->trigger();
+  }
+
+  if ( o()->conduit.tyrants_soul.value() > 0 )
+  {
+    o()->buffs.demonic_core->trigger( 1 );
+    o()->buffs.tyrants_soul->trigger();
   }
 }
 
