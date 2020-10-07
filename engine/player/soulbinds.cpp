@@ -552,15 +552,13 @@ void combat_meditation( special_effect_t& effect )
   // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
   // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
   // id:345861 lockout buff (buff->eff#3->trigger)
-  struct combat_meditation_buff_t : public buff_t
+  struct combat_meditation_buff_t : public stat_buff_t
   {
     timespan_t ext_dur;
 
-    combat_meditation_buff_t( player_t* p ) : buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
+    combat_meditation_buff_t( player_t* p ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
       set_cooldown( data().effectN( 3 ).trigger()->duration() );
-      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-      set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
       ext_dur =
