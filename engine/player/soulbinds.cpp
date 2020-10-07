@@ -892,7 +892,7 @@ void lead_by_example( special_effect_t& effect )
     // TODO: does 'up to X%' include the base value or refers only to extra per ally?
     buff = make_buff( effect.player, "lead_by_example", s_data )
       ->set_default_value_from_effect( 2 )
-      ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
+      ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
