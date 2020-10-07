@@ -315,7 +315,7 @@ public:
     buff_t* concealed_blunderbuss;
     damage_buff_t* finality_eviscerate;
     buff_t* finality_rupture;
-    damage_buff_t* finality_shadow_vault;
+    damage_buff_t* finality_black_powder;
     buff_t* greenskins_wickers;
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
@@ -1126,7 +1126,7 @@ public:
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.perforated_veins );
     register_damage_buff( p()->buffs.finality_eviscerate );
-    register_damage_buff( p()->buffs.finality_shadow_vault );
+    register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
@@ -4002,15 +4002,15 @@ struct shadowstrike_t : public rogue_attack_t
   }
 };
 
-// Shadow Vault =============================================================
+// Black Powder =============================================================
 
-struct shadow_vault_t: public rogue_attack_t
+struct black_powder_t: public rogue_attack_t
 {
-  struct shadow_vault_bonus_t : public rogue_attack_t
+  struct black_powder_bonus_t : public rogue_attack_t
   {
     int last_cp;
 
-    shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
+    black_powder_bonus_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 319190 ) ),
       last_cp( 1 )
     {
@@ -4028,15 +4028,15 @@ struct shadow_vault_t: public rogue_attack_t
     }
   };
 
-  shadow_vault_bonus_t* bonus_attack;
+  black_powder_bonus_t* bonus_attack;
 
-  shadow_vault_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Shadow Vault" ), options_str ),
+  black_powder_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Black Powder" ), options_str ),
     bonus_attack( nullptr )
   {
     if ( p->find_rank_spell( "Shadow Vault", "Rank 2" )->ok() )
     {
-      bonus_attack = p->get_background_action<shadow_vault_bonus_t>( "shadow_vault_bonus" );
+      bonus_attack = p->get_background_action<black_powder_bonus_t>( "black_powder_bonus" );
       add_child( bonus_attack );
     }
   }
@@ -4048,10 +4048,10 @@ struct shadow_vault_t: public rogue_attack_t
 
     if ( p()->legendary.finality.ok() )
     {
-      if ( p()->buffs.finality_shadow_vault->check() )
-        p()->buffs.finality_shadow_vault->expire();
+      if ( p()->buffs.finality_black_powder->check() )
+        p()->buffs.finality_black_powder->expire();
       else
-        p()->buffs.finality_shadow_vault->trigger();
+        p()->buffs.finality_black_powder->trigger();
     }
   }
 
@@ -7165,7 +7165,7 @@ void rogue_t::init_action_list()
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-    finish->add_action( this, "Shadow Vault", "if=!variable.use_priority_rotation&spell_targets>=3" );
+    finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=3" );
     finish->add_action( this, "Eviscerate" );
 
     // Builders
@@ -7193,6 +7193,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "auto_attack"         ) return new auto_melee_attack_t   ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t            ( name, this, options_str );
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t    ( name, this, options_str );
+  if ( name == "black_powder"        ) return new black_powder_t        ( name, this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t        ( name, this, options_str );
   if ( name == "blade_rush"          ) return new blade_rush_t          ( name, this, options_str );
   if ( name == "cheap_shot"          ) return new cheap_shot_t          ( name, this, options_str );
@@ -7228,7 +7229,6 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "shadow_dance"        ) return new shadow_dance_t        ( name, this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t          ( name, this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t        ( name, this, options_str );
-  if ( name == "shadow_vault"        ) return new shadow_vault_t        ( name, this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t      ( name, this, options_str );
   if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t    ( name, this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t       ( name, this, options_str );
@@ -8407,7 +8407,7 @@ void rogue_t::create_buffs()
   buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", find_spell( 340600 ) );
   buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
     ->set_default_value_from_effect( 1 ); // Bonus Damage%
-  buffs.finality_shadow_vault = make_buff<damage_buff_t>( this, "finality_shadow_vault", find_spell( 340603 ) );
+  buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", find_spell( 340603 ) );
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
     ->set_chance( legendary.concealed_blunderbuss->effectN( 1 ).percent() )
