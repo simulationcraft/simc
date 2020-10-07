@@ -1,16 +1,16 @@
 rogue="DS_Rogue_Assassination"
-level=120
+level=50
 race=human
 spec=assassination
 role=attack
 position=back
-talents=2210021
+talents=2210023
 
-azerite_essences=35:3:1/27:3:0/6:3:0/32:3:0
+azerite_essences=5:3:1/12:3:0/27:3:0/35:3:0
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1647/4819,azerite_powers=407/408/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=408/193/30/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1647/4819,azerite_powers=407/408/22/13,ilevel=130
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80,ilevel=145
+shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=408/193/30/13,ilevel=130
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=408/582/30/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6573
@@ -34,12 +34,12 @@ race=human
 spec=outlaw
 role=attack
 position=back
-talents=2020021
+talents=2020022
 
-azerite_essences=35:3:1/27:3:0/6:3:0/32:3:0
+azerite_essences=5:3:1/12:3:0/27:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=411/582/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80,ilevel=145
 shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=411/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=180/582/31/13
@@ -64,13 +64,13 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=2120012
+talents=2120032
 
-azerite_essences=35:3:1/27:3:0/6:3:0/32:3:0
+azerite_essences=5:3:1/12:3:0/27:3:0/35:3:0
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=175/413/30/13
+head=stygian_guise,id=174132,bonus_id=4824/1517,azerite_powers=413/582/18/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=175/582/21/13
+shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=414/413/18/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=414/582/21/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573

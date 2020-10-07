@@ -1,0 +1,144 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for HUNTERs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="My'das Talisman"
+trinket1=,id=158319,ilevel=400
+
+copy="Harlan's Loaded Dice"
+trinket1=,id=155881,ilevel=400
+
+copy="Lustrous Golden Plumage"
+trinket1=,id=159617,ilevel=400
+
+copy="Galecaller's Boon"
+trinket1=,id=159614,ilevel=400
+
+copy="Dead-Eye Spyglass"
+trinket1=,id=159623,ilevel=400
+
+copy="Tiny Electromental in a Jar"
+trinket1=,id=158374,ilevel=400
+
+copy="Azerokk's Resonating Heart"
+trinket1=,id=159612,ilevel=400
+
+copy="Lingering Sporepods"
+trinket1=,id=159626,ilevel=400
+
+copy="Permafrost-Encrusted Heart"
+trinket1=,id=161381,ilevel=400
+
+copy="Plume of the Seaborne Avian"
+trinket1=,id=161378,ilevel=400
+
+copy="Spiritbound Voodoo Burl"
+trinket1=,id=161412,ilevel=400
+
+copy="Darkmoon Deck: Fathoms"
+trinket1=,id=159125,ilevel=355
+
+copy="Surging Alchemist Stone"
+trinket1=,id=152632,ilevel=300
+
+copy="Plunderbeard's Flask"
+trinket1=,id=158164,ilevel=400
+
+copy="Frenetic Corpuscle"
+trinket1=,id=160648,ilevel=400
+
+copy="Construct Overcharger"
+trinket1=,id=160652,ilevel=400
+
+copy="Kul Tiran Cannonball Runner"
+trinket1=,id=159628,ilevel=400
+
+copy="Vanquished Tendril of G'huun"
+trinket1=,id=160654,ilevel=400
+
+copy="Landoi's Scrutiny"
+trinket1=,id=163935,ilevel=400
+
+copy="Kaja-fied Banana"
+trinket1=,id=161125,ilevel=400
+
+copy="Endless Tincture of Fractional Power"
+trinket1=,id=152636,ilevel=300
+
+copy="Galewind Chimes"
+trinket1=,id=155568,ilevel=400
+
+copy="Gilded Loa Figurine"
+trinket1=,id=158153,ilevel=400
+
+copy="Emblem of Zandalar"
+trinket1=,id=158154,ilevel=400
+
+copy="Dinobone Charm"
+trinket1=,id=158155,ilevel=400
+
+copy="Pearl Diver's Compass"
+trinket1=,id=158162,ilevel=400
+
+copy="First Mate's Spyglass"
+trinket1=,id=158163,ilevel=400
+
+copy="Whirlwing's Plumage"
+trinket1=,id=158215,ilevel=400
+
+copy="Living Oil Cannister"
+trinket1=,id=158216,ilevel=400
+
+copy="Vial of Storms"
+trinket1=,id=158224,ilevel=400
+
+copy="Doom Shroom"
+trinket1=,id=158555,ilevel=400
+
+copy="Snowpelt Mangler"
+trinket1=,id=160263,ilevel=400
+
+copy="Incessantly Ticking Clock"
+trinket1=,id=161113,ilevel=400
+
+copy="Ravasaur Skull Bijou"
+trinket1=,id=161119,ilevel=400
+
+copy="Crawg Gnawed Femur"
+trinket1=,id=163703,ilevel=400
+
+copy="Dread Gladiator's Badge"
+trinket1=,id=161902,ilevel=400
+
+copy="Lion's Guile"
+trinket1=,id=161473,ilevel=400
+
+copy="Doom's Wake"
+trinket1=,id=161462,ilevel=400
+
+copy="Dread Gladiator's Insignia"
+trinket1=,id=161676,ilevel=400
+
+copy="Dread Gladiator's Medallion"
+trinket1=,id=161674,ilevel=400
+
+copy="Berserker's Juju"
+trinket1=,id=161117,ilevel=400
+
+copy="Emblazoned Alchemist Stone"
+trinket1=,id=166976,ilevel=415
+
+copy="Forest Lord's Razorleaf"
+trinket1=,id=166794,ilevel=400
+
+copy="Razzashi Tooth Medallion"
+trinket1=,id=165667,ilevel=400
+
+copy="Kezan Stamped Bijou"
+trinket1=,id=165662,ilevel=400
+
+copy="Chargestone of the Thunder King's Court"
+trinket1=,id=165660,ilevel=400
+

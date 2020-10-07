@@ -1,0 +1,135 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for CASTERs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Vessel of Skittering Shadows"
+trinket1=,id=159610,ilevel=400
+
+copy="Conch of Dark Whispers"
+trinket1=,id=159620,ilevel=400
+
+copy="Hadal's Nautilus"
+trinket1=,id=159622,ilevel=400
+
+copy="Rotcrusted Voodoo Doll"
+trinket1=,id=159624,ilevel=400
+
+copy="Ignition Mage's Fuse"
+trinket1=,id=159615,ilevel=400
+
+copy="Lady Waycrest's Music Box"
+trinket1=,id=159631,ilevel=400
+
+copy="Balefire Branch"
+trinket1=,id=159630,ilevel=400
+
+copy="Azurethos' Singed Plumage"
+trinket1=,id=161377,ilevel=400
+
+copy="Drust-Runed Icicle"
+trinket1=,id=161380,ilevel=400
+
+copy="T'zane's Barkspines"
+trinket1=,id=161411,ilevel=400
+
+copy="Darkmoon Deck: Squalls"
+trinket1=,id=159126,ilevel=355
+
+copy="Surging Alchemist Stone"
+trinket1=,id=152632,ilevel=300
+
+copy="Plunderbeard's Flask"
+trinket1=,id=158164,ilevel=400
+
+copy="Vigilant's Bloodshaper"
+trinket1=,id=160651,ilevel=400
+
+copy="Vanquished Tendril of G'huun"
+trinket1=,id=160654,ilevel=400
+
+copy="Leyshock's Grand Compilation"
+trinket1=,id=163937,ilevel=400
+
+copy="Kaja-fied Banana"
+trinket1=,id=161125,ilevel=400
+
+copy="Twitching Tentacle of Xalzaix"
+trinket1=,id=160656,ilevel=400
+
+copy="Endless Tincture of Fractional Power"
+trinket1=,id=152636,ilevel=300
+
+copy="Galewind Chimes"
+trinket1=,id=155568,ilevel=400
+
+copy="Gilded Loa Figurine"
+trinket1=,id=158153,ilevel=400
+
+copy="Emblem of Zandalar"
+trinket1=,id=158154,ilevel=400
+
+copy="Dinobone Charm"
+trinket1=,id=158155,ilevel=400
+
+copy="Pearl Diver's Compass"
+trinket1=,id=158162,ilevel=400
+
+copy="First Mate's Spyglass"
+trinket1=,id=158163,ilevel=400
+
+copy="Whirlwing's Plumage"
+trinket1=,id=158215,ilevel=400
+
+copy="Living Oil Cannister"
+trinket1=,id=158216,ilevel=400
+
+copy="Vial of Storms"
+trinket1=,id=158224,ilevel=400
+
+copy="Doom Shroom"
+trinket1=,id=158555,ilevel=400
+
+copy="Snowpelt Mangler"
+trinket1=,id=160263,ilevel=400
+
+copy="Incessantly Ticking Clock"
+trinket1=,id=161113,ilevel=400
+
+copy="Ravasaur Skull Bijou"
+trinket1=,id=161119,ilevel=400
+
+copy="Crawg Gnawed Femur"
+trinket1=,id=163703,ilevel=400
+
+copy="Dread Gladiator's Badge"
+trinket1=,id=161902,ilevel=400
+
+copy="Lion's Grace"
+trinket1=,id=161472,ilevel=400
+
+copy="Doom's Hatred"
+trinket1=,id=161461,ilevel=400
+
+copy="Dread Gladiator's Insignia"
+trinket1=,id=161676,ilevel=400
+
+copy="Dread Gladiator's Medallion"
+trinket1=,id=161674,ilevel=400
+
+copy="Berserker's Juju"
+trinket1=,id=161117,ilevel=400
+
+copy="Emblazoned Alchemist Stone"
+trinket1=,id=166976,ilevel=415
+
+copy="Ancient Knot of Wisdom"
+trinket1=,id=161417,ilevel=400
+
+copy="Moonstone of Zin-Azshari"
+trinket1=,id=165666,ilevel=400
+
+copy="Sea Giant's Tidestone"
+trinket1=,id=165664,ilevel=400
+

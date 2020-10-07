@@ -3749,9 +3749,8 @@ struct rapid_fire_t: public hunter_spell_t
   {
     hunter_spell_t::init();
 
-    damage -> gain       = gain;
-    damage -> stats      = stats;
-    damage -> parent_dot = target -> get_dot( name_str, player );
+    damage -> gain  = gain;
+    damage -> stats = stats;
     stats -> action_list.push_back( damage );
   }
 
@@ -3774,6 +3773,8 @@ struct rapid_fire_t: public hunter_spell_t
   void tick( dot_t* d ) override
   {
     hunter_spell_t::tick( d );
+
+    damage -> parent_dot = d; // BfA Surging Shots shenanigans
     damage -> set_target( d -> target );
     damage -> execute();
 

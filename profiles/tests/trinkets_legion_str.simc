@@ -1,0 +1,156 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for MELEEs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Bloodstained Handkerchief"
+trinket1=,id=142159,ilevel=255
+
+copy="Chaos Talisman"
+trinket1=,id=137459,ilevel=255
+
+copy="Eye of Command"
+trinket1=,id=142167,ilevel=255
+
+copy="Faulty Countermeasure"
+trinket1=,id=137539,ilevel=255
+
+copy="Gift of Radiance"
+trinket1=,id=133647,ilevel=255
+
+copy="Giant Ornamental Pearl"
+trinket1=,id=137369,ilevel=255
+
+copy="Mark of Dargrul"
+trinket1=,id=137357,ilevel=255
+
+copy="Memento of Angerboda"
+trinket1=,id=133644,ilevel=255
+
+copy="Nightmare Egg Shell"
+trinket1=,id=137312,ilevel=255
+
+copy="Spiked Counterweight"
+trinket1=,id=136715,ilevel=255
+
+copy="Terrorbound Nexus"
+trinket1=,id=137406,ilevel=255
+
+copy="Tiny Oozeling in a Jar"
+trinket1=,id=137439,ilevel=255
+
+copy="Windscar Whetstone"
+trinket1=,id=137486,ilevel=255
+
+copy="Fel-Oiled Infernal Machine"
+trinket1=,id=144482,ilevel=255
+
+copy="Void Stalker's Contract"
+trinket1=,id=151307,ilevel=255
+
+copy="Chrono Shard"
+trinket1=,id=137419,ilevel=255
+
+copy="Horn of Valor"
+trinket1=,id=133642,ilevel=255
+
+copy="Toe Knee's Promise"
+trinket1=,id=142164,ilevel=255
+
+copy="Nature's Call"
+trinket1=,id=139334,ilevel=255
+
+copy="Ravaged Seed Pod"
+trinket1=,id=139320,ilevel=255
+
+copy="Spontaneous Appendages"
+trinket1=,id=139325,ilevel=255
+
+copy="Ursoc's Rending Paw"
+trinket1=,id=139328,ilevel=255
+
+copy="Draught of Souls"
+trinket1=,id=140808,ilevel=255
+
+copy="Claw of the Crystalline Scorpid"
+trinket1=,id=140790,ilevel=255
+
+copy="Convergence of Fates"
+trinket1=,id=140806,ilevel=255
+
+copy="Entwined Elemental Foci"
+trinket1=,id=140796,ilevel=255
+
+copy="Might of Krosus"
+trinket1=,id=140799,ilevel=255
+
+copy="Infernal Cinders"
+trinket1=,id=147009,ilevel=255
+
+copy="Umbral Moonglaives"
+trinket1=,id=147012,ilevel=255
+
+copy="Vial of Ceaseless Toxins"
+trinket1=,id=147011,ilevel=255
+
+copy="Specter of Betrayal"
+trinket1=,id=151190,ilevel=255
+
+copy="Cradle of Anguish"
+trinket1=,id=147010,ilevel=255
+
+copy="Engine of Eradication"
+trinket1=,id=147015,ilevel=255
+
+copy="Gorshalach's Legacy"
+trinket1=,id=152093,ilevel=255
+
+copy="Seeping Scourgewing"
+trinket1=,id=151964,ilevel=255
+
+copy="Forgefiend's Fabricator"
+trinket1=,id=151963,ilevel=255
+
+copy="Khaz'goroths Courage"
+trinket1=,id=154176,ilevel=280
+
+copy="Shadow-Singed Fang"
+trinket1=,id=151968,ilevel=255
+
+copy="Terminus Signaling Beacon"
+trinket1=,id=151969,ilevel=255
+
+copy="PVP Insignia of Victory"
+trinket1=,id=142784,ilevel=255
+
+copy="PVP Badge of Victory"
+trinket1=,id=142669,ilevel=255
+
+copy="Impact Tremor"
+trinket1=,id=140034,ilevel=255
+
+copy="Stat Stick (Crit)"
+trinket1=,id=142508,bonus_id=603,ilevel=255
+
+copy="Stat Stick (Haste)"
+trinket1=,id=142508,bonus_id=604,ilevel=255
+
+copy="Stat Stick (Mastery)"
+trinket1=,id=142508,bonus_id=605,ilevel=255
+
+copy="Stat Stick (Versatility)"
+trinket1=,id=142508,bonus_id=607,ilevel=255
+
+copy="Ettin Fingernail"
+trinket1=,id=141535,ilevel=255
+
+copy="Unstable Arcanocrystal"
+trinket1=,id=141482,ilevel=255
+
+copy="Kil'jaeden's Burning Wish"
+trinket1=,id=144259,ilevel=265
+
+copy="Aman'Thul's Vision"
+trinket1=,id=154172,ilevel=280
+

@@ -473,6 +473,7 @@ public:
 
     // SL
     propagate_const<buff_t*> decimating_bolt;
+    propagate_const<buff_t*> tyrants_soul;
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;

@@ -511,7 +511,7 @@ struct implosion_t : public demonology_spell_t
     if ( p()->azerite.explosive_potential.ok() && imps_consumed >= 3 )
       p()->buffs.explosive_potential->trigger();
 
-    if ( p()->legendary.implosive_potential.ok() && imps_consumed >= p()->legendary.implosive_potential->effectN( 1 ).base_value() )
+    if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
   }
 };
@@ -621,6 +621,10 @@ struct demonic_strength_t : public demonology_spell_t
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
@@ -1097,6 +1101,10 @@ void warlock_t::create_buffs_demonology()
                                 ->set_duration( find_spell( 279885 )->duration() );
   buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
+
+  // Conduits
+  buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
+                           ->set_default_value( conduit.tyrants_soul.percent() );
 
   // Legendaries
   buffs.balespiders_burning_core =

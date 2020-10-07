@@ -1,0 +1,138 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for MELEEs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Rezan's Gleaming Eye"
+trinket1=,id=158712,ilevel=400
+
+copy="Briny Barnacle"
+trinket1=,id=159619,ilevel=400
+
+copy="Merektha's Fang"
+trinket1=,id=158367,ilevel=400
+
+copy="Razdunk's Big Red Button"
+trinket1=,id=159611,ilevel=400
+
+copy="Lingering Sporepods"
+trinket1=,id=159626,ilevel=400
+
+copy="Vial of Animated Blood"
+trinket1=,id=159625,ilevel=400
+
+copy="Jes' Howler"
+trinket1=,id=159627,ilevel=400
+
+copy="Galecaller's Beak"
+trinket1=,id=161379,ilevel=400
+
+copy="Kraulok's Claw"
+trinket1=,id=161419,ilevel=400
+
+copy="Prism of Dark Intensity"
+trinket1=,id=161376,ilevel=400
+
+copy="Darkmoon Deck: Fathoms"
+trinket1=,id=159125,ilevel=355
+
+copy="Surging Alchemist Stone"
+trinket1=,id=152632,ilevel=300
+
+copy="Plunderbeard's Flask"
+trinket1=,id=158164,ilevel=400
+
+copy="Vanquished Tendril of G'huun"
+trinket1=,id=160654,ilevel=400
+
+copy="'Bygone Bee' Almanac"
+trinket1=,id=163936,ilevel=400
+
+copy="Kaja-fied Banana"
+trinket1=,id=161125,ilevel=400
+
+copy="Syringe of Bloodborne Infirmity"
+trinket1=,id=160655,ilevel=400
+
+copy="Disc of Systematic Regression"
+trinket1=,id=160650,ilevel=400
+
+copy="Endless Tincture of Fractional Power"
+trinket1=,id=152636,ilevel=300
+
+copy="Galewind Chimes"
+trinket1=,id=155568,ilevel=400
+
+copy="Gilded Loa Figurine"
+trinket1=,id=158153,ilevel=400
+
+copy="Emblem of Zandalar"
+trinket1=,id=158154,ilevel=400
+
+copy="Dinobone Charm"
+trinket1=,id=158155,ilevel=400
+
+copy="Pearl Diver's Compass"
+trinket1=,id=158162,ilevel=400
+
+copy="First Mate's Spyglass"
+trinket1=,id=158163,ilevel=400
+
+copy="Whirlwing's Plumage"
+trinket1=,id=158215,ilevel=400
+
+copy="Living Oil Cannister"
+trinket1=,id=158216,ilevel=400
+
+copy="Vial of Storms"
+trinket1=,id=158224,ilevel=400
+
+copy="Doom Shroom"
+trinket1=,id=158555,ilevel=400
+
+copy="Gore-Crusted Butcher's Block"
+trinket1=,id=159616,ilevel=400
+
+copy="Snowpelt Mangler"
+trinket1=,id=160263,ilevel=400
+
+copy="Incessantly Ticking Clock"
+trinket1=,id=161113,ilevel=400
+
+copy="Ravasaur Skull Bijou"
+trinket1=,id=161119,ilevel=400
+
+copy="Crawg Gnawed Femur"
+trinket1=,id=163703,ilevel=400
+
+copy="Dread Gladiator's Badge"
+trinket1=,id=161902,ilevel=400
+
+copy="Lion's Strength"
+trinket1=,id=161474,ilevel=400
+
+copy="Doom's Fury"
+trinket1=,id=161463,ilevel=400
+
+copy="Dread Gladiator's Insignia"
+trinket1=,id=161676,ilevel=400
+
+copy="Dread Gladiator's Medallion"
+trinket1=,id=161674,ilevel=400
+
+copy="Berserker's Juju"
+trinket1=,id=161117,ilevel=400
+
+copy="Emblazoned Alchemist Stone"
+trinket1=,id=166976,ilevel=415
+
+copy="Knot of Ancient Fury"
+trinket1=,id=161413,ilevel=400
+
+copy="Ancient Tuskarr Sea Charm"
+trinket1=,id=165661,ilevel=400
+
+copy="Ritual Feather of Unng Ak"
+trinket1=,id=165665,ilevel=400
+

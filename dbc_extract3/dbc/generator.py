@@ -1232,6 +1232,7 @@ class SpellDataGenerator(DataGenerator):
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
+         323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
         ),
 
         # Warrior:
@@ -1587,7 +1588,8 @@ class SpellDataGenerator(DataGenerator):
           ( 265391, 3 ),    # Roaring Blaze Debuff
           ( 266087, 3 ),    # Rain of Chaos Buff
           ( 339784, 2 ),    # Tyrant's Soul Buff
-          ( 337142, 2 )     # Grim Inquisitor's Dread Calling Buff
+          ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
+          ( 342997, 2 )     # Grim Inquisitor's Dread Calling Buff 2     
         ),
 
         # Monk:
