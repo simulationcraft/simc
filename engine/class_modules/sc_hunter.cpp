@@ -2355,6 +2355,25 @@ struct tar_trap_aoe_t : public event_t
 
 } // namespace events
 
+namespace buffs {
+
+struct trick_shots_t : public buff_t
+{
+  using buff_t::buff_t;
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool ret = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( ret )
+      debug_cast<hunter_t*>( player ) -> buffs.secrets_of_the_vigil -> trigger();
+
+    return ret;
+  }
+};
+
+} // namespace buffs
+
 void hunter_t::trigger_wild_spirits( const action_state_t* s )
 {
   if ( !buffs.wild_spirits -> check() )
@@ -2451,12 +2470,6 @@ void hunter_t::consume_trick_shots()
 {
   if ( buffs.volley -> up() )
     return;
-
-  if ( buffs.secrets_of_the_vigil -> up() )
-  {
-    buffs.secrets_of_the_vigil -> decrement();
-    return;
-  }
 
   buffs.trick_shots -> decrement();
 }
@@ -3483,12 +3496,15 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   double cost() const override
   {
-    if ( p() -> executing && p() -> executing == this )
-      return lock_and_loaded ? 0 : aimed_shot_base_t::cost();
-
-    if ( p() -> buffs.lock_and_load -> check() )
+    const bool casting = p() -> executing && p() -> executing == this;
+    if ( casting ? lock_and_loaded : p() -> buffs.lock_and_load -> check() )
       return 0;
-    return aimed_shot_base_t::cost();
+
+    double c = aimed_shot_base_t::cost();
+
+    c *= 1 + p() -> buffs.secrets_of_the_vigil -> check_value();
+
+    return c;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3514,6 +3530,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
+
+    p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -3542,6 +3560,15 @@ struct aimed_shot_t : public aimed_shot_base_t
       et *= 1 + p() -> buffs.trueshot -> check_value();
 
     return et;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    aimed_shot_base_t::impact( s );
+
+    // XXX: gets consumed on impact for some reason
+    if ( s -> chain_target == 0 )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -6262,14 +6289,8 @@ void hunter_t::create_buffs()
       -> set_chance( talents.streamline.ok() );
 
   buffs.trick_shots =
-    make_buff( this, "trick_shots", find_spell( 257622 ) )
-      -> set_chance( specs.trick_shots.ok() )
-      -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
-          if ( cur == 0 )
-            buffs.secrets_of_the_vigil -> expire();
-          else if ( old == 0 )
-            buffs.secrets_of_the_vigil -> trigger();
-        } );
+    make_buff<buffs::trick_shots_t>( this, "trick_shots", find_spell( 257622 ) )
+      -> set_chance( specs.trick_shots.ok() );
 
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
@@ -6400,6 +6421,7 @@ void hunter_t::create_buffs()
 
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.secrets_of_the_vigil );
 
   // Azerite
