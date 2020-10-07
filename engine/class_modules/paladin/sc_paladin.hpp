@@ -212,6 +212,8 @@ public:
   {
     const spell_data_t* judgment_3;
     const spell_data_t* judgment_4;
+    const spell_data_t* consecation_2;
+    const spell_data_t* consecration_3;
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
@@ -236,6 +238,7 @@ public:
     cooldown_t* judgment; // Crusader's Judgment
     cooldown_t* light_of_the_protector;  // Righteous Protector
     cooldown_t* shield_of_the_righteous; // Judgment
+
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
