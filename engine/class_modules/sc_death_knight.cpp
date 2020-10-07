@@ -9,6 +9,7 @@
 // Defensives: Anti-Magic Zone, Lichborne
 // Disable noise from healing/defensive actions when simming a single, dps role, character
 // Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides?
+// utilize stat_pct_buffs instead of overriding player_t methods?
 // Unholy:
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
@@ -894,19 +895,52 @@ public:
   } azerite;
 
   struct soulbind_conduits_t
-  {
-                                     // ConduitID for soulbind=
+  { // Commented out = NYI           // ID
+    // Shared - Covenant ability conduits
+    // conduit_data_t brutal_grasp; // Necrolord, 127
+    // conduit_data_t impenetrable_glomm; // Venthyr, 126
+    // conduit_data_t proliferation; // Kyrian, 128
+    // conduit_data_t withering_ground; // Night Fae, 250
+
+    // Shared - other throughput
+    // conduit_data_t spirit_drain; Finesse trait, 70
+
+    // Blood
+    // conduit_data_t debilitating_malady; // 123
+    // conduit_data_t meat_shield; // Endurance trait, 121
+    // conduit_data_t withering_plague; // 80
+
+    // Frost
     conduit_data_t accelerated_cold; // 79
     conduit_data_t biting_cold;      // 91
     conduit_data_t eradicating_blow; // 83
     conduit_data_t unleashed_frenzy; // 122
+
+    // Unholy
+    // conduit_data_t convocation_of_the_dead; // 124
+    // conduit_data_t embrace_death; // 89
+    // conduit_data_t eternal_hunger; // 65
+    // conduit_data_t lingering_plague; // 125
+
+    // Defensive - Endurance/Finesse
+    // conduit_data_t blood_bond; // Blood only, 86
+    // conduit_data_t chilled_resilience; // 68
+    // conduit_data_t fleeting_wind; // 99
+    // conduit_data_t hardened_bones; // 88
+    // conduit_data_t insatiable_appetite; // 108
+    // conduit_data_t reinforced_shell; // 74
+    // conduit_data_t unending_grip; // 106
   } conduits;
 
   struct legendary_t
-  {
-    // Generic
+  { // Commented out = NYI                        // bonus ID
+    // Shared
+    // item_runeforge_t phearomones; // 6954
+    // item_runeforge_t superstrain; // 6953
 
     // Blood
+    // item_runeforge_t bryndaors_might; // 6940
+    // item_runeforge_t crimson_rune_weapon; // 6941
 
     // Frost                                      // bonus_id
     item_runeforge_t absolute_zero;               // 6946
@@ -915,6 +949,16 @@ public:
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
     // Unholy
+    // item_runeforge_t deadliest_coil; // 6952
+    // item_runeforge_t deaths_certainty; // 6951
+    // item_runeforge_t frenzied_monstrosity; // 6950
+    // item_runeforge_t reanimated_shambler; // 6949
+
+    // Defensive/Utility
+    // item_runeforge_t deaths_embrace; // 6947
+    // item_runeforge_t grip_of_the_everlasting; // 6948
+    // item_runeforge_t gorefiends_domination; // 6943
+    // item_runeforge_t vampiric_aura; // 6942
   } legendary;
 
   // Death Knight Options
@@ -8284,24 +8328,73 @@ void death_knight_t::init_spells()
   azerite_essence_t memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_minor_refund = memory_of_lucid_dreams.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).percent();
 
+  // Shadowlands specific - Commented out = NYI
+
   // Conduits
+
+  // Shared - Covenant ability conduits
+  // conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
+  // conduits.impenetrable_glomm = find_conduit_spell( "Impenetrable Gloom" );
+  // conduits.proliferation = find_conduit_spell( "Proliferation" );
+  // conduits.withering_ground = find_conduit_spell( "Withering Ground" );
+
+  // Shared - other throughput
+  // conduits.spirit_drain = find_conduit_spell( "Spirit Drain" );
+
   // Blood
+  // conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
+  // conduits.meat_shield = find_conduit_spell( "Meat Shield" );
+  // conduits.withering_plague = find_conduit_spell( "Withering Plague" );
+
   // Frost
   conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
   conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
   conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
+
   // Unholy
+  // conduits.convocation_of_the_dead = find_conduit_spell( "Convocation of the Dead" );
+  // conduits.embrace_death = find_conduit_spell( "Embrace Death" );
+  // conduits.eternal_hunger = find_conduit_spell( "Eternal Hunger" );
+  // conduits.lingering_plague = find_conduit_spell( "Linguering Plague" );
+
+  // Defensive - Endurance/Finesse
+  // conduits.blood_bond = find_conduit_spell( "Blood Bond" );
+  // conduits.chilled_resilience = find_conduit_spell( "Chilled Resilience" );
+  // conduits.fleeting_wind = find_conduit_spell( "Fleeting Wind" );
+  // conduits.hardened_bones = find_conduit_spell( "Hardened Bones" );
+  // conduits.insatiable_appetite = find_conduit_spell( "Insatiable Appetite" );
+  // conduits.reinforced_shell = find_conduit_spell( "Reinforced Shell" );
+  // conduits.unending_grip = find_conduit_spell( "Unending Grip" );
 
   // Legendary Items
-  // Generic
+
+  // Shared
+  // legendary.phearomones = find_runeforge_legendary( "Phearomones" );
+  // legendary.superstrain = find_runeforge_legendary( "Superstrain" );
+
   // Blood
+  // legendary.bryndaors_might = find_runeforge_legendary( "Bryndaor's Might" );
+  // legendary.crimson_rune_weapon = find_runeforge_legendary( "Crimson Rune Weapon" );
+
   // Frost
   legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
   legendary.biting_cold                 = find_runeforge_legendary( "Biting Cold" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
+
   // Unholy
+  // legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
+  // legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
+  // legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
+  // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
+
+  // Defensive/Utility
+  // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
+  // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
+  // legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
+  // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
+
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
