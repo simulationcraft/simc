@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 9.0.2.36165
-static const std::array<specialization_spell_entry_t, 926> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 927> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -370,6 +370,7 @@ static const std::array<specialization_spell_entry_t, 926> __specialization_spel
   {  5,  258, 335467,      0, "Devouring Plague"                  , 0 },
   {  5,  258, 341205,      0, "Dark Thoughts"                     , 0 },
   {  5,  258, 341491,      0, "Shadowy Apparitions"               , 0 },
+  {  5,  258, 342991,      0, "Shadow Mend"                       , "Rank 2" },
   {  5,  258, 343690,      0, "Mastery: Shadow Weaving"           , 0 },
   {  6,  250,  49028,      0, "Dancing Rune Weapon"               , 0 },
   {  6,  250,  50842,      0, "Blood Boil"                        , 0 },
