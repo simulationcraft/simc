@@ -4843,13 +4843,21 @@ struct growl_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
-  mangle_t( druid_t* player, util::string_view options_str )
-    : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str )
+  int inc_targets;
+
+  mangle_t( druid_t* p, util::string_view opt )
+    : bear_attack_t( "mangle", p, p->find_class_spell( "Mangle" ), opt ), inc_targets( 0 )
   {
-    if ( p()->find_rank_spell( "Mangle", "Rank 2" )->ok() )
+    if ( p->find_rank_spell( "Mangle", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
-    energize_amount += player->talent.soul_of_the_forest_bear->effectN( 1 ).resource( RESOURCE_RAGE );
+    energize_amount += p->talent.soul_of_the_forest_bear->effectN( 1 ).resource( RESOURCE_RAGE );
+
+    if ( p->talent.incarnation_bear->ok() )
+    {
+      inc_targets = as<int>(
+          p->query_aura_effect( p->talent.incarnation_bear, A_ADD_FLAT_MODIFIER, P_TARGET, s_data )->base_value() );
+    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4864,7 +4872,7 @@ struct mangle_t : public bear_attack_t
   int n_targets() const override
   {
     if ( p()->buff.incarnation_bear->check() )
-      return as<int>( p()->talent.incarnation_bear->effectN( 4 ).base_value() );
+      return inc_targets;
 
     return bear_attack_t::n_targets();
   }
