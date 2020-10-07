@@ -82,7 +82,6 @@ struct avengers_shield_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p() -> buffs.avengers_valor -> trigger();
     if ( p() -> talents.redoubt -> ok() )
     {
       p() -> buffs.redoubt -> trigger();
@@ -452,8 +451,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
     // Duration and armor bonus recalculation handled in the buff
     p() -> buffs.shield_of_the_righteous -> trigger();
 
-    p() -> buffs.avengers_valor -> expire();
-
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
@@ -679,9 +676,6 @@ void paladin_t::create_buffs_protection()
 {
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
                         -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor )
-                       -> set_default_value( passives.avengers_valor -> effectN( 1 ).percent() );
-
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                   -> set_cooldown( 0_ms );
 
@@ -741,7 +735,6 @@ void paladin_t::init_spells_protection()
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
   spells.sotr_buff = find_spell( 132403 );
 
-  passives.avengers_valor      = find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger();
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
@@ -799,8 +792,8 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "use_item,name=razdunks_big_red_button" );
 
   def -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
-  def -> add_action( this, "Shield of the Righteous", "if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
-  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up" );
+  def -> add_action( this, "Shield of the Righteous", "if=(cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
+  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up" );
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)" );
   def -> add_talent( this, "Bastion of light", "if=(cooldown.shield_of_the_righteous.charges_fractional<=0.2)&(!talent.seraphim.enabled|buff.seraphim.up)" );
   def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );

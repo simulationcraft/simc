@@ -162,7 +162,6 @@ public:
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     buff_t* seraphim;
     buff_t* ardent_defender;
-    buff_t* avengers_valor;
     buff_t* grand_crusader;
     buff_t* guardian_of_ancient_kings;
     buff_t* redoubt;
@@ -251,7 +250,6 @@ public:
 
     const spell_data_t* infusion_of_light;
 
-    const spell_data_t* avengers_valor;
     const spell_data_t* grand_crusader;
     const spell_data_t* riposte;
     const spell_data_t* sanctuary;
