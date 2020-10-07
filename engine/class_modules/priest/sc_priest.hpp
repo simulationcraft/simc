@@ -712,9 +712,12 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t
 {
   bool affected_by_shadow_weaving;
+  const spell_data_t* hungering_void_buff_spell;
 
   priest_pet_spell_t( priest_pet_t& p, util::string_view n )
-    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
+    : spell_t( n, &p, p.find_pet_spell( n ) ),
+      affected_by_shadow_weaving( false ),
+      hungering_void_buff_spell( p.o().find_spell( 345219 ) )
   {
     may_crit = true;
   }
@@ -745,7 +748,7 @@ struct priest_pet_spell_t : public spell_t
 
     if ( p().o().hungering_void_active( t ) )
     {
-      tdm *= ( 1 + p().o().talents.hungering_void->effectN( 2 ).percent() );
+      tdm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return tdm;
@@ -762,7 +765,7 @@ struct priest_pet_spell_t : public spell_t
 
     if ( p().o().hungering_void_active( t ) )
     {
-      ttm *= ( 1 + p().o().talents.hungering_void->effectN( 2 ).percent() );
+      ttm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return ttm;
@@ -1309,11 +1312,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   unsigned int mind_sear_id;
+  const spell_data_t* hungering_void_buff_spell;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
-      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
+      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() ),
+      hungering_void_buff_spell( priest().find_spell( 345219 ) )
   {
     weapon_multiplier = 0.0;
   }
@@ -1392,7 +1397,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      tdm *= ( 1 + priest().talents.hungering_void->effectN( 2 ).percent() );
+      tdm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return tdm;
@@ -1409,7 +1414,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      ttm *= ( 1 + priest().talents.hungering_void->effectN( 2 ).percent() );
+      ttm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return ttm;
