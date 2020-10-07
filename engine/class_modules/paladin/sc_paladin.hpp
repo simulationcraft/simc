@@ -239,7 +239,6 @@ public:
     cooldown_t* light_of_the_protector;  // Righteous Protector
     cooldown_t* shield_of_the_righteous; // Judgment
 
-
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
   } cooldowns;
