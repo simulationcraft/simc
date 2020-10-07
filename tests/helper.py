@@ -13,10 +13,10 @@ def __error_status(code):
 def __simc_cli_path(var):
     path = os.environ.get(var)
     if path is None:
-        sys.exit(1)
+        raise Exception("No SIMC_CLI_PATH environment variable set")
     path = shutil.which(path)
     if path is None:
-        sys.exit(1)
+        raise Exception("SIMC_CLI_PATH not valid")
     return str(Path(path).resolve())
 
 IN_CI = 'CI' in os.environ
