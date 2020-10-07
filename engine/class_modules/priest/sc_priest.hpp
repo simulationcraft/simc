@@ -692,6 +692,15 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double mul = attack_t::composite_target_multiplier( target );
+
+    mul *= debug_cast<priest_t*>( debug_cast<priest_pet_t*>( player )->owner )->shadow_weaving_multiplier( target, 0 );
+
+    return mul;
+  }
+
   timespan_t execute_time() const override
   {
     // First swing comes instantly after summoning the pet
@@ -982,7 +991,7 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
   {
     background = true;
-    // This is hard coded in the spell, base SP is 3.0
+    // This is hard coded in the spell
     // Depending on Mindbender or Shadowfiend this hits differently
     switch ( p.pet_type )
     {
@@ -1007,8 +1016,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   shadowflame_prism_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
-      duration( timespan_t::from_seconds( as<double>( data().effectN( 3 ).base_value() ) +
-                                          0.5 ) )  // This 0.5 is hardcoded in spell data
+      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
