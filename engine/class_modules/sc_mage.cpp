@@ -3398,7 +3398,7 @@ struct evocation_t : public arcane_mage_spell_t
     if ( p->azerite.brain_storm.enabled() )
       brain_storm_charges = as<int>( p->find_spell( 288466 )->effectN( 1 ).base_value() );
     if ( p->runeforge.siphon_storm.ok() )
-      siphon_storm_charges = as<int>( p->runeforge.siphon_storm->effectN( 1 ).base_value() );
+      siphon_storm_charges = as<int>( p->find_spell( 332929 )->effectN( 1 ).base_value() );
   }
 
   void on_tick()
