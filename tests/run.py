@@ -12,8 +12,8 @@ COVENANTS = ( 'Kyrian', 'Venthyr', 'Night_Fae', 'Necrolord' )
 parser = argparse.ArgumentParser(description='Run simc tests')
 parser.add_argument('specialization', metavar='spec', type=str,
                     help='Simc specialization in the form of CLASS_SPEC, eg. Priest_Shadow')
-parser.add_argument('--no-trinkets', default=False,action="store_true",
-                    help='Disable trinket tests. Requires simc-support dependency to be installed')
+parser.add_argument('--no-trinkets', default=False, action='store_true',
+                    help='Disable trinket tests. Trinket tests require simc-support library to be installed.')
 args = parser.parse_args()
 
 klass = args.specialization
