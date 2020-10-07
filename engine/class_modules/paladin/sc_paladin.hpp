@@ -1112,6 +1112,12 @@ struct shield_of_the_righteous_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
+struct redoubt_buff_t : public buff_t
+{
+  redoubt_buff_t( paladin_t* p );
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
 void empyrean_power( special_effect_t& effect );
 
 }

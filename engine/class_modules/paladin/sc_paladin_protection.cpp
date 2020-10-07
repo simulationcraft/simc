@@ -74,16 +74,6 @@ struct avengers_shield_t : public paladin_spell_t
     cooldown = p -> cooldowns.avengers_shield;
   }
 
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( p() -> talents.redoubt -> ok() )
-    {
-      p() -> buffs.redoubt -> trigger();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
@@ -467,6 +457,11 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
     // Duration and armor bonus recalculation handled in the buff
     p() -> buffs.shield_of_the_righteous -> trigger();
 
+    if ( p() -> talents.redoubt -> ok() )
+    {
+      p() -> buffs.redoubt -> trigger();
+    }
+
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
@@ -485,6 +480,22 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
     return rm;
   }
 };
+
+redoubt_buff_t::redoubt_buff_t( paladin_t* p ) :
+  buff_t( p, "redoubt", p -> find_spell( 280375 ) )
+{
+  add_invalidate( CACHE_STRENGTH );
+  add_invalidate( CACHE_STAMINA );
+}
+
+void redoubt_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+
+  paladin_t* p = debug_cast< paladin_t* >( player );
+  add_invalidate( CACHE_STRENGTH );
+  add_invalidate( CACHE_STAMINA );
+}
 
 
 // paladin_t::target_mitigation ===============================================
@@ -717,7 +728,7 @@ void paladin_t::create_buffs_protection()
                               -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
   buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
                             -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
-  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
+  buffs.redoubt = new redoubt_buff_t( this );
 
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
 

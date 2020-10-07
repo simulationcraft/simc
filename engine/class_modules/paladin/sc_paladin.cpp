@@ -2085,6 +2085,15 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.protection_paladin -> effectN( 3 ).percent();
+    if ( buffs.redoubt -> up() )
+      m *= 1.0 + buffs.redoubt -> data().effectN( 1 ).percent() * buffs.redoubt -> stack();
+  }
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    if ( buffs.redoubt -> up() )
+      //Applies to base str, gear str and buffs. So everything basically.
+      m *= 1.0 + buffs.redoubt -> data().effectN( 1 ).percent() * buffs.redoubt -> stack();
   }
 
   return m;
@@ -2285,11 +2294,6 @@ double paladin_t::composite_block_reduction( action_state_t* s ) const
   double br = player_t::composite_block_reduction( s );
 
   br += buffs.inner_light -> value();
-
-  if ( buffs.redoubt -> up() )
-  {
-    br *= 1.0 + talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
-  }
 
   return br;
 }
