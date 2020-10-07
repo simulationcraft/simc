@@ -160,6 +160,7 @@ public:
 
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
+    absorb_buff_t* blessed_hammer_absorb; // ^
     buff_t* first_avenger_absorb;
     buff_t* seraphim;
     buff_t* ardent_defender;
@@ -197,6 +198,7 @@ public:
     // Healing/absorbs
     gain_t* holy_shield;
     gain_t* first_avenger;
+    gain_t* blessed_hammer;
 
     // Mana
     gain_t* mana_beacon_of_light;

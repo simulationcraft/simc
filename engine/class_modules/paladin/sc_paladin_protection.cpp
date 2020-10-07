@@ -125,40 +125,45 @@ struct blessed_hammer_tick_t : public paladin_spell_t
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
-
     // apply BH debuff to target_data structure
-    td( s -> target ) -> debuff.blessed_hammer -> trigger();
+    // Does not interact with vers.
+    // To Do: Investigate refresh behaviour
+    td( s -> target ) -> debuff.blessed_hammer -> trigger(
+      1,
+      s -> attack_power * p() -> talents.blessed_hammer -> effectN( 1 ).percent()
+    );
   }
 };
 
 struct blessed_hammer_t : public paladin_spell_t
 {
   blessed_hammer_tick_t* hammer;
-  int num_strikes;
+  double num_strikes;
 
   blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "blessed_hammer", p, p -> talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
-    add_option( opt_int( "strikes", num_strikes ) );
+    add_option( opt_float( "strikes", num_strikes) );
     parse_options( options_str );
 
     // Sane bounds for num_strikes - only makes three revolutions, impossible to hit one target more than 3 times.
     // Likewise calling the spell with 0 or negative strikes is sort of pointless.
-    if ( num_strikes < 1 )
+    if ( num_strikes <= 0 )
     {
       num_strikes = 1;
-      sim -> error( "{} trying to hit less than one time with blessed_hammer, value changed to 1", p -> name() );
+      sim -> error( "{} invalid blessed_hammer strikes, value changed to 1", p -> name() );
     }
-    if ( num_strikes > 3 )
-    {
-      num_strikes = 3;
-      sim -> error( "{} trying to hit more than three times with blessed_hammer, value changed to 3", p -> name() );
-    }
+    // if ( num_strikes > 3 )
+    // {
+    //   num_strikes = 3;
+    //   sim -> error( "{} trying to hit more than three times with blessed_hammer, value changed to 3", p -> name() );
+    // }
 
-    dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
+    // dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
+
     may_miss = false;
-    base_tick_time = 1667_ms; // Rough estimation based on stopwatch testing
+    base_tick_time = data().duration();
     cooldown -> hasted = true;
 
     tick_may_crit = true;
@@ -171,14 +176,19 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : 0_ms;
+    // Let strikes be a decimal rather than int, and roll a random number to decide
+    // hits each time.
+    int roll_strikes = static_cast<int>(floor(num_strikes));
+    if (rng().roll( num_strikes - roll_strikes ))
+      roll_strikes += 1;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .pulse_time( base_tick_time )
-        .duration( base_tick_time * ( num_strikes - 0.5 ) )
+        .pulse_time( base_tick_time/roll_strikes )
+        .n_pulses( roll_strikes )
         .start_time( sim -> current_time() + initial_delay )
         .action( hammer ), true );
 
@@ -476,6 +486,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
   }
 };
 
+
 // paladin_t::target_mitigation ===============================================
 
 void paladin_t::target_mitigation( school_e school,
@@ -517,33 +528,48 @@ void paladin_t::target_mitigation( school_e school,
       sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
   }
 
-  // Other stuff
-
-  // Blessed Hammer
-  if ( talents.blessed_hammer -> ok() && s -> action )
-  {
-    buff_t* b = get_target_data( s -> action -> player ) -> debuff.blessed_hammer;
-
-    // BH only reduces auto-attack damage
-    if ( b -> up() && !s -> action -> special )
-    {
-      // apply mitigation and expire the BH buff
-      s -> result_amount *= 1.0 - b -> data().effectN( 2 ).percent();
-      b -> expire();
-
-      // TODO: Show the absorb on the results like Holy Shield
-    }
-  }
-
-  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> print_debug( "Damage to {} after mitigation effects is {}", s -> target -> name(), s -> result_amount );
-
   // Divine Bulwark
 
   if ( standing_in_consecration() )
   {
     s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value() );
   }
+
+  // Blessed Hammer
+  if ( talents.blessed_hammer -> ok() && s -> action )
+  {
+    buff_t* b = get_target_data( s -> action -> player ) -> debuff.blessed_hammer;
+
+    // BH now reduces all damage; not just melees.
+    if ( b -> up() )
+    {
+      // Absorb value collected from (de)buff value
+      // Calculate actual amount absorbed.
+      double amount_absorbed = std::min( s->result_amount, b -> value() );
+      b -> expire();
+
+      sim -> print_debug( "{} Blessed Hammer absorbs {} out of {} damage",
+        name(),
+        amount_absorbed,
+        s -> result_amount
+      );
+
+      // update the relevant counters
+      iteration_absorb_taken += amount_absorbed;
+      s -> self_absorb_amount += amount_absorbed;
+      s -> result_amount -= amount_absorbed;
+      s -> result_absorbed = s -> result_amount;
+
+      // hack to register this on the abilities table
+      buffs.blessed_hammer_absorb -> trigger( 1, amount_absorbed );
+      buffs.blessed_hammer_absorb -> consume( amount_absorbed );
+    }
+  }
+
+  // Other stuff
+  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+    sim -> print_debug( "Damage to {} after mitigation effects is {}", s -> target -> name(), s -> result_amount );
+
 
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
@@ -652,10 +678,7 @@ bool paladin_t::standing_in_consecration() const
 // Initialization
 void paladin_t::create_prot_actions()
 {
-  if ( specialization() == PALADIN_PROTECTION )
-  {
-    active.divine_toll = new avengers_shield_t( this );
-  }
+  active.divine_toll = new avengers_shield_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
@@ -684,11 +707,14 @@ void paladin_t::create_buffs_protection()
                         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                   -> set_cooldown( 0_ms );
-
+//HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
+  buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
+                              -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
   buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
                             -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
