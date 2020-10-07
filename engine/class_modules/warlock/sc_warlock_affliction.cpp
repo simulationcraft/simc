@@ -910,7 +910,7 @@ void warlock_t::create_buffs_affliction()
   // talents
   buffs.dark_soul_misery = make_buff( this, "dark_soul", talents.dark_soul_misery )
                                ->set_default_value( talents.dark_soul_misery->effectN( 1 ).percent() )
-                               ->add_invalidate( CACHE_SPELL_HASTE );
+                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
                         ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
                         ->set_trigger_spell( talents.nightfall );
