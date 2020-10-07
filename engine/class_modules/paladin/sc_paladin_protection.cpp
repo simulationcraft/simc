@@ -313,9 +313,6 @@ struct judgment_prot_t : public judgment_t
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
-
-    //Spell power coefficient
-    base_multiplier *= p -> spec.protection_paladin -> effectN( 9 ).percent();
   }
 
   // Special things that happen when Judgment damages target
