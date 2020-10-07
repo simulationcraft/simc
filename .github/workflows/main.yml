@@ -184,6 +184,9 @@ jobs:
             profiles
             tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
+          
+      - name: Install Python dependencies
+        run: pip install -r tests/requirements.txt
 
       - name: Run
         env:
