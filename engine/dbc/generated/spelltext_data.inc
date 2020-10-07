@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36086
-static const std::array<spelltext_data_t, 15646> __spelltext_data { {
+static const std::array<spelltext_data_t, 15651> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13375,7 +13375,6 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -13994,6 +13993,11 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 323436, "Restores $?a329777[${$s1+$329777s1}% health over $330749d, and instantly][$s1% health and] removes all diseases, poisons, curses, and bleeds affecting you.$?a325865[\r\n\r\nThis potion has additional effects.][]", "Damage and healing increased by $w6%.", "Kyrian" },
   { 323476, "$@spelldesc323081", "Removing wear and tear from your equipment.", 0 },
   { 323478, "$@spelldesc323081", "Removing wear and tear from your equipment.", 0 },
+  { 323491, "$@spelldesc323074", "Mastery increased by $m1.", 0 },
+  { 323498, "$@spelldesc323074", "$pri increased by $m1%.", 0 },
+  { 323502, "$@spelldesc323074", "Critical Strike increased by $m1%.", 0 },
+  { 323504, "$@spelldesc323074", "Magic damage done increased by $m1%.", 0 },
+  { 323506, "$@spelldesc323074", "Size increased by $w1%.\r\nPhysical damage done increased by $w2%.", 0 },
   { 323524, "$@spelldesc323095", "Immune to crowd control effects.", 0 },
   { 323536, "$@spelldesc323091", 0, 0 },
   { 323546, "For $d, Druid spells you cast increase your damage, healing, and haste by $s1%, stacking.\r\n\r\nIf you spend ${$s9/10}.1 sec idle, the Frenzy overcomes you, consuming $s3% of your health per stack, stunning you for $323557d, and ending.", "Damage, healing, and haste increased by $?<$w6<1>[$w1%.\r\n\r\nIf you spend ${$s9~/10}.1 sec idle, the Frenzy consumes $w3% of your health and ends.][$w6%.]", "Venthyr" },
@@ -15417,6 +15421,7 @@ static const std::array<spelltext_data_t, 15646> __spelltext_data { {
   { 342937, "$@spelldesc322721", "$@spelldesc322721", 0 },
   { 342991, "When Shadowmend is cast on yourself, increases all healing you do to yourself with your own spells by $342992m1% for $342992d. Stacks up to $342992u times.", 0, "Rank 2" },
   { 342992, "$@spelldesc342991", "Increases healing taken by the Priests own spells by $w1%.", 0 },
+  { 342997, "$@spelldesc337141", "Your next Call Dreadstalkers will have their damage increased by $337141s1%.", 0 },
   { 343006, "Increases maximum Fury by $s1.", 0, "Rank 2" },
   { 343010, "The duration of Fiery Brand is increased by ${$s1/1000} sec.", 0, "Rank 3" },
   { 343011, "$@spelldesc343010", 0, 0 },
