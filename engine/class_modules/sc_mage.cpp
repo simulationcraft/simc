@@ -2798,7 +2798,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = triggers.radiant_spark = true;
-    base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -3835,9 +3834,6 @@ struct frostbolt_t : public frost_mage_spell_t
     p()->last_frostbolt_target = target;
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
-
-    if ( p()->buffs.freezing_winds->check() == 0 )
-      p()->cooldowns.frozen_orb->adjust( -p()->runeforge.freezing_winds->effectN( 1 ).time_value(), false );
 
     consume_cold_front( target );
 
@@ -7288,7 +7284,7 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( auto td = target_data[ target ] )
   {
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
   }
 
