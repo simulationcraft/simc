@@ -6,8 +6,8 @@ import argparse
 from helper import Test, TestGroup, run, find_profiles
 from talent_options import talent_combinations
 
-FIGHT_STYLES = ( 'Patchwerk', 'DungeonSlice', 'HeavyMovement' )
-COVENANTS = ( 'Kyrian', 'Venthyr', 'Night_Fae', 'Necrolord' )
+FIGHT_STYLES = ('Patchwerk', 'DungeonSlice', 'HeavyMovement')
+COVENANTS = ('Kyrian', 'Venthyr', 'Night_Fae', 'Necrolord')
 
 parser = argparse.ArgumentParser(description='Run simc tests')
 parser.add_argument('specialization', metavar='spec', type=str,
@@ -27,7 +27,7 @@ for profile, path in find_profiles(klass):
                         fight_style=fight_style, profile=path)
         tests.append(grp)
         for talents in talent_combinations(klass):
-            Test(talents, group=grp, args=[ ('talents', talents) ])
+            Test(talents, group=grp, args=[('talents', talents)])
 
     for fight_style in FIGHT_STYLES:
         grp = TestGroup('{}/{}/covenants'.format(profile, fight_style),
@@ -35,8 +35,8 @@ for profile, path in find_profiles(klass):
         tests.append(grp)
         for covenant in COVENANTS:
             Test(covenant, group=grp,
-                 args=[ ('covenant', covenant.lower()), ('level', 60) ])
-    
+                 args=[('covenant', covenant.lower()), ('level', 60)])
+
     if not args.no_trinkets:
         from simc_support.game_data.WowSpec import get_wow_spec
         from simc_support.game_data.Trinket import get_trinkets_for_spec
@@ -48,6 +48,7 @@ for profile, path in find_profiles(klass):
                             fight_style=fight_style, profile=path)
             tests.append(grp)
             for trinket in trinkets:
-                Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[ ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel)) ])
+                Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
+                     ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
-sys.exit( run(tests) )
+sys.exit(run(tests))
