@@ -1551,11 +1551,9 @@ void paladin_t::init_base_stats()
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
   }
 
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
+
     // Boundless Conviction raises max holy power to 5
     resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
-  }
 
   if ( specialization() == PALADIN_HOLY )
   {
