@@ -67,12 +67,8 @@ struct avengers_shield_t : public paladin_spell_t
       aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
     }
 
-    // Redoubt offensive benefit
-    aoe += as<int>( p -> talents.redoubt -> effectN( 2 ).base_value() );
-
-    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-    // First Avenger only increases primary target damage
-    base_aoe_multiplier *= 1.0 / ( 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent() );
+    // First Avenger hits +2 targets
+    aoe += as<int>( p -> talents.first_avenger -> effectN( 1 ).base_value() );
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
@@ -95,6 +91,19 @@ struct avengers_shield_t : public paladin_spell_t
     if ( p() -> azerite.soaring_shield.enabled() )
     {
       p() -> buffs.soaring_shield -> trigger();
+    }
+
+    // First Avenger absorb shield. Amount is additive per hit.
+    if ( p() -> talents.first_avenger -> ok() )
+    {
+      //First Avenger is capped at 30% of max hp. Hardcoded here.
+      double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
+
+      double new_absorb = s -> result_amount * p() -> talents.first_avenger -> effectN( 2 ).percent();
+      if( p() -> buffs.first_avenger_absorb -> value() + new_absorb < max_absorb )
+        p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
+      else
+        p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
     }
   }
 };
@@ -586,7 +595,7 @@ void paladin_t::trigger_grand_crusader()
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
-  bool success = rng().roll( gc_proc_chance + talents.first_avenger -> effectN( 2 ).percent() );
+  bool success = rng().roll( gc_proc_chance );
   if ( ! success )
     return;
 
@@ -683,6 +692,8 @@ void paladin_t::create_buffs_protection()
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
+                            -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
 
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
