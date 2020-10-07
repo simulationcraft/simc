@@ -1393,6 +1393,8 @@ class SpellDataGenerator(DataGenerator):
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
             ( 345452, 0 ),          # Fae Fermata target Debuff
             ( 345219, 0 ),          # Hungering Void target Debuff
+            ( 346111, 0 ),          # Shadow Weaving Mastery spell
+            ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
         ),
 
         # Death Knight:
