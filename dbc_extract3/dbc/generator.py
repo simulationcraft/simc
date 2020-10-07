@@ -1232,6 +1232,7 @@ class SpellDataGenerator(DataGenerator):
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
+         323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
         ),
 
         # Warrior:
