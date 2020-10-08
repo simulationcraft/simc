@@ -591,6 +591,7 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   bool hungering_void_active( player_t* target ) const;
+  void remove_hungering_void( player_t* target );
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();

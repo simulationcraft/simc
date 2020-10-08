@@ -1223,6 +1223,7 @@ struct void_bolt_t final : public priest_spell_t
         // TODO: add some type of tracking for this increase
         priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
       }
+      priest().remove_hungering_void( s->target );
       td.buffs.hungering_void->trigger();
     }
   }
@@ -2377,5 +2378,19 @@ bool priest_t::hungering_void_active( player_t* target ) const
     return false;
 
   return td->buffs.hungering_void->check();
+}
+
+// ==========================================================================
+// Remove Hungering Void on any targets that don't match
+// ==========================================================================
+void priest_t::remove_hungering_void( player_t* target )
+{
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && ( priest_td->target != target ) && priest_td->buffs.hungering_void->check() )
+    {
+      priest_td->buffs.hungering_void->expire();
+    }
+  }
 }
 }  // namespace priestspace
