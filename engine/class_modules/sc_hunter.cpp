@@ -4731,7 +4731,7 @@ struct flare_t : hunter_spell_t
     soulforge_embers_t( util::string_view n, hunter_t* p )
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
-      aoe = -1;
+      aoe = as<int>( p -> legendary.soulforge_embers -> effectN( 1 ).base_value() );
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     }
   };
