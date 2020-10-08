@@ -2190,18 +2190,22 @@ void priest_t::generate_apl_shadow()
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
   default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3" );
+  default_list->add_action(
+      "variable,name=pi_vf_condition,op=set,value=level>=58&cooldown.power_infusion.up|level<58&cooldown.void_eruption."
+      "up",
+      "Transition condition so our APL works when you don't have Power Infusion" );
 
   // Racials
   if ( race == RACE_DARK_IRON_DWARF )
-    default_list->add_action( "fireblood,if=buff.power_infusion.up" );
+    default_list->add_action( "fireblood,if=buff.power_infusion.up|level<58" );
   if ( race == RACE_TROLL )
-    default_list->add_action( "berserking,if=buff.power_infusion.up" );
+    default_list->add_action( "berserking,if=buff.power_infusion.up|level<58" );
   if ( race == RACE_LIGHTFORGED_DRAENEI )
     default_list->add_action(
         "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
         "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   if ( race == RACE_MAGHAR_ORC )
-    default_list->add_action( "ancestral_call,if=buff.power_infusion.up" );
+    default_list->add_action( "ancestral_call,if=buff.power_infusion.up|level<58" );
 
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
@@ -2242,7 +2246,7 @@ void priest_t::generate_apl_shadow()
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( this, "Searing Nightmare",
-                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
+                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_vf_condition)|("
                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
                    "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
                    "ready, or to refresh SW:P on two or more targets." );
@@ -2255,8 +2259,8 @@ void priest_t::generate_apl_shadow()
 
   // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40",
-                    "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
+  main->add_action( this, "Void Eruption", "if=variable.pi_vf_condition&insanity>=40",
+                    "Sync up Voidform and Power Infusion Cooldowns." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
   main->add_call_action_list( cds );
@@ -2267,7 +2271,7 @@ void priest_t::generate_apl_shadow()
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action( this, "Devouring Plague",
-                    "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare."
+                    "target_if=(refreshable|insanity>75)&!variable.pi_vf_condition&(!talent.searing_nightmare."
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
