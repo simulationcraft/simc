@@ -348,10 +348,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
-  int judge_holy_power;
+  int judge_holy_power, sw_holy_power;
   judgment_prot_t( paladin_t* p, const std::string& options_str ) :
     judgment_t( p, options_str ),
-    judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
+    judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
+    sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
@@ -367,8 +368,13 @@ struct judgment_prot_t : public judgment_t
       if ( p() -> spec.judgment_4 -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
 
+      int hopo = 0;
       if ( p() -> spec.judgment_3 -> ok() )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, judgment_prot_t::judge_holy_power, p() -> gains.judgment );
+        hopo += judge_holy_power;
+      if ( p() -> talents.prot_sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> up() )
+        hopo += sw_holy_power;
+      if( hopo > 0 )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
     }
   }
 };

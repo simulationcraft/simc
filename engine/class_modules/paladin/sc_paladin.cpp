@@ -173,6 +173,7 @@ struct avenging_wrath_t : public paladin_spell_t
       background = true;
 
     harmful = false;
+    use_off_gcd = true;
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
@@ -898,12 +899,21 @@ void holy_power_consumer_t::execute()
       ld -> execute();
     }
 
-    if ( p() -> talents.ret_sanctified_wrath -> ok() )
+    if ( p() -> specialization() == PALADIN_RETRIBUTION && p() -> talents.ret_sanctified_wrath -> ok() )
     {
       sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p() -> active.sanctified_wrath );
       st -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
       st -> execute();
     }
+  }
+  //Righteous Protector
+  if ( p() -> talents.righteous_protector -> ok() ){
+    timespan_t reduction = timespan_t::from_seconds(
+      // Why do I need to divide this by 10? Just give me sec or milli, what is this??
+       -1.0 * p() -> talents.righteous_protector -> effectN( 1 ).base_value()
+       * base_costs[ RESOURCE_HOLY_POWER ] / 10
+     );
+    p() -> cooldowns.avenging_wrath -> adjust( reduction );
   }
 }
 
