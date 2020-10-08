@@ -627,9 +627,10 @@ void item_t::parse_options()
 
   auto splits = util::string_split_allow_quotes(options_str, ",");
   option_name_str = splits[0];
-  if (splits.size() > 1)
+  splits.erase(splits.begin());
+  if (!splits.empty())
   {
-    remainder = options_str.substr( splits[0].size() );
+    remainder = util::string_join(splits, ",");
   }
 
   std::array<std::unique_ptr<option_t>, 32> options { {
