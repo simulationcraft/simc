@@ -97,10 +97,7 @@ struct avengers_shield_t : public avengers_shield_base_t
   avengers_shield_t( paladin_t* p, const std::string& options_str ) :
     avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
   {
-    sim -> print_debug( "initial cooldown: {}", cooldown -> duration );
-    // p -> cooldowns.avengers_shield = cooldown;
     cooldown = p -> cooldowns.avengers_shield;
-    sim -> print_debug( "adjusted cooldown: {}", p -> cooldowns.avengers_shield -> duration );
   }
 
   void execute() override
@@ -108,10 +105,9 @@ struct avengers_shield_t : public avengers_shield_base_t
     avengers_shield_base_t::execute();
     if( p() -> buffs.moment_of_glory -> up() )
     {
-      p() -> cooldowns.avengers_shield -> reset( true );
+      p() -> cooldowns.avengers_shield -> reset( false );
       p() -> buffs.moment_of_glory -> decrement( 1 );
     }
-    sim -> print_debug("NormalAS");
   }
 
   double action_multiplier() const override
@@ -129,7 +125,7 @@ struct avengers_shield_t : public avengers_shield_base_t
 struct moment_of_glory_t : public paladin_spell_t
 {
   moment_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "moment_of_glory", p, p -> find_spell( 327193 ) )
+    paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
   {
     parse_options( options_str );
 
@@ -141,8 +137,11 @@ struct moment_of_glory_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    p() -> buffs.moment_of_glory -> trigger( 3 );
-    p() -> cooldowns.avengers_shield -> reset( true );
+    // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
+    // then when you use the last stack you get another (4th) AS without a cooldown
+    // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
+    p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
+    p() -> cooldowns.avengers_shield -> reset( false );
   }
 };
 
@@ -210,7 +209,7 @@ struct blessed_hammer_t : public paladin_spell_t
     // Let strikes be a decimal rather than int, and roll a random number to decide
     // hits each time.
     int roll_strikes = static_cast<int>(floor(num_strikes));
-    if ( num_strikes - roll_strikes == 0 || rng().roll( num_strikes - roll_strikes ))
+    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
       roll_strikes += 1;
     if (roll_strikes > 0)
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -349,15 +348,14 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
+  int judge_holy_power;
   judgment_prot_t( paladin_t* p, const std::string& options_str ) :
-    judgment_t( p, options_str )
+    judgment_t( p, options_str ),
+    judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
   }
-
-  private:
-    int judge_holy_power = as<int>( p() -> find_spell( 220637 ) -> effectN( 1 ).base_value() );
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
@@ -370,7 +368,7 @@ struct judgment_prot_t : public judgment_t
         td( s -> target ) -> debuff.judgment -> trigger();
 
       if ( p() -> spec.judgment_3 -> ok() )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, judge_holy_power, p() -> gains.judgment );
+        p() -> resource_gain( RESOURCE_HOLY_POWER, judgment_prot_t::judge_holy_power, p() -> gains.judgment );
     }
   }
 };
@@ -753,13 +751,13 @@ void paladin_t::create_buffs_protection()
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
   buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
         -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
-  buffs.redoubt = make_buff( this, "redoubt", find_spell( 280375 ) )
-        -> set_default_value( find_spell( 280375 ) -> effectN( 1 ).percent() )
+  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
+        -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_STRENGTH )
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.moment_of_glory = make_buff(this, "moment_of_glory", find_spell( 327193 ) )
-        -> set_default_value( find_spell( 327193 ) -> effectN( 2 ).percent() );
+  buffs.moment_of_glory = make_buff(this, "moment_of_glory", talents.moment_of_glory )
+        -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
