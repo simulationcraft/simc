@@ -4753,7 +4753,7 @@ struct flare_t : hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> state.tar_trap_aoe )
+    if ( soulforge_embers && p() -> state.tar_trap_aoe )
     {
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
