@@ -265,6 +265,8 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
+    if ( p -> specialization() == PALADIN_PROTECTION && p -> spec.consecration_3 -> ok() )
+      cooldown -> duration *= 1.0 + p -> spec.consecration_3 -> effectN( 1 ).percent();
 
     add_child( damage_tick );
   }
