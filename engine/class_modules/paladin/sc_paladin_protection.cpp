@@ -137,18 +137,12 @@ struct blessed_hammer_t : public paladin_spell_t
     add_option( opt_float( "strikes", num_strikes) );
     parse_options( options_str );
 
-    // Sane bounds for num_strikes - only makes three revolutions, impossible to hit one target more than 3 times.
-    // Likewise calling the spell with 0 or negative strikes is sort of pointless.
-    if ( num_strikes <= 0 )
+    // Sanity check for num_strikes
+    if ( num_strikes <= 0 || num_strikes > 10)
     {
-      num_strikes = 1;
-      sim -> error( "{} invalid blessed_hammer strikes, value changed to 1", p -> name() );
+      num_strikes = 2;
+      sim -> error( "{} invalid blessed_hammer strikes, value changed to 2", p -> name() );
     }
-    // if ( num_strikes > 3 )
-    // {
-    //   num_strikes = 3;
-    //   sim -> error( "{} trying to hit more than three times with blessed_hammer, value changed to 3", p -> name() );
-    // }
 
     // dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
 
@@ -164,23 +158,22 @@ struct blessed_hammer_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-
     timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : 0_ms;
     // Let strikes be a decimal rather than int, and roll a random number to decide
     // hits each time.
     int roll_strikes = static_cast<int>(floor(num_strikes));
-    if (rng().roll( num_strikes - roll_strikes ))
+    if ( num_strikes - roll_strikes == 0 || rng().roll( num_strikes - roll_strikes ))
       roll_strikes += 1;
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        .pulse_time( base_tick_time/roll_strikes )
-        .n_pulses( roll_strikes )
-        .start_time( sim -> current_time() + initial_delay )
-        .action( hammer ), true );
+    if (roll_strikes > 0)
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          // spawn at feet of player
+          .x( execute_state -> action -> player -> x_position )
+          .y( execute_state -> action -> player -> y_position )
+          .pulse_time( base_tick_time/roll_strikes )
+          .n_pulses( roll_strikes )
+          .start_time( sim -> current_time() + initial_delay )
+          .action( hammer ), true );
 
     // Grand Crusader can proc on cast, but not on impact
     p() -> trigger_grand_crusader();
@@ -315,6 +308,9 @@ struct judgment_prot_t : public judgment_t
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
   }
 
+  private:
+    int judge_holy_power = as<int>( p() -> find_spell( 220637 ) -> effectN( 1 ).base_value() );
+
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
@@ -322,16 +318,11 @@ struct judgment_prot_t : public judgment_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
-           rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
-      {
-        p() -> cooldowns.avengers_shield -> reset( true );
-      }
       if ( p() -> spec.judgment_4 -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
 
       if ( p() -> spec.judgment_3 -> ok() )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, as<int>( p() -> find_spell( 220637 ) -> effectN( 1 ).base_value() ), p() -> gains.judgment );
+        p() -> resource_gain( RESOURCE_HOLY_POWER, judge_holy_power, p() -> gains.judgment );
     }
   }
 };
@@ -480,22 +471,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t
     return rm;
   }
 };
-
-redoubt_buff_t::redoubt_buff_t( paladin_t* p ) :
-  buff_t( p, "redoubt", p -> find_spell( 280375 ) )
-{
-  add_invalidate( CACHE_STRENGTH );
-  add_invalidate( CACHE_STAMINA );
-}
-
-void redoubt_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-{
-  buff_t::expire_override( expiration_stacks, remaining_duration );
-
-  paladin_t* p = debug_cast< paladin_t* >( player );
-  add_invalidate( CACHE_STRENGTH );
-  add_invalidate( CACHE_STAMINA );
-}
 
 
 // paladin_t::target_mitigation ===============================================
@@ -715,30 +690,33 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
 void paladin_t::create_buffs_protection()
 {
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
-                        -> set_cooldown( 0_ms ); // handled by the ability
+        -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                  -> set_cooldown( 0_ms );
+        -> set_cooldown( 0_ms );
+
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
-                           -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
-                           -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+        -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
+        -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
-                              -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
+        -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
   buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
-                            -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
-  buffs.redoubt = new redoubt_buff_t( this );
-
+        -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
+  buffs.redoubt = make_buff( this, "redoubt", find_spell( 280375 ) )
+        -> set_default_value( find_spell( 280375 ) -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_STRENGTH )
+        -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
-                    -> set_default_value( azerite.inner_light.value( 1 ) );
+        -> set_default_value( azerite.inner_light.value( 1 ) );
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                           -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
+        -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                       -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
+        -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
 
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )

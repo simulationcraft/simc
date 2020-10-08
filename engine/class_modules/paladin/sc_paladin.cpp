@@ -973,7 +973,7 @@ double judgment_t::bonus_da( const action_state_t* s ) const
       ij_bonus *= ( player_percent - target_percent ) / 100.0;
 
       // Protection has a 50% damage reduction to IJ
-      ij_bonus *= 1.0 + p() -> spec.protection_paladin -> effectN( 14 ).percent();
+      ij_bonus *= 1.0 + p() -> spec.protection_paladin -> effectN( 15 ).percent();
 
       da += ij_bonus;
     }
@@ -1587,8 +1587,6 @@ void paladin_t::init_gains()
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams" );
-  gains.hp_avengers_shield             = get_gain( "avengers_shield" );
-  gains.hp_hammer_of_wrath             = get_gain( "hammer_of_wrath");
 }
 
 // paladin_t::init_procs ====================================================
@@ -2086,14 +2084,14 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     m *= 1.0 + spec.protection_paladin -> effectN( 3 ).percent();
     if ( buffs.redoubt -> up() )
-      m *= 1.0 + buffs.redoubt -> data().effectN( 1 ).percent() * buffs.redoubt -> stack();
+      m *= 1.0 + buffs.redoubt -> stack_value();
   }
 
   if ( attr == ATTR_STRENGTH )
   {
     if ( buffs.redoubt -> up() )
       //Applies to base str, gear str and buffs. So everything basically.
-      m *= 1.0 + buffs.redoubt -> data().effectN( 1 ).percent() * buffs.redoubt -> stack();
+      m *= 1.0 + buffs.redoubt -> stack_value();
   }
 
   return m;
@@ -2207,7 +2205,7 @@ double paladin_t::composite_bonus_armor() const
 
   if ( buffs.shield_of_the_righteous -> check() )
   {
-    ba += buffs.shield_of_the_righteous -> value();
+    ba += buffs.shield_of_the_righteous -> value() * cache.strength();
   }
 
   return ba;
@@ -2304,7 +2302,7 @@ double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.protection_paladin -> effectN( 9 ).percent();
+  c += spec.protection_paladin -> effectN( 10 ).percent();
 
   return c;
 }

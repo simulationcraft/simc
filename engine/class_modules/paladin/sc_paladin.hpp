@@ -453,7 +453,6 @@ public:
     bool fake_sov = true;
     int indomitable_justice_pct = 0;
   } options;
-
   player_t* beacon_target;
 
   double lucid_dreams_accumulator;
@@ -1109,12 +1108,6 @@ private:
 struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
-
-struct redoubt_buff_t : public buff_t
-{
-  redoubt_buff_t( paladin_t* p );
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
