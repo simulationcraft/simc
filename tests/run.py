@@ -23,7 +23,11 @@ klass = args.specialization
 print(' '.join(klass.split('_')))
 
 tests = []
-for profile, path in find_profiles(klass):
+profiles = list(find_profiles(klass))
+if len(profiles) == 0:
+    print("No profile found for {}".format(klass))
+
+for profile, path in profiles:
     for fight_style in FIGHT_STYLES:
         grp = TestGroup('{}/{}/talents'.format(profile, fight_style),
                         fight_style=fight_style, profile=path)
@@ -52,7 +56,5 @@ for profile, path in find_profiles(klass):
         for trinket in trinkets:
             Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
                     ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
-else:
-    print("No profile found for {}".format(klass))
 
 sys.exit(run(tests))
