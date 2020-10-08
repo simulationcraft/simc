@@ -2385,6 +2385,9 @@ bool priest_t::hungering_void_active( player_t* target ) const
 // ==========================================================================
 void priest_t::remove_hungering_void( player_t* target )
 {
+  if ( !talents.hungering_void->ok() )
+    return;
+
   for ( priest_td_t* priest_td : _target_data.get_entries() )
   {
     if ( priest_td && ( priest_td->target != target ) && priest_td->buffs.hungering_void->check() )
