@@ -74,11 +74,29 @@ def test_trinkets(klass: str, path: str):
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
             ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
+def test_legendaries(klass: str, path: str):
+    try:
+        from simc_support.game_data.WowSpec import get_wow_spec_from_combined_simc_name
+        from simc_support.game_data.Legendary import get_legendaries_for_spec
+    except ImportError:
+        print("Error importing simc-support library for legendary test. Skipping test.")
+        return
+
+    spec = get_wow_spec_from_combined_simc_name(klass)
+    legendaries = get_legendaries_for_spec(spec)
+    for fight_style in FIGHT_STYLES:
+        grp = TestGroup('{}/{}/legendaries'.format(profile, fight_style),
+                        fight_style=fight_style, profile=path)
+        tests.append(grp)
+        for legendary in legendaries:
+            Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
+                ('trinket1', '{},bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
 
 available_tests = {
     "talent": (test_talents, None),
     "covenant": (test_covenants, "simc-support"),
-    "trinket": (test_trinkets, "simc-support")
+    "trinket": (test_trinkets, "simc-support"),
+    "legendary": (test_legendaries, "simc-support")
 }
 
 formatted_available_tests = ", ".join(("'{}'{}".format(
