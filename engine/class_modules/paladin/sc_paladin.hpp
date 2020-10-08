@@ -168,6 +168,7 @@ public:
     buff_t* guardian_of_ancient_kings;
     buff_t* redoubt;
     buff_t* shield_of_the_righteous;
+    buff_t* moment_of_glory;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;

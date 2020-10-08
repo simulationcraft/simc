@@ -36,24 +36,12 @@ struct ardent_defender_t : public paladin_spell_t
 
 // Avengers Shield ==========================================================
 
-struct avengers_shield_t : public paladin_spell_t
+struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
+  avengers_shield_base_t( const std::string& n, paladin_t* p, const spell_data_t* s, const std::string& options_str ) :
+    paladin_spell_t( n, p, s )
   {
     parse_options( options_str );
-    do_ctor_common( p );
-  }
-
-  avengers_shield_t( paladin_t* p ) :
-    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
-  {
-    do_ctor_common( p );
-    background = true;
-  }
-
-  void do_ctor_common( paladin_t* p )
-  {
     if ( ! p -> has_shield_equipped() )
     {
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
@@ -69,9 +57,6 @@ struct avengers_shield_t : public paladin_spell_t
 
     // First Avenger hits +2 targets
     aoe += as<int>( p -> talents.first_avenger -> effectN( 1 ).base_value() );
-
-    // link needed for trigger_grand_crusader
-    cooldown = p -> cooldowns.avengers_shield;
   }
 
   void impact( action_state_t* s ) override
@@ -95,6 +80,69 @@ struct avengers_shield_t : public paladin_spell_t
       else
         p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
     }
+  }
+};
+
+struct avengers_shield_dt_t : public avengers_shield_base_t
+{
+  avengers_shield_dt_t( paladin_t* p ) :
+    avengers_shield_base_t( "avengers_shield_dt", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
+  {
+    background=true;
+  }
+};
+
+struct avengers_shield_t : public avengers_shield_base_t
+{
+  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
+    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
+  {
+    sim -> print_debug( "initial cooldown: {}", cooldown -> duration );
+    // p -> cooldowns.avengers_shield = cooldown;
+    cooldown = p -> cooldowns.avengers_shield;
+    sim -> print_debug( "adjusted cooldown: {}", p -> cooldowns.avengers_shield -> duration );
+  }
+
+  void execute() override
+  {
+    avengers_shield_base_t::execute();
+    if( p() -> buffs.moment_of_glory -> up() )
+    {
+      p() -> cooldowns.avengers_shield -> reset( true );
+      p() -> buffs.moment_of_glory -> decrement( 1 );
+    }
+    sim -> print_debug("NormalAS");
+  }
+
+  double action_multiplier() const override
+  {
+    double m = avengers_shield_base_t::action_multiplier();
+    if( p() -> buffs.moment_of_glory -> up() )
+      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
+
+    return m;
+  }
+};
+
+// Moment of Glory ============================================================
+
+struct moment_of_glory_t : public paladin_spell_t
+{
+  moment_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "moment_of_glory", p, p -> find_spell( 327193 ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    use_off_gcd = true;
+    trigger_gcd = 0_ms;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> buffs.moment_of_glory -> trigger( 3 );
+    p() -> cooldowns.avengers_shield -> reset( true );
   }
 };
 
@@ -664,7 +712,7 @@ bool paladin_t::standing_in_consecration() const
 // Initialization
 void paladin_t::create_prot_actions()
 {
-  active.divine_toll = new avengers_shield_t( this );
+  active.divine_toll = new avengers_shield_dt_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
@@ -678,6 +726,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
   if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
   if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
+  if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -709,6 +758,8 @@ void paladin_t::create_buffs_protection()
         -> add_invalidate( CACHE_STRENGTH )
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
+  buffs.moment_of_glory = make_buff(this, "moment_of_glory", find_spell( 327193 ) )
+        -> set_default_value( find_spell( 327193 ) -> effectN( 2 ).percent() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
@@ -752,7 +803,6 @@ void paladin_t::init_spells_protection()
     spec.consecration_3 = find_specialization_spell( 327980 );
     spec.judgment_3 = find_specialization_spell( 315867 );
     spec.judgment_4 = find_specialization_spell( 231663 );
-
 
     spells.judgment_debuff = find_spell( 197277 );
   }
