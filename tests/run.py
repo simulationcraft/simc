@@ -72,7 +72,7 @@ def test_trinkets(klass: str, path: str):
     tests.append(grp)
     for trinket in trinkets:
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
-            ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
+            ('trinket1', '"{}",id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
 def test_legendaries(klass: str, path: str):
     try:
@@ -90,7 +90,7 @@ def test_legendaries(klass: str, path: str):
         tests.append(grp)
         for legendary in legendaries:
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
-                ('trinket1', '{},bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
+                ('trinket1', '"{}",bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
 
 available_tests = {
     "talent": (test_talents, None),
