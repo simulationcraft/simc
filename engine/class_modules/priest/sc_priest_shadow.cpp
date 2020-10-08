@@ -1211,11 +1211,11 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->schedule_execute();
     }
 
-    if ( priest().talents.hungering_void->ok() && priest().buffs.voidform->check() )
+    if ( priest().talents.hungering_void->ok() )
     {
       priest_td_t& td = get_td( s->target );
       // Check if this buff is active, every Void Bolt after the first should get this
-      if ( td.buffs.hungering_void->up() )
+      if ( td.buffs.hungering_void->up() && priest().buffs.voidform->check() )
       {
         timespan_t seconds_to_add_to_voidform =
             s->result == RESULT_CRIT ? hungering_void_crit_duration : hungering_void_base_duration;
