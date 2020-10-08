@@ -195,7 +195,7 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: tests/run.py ${{ matrix.spec }} --test-trinkets
+        run: tests/run.py ${{ matrix.spec }} -tests talent trinket covenant
 
   build-docker:
     name: docker
