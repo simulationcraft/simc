@@ -467,6 +467,7 @@ public:
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* touch_of_death_3_mw;
     const spell_data_t* touch_of_death_3_ww;
+    const spell_data_t* two_hand_adjustment;
     const spell_data_t* vivify;
     const spell_data_t* vivify_2_brm;
     const spell_data_t* vivify_2_mw;
@@ -586,7 +587,6 @@ public:
     const spell_data_t* chi_wave_heal;
     const spell_data_t* fortifying_brew;
     const spell_data_t* healing_elixir;
-    const spell_data_t* two_hand_adjustment;
     const spell_data_t* mystic_touch;
 
     // Brewmaster
@@ -8473,6 +8473,9 @@ struct expel_harm_t : public monk_heal_t
     target           = player;
     may_combo_strike = true;
 
+    if ( p.spec.expel_harm_2_brm->ok() )
+      cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
+
     add_child( dmg );
   }
 
@@ -9750,6 +9753,7 @@ void monk_t::init_spells()
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
   spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
+  spec.two_hand_adjustment       = find_spell( 346104 );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );
@@ -9936,7 +9940,6 @@ void monk_t::init_spells()
   passives.chi_wave_heal         = find_spell( 132463 );
   passives.fortifying_brew       = find_spell( 120954 );
   passives.healing_elixir        = find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
-  passives.two_hand_adjustment   = find_spell( 346104 );
   passives.mystic_touch          = find_spell( 8647 );
 
   // Brewmaster
@@ -12427,7 +12430,7 @@ void monk_t::apply_affecting_auras( action_t& action )
 
   if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
       main_hand_weapon.group() == weapon_e::WEAPON_2H )
-        action.apply_affecting_aura( passives.two_hand_adjustment );
+        action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
   //   action.gcd_type = gcd_haste_type::HASTE;
