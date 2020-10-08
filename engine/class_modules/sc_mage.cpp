@@ -513,14 +513,9 @@ public:
     timespan_t firestarter_time = 0_ms;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
-    double lucid_dreams_proc_chance_arcane = 0.075;
-    double lucid_dreams_proc_chance_fire = 0.1;
-    double lucid_dreams_proc_chance_frost = 0.075;
-    timespan_t enlightened_interval = 2.0_s;
     timespan_t focus_magic_interval = 1.5_s;
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
-    timespan_t from_the_ashes_interval = 2.0_s;
     timespan_t mirrors_of_torment_interval = 1.5_s;
   } options;
 
@@ -5576,7 +5571,7 @@ struct enlightened_event_t : public event_t
   {
     mage->events.enlightened = nullptr;
     mage->update_enlightened();
-    mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
+    mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, 2.0_s );
   }
 };
 
@@ -5669,7 +5664,7 @@ struct from_the_ashes_event_t : public event_t
   {
     mage->events.from_the_ashes = nullptr;
     mage->update_from_the_ashes();
-    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, mage->options.from_the_ashes_interval );
+    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, 2.0_s );
   }
 };
 
@@ -5986,14 +5981,9 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
-  add_option( opt_timespan( "enlightened_interval", options.enlightened_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
 
   player_t::create_options();
@@ -7372,7 +7362,7 @@ void mage_t::arise()
   {
     update_enlightened();
 
-    timespan_t first_tick = rng().real() * options.enlightened_interval;
+    timespan_t first_tick = rng().real() * 2.0_s;
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
@@ -7387,7 +7377,7 @@ void mage_t::arise()
   {
     update_from_the_ashes();
 
-    timespan_t first_tick = rng().real() * options.from_the_ashes_interval;
+    timespan_t first_tick = rng().real() * 2.0_s;
     events.from_the_ashes = make_event<events::from_the_ashes_event_t>( *sim, *this, first_tick );
   }
 
@@ -7904,9 +7894,9 @@ void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
     return;
 
   double proc_chance =
-    ( specialization() == MAGE_ARCANE ) ? options.lucid_dreams_proc_chance_arcane :
-    ( specialization() == MAGE_FIRE   ) ? options.lucid_dreams_proc_chance_fire :
-                                          options.lucid_dreams_proc_chance_frost;
+    ( specialization() == MAGE_ARCANE ) ? 0.075 :
+    ( specialization() == MAGE_FIRE   ) ? 0.1 :
+                                          0.075;
 
   if ( rng().roll( proc_chance ) )
   {
