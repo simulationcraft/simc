@@ -84,7 +84,6 @@ public:
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
-    propagate_const<buff_t*> hungering_void_tracking;
     propagate_const<buff_t*> hungering_void;
   } buffs;
 
@@ -243,6 +242,7 @@ public:
     const spell_data_t* void_torrent;
     // T50
     const spell_data_t* hungering_void;
+    const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
     const spell_data_t* ancient_madness;
     const spell_data_t* surrender_to_madness;
   } talents;
@@ -595,7 +595,6 @@ public:
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
   void remove_wrathful_faerie_fermata();
-  void remove_hungering_void_tracking();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
@@ -712,12 +711,9 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t
 {
   bool affected_by_shadow_weaving;
-  const spell_data_t* hungering_void_buff_spell;
 
   priest_pet_spell_t( priest_pet_t& p, util::string_view n )
-    : spell_t( n, &p, p.find_pet_spell( n ) ),
-      affected_by_shadow_weaving( false ),
-      hungering_void_buff_spell( p.o().find_spell( 345219 ) )
+    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
   }
@@ -746,11 +742,6 @@ struct priest_pet_spell_t : public spell_t
       tdm *= p().o().shadow_weaving_multiplier( t, id );
     }
 
-    if ( p().o().hungering_void_active( t ) )
-    {
-      tdm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
-    }
-
     return tdm;
   }
 
@@ -761,11 +752,6 @@ struct priest_pet_spell_t : public spell_t
     if ( affected_by_shadow_weaving )
     {
       ttm *= p().o().shadow_weaving_multiplier( t, id );
-    }
-
-    if ( p().o().hungering_void_active( t ) )
-    {
-      ttm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return ttm;
@@ -1312,13 +1298,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   unsigned int mind_sear_id;
-  const spell_data_t* hungering_void_buff_spell;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
-      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() ),
-      hungering_void_buff_spell( priest().find_spell( 345219 ) )
+      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
   }
@@ -1395,11 +1379,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       tdm *= priest().shadow_weaving_multiplier( t, id );
     }
 
-    if ( priest().hungering_void_active( t ) )
-    {
-      tdm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
-    }
-
     return tdm;
   }
 
@@ -1410,11 +1389,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( affected_by_shadow_weaving )
     {
       ttm *= priest().shadow_weaving_multiplier( t, id );
-    }
-
-    if ( priest().hungering_void_active( t ) )
-    {
-      ttm *= ( 1 + hungering_void_buff_spell->effectN( 1 ).percent() );
     }
 
     return ttm;

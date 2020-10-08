@@ -2016,6 +2016,7 @@ void priest_t::init_spells_shadow()
   // T50
   talents.ancient_madness      = find_talent_spell( "Ancient Madness" );
   talents.hungering_void       = find_talent_spell( "Hungering Void" );
+  talents.hungering_void_buff  = find_spell( 345219 );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
@@ -2377,24 +2378,4 @@ bool priest_t::hungering_void_active( player_t* target ) const
 
   return td->buffs.hungering_void->check();
 }
-
-// ==========================================================================
-// Helper function to expire all tracking debuffs after Voidform expires
-// ==========================================================================
-void priest_t::remove_hungering_void_tracking()
-{
-  if ( !talents.hungering_void->ok() )
-  {
-    return;
-  }
-
-  for ( priest_td_t* priest_td : _target_data.get_entries() )
-  {
-    if ( priest_td && priest_td->buffs.hungering_void_tracking->check() )
-    {
-      priest_td->buffs.hungering_void_tracking->expire();
-    }
-  }
-}
-
 }  // namespace priestspace
