@@ -92,11 +92,32 @@ def test_legendaries(klass: str, path: str):
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
                 ('trinket1', '"{}",bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
 
+def test_soulbinds(klass: str, path: str):
+    try:
+        from simc_support.game_data.WowSpec import get_wow_spec_from_combined_simc_name
+        from simc_support.game_data.SoulBind import SOULBINDS
+    except ImportError:
+        print("Error importing simc-support library for legendary test. Skipping test.")
+        return
+
+    for fight_style in FIGHT_STYLES:
+        for covenant in COVENANTS:
+            grp = TestGroup('{}/{}/soulbinds'.format(profile, fight_style),
+                            fight_style=fight_style, profile=path)
+            tests.append(grp)
+            for soulbind in SOULBINDS:
+                if covenant.lower() == soulbind.covenant.simc_name:
+                    for soulbind_talent in soulbind.soul_bind_talents:
+                        if soulbind_talent.spell_id != 0:
+                            Test('{} - {} - {} ({})'.format(covenant, soulbind.full_name, soulbind_talent.full_name, soulbind_talent.spell_id), group=grp, args=[
+                                ('covenant', covenant.lower()), ('level', 60), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
+
 available_tests = {
     "talent": (test_talents, None),
     "covenant": (test_covenants, "simc-support"),
     "trinket": (test_trinkets, "simc-support"),
-    "legendary": (test_legendaries, "simc-support")
+    "legendary": (test_legendaries, "simc-support"),
+    "soulbind": (test_soulbinds, "simc-support")
 }
 
 formatted_available_tests = ", ".join(("'{}'{}".format(
