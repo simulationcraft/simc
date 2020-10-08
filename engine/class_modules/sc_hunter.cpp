@@ -1902,6 +1902,10 @@ struct kill_command_bm_t: public kill_command_base_t
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } killer_instinct;
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } dire_command;
   timespan_t ferocious_appetite_reduction;
 
   kill_command_bm_t( hunter_main_pet_base_t* p ):
@@ -1919,6 +1923,24 @@ struct kill_command_bm_t: public kill_command_base_t
 
     if ( o() -> conduits.ferocious_appetite.ok() )
       ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
+
+    if ( o() -> legendary.dire_command.ok() )
+    {
+      // assume it's a flat % without any bs /shrug
+      dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = o() -> get_proc( "Dire Command" );
+    }
+  }
+
+  void execute() override
+  {
+    kill_command_base_t::execute();
+
+    if ( rng().roll( dire_command.chance ) )
+    {
+      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
+      dire_command.proc -> occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4779,10 +4801,6 @@ struct kill_command_t: public hunter_spell_t
     real_ppm_t* rppm = nullptr;
     proc_t* proc;
   } dire_consequences;
-  struct {
-    double chance = 0;
-    proc_t* proc;
-  } dire_command;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> specs.kill_command )
@@ -4793,13 +4811,6 @@ struct kill_command_t: public hunter_spell_t
     {
       flankers_advantage.chance = data().effectN( 2 ).percent();
       flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
-    }
-
-    if ( p -> legendary.dire_command.ok() )
-    {
-      // assume it's a flat % without any bs /shrug
-      dire_command.chance = p -> legendary.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = p -> get_proc( "Dire Command" );
     }
 
     if ( p -> azerite.dire_consequences.ok() )
@@ -4844,12 +4855,6 @@ struct kill_command_t: public hunter_spell_t
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
       }
-    }
-
-    if ( rng().roll( dire_command.chance ) )
-    {
-      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      dire_command.proc -> occur();
     }
 
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
