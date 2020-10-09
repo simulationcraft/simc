@@ -321,7 +321,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // Attach AoE proc as a child
     add_child( hotr_aoe );
     if ( p -> spec.hammer_of_the_righteous_2 -> ok() && ! p -> talents.blessed_hammer -> ok() )
-      cooldown -> charges += p -> spec.hammer_of_the_righteous_2 -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p -> spec.hammer_of_the_righteous_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -568,14 +568,11 @@ void paladin_t::target_mitigation( school_e school,
       sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
   }
 
-  // Divine Bulwark
-
+  // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() )
   {
-    double cons_multiplier = 1.0 + ( cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value() );
-    if ( spec.consecration_2 -> ok() )
-      cons_multiplier += spec.consecration_2 -> effectN( 1 ).percent();
-    s -> result_amount *= cons_multiplier;
+    s -> result_amount *= 1.0 + spec.consecration_2 -> effectN( 1 ).percent()
+      + cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value();
   }
 
   // Blessed Hammer
