@@ -917,10 +917,10 @@ public:
     conduit_data_t unleashed_frenzy; // 122
 
     // Unholy
-    // conduit_data_t convocation_of_the_dead; // 124
-    // conduit_data_t embrace_death; // 89
-    // conduit_data_t eternal_hunger; // 65
-    // conduit_data_t lingering_plague; // 125
+    conduit_data_t convocation_of_the_dead; // 124
+    conduit_data_t embrace_death; // 89
+    conduit_data_t eternal_hunger; // 65
+    conduit_data_t lingering_plague; // 125
 
     // Defensive - Endurance/Finesse
     // conduit_data_t blood_bond; // Blood only, 86
@@ -4468,6 +4468,17 @@ struct death_coil_damage_t : public death_knight_spell_t
   {
     background = dual = true;
   }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+    if ( p() -> buffs.sudden_doom -> check() )
+    {
+      m *= 1.0 + p() -> conduits.embrace_death.percent();
+    }
+
+    return m;
+  }
 };
 
 struct death_coil_t : public death_knight_spell_t
@@ -6270,6 +6281,11 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       p() -> burst_festering_wound( state, 1 );
+      death_knight_td_t* target_data = td( state -> target );
+      if ( target_data -> dot.virulent_plague -> is_ticking() )
+      {
+        target_data->dot.virulent_plague->adjust_duration( p()->conduits.lingering_plague.time_value() );
+      }
     }
   }
 };
@@ -7482,6 +7498,11 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
           dk -> active_spells.bursting_sores -> set_target( target );
           dk -> active_spells.bursting_sores -> execute();
         }
+        if ( dk -> conduits.convocation_of_the_dead.ok() )
+        {
+          dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+            dk -> conduits.convocation_of_the_dead.value() / 10 ) );
+        }
       }
 
       // Triggers once per target per player action:
@@ -8353,10 +8374,10 @@ void death_knight_t::init_spells()
   conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
 
   // Unholy
-  // conduits.convocation_of_the_dead = find_conduit_spell( "Convocation of the Dead" );
-  // conduits.embrace_death = find_conduit_spell( "Embrace Death" );
-  // conduits.eternal_hunger = find_conduit_spell( "Eternal Hunger" );
-  // conduits.lingering_plague = find_conduit_spell( "Linguering Plague" );
+  conduits.convocation_of_the_dead = find_conduit_spell( "Convocation of the Dead" );
+  conduits.embrace_death = find_conduit_spell( "Embrace Death" );
+  conduits.eternal_hunger = find_conduit_spell( "Eternal Hunger" );
+  conduits.lingering_plague = find_conduit_spell( "Lingering Plague" );
 
   // Defensive - Endurance/Finesse
   // conduits.blood_bond = find_conduit_spell( "Blood Bond" );
@@ -9014,6 +9035,7 @@ void death_knight_t::create_buffs()
 
   // Unholy
   buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
+        -> set_duration( spec.dark_transformation->duration() + conduits.eternal_hunger.time_value() )
         -> set_cooldown( 0_ms ); // Handled by the ability
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
