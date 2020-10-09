@@ -2889,9 +2889,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     arcane_mage_spell_t::snapshot_state( s, rt );
-
-    if ( p()->buffs.clearcasting_channel->check() )
-      debug_cast<am_state_t*>( s )->tick_time_multiplier = 1.0 + cc_tick_time_reduction;
+    debug_cast<am_state_t*>( s )->tick_time_multiplier = p()->buffs.clearcasting_channel->check() ? 1.0 + cc_tick_time_reduction : 1.0;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3287,7 +3285,6 @@ struct use_mana_gem_t : public action_t
   bool ready() override
   {
     mage_t* p = debug_cast<mage_t*>( player );
-
     if ( p->state.mana_gem_charges <= 0 || p->resources.pct( RESOURCE_MANA ) >= 1.0 )
       return false;
 
@@ -3296,10 +3293,9 @@ struct use_mana_gem_t : public action_t
 
   void execute() override
   {
-    mage_t* p = debug_cast<mage_t*>( player );
-
     action_t::execute();
 
+    mage_t* p = debug_cast<mage_t*>( player );
     p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p->gains.mana_gem, this );
     p->state.mana_gem_charges--;
     assert( p->state.mana_gem_charges >= 0 );
