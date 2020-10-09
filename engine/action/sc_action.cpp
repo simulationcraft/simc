@@ -3820,7 +3820,7 @@ void action_t::impact( action_state_t* s )
 void action_t::trigger_dot( action_state_t* s )
 {
   timespan_t duration = composite_dot_duration( s );
-  if ( duration <= timespan_t::zero() && !tick_zero && !tick_on_application )
+  if ( duration <= timespan_t::zero() )
     return;
 
   // To simulate precasting HoTs, remove one tick worth of duration if precombat.
