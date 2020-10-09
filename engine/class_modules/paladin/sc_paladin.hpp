@@ -224,6 +224,7 @@ public:
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
+    const spell_data_t* hammer_of_the_righteous_2;
   } spec;
 
   // Cooldowns

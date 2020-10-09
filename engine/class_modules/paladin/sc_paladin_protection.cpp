@@ -320,6 +320,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
+    if ( p -> spec.hammer_of_the_righteous_2 -> ok() && ! p -> talents.blessed_hammer -> ok() )
+      cooldown -> charges += p -> spec.hammer_of_the_righteous_2 -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -812,6 +814,7 @@ void paladin_t::init_spells_protection()
     spec.consecration_2 = find_rank_spell( "Consecration", "Rank 2" );
     spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
+    spec.hammer_of_the_righteous_2 = find_rank_spell( "Hammer of the Righteous", "Rank 2" );
 
     spells.judgment_debuff = find_spell( 197277 );
   }
