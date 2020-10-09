@@ -3514,7 +3514,10 @@ public:
       {
         double cam = spell_t::composite_aoe_multiplier( state );
 
-        return cam / std::sqrt( state->n_targets );
+        if ( state->target != target )
+          return cam / std::sqrt( state->n_targets );
+
+        return cam;
       }
     };
 
@@ -7080,7 +7083,10 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->target != target )
+        return cam / std::sqrt( state->n_targets );
+
+    return cam;
   }
 
   void execute() override
