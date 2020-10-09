@@ -1869,9 +1869,14 @@ struct arcane_mage_spell_t : public mage_spell_t
     // Consume first applicable buff and then stop.
     for ( auto cr : cost_reductions )
     {
-      if ( cr->check() )
+      int before = cr->check();
+      if ( before )
       {
         cr->decrement();
+        // Nether Precision is only triggered if the buff was actually decremented.
+        // This is relevant when the player uses Expanded Potential.
+        if ( cr == p()->buffs.clearcasting && cr->check() < before )
+          p()->buffs.nether_precision->trigger( p()->buffs.nether_precision->max_stack() );
         break;
       }
     }
@@ -6349,10 +6354,7 @@ void mage_t::create_buffs()
                                  ->modify_duration( spec.arcane_power_3->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value_from_effect( 1 )
-                                 ->modify_max_stack( as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                  // Nether Precision activates when all stacks of Clearcasting expire, regardless of how they expire.
-                                   { if ( cur == 0 ) buffs.nether_precision->trigger( buffs.nether_precision->max_stack() ); } );
+                                 ->modify_max_stack( as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
