@@ -890,7 +890,7 @@ public:
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
   void      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
-  void      trigger_fof( double chance, int stacks, proc_t* source );
+  void      trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
@@ -2429,7 +2429,7 @@ struct icicle_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      p()->trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent(), 1, proc_fof );
+      p()->trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent(), proc_fof );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -3821,7 +3821,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    p()->trigger_fof( fof_proc_chance, 1, proc_fof );
+    p()->trigger_fof( fof_proc_chance, proc_fof );
 
     double bf_proc_chance = p()->spec.brain_freeze->effectN( 1 ).percent();
     bf_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
@@ -3918,7 +3918,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     if ( hit_any_target )
-      p()->trigger_fof( p()->spec.fingers_of_frost->effectN( 2 ).percent(), 1, proc_fof );
+      p()->trigger_fof( p()->spec.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
   }
 
   double action_multiplier() const override
@@ -3990,7 +3990,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->trigger_fof( 1.0, 1, proc_fof );
+    p()->trigger_fof( 1.0, proc_fof );
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
@@ -4085,7 +4085,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     double fof_proc_chance = p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent();
     for ( int i = 0; i < as<int>( p()->spec.icicles->effectN( 2 ).base_value() ); i++ )
-      p()->trigger_fof( fof_proc_chance, 1, proc_fof );
+      p()->trigger_fof( fof_proc_chance, proc_fof );
   }
 
   void impact( action_state_t* s ) override
@@ -4989,7 +4989,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // TODO: Now happens at 2.5 and 5.
     if ( d->current_tick == 3 || d->current_tick == 5 )
-      p()->trigger_fof( 1.0, 1, proc_fof );
+      p()->trigger_fof( 1.0, proc_fof );
   }
 
   void last_tick( dot_t* d ) override
@@ -6485,7 +6485,7 @@ void mage_t::create_buffs()
   buffs.frigid_grasp       = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
                                ->add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() )
                                ->set_stack_change_callback( [ this, fg_fof ] ( buff_t*, int old, int )
-                                 { if ( old == 0 ) trigger_fof( 1.0, 1, fg_fof ); } )
+                                 { if ( old == 0 ) trigger_fof( 1.0, fg_fof ); } )
                                ->set_chance( azerite.frigid_grasp.enabled() );
 
   buffs.tunnel_of_ice      = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
@@ -6524,7 +6524,7 @@ void mage_t::create_buffs()
   proc_t* fw_fof = get_proc( "Fingers of Frost from Freezing Winds" );
   buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 327478 ) )
                              ->set_tick_callback( [ this, fw_fof ] ( buff_t*, int, timespan_t )
-                               { trigger_fof( 1.0, 1, fw_fof ); } )
+                               { trigger_fof( 1.0, fw_fof ); } )
                              ->set_chance( runeforge.freezing_winds.ok() );
   buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 327509 ) )
                              ->set_default_value_from_effect( 1 )
@@ -7804,7 +7804,7 @@ void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
   }
 }
 
-void mage_t::trigger_fof( double chance, int stacks, proc_t* source )
+void mage_t::trigger_fof( double chance, proc_t* source, int stacks )
 {
   assert( source );
 
