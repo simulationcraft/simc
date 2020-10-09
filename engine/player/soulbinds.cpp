@@ -855,6 +855,8 @@ void volatile_solvent( special_effect_t& effect )
 
     if ( effect.player->sim->shadowlands_opts.volatile_solvent_mastery )
       effect.player->register_combat_begin( [ buff_mastery ]( player_t* p ) { buff_mastery->trigger(); } );
+
+    //Todo: Add the buffs for Magic Damage percent and Physical damage preseont
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
