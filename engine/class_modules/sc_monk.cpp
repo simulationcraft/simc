@@ -3446,7 +3446,7 @@ public:
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      if ( state->n_targets >= owner->spec.keg_smash->effectN( 7 ).base_value() )
+      if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
         // Primary takes 100% damage
         // Secondary targets get reduced damage
@@ -6369,7 +6369,7 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    if ( state->n_targets >= p()->spec.keg_smash->effectN( 7 ).base_value() )
+    if ( state->n_targets > p()->spec.keg_smash->effectN( 7 ).base_value() )
       // this is the closest we can come up without Blizzard flat out giving us the function
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
