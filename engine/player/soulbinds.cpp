@@ -120,25 +120,26 @@ double class_value_from_desc_vars( special_effect_t& e, util::string_view var, u
   return value;
 }
 
-bool extra_desc_lines_for_class( special_effect_t& e )
+// By default, look for a new line being added
+bool extra_desc_text_for_class( special_effect_t& e, util::string_view text = "[\r\n]" )
 {
   if ( const char* desc = e.player->dbc->spell_text( e.spell_id ).desc() )
   {
     // The relevant part of the description is formatted as a '|' delimited list of the
-    // letter 'a' followed by class aura spell IDs until we reach a '[' and a new line.
-    std::regex r( "(?=(?:a\\d+\\|?)*\\[[\r\n])a(\\d+)" );
+    // letter 'a' followed by class aura spell IDs until we reach a '[' and the extra text
+    std::regex r( "(?=(?:\\??a\\d+\\|?)*\\[" + std::string( text ) + ")a(\\d+)" );
     std::cregex_iterator begin( desc, desc + std::strlen( desc ), r );
     for( std::cregex_iterator i = begin; i != std::cregex_iterator(); i++ )
     {
       auto spell = e.player->find_spell( std::stoi( ( *i ).str( 1 ) ) );
       if ( spell->is_class( e.player->type ) )
       {
-        e.player->sim->print_debug( "description for special effect '{}': has extra lines for this class", e.name() );
+        e.player->sim->print_debug( "parsed description for special effect '{}': found extra text '{}' for this class", e.name(), text );
         return true;
       }
     }
   }
-  e.player->sim->print_debug( "description for special effect '{}': does not have extra lines for this class", e.name() );
+  e.player->sim->print_debug( "parsed description for special effect '{}': no extra text '{}' found for this class", e.name(), text );
   return false;
 }
 
@@ -269,7 +270,7 @@ void field_of_blossoms( special_effect_t& effect )
   if ( !buff )
   {
     // The ICD of 60 seconds is enabled for some classes in the description of Field of Blossoms (id=319191)
-    bool icd_enabled = extra_desc_lines_for_class( effect );
+    bool icd_enabled = extra_desc_text_for_class( effect );
 
     effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: icd_enabled={}", icd_enabled );
 
@@ -453,7 +454,7 @@ void wasteland_propriety( special_effect_t& effect )
     double duration_mod = class_value_from_desc_vars( effect, "mod" );
 
     // The ICD of 60 seconds is enabled for some classes in the description of Wasteland Propriety (id=319983)
-    bool icd_enabled = extra_desc_lines_for_class( effect );
+    bool icd_enabled = extra_desc_text_for_class( effect );
 
     effect.player->sim->print_debug( "class-specific properties for wasteland_propriety: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
 
@@ -552,16 +553,14 @@ void combat_meditation( special_effect_t& effect )
   // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
   // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
   // id:345861 lockout buff (buff->eff#3->trigger)
-  struct combat_meditation_buff_t : public buff_t
+  struct combat_meditation_buff_t : public stat_buff_t
   {
     timespan_t ext_dur;
-
-    combat_meditation_buff_t( player_t* p ) : buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
+    combat_meditation_buff_t( player_t* p, double duration_mod, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
-      set_cooldown( data().effectN( 3 ).trigger()->duration() );
-      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-      set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+      set_cooldown( icd_enabled ? data().effectN( 3 ).trigger()->duration() : 0_ms );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
+      set_duration_multiplier( duration_mod );
 
       ext_dur =
           timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
@@ -576,7 +575,12 @@ void combat_meditation( special_effect_t& effect )
 
   auto buff = buff_t::find( effect.player, "combat_meditation" );
   if ( !buff )
-    buff = make_buff<combat_meditation_buff_t>( effect.player );
+  {
+    double duration_mod = class_value_from_desc_vars( effect, "mod" );
+    bool icd_enabled = extra_desc_text_for_class( effect, effect.driver()->name_cstr() );
+    effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
+    buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
+  }
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
@@ -894,7 +898,7 @@ void lead_by_example( special_effect_t& effect )
     // TODO: does 'up to X%' include the base value or refers only to extra per ally?
     buff = make_buff( effect.player, "lead_by_example", s_data )
       ->set_default_value_from_effect( 2 )
-      ->modify_default_value( s_data->effectN( 2 ).percent() * s_data->effectN( 3 ).base_value() )
+      ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )

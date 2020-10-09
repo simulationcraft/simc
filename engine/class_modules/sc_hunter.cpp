@@ -268,7 +268,6 @@ struct hunter_td_t: public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* hunters_mark;
     buff_t* latent_poison;
     buff_t* latent_poison_injection;
     buff_t* steady_aim;
@@ -574,7 +573,6 @@ public:
     spell_data_ptr_t marksmanship_hunter;
     spell_data_ptr_t survival_hunter;
 
-    spell_data_ptr_t hunters_mark;
     spell_data_ptr_t kill_command;
     spell_data_ptr_t kill_shot;
 
@@ -619,7 +617,6 @@ public:
   cdwaste::player_data_t cd_waste;
 
   struct {
-    player_t* current_hunters_mark_target = nullptr;
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
@@ -1210,9 +1207,6 @@ struct hunter_pet_t: public pet_t
   double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = pet_t::composite_player_target_multiplier( target, school );
-
-    if ( auto td = o() -> find_target_data( target ) )
-      m *= 1 + td -> debuffs.hunters_mark -> check_value();
 
     m *= 1 + o() -> buffs.wild_spirits -> check_value();
 
@@ -2361,6 +2355,25 @@ struct tar_trap_aoe_t : public event_t
 
 } // namespace events
 
+namespace buffs {
+
+struct trick_shots_t : public buff_t
+{
+  using buff_t::buff_t;
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool ret = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( ret )
+      debug_cast<hunter_t*>( player ) -> buffs.secrets_of_the_vigil -> trigger();
+
+    return ret;
+  }
+};
+
+} // namespace buffs
+
 void hunter_t::trigger_wild_spirits( const action_state_t* s )
 {
   if ( !buffs.wild_spirits -> check() )
@@ -2457,12 +2470,6 @@ void hunter_t::consume_trick_shots()
 {
   if ( buffs.volley -> up() )
     return;
-
-  if ( buffs.secrets_of_the_vigil -> up() )
-  {
-    buffs.secrets_of_the_vigil -> decrement();
-    return;
-  }
 
   buffs.trick_shots -> decrement();
 }
@@ -3489,12 +3496,15 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   double cost() const override
   {
-    if ( p() -> executing && p() -> executing == this )
-      return lock_and_loaded ? 0 : aimed_shot_base_t::cost();
-
-    if ( p() -> buffs.lock_and_load -> check() )
+    const bool casting = p() -> executing && p() -> executing == this;
+    if ( casting ? lock_and_loaded : p() -> buffs.lock_and_load -> check() )
       return 0;
-    return aimed_shot_base_t::cost();
+
+    double c = aimed_shot_base_t::cost();
+
+    c *= 1 + p() -> buffs.secrets_of_the_vigil -> check_value();
+
+    return c;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3520,6 +3530,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
+
+    p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -3548,6 +3560,15 @@ struct aimed_shot_t : public aimed_shot_base_t
       et *= 1 + p() -> buffs.trueshot -> check_value();
 
     return et;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    aimed_shot_base_t::impact( s );
+
+    // XXX: gets consumed on impact for some reason
+    if ( s -> chain_target == 0 )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -4710,7 +4731,7 @@ struct flare_t : hunter_spell_t
     soulforge_embers_t( util::string_view n, hunter_t* p )
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
-      aoe = -1;
+      aoe = as<int>( p -> legendary.soulforge_embers -> effectN( 1 ).base_value() );
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     }
   };
@@ -4732,7 +4753,7 @@ struct flare_t : hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> state.tar_trap_aoe )
+    if ( soulforge_embers && p() -> state.tar_trap_aoe )
     {
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
@@ -5128,30 +5149,6 @@ struct trueshot_t: public hunter_spell_t
     trigger_buff( p() -> buffs.unerring_vision_driver, precast_time );
 
     adjust_precast_cooldown( precast_time );
-  }
-};
-
-// Hunter's Mark ============================================================
-
-struct hunters_mark_t: public hunter_spell_t
-{
-  hunters_mark_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "hunters_mark", p, p -> specs.hunters_mark )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> state.current_hunters_mark_target != nullptr )
-      td( p() -> state.current_hunters_mark_target ) -> debuffs.hunters_mark -> expire();
-
-    p() -> state.current_hunters_mark_target = target;
-    td( target ) -> debuffs.hunters_mark -> trigger();
   }
 };
 
@@ -5590,10 +5587,6 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs(),
   dots()
 {
-  debuffs.hunters_mark =
-    make_buff( *this, "hunters_mark", p -> specs.hunters_mark )
-      -> set_default_value_from_effect( 1 );
-
   debuffs.latent_poison =
     make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
       -> set_default_value( p -> azerite.latent_poison.value( 1 ) )
@@ -5628,11 +5621,6 @@ void hunter_td_t::target_demise()
     p -> sim -> print_debug( "{} a_murder_of_crows cooldown reset on target death.", p -> name() );
 
     p -> cooldowns.a_murder_of_crows -> reset( true );
-  }
-
-  if ( debuffs.hunters_mark -> check() )
-  {
-    p -> state.current_hunters_mark_target = nullptr;
   }
 
   if ( p -> talents.terms_of_engagement.ok() && damaged )
@@ -5849,7 +5837,6 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "flayed_shot"           ) return new            flayed_shot_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
-  if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
@@ -6030,7 +6017,6 @@ void hunter_t::init_spells()
   specs.marksmanship_hunter  = find_specialization_spell( "Marksmanship Hunter" );
   specs.survival_hunter      = find_specialization_spell( "Survival Hunter" );
 
-  specs.hunters_mark         = find_class_spell( "Hunter's Mark" );
   specs.kill_command         = find_class_spell( "Kill Command" );
   specs.kill_shot            = find_class_spell( "Kill Shot" );
 
@@ -6303,14 +6289,8 @@ void hunter_t::create_buffs()
       -> set_chance( talents.streamline.ok() );
 
   buffs.trick_shots =
-    make_buff( this, "trick_shots", find_spell( 257622 ) )
-      -> set_chance( specs.trick_shots.ok() )
-      -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
-          if ( cur == 0 )
-            buffs.secrets_of_the_vigil -> expire();
-          else if ( old == 0 )
-            buffs.secrets_of_the_vigil -> trigger();
-        } );
+    make_buff<buffs::trick_shots_t>( this, "trick_shots", find_spell( 257622 ) )
+      -> set_chance( specs.trick_shots.ok() );
 
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
@@ -6441,6 +6421,7 @@ void hunter_t::create_buffs()
 
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.secrets_of_the_vigil );
 
   // Azerite
@@ -6698,7 +6679,6 @@ void hunter_t::apl_bm()
     action_priority_list_t* st           = get_action_priority_list( "st" );
     action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
 
-    precombat -> add_action( "hunters_mark" );
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "aspect_of_the_wild,precast_time=1.3" );
     precombat -> add_action( "bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood.enabled&!runeforge.soulforge_embers.equipped" );
@@ -6858,7 +6838,6 @@ void hunter_t::apl_mm()
     action_priority_list_t* st           = get_action_priority_list( "st" );
     action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
-    precombat -> add_action( "hunters_mark" );
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "double_tap,precast_time=10" );
     precombat -> add_action( "potion,dynamic_prepot=1" );
@@ -6870,7 +6849,6 @@ void hunter_t::apl_mm()
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
     default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-    cds -> add_action( "hunters_mark,if=debuff.hunters_mark.down&!buff.trueshot.up" );
     cds -> add_action( "berserking,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
     cds -> add_action( "blood_fury,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
     cds -> add_action( "ancestral_call,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
@@ -6927,7 +6905,6 @@ void hunter_t::apl_mm()
     action_priority_list_t* st           = get_action_priority_list( "st" );
     action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
-    precombat -> add_talent( this, "Hunter's Mark" );
     precombat -> add_talent( this, "Double Tap", "precast_time=10",
           "Precast this as early as possible to potentially gain another cast during the fight." );
     precombat -> add_action( "use_item,name=azsharas_font_of_power" );
@@ -6951,7 +6928,6 @@ void hunter_t::apl_mm()
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
     default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-    cds -> add_action( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
     cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20" );
     cds -> add_action( "berserking,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
     cds -> add_action( "blood_fury,if=buff.trueshot.remains>14&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
@@ -7016,7 +6992,6 @@ void hunter_t::apl_surv()
     action_priority_list_t* st           = get_action_priority_list( "st" );
     action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
 
-    precombat -> add_action( "hunters_mark" );
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "steel_trap" );
     precombat -> add_action( "coordinated_assault" );
@@ -7432,9 +7407,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 double hunter_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double d = player_t::composite_player_target_multiplier( target, school );
-
-  if ( auto td = find_target_data( target ) )
-    d *= 1 + td -> debuffs.hunters_mark -> check_value();
 
   d *= 1 + buffs.wild_spirits -> check_value();
 

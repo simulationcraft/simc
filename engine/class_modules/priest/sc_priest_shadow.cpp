@@ -1629,7 +1629,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
     if ( td && td->dots.shadow_word_pain->is_ticking() )
     {
-      tdm *= data().effectN( 1 ).percent();
+      tdm *= ( 1 + data().effectN( 1 ).percent() );
     }
 
     return tdm;
@@ -2192,20 +2192,16 @@ void priest_t::generate_apl_shadow()
   default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3" );
 
   // Racials
-  // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
-  // if ( race == RACE_BLOOD_ELF )
-  //     default_list->add_action(
-  //         "arcane_torrent,if=prev_gcd.1.mindbender&buff.voidform.up" );
   if ( race == RACE_DARK_IRON_DWARF )
-    default_list->add_action( "fireblood,if=buff.voidform.up" );
+    default_list->add_action( "fireblood,if=buff.power_infusion.up" );
   if ( race == RACE_TROLL )
-    default_list->add_action( "berserking" );
+    default_list->add_action( "berserking,if=buff.power_infusion.up" );
   if ( race == RACE_LIGHTFORGED_DRAENEI )
-    default_list->add_action( "lights_judgment" );
+    default_list->add_action(
+        "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
+        "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   if ( race == RACE_MAGHAR_ORC )
-    default_list->add_action( "ancestral_call,if=buff.voidform.up" );
-  if ( race == RACE_VULPERA )
-    default_list->add_action( "bag_of_tricks" );
+    default_list->add_action( "ancestral_call,if=buff.power_infusion.up" );
 
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );

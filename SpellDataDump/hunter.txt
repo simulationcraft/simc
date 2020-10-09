@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-06/36086, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -617,7 +617,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#9)
 Azerite Power Id : 97
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effects: #1, #2, #4), Aspect of the Wild (193530 effects: #1, #3), Lock and Load (194594 effects: #1, #2, #3), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Precision (246153 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effects: #1, #2), Trueshot (288613 effect#4), Streamline (342076 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effects: #1, #2, #4), Aspect of the Wild (193530 effects: #1, #3), Lock and Load (194594 effects: #1, #2, #3), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Precision (246153 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effects: #1, #2), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1)
 Triggered by     : Lock and Load (194594)
 Family Flags     : 1, 17, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
@@ -1021,7 +1021,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
-Stance Mask      : 0x81000000
+Stance Mask      : 0x89000000
 Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
@@ -1632,7 +1632,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
-Stance Mask      : 0x81000000
+Stance Mask      : 0x89000000
 Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
@@ -5526,7 +5526,6 @@ Spell Level      : 7
 Range            : 60 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
-Cooldown         : 20 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 28
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -5540,22 +5539,20 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=480367)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 #2 (id=743704)   : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=819194)   : Apply Aura (6) | Unknown(381)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=819195)   : Apply Aura (6) | Unknown(380)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%. The target can always be seen and tracked by the Hunter.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Apply Hunter's Mark to the target, causing the target to always be seen and tracked by the Hunter.
 
-Only one Hunter's Mark can be applied at a time.
+Only one Hunter's Mark can be applied at a time.
+Tooltip          : Can always be seen and tracked by the Hunter.$?a339264[
 
-The cooldown of Hunter's Mark is reset if the target dies.
-Tooltip          : Damage taken from $@auracaster increased by $s1%$?a339264[ and damage dealt to $@auracaster is reduced by $339264s1%][].
-
-Can always be seen and tracked by the Hunter.
+Damage dealt to $@auracaster is reduced by $339264s1%.][]
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -11499,7 +11496,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=815011)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.15 | Chain Targets: 7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.15 | Chain Targets: 7 | Target: Enemy (6)
 #2 (id=815029)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #3 (id=815069)   : Dummy (3)
@@ -11543,7 +11540,7 @@ Velocity         : 30 yards/sec
 Cooldown         : 120 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11655,7 +11652,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834321)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Aspect of the Eagle (186289), Aspect of the Wild (193530), Coordinated Assault (266779), Trueshot (288613)
                    Family Flags: 15, 20, 21, 27, 53, 77
 Description      : The cooldown of all of your Aspects$?a137016[ and Trueshot]?a137017[ and Coordinated Assault][] is reduced by $s1%.
@@ -11695,7 +11692,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834323)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc336743
 
 Name             : Soulforge Embers (id=336745) [Spell Family (9), Passive] 
@@ -11778,13 +11775,13 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834475)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Kill Command has a $s1% chance to also summon a Dire Beast to attack your target.
 
 Name             : Flamewaker's Cobra Sting (id=336822) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 10%
+Proc Chance      : 15%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -11955,7 +11952,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834554)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Aimed Shot hits multiple targets from the Trick Shots effect, $s1 enemies struck by the Aimed Shot also get hit by an $?s342049[Chimaera Shot][Arcane Shot].
 
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
@@ -11976,12 +11973,16 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834562)   : Apply Aura (6) | Proc Trigger Spell (42): Secrets of the Unblinking Vigil
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 336892 | Target: Self (1)
-Description      : When you gain the Trick Shots effect, you have a $h% chance for it to not be consumed by your next Aimed Shot or Rapid Fire.
+Description      : When you gain the Trick Shots effect, you have a $h% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
 
 Name             : Secrets of the Unblinking Vigil (id=336892) [Spell Family (9)] 
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
 Triggered by     : Secrets of the Unblinking Vigil (336878)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -11993,10 +11994,12 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=834578)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=834578)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Aimed Shot (19434)
+                   Family Flags: 17
 Description      : $@spelldesc336878
-Tooltip          : Your next Trick Shots will not be consumed by Aimed Shot or Rapid Fire.
+Tooltip          : Your next Aimed Shot will consume $s1% less Focus.
 
 Name             : Wildfire Cluster (id=336895) [Spell Family (9), Passive] 
 School           : Physical
@@ -12105,7 +12108,7 @@ Name             : Butcher's Bone Fragments (id=336908) [Spell Family (9)]
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Stacks           : 10 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -12121,7 +12124,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834603)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Carve (187708), Butchery (212436)
                    Family Flags: 38, 71
 Description      : $@spelldesc336907

@@ -315,7 +315,7 @@ public:
     buff_t* concealed_blunderbuss;
     damage_buff_t* finality_eviscerate;
     buff_t* finality_rupture;
-    damage_buff_t* finality_shadow_vault;
+    damage_buff_t* finality_black_powder;
     buff_t* greenskins_wickers;
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
@@ -789,7 +789,6 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
 
-  double    composite_rating_multiplier( rating_e ) const override;
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit_chance() const override;
@@ -1126,7 +1125,7 @@ public:
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.perforated_veins );
     register_damage_buff( p()->buffs.finality_eviscerate );
-    register_damage_buff( p()->buffs.finality_shadow_vault );
+    register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
@@ -4002,15 +4001,15 @@ struct shadowstrike_t : public rogue_attack_t
   }
 };
 
-// Shadow Vault =============================================================
+// Black Powder =============================================================
 
-struct shadow_vault_t: public rogue_attack_t
+struct black_powder_t: public rogue_attack_t
 {
-  struct shadow_vault_bonus_t : public rogue_attack_t
+  struct black_powder_bonus_t : public rogue_attack_t
   {
     int last_cp;
 
-    shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
+    black_powder_bonus_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 319190 ) ),
       last_cp( 1 )
     {
@@ -4028,15 +4027,15 @@ struct shadow_vault_t: public rogue_attack_t
     }
   };
 
-  shadow_vault_bonus_t* bonus_attack;
+  black_powder_bonus_t* bonus_attack;
 
-  shadow_vault_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Shadow Vault" ), options_str ),
+  black_powder_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Black Powder" ), options_str ),
     bonus_attack( nullptr )
   {
     if ( p->find_rank_spell( "Shadow Vault", "Rank 2" )->ok() )
     {
-      bonus_attack = p->get_background_action<shadow_vault_bonus_t>( "shadow_vault_bonus" );
+      bonus_attack = p->get_background_action<black_powder_bonus_t>( "black_powder_bonus" );
       add_child( bonus_attack );
     }
   }
@@ -4048,10 +4047,10 @@ struct shadow_vault_t: public rogue_attack_t
 
     if ( p()->legendary.finality.ok() )
     {
-      if ( p()->buffs.finality_shadow_vault->check() )
-        p()->buffs.finality_shadow_vault->expire();
+      if ( p()->buffs.finality_black_powder->check() )
+        p()->buffs.finality_black_powder->expire();
       else
-        p()->buffs.finality_shadow_vault->trigger();
+        p()->buffs.finality_black_powder->trigger();
     }
   }
 
@@ -4697,14 +4696,14 @@ struct flagellation_cleanse_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
+    p()->buffs.flagellation->trigger( p()->active.flagellation->debuff->stack() );
     p()->active.flagellation->debuff->expire();
-    p()->buffs.flagellation->trigger();
   }
 
   bool ready() override
   {
     const buff_t* current_debuff = p()->active.flagellation->debuff;
-    if ( current_debuff && current_debuff->at_max_stacks() )
+    if ( current_debuff && current_debuff->check() )
       return true;
 
     return false;
@@ -6604,20 +6603,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // Rogue Character Definition
 // ==========================================================================
 
-// rogue_t::composite_rating_multiplier =====================================
-
-double rogue_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double rm = player_t::composite_rating_multiplier( rating );
-
-  if ( rating == RATING_MASTERY )
-  {
-    rm *= 1.0 + buffs.flagellation->value();
-  }
-
-  return rm;
-}
-
 // rogue_t::composite_attack_speed ==========================================
 
 double rogue_t::composite_melee_speed() const
@@ -6642,6 +6627,11 @@ double rogue_t::composite_melee_haste() const
   if ( buffs.alacrity -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
+  }
+
+  if ( buffs.flagellation -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.flagellation -> stack_value() );
   }
 
   return h;
@@ -6687,6 +6677,11 @@ double rogue_t::composite_spell_haste() const
   if ( buffs.alacrity -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
+  }
+
+  if ( buffs.flagellation -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.flagellation -> stack_value() );
   }
 
   return h;
@@ -6872,7 +6867,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "flagellation" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=40" );
     cds->add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -6994,7 +6989,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all" );
     cds->add_action( "flagellation" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=40" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
     cds->add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -7074,6 +7069,7 @@ void rogue_t::init_action_list()
     def->add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold", "Consider using a Stealth CD when reaching the energy threshold" );
     //def -> add_action( this, "Rupture", "if=azerite.nights_vengeance.enabled&!buff.nights_vengeance.up&combo_points.deficit>1&(spell_targets.shuriken_storm<2|variable.use_priority_rotation)&(cooldown.symbols_of_death.remains<=3|(azerite.nights_vengeance.rank>=2&buff.symbols_of_death.remains>3&!stealthed.all&cooldown.shadow_dance.charges_fractional>=0.9))", "Night's Vengeance: Rupture before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols between Dances with 2+ NV." );
     def->add_action( "call_action_list,name=finish,if=runeforge.deathly_shadows.equipped&dot.sepsis.ticking&dot.sepsis.remains<=2&combo_points>=2" );
+    def->add_action( "call_action_list,name=finish,if=cooldown.symbols_of_death.remains<=2&combo_points>=2&runeforge.the_rotten.equipped" );
     def->add_action( "call_action_list,name=finish,if=combo_points=animacharged_cp" );
     def->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
@@ -7088,13 +7084,13 @@ void rogue_t::init_action_list()
     cds->add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
-    cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped|runeforge.deathly_shadows.equipped)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down&(combo_points<1|!runeforge.deathly_shadows.equipped)" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=40" );
+    cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped&combo_points.deficit<=3|runeforge.deathly_shadows.equipped&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&variable.snd_condition|essence.breath_of_the_dying.major&time>=2" );
     cds->add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5" );
-    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!runeforge.the_rotten.equipped|combo_points<=2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus. Low CP for The Rotten." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2" );
@@ -7150,7 +7146,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
     stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
-    stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)" );
+    stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|buff.the_rotten.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)" );
     stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
     stealthed->add_action( "pool_resource,for_next=1" );
     stealthed->add_talent( this, "Gloomblade", "if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=13-(9*conduit.deeper_dagger.enabled+conduit.deeper_dagger.rank)" );
@@ -7165,7 +7161,7 @@ void rogue_t::init_action_list()
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-    finish->add_action( this, "Shadow Vault", "if=!variable.use_priority_rotation&spell_targets>=3" );
+    finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=3" );
     finish->add_action( this, "Eviscerate" );
 
     // Builders
@@ -7193,6 +7189,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "auto_attack"         ) return new auto_melee_attack_t   ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t            ( name, this, options_str );
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t    ( name, this, options_str );
+  if ( name == "black_powder"        ) return new black_powder_t        ( name, this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t        ( name, this, options_str );
   if ( name == "blade_rush"          ) return new blade_rush_t          ( name, this, options_str );
   if ( name == "cheap_shot"          ) return new cheap_shot_t          ( name, this, options_str );
@@ -7228,7 +7225,6 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "shadow_dance"        ) return new shadow_dance_t        ( name, this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t          ( name, this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t        ( name, this, options_str );
-  if ( name == "shadow_vault"        ) return new shadow_vault_t        ( name, this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t      ( name, this, options_str );
   if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t    ( name, this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t       ( name, this, options_str );
@@ -8332,8 +8328,8 @@ void rogue_t::create_buffs()
   // Covenants ==============================================================
 
   buffs.flagellation = make_buff( this, "flagellation_buff", covenant.flagellation_buff )
-    ->set_default_value_from_effect( 1 )
-    ->add_invalidate( CACHE_MASTERY );
+    ->set_default_value_from_effect( 2, 0.001 )
+    ->add_invalidate( CACHE_HASTE );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
                                          find_spell( 323558 ) : spell_data_t::not_found() )
@@ -8407,7 +8403,7 @@ void rogue_t::create_buffs()
   buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", find_spell( 340600 ) );
   buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
     ->set_default_value_from_effect( 1 ); // Bonus Damage%
-  buffs.finality_shadow_vault = make_buff<damage_buff_t>( this, "finality_shadow_vault", find_spell( 340603 ) );
+  buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", find_spell( 340603 ) );
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
     ->set_chance( legendary.concealed_blunderbuss->effectN( 1 ).percent() )

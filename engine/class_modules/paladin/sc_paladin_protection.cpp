@@ -570,7 +570,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( standing_in_consecration() )
   {
-    s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value() );
+    s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value() );
   }
 
   // Blessed Hammer
@@ -801,6 +801,7 @@ void paladin_t::init_spells_protection()
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
+  mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
 
   if ( specialization() == PALADIN_PROTECTION )
   {

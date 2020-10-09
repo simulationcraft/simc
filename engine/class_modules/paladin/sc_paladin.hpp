@@ -270,6 +270,7 @@ public:
   struct mastery_t
   {
     const spell_data_t* divine_bulwark; // Prot
+    const spell_data_t* divine_bulwark_2; // Rank 2 - consecration DR
     const spell_data_t* hand_of_light; // Ret
     const spell_data_t* lightbringer; // Holy
   } mastery;

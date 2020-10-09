@@ -513,14 +513,9 @@ public:
     timespan_t firestarter_time = 0_ms;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
-    double lucid_dreams_proc_chance_arcane = 0.075;
-    double lucid_dreams_proc_chance_fire = 0.1;
-    double lucid_dreams_proc_chance_frost = 0.075;
-    timespan_t enlightened_interval = 2.0_s;
     timespan_t focus_magic_interval = 1.5_s;
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
-    timespan_t from_the_ashes_interval = 2.0_s;
     timespan_t mirrors_of_torment_interval = 1.5_s;
   } options;
 
@@ -2798,7 +2793,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = triggers.radiant_spark = true;
-    base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -3399,7 +3393,7 @@ struct evocation_t : public arcane_mage_spell_t
     if ( p->azerite.brain_storm.enabled() )
       brain_storm_charges = as<int>( p->find_spell( 288466 )->effectN( 1 ).base_value() );
     if ( p->runeforge.siphon_storm.ok() )
-      siphon_storm_charges = as<int>( p->runeforge.siphon_storm->effectN( 1 ).base_value() );
+      siphon_storm_charges = as<int>( p->find_spell( 332929 )->effectN( 1 ).base_value() );
   }
 
   void on_tick()
@@ -3835,9 +3829,6 @@ struct frostbolt_t : public frost_mage_spell_t
     p()->last_frostbolt_target = target;
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
-
-    if ( p()->buffs.freezing_winds->check() == 0 )
-      p()->cooldowns.frozen_orb->adjust( -p()->runeforge.freezing_winds->effectN( 1 ).time_value(), false );
 
     consume_cold_front( target );
 
@@ -4400,7 +4391,7 @@ struct icy_veins_t : public frost_mage_spell_t
 struct fire_blast_t : public fire_mage_spell_t
 {
   fire_blast_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->spec.fire_blast_3->ok() ? p->spec.fire_blast_3 : p->find_class_spell( "Fire Blast" ) )
+    fire_mage_spell_t( n, p, p->spec.fire_blast_3->ok() ? p->spec.fire_blast_3 : p->find_spell( 319836 ) ) // TODO: figure out how not to hardcode these
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
@@ -5580,7 +5571,7 @@ struct enlightened_event_t : public event_t
   {
     mage->events.enlightened = nullptr;
     mage->update_enlightened();
-    mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
+    mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, 2.0_s );
   }
 };
 
@@ -5673,7 +5664,7 @@ struct from_the_ashes_event_t : public event_t
   {
     mage->events.from_the_ashes = nullptr;
     mage->update_from_the_ashes();
-    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, mage->options.from_the_ashes_interval );
+    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, 2.0_s );
   }
 };
 
@@ -5990,14 +5981,9 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
-  add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
-  add_option( opt_timespan( "enlightened_interval", options.enlightened_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
 
   player_t::create_options();
@@ -6222,7 +6208,7 @@ void mage_t::init_spells()
   spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
   spec.fireball_3            = find_specialization_spell( "Fireball", "Rank 3" );
   spec.fire_blast_2          = find_specialization_spell( "Fire Blast", "Rank 2" );
-  spec.fire_blast_3          = find_specialization_spell( "Fire Blast", "Rank 3" );
+  spec.fire_blast_3          = find_specialization_spell( 108853 );
   spec.fire_blast_4          = find_specialization_spell( "Fire Blast", "Rank 4" );
   spec.fire_mage             = find_specialization_spell( "Fire Mage" );
   spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
@@ -7288,7 +7274,7 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( auto td = target_data[ target ] )
   {
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
   }
 
@@ -7376,7 +7362,7 @@ void mage_t::arise()
   {
     update_enlightened();
 
-    timespan_t first_tick = rng().real() * options.enlightened_interval;
+    timespan_t first_tick = rng().real() * 2.0_s;
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
@@ -7391,7 +7377,7 @@ void mage_t::arise()
   {
     update_from_the_ashes();
 
-    timespan_t first_tick = rng().real() * options.from_the_ashes_interval;
+    timespan_t first_tick = rng().real() * 2.0_s;
     events.from_the_ashes = make_event<events::from_the_ashes_event_t>( *sim, *this, first_tick );
   }
 
@@ -7908,9 +7894,9 @@ void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
     return;
 
   double proc_chance =
-    ( specialization() == MAGE_ARCANE ) ? options.lucid_dreams_proc_chance_arcane :
-    ( specialization() == MAGE_FIRE   ) ? options.lucid_dreams_proc_chance_fire :
-                                          options.lucid_dreams_proc_chance_frost;
+    ( specialization() == MAGE_ARCANE ) ? 0.075 :
+    ( specialization() == MAGE_FIRE   ) ? 0.1 :
+                                          0.075;
 
   if ( rng().roll( proc_chance ) )
   {

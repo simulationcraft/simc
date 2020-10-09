@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.2.36086
-static const std::array<item_name_description_t, 560> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.2.36165
+static const std::array<item_name_description_t, 563> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -358,7 +358,7 @@ static const std::array<item_name_description_t, 560> __item_name_description_da
   { 13599, "Measured Contemplation"                      },
   { 13600, "Twins of the Sun Priestess"                  },
   { 13601, "X'anshi, Return of Archbishop Benedictus"    },
-  { 13602, "Call to the Void"                            },
+  { 13602, "Eternal Call to the Void"                    },
   { 13603, "Shadowflame Prism"                           },
   { 13604, "Painbreaker Psalm"                           },
   { 13605, "Clarity of Mind"                             },
@@ -560,5 +560,8 @@ static const std::array<item_name_description_t, 560> __item_name_description_da
   { 13802, "Akaari's Soul Fragment"                      },
   { 13803, "the Rotten"                                  },
   { 13804, "Deathly Shadows"                             },
+  { 13805, "Cosmetic"                                    },
+  { 13806, "Runes cascade across the surface of this armor." },
+  { 13808, 0                                             },
 } };
 

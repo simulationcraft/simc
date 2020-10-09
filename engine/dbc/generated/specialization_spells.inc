@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.2.36086
-static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.2.36165
+static const std::array<specialization_spell_entry_t, 927> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -291,7 +291,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },
   {  4,  261, 245751,      0, "Sprint"                            , "Rank 3" },
   {  4,  261, 316219,      0, "Find Weakness"                     , 0 },
-  {  4,  261, 319175,      0, "Shadow Vault"                      , 0 },
+  {  4,  261, 319175,      0, "Black Powder"                      , 0 },
   {  4,  261, 319178,      0, "Shadow Vault"                      , "Rank 2" },
   {  4,  261, 319949,      0, "Backstab"                          , "Rank 2" },
   {  4,  261, 319951,      0, "Shuriken Storm"                    , "Rank 2" },
@@ -316,7 +316,6 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  5,  256, 262861,      0, "Smite"                             , "Rank 2" },
   {  5,  256, 271534,      0, "Mastery: Grace"                    , 0 },
   {  5,  256, 285485,      0, "Focused Will"                      , "Rank 2" },
-  {  5,  256, 319912,      0, "Prayer of Mending"                 , "Rank 2" },
   {  5,  256, 322112,      0, "Holy Nova"                         , "Rank 2" },
   {  5,  256, 322115,      0, "Power Word: Radiance"              , "Rank 2" },
   {  5,  256, 343726,      0, "Shadowfiend"                       , "Rank 2" },
@@ -371,6 +370,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  5,  258, 335467,      0, "Devouring Plague"                  , 0 },
   {  5,  258, 341205,      0, "Dark Thoughts"                     , 0 },
   {  5,  258, 341491,      0, "Shadowy Apparitions"               , 0 },
+  {  5,  258, 342991,      0, "Shadow Mend"                       , "Rank 2" },
   {  5,  258, 343690,      0, "Mastery: Shadow Weaving"           , 0 },
   {  6,  250,  49028,      0, "Dancing Rune Weapon"               , 0 },
   {  6,  250,  50842,      0, "Blood Boil"                        , 0 },
@@ -550,7 +550,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  8,   63,  31661,      0, "Dragon's Breath"                   , 0 },
   {  8,   63,  44448,      0, "Pyroblast Clearcasting Driver"     , 0 },
   {  8,   63,  86949,      0, "Cauterize"                         , 0 },
-  {  8,   63, 108853, 319836, "Fire Blast"                        , "Rank 3" },
+  {  8,   63, 108853, 319836, "Fire Blast"                        , 0 },
   {  8,   63, 108978,      0, "Alter Time"                        , 0 },
   {  8,   63, 117216,      0, "Critical Mass"                     , 0 },
   {  8,   63, 137019,      0, "Fire Mage"                         , 0 },
@@ -678,6 +678,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  268, 328682,      0, "Zen Meditation"                    , "Rank 2" },
   { 10,  268, 343743,      0, "Purifying Brew"                    , "Rank 2" },
+  { 10,  268, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 10,  270, 107428,      0, "Rising Sun Kick"                   , 0 },
   { 10,  270, 115151,      0, "Renewing Mist"                     , 0 },
   { 10,  270, 115175,      0, "Soothing Mist"                     , 0 },
@@ -740,6 +741,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
   { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
+  { 10,  269, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 11,  102,   2782,      0, "Remove Corruption"                 , 0 },
   { 11,  102,  24858,      0, "Moonkin Form"                      , 0 },
   { 11,  102,  29166,      0, "Innervate"                         , 0 },
