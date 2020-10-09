@@ -677,14 +677,10 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
 
-  double    composite_attack_power_multiplier() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
-  double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
-  double    composite_spell_haste() const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
-  double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
@@ -1372,10 +1368,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double ah = hunter_pet_t::composite_melee_speed();
 
     if ( buffs.frenzy -> check() )
-      ah *= 1.0 / ( 1 + buffs.frenzy -> check_stack_value() );
+      ah /= 1 + buffs.frenzy -> check_stack_value();
 
     if ( buffs.predator && buffs.predator -> check() )
-      ah *= 1.0 / ( 1 + buffs.predator -> check_stack_value() );
+      ah /= 1 + buffs.predator -> check_stack_value();
 
     return ah;
   }
@@ -6250,7 +6246,7 @@ void hunter_t::create_buffs()
   buffs.dire_beast =
     make_buff( this, "dire_beast", find_spell( 120679 ) -> effectN( 2 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> add_invalidate( CACHE_HASTE );
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
@@ -6284,8 +6280,7 @@ void hunter_t::create_buffs()
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
       -> set_default_value_from_effect( 1 )
-      -> set_max_stack( 1 )
-      -> add_invalidate( CACHE_HASTE )
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       -> set_trigger_spell( talents.steady_focus );
 
   buffs.streamline =
@@ -7305,13 +7300,6 @@ void hunter_t::datacollection_end()
   player_t::datacollection_end();
 }
 
-// hunter_t::composite_attack_power_multiplier ==============================
-
-double hunter_t::composite_attack_power_multiplier() const
-{
-  return player_t::composite_attack_power_multiplier();
-}
-
 // hunter_t::composite_melee_crit_chance ===========================================
 
 double hunter_t::composite_melee_crit_chance() const
@@ -7334,21 +7322,6 @@ double hunter_t::composite_spell_crit_chance() const
   return crit;
 }
 
-// hunter_t::composite_melee_haste ===========================================
-
-double hunter_t::composite_melee_haste() const
-{
-  double h = player_t::composite_melee_haste();
-
-  if ( buffs.dire_beast -> check() )
-    h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
-
-  if ( buffs.steady_focus -> check() )
-    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
-
-  return h;
-}
-
 // hunter_t::composite_melee_speed ==========================================
 
 double hunter_t::composite_melee_speed() const
@@ -7356,24 +7329,9 @@ double hunter_t::composite_melee_speed() const
   double s = player_t::composite_melee_speed();
 
   if ( buffs.predator -> check() )
-    s *= 1.0 / ( 1 + buffs.predator -> check_stack_value() );
+    s /= 1 + buffs.predator -> check_stack_value();
 
   return s;
-}
-
-// hunter_t::composite_spell_haste ===========================================
-
-double hunter_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buffs.dire_beast -> check() )
-    h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
-
-  if ( buffs.steady_focus -> check() )
-    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
-
-  return h;
 }
 
 // hunter_t::composite_player_target_crit_chance ============================
@@ -7385,15 +7343,6 @@ double hunter_t::composite_player_target_crit_chance( player_t* target ) const
   crit += buffs.resonating_arrow -> check_value();
 
   return crit;
-}
-
-// hunter_t::composite_player_critical_damage_multiplier ====================
-
-double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  return cdm;
 }
 
 // hunter_t::composite_player_multiplier ====================================
