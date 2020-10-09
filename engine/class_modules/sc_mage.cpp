@@ -5380,11 +5380,6 @@ struct shifting_power_pulse_t : public mage_spell_t
     callbacks = false;
     aoe = -1;
   }
-
-  result_amount_type amount_type( const action_state_t*, bool ) const override
-  {
-    return result_amount_type::DMG_DIRECT;
-  }
 };
 
 struct shifting_power_t : public mage_spell_t
@@ -5401,6 +5396,11 @@ struct shifting_power_t : public mage_spell_t
     channeled = affected_by.ice_floes = true;
     affected_by.shifting_power = false;
     tick_action = get_action<shifting_power_pulse_t>( "shifting_power_pulse", p );
+  }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
   }
 
   void init_finished() override
@@ -5540,7 +5540,6 @@ struct freeze_t : public action_t
   bool ready() override
   {
     mage_t* m = debug_cast<mage_t*>( player );
-
     if ( !m->pets.water_elemental || m->pets.water_elemental->is_sleeping() )
       return false;
 
