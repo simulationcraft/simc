@@ -11,14 +11,16 @@ try:
     from simc_support.game_data import Legendary
     from simc_support.game_data import SoulBind
 except ImportError:
-    raise Exception("simc-support dependency missing. Please install using 'pip3 install -r requirements.txt'")
+    raise Exception(
+        "simc-support dependency missing. Please install using 'pip3 install -r requirements.txt'")
 
 from helper import Test, TestGroup, run, find_profiles
 from talent_options import talent_combinations
 
 FIGHT_STYLES = ('Patchwerk', 'DungeonSlice', 'HeavyMovement')
 
-def get_talent_name(spec : WowSpec.WowSpec, talents: str):
+
+def get_talent_name(spec: WowSpec.WowSpec, talents: str):
     try:
         talent_row = next(i for i, x in enumerate(talents) if x != "0")
         talent_choice = int(talents[talent_row])
@@ -29,6 +31,7 @@ def get_talent_name(spec : WowSpec.WowSpec, talents: str):
     except Exception:
         return "Unknown"
 
+
 def test_talents(klass: str, path: str):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     for fight_style in FIGHT_STYLES:
@@ -37,7 +40,8 @@ def test_talents(klass: str, path: str):
         tests.append(grp)
         for talents in talent_combinations(klass):
             talent_name = get_talent_name(spec, talents)
-            Test('{:<40} ({})'.format(talent_name, talents), group=grp, args=[('talents', talents)])
+            Test('{:<40} ({})'.format(talent_name, talents),
+                 group=grp, args=[('talents', talents)])
 
 
 def test_covenants(klass: str, path: str):
@@ -80,6 +84,7 @@ def test_trinkets(klass: str, path: str):
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
             ('trinket1', '"{}",id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
+
 def test_legendaries(klass: str, path: str):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     legendaries = Legendary.get_legendaries_for_spec(spec)
@@ -90,6 +95,7 @@ def test_legendaries(klass: str, path: str):
         for legendary in legendaries:
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
                 ('trinket1', '"{}",bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
+
 
 def test_soulbinds(klass: str, path: str):
     fight_style = args.soulbind_fight_style
@@ -103,6 +109,7 @@ def test_soulbinds(klass: str, path: str):
                     if soulbind_talent.spell_id != 0:
                         Test('{} - {} - {} ({})'.format(covenant.full_name, soulbind.full_name, soulbind_talent.full_name, soulbind_talent.spell_id), group=grp, args=[
                             ('covenant', covenant.simc_name), ('level', 60), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
+
 
 available_tests = {
     "talent": test_talents,
