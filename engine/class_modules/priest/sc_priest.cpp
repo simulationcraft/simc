@@ -1194,8 +1194,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.hungering_void_tracking =
-      make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )->set_quiet( true )->set_duration( 0_ms );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
@@ -1503,6 +1501,11 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
   if ( target_data && target_data->buffs.schism->check() )
   {
     m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
+  }
+
+  if ( hungering_void_active( t ) )
+  {
+    m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
   }
 
   return m;
