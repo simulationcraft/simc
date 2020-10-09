@@ -264,6 +264,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     trigger_gcd = 0_ms;
+    cooldown = p -> cooldowns.guardian_of_ancient_kings;
   }
 
   void execute() override

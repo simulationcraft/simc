@@ -46,6 +46,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.judgment                = get_cooldown( "judgment" );
   cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
   cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
+  cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
 
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
@@ -914,6 +915,7 @@ void holy_power_consumer_t::execute()
        * base_costs[ RESOURCE_HOLY_POWER ] / 10
      );
     p() -> cooldowns.avenging_wrath -> adjust( reduction );
+    p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
   }
 }
 
