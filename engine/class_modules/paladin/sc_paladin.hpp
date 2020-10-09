@@ -218,7 +218,7 @@ public:
   {
     const spell_data_t* judgment_3;
     const spell_data_t* judgment_4;
-    const spell_data_t* consecation_2; //NYI
+    const spell_data_t* consecration_2;
     const spell_data_t* consecration_3;
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;

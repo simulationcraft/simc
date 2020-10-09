@@ -355,7 +355,6 @@ struct judgment_prot_t : public judgment_t
     sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
-    cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 5 ).percent();
   }
 
   // Special things that happen when Judgment damages target
@@ -570,7 +569,10 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( standing_in_consecration() )
   {
-    s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value() );
+    double cons_multiplier = 1.0 + ( cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value() );
+    if ( spec.consecration_2 -> ok() )
+      cons_multiplier += spec.consecration_2 -> effectN( 1 ).percent();
+    s -> result_amount *= cons_multiplier;
   }
 
   // Blessed Hammer
@@ -805,9 +807,10 @@ void paladin_t::init_spells_protection()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    spec.consecration_3 = find_specialization_spell( 327980 );
-    spec.judgment_3 = find_specialization_spell( 315867 );
-    spec.judgment_4 = find_specialization_spell( 231663 );
+    spec.consecration_3 = find_rank_spell( "Consecration", "Rank 3" );
+    spec.consecration_2 = find_rank_spell( "Consecration", "Rank 2" );
+    spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
+    spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
     spells.judgment_debuff = find_spell( 197277 );
   }
