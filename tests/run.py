@@ -4,7 +4,12 @@ import sys
 import argparse
 import random
 try:
-    import simc_support
+    from simc_support.game_data import WowSpec
+    from simc_support.game_data import Covenant
+    from simc_support.game_data import Conduit
+    from simc_support.game_data import Trinket
+    from simc_support.game_data import Legendary
+    from simc_support.game_data import SoulBind
 except ImportError:
     raise Exception("simc-support dependency missing. Please install using 'pip3 install -r requirements.txt'")
 
@@ -13,7 +18,7 @@ from talent_options import talent_combinations
 
 FIGHT_STYLES = ('Patchwerk', 'DungeonSlice', 'HeavyMovement')
 
-def get_talent_name(spec, talents: str):
+def get_talent_name(spec : WowSpec.WowSpec, talents: str):
     try:
         talent_row = next(i for i, x in enumerate(talents) if x != "0")
         talent_choice = int(talents[talent_row])
@@ -25,7 +30,6 @@ def get_talent_name(spec, talents: str):
         return "Unknown"
 
 def test_talents(klass: str, path: str):
-    from simc_support.game_data import WowSpec
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     for fight_style in FIGHT_STYLES:
         grp = TestGroup('{}/{}/talents'.format(profile, fight_style),
@@ -37,9 +41,6 @@ def test_talents(klass: str, path: str):
 
 
 def test_covenants(klass: str, path: str):
-    from simc_support.game_data import WowSpec
-    from simc_support.game_data import Covenant
-    from simc_support.game_data import Conduit
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     conduits = Conduit.get_conduits_for_spec(spec)
     for fight_style in FIGHT_STYLES:
@@ -69,8 +70,6 @@ def test_covenants(klass: str, path: str):
 
 
 def test_trinkets(klass: str, path: str):
-    from simc_support.game_data import WowSpec
-    from simc_support.game_data import Trinket
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     trinkets = Trinket.get_trinkets_for_spec(spec)
     fight_style = args.trinkets_fight_style
@@ -82,8 +81,6 @@ def test_trinkets(klass: str, path: str):
             ('trinket1', '"{}",id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
 def test_legendaries(klass: str, path: str):
-    from simc_support.game_data import WowSpec
-    from simc_support.game_data import Legendary
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     legendaries = Legendary.get_legendaries_for_spec(spec)
     for fight_style in FIGHT_STYLES:
@@ -95,8 +92,6 @@ def test_legendaries(klass: str, path: str):
                 ('trinket1', '"{}",bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
 
 def test_soulbinds(klass: str, path: str):
-    from simc_support.game_data import Covenant
-    from simc_support.game_data import SoulBind
     fight_style = args.soulbind_fight_style
     for covenant in Covenant.COVENANTS:
         grp = TestGroup('{}/{}/soulbinds'.format(profile, fight_style),
