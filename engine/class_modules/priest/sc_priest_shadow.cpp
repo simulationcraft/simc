@@ -1629,7 +1629,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
     if ( td && td->dots.shadow_word_pain->is_ticking() )
     {
-      tdm *= data().effectN( 1 ).percent();
+      tdm *= ( 1 + data().effectN( 1 ).percent() );
     }
 
     return tdm;
