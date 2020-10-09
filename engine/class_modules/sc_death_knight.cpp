@@ -5602,7 +5602,10 @@ struct hypothermic_presence_t : public death_knight_spell_t
 {
   hypothermic_presence_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "hypothermic_presence", p, p -> talent.hypothermic_presence )
-  { }
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
 
   void execute() override
   {
@@ -9093,9 +9096,13 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( conduits.eradicating_blow )
         -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
 
-  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
+  if ( ! bugs )
+    buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_STRENGTH )
         -> set_default_value( conduits.unleashed_frenzy.percent() );
+  else
+     buffs.unleashed_frenzy = make_buff<stat_buff_t>( this, "unleashed_frenzy", conduits.unleashed_frenzy -> effectN( 1 ).trigger() )
+    -> add_stat( STAT_STRENGTH, conduits.unleashed_frenzy.percent() * base.stats.attribute[ STAT_STRENGTH ] );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9400,7 +9407,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
-    m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
+    if ( ! bugs )
+      m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
 
     m *= 1.0 + buffs.unholy_pact -> value();
   }
