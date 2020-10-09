@@ -4542,12 +4542,13 @@ struct meteor_burn_t : public fire_mage_spell_t
   meteor_burn_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
-    // Meteor Burn is actually some sort of area DoT. We simulate it
-    // by using ground_aoe_event_t and a DoT that does a single (instant)
-    // tick on each pulse.
-    background = ground_aoe = tick_zero = true;
+    background = ground_aoe = true;
+    hasted_ticks = false;
     aoe = -1;
-    dot_duration = 0_ms;
+    // Meteor Burn is actually some sort of area DoT. We simulate it
+    // by using ground_aoe_event_t and a DoT that does a single
+    // tick on each pulse.
+    dot_duration = base_tick_time = 1_ms;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 };
