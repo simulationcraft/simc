@@ -3450,10 +3450,10 @@ public:
         // this is the closest we can come up without Blizzard flat out giving us the function
         // Primary takes the full damage
         if ( state->target == target )
-          cam *= 1 + 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
+          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
         // Secondary targets get reduced damage
         else
-          cam *= 1 + ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
+          cam *= ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
 
       return cam;
     }
@@ -6375,10 +6375,10 @@ struct keg_smash_t : public monk_melee_attack_t
       // this is the closest we can come up without Blizzard flat out giving us the function
       // Primary takes the full damage
       if ( state->target == target )
-        cam *= 1 + 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
+        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
       // Secondary targets get reduced damage
       else
-        cam *= 1 + ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
+        cam *= ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
 
     return cam;
   }
