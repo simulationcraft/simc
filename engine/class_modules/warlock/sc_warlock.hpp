@@ -135,7 +135,6 @@ public:
   //TODO: SL Beta - what is this struct for/should it be renamed for clarity?
   struct active_t
   {
-    action_t* grimoire_of_sacrifice_proc; //TODO: SL Beta - Should Grimoire of Sacrifice be refactored? Regardless, figure out better placement of this
     spell_t* pandemic_invocation;  // BFA - Azerite
     spell_t* corruption; //TODO: SL Beta - This is currently unused, was this meant to be the definition for the primary active ability? Fix this!
     spell_t* roaring_blaze; //TODO: SL Beta - This is currently unused, is there any need to define it or is debuffs_roaring_blaze sufficient?
@@ -578,6 +577,7 @@ public:
   void init_rng() override;
   void init_action_list() override;
   void init_resources( bool force ) override;
+  void init_special_effects() override;
   void reset() override;
   void create_options() override;
   int get_spawning_imp_count();
@@ -832,22 +832,6 @@ public:
     return c;
   }
 
-  void execute() override
-  {
-    spell_t::execute();
-
-    if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() &&
-         p()->buffs.grimoire_of_sacrifice->up() )
-    {
-      bool procced = p()->grimoire_of_sacrifice_rppm->trigger();
-      if ( procced )
-      {
-        p()->active.grimoire_of_sacrifice_proc->set_target( execute_state->target );
-        p()->active.grimoire_of_sacrifice_proc->execute();
-      }
-    }
-  }
-
   void consume_resource() override
   {
     spell_t::consume_resource();
@@ -957,6 +941,16 @@ public:
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
     return spell_t::create_expression( name_str );
+  }
+};
+
+struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
+{
+  grimoire_of_sacrifice_damage_t(warlock_t* p)
+    : warlock_spell_t("grimoire_of_sacrifice_damage_proc", p, p->find_spell(196100))
+  {
+    background = true;
+    proc = true;
   }
 };
 
