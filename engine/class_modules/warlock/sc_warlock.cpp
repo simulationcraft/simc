@@ -162,16 +162,6 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     }
   }
 };
-
-struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
-{
-  grimoire_of_sacrifice_damage_t( warlock_t* p )
-    : warlock_spell_t( "grimoire_of_sacrifice", p, p->find_spell( 196100 ) )
-  {
-    background = true;
-    proc       = true;
-  }
-};
 }  // namespace actions
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
@@ -683,7 +673,6 @@ void warlock_t::init_spells()
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -956,6 +945,27 @@ void warlock_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+}
+
+void warlock_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  auto const effect = new special_effect_t( this );
+  effect->name_str = "grimoire_of_sacrifice_effect";
+  effect->spell_id = 196099;
+  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+  special_effects.push_back( effect );
+
+  auto cb = new dbc_proc_callback_t( this, *effect );
+
+  cb->initialize();
+  cb->deactivate();
+
+  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+      if ( new_ == 1 ) cb->activate();
+      else cb->deactivate();
+    } );
 }
 
 void warlock_t::combat_begin()
