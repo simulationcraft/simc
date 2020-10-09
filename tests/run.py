@@ -5,30 +5,38 @@ import argparse
 import random
 try:
     import simc_support
-    simc_support_available = True
 except ImportError:
-    simc_support_available = False
+    raise Exception("simc-support dependency missing. Please install using 'pip3 install -r requirements.txt'")
 
 from helper import Test, TestGroup, run, find_profiles
 from talent_options import talent_combinations
 
 FIGHT_STYLES = ('Patchwerk', 'DungeonSlice', 'HeavyMovement')
 
+def get_talent_name(spec, talents: str):
+    try:
+        talent_row = next(i for i, x in enumerate(talents) if x != "0")
+        talent_choice = int(talents[talent_row])
+        talent = spec.talents[talent_row+1][talent_choice]
+        return talent["name"]
+    except StopIteration:
+        return "None"
+    except Exception:
+        return "Unknown"
 
 def test_talents(klass: str, path: str):
+    from simc_support.game_data import WowSpec
+    spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     for fight_style in FIGHT_STYLES:
         grp = TestGroup('{}/{}/talents'.format(profile, fight_style),
                         fight_style=fight_style, profile=path)
         tests.append(grp)
         for talents in talent_combinations(klass):
-            Test(talents, group=grp, args=[('talents', talents)])
+            talent_name = get_talent_name(spec, talents)
+            Test('{:<40} ({})'.format(talent_name, talents), group=grp, args=[('talents', talents)])
 
 
 def test_covenants(klass: str, path: str):
-    if not simc_support_available:
-        print("Error importing simc-support library. Skipping covenant tests.")
-        return
-
     from simc_support.game_data import WowSpec
     from simc_support.game_data import Covenant
     from simc_support.game_data import Conduit
@@ -61,10 +69,6 @@ def test_covenants(klass: str, path: str):
 
 
 def test_trinkets(klass: str, path: str):
-    if not simc_support_available:
-        print("Error importing simc-support library. Skipping trinket tests.")
-        return
-    
     from simc_support.game_data import WowSpec
     from simc_support.game_data import Trinket
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
@@ -78,10 +82,6 @@ def test_trinkets(klass: str, path: str):
             ('trinket1', '"{}",id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
 
 def test_legendaries(klass: str, path: str):
-    if not simc_support_available:
-        print("Error importing simc-support library. Skipping legendary tests.")
-        return
-
     from simc_support.game_data import WowSpec
     from simc_support.game_data import Legendary
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
@@ -95,10 +95,6 @@ def test_legendaries(klass: str, path: str):
                 ('trinket1', '"{}",bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
 
 def test_soulbinds(klass: str, path: str):
-    if not simc_support_available:
-        print("Error importing simc-support library. Skipping soulbind tests.")
-        return
-
     from simc_support.game_data import Covenant
     from simc_support.game_data import SoulBind
     fight_style = args.soulbind_fight_style
@@ -114,21 +110,18 @@ def test_soulbinds(klass: str, path: str):
                             ('covenant', covenant.simc_name), ('level', 60), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
 
 available_tests = {
-    "talent": (test_talents, None),
-    "covenant": (test_covenants, "simc-support"),
-    "trinket": (test_trinkets, "simc-support"),
-    "legendary": (test_legendaries, "simc-support"),
-    "soulbind": (test_soulbinds, "simc-support")
+    "talent": test_talents,
+    "covenant": test_covenants,
+    "trinket": test_trinkets,
+    "legendary": test_legendaries,
+    "soulbind": test_soulbinds
 }
-
-formatted_available_tests = ", ".join(("'{}'{}".format(
-    key, "" if data[1] is None else " (requires {})".format(data[1])) for key, data in available_tests.items()))
 
 parser = argparse.ArgumentParser(description='Run simc tests.')
 parser.add_argument('specialization', metavar='spec', type=str,
                     help='Simc specialization in the form of CLASS_SPEC, eg. Priest_Shadow')
 parser.add_argument('-tests', nargs='+', default=["talent"], required=False,
-                    help='Tests to run. Available tests: {}'.format(formatted_available_tests))
+                    help='Tests to run. Available tests: {}'.format([t for t in available_tests.keys()]))
 parser.add_argument('--trinkets-fight-style', default='DungeonSlice', type=str,
                     help='Fight style used for trinket simulations.')
 parser.add_argument('--soulbind-fight-style', default='DungeonSlice', type=str,
@@ -148,7 +141,7 @@ if len(profiles) == 0:
 for profile, path in profiles:
     for test in args.tests:
         if test in available_tests:
-            available_tests[test][0](klass, path)
+            available_tests[test](klass, path)
         else:
             print("Could not find test {}".format(test))
 
