@@ -120,6 +120,8 @@ parser.add_argument('--trinkets-fight-style', default='DungeonSlice', type=str,
                     help='Fight style used for trinket simulations.')
 parser.add_argument('--soulbind-fight-style', default='DungeonSlice', type=str,
                     help='Fight style used for soulbind simulations.')
+parser.add_argument('--max-profiles-to-use', default='0', type=int,
+                    help='Maximum number of profiles to use per spec. 0 means use all available profiles')
 args = parser.parse_args()
 
 
@@ -129,6 +131,9 @@ print(' '.join(klass.split('_')))
 
 tests = []
 profiles = list(find_profiles(klass))
+if args.max_profiles_to_use != 0:
+    profiles = profiles[:args.max_profiles_to_use]
+
 if len(profiles) == 0:
     print("No profile found for {}".format(klass))
 
