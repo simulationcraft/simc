@@ -3446,14 +3446,12 @@ public:
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      if ( state->n_targets >= owner->spec.keg_smash->effectN( 7 ).base_value() && state->n_targets < 20 )
+      if ( state->n_targets >= owner->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
-        // Primary takes the full damage
-        if ( state->target == target )
-          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
+        // Primary takes 100% damage
         // Secondary targets get reduced damage
-        else
-          cam *= ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
+        if ( state->target != target )
+          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
 
       return cam;
     }
@@ -6371,14 +6369,12 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    if ( state->n_targets >= p()->spec.keg_smash->effectN( 7 ).base_value() && state->n_targets < 20 )
+    if ( state->n_targets >= p()->spec.keg_smash->effectN( 7 ).base_value() )
       // this is the closest we can come up without Blizzard flat out giving us the function
-      // Primary takes the full damage
-      if ( state->target == target )
-        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 );
+      // Primary takes the 100% damage
       // Secondary targets get reduced damage
-      else
-        cam *= ( 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 ) );
+      if ( state->target != target )
+        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
 
     return cam;
   }
