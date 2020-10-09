@@ -894,6 +894,7 @@ public:
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
+  void      trigger_arcane_charge( int stacks = 1, bool rule_of_threes = true );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
 
@@ -1898,12 +1899,12 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     if ( arcane_barrage )
     {
-      per_ac_bonus = p()->spec.arcane_charge->effectN( 2 ).percent()
+      per_ac_bonus = p()->buffs.arcane_charge->data().effectN( 2 ).percent()
                    + p()->cache.mastery() * p()->spec.savant->effectN( 3 ).mastery_value();
     }
     else
     {
-      per_ac_bonus = p()->spec.arcane_charge->effectN( 1 ).percent()
+      per_ac_bonus = p()->buffs.arcane_charge->data().effectN( 1 ).percent()
                    + p()->cache.mastery() * p()->spec.savant->effectN( 2 ).mastery_value();
     }
 
@@ -2539,7 +2540,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
       p()->buffs.chrono_shift->trigger();
       // Multiply by 0.1 because for this data a value of 100 means 10%.
       if ( rng().roll( 0.1 * p()->conduits.artifice_of_the_archmage.percent() ) )
-        p()->buffs.arcane_charge->trigger( artifice_of_the_archmage_charges );
+        p()->trigger_arcane_charge( artifice_of_the_archmage_charges, false );
     }
   }
 
@@ -2612,7 +2613,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       c += equipoise_reduction;
 
     c *= 1.0 + p()->buffs.arcane_charge->check()
-             * p()->spec.arcane_charge->effectN( 5 ).percent();
+             * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
 
     return std::max( c, 0.0 );
   }
@@ -2633,9 +2634,9 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    p()->buffs.arcane_charge->trigger();
+    p()->trigger_arcane_charge();
     if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
-      p()->buffs.arcane_charge->trigger();
+      p()->trigger_arcane_charge();
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2679,7 +2680,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     timespan_t t = arcane_mage_spell_t::execute_time();
 
     t *= 1.0 + p()->buffs.arcane_charge->check()
-             * p()->spec.arcane_charge->effectN( 4 ).percent();
+             * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
     return t;
   }
@@ -2704,16 +2705,13 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( p()->specialization() == MAGE_ARCANE )
-    {
-      if ( !target_list().empty() )
-        p()->buffs.arcane_charge->trigger();
+    if ( !target_list().empty() )
+      p()->trigger_arcane_charge();
 
-      if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
-        && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-      {
-        p()->buffs.arcane_charge->trigger();
-      }
+    if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
+      && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
+    {
+      p()->trigger_arcane_charge();
     }
   }
 
@@ -2962,7 +2960,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     // AC is triggered even if the spell misses.
-    p()->buffs.arcane_charge->trigger();
+    p()->trigger_arcane_charge();
   }
 };
 
@@ -2982,7 +2980,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-    p()->buffs.arcane_charge->trigger();
+    p()->trigger_arcane_charge();
   }
 };
 
@@ -3440,9 +3438,9 @@ struct evocation_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( brain_storm_charges > 0 )
-      p()->buffs.arcane_charge->trigger( brain_storm_charges );
+      p()->trigger_arcane_charge( brain_storm_charges );
     if ( siphon_storm_charges > 0 )
-      p()->buffs.arcane_charge->trigger( siphon_storm_charges );
+      p()->trigger_arcane_charge( siphon_storm_charges, false );
   }
 
   void tick( dot_t* d ) override
@@ -5211,7 +5209,7 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( p()->spec.touch_of_the_magi_2->ok() )
-      p()->buffs.arcane_charge->trigger( as<int>( data().effectN( 2 ).base_value() ) );
+      p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
   }
 
   void impact( action_state_t* s ) override
@@ -6198,7 +6196,7 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( "Arcane Barrage", "Rank 2" );
   spec.arcane_barrage_3      = find_specialization_spell( "Arcane Barrage", "Rank 3" );
-  spec.arcane_charge         = find_spell( 36032 );
+  spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
   spec.arcane_explosion_2    = find_specialization_spell( "Arcane Explosion", "Rank 2" );
   spec.arcane_mage           = find_specialization_spell( "Arcane Mage" );
   spec.arcane_power_2        = find_specialization_spell( "Arcane Power", "Rank 2" );
@@ -6349,9 +6347,7 @@ void mage_t::create_buffs()
   player_t::create_buffs();
 
   // Arcane
-  buffs.arcane_charge        = make_buff( this, "arcane_charge", spec.arcane_charge )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                   { if ( old < 3 && cur >= 3 ) buffs.rule_of_threes->trigger(); } );
+  buffs.arcane_charge        = make_buff( this, "arcane_charge", find_spell( 36032 ) );
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value_from_effect( 1 )
@@ -7890,6 +7886,18 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
   }
 
   buffs.evocation->trigger( 1, mana_regen_multiplier, -1.0, duration );
+}
+
+void mage_t::trigger_arcane_charge( int stacks, bool rule_of_threes )
+{
+  if ( !spec.arcane_charge->ok() )
+    return;
+
+  int before = buffs.arcane_charge->check();
+  buffs.arcane_charge->trigger( stacks );
+
+  if ( ( !bugs || rule_of_threes ) && before < 3 && buffs.arcane_charge->check() >= 3 )
+    buffs.rule_of_threes->trigger();
 }
 
 void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
