@@ -821,11 +821,14 @@ void brons_call_to_action( special_effect_t& effect )
 
 void volatile_solvent( special_effect_t& effect )
 {
-    const spell_data_t* volatile_solvent = effect.player->find_spell( 323074 );
+    const spell_data_t* volatile_solvent_dragonkin = effect.player->find_spell( 323502 );
+    const spell_data_t* volatile_solvent_humanoid = effect.player->find_spell( 323491 );
+    const spell_data_t* volatile_solvent_beast = effect.player->find_spell( 323498 );
+
     double amount = 0.02;
     double mastery_amount = 2.0;
 
-    buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent )
+    buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent_dragonkin )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
       ->set_default_value( amount )
       ->set_duration( timespan_t::from_seconds( 360 ) );
@@ -834,7 +837,7 @@ void volatile_solvent( special_effect_t& effect )
       effect.player->register_combat_begin( [ buff_crit ]( player_t* p ) { buff_crit->trigger(); } );
 
 
-    buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beasts", volatile_solvent )
+    buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beast", volatile_solvent_beast )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
@@ -845,7 +848,7 @@ void volatile_solvent( special_effect_t& effect )
       effect.player->register_combat_begin( [ buff_primary ]( player_t* p ) { buff_primary->trigger(); } );
 
 
-    buff_t* buff_mastery = make_buff( effect.player, "volatile_solvent_humanoid", volatile_solvent )        
+    buff_t* buff_mastery = make_buff( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid )        
       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
       ->set_default_value( mastery_amount ) 
       ->set_duration( timespan_t::from_seconds( 360 ) );
