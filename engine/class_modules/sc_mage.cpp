@@ -4542,16 +4542,13 @@ struct meteor_burn_t : public fire_mage_spell_t
   meteor_burn_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
-    background = ground_aoe = true;
+    // Meteor Burn is actually some sort of area DoT. We simulate it
+    // by using ground_aoe_event_t and a DoT that does a single (instant)
+    // tick on each pulse.
+    background = ground_aoe = tick_zero = true;
     aoe = -1;
-    std::swap( spell_power_mod.direct, spell_power_mod.tick );
     dot_duration = 0_ms;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
-  }
-
-  result_amount_type amount_type( const action_state_t*, bool ) const override
-  {
-    return result_amount_type::DMG_OVER_TIME;
   }
 };
 
