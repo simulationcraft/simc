@@ -3245,6 +3245,11 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "fight_remains" ) )
     return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
 
+  if ( util::str_compare_ci( name_str, "interpolated_fight_remains" ) )
+    return make_fn_expr( name_str, [ this ] {
+      return max_time * ( 1.0 - event_mgr.current_time / expected_iteration_time );
+    } );
+
   if ( name_str == "channel_lag" )
     return expr_t::create_constant( name_str, channel_lag );
 
