@@ -48,29 +48,20 @@ def test_covenants(klass: str, path: str):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     conduits = Conduit.get_conduits_for_spec(spec)
     for fight_style in FIGHT_STYLES:
-        grp = TestGroup('{}/{}/covenants'.format(profile, fight_style),
-                        fight_style=fight_style, profile=path)
-        tests.append(grp)
-
-        # Test covenants
         for covenant in Covenant.COVENANTS:
+            grp = TestGroup('{}/{}/covenants/{}'.format(profile, fight_style, covenant.simc_name),
+                            fight_style=fight_style, profile=path)
+            tests.append(grp)
+
             Test(covenant.full_name, group=grp,
                  args=[('covenant', covenant.simc_name), ('level', 60)])
             # Add conduits specific to selected covenant
             for conduit in conduits:
-                if len(conduit.covenants) == 1 and covenant == conduit.covenants[0]:
+                if covenant in conduit.covenants:
                     rank = random.choice(conduit.ranks) + 1
                     soulbind_argument = '{}:{}'.format(conduit.id, rank)
-                    Test('{} - {} ({}) Rank {}'.format(covenant.full_name, conduit.full_name, conduit.id, rank), group=grp, args=[
+                    Test('{:<40} {:<10} Rank {:>2}'.format(conduit.full_name, "({})".format(conduit.id), rank), group=grp, args=[
                         ('covenant', covenant.simc_name), ('level', 60), ('soulbind', soulbind_argument)])
-
-        # test conduits available for all 4 covenants independent from covenant selection.
-        for conduit in conduits:
-            if len(conduit.covenants) == 4:
-                rank = random.choice(conduit.ranks) + 1
-                soulbind_argument = '{}:{}'.format(conduit.id, rank)
-                Test('{} ({}) Rank {}'.format(conduit.full_name, conduit.id, rank), group=grp, args=[
-                    ('level', 60), ('soulbind', soulbind_argument)])
 
 
 def test_trinkets(klass: str, path: str):
@@ -100,14 +91,15 @@ def test_legendaries(klass: str, path: str):
 def test_soulbinds(klass: str, path: str):
     fight_style = args.soulbind_fight_style
     for covenant in Covenant.COVENANTS:
-        grp = TestGroup('{}/{}/soulbinds'.format(profile, fight_style),
+        grp = TestGroup('{}/{}/soulbinds/{}'.format(profile, fight_style, covenant.simc_name),
                         fight_style=fight_style, profile=path)
         tests.append(grp)
         for soulbind in SoulBind.SOULBINDS:
             if covenant == soulbind.covenant:
                 for soulbind_talent in soulbind.soul_bind_talents:
                     if soulbind_talent.spell_id != 0:
-                        Test('{} - {} - {} ({})'.format(covenant.full_name, soulbind.full_name, soulbind_talent.full_name, soulbind_talent.spell_id), group=grp, args=[
+                        soulbind_name = '{} - {}'.format(soulbind.full_name, soulbind_talent.full_name)
+                        Test('{:<60} ({})'.format(soulbind_name, soulbind_talent.spell_id), group=grp, args=[
                             ('covenant', covenant.simc_name), ('level', 60), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
 
 
