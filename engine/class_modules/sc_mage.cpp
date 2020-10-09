@@ -3390,6 +3390,7 @@ struct evocation_t : public arcane_mage_spell_t
     dot_duration = data().duration();
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
+    target = player;
     cooldown->duration *= 1.0 + p->spec.evocation_2->effectN( 1 ).percent();
 
     if ( p->azerite.brain_storm.enabled() )
