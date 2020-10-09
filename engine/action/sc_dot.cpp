@@ -182,7 +182,7 @@ void dot_t::reset()
  */
 void dot_t::trigger( timespan_t duration )
 {
-  assert( duration > 0_ms && "Dot Trigger with duration <= 0 seconds." );
+  assert( duration >= 0_ms && "Dot Trigger with duration < 0 seconds." );
 
   current_tick = 0;
   extra_time   = 0_ms;
