@@ -2196,7 +2196,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     // The buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
-    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
+    if ( result_is_hit( s->result ) )
+      p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
   }
 
   double action_multiplier() const override
@@ -2656,7 +2657,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     // Clearcasting immediately after Arcane Blast, a stack of Nether Precision
     // will be consumed by Arcane Blast will not benefit from the damage bonus.
     // Check if this is still the case closer to Shadowlands release.
-    if ( p()->conduits.nether_precision.ok() )
+    if ( result_is_hit( s-> result ) && p()->conduits.nether_precision.ok() )
       make_event( sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
   }
 
@@ -2959,6 +2960,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    // AC is triggered even if the spell misses.
     p()->buffs.arcane_charge->trigger();
   }
 };
@@ -3880,7 +3883,7 @@ struct frost_nova_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     timespan_t duration = timespan_t::min();
-    if ( p()->runeforge.grisly_icicle.ok() )
+    if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
       auto debuff = td( s->target )->debuffs.grisly_icicle;
       duration = debuff->buff_duration();
@@ -5328,7 +5331,9 @@ struct mirrors_of_torment_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    td( s->target )->debuffs.mirrors_of_torment->trigger();
+
+    if ( result_is_hit( s->result ) )
+      td( s->target )->debuffs.mirrors_of_torment->trigger();
   }
 };
 
