@@ -9117,6 +9117,43 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.6988 )
       .verification_value( 0.8735 );
+
+    // Manually merge PTR hotfixes.
+    hotfix::register_effect( "Rogue", "2020-10-09", "Outlaw Mastery #1", 68026, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.45 )
+      .verification_value( 1.3 );
+
+    hotfix::register_effect( "Rogue", "2020-10-09", "Outlaw Mastery #2", 717709, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.029 )
+      .verification_value( 0.026 );
+
+    hotfix::register_effect( "Rogue", "2020-10-09", "Venom Rush buff", 210641, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 8.0 )
+      .verification_value( 5.0 );
+
+    hotfix::register_effect( "Rogue", "2020-10-09", "Enveloping Shadows", 360789, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 5.0 )
+      .verification_value( 10.0 );
+
+    hotfix::register_power( "Rogue", "2020-10-09", "Roll the Bones Cost", 192463, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "cost" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25.0 )
+      .verification_value( 50.0 );
+
+    hotfix::register_effect( "Rogue", "2020-10-09", "Blade Flurry Instant", 826276, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.4 )
+      .verification_value( 1.2 );
   }
 
   void init( player_t* ) const override {}
