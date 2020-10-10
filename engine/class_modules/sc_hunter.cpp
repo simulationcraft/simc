@@ -761,7 +761,6 @@ private:
   using ab = Base;
 public:
 
-  bool precombat = false;
   bool track_cd_waste;
   maybe_bool triggers_wild_spirits;
 
@@ -861,14 +860,6 @@ public:
 
     if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
-  }
-
-  void init_finished() override
-  {
-    ab::init_finished();
-
-    if( ab::action_list )
-      precombat = ab::action_list -> name_str == "precombat";
   }
 
   timespan_t gcd() const override
@@ -1065,7 +1056,7 @@ public:
   {
     const bool in_combat = ab::player -> in_combat;
     const bool triggered = buff -> trigger();
-    if ( triggered && precombat && !in_combat && precast_time > 0_ms )
+    if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
       buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
@@ -1076,7 +1067,7 @@ public:
   void adjust_precast_cooldown( timespan_t precast_time ) const
   {
     const bool in_combat = ab::player -> in_combat;
-    if ( precombat && !in_combat && precast_time > 0_ms )
+    if ( ab::is_precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
   }
 };
@@ -4984,7 +4975,7 @@ struct bestial_wrath_t: public hunter_spell_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
       // Assume the pet is out of range / not engaged when precasting.
-      if ( !precombat )
+      if ( !is_precombat )
       {
         pet -> active.bestial_wrath -> set_target( target );
         pet -> active.bestial_wrath -> execute();
