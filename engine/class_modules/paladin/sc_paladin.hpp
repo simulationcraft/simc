@@ -725,24 +725,20 @@ public:
     hasted_cd( false ), hasted_gcd( false )
   {
     // Spec aura damage increase
-    if ( p -> specialization() == PALADIN_HOLY )
-    {
-      this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
-    }
-    else // Default to Ret
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       // Mastery
       this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
 
       // Temporary damage modifiers
       this -> affected_by.crusade = this -> data().affected_by( p -> talents.crusade -> effectN( 1 ) );
-      this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
       this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
       this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
-      this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     }
-
+    this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
+    this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
+
 
     // The whitelists for spells affected by a hasted gcd/cd are spread over a lot of different effects and spells
     // This browses the given spell data to find cd/gcd affecting effects and if they affect the current spell
@@ -878,19 +874,21 @@ public:
       {
         am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
       }
-
-      // Divine purpose damage increase handled here,
-      // Cost handled in holy_power_consumer_t
-      if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
-      {
-        am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
-      }
     }
 
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
     {
       am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
     }
+
+    // Divine purpose damage increase handled here,
+    // Cost handled in holy_power_consumer_t
+    if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
+    {
+      am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+    }
+
+    ab::sim -> print_debug( "Multiplier after action_t: {}", am );
 
     return am;
   }

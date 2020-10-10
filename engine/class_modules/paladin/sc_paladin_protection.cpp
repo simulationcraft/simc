@@ -400,7 +400,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     {
       // Heals for a base amount, increased by up to +300% based on the target's missing health
       // Linear increase, each missing health % increases the healing by 3%
-      double missing_health_percent = 1.0 - t -> resources.pct( RESOURCE_HEALTH );
+      double missing_health_percent = std::min( 1.0 - t -> resources.pct( RESOURCE_HEALTH ), 1.0 );
 
       m *= 1.0 + missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent();
 
