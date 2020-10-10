@@ -3375,13 +3375,11 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 struct evocation_t : public arcane_mage_spell_t
 {
-  bool precombat;
   int brain_storm_charges;
   int siphon_storm_charges;
 
   evocation_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Evocation" ) ),
-    precombat(),
     brain_storm_charges(),
     siphon_storm_charges()
   {
@@ -3405,19 +3403,11 @@ struct evocation_t : public arcane_mage_spell_t
     p()->buffs.siphon_storm->trigger();
   }
 
-  void init_finished() override
-  {
-    arcane_mage_spell_t::init_finished();
-
-    if ( action_list->name_str == "precombat" )
-      precombat = true;
-  }
-
   void trigger_dot( action_state_t* s ) override
   {
     // When Evocation is used from the precombat action list, do not start the channel.
     // Just trigger the appropriate buffs and bail out.
-    if ( precombat )
+    if ( is_precombat )
     {
       int ticks = as<int>( tick_zero ) + static_cast<int>( dot_duration / base_tick_time );
       for ( int i = 0; i < ticks; i++ )
