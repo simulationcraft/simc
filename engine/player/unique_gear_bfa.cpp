@@ -252,11 +252,6 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
   };
 }
 
-bool is_adjustable_class_spell( action_t* a )
-{
-  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
-}
-
 }  // namespace util
 
 namespace set_bonus
