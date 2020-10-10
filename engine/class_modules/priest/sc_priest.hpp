@@ -936,9 +936,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( base_execute_time == timespan_t::zero() )
       return timespan_t::zero();
 
-    if ( !harmful && !player->in_combat )
-      return timespan_t::zero();
-
     return base_execute_time * player->cache.spell_speed();
   }
 

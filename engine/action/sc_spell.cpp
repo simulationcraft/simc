@@ -43,9 +43,6 @@ spell_base_t::spell_base_t( action_e at,
 
 timespan_t spell_base_t::execute_time() const
 {
-  if ( ! harmful && ! player -> in_combat )
-    return timespan_t::zero();
-
   timespan_t t = base_execute_time;
 
   if ( t <= timespan_t::zero() ) {
