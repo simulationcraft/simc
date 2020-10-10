@@ -1782,7 +1782,7 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
         if ( spark_debuff->at_max_stacks() )
         {
-          spark_debuff->expire();
+          spark_debuff->expire( p()->bugs ? 30_ms : 0_ms );
           // Prevent new applications of the vulnerability debuff until the DoT finishes ticking.
           spark_debuff->cooldown->start( spark_dot->remains() );
         }
