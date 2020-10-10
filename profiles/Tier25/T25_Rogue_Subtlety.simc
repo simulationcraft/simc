@@ -21,6 +21,6 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
 finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522/6573,enchant=accord_of_versatility
 finger2=overclocking_bit_band,id=169159,bonus_id=3536/4786/1522,enchant=accord_of_versatility
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637,ilevel=130
 main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=deadly_navigation
 off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_navigation
