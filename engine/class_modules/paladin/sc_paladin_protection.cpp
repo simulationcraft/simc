@@ -471,7 +471,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
   }
 }
 
-struct shield_of_the_righteous_t : public holy_power_consumer_t
+struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )

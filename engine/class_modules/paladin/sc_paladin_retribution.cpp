@@ -82,7 +82,7 @@ struct crusade_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
-struct execution_sentence_t : public holy_power_consumer_t
+struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   execution_sentence_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "execution_sentence", p, p -> talents.execution_sentence )
@@ -236,7 +236,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
-struct divine_storm_t: public holy_power_consumer_t
+struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
@@ -280,7 +280,7 @@ struct divine_storm_t: public holy_power_consumer_t
   }
 };
 
-struct templars_verdict_t : public holy_power_consumer_t
+struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   // Templar's Verdict damage is stored in a different spell
   struct templars_verdict_damage_t : public paladin_melee_attack_t
@@ -429,7 +429,7 @@ struct judgment_ret_t : public judgment_t
 };
 
 // Justicar's Vengeance
-struct justicars_vengeance_t : public holy_power_consumer_t
+struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )

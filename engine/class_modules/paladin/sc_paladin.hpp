@@ -1082,18 +1082,168 @@ struct sanctified_wrath_t : public paladin_spell_t
   }
 };
 
-
-struct holy_power_consumer_t : public paladin_melee_attack_t
+template <class Base >
+struct holy_power_consumer_t : public Base
 {
+  private:
+    typedef Base ab; // action base, eg. spell_t
+  public:
+    typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
-  holy_power_consumer_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
-    paladin_melee_attack_t( n, p, s ),
+  holy_power_consumer_t( const std::string& n, paladin_t* player,
+      const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s ),
     is_divine_storm ( false )
   { }
 
-  double cost() const override;
-  void execute() override;
-  void consume_resource() override;
+  double cost() const override
+  {
+    // paladin_t* p = paladin_action_t<Base>::template p();
+
+    if ( ab::background )
+    {
+      return 0.0;
+    }
+
+    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
+         ab::p() -> buffs.divine_purpose -> check() )
+    {
+      return 0.0;
+    }
+
+    double c = ab::cost();
+
+    if ( ab::p() -> buffs.fires_of_justice -> check() )
+    {
+      c += ab::p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
+    }
+
+    return c;
+  }
+
+  void execute() override
+  {
+    double hp_used = cost();
+    //p variable just to make this look neater
+    paladin_t* p = this -> p();
+
+    ab::execute();
+
+    // if this is a vanq-hammer-based DS, don't do this stuff
+    if ( ab::background )
+      return;
+
+    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
+    if ( p -> buffs.crusade -> check() )
+    {
+      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+      if ( p -> bugs && is_divine_storm && ( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
+      {
+        num_stacks = 0;
+      }
+      else
+      {
+        p -> buffs.crusade -> trigger( num_stacks );
+      }
+    }
+
+    if ( p -> azerite.relentless_inquisitor.ok() )
+    {
+      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+
+      p -> buffs.relentless_inquisitor -> trigger( num_stacks );
+    }
+
+    // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
+    // Cost reduction is still in divine_storm_t
+    bool should_continue = true;
+    if ( is_divine_storm && p -> bugs )
+    {
+      if ( p -> buffs.empyrean_power_azerite -> up() )
+      {
+        p -> buffs.empyrean_power_azerite -> expire();
+        should_continue = false;
+      }
+
+      if ( p -> buffs.empyrean_power -> up() )
+      {
+        p -> buffs.empyrean_power -> expire();
+        should_continue = false;
+      }
+    }
+    else if ( is_divine_storm )
+    {
+      if ( p -> buffs.empyrean_power_azerite -> up() )
+      {
+        p -> buffs.empyrean_power_azerite -> expire();
+        should_continue = false;
+      }
+      else if ( p -> buffs.empyrean_power -> up() )
+      {
+        p -> buffs.empyrean_power -> expire();
+        should_continue = false;
+      }
+    }
+
+    // Divine Purpose isn't consumed on DS if EP was consumed
+    if ( should_continue )
+    {
+      if ( should_continue && p -> buffs.divine_purpose -> up() )
+      {
+        p -> buffs.divine_purpose -> expire();
+      }
+      // FoJ isn't consumed if EP or DP were consumed
+      else if ( p -> buffs.fires_of_justice -> up() )
+      {
+        p -> buffs.fires_of_justice -> expire();
+      }
+    }
+
+    // Roll for Divine Purpose
+    if ( p -> talents.divine_purpose -> ok() &&
+         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() ) )
+    {
+      p -> buffs.divine_purpose -> trigger();
+      p -> procs.divine_purpose -> occur();
+    }
+
+    if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
+    {
+      if ( p -> azerite.lights_decree.ok() )
+      {
+        lights_decree_t* ld = debug_cast<lights_decree_t*>( p -> active.lights_decree );
+        ld -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+        ld -> execute();
+      }
+
+      if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.ret_sanctified_wrath -> ok() )
+      {
+        sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
+        st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+        st -> execute();
+      }
+    }
+    //Righteous Protector
+    if ( p -> talents.righteous_protector -> ok() ){
+      timespan_t reduction = timespan_t::from_seconds(
+        // Why do I need to divide this by 10? Just give me sec or milli, what is this??
+         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value()
+         * ab::base_costs[ RESOURCE_HOLY_POWER ] / 10
+       );
+      p -> cooldowns.avenging_wrath -> adjust( reduction );
+      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+    }
+  }
+
+  void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( ab::current_resource() == RESOURCE_HOLY_POWER)
+    {
+      ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
+    }
+  }
 };
 
 struct judgment_t : public paladin_melee_attack_t
