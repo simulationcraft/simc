@@ -2033,7 +2033,6 @@ double paladin_t::composite_player_target_multiplier ( player_t* target, school_
   if ( school == SCHOOL_HOLY && td -> debuff.vengeful_shock -> up() )
   {
     cptm *= 1.0 + td -> debuff.vengeful_shock -> value();
-    sim -> print_debug( "vengeful shock multiplier: {}", cptm );
   }
   return cptm;
 }

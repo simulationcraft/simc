@@ -890,8 +890,6 @@ public:
       am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
     }
 
-    ab::sim -> print_debug( "Multiplier after action_t: {}", am );
-
     return am;
   }
 
