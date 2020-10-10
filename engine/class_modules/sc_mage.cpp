@@ -22,6 +22,11 @@ namespace pets {
   }
 }
 
+// Finds an action with the given name. If no action exists, a new one will
+// be created.
+//
+// Use this with secondary background actions to ensure the player only has
+// one copy of the action.
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -117,10 +122,9 @@ public:
   }
 };
 
-/// Icicle container object, contains a timestamp and its corresponding icicle data!
 struct icicle_tuple_t
 {
-  action_t* action;
+  action_t* action; // Icicle action corresponding to the source action
   event_t*  expiration;
 };
 
@@ -152,6 +156,8 @@ struct mage_td_t : public actor_target_data_t
   mage_td_t( player_t* target, mage_t* mage );
 };
 
+// Generalization of buff benefit tracking (up(), value(), etc).
+// Keeps a track of the benefit for each stack separately.
 struct buff_stack_benefit_t
 {
   const buff_t* buff;
@@ -244,6 +250,10 @@ struct cooldown_waste_data_t : private noncopyable
   }
 };
 
+// Generalization of proc tracking (proc_t).
+// Keeps a track of multiple related effects at once.
+//
+// See shatter_source_t for an example of its use.
 template <size_t N>
 struct effect_source_t : private noncopyable
 {
@@ -329,7 +339,7 @@ public:
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
   // Miscellaneous
-  int remaining_winters_chill;
+  int remaining_winters_chill; // Estimation of remaining Winter's Chill stacks, accounting for travel time
   double distance_from_rune;
   double lucid_dreams_refund;
   double strive_for_perfection_multiplier;
@@ -1109,7 +1119,7 @@ struct touch_of_the_magi_t : public buff_t
 
 struct combustion_buff_t : public buff_t
 {
-  double current_amount;
+  double current_amount; // Amount of mastery rating granted by the buff
   double multiplier;
 
   combustion_buff_t( mage_t* p ) :
@@ -1119,7 +1129,6 @@ struct combustion_buff_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
-    set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
 
@@ -1253,6 +1262,7 @@ struct mirrors_of_torment_t : public buff_t
   cooldown_t* icd;
   int successful_triggers;
 
+  // Spec-specific effects
   double mana_pct;
   timespan_t reduction;
 
@@ -1335,6 +1345,7 @@ struct mirrors_of_torment_t : public buff_t
 
   bool freeze_stacks() override
   {
+    // Stacks are handled manually by the tick callback.
     return true;
   }
 };
@@ -1629,6 +1640,7 @@ public:
     return c;
   }
 
+  // Returns all currently active frozen effects as a bitfield (see frozen_flag_e).
   virtual unsigned frozen( const action_state_t* s ) const
   {
     const mage_td_t* td = p()->target_data[ s->target ];
@@ -1647,6 +1659,7 @@ public:
     return source;
   }
 
+  // Damage multiplier that applies only if the target is frozen.
   virtual double frozen_multiplier( const action_state_t* ) const
   { return 1.0; }
 
@@ -1784,6 +1797,8 @@ public:
       {
         totm->accumulate_damage( s );
 
+        // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
+        // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
         {
           make_event( *sim, 0_ms, [ this, t = s->target ]
@@ -1986,6 +2001,8 @@ struct fire_mage_spell_t : public mage_spell_t
           bool hu_react = p->buffs.heating_up->stack_react() > 0;
           p->buffs.heating_up->expire();
           p->buffs.hot_streak->trigger();
+          // If the player knew about Heating Up and converted to Hot Streak
+          // with a guaranteed crit, let them react to the Hot Streak instantly.
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
 
@@ -1996,6 +2013,7 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( id == 2948 && p->executing && p->executing->id == 11366 )
           {
             assert( p->executing->execute_event );
+            p->current_execute_type = execute_type::FOREGROUND;
             event_t::cancel( p->executing->execute_event );
             event_t::cancel( p->cast_while_casting_poll_event );
             // We need to set time_to_execute to zero, start a new action execute event and
@@ -2524,9 +2542,9 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     // Arcane Barrage restores 1% mana per charge in game and states that 2% is restored
     // in the tooltip. The data has a value of 1.5, so this is likely a rounding issue.
-    p()->resource_gain( RESOURCE_MANA,
-      p()->buffs.arcane_charge->check() * p()->resources.max[ RESOURCE_MANA ] * floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() ) * 0.01,
-      p()->gains.arcane_barrage, this );
+    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * std::floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() );
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
+
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
   }
@@ -2919,6 +2937,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     p()->buffs.arcane_pummeling->expire();
 
+    // Set up the hidden Clearcasting buff before executing the spell
+    // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
       p()->buffs.clearcasting_channel->trigger();
     else
@@ -3323,7 +3343,8 @@ struct counterspell_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     bool success = p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
-    if ( success )
+    if ( success && p()->conduits.grounding_surge.ok() )
+      // At this point, Counterspell's cooldown hasn't started yet. Do the CDR in a separate event.
       make_event( *sim, 0_ms, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
   }
 
@@ -3384,8 +3405,6 @@ struct evocation_t : public arcane_mage_spell_t
     siphon_storm_charges()
   {
     parse_options( options_str );
-    base_tick_time = 1.0_s;
-    dot_duration = data().duration();
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
     target = player;
@@ -3708,6 +3727,7 @@ struct flurry_t : public frost_mage_spell_t
   void init() override
   {
     frost_mage_spell_t::init();
+
     // Snapshot haste for bolt impact timing.
     snapshot_flags |= STATE_HASTE;
   }
@@ -3809,13 +3829,9 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
       p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
-    double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
-    fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    p()->trigger_fof( fof_proc_chance, proc_fof );
-
-    double bf_proc_chance = p()->spec.brain_freeze->effectN( 1 ).percent();
-    bf_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    p()->trigger_brain_freeze( bf_proc_chance, proc_brain_freeze );
+    double ft_multiplier = 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
+    p()->trigger_fof( ft_multiplier * p()->spec.fingers_of_frost->effectN( 1 ).percent(), proc_fof );
+    p()->trigger_brain_freeze( ft_multiplier * p()->spec.brain_freeze->effectN( 1 ).percent(), proc_brain_freeze );
 
     if ( target != p()->last_frostbolt_target )
       p()->buffs.tunnel_of_ice->expire();
@@ -3870,6 +3886,7 @@ struct frost_nova_t : public mage_spell_t
     timespan_t duration = timespan_t::min();
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
+      // The damage taken debuff is triggered even on targets that cannot be rooted.
       auto debuff = td( s->target )->debuffs.grisly_icicle;
       duration = debuff->buff_duration();
       debuff->trigger();
@@ -4069,6 +4086,9 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    // Consume all Icicles by expiring the buff and cleaning up the
+    // Icicles vector. Note that this also includes canceling the
+    // expiration events.
     p()->buffs.icicles->expire();
     while ( !p()->icicles.empty() )
       p()->get_icicle();
@@ -4533,13 +4553,14 @@ struct meteor_burn_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
     background = ground_aoe = true;
-    hasted_ticks = false;
     aoe = -1;
+    radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
+
     // Meteor Burn is actually some sort of area DoT. We simulate it
     // by using ground_aoe_event_t and a DoT that does a single
     // tick on each pulse.
     dot_duration = base_tick_time = 1_ms;
-    radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
+    hasted_ticks = false;
   }
 };
 
@@ -4597,12 +4618,10 @@ struct meteor_t : public fire_mage_spell_t
       return;
 
     action_t* meteor_burn = get_action<meteor_burn_t>( legendary ? "legendary_meteor_burn" : "meteor_burn", p );
-    action_t* meteor_impact = get_action<meteor_impact_t>( legendary ? "legendary_meteor_impact" : "meteor_impact", p, meteor_burn );
-
-    impact_action = meteor_impact;
+    impact_action = get_action<meteor_impact_t>( legendary ? "legendary_meteor_impact" : "meteor_impact", p, meteor_burn );
 
     add_child( meteor_burn );
-    add_child( meteor_impact );
+    add_child( impact_action );
 
     if ( legendary )
     {
@@ -4705,6 +4724,9 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::tick( d );
 
+    // Since the Nether Tempest AoE action inherits persistent multiplier and tick
+    // factor of the DoT, we need to manually create an action state, set the
+    // relevant values and pass it to the AoE action's schedule_execute.
     action_state_t* aoe_state = nether_tempest_aoe->get_state();
     aoe_state->target = d->target;
     nether_tempest_aoe->snapshot_state( aoe_state, nether_tempest_aoe->amount_type( aoe_state ) );
@@ -5058,6 +5080,8 @@ struct scorch_t : public fire_mage_spell_t
 
   timespan_t travel_time() const override
   {
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
     return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
   }
 
@@ -5262,7 +5286,6 @@ struct deathborne_t : public mage_spell_t
     mage_spell_t( n, p, p->find_covenant_spell( "Deathborne" ) )
   {
     parse_options( options_str );
-    // TODO: Which Ice Floes effect allows the covenant abilities to be cast while moving?
     affected_by.ice_floes = true;
     harmful = false;
   }
@@ -5703,22 +5726,14 @@ struct time_anomaly_tick_event_t : public event_t
         switch ( proc )
         {
           case TA_ARCANE_POWER:
-          {
-            timespan_t duration = 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value();
-            mage->buffs.arcane_power->trigger( duration );
+            mage->buffs.arcane_power->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
             break;
-          }
           case TA_EVOCATION:
-          {
-            timespan_t duration = 1000 * mage->talents.time_anomaly->effectN( 2 ).time_value();
-            mage->trigger_evocation( duration, false );
+            mage->trigger_evocation( 1000 * mage->talents.time_anomaly->effectN( 2 ).time_value(), false );
             break;
-          }
           case TA_TIME_WARP:
-          {
             mage->buffs.time_warp->trigger();
             break;
-          }
           default:
             break;
         }
@@ -7576,6 +7591,9 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
   }
 
+  // Time remaining until the specified Incanter's Flow stack.
+  // Format: incanters_flow_time_to.<stack>.<type> where
+  // type can be one of "up", "down", or "any".
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "incanters_flow_time_to" ) )
   {
     int expr_stack = util::to_int( splits[ 1 ] );
@@ -7611,6 +7629,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
         return 0.0;
 
       int buff_stack = buffs.incanters_flow->check();
+      // Current position in the stack cycle.
       int buff_pos = buffs.incanters_flow->reverse ? tick_cycle - buff_stack + 1 : buff_stack;
       if ( expr_pos_lo == buff_pos || expr_pos_hi == buff_pos )
         return 0.0;
@@ -7760,6 +7779,8 @@ action_t* mage_t::get_icicle()
   return a;
 }
 
+// Triggers a buff. If the buff was already active, the new application
+// is delayed by the specified amount.
 bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay )
 {
   if ( buff->max_stack() == 0 || buff->cooldown->down() )
@@ -7826,6 +7847,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
+  // If Icicles are already being launched, don't start a new chain.
   if ( chain && !events.icicle )
   {
     events.icicle = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
