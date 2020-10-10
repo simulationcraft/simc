@@ -381,70 +381,34 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// Light of the Protector ===================================================
+// Word of Glory ===================================================
 
-struct light_of_the_protector_base_t : public paladin_heal_t
+struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
-  light_of_the_protector_base_t( paladin_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str ) :
-    paladin_heal_t( name, p, spell )
+  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    holy_power_consumer_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
   {
     parse_options( options_str );
-    may_crit = true;
+    target = p;
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double m = paladin_heal_t::composite_target_multiplier( t );
+    double m = holy_power_consumer_t::composite_target_multiplier( t );
 
-    // Heals for a base amount, increased by up to +200% based on the target's missing health
-    // Linear increase, each missing health % increases the healing by 2%
-    double missing_health_percent = 1.0 -  t -> resources.pct( RESOURCE_HEALTH );
+    if ( p() -> spec.word_of_glory_2 -> ok() )
+    {
+      // Heals for a base amount, increased by up to +300% based on the target's missing health
+      // Linear increase, each missing health % increases the healing by 3%
+      double missing_health_percent = 1.0 - t -> resources.pct( RESOURCE_HEALTH );
 
-    m *= 1.0 + missing_health_percent * data().effectN( 2 ).percent();
+      m *= 1.0 + missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent();
 
-    sim -> print_log( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
-                      t -> name(), missing_health_percent * 100,
-                      missing_health_percent * data().effectN( 2 ).percent() * 100 );
+      sim -> print_debug( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
+                        t -> name(), missing_health_percent * 100,
+                        missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent() * 100 );
+    }
     return m;
-  }
-};
-
-struct light_of_the_protector_t : public light_of_the_protector_base_t
-{
-  light_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
-    light_of_the_protector_base_t( p, "light_of_the_protector", p -> find_specialization_spell( "Light of the Protector" ), options_str )
-  {
-    target = p;
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p -> cooldowns.light_of_the_protector;
-  }
-
-  bool ready() override
-  {
-    if ( p() -> talents.hand_of_the_protector -> ok() )
-      return false;
-
-    return paladin_heal_t::ready();
-  }
-};
-
-// Hand of the Protector (Protection) =======================================
-
-struct hand_of_the_protector_t : public light_of_the_protector_base_t
-{
-  hand_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
-    light_of_the_protector_base_t( p, "hand_of_the_protector", p -> talents.hand_of_the_protector, options_str )
-  {
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p -> cooldowns.hand_of_the_protector;
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> talents.hand_of_the_protector -> ok() )
-      return false;
-
-    return paladin_heal_t::ready();
   }
 };
 
@@ -515,7 +479,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
   double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = paladin_melee_attack_t::recharge_multiplier( cd );
+    double rm = holy_power_consumer_t::recharge_multiplier( cd );
 
     if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
     {
@@ -729,8 +693,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
-  if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
+  if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
 
@@ -793,7 +756,6 @@ void paladin_t::init_spells_protection()
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
-  talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 
   talents.prot_sanctified_wrath      = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );

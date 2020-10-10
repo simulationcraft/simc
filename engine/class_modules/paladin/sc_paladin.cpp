@@ -41,10 +41,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
 
   cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
   cooldowns.consecration            = get_cooldown( "consecration" );
-  cooldowns.hand_of_the_protector   = get_cooldown( "hand_of_the_protector" );
   cooldowns.inner_light_icd         = get_cooldown( "inner_light_icd" );
   cooldowns.judgment                = get_cooldown( "judgment" );
-  cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
   cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
   cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
 
@@ -1796,6 +1794,7 @@ void paladin_t::init_spells()
   spells.judgment_2 = find_rank_spell( "Judgment", "Rank 2" ); // 327977
   spells.avenging_wrath_2 = find_rank_spell( "Avenging Wrath", "Rank 2" ); // 317872
   spells.hammer_of_wrath_2 = find_rank_spell( "Hammer of Wrath", "Rank 2" ); // 326730
+  spec.word_of_glory_2 = find_rank_spell( "Word of Glory", "Rank 2");
   spells.divine_purpose_buff = find_spell( 223819 );
 
   // Shared Azerite traits

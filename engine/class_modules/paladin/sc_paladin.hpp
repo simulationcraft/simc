@@ -225,6 +225,7 @@ public:
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
     const spell_data_t* hammer_of_the_righteous_2;
+    const spell_data_t* word_of_glory_2;
   } spec;
 
   // Cooldowns
@@ -240,10 +241,8 @@ public:
 
     cooldown_t* avengers_shield; // Grand Crusader
     cooldown_t* consecration; // Precombat shenanigans
-    cooldown_t* hand_of_the_protector; // Righteous Protector
     cooldown_t* inner_light_icd;
     cooldown_t* judgment; // Crusader's Judgment
-    cooldown_t* light_of_the_protector;  // Righteous Protector
     cooldown_t* shield_of_the_righteous; // Judgment
     cooldown_t* guardian_of_ancient_kings; // Righteous Protector
 
@@ -361,7 +360,7 @@ public:
     const spell_data_t* blessing_of_spellwarding;
     // skip T40, see Holy
     // T45
-    const spell_data_t* hand_of_the_protector;
+    // const spell_data_t* hand_of_the_protector;
     const spell_data_t* consecrated_ground;
     // const spell_data_t* judgment_of_light;
     // T50
@@ -986,6 +985,8 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     may_crit          = true;
     tick_may_crit     = true;
     harmful = false;
+    // WARNING: When harmful = false, if you try to cast at time=0
+    // then the ability has no cost and no gcd, so it just spams it indefinitely
 
     weapon_multiplier = 0.0;
   }
