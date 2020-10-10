@@ -5796,6 +5796,73 @@ struct tiger_dash_t : public druid_spell_t
   }
 };
 
+// New Moon Spell ===========================================================
+
+struct new_moon_t : public druid_spell_t
+{
+  new_moon_t( druid_t* player, util::string_view options_str )
+    : druid_spell_t( "new_moon", player, player->talent.new_moon, options_str )
+  {
+    cooldown           = player->cooldown.moon_cd;
+    cooldown->duration = data().charge_cooldown();
+    cooldown->charges  = data().charges();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    streaking_stars_trigger( SS_NEW_MOON, s );  // proc munching shenanigans, munch tracking NYI
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->moon_stage++;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.new_moon || p()->moon_stage != NEW_MOON || !p()->cooldown.moon_cd->up() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+// Half Moon Spell ==========================================================
+
+struct half_moon_t : public druid_spell_t
+{
+  half_moon_t( druid_t* player, util::string_view options_str )
+    : druid_spell_t( "half_moon", player, player->spec.half_moon, options_str )
+  {
+    cooldown = player->cooldown.moon_cd;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+    streaking_stars_trigger( SS_HALF_MOON, s );  // proc munching shenanigans, munch tracking NYI
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->moon_stage++;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.new_moon || p()->moon_stage != HALF_MOON || !p()->cooldown.moon_cd->up() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Full Moon Spell ==========================================================
 
 struct full_moon_t : public druid_spell_t
@@ -5847,35 +5914,78 @@ struct full_moon_t : public druid_spell_t
   }
 };
 
-// Half Moon Spell ==========================================================
-
-struct half_moon_t : public druid_spell_t
+struct moon_proxy_t : public druid_spell_t
 {
-  half_moon_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "half_moon", player, player->spec.half_moon, options_str )
+  action_t* new_moon;
+  action_t* half_moon;
+  action_t* full_moon;
+
+  moon_proxy_t( druid_t* p, util::string_view opt ) : druid_spell_t( "moons", p, spell_data_t::nil(), opt )
   {
-    cooldown = player->cooldown.moon_cd;
+    new_moon = new new_moon_t( p, opt );
+    half_moon = new half_moon_t( p, opt );
+    full_moon = new full_moon_t( p, opt );
   }
 
-  void impact( action_state_t* s ) override
+  void schedule_execute( action_state_t* s ) override
   {
-    druid_spell_t::impact( s );
-    streaking_stars_trigger( SS_HALF_MOON, s );  // proc munching shenanigans, munch tracking NYI
+    switch ( p()->moon_stage )
+    {
+      case NEW_MOON: new_moon->schedule_execute( s ); return;
+      case HALF_MOON: half_moon->schedule_execute( s ); return;
+      case FULL_MOON: full_moon->schedule_execute( s ); return;
+      default: break;
+    }
+
+    if ( s )
+      action_state_t::release( s );
   }
 
   void execute() override
   {
-    druid_spell_t::execute();
+    switch ( p()->moon_stage )
+    {
+      case NEW_MOON: new_moon->execute(); return;
+      case HALF_MOON: half_moon->execute(); return;
+      case FULL_MOON: full_moon->execute(); return;
+      default: break;
+    }
 
-    p()->moon_stage++;
+    if ( pre_execute_state )
+      action_state_t::release( pre_execute_state );
+  }
+
+  bool action_ready() override
+  {
+    switch ( p()->moon_stage )
+    {
+      case NEW_MOON: return new_moon->action_ready();
+      case HALF_MOON: return half_moon->action_ready();
+      case FULL_MOON: return full_moon->action_ready();
+      default: return false;
+    }
+  }
+
+  bool target_ready( player_t* t ) override
+  {
+    switch ( p()->moon_stage )
+    {
+      case NEW_MOON: return new_moon->target_ready( t );
+      case HALF_MOON: return half_moon->target_ready( t );
+      case FULL_MOON: return full_moon->target_ready( t );
+      default: return false;
+    }
   }
 
   bool ready() override
   {
-    if ( !p()->talent.new_moon || p()->moon_stage != HALF_MOON || !p()->cooldown.moon_cd->up() )
-      return false;
-
-    return druid_spell_t::ready();
+    switch ( p()->moon_stage )
+    {
+      case NEW_MOON: return new_moon->ready();
+      case HALF_MOON: return half_moon->ready();
+      case FULL_MOON: return full_moon->ready();
+      default: return false;
+    }
   }
 };
 
@@ -6260,41 +6370,6 @@ struct starfire_t : public druid_spell_t
       cc += p()->buff.eclipse_lunar->value();
 
     return cc;
-  }
-};
-
-// New Moon Spell ===========================================================
-
-struct new_moon_t : public druid_spell_t
-{
-  new_moon_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "new_moon", player, player->talent.new_moon, options_str )
-  {
-    cooldown           = player->cooldown.moon_cd;
-    cooldown->duration = data().charge_cooldown();
-    cooldown->charges  = data().charges();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( SS_NEW_MOON, s );  // proc munching shenanigans, munch tracking NYI
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->moon_stage++;
-  }
-
-  bool ready() override
-  {
-    if ( !p()->talent.new_moon || p()->moon_stage != NEW_MOON || !p()->cooldown.moon_cd->up() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -7871,6 +7946,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
+  if ( name == "moons"                  ) return new             moon_proxy_t( this, options_str );
   if ( name == "solar_beam"             ) return new             solar_beam_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
