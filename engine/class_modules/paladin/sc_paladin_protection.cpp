@@ -38,8 +38,10 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
+  double veangful_shock_value;
   avengers_shield_base_t( const std::string& n, paladin_t* p, const spell_data_t* s, const std::string& options_str ) :
-    paladin_spell_t( n, p, s )
+    paladin_spell_t( n, p, s ),
+    veangful_shock_value( p -> conduit.vengeful_shock.percent() )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -79,6 +81,11 @@ struct avengers_shield_base_t : public paladin_spell_t
         p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
       else
         p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
+    }
+
+    if ( p() -> conduit.vengeful_shock -> ok() )
+    {
+      td( s -> target ) -> debuff.vengeful_shock -> trigger( 1, veangful_shock_value );
     }
   }
 };

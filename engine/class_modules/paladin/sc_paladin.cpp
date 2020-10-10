@@ -1217,6 +1217,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   debuff.judgment_of_light = make_buff( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   debuff.final_reckoning = make_buff( *this, "final_reckoning", paladin -> talents.final_reckoning );
   debuff.reckoning = make_buff( *this, "reckoning", paladin -> spells.reckoning );
+  debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin -> find_spell( 340007 ) );
 }
 
 // paladin_t::create_actions ================================================
@@ -2022,6 +2023,18 @@ double paladin_t::composite_melee_crit_chance() const
     h += buffs.seraphim -> data().effectN( 1 ).percent();
 
   return h;
+}
+
+double paladin_t::composite_player_target_multiplier ( player_t* target, school_e school ) const
+{
+  paladin_td_t* td = get_target_data( target );
+  double cptm = player_t::composite_player_target_multiplier( target, school );
+  if ( school == SCHOOL_HOLY && td -> debuff.vengeful_shock -> up() )
+  {
+    cptm *= 1.0 + td -> debuff.vengeful_shock -> value();
+    sim -> print_debug( "vengeful shock multiplier: {}", cptm );
+  }
+  return cptm;
 }
 
 // paladin_t::composite_melee_haste =========================================
