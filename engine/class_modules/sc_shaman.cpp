@@ -473,6 +473,7 @@ public:
     // Elemental
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
+    conduit_data_t pyroclastic_shock;
   } conduit;
 
   // Legendaries
@@ -4832,6 +4833,15 @@ struct earth_shock_t : public shaman_spell_t
     {
       p()->buff.echoes_of_great_sundering->trigger();
     }
+    if ( p()->conduit.pyroclastic_shock->ok() && rng().roll( p()->conduit.pyroclastic_shock.percent() ) )
+    {
+      dot_t* fs = this->td(target)->dot.flame_shock;
+      timespan_t extend_time = p()->conduit.pyroclastic_shock->effectN( 2 ).time_value();
+      if ( fs->is_ticking() )
+      {
+        fs->adjust_duration( extend_time );
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6553,6 +6563,7 @@ void shaman_t::init_spells()
   // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
+  conduit.pyroclastic_shock = find_conduit_spell( "Pyroclastic Shock" );
 
   // Shared Legendaries
   legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
