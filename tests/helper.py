@@ -1,4 +1,4 @@
-import sys, os, shutil, subprocess, re, signal
+import sys, os, shutil, subprocess, re, signal, shlex
 from pathlib import Path
 
 def __error_status(code):
@@ -66,9 +66,9 @@ class Test(object):
         args.append(self._profile)
         for arg in self._args:
             if isinstance(arg, tuple):
-                args.append('{}={}'.format(*arg))
+                args.append(shlex.quote('{}={}'.format(*arg)))
             else:
-                args.append(str(arg))
+                args.append(shlex.quote(str(arg)))
         return args
 
 SIMC_WALL_SECONDS_RE = re.compile('WallSeconds\\s*=\\s*([0-9\\.]+)')
