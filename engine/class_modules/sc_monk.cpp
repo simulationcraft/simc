@@ -3440,12 +3440,20 @@ public:
       }
     }
 
-    // Initial damage does Square Root damage
+    // For more than 5 targets damage is based on a logarithmic function.
+    // This is the closest we can figure out what that function is
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      return cam / std::sqrt( state->n_targets );
+      if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
+        // this is the closest we can come up without Blizzard flat out giving us the function
+        // Primary takes 100% damage
+        // Secondary targets get reduced damage
+        if ( state->target != target )
+          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+      return cam;
     }
 
     double action_multiplier() const override
@@ -3506,7 +3514,10 @@ public:
       {
         double cam = spell_t::composite_aoe_multiplier( state );
 
-        return cam / std::sqrt( state->n_targets );
+        if ( state->target != target )
+          return cam / std::sqrt( state->n_targets );
+
+        return cam;
       }
     };
 
@@ -6355,12 +6366,20 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // Initial damage does Square Root damage
+  // For more than 5 targets damage is based on a logarithmic function.
+  // This is the closest we can figure out what that function is
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->n_targets > p()->spec.keg_smash->effectN( 7 ).base_value() )
+      // this is the closest we can come up without Blizzard flat out giving us the function
+      // Primary takes the 100% damage
+      // Secondary targets get reduced damage
+      if ( state->target != target )
+        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+    return cam;
   }
 
   double action_multiplier() const override
@@ -7064,7 +7083,10 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->target != target )
+        return cam / std::sqrt( state->n_targets );
+
+    return cam;
   }
 
   void execute() override

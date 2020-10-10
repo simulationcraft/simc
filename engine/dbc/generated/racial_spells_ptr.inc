@@ -1,8 +1,8 @@
-// Racial abilities, wow build 9.0.1.34490
-static const std::array<racial_spell_entry_t, 140> __racial_spell_data { {
+// Racial abilities, wow build 9.0.1.36163
+static const std::array<racial_spell_entry_t, 140> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
-  { 0x0000000000000001, 0x00000000,  59752, "Every Man for Himself"              },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
+  { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
   { 0x0000000000000002, 0x00000240,  33697, "Blood Fury"                         },
   { 0x0000000000000002, 0x00000180,  33702, "Blood Fury"                         },
   { 0x0000000000000002, 0x0000002d,  20572, "Blood Fury"                         },

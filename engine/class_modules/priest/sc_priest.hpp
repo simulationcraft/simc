@@ -84,7 +84,6 @@ public:
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
-    propagate_const<buff_t*> hungering_void_tracking;
     propagate_const<buff_t*> hungering_void;
   } buffs;
 
@@ -243,6 +242,7 @@ public:
     const spell_data_t* void_torrent;
     // T50
     const spell_data_t* hungering_void;
+    const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
     const spell_data_t* ancient_madness;
     const spell_data_t* surrender_to_madness;
   } talents;
@@ -591,11 +591,11 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   bool hungering_void_active( player_t* target ) const;
+  void remove_hungering_void( player_t* target );
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
   void remove_wrathful_faerie_fermata();
-  void remove_hungering_void_tracking();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
@@ -752,11 +752,6 @@ struct priest_pet_spell_t : public spell_t
       tdm *= p().o().shadow_weaving_multiplier( t, id );
     }
 
-    if ( p().o().hungering_void_active( t ) )
-    {
-      tdm *= ( 1 + p().o().talents.hungering_void->effectN( 2 ).percent() );
-    }
-
     return tdm;
   }
 
@@ -767,11 +762,6 @@ struct priest_pet_spell_t : public spell_t
     if ( affected_by_shadow_weaving )
     {
       ttm *= p().o().shadow_weaving_multiplier( t, id );
-    }
-
-    if ( p().o().hungering_void_active( t ) )
-    {
-      ttm *= ( 1 + p().o().talents.hungering_void->effectN( 2 ).percent() );
     }
 
     return ttm;
@@ -1398,11 +1388,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       tdm *= priest().shadow_weaving_multiplier( t, id );
     }
 
-    if ( priest().hungering_void_active( t ) )
-    {
-      tdm *= ( 1 + priest().talents.hungering_void->effectN( 2 ).percent() );
-    }
-
     return tdm;
   }
 
@@ -1413,11 +1398,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( affected_by_shadow_weaving )
     {
       ttm *= priest().shadow_weaving_multiplier( t, id );
-    }
-
-    if ( priest().hungering_void_active( t ) )
-    {
-      ttm *= ( 1 + priest().talents.hungering_void->effectN( 2 ).percent() );
     }
 
     return ttm;

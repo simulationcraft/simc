@@ -1,208 +1,7500 @@
-// Item effects, wow build 8.3.0.34220
-static const std::array<item_effect_t, 204> __ptr_item_effect_data { {
-  {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
-  { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
-  { 116156, 315281,   3,   1,     -1,    0,     -1 }, // Strikethrough
-  { 116157, 315282,   4,   1,     -1,    0,     -1 }, // Strikethrough
-  { 116221, 315529,   2,   1,     -1,    0,     -1 }, // Masterful
-  { 116222, 315530,   2,   1,     -1,    0,     -1 }, // Masterful
-  { 116223, 315531,   2,   1,     -1,    0,     -1 }, // Masterful
-  { 116224, 315544,   2,   1,     -1,    0,     -1 }, // Expedient
-  { 116225, 315545,   2,   1,     -1,    0,     -1 }, // Expedient
-  { 116226, 315546,   2,   1,     -1,    0,     -1 }, // Expedient
-  { 116227, 315549,   2,   1,     -1,    0,     -1 }, // Versatile
-  { 116228, 315552,   2,   1,     -1,    0,     -1 }, // Versatile
-  { 116229, 315553,   2,   1,     -1,    0,     -1 }, // Versatile
-  { 116230, 315554,   2,   1,     -1,    0,     -1 }, // Severe
-  { 116231, 315557,   2,   1,     -1,    0,     -1 }, // Severe
-  { 116232, 315558,   2,   1,     -1,    0,     -1 }, // Severe
-  { 116233, 315607,   2,   1,     -1,    0,     -1 }, // Avoidant
-  { 116234, 315608,   2,   1,     -1,    0,     -1 }, // Avoidant
-  { 116235, 315609,   2,   1,     -1,    0,     -1 }, // Avoidant
-  { 116236, 315574,   2,   1,     -1,    0,     -1 }, // Glimpse of Clarity
-  { 116243, 315590,   2,   1,     -1,    0,     -1 }, // Siphoner
-  { 116244, 315591,   2,   1,     -1,    0,     -1 }, // Siphoner
-  { 116245, 315592,   2,   1,     -1,    0,     -1 }, // Siphoner
-  { 116657, 317388,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116658, 317389,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116661, 317407,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116662, 317408,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116663, 317409,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116664, 317410,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116665, 317411,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116666, 317412,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116667, 317413,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116668, 317414,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116669, 317415,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116670, 317416,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116671, 317417,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116672, 317418,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116782, 318276,   2,   1,     -1,    0,     -1 }, // Twilight Devastation
-  { 116783, 318477,   2,   1,     -1,    0,     -1 }, // Twilight Devastation
-  { 116784, 318478,   2,   1,     -1,    0,     -1 }, // Twilight Devastation
-  { 116785, 318286,   2,   1,     -1,    0,     -1 }, // Void Ritual
-  { 116786, 318479,   2,   1,     -1,    0,     -1 }, // Void Ritual
-  { 116787, 318480,   2,   1,     -1,    0,     -1 }, // Void Ritual
-  { 116788, 318481,   2,   1,     -1,    0,     -1 }, // Twisted Appendage
-  { 116789, 318482,   2,   1,     -1,    0,     -1 }, // Twisted Appendage
-  { 116790, 318483,   2,   1,     -1,    0,     -1 }, // Twisted Appendage
-  { 116791, 318239,   2,   1,     -1,    0,     -1 }, // Glimpse of Clarity
-  { 116792, 318303,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
-  { 116793, 318484,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
-  { 116794, 318280,   2,   1,     -1,    0,     -1 }, // Echoing Void
-  { 116795, 318485,   2,   1,     -1,    0,     -1 }, // Echoing Void
-  { 116796, 318486,   2,   1,     -1,    0,     -1 }, // Echoing Void
-  { 116797, 318274,   2,   1,     -1,    0,     -1 }, // Infinite Stars
-  { 116798, 318487,   2,   1,     -1,    0,     -1 }, // Infinite Stars
-  { 116799, 318488,   2,   1,     -1,    0,     -1 }, // Infinite Stars
-  { 116800, 318266,   2,   1,     -1,    0,     -1 }, // Racing Pulse
-  { 116801, 318268,   2,   1,     -1,    0,     -1 }, // Deadly Momentum
-  { 116802, 318269,   2,   1,     -1,    0,     -1 }, // Honed Mind
-  { 116803, 318270,   2,   1,     -1,    0,     -1 }, // Surging Vitality
-  { 116804, 318492,   2,   1,     -1,    0,     -1 }, // Racing Pulse
-  { 116805, 318496,   2,   1,     -1,    0,     -1 }, // Racing Pulse
-  { 116806, 318493,   2,   1,     -1,    0,     -1 }, // Deadly Momentum
-  { 116807, 318497,   2,   1,     -1,    0,     -1 }, // Deadly Momentum
-  { 116808, 318494,   2,   1,     -1,    0,     -1 }, // Honed Mind
-  { 116809, 318498,   2,   1,     -1,    0,     -1 }, // Honed Mind
-  { 116810, 318495,   2,   1,     -1,    0,     -1 }, // Surging Vitality
-  { 116811, 318499,   2,   1,     -1,    0,     -1 }, // Surging Vitality
-  { 116812, 318294,   2,   1,     -1,    0,     -1 }, // Devour Vitality
-  { 116813, 316780,   2,   1,     -1,    0,     -1 }, // Whispered Truths
-  { 116814, 317290,   2,   1,     -1,    0,     -1 }, // Lash of the Void
-  { 116815, 318299,   2,   1,     -1,    0,     -1 }, // Flash of Insight
-  { 116816, 318293,   2,   1,     -1,    0,     -1 }, // Searing Flames
-  { 116817, 316651,   2,   1,     -1,    0,     -1 }, // Obsidian Skin
-  { 116818, 318272,   2,   1,     -1,    0,     -1 }, // Gushing Wound
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
+// Item effects, wow build 9.0.1.36163
+static const std::array<item_effect_t, 6660> __ptr_item_effect_data { {
+  { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116662, 317408,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116663, 317409,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116664, 317410,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116665, 317411,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116666, 317412,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116667, 317413,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116668, 317414,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116669, 317415,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116670, 317416,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116671, 317417,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116672, 317418,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116673, 317419,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 116723, 318378,      0,   0,   0,    0,      -1,      -1 }, // Steadfast Resolve
+  { 116780, 317860,      0,   0,   1,    0,      -1,      -1 }, // Draconic Empowerment
+  { 116854, 300470,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
+  { 117575, 327508,      0,   0,   1,    0,      -1,      -1 }, // Slick Ice
+  { 117914, 327284,      0,   0,   1,    0,      -1,      -1 }, // Cold Front
+  { 117915, 327364,      0,   0,   1,    0,      -1,      -1 }, // Freezing Winds
+  { 117916, 327492,      0,   0,   1,    0,      -1,      -1 }, // Glacial Fragments
+  { 117917, 327489,      0,   0,   1,    0,      -1,      -1 }, // Expanded Potential
+  { 117918, 327365,      0,   0,   1,    0,      -1,      -1 }, // Disciplinary Command
+  { 117919, 327273,      0,   0,   1,    0,      -1,      -1 }, // Elemental Redirection
+  { 117920, 327351,      0,   0,   1,    0,      -1,      -1 }, // Temporal Warp
+  { 117932, 329049,      0,   0,   1,    0,      -1,      -1 }, // Luxurious Feather
+  { 117933, 329058,      0,   0,   1,    0,      -1,      -1 }, // Shadowy Rabbit's Paw
+  { 117945, 329169,      0,   0,   1,    0,      -1,      -1 }, // Hydrodynamic Accelerator
+  { 125672, 332618,      0,   0,   1,    0,      -1,      -1 }, // Reinforced Girdle
+  { 125673, 332684,      0,   0,   1,    0,      -1,      -1 }, // Craftsman's Pouch
+  { 125679, 332769,      0,   0,   1,    0,      -1,      -1 }, // Arcane Harmony
+  { 125682, 332892,      0,   0,   1,    0,      -1,      -1 }, // Arcane Bombardment
+  { 125683, 332928,      0,   0,   1,    0,      -1,      -1 }, // Siphon Storm
+  { 125684, 332950,      0,   0,   1,    0,      -1,      -1 }, // Fire Proc (DNT)
+  { 125685, 332979,      0,   0,   1,    0,      -1,      -1 }, // Necrostatic Micro Capacitor
+  { 125686, 333030,      0,   0,   1,    0,      -1,      -1 }, // Fevered Incantation
+  { 125690, 333097,      0,   0,   1,    0,      -1,      -1 }, // Firestorm
+  { 125696, 333167,      0,   0,   1,    0,      -1,      -1 }, // Molten Skyfall
+  { 125702, 333313,      0,   0,   1,    0,      -1,      -1 }, // Sun King's Blessing
+  { 125705, 333373,      0,   0,   1,    0,      -1,      -1 }, // Triune Ward
+  { 125707, 333393,      0,   0,   1,    0,      -1,      -1 }, // Grisly Icicle
+  { 125901, 334501,      0,   0,   1,    0,      -1,      -1 }, // Bryndaor's Might
+  { 125903, 334525,      0,   0,   1,    0,      -1,      -1 }, // Crimson Rune Weapon
+  { 125912, 334547,      0,   0,   1,    0,      -1,      -1 }, // Vampiric Aura
+  { 125913, 334580,      0,   0,   1,    0,      -1,      -1 }, // Gorefiend's Domination
+  { 125914, 334583,      0,   0,   1,    0,      -1,      -1 }, // Koltira's Favor
+  { 125915, 334678,      0,   0,   1,    0,      -1,      -1 }, // Biting Cold
+  { 125916, 334692,      0,   0,   1,    0,      -1,      -1 }, // Absolute Zero
+  { 125919, 334728,      0,   0,   1,    0,      -1,      -1 }, // Death's Embrace
+  { 125929, 334724,      0,   0,   1,    0,      -1,      -1 }, // Grip of the Everlasting
+  { 125933, 334836,      0,   0,   1,    0,      -1,      -1 }, // Reanimated Shambler
+  { 125936, 334888,      0,   0,   1,    0,      -1,      -1 }, // Frenzied Monstrosity
+  { 125937, 334898,      0,   0,   1,    0,      -1,      -1 }, // Death's Certainty
+  { 125939, 334949,      0,   0,   1,    0,      -1,      -1 }, // Deadliest Coil
+  { 125950, 334974,      0,   0,   1,    0,      -1,      -1 }, // Superstrain
+  { 125984, 335177,      0,   0,   1,    0,      -1,      -1 }, // Phearomones
+  { 125986, 335214,      0,   0,   1,    0,      -1,      -1 }, // Leaper
+  { 125989, 335229,      0,   0,   1,    0,      -1,      -1 }, // Thunderlord
+  { 125992, 335239,      0,   0,   1,    0,      -1,      -1 }, // The Wall
+  { 125994, 335253,      0,   0,   1,    0,      -1,      -1 }, // Misshapen Mirror
+  { 125998, 335266,      0,   0,   1,    0,      -1,      -1 }, // Signet of Tormented Kings
+  { 126000, 335274,      0,   0,   1,    0,      -1,      -1 }, // Battlelord
+  { 126004, 335451,      0,   0,   1,    0,      -1,      -1 }, // Exploiter
+  { 126005, 335458,      0,   0,   1,    0,      -1,      -1 }, // Enduring Blow
+  { 126009, 335555,      0,   0,   1,    0,      -1,      -1 }, // Cadence of Fujieda
+  { 126010, 335567,      0,   0,   1,    0,      -1,      -1 }, // Deathmaker
+  { 126011, 335582,      0,   0,   1,    0,      -1,      -1 }, // Reckless Defense
+  { 126014, 335594,      0,   0,   1,    0,      -1,      -1 }, // Will of the Berserker
+  { 126021, 335629,      0,   0,   1,    0,      -1,      -1 }, // Unbreakable Will
+  { 126030, 335718,      0,   0,   1,    0,      -1,      -1 }, // Reprisal
+  { 126031, 335282,      0,   0,   1,    0,      -1,      -1 }, // Unhinged
+  { 126038, 335758,      0,   0,   1,    0,      -1,      -1 }, // Seismic Reverberation
+  { 126134, 336470,      0,   0,   1,    0,      -1,      -1 }, // Vault of Heavens
+  { 126160, 336400,      0,   0,   1,    0,      -1,      -1 }, // Divine Image
+  { 126162, 336266,      0,   0,   1,    0,      -1,      -1 }, // Flash Concentration
+  { 126163, 336370,      0,   0,   1,    0,      -1,      -1 }, // Cauterizing Shadows
+  { 126164, 336011,      0,   0,   1,    0,      -1,      -1 }, // The Penitent One
+  { 126165, 336314,      0,   0,   1,    0,      -1,      -1 }, // Harmonious Apparatus
+  { 126166, 336507,      0,   0,   1,    0,      -1,      -1 }, // Crystalline Reflection
+  { 126167, 336133,      0,   0,   1,    0,      -1,      -1 }, // Kiss of Death
+  { 126168, 336067,      0,   0,   1,    0,      -1,      -1 }, // Clarity of Mind
+  { 126169, 336165,      0,   0,   1,    0,      -1,      -1 }, // Painbreaker Psalm
+  { 126170, 336143,      0,   0,   1,    0,      -1,      -1 }, // Shadowflame Prism
+  { 126172, 336214,      0,   0,   1,    0,      -1,      -1 }, // Eternal Call to the Void
+  { 126174, 337477,      0,   0,   1,    0,      -1,      -1 }, // X'anshi, Return of Archbishop Benedictus
+  { 126176, 336741,      0,   0,   1,    0,      -1,      -1 }, // Ancestral Reminder
+  { 126177, 336739,      0,   0,   1,    0,      -1,      -1 }, // Deeptremor Stone
+  { 126178, 336738,      0,   0,   1,    0,      -1,      -1 }, // Deeply Rooted Elements
+  { 126179, 336735,      0,   0,   1,    0,      -1,      -1 }, // Chains of Devastation
+  { 126180, 336734,      0,   0,   1,    0,      -1,      -1 }, // Skybreaker's Fiery Demise
+  { 126181, 336730,      0,   0,   1,    0,      -1,      -1 }, // Elemental Equilibrium
+  { 126182, 336215,      0,   0,   1,    0,      -1,      -1 }, // Echoes of Great Sundering
+  { 126183, 336063,      0,   0,   1,    0,      -1,      -1 }, // Windspeaker's Lava Resurgence
+  { 126184, 335902,      0,   0,   1,    0,      -1,      -1 }, // Doom Winds
+  { 126185, 335899,      0,   0,   1,    0,      -1,      -1 }, // Legacy of the Frost Witch
+  { 126186, 335897,      0,   0,   1,    0,      -1,      -1 }, // Witch Doctor's Wolf Bones
+  { 126187, 335895,      0,   0,   1,    0,      -1,      -1 }, // Primal Lava Actuators
+  { 126188, 335893,      0,   0,   1,    0,      -1,      -1 }, // Jonat's Natural Focus
+  { 126189, 335891,      0,   0,   1,    0,      -1,      -1 }, // Spiritwalker's Tidal Totem
+  { 126190, 335889,      0,   0,   1,    0,      -1,      -1 }, // Primal Tide Core
+  { 126191, 335886,      0,   0,   1,    0,      -1,      -1 }, // Earthen Harmony
+  { 126211, 336897,      0,   0,   1,    0,      -1,      -1 }, // Twins of the Sun Priestess
+  { 126212, 336742,      0,   0,   1,    0,      -1,      -1 }, // Call of the Wild
+  { 126213, 336743,      0,   0,   1,    0,      -1,      -1 }, // Nessingwary's Trapping Apparatus
+  { 126214, 336745,      0,   0,   1,    0,      -1,      -1 }, // Soulforge Embers
+  { 126215, 336747,      0,   0,   1,    0,      -1,      -1 }, // Craven Strategem
+  { 126216, 336819,      0,   0,   1,    0,      -1,      -1 }, // Dire Command
+  { 126217, 336822,      0,   0,   1,    0,      -1,      -1 }, // Flamewaker's Cobra Sting
+  { 126218, 336830,      0,   0,   1,    0,      -1,      -1 }, // Qa'pla, Eredun War Order
+  { 126219, 336844,      0,   0,   1,    0,      -1,      -1 }, // Rylakstalker's Piercing Fangs
+  { 126220, 336849,      0,   0,   1,    0,      -1,      -1 }, // Eagletalon's True Focus
+  { 126221, 336867,      0,   0,   1,    0,      -1,      -1 }, // Surging Shots
+  { 126222, 336870,      0,   0,   1,    0,      -1,      -1 }, // Serpentstalker's Trickery
+  { 126223, 336878,      0,   0,   1,    0,      -1,      -1 }, // Secrets of the Unblinking Vigil
+  { 126224, 336895,      0,   0,   1,    0,      -1,      -1 }, // Wildfire Cluster
+  { 126225, 336901,      0,   0,   1,    0,      -1,      -1 }, // Rylakstalker's Confounding Strikes
+  { 126226, 336902,      0,   0,   1,    0,      -1,      -1 }, // Latent Poison Injectors
+  { 126227, 336907,      0,   0,   1,    0,      -1,      -1 }, // Butcher's Bone Fragments
+  { 126293, 337020,      0,   0,   1,    0,      -1,      -1 }, // Wilfred's Sigil of Superior Summoning
+  { 126294, 337038,      0,   0,   1,    0,      -1,      -1 }, // Claw of Endereth
+  { 126295, 337057,      0,   0,   1,    0,      -1,      -1 }, // Mark of Borrowed Power
+  { 126297, 337065,      0,   0,   1,    0,      -1,      -1 }, // Pillars of the Dark Portal
+  { 126299, 337106,      0,   0,   1,    0,      -1,      -1 }, // Perpetual Agony of Azj'Aqir
+  { 126301, 337111,      0,   0,   1,    0,      -1,      -1 }, // Sacrolash's Dark Strike
+  { 126303, 337122,      0,   0,   1,    0,      -1,      -1 }, // Malefic Wrath
+  { 126305, 337128,      0,   0,   1,    0,      -1,      -1 }, // Wrath of Consumption
+  { 126306, 337135,      0,   0,   1,    0,      -1,      -1 }, // Implosive Pontential
+  { 126307, 337141,      0,   0,   1,    0,      -1,      -1 }, // Grim Inquisitor's Dread Calling
+  { 126308, 337146,      0,   0,   1,    0,      -1,      -1 }, // Forces of the Horned Nightmare
+  { 126309, 337159,      0,   0,   1,    0,      -1,      -1 }, // Balespider's Burning Core
+  { 126310, 337163,      0,   0,   1,    0,      -1,      -1 }, // Odr, Shawl of the Ymirjar
+  { 126311, 337166,      0,   0,   1,    0,      -1,      -1 }, // Cinders of the Azj'Aqir
+  { 126312, 337169,      0,   0,   1,    0,      -1,      -1 }, // Madness  of the Azj'Aqir
+  { 126314, 337272,      0,   0,   1,    0,      -1,      -1 }, // Embers of the Diabolic Raiment
+  { 126324, 337504,      0,   0,   1,    0,      -1,      -1 }, // Collective Anguish
+  { 126325, 337532,      0,   0,   1,    0,      -1,      -1 }, // Half-Giant Empowerment
+  { 126326, 337534,      0,   0,   1,    0,      -1,      -1 }, // Darkglare Boon
+  { 126327, 337539,      0,   0,   1,    0,      -1,      -1 }, // Darkest Hour
+  { 126328, 337541,      0,   0,   1,    0,      -1,      -1 }, // Spirit of the Darkness Flame
+  { 126329, 337544,      0,   0,   1,    0,      -1,      -1 }, // Razelikh's Defilement
+  { 126330, 337545,      0,   0,   1,    0,      -1,      -1 }, // Fel Flame Fortification
+  { 126331, 337547,      0,   0,   1,    0,      -1,      -1 }, // Fiery Soul
+  { 126332, 337548,      0,   0,   1,    0,      -1,      -1 }, // Inner Demons
+  { 126333, 337551,      0,   0,   1,    0,      -1,      -1 }, // Chaos Theory
+  { 126352, 337685,      0,   0,   1,    0,      -1,      -1 }, // Erratic Fel Core
+  { 126353, 337775,      0,   0,   1,    0,      -1,      -1 }, // Fel Bombardment
+  { 126364, 337600,      0,   0,   1,    0,      -1,      -1 }, // Uther's Devotion
+  { 126365, 337594,      0,   0,   1,    0,      -1,      -1 }, // The Mad Paragon
+  { 126366, 337746,      0,   0,   1,    0,      -1,      -1 }, // From Dusk till Dawn
+  { 126367, 337681,      0,   0,   1,    0,      -1,      -1 }, // The Magistrate's Judgment
+  { 126368, 337812,      0,   0,   1,    0,      -1,      -1 }, // Shadowbreaker, Dawn of the Sun
+  { 126369, 337777,      0,   0,   1,    0,      -1,      -1 }, // Inflorescence of the Sunwell
+  { 126370, 337825,      0,   0,   1,    0,      -1,      -1 }, // Shock Barrier
+  { 126371, 337831,      0,   0,   1,    0,      -1,      -1 }, // Holy Avenger's Engraved Sigil
+  { 126372, 337838,      0,   0,   1,    0,      -1,      -1 }, // The Ardent Protector's Sanctum
+  { 126373, 337847,      0,   0,   1,    0,      -1,      -1 }, // Bulwark of Righteous Fury
+  { 126374, 337850,      0,   0,   1,    0,      -1,      -1 }, // Reign of Endless Kings
+  { 126375, 337247,      0,   0,   1,    0,      -1,      -1 }, // Final Verdict
+  { 126376, 337638,      0,   0,   1,    0,      -1,      -1 }, // Vanguard's Momentum
+  { 126377, 337297,      0,   0,   1,    0,      -1,      -1 }, // Relentless Inquisitor
+  { 126378, 337257,      0,   0,   1,    0,      -1,      -1 }, // Tempest of the Lightbringer
+  { 126404, 337334,      0,   0,   1,    0,      -1,      -1 }, // Keefer's Skyreach
+  { 126405, 337292,      0,   0,   1,    0,      -1,      -1 }, // Last Emperor's Capacitor
+  { 126416, 337481,      0,   0,   1,    0,      -1,      -1 }, // Xuen's Battlegear
+  { 126417, 337483,      0,   0,   1,    0,      -1,      -1 }, // Jade Ignition
+  { 126425, 337473,      0,   0,   1,    0,      -1,      -1 }, // Tear of Morning
+  { 126426, 337225,      0,   0,   1,    0,      -1,      -1 }, // Yu'lon's Whisper
+  { 126427, 337343,      0,   0,   1,    0,      -1,      -1 }, // Clouded Focus
+  { 126428, 337172,      0,   0,   1,    0,      -1,      -1 }, // Ancient Teachings of the Monastery
+  { 126429, 338138,      0,   0,   1,    0,      -1,      -1 }, // Charred Passions
+  { 126430, 337288,      0,   0,   1,    0,      -1,      -1 }, // Stormstout's Last Keg
+  { 126431, 337290,      0,   0,   1,    0,      -1,      -1 }, // Mighty Pour
+  { 126432, 337570,      0,   0,   1,    0,      -1,      -1 }, // Shaohao's Might
+  { 126433, 337294,      0,   0,   1,    0,      -1,      -1 }, // Roll Out
+  { 126434, 337296,      0,   0,   1,    0,      -1,      -1 }, // Fatal Touch
+  { 126458, 338608,      0,   0,   1,    0,      -1,      -1 }, // Oath of the Elder Druid
+  { 126459, 338657,      0,   0,   1,    0,      -1,      -1 }, // Circle of Life and Death
+  { 126460, 338658,      0,   0,   1,    0,      -1,      -1 }, // Draught of Deep Focus
+  { 126461, 338661,      0,   0,   1,    0,      -1,      -1 }, // Oneth's Clear Vision
+  { 126462, 338668,      0,   0,   1,    0,      -1,      -1 }, // Primordial Arcanic Pulsar
+  { 126463, 339144,      0,   0,   1,    0,      -1,      -1 }, // Cat-eye Curio
+  { 126464, 339141,      0,   0,   1,    0,      -1,      -1 }, // Eye of Fearful Symmetry
+  { 126465, 339139,      0,   0,   1,    0,      -1,      -1 }, // Apex Predator's Craving
+  { 126466, 339060,      0,   0,   1,    0,      -1,      -1 }, // Luffa-Infused Embrace
+  { 126467, 339063,      0,   0,   1,    0,      -1,      -1 }, // The Natural Order's Will
+  { 126468, 339056,      0,   0,   1,    0,      -1,      -1 }, // Ursoc's Lingering Spirit
+  { 126469, 339062,      0,   0,   1,    0,      -1,      -1 }, // Legacy of the Sleeper
+  { 126470, 339064,      0,   0,   1,    0,      -1,      -1 }, // Memory of the Mother Tree
+  { 126471, 338831,      0,   0,   1,    0,      -1,      -1 }, // The Dark Titan's Lesson
+  { 126472, 338829,      0,   0,   1,    0,      -1,      -1 }, // Verdant Infusion
+  { 126473, 338832,      0,   0,   1,    0,      -1,      -1 }, // Vision of Unending Growth
+  { 126501, 338477,      0,   0,   1,    0,      -1,      -1 }, // Echo of Eonar
+  { 126502, 339344,      0,   0,   1,    0,      -1,      -1 }, // Judgment of the Arbiter
+  { 126505, 339340,      0,   0,   1,    0,      -1,      -1 }, // Norgannon's Sagacity
+  { 126506, 339348,      0,   0,   1,    0,      -1,      -1 }, // Sephuz's Proclamation
+  { 126507, 339351,      0,   0,   1,    0,      -1,      -1 }, // Stable Phantasma Lure
+  { 126508, 339058,      0,   0,   1,    0,      -1,      -1 }, // Third Eye of the Jailer
+  { 126509, 338743,      0,   0,   1,    0,      -1,      -1 }, // Vitality Sacrifice
+  { 126514, 339942,      0,   0,   1,    0,      -1,      -1 }, // Balance of All Things
+  { 126550, 339949,      0,   0,   1,    0,      -1,      -1 }, // Timeworn Dreambinder
+  { 126554, 340053,      0,   0,   1,    0,      -1,      -1 }, // Frenzyband
+  { 126557, 340059,      0,   0,   1,    0,      -1,      -1 }, // Lycara's Fleeting Glimpse
+  { 126561, 340076,      0,   0,   1,    0,      -1,      -1 }, // Mark of the Master Assassin
+  { 126562, 340078,      0,   0,   1,    0,      -1,      -1 }, // Tiny Toxic Blades
+  { 126563, 340079,      0,   0,   1,    0,      -1,      -1 }, // Essence of Bloodfang
+  { 126564, 340080,      0,   0,   1,    0,      -1,      -1 }, // Invigorating Shadowdust
+  { 126565, 340081,      0,   0,   1,    0,      -1,      -1 }, // Dashing Scoundrel
+  { 126566, 340082,      0,   0,   1,    0,      -1,      -1 }, // Doomblade
+  { 126567, 340083,      0,   0,   1,    0,      -1,      -1 }, // Zoldyck Insignia
+  { 126568, 340084,      0,   0,   1,    0,      -1,      -1 }, // Dustwalker's Patch
+  { 126569, 340085,      0,   0,   1,    0,      -1,      -1 }, // Greenskin's Wickers
+  { 126570, 340086,      0,   0,   1,    0,      -1,      -1 }, // Guile Charm
+  { 126571, 340087,      0,   0,   1,    0,      -1,      -1 }, // Celerity
+  { 126572, 340088,      0,   0,   1,    0,      -1,      -1 }, // Concealed Blunderbuss
+  { 126573, 340089,      0,   0,   1,    0,      -1,      -1 }, // Finality
+  { 126574, 340090,      0,   0,   1,    0,      -1,      -1 }, // Akaari's Soul Fragment
+  { 126575, 340091,      0,   0,   1,    0,      -1,      -1 }, // The Rotten
+  { 126576, 340092,      0,   0,   1,    0,      -1,      -1 }, // Deathly Shadows
+  { 126770, 340458,      0,   0,   1,    0,      -1,      -1 }, // Maraad's Dying Breath
+  { 127406, 340197,      0,   0,   1,    0,      -1,      -1 }, // Maw Rattle
+  { 127421, 341724,      0,   0,   1,    0,      -1,      -1 }, // Rage of the Frozen Champion
+  { 127433, 341804,      0,   0,   1,    0,      -1,      -1 }, // Measured Contemplation
+  { 127475, 342415,      0,   0,   1,    0,      -1,      -1 }, // Talbadar's Stratagem
+  { 135884, 343250,      0,   0,   1,    0,      -1,      -1 }, // Escape from Reality
+  { 116155, 315277,      0,   2,   1,    0,      -1,      -1 }, // Strikethrough
+  { 116221, 315529,      0,   2,   1,    0,      -1,      -1 }, // Masterful
+  { 116222, 315530,      0,   2,   1,    0,      -1,      -1 }, // Masterful
+  { 116223, 315531,      0,   2,   1,    0,      -1,      -1 }, // Masterful
+  { 116224, 315544,      0,   2,   1,    0,      -1,      -1 }, // Expedient
+  { 116225, 315545,      0,   2,   1,    0,      -1,      -1 }, // Expedient
+  { 116226, 315546,      0,   2,   1,    0,      -1,      -1 }, // Expedient
+  { 116227, 315549,      0,   2,   1,    0,      -1,      -1 }, // Versatile
+  { 116228, 315552,      0,   2,   1,    0,      -1,      -1 }, // Versatile
+  { 116229, 315553,      0,   2,   1,    0,      -1,      -1 }, // Versatile
+  { 116230, 315554,      0,   2,   1,    0,      -1,      -1 }, // Severe
+  { 116231, 315557,      0,   2,   1,    0,      -1,      -1 }, // Severe
+  { 116232, 315558,      0,   2,   1,    0,      -1,      -1 }, // Severe
+  { 116233, 315607,      0,   2,   1,    0,      -1,      -1 }, // Avoidant
+  { 116234, 315608,      0,   2,   1,    0,      -1,      -1 }, // Avoidant
+  { 116235, 315609,      0,   2,   1,    0,      -1,      -1 }, // Avoidant
+  { 116236, 315574,      0,   2,   1,    0,      -1,      -1 }, // Glimpse of Clarity
+  { 116243, 315590,      0,   2,   1,    0,      -1,      -1 }, // Siphoner
+  { 116244, 315591,      0,   2,   1,    0,      -1,      -1 }, // Siphoner
+  { 116245, 315592,      0,   2,   1,    0,      -1,      -1 }, // Siphoner
+  { 116782, 318276,      0,   2,   1,    0,      -1,      -1 }, // Twilight Devastation
+  { 116783, 318477,      0,   2,   1,    0,      -1,      -1 }, // Twilight Devastation
+  { 116784, 318478,      0,   2,   1,    0,      -1,      -1 }, // Twilight Devastation
+  { 116785, 318286,      0,   2,   1,    0,      -1,      -1 }, // Void Ritual
+  { 116786, 318479,      0,   2,   1,    0,      -1,      -1 }, // Void Ritual
+  { 116787, 318480,      0,   2,   1,    0,      -1,      -1 }, // Void Ritual
+  { 116788, 318481,      0,   2,   1,    0,      -1,      -1 }, // Twisted Appendage
+  { 116789, 318482,      0,   2,   1,    0,      -1,      -1 }, // Twisted Appendage
+  { 116790, 318483,      0,   2,   1,    0,      -1,      -1 }, // Twisted Appendage
+  { 116791, 318239,      0,   2,   1,    0,      -1,      -1 }, // Glimpse of Clarity
+  { 116792, 318303,      0,   2,   1,    0,      -1,      -1 }, // Ineffable Truth
+  { 116793, 318484,      0,   2,   1,    0,      -1,      -1 }, // Ineffable Truth
+  { 116794, 318280,      0,   2,   1,    0,      -1,      -1 }, // Echoing Void
+  { 116795, 318485,      0,   2,   1,    0,      -1,      -1 }, // Echoing Void
+  { 116796, 318486,      0,   2,   1,    0,      -1,      -1 }, // Echoing Void
+  { 116797, 318274,      0,   2,   1,    0,      -1,      -1 }, // Infinite Stars
+  { 116798, 318487,      0,   2,   1,    0,      -1,      -1 }, // Infinite Stars
+  { 116799, 318488,      0,   2,   1,    0,      -1,      -1 }, // Infinite Stars
+  { 116800, 318266,      0,   2,   1,    0,      -1,      -1 }, // Racing Pulse
+  { 116801, 318268,      0,   2,   1,    0,      -1,      -1 }, // Deadly Momentum
+  { 116802, 318269,      0,   2,   1,    0,      -1,      -1 }, // Honed Mind
+  { 116803, 318270,      0,   2,   1,    0,      -1,      -1 }, // Surging Vitality
+  { 116804, 318492,      0,   2,   1,    0,      -1,      -1 }, // Racing Pulse
+  { 116805, 318496,      0,   2,   1,    0,      -1,      -1 }, // Racing Pulse
+  { 116806, 318493,      0,   2,   1,    0,      -1,      -1 }, // Deadly Momentum
+  { 116807, 318497,      0,   2,   1,    0,      -1,      -1 }, // Deadly Momentum
+  { 116808, 318494,      0,   2,   1,    0,      -1,      -1 }, // Honed Mind
+  { 116809, 318498,      0,   2,   1,    0,      -1,      -1 }, // Honed Mind
+  { 116810, 318495,      0,   2,   1,    0,      -1,      -1 }, // Surging Vitality
+  { 116811, 318499,      0,   2,   1,    0,      -1,      -1 }, // Surging Vitality
+  { 116812, 318294,      0,   2,   1,    0,      -1,      -1 }, // Devour Vitality
+  { 116813, 316780,      0,   2,   1,    0,      -1,      -1 }, // Whispered Truths
+  { 116814, 317290,      0,   2,   1,    0,      -1,      -1 }, // Lash of the Void
+  { 116815, 318299,      0,   2,   1,    0,      -1,      -1 }, // Flash of Insight
+  { 116816, 318293,      0,   2,   1,    0,      -1,      -1 }, // Searing Flames
+  { 116817, 316651,      0,   2,   1,    0,      -1,      -1 }, // Obsidian Skin
+  { 116818, 318272,      0,   2,   1,    0,      -1,      -1 }, // Gushing Wound
+  { 125523, 330767,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125525, 330739,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125526, 330740,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125527, 330741,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125657, 332299,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
+  { 125658, 332300,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
+  { 125659, 332301,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
+  { 125660, 330067,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
+  { 116156, 315281,      0,   3,   1,    0,      -1,      -1 }, // Strikethrough
+  { 116157, 315282,      0,   4,   1,    0,      -1,      -1 }, // Strikethrough
+  {      9,  17152,    647,   0,   2,    0,      -1,      -1 }, // Destiny
+  {     10,   5005,    724,   0,   0,   11,       0,    1000 }, // Food
+  {     15,  12257,    744,   0,   0,    0, 1800000,       0 }, // Breath of Fire
+  {     18,  17504,    809,   0,   2,    0,      -1,      -1 }, // Rend
+  {     19,  13439,    810,   0,   2,    0,      -1,      -1 }, // Frostbolt
+  {     20,  18104,    811,   0,   2,    0,      -1,      -1 }, // Wrath
+  {  36681,   5707,    833,   1,   1,    0,      -1,      -1 }, // Lifestone Regeneration
+  {  36682,  17712,    833,   2,   0,   30,  300000,  300000 }, // Lifestone Healing
+  {     25,  18074,    867,   2,   1,    0,      -1,      -1 }, // Undead Slayer 30
+  {     26,  13752,    869,   0,   2,    0,      -1,      -1 }, // Faerie Fire
+  {     27, 265000,    870,   0,   1,    0,      -1,      -1 }, // Fiery War Axe
+  {     28, 182395,    871,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {     35,  18820,    940,   0,   0,    0,  900000,       0 }, // Insight
+  {     36,  18799,    942,   1,   1,    0,      -1,      -1 }, // Freeze
+  {     41,   5006,   1017,   0,   0,   11,       0,    1000 }, // Food
+  {     42,   5006,   1082,   0,   0,   11,       0,    1000 }, // Food
+  {  19936,  18815,   1168,   0,   1,    0,      -1,      -1 }, // Drain Life
+  {  19937,  18816,   1168,   1,   1,    0,      -1,      -1 }, // Flamestrike
+  {     63,  18097,   1204,   0,   1,    0,      -1,      -1 }, // The Green Tower
+  {     68,  17148,   1263,   0,   2,    0,      -1,      -1 }, // Brain Hacker
+  {     70,  18831,   1315,   0,   0,    0, 3600000,       0 }, // Conjure Lily Root
+  {     78,    835,   1404,   0,   0,    0,  900000,       0 }, // Tidal Charm
+  {     80,  18826,   1447,   0,   0,    0, 1800000,       0 }, // Savior's Sacrifice
+  {     81,    806,   1450,   0,   0,    4,  300000,  300000 }, // Fervor
+  {     95,  14053,   1713,   0,   0,    0,  300000,       0 }, // Heal
+  {     98,  18086,   1728,   0,   2,    0,      -1,      -1 }, // Firebolt
+  {     99,   8736,   1933,   0,   0,    0,  300000,       0 }, // Conjure Food
+  {    102,  19409,   1979,   0,   1,    0,      -1,      -1 }, // Bone Armor
+  {    103, 144250,   1982,   0,   2,    0,      -1,      -1 }, // Shadow Bolt
+  {    108,  29625,   2099,   0,   1,    0,      -1,      -1 }, // Flaming Cannonball
+  {    110, 144246,   2163,   0,   2,    0,      -1,      -1 }, // Shadow Bolt
+  {    111,  18107,   2164,   0,   2,    0,      -1,      -1 }, // Wound
+  {    113, 193841,   2243,   0,   1,    0,      -1,      -1 }, // Odd Feeling
+  {    120,  17153,   2291,   0,   2,    0,      -1,      -1 }, // Rend
+  {    136,   2367,   2454,   0,   0,   79,       0,    3000 }, // Lion's Strength
+  {    139,   2374,   2457,   0,   0,   79,       0,    3000 }, // Minor Agility
+  {    158,   5004,   2680,   0,   0,   11,       0,    1000 }, // Food
+  {    161,   5005,   2683,   0,   0,   11,       0,    1000 }, // Food
+  {    162,   5005,   2684,   0,   0,   11,       0,    1000 }, // Food
+  {    165,   5005,   2687,   0,   0,   11,       0,    1000 }, // Food
+  {    177,  13744,   2802,   0,   0,    0,  600000,       0 }, // Blazing Emblem
+  {    178,  14530,   2820,   0,   0,    0, 1800000,       0 }, // Speed
+  {    179,  29501,   2824,   0,   1,    0,      -1,      -1 }, // Frost Arrow
+  {    180,  29624,   2825,   0,   1,    0,      -1,      -1 }, // Searing Arrow
+  {    190,   5004,   2888,   0,   0,   11,       0,    1000 }, // Food
+  {    196,  16415,   2915,   0,   2,    0,      -1,      -1 }, // Fireball
+  {    203,   5005,   3220,   0,   0,   11,       0,    1000 }, // Food
+  {    211,   3166,   3383,   0,   0,   79,       0,    3000 }, // Wisdom
+  {    216,   3220,   3389,   0,   0,   79,       0,    3000 }, // Defense
+  {    217,   3160,   3390,   0,   0,   79,       0,    3000 }, // Lesser Agility
+  {    218,   3164,   3391,   0,   0,   79,       0,    3000 }, // Ogre's Strength
+  {    228, 144317,   3475,   0,   1,    0,      -1,      -1 }, // Immolation
+  {    242,   5005,   3662,   0,   0,   11,       0,    1000 }, // Food
+  {    243,   5006,   3663,   0,   0,   11,       0,    1000 }, // Food
+  {    244,   5006,   3664,   0,   0,   11,       0,    1000 }, // Food
+  {    245,   5006,   3665,   0,   0,   11,       0,    1000 }, // Food
+  {    246,   5006,   3666,   0,   0,   11,       0,    1000 }, // Food
+  {    261,   5006,   3726,   0,   0,   11,       0,    1000 }, // Food
+  {    262,   5006,   3727,   0,   0,   11,       0,    1000 }, // Food
+  {    263,   5007,   3728,   0,   0,   11,       0,    1000 }, // Food
+  {    264,   5007,   3729,   0,   0,   11,       0,    1000 }, // Food
+  {    319,   9163,   4262,   0,   0,    0,  300000,       0 }, // Heal Self
+  {    320,   9174,   4264,   0,   0, 1141, 1200000,   15000 }, // Energize
+  {    340,   9774,   4328,   0,   0,    0, 1800000,      -1 }, // Freedom
+  {    375,  18805,   4381,   0,   0, 1153,  300000,  120000 }, // Recombobulate
+  {    384,   4073,   4396,   0,   0,   94,  300000,   60000 }, // Mechanical Dragonling
+  {    385,   4079,   4397,   0,   0,    0, 3600000,       0 }, // Cloaking
+  {    419,  14253,   4444,   0,   0,    0,  300000,       0 }, // Abolish Poison
+  {    420,  13518,   4446,   0,   2,    0,      -1,      -1 }, // Poison
+  {    422,   5007,   4457,   0,   0,   11,       0,    1000 }, // Food
+  {    458,   4941,   4623,   0,   0,    4,  300000,  300000 }, // Stoneshield
+  {    464,   1135,   4696,   0,   0,   59,  600000,    1000 }, // Drink
+  {    474,   5024,   4984,   0,   0,    0,  300000,       0 }, // Flee
+  {    488,   1139,   5079,   0,   0,    0,  300000,       0 }, // Cold Eye
+  {    512,  14053,   5323,   0,   0,    0, 1800000,       0 }, // Heal
+  {    518,   6298,   5387,   0,   0,    0,    1000,      -1 }, // Form of the Moonstalker
+  {    529,   5004,   5472,   0,   0,   11,       0,    1000 }, // Food
+  {    531,   5004,   5474,   0,   0,   11,       0,    1000 }, // Food
+  {    533,   5005,   5476,   0,   0,   11,       0,    1000 }, // Food
+  {    534,   5005,   5477,   0,   0,   11,       0,    1000 }, // Food
+  {    536,   5006,   5479,   0,   0,   11,       0,    1000 }, // Food
+  {    537,   5006,   5480,   0,   0,   11,       0,    1000 }, // Food
+  {    555,   5405,   5514,   1,   0,  100,       0,  120000 }, // Replenish Mana
+  {    559,   5005,   5525,   0,   0,   11,       0,    1000 }, // Food
+  {    561,   5006,   5527,   0,   0,   11,       0,    1000 }, // Food
+  {    570,  14134,   5613,   0,   0,    0,  300000,       0 }, // Item - Purify
+  {    647,    673,   5997,   0,   0,   79,       0,    3000 }, // Minor Defense
+  {    648,   5007,   6038,   0,   0,   11,       0,    1000 }, // Food
+  {    742,   7844,   6373,   0,   0,   79,       0,    3000 }, // Fire Power
+  {    796,   8212,   6662,   0,   0,   79,       0,    3000 }, // Giant Growth
+  {    822,   5004,   6888,   0,   0,   11,       0,    1000 }, // Food
+  {    828,  18956,   6898,   2,   0,   30,  300000,  300000 }, // Restore Life
+  {    835,  70537,   6972,   0,   0, 1141, 3600000,   15000 }, // Energize
+  {    866,  70537,   7133,   0,   0, 1141, 3600000,   15000 }, // Energize
+  {    868,   8892,   7189,   0,   0, 1203,  300000,  300000 }, // Goblin Rocket Boots
+  {    882,   8913,   7297,   0,   0,    0,  180000,       0 }, // Sacred Cleansing
+  {    898,   9175,   7391,   0,   0, 1203, 1200000,  300000 }, // Running Speed
+  {    910,   8344,   7506,   0,   0,    0,  180000,       0 }, // Universal Remote
+  {    911,   9252,   7507,   0,   0,   30,  300000,  300000 }, // Replenish Mana I
+  {    912,   9252,   7508,   0,   0,   30,  300000,  300000 }, // Replenish Mana I
+  {    913,   9253,   7515,   1,   0,   30,  300000,  300000 }, // Replenish Mana II
+  {    926,  14537,   7734,   0,   0, 1141,  180000,   10000 }, // Six Demon Bag
+  {    936,   5004,   7806,   0,   0,   11,       0,    1000 }, // Food
+  {    937,   5004,   7807,   0,   0,   11,       0,    1000 }, // Food
+  {    938,   5004,   7808,   0,   0,   11,       0,    1000 }, // Food
+  {    940,   9774,   7936,   1,   0,    0, 1800000,       0 }, // Freedom
+  {   1023,  10577,   8346,   0,   0,    0, 1800000,       0 }, // Heal
+  {   1024,  10578,   8348,   0,   0, 1141,  300000,   10000 }, // Fireball
+  {   1027,  10618,   8367,   0,   0,    0, 3600000,  600000 }, // Elemental Protection
+  {   1148,  11328,   8949,   0,   0,   79,       0,    3000 }, // Agility
+  {   1150,  11349,   8951,   0,   0,   79,       0,    3000 }, // Armor
+  {   1160,  11390,   9155,   0,   0,   79,       0,    3000 }, // Arcane Elixir
+  {   1162,  11396,   9179,   0,   0,   79,       0,    3000 }, // Greater Intellect
+  {   1163,  11334,   9187,   0,   0,   79,       0,    3000 }, // Greater Agility
+  {   1166,  11405,   9206,   0,   0,   79,       0,    3000 }, // Elixir of the Giants
+  {   1173,  11474,   9264,   0,   0,   79,       0,    3000 }, // Shadow Power
+  {   1211, 258933,   9372,   0,   1,    0,      -1,      -1 }, // Sul'thraze
+  {   1213,  22641,   9394,   0,   0,    0,  180000,       0 }, // Reckless Charge
+  {   1214,   5405,   9397,   0,   0,    0, 3600000,  180000 }, // Replenish Mana
+  {   1215,  12438,   9404,   0,   0,    0, 3600000,       0 }, // Slow Fall
+  {   1222, 245705,   9449,   0,   0,    0,  180000,       0 }, // Haste
+  {   1236, 245708,   9492,   0,   0, 1141,   60000,   10000 }, // Electromagnetic Gigaflux Reactivator
+  {   1250,  12022,  10030,   0,   0,    0,   60000,       0 }, // Admiral's Hat
+  {   1314,  12733,  10418,   0,   0,    0, 1200000,       0 }, // Mithril Insignia
+  {   1319,  12766,  10455,   0,   0, 1141,  900000,   45000 }, // Poison Cloud
+  {   1329,  12438,  10518,   0,   0,    0,   30000,      -1 }, // Slow Fall
+  {   1331,  12561,  10543,   0,   0,    0, 3600000,       0 }, // Fire Protection
+  {   1336,  12749,  10576,   0,   0,   94,  300000,   60000 }, // Mithril Mechanical Dragonling
+  {   1337,  13237,  10577,   0,   0, 1141,  600000,   10000 }, // Goblin Mortar
+  {   1339,  23134,  10587,   0,   0,    0, 1800000,       0 }, // Goblin Bomb
+  {   1340,  22641,  10588,   0,   0, 1180, 1200000,       0 }, // Reckless Charge
+  {   1368,  13278,  10645,   0,   0, 1141,  300000,   10000 }, // Gnomish Death Ray
+  {   1386,  13006,  10716,   0,   0,    0,  300000,       0 }, // Shrink Ray
+  {   1388,  13120,  10720,   0,   0,    0,  600000,       0 }, // Net-o-Matic
+  {   1389,  13234,  10721,   0,   0,    0, 3600000,       0 }, // Harm Prevention Belt
+  {   1390,  13141,  10724,   0,   0, 1203,  900000,  300000 }, // Gnomish Rocket Boots
+  {   1391,  23133,  10725,   0,   0,   94, 1200000,   90000 }, // Gnomish Battle Chicken
+  {   1392,  13180,  10726,   0,   0,    0, 1800000,       0 }, // Gnomish Mind Control Cap
+  {   1393,  13183,  10727,   0,   0, 1141,  300000,   10000 }, // Goblin Dragon Gun
+  {   1410, 250093,  10847,   0,   1,    0,      -1,      -1 }, // Dragon's Call
+  {   1508,   5004,  11584,   0,   0,   11,       0,    1000 }, // Food
+  {   1549, 182395,  11684,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {   1553,  17447,  11808,   0,   0,    0,   60000,       0 }, // Circle of Flame
+  {   1560,  15604,  11819,   2,   0,    0,  900000,       0 }, // Second Wind
+  {   1569,  15646,  11832,   2,   0,    0,  900000,       0 }, // Burst of Knowledge
+  {   1577,  15712,  11905,   0,   0, 1141,  180000,   10000 }, // Linken's Boomerang
+  {  19947,  60244,  12185,   0,   1,    0,      -1,      -1 }, // Blood Parrot Despawn Aura
+  {  19948,  17567,  12185,   1,   0,    0,    1500,      -1 }, // Summon Blood Parrot
+  {   1597,   5006,  12209,   0,   0,   11,       0,    1000 }, // Food
+  {   1598,   5007,  12210,   0,   0,   11,       0,    1000 }, // Food
+  {   1600,   5007,  12212,   0,   0,   11,       0,    1000 }, // Food
+  {   1601,   5007,  12213,   0,   0,   11,       0,    1000 }, // Food
+  {   1602,   5007,  12214,   0,   0,   11,       0,    1000 }, // Food
+  {   1603,  10256,  12215,   0,   0,   11,       0,    1000 }, // Food
+  {   1604,  10256,  12216,   0,   0,   11,       0,    1000 }, // Food
+  {   1606,  10256,  12218,   0,   0,   11,       0,    1000 }, // Food
+  {   1607,   5004,  12224,   0,   0,   11,       0,    1000 }, // Food
+  {   1683,  16470,  12532,   0,   0,    0,  900000,       0 }, // Gift of Stone
+  {   1693, 265083,  12590,   0,   1,    0,      -1,      -1 }, // Felstriker
+  {   1694, 345875,  12592,   0,   1,    0,      -1,      -1 }, // Shahram
+  {   1701,  43588,  12639,   0,   1,    0,      -1,      -1 }, // Disarm Duration Reduction
+  {   1702,  16620,  12641,   0,   1,    0,      -1,      -1 }, // Proc Self Invulnerability
+  {   1815,  17038,  12820,   0,   0,    0,   60000,   60000 }, // Winterfall Firewater
+  {   1879,  17252,  13143,   0,   0,    0,   60000,       0 }, // Mark of the Dragon Lord
+  {   1883,  17275,  13164,   0,   0,    0, 1800000,       0 }, // Heart of the Scale
+  {   1884,  17283,  13171,   0,   0, 1141,  300000,   10000 }, // Smokey's Lighter
+  {   1890,  17330,  13213,   0,   0, 1141,  120000,   10000 }, // Poison
+  {   1894, 265170,  13262,   0,   1,    0,      -1,      -1 }, // Ashbringer
+  {   1910,  17448,  13315,   0,   0,    0, 1800000,       0 }, // Testament of Hope
+  {   1944, 250092,  13353,   0,   1,    0,      -1,      -1 }, // Book of the Dead
+  {   1953,  17528,  13442,   0,   0,    4,  300000,  300000 }, // Mighty Rage
+  {   1956,  11348,  13445,   0,   0,   79,       0,    3000 }, // Greater Armor
+  {   1958,  17535,  13447,   0,   0,   79,       0,    3000 }, // Elixir of the Sages
+  {   1959,  17538,  13452,   0,   0,   79,       0,    3000 }, // Elixir of the Mongoose
+  {   1960,  17537,  13453,   0,   0,   79,       0,    3000 }, // Elixir of Brute Force
+  {   1961,  17539,  13454,   0,   0,   79,       0,    3000 }, // Greater Arcane Elixir
+  {   1962,  17540,  13455,   0,   0,    4,  300000,  300000 }, // Greater Stoneshield
+  {   2020,  17619,  13503,   0,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   2021,  17625,  13505,   0,   1,    0,      -1,      -1 }, // Unholy Aura
+  {   2026,  17627,  13511,   0,   0,   79,       0,    3000 }, // Distilled Wisdom
+  {   2027,  17628,  13512,   0,   0,   79,       0,    3000 }, // Supreme Power
+  {   2029,  17668,  13515,   0,   0, 1141,   60000,   10000 }, // Ramstein's Lightning Bolts
+  {   2059,   5007,  13851,   0,   0,   11,       0,    1000 }, // Food
+  {   2065,  18230,  13928,   0,   0,   11,       0,    1000 }, // Food
+  {   2066,   5007,  13929,   0,   0,   11,       0,    1000 }, // Food
+  {   2073,  18264,  13937,   0,   0,    0,  600000,       0 }, // Headmaster's Charge
+  {   2097,  18307,  14022,   0,   0,   94,  600000,  600000 }, // Death by Peasant
+  {   2098,  18308,  14023,   0,   0,   94,  600000,  600000 }, // Death by Peasant
+  {   2102,  18364,  14134,   0,   0,    0,  120000,      -1 }, // Cloak of Fire
+  {   2104,  18385,  14152,   2,   0,   30,  300000,  300000 }, // Replenish Mana
+  {   2105,  18386,  14153,   1,   0,    0,  600000,       0 }, // Heal Pet
+  {   2106,  18388,  14154,   2,   1,    0,      -1,      -1 }, // Quick Fade
+  {   2175,  18787,  14554,   0,   0, 1141,  900000,   30000 }, // Heaven's Blessing
+  {   2176,  18833,  14555,   0,   2,    0,      -1,      -1 }, // Firebolt
+  {   2177,  20847,  14557,   0,   1,    0,      -1,      -1 }, // The Lion Horn of Stormwind
+  {   2193,  18957,  15107,   1,   0,   30,  300000,  300000 }, // Restore Life
+  {   2194,  18957,  15108,   1,   0,   30,  300000,  300000 }, // Restore Life
+  {   2326,  19634,  15866,   0,   0,    0, 1800000,       0 }, // Mana Rejuvenation
+  {   2327,  19638,  15867,   0,   0,    0, 1800000,       0 }, // Prismstone
+  {   2332,  20587,  15873,   0,   0,    0, 1800000,       0 }, // Ragged John's Neverending Cup
+  {   2355,  19804,  16022,   0,   0,   94,  300000,   60000 }, // Arcanite Dragonling
+  {   2524, 144318,  16440,   1,   1,    0,      -1,      -1 }, // Mana Shield Absorb Increase
+  {   2525,  23049,  16446,   0,   1,    0,      -1,      -1 }, // Sprint Duration Increase
+  {   2526,  23217,  16448,   0,   1,    0,      -1,      -1 }, // Stealth Detection
+  {   2527,  28539,  16463,   0,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   2528, 144306,  16471,   0,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   2529,  22778,  16484,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   2536, 144318,  16540,   0,   1,    0,      -1,      -1 }, // Mana Shield Absorb Increase
+  {   2537,  22778,  16548,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   2538,  23217,  16555,   0,   1,    0,      -1,      -1 }, // Stealth Detection
+  {   2539,  23049,  16558,   0,   1,    0,      -1,      -1 }, // Sprint Duration Increase
+  {   2540,  28539,  16571,   0,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   2541,  22801,  16573,   0,   1,    0,      -1,      -1 }, // Ghost Wolf Speed
+  {   2543,  62352,  16608,   0,   0,    0,  300000,       0 }, // Heal
+  {   2562,  20631,  16768,   0,   0,    0, 1200000,       0 }, // Furbolg Medicine Pouch
+  {   2565,  10256,  16971,   0,   0,   11,       0,    1000 }, // Food
+  {   2596,  15438,  17066,   0,   1,    0,      -1,      -1 }, // Thorns
+  {   2597,  17490,  17067,   0,   0,    0,   60000,      -1 }, // Summon Skeleton
+  {   2598,  18138,  17068,   0,   1,    0,      -1,      -1 }, // Shadow Bolt
+  {   2599,  21151,  17071,   0,   2,    0,      -1,      -1 }, // Gutgore Ripper
+  {   2600,  21152,  17073,   0,   2,    0,      -1,      -1 }, // Earthshaker
+  {  19950, 144241,  17074,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {  19951,  21180,  17074,   1,   0, 1150,      -1,   60000 }, // Summon Thunderstrike
+  {   2603,  21140,  17075,   0,   1,    0,      -1,      -1 }, // Fatal Wound
+  {   2604,  21153,  17076,   0,   2,    0,      -1,      -1 }, // Bonereaver's Edge
+  {   2605,  21185,  17104,   0,   1,    0,      -1,      -1 }, // Spinal Reaper
+  {   2606,   7711,  17111,   0,   1,    0,      -1,      -1 }, // Add Fire Dam - Weap 02
+  {   2607, 144238,  17112,   0,   2,    0,      -1,      -1 }, // Haste
+  {   2611,  21079,  17142,   0,   1,    0,      -1,      -1 }, // Echo of Archimonde
+  {  19952,  21162,  17182,   1,   2,    0,      -1,      -1 }, // Fireball
+  {  19953,  21142,  17182,   2,   1,    0,      -1,      -1 }, // Immolation
+  {   2615, 265240,  17193,   0,   1,    0,      -1,      -1 }, // Sulfuron Hammer
+  {   2617,   5004,  17197,   0,   0,   11,       0,    1000 }, // Food
+  {   2618,  21149,  17198,   0,   0,   11,       0,    1000 }, // Egg Nog
+  {   2626,  10256,  17222,   0,   0,   11,       0,    1000 }, // Food
+  {  19954, 144240,  17223,   0,   2,    0,      -1,      -1 }, // Chain Lightning
+  {  19955,  21181,  17223,   1,   0, 1150,      -1,   60000 }, // Summon Shadowstrike
+  {   2661,  23046,  17584,   0,   1,    0,      -1,      -1 }, // Searing Pain Cast Pushback Reduction
+  {   2662,  23046,  17588,   0,   1,    0,      -1,      -1 }, // Searing Pain Cast Pushback Reduction
+  {   2664,  23043,  17608,   1,   1,    0,      -1,      -1 }, // Mind Blast Cast Pushback Reduction
+  {   2666,  23043,  17620,   0,   1,    0,      -1,      -1 }, // Mind Blast Cast Pushback Reduction
+  {   2669, 196079,  17690,   0,   0, 1091,  120000,  120000 }, // Recall
+  {   2670, 196080,  17691,   0,   0, 1091,  120000,  120000 }, // Recall
+  {   2677,  21920,  17708,   0,   0,   79,       0,    3000 }, // Frost Power
+  {   2693,  21954,  17744,   0,   0,    0,  120000,       0 }, // Dispel Poison
+  {   2698,  21956,  17759,   0,   0,    0,  300000,       0 }, // Physical Protection
+  {   2706, 259005,  17780,   0,   1,    0,      -1,      -1 }, // Blade of Eternal Darkness
+  {  24311,  82910,  17782,   0,   1,    0,      -1,      -1 }, // Lightning Shield
+  {   2707, 196080,  17900,   1,   0, 1091,  120000,  120000 }, // Recall
+  {   2708, 196080,  17901,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2709, 196080,  17902,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2710, 196080,  17903,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2711, 196080,  17904,   2,   0, 1091,       0,    1000 }, // Recall
+  {   2712, 196079,  17905,   1,   0, 1091,  120000,  120000 }, // Recall
+  {   2713, 196079,  17906,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2714, 196079,  17907,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2715, 196079,  17908,   2,   0, 1091,  120000,  120000 }, // Recall
+  {   2716, 196079,  17909,   2,   0, 1091,       0,    1000 }, // Recall
+  {   2718,  10256,  18045,   0,   0,   11,       0,    1000 }, // Food
+  {  19956,  22618,  18168,   0,   1,    0,      -1,      -1 }, // Force Reactive Disk
+  {  19957,  22620,  18168,   1,   1,    0,      -1,      -1 }, // Force Reactive Disk
+  {   2745,  22639,  18202,   0,   2,    0,      -1,      -1 }, // Eskhandar's Rake
+  {   2746,  22640,  18203,   0,   2,    0,      -1,      -1 }, // Eskhandar's Rage
+  {   2807, 265255,  18348,   0,   1,    0,      -1,      -1 }, // Quel'Serrar
+  {  19958,  22988,  18582,   0,   1,    0,      -1,      -1 }, // Illidan's Fury
+  {  19959,  22989,  18582,   1,   0,    0,      -1,      -1 }, // The Breaking
+  {   2840,  22990,  18583,   0,   0,    0,      -1,      -1 }, // The Forming
+  {   2852,  23041,  18608,   0,   0, 1160,       0, 1800000 }, // Call Anathema
+  {   2853,  23042,  18609,   0,   0, 1160,       0, 1800000 }, // Call Benediction
+  {   2860,  23131,  18634,   0,   0,    0,  300000,       0 }, // Frost Reflector
+  {   2862,  23064,  18637,   0,   0, 1153,  300000,  120000 }, // Recombobulate
+  {   2863,  23097,  18638,   0,   0,    0,  300000,       0 }, // Fire Reflector
+  {   2864,  23132,  18639,   0,   0,    0,  300000,       0 }, // Shadow Reflector
+  {   2868,  23101,  18646,   0,   1,    0,      -1,      -1 }, // Eye of Divinity
+  {   2904,  14097,  18715,   2,   1,    0,      -1,      -1 }, // Demon Slaying
+  {   2960,  21599,  18809,   1,   1,    0,      -1,      -1 }, // Vitality
+  {   2961,  23266,  18815,   0,   1,    0,      -1,      -1 }, // Fiery Aura
+  {   2962,  23267,  18816,   0,   2,    0,      -1,      -1 }, // Firebolt
+  {   2963,  23271,  18820,   0,   0, 1141,   90000,   15000 }, // Ephemeral Power
+  {   2964,  13959,  18825,   0,   1,    0,      -1,      -1 }, // Electrostatic Charge
+  {   2965,  13959,  18826,   0,   1,    0,      -1,      -1 }, // Electrostatic Charge
+  {   2966,  42292,  18834,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2969,  42292,  18845,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2970,  42292,  18846,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2971,  42292,  18849,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2972,  42292,  18850,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2973,  42292,  18851,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2974,  42292,  18852,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2975,  42292,  18853,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2976,  42292,  18854,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2977,  42292,  18856,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2978,  42292,  18857,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2979,  42292,  18858,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2980,  42292,  18859,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2981,  42292,  18862,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2982,  42292,  18863,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2983,  42292,  18864,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   2992,  12438,  18951,   0,   0,    0, 1800000,      -1 }, // Slow Fall
+  {   3011,  21992,  19019,   0,   2,    0,      -1,      -1 }, // Thunderfury
+  {   3013, 186318,  19024,   0,   1,    0,      -1,      -1 }, // Arena Grand Master
+  {  25542,  23506,  19024,   1,   0,    0,  900000,       0 }, // Aura of Protection
+  {   3037,  23595,  19141,   0,   0,    0,  180000,      -1 }, // Luffa
+  {   3040,  23604,  19166,   0,   2,    0,      -1,      -1 }, // Reduce Threat
+  {   3041,  23605,  19169,   0,   2,    0,      -1,      -1 }, // Spell Vulnerability
+  {   3042, 265270,  19170,   0,   1,    0,      -1,      -1 }, // Ebon Hand
+  {   3116,  23689,  19287,   0,   1,    0,      -1,      -1 }, // Heroism
+  {   3117,  23688,  19288,   0,   1,    0,      -1,      -1 }, // Aura of the Blue Dragon
+  {   3118,  23686,  19289,   0,   1,    0,      -1,      -1 }, // Lightning Strike
+  {   3119,  23701,  19290,   0,   1,    0,      -1,      -1 }, // Twisting Nether
+  {   3128,  18050,  19315,   0,   1,    0,      -1,      -1 },
+  {   3130,  23454,  19323,   1,   2,    0,      -1,      -1 }, // Stun
+  {   3131,  24388,  19324,   0,   2,    0,      -1,      -1 }, // Brain Damage
+  {   3148,  23719,  19334,   0,   2,    0,      -1,      -1 }, // Untamed Fury
+  {   3149,  23721,  19336,   0,   0, 1141,  120000,   10000 }, // Arcane Infused
+  {   3150,  23720,  19337,   0,   0, 1141,  300000,   30000 }, // Blessing of the Black Book
+  {   3151,  23723,  19339,   0,   0, 1141,  300000,   20000 }, // Mind Quickening
+  {   3152,  23724,  19340,   0,   0,    0,  300000,      -1 }, // Metamorphosis Rune
+  {   3153,  23725,  19341,   0,   0,    0,  300000,      -1 }, // Gift of Life
+  {   3154,  23726,  19342,   0,   0, 1141,  300000,   20000 }, // Venomous Totem
+  {   3155,  23733,  19343,   0,   0, 1141,  300000,   20000 }, // Blinding Light
+  {   3156,  23734,  19344,   0,   0, 1141,  300000,   20000 }, // Nature Aligned
+  {   3157,  23780,  19345,   0,   0,    0,  300000,      -1 }, // Aegis of Preservation
+  {   3158,  21140,  19353,   0,   2,    0,      -1,      -1 }, // Fatal Wound
+  {   3177,  24428,  19577,   2,   1,    0,      -1,      -1 }, // Improved Hamstring
+  {   3178,  24188,  19588,   0,   1,    0,      -1,      -1 }, // Improved Hammer of Justice
+  {   3179,  24191,  19594,   1,   1,    0,      -1,      -1 }, // Improved Power Word: Shield
+  {   3180,  24429,  19601,   1,   1,    0,      -1,      -1 }, // Improved Counterspell
+  {   3181,  24430,  19605,   1,   1,    0,      -1,      -1 }, // Improved Rain of Fire/Hellfire
+  {   3182,  24436,  19609,   0,   1,    0,      -1,      -1 },
+  {   3183,  24434,  19617,   0,   1,    0,      -1,      -1 }, // Improved Kick
+  {   3184,  24432,  19621,   0,   1,    0,      -1,      -1 }, // Improved Feign Death
+  {   3186,  24006,  19697,   0,   0,    0, 43200000,      -1 }, // Bounty of the Harvest
+  {   3245, 144237,  19852,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {   3249,  25669,  19874,   0,   1,    0,      -1,      -1 }, // Decapitate
+  {   3256,  18205,  19910,   0,   2,    0,      -1,      -1 }, // Shadow Bolt
+  {   3257,  24257,  19918,   0,   2,    0,      -1,      -1 }, // Jeklik's Crushing Blow
+  {   3258,  24268,  19930,   0,   0,    0,  180000,       0 }, // Mar'li's Brain Boost
+  {   3262,  24610,  19947,   0,   0,    0,   75000,       0 }, // Pagle's Broken Reel
+  {   3263,  24574,  19948,   0,   0,    0,  120000,       0 }, // Brittle Armor
+  {   3264,  24661,  19949,   0,   0, 1141,  120000,   20000 }, // Restless Strength
+  {   3265,  24658,  19950,   0,   0, 1141,  120000,   20000 }, // Unstable Power
+  {   3266,  24571,  19951,   0,   0, 1141,  180000,   10000 }, // Blood Fury
+  {   3267,  24498,  19952,   0,   0, 1141,  180000,   20000 }, // Brilliant Light
+  {   3268,  24531,  19953,   0,   0, 1141,  180000,   30000 }, // Refocus
+  {   3269,  24532,  19954,   0,   0, 1141,  180000,   10000 }, // Burst of Energy
+  {   3270,  24542,  19955,   0,   0,    0,  180000,       0 }, // Nimble Healing Touch
+  {   3271,  24499,  19956,   0,   0, 1141,  180000,   20000 }, // Energized Shield
+  {   3272,  24543,  19957,   0,   0, 1141,  180000,   20000 }, // Massive Destruction
+  {   3273,  24546,  19958,   0,   0,    0,  180000,       0 }, // Rapid Healing
+  {   3274,  24544,  19959,   0,   0, 1141,  180000,   20000 }, // Arcane Potency
+  {   3286,  24354,  19990,   0,   0, 1141,  120000,   20000 }, // Prayer Beads Blessing
+  {   3287,  24352,  19991,   0,   0, 1141,  120000,   20000 }, // Devilsaur Fury
+  {   3288,  50708,  19992,   0,   0, 1141,  120000,   20000 }, // Primal Instinct
+  {   3300,  24363,  20007,   0,   0,   79,       0,    3000 }, // Mageblood Elixir
+  {   3312,  24389,  20036,   0,   0, 1141,  180000,   10000 }, // Chaos Fire
+  {   3328,  23991,  20071,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3329,  23991,  20072,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3330,   5007,  20074,   0,   0,   11,       0,    1000 }, // Food
+  {   3333,  24421,  20076,   0,   0,    0,      -1,      -1 }, // Zandalar Signet of Mojo
+  {   3334,  24422,  20077,   0,   0,    0,      -1,      -1 }, // Zandalar Signet of Might
+  {   3335,  24420,  20078,   0,   0,    0,      -1,      -1 }, // Zandalar Signet of Serenity
+  {   3361,  24427,  20130,   0,   0, 1141,  360000,   60000 }, // Diamond Flask
+  {   3428,  24800,  20452,   0,   0,   11,       0,    1000 }, // Food
+  {   3431,  24854,  20503,   0,   0,    0,  180000,      -1 }, // Mana Spring Totem
+  {   3444,  24865,  20512,   0,   0, 1141,  180000,   25000 }, // Sanctified Orb
+  {   3455,  25112,  20534,   0,   0,    0, 1800000,      -1 }, // Summon Voidwalker
+  {   3490,  24993,  20578,   0,   2,    0,      -1,      -1 }, // Acid Blast
+  {   3491,  21595,  20579,   0,   1,    0,      -1,      -1 }, // Vitality
+  {   3494,  24998,  20636,   0,   0, 1141,   90000,   15000 }, // Healing of the Ages
+  {   3541,  25207,  20830,   0,   0,    0,    1500,      -1 }, // Amulet of the Moon
+  {   3542,  25211,  20831,   0,   0,    0,    1500,      -1 }, // Heavy Golden Necklace of Battle
+  {   3552,  25606,  20950,   1,   0,    0,    1500,      -1 }, // Pendant of the Agate Shield
+  {   3554,  25607,  20966,   1,   0,    0,    1500,      -1 }, // Jade Pendant of Blasting
+  {   3555,  25608,  20967,   1,   0,    0,    1500,       0 }, // Citrine Pendant of Golden Healing
+  {   3570,  25660,  21023,   0,   0,   11,       0,    1000 }, // Food
+  {   3587,  25746,  21115,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3588,  25747,  21116,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3589,  25746,  21117,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3590,  25747,  21118,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3591,  25750,  21119,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3592,  25750,  21120,   0,   0, 1155,  180000,  180000 }, // Damage Absorb
+  {   3593,  25767,  21128,   1,   1,    0,      -1,      -1 }, // Mystical Disjunction
+  {   3594,  26108,  21134,   0,   2,    0,      -1,      -1 }, // Glimpse of Madness
+  {   3607,  25891,  21180,   0,   0, 1141,  120000,   20000 }, // Earthstrike
+  {   3608,  25892,  21181,   0,   0,    0,  300000,       0 }, // Grace of Earth
+  {   3609,  25901,  21189,   0,   1,    0,      -1,      -1 }, // Weapon Damage
+  {   3610,  25906,  21190,   0,   1,    0,      -1,      -1 }, // Spell Blasting
+  {   3624,  24869,  21254,   0,   0,   11,       0,    1000 }, // Food
+  {   3643,  26066,  21326,   0,   0,   94,  600000,   60000 }, // Defender of the Timbermaw
+  {   3651,  26166,  21473,   0,   0, 1141,  180000,   30000 }, // Obsidian Insight
+  {   3652,  26168,  21488,   0,   0,    0,  180000,      -1 }, // Chitinous Spikes
+  {   3653,  35126,  21517,   1,   1,    0,      -1,      -1 }, // Silence Resistance 20%
+  {   3655,  11789,  21526,   0,   1,    0,      -1,      -1 }, // Water Breathing
+  {   3659,  26276,  21546,   0,   0,   79,       0,    3000 }, // Greater Firepower
+  {   3681,  26391,  21579,   0,   0,    0,  180000,      -1 }, // Tentacle Call
+  {   3688,  26467,  21625,   0,   0,    0,  180000,      -1 }, // Persistent Shield
+  {   3689,  26400,  21647,   0,   0,    0,  180000,      -1 }, // Arcane Shroud
+  {   3690,  26480,  21670,   0,   0,    0,  180000,      -1 }, // Badge of the Swarmguard
+  {   3691,  26415,  21679,   0,   2,    0,      -1,      -1 }, // Shock
+  {   3692,  26463,  21685,   0,   0,    0,  180000,      -1 }, // Mercurial Shield
+  {   3693,  21596,  21687,   0,   1,    0,      -1,      -1 }, // Vitality
+  {   3739,  26551,  21748,   0,   0,   28,  300000,   60000 }, // Jade Owl
+  {   3740,  26562,  21755,   1,   0,    0,    1500,       0 }, // Aquamarine Pendant of the Warrior
+  {  36635,  23990,  21756,   0,   1,    0,      -1,      -1 }, // Item - Minor Run Speed
+  {  36636,  26571,  21756,   1,   0,    0, 1200000,       0 }, // Golden Hare
+  {  36845,  26578,  21758,   0,   1,    0,      -1,      -1 }, // Stealth 3
+  {  36846,  26576,  21758,   1,   0, 1141,  300000,   15000 }, // Black Pearl Panther
+  {   3745,  26581,  21760,   1,   0,   28,  300000,   60000 }, // Truesilver Crab
+  {   3746,  26593,  21763,   1,   0,   28,  900000,   60000 }, // Truesilver Boar
+  {   3748,  26599,  21769,   0,   0, 1141,  300000,   20000 }, // Ruby Serpent
+  {   3749,  26600,  21777,   1,   0,   28,  300000,   60000 }, // Emerald Owl
+  {   3751,  26609,  21784,   1,   0,   28,  300000,   60000 }, // Black Diamond Crab
+  {   3752,  26614,  21789,   1,   0, 1141,  300000,   60000 }, // Dark Iron Scorpid
+  {   3765,  26693,  21856,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {   3766,  26789,  21891,   0,   0,    0,  180000,      -1 }, // Shard of the Fallen Star
+  {   3868,  27037,  22003,   0,   1,    0,      -1,      -1 }, // Stealth +8
+  {   3870,  27038,  22013,   1,   1,    0,      -1,      -1 }, // Increased Pet Health +3%
+  {   3871,  27043,  22015,   1,   1,    0,      -1,      -1 }, // Increased Pet Crit +2%
+  {   3885,  27225,  22060,   0,   1,    0,      -1,      -1 }, // Increased Pet Armor +10%
+  {   3886,  27206,  22061,   0,   1,    0,      -1,      -1 }, // Increased Pet Damage +3%
+  {   3926,  27518,  22191,   2,   1,    0,      -1,      -1 }, // Spell Damage Reduction
+  {   3929,  27522,  22194,   2,   1,    0,      -1,      -1 }, // Mana Drain Trigger
+  {   3931,  27539,  22196,   0,   1,    0,      -1,      -1 }, // Obsidian Armor
+  {  19968,  18676,  22198,   1,   1,    0,      -1,      -1 },
+  {  19969,  27561,  22198,   2,   1,    0,      -1,      -1 }, // Silence Trigger
+  {   3936,  27571,  22206,   0,   0,    0,  300000,      -1 }, // Cascade of Roses
+  {   3958,  27675,  22268,   0,   0, 1141,   75000,   15000 }, // Chromatic Infusion
+  {  19970,  28142,  22589,   2,   1,    0,      -1,      -1 }, // Power of the Guardian
+  {  19971,  28148,  22589,   3,   0,    0,      -1,      -1 }, // Portal: Karazhan
+  {  19972,  31796,  22589,   4,   1,    0,      -1,      -1 }, // Atiesh Visual
+  {  19973,  28143,  22630,   2,   1,    0,      -1,      -1 }, // Power of the Guardian
+  {  19974,  28148,  22630,   3,   0,    0,      -1,      -1 }, // Portal: Karazhan
+  {  19975,  31796,  22630,   4,   1,    0,      -1,      -1 }, // Atiesh Visual
+  {  19976,  28144,  22631,   0,   1,    0,      -1,      -1 }, // Power of the Guardian
+  {  19977,  28148,  22631,   2,   0,    0,      -1,      -1 }, // Portal: Karazhan
+  {  19978,  31796,  22631,   3,   1,    0,      -1,      -1 }, // Atiesh Visual
+  {  19979,  28145,  22632,   0,   1,    0,      -1,      -1 }, // Power of the Guardian
+  {  19980,  28148,  22632,   3,   0,    0,      -1,      -1 }, // Portal: Karazhan
+  {  19981,  31796,  22632,   4,   1,    0,      -1,      -1 }, // Atiesh Visual
+  {   4086,   5005,  22645,   0,   0,   11,       0,    1000 }, // Food
+  {   4090,  28200,  22678,   0,   0, 1141,   60000,   20000 }, // Ascendance
+  {  19982,  28282,  22691,   0,   1,    0,      -1,      -1 }, // Ashbringer
+  {  19983,  28414,  22691,   1,   2,    0,      -1,      -1 },
+  {  19984,  29155,  22691,   4,   2,    0,      -1,      -1 }, // Drain Life
+  {   4159,  28516,  22783,   0,   0, 1139,  600000,  600000 }, // Sunwell Torrent
+  {   4160,  28516,  22784,   0,   0, 1139,  600000,  600000 }, // Sunwell Torrent
+  {   4166,  28490,  22824,   0,   0,   79,       0,    3000 }, // Major Strength
+  {   4167,  28491,  22825,   0,   0,   79,       0,    3000 }, // Healing Power
+  {   4169,  28493,  22827,   0,   0,   79,       0,    3000 }, // Major Frost Power
+  {   4170,  28494,  22828,   0,   0,    4,  300000,  300000 }, // Insane Strength Potion
+  {   4173,  54494,  22831,   0,   0,   79,       0,    3000 }, // Major Agility
+  {   4175,  28501,  22833,   0,   0,   79,       0,    3000 }, // Major Firepower
+  {   4176,  28502,  22834,   0,   0,   79,       0,    3000 }, // Major Armor
+  {   4177,  28503,  22835,   0,   0,   79,       0,    3000 }, // Major Shadow Power
+  {   4179,  28506,  22837,   0,   0,    4,  300000,  300000 }, // Potion of Heroes
+  {   4180,  28507,  22838,   0,   0,    4,  300000,  300000 }, // Haste
+  {   4181,  28508,  22839,   0,   0,    4,  300000,  300000 }, // Destruction
+  {   4182,  28509,  22840,   0,   0,   79,       0,    3000 }, // Greater Versatility
+  {   4189, 134870,  22848,   0,   0,   79,       0,    3000 }, // Empowerment
+  {   4190,  28515,  22849,   0,   0,    4,  300000,  300000 }, // Ironshield
+  {   4192,  28518,  22851,   0,   0,   79,       0,    3000 }, // Flask of Fortification
+  {   4193,  28519,  22853,   0,   0,   79,       0,    3000 }, // Flask of Mighty Versatility
+  {   4194,  28520,  22854,   0,   0,   79,       0,    3000 }, // Flask of Relentless Assault
+  {   4197,  28521,  22861,   0,   0,   79,       0,    3000 }, // Flask of Blinding Light
+  {   4201,  28540,  22866,   0,   0,   79,       0,    3000 }, // Flask of Pure Death
+  {   4264,  28866,  22954,   2,   0, 1141,  120000,   15000 }, // Kiss of the Spider
+  {   4267,  28862,  23001,   1,   0,    0,  120000,      -1 }, // The Eye of Diminution
+  {   4274,  28760,  23027,   1,   0,    0,  180000,      -1 }, // Mana Infusion
+  {   4275,  84212,  23040,   2,   0, 1141,  120000,   20000 }, // Glyph of Deflection
+  {   4276,  28777,  23041,   1,   0, 1141,  120000,   20000 }, // Slayer's Crest
+  {   4277,  28778,  23042,   0,   0,    0,  120000,      -1 }, // Loatheb's Reflection
+  {   4278,  28779,  23046,   1,   0, 1141,  120000,   20000 }, // Essence of Sapphiron
+  {   4279,  28780,  23047,   1,   0, 1141,  120000,   30000 }, // The Eye of the Dead
+  {   4281,  43588,  23072,   0,   1,    0,      -1,      -1 }, // Disarm Duration Reduction
+  {   4282,  27037,  23073,   0,   1,    0,      -1,      -1 }, // Stealth +8
+  {  30096, 216042,  23192,   0,   1,    0,      -1,      -1 }, // Item Aura
+  {   4360,  29112,  23206,   0,   1,    0,      -1,      -1 }, // Champion of the Dawn
+  {   4361,  29113,  23207,   0,   1,    0,      -1,      -1 }, // Champion of the Dawn
+  {   4364,  29150,  23221,   0,   1,    0,      -1,      -1 }, // Electric Discharge
+  {   4365,  29162,  23238,   0,   1,    0,      -1,      -1 }, // Stygian Grasp
+  {   4403,  43588,  23533,   0,   1,    0,      -1,      -1 }, // Disarm Duration Reduction
+  {   4404,  16916,  23541,   0,   2,    0,      -1,      -1 }, // Strength of the Champion
+  {   4405,  29467,  23545,   0,   0,    0,      -1,      -1 }, // Power of the Scourge
+  {   4406,  29475,  23547,   0,   0,    0,      -1,      -1 }, // Resilience of the Scourge
+  {   4407,  29483,  23548,   0,   0,    0,      -1,      -1 }, // Might of the Scourge
+  {   4408,  29480,  23549,   0,   0,    0,      -1,      -1 }, // Fortitude of the Scourge
+  {   4409,  29506,  23558,   0,   0,    0,  120000,       0 }, // The Burrower's Shell
+  {   4411,  34518,  23564,   2,   0,    0, 1800000,      -1 }, // Nether Protection
+  {   4412,  34518,  23565,   2,   0,    0, 1800000,      -1 }, // Nether Protection
+  {   4414,  29602,  23570,   0,   0, 1141,  120000,   20000 }, // Jom Gabbar
+  {   4425,  29830,  23587,   0,   0,    0, 3600000,      -1 }, // Use Mirren's Drinking Hat
+  {   4549,  69773,  23714,   0,   0,    0,   30000,       0 }, // Create Perpetual Purple Firework
+  {   4551,  69777,  23716,   0,   0,    0,  600000,       0 }, // Create Carved Ogre Idol
+  {   4570,   5004,  23756,   0,   0,   11,       0,    1000 }, // Food
+  {   4572,  30249,  23763,   2,   0,    0,  120000,      -1 }, // Hyper Vision
+  {   4628,  51582,  23824,   2,   0, 1203,  300000,  300000 }, // Rocket Boots Engaged
+  {   4629,  30458,  23825,   0,   0,    0,  300000,       0 }, // Nigh Invulnerability
+  {   4634,  30507,  23835,   0,   0,    0,  300000,       0 }, // Poultryizer
+  {   4635,  46567,  23836,   0,   0,    0,  120000,       0 }, // Rocket Launch
+  {   4636,  40386,  23838,   0,   1,    0,      -1,      -1 }, // Increased Stun Resist +10%
+  {   4637,  30519,  23839,   1,   1,    0,      -1,      -1 }, // Foreman's Reinforced Helmet
+  {   4692,  30997,  24092,   0,   0,    0, 3600000,       0 }, // Fire Absorption
+  {   4693,  30994,  24093,   0,   0,    0, 3600000,       0 }, // Frost Absorption
+  {   4694,  30999,  24095,   0,   0,    0, 3600000,       0 }, // Nature Absorption
+  {   4695,  31000,  24097,   0,   0,    0, 3600000,       0 }, // Shadow Absorption
+  {   4696,  31002,  24098,   0,   0,    0, 3600000,       0 }, // Arcane Absorption
+  {   4698,   5004,  24105,   0,   0,   11,       0,    1000 }, // Food
+  {   4699,  31023,  24106,   0,   0,    0, 3600000,       0 }, // Thick Felsteel Necklace
+  {   4700,  31024,  24110,   2,   0,    0, 3600000,      -1 }, // Living Ruby Pendant
+  {  36847,  33488,  24114,   0,   1,    0,      -1,      -1 }, // Weapon Damage
+  {  36848,  31025,  24114,   1,   0,    0, 3600000,      -1 }, // Braided Eternium Chain
+  {   4703,  31033,  24116,   2,   0,    0, 3600000,      -1 }, // Eye of the Night
+  {   4704,  31026,  24117,   1,   0,    0, 3600000,       0 }, // Embrace of the Dawn
+  {   4705,  31035,  24121,   1,   0,    0, 3600000,       0 }, // Chain of the Twilight Owl
+  {   4706,  32981,  24122,   0,   1,    0,      -1,      -1 }, // Verdant Flame
+  {   4707,  32980,  24123,   0,   1,    0,      -1,      -1 }, // Arcane Might
+  {   4708,  31038,  24124,   1,   0,    0,  300000,       0 }, // Felsteel Boar
+  {   4709,  31039,  24125,   0,   0,    0,  120000,       0 }, // Dawnstone Crab
+  {   4710,  31040,  24126,   0,   0, 1141,  300000,   20000 }, // Living Ruby Serpent
+  {   4711,  31045,  24127,   1,   0,    0,  300000,       0 }, // Talasite Owl
+  {   4712,  31047,  24128,   2,   0, 1141,  180000,   15000 }, // Nightseye Panther
+  {   4893,  31771,  24376,   0,   0,    0,  120000,       0 }, // Shell of Deterrence
+  {   4894,  31794,  24390,   1,   0,    0,  180000,      -1 }, // Focused Mind
+  {   4911,  32112,  24539,   0,   0,   11,       0,    1000 }, // Food
+  {   4915,  22778,  24549,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   4916,  32140,  24551,   0,   0, 1155,  120000,  120000 }, // Talisman of the Horde
+  {   4917,  95677,  24556,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   4966,  32355,  25619,   1,   0, 1141,  120000,   20000 }, // Focused Power
+  {   4967,  32355,  25620,   1,   0, 1141,  120000,   20000 }, // Focused Power
+  {   4968,  32362,  25628,   1,   0, 1141,  120000,   15000 }, // Burning Hatred
+  {   4969,  32362,  25633,   1,   0, 1141,  120000,   15000 }, // Burning Hatred
+  {   4970,  32367,  25634,   1,   0, 1141,  120000,   20000 }, // Power of Prayer
+  {   5028,  32599,  25786,   0,   0,    0,  300000,       0 }, // Soothe
+  {   5029,  32600,  25787,   0,   0,    0,   90000,      -1 }, // Avoidance
+  {   5033,  32641,  25827,   0,   0,    0,  300000,      -1 }, // Soothe
+  {   5035,  33828,  25829,   0,   0, 1155,  120000,  120000 }, // Talisman of the Alliance
+  {   5036,  61249,  25834,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   5040,  33066,  25857,   0,   1,    0,      -1,      -1 }, // Mage Fire Blast Range Bonus
+  {   5075,  39201,  25936,   0,   0, 1141,   90000,   15000 }, // Spell Power
+  {   5076,  39200,  25937,   0,   0, 1141,   90000,   15000 }, // Heroism
+  {   5078,  32955,  25994,   0,   0, 1141,  120000,   20000 }, // Heroism
+  {   5079,  32956,  25995,   0,   0, 1141,  120000,   20000 }, // Spell Power
+  {   5080,  32957,  25996,   0,   0, 1141,  120000,   20000 }, // Stoicism
+  {   5081,  33020,  26000,   0,   1,    0,      -1,      -1 }, // Shaman Lightning Shield Bonus
+  {   5083,  33012,  26055,   1,   0,    0,  120000,      -1 }, // Consume Essence
+  {   5088,  33014,  27416,   1,   0,    0,  120000,      -1 }, // Consume Life
+  {   5092,  32973,  27470,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   5100,  33089,  27529,   0,   0,    0,  120000,       0 }, // Vigilance of the Colossus
+  {   5102,   5004,  27635,   0,   0,   11,       0,    1000 }, // Food
+  {   5103,   5005,  27636,   0,   0,   11,       0,    1000 }, // Food
+  {   5104,  33253,  27651,   0,   0,   11,       0,    1000 }, // Food
+  {   5105,  33260,  27655,   0,   0,   11,       0,    1000 }, // Food
+  {   5106,  33264,  27657,   0,   0,   11,       0,    1000 }, // Food
+  {   5107,  33255,  27658,   0,   0,   11,       0,    1000 }, // Food
+  {   5108,  33262,  27659,   0,   0,   11,       0,    1000 }, // Food
+  {   5109,  35271,  27660,   0,   0,   11,       0,    1000 }, // Food
+  {   5111,  33253,  27662,   0,   0,   11,       0,    1000 }, // Food
+  {   5112,  33266,  27663,   0,   0,   11,       0,    1000 }, // Food
+  {   5113,  33262,  27664,   0,   0,   11,       0,    1000 }, // Food
+  {   5114,  33264,  27665,   0,   0,   11,       0,    1000 }, // Food
+  {   5115,  33269,  27666,   0,   0,   11,       0,    1000 }, // Food
+  {   5116,  33258,  27667,   0,   0,   11,       0,    1000 }, // Food
+  {   5150,  38522,  27703,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   5151,  23044,  27707,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   5153,  39228,  27770,   0,   0,    0,  120000,      -1 }, // Argussian Compass
+  {   5154,  33400,  27828,   1,   0, 1141,  120000,   20000 }, // Accelerated Mending
+  {   5162, 144310,  27880,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   5163,  33479,  27891,   0,   0,    0,  120000,       0 }, // Adamantine Shell
+  {   5165,  33486,  27900,   0,   0,    0,  300000,       0 }, // Heart's Mystique
+  {   5176,  33662,  28040,   0,   0, 1141,   90000,   15000 }, // Arcane Energy
+  {   5177,  33667,  28041,   0,   0, 1141,   90000,   15000 }, // Ferocity
+  {   5178,  33668,  28042,   0,   0,    0,  300000,       0 }, // Tenacity
+  {   5187,  33720,  28102,   0,   0,   79,       0,    3000 }, // Onslaught Elixir
+  {   5188,  54452,  28103,   0,   0,   79,       0,    3000 }, // Adept's Elixir
+  {   5189,  33726,  28104,   0,   0,   79,       0,    3000 }, // Elixir of Mastery
+  {   5194,  33770,  28111,   0,   0,    0, 43200000,      -1 }, // Everlasting Underspore Fronds
+  {   5196,  34106,  28121,   0,   0, 1141,  120000,   20000 }, // Unyielding Courage
+  {   5197,  96148,  28126,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   5200,  96148,  28136,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   5204,  34000,  28223,   0,   0, 1141,  120000,   20000 }, // The Arcanist's Stone
+  {   5205,  42292,  28234,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5206,  42292,  28235,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5207,  42292,  28236,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5208,  42292,  28237,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5209,  42292,  28238,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5210,  42292,  28239,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5211,  42292,  28240,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5212,  42292,  28241,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5213,  42292,  28242,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5214,  42292,  28243,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5236,  33807,  28288,   1,   0, 1141,  120000,   10000 }, // Abacus of Violent Odds
+  {   5241,  28539,  28335,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {  26689,  38334,  28370,   0,   1,    0,      -1,      -1 }, // Proc Mana Regen
+  {  26690,  34210,  28370,   1,   0,    0,  120000,      -1 }, // Endless Blessings
+  {   5254,  34514,  28428,   0,   1,    0,      -1,      -1 }, // Fear Resistance 5
+  {  19985,  34514,  28429,   0,   1,    0,      -1,      -1 }, // Fear Resistance 5
+  {  19986, 144232,  28429,   1,   2,    0,      -1,      -1 }, // Lionheart
+  {  19987,  34515,  28430,   0,   1,    0,      -1,      -1 }, // Fear Resistance 8
+  {  19988,  34513,  28430,   1,   2,    0,      -1,      -1 }, // Lionheart
+  {   5259, 265274,  28437,   0,   1,    0,      -1,      -1 }, // Drakefist Hammer
+  {   5260, 265276,  28438,   0,   1,    0,      -1,      -1 }, // Dragonmaw
+  {   5261,  21165,  28439,   0,   2,    0,      -1,      -1 }, // Haste
+  {   5262, 265278,  28441,   0,   1,    0,      -1,      -1 }, // Deep Thunder
+  {   5263, 265282,  28442,   0,   1,    0,      -1,      -1 }, // Stormherald
+  {   5271, 144300,  28484,   0,   0,    0, 1800000,      -1 }, // Valor
+  {   5272,  34511,  28485,   0,   0,    0, 1800000,      -1 }, // Valor
+  {   5275,  34519,  28528,   0,   0,    0,  120000,      -1 }, // Time's Favor
+  {   5278,  34580,  28573,   0,   2,    0,      -1,      -1 }, // Impale
+  {   5279,  34584,  28578,   1,   1,    0,      -1,      -1 }, // Love Struck
+  {   5280,  34586,  28579,   0,   1,    0,      -1,      -1 }, // Romulo's Poison
+  {   5281,  39937,  28585,   1,   0, 1176, 1800000, 1800000 }, // There's No Place Like Home
+  {   5282,  38332,  28590,   0,   0,    0,  120000,      -1 }, // Blessing of Life
+  {   5285,  34598,  28602,   1,   1,    0,      -1,      -1 }, // Karazhan Caster Robe
+  {   5304,  29601,  28727,   0,   0,    0,  120000,      -1 }, // Enlightenment
+  {   5305,  37208,  28767,   0,   0, 1141,  180000,   10000 }, // The Decapitator
+  {   5306,  34696,  28774,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {   5307,  37657,  28785,   0,   1,    0,      -1,      -1 }, // Lightning Capacitor
+  {   5309,  34750,  28788,   0,   0,    0,  300000,      -1 }, // Badge of the Protector
+  {   5310,  34749,  28789,   1,   1,    0,      -1,      -1 }, // Recurring Power
+  {   5315,  37705,  28823,   1,   1,    0,      -1,      -1 }, // Healing Discount
+  {   5316,  34774,  28830,   1,   1,    0,      -1,      -1 }, // Magtheridon Melee Trinket
+  {   5367,  35337,  29132,   0,   0, 1141,   90000,   15000 }, // Spell Power
+  {   5368,  35337,  29179,   0,   0, 1141,   90000,   15000 }, // Spell Power
+  {   5369,  35352,  29181,   0,   0,    0,  120000,      -1 }, // Soothe
+  {   5370,  35353,  29182,   0,   2,    0,      -1,      -1 }, // Temporal Rift
+  {   5411,  24800,  29292,   0,   0,   11,       0,    1000 }, // Food
+  {   5413,  35077,  29297,   1,   1,    0,      -1,      -1 }, // Band of the Eternal Defender
+  {   5414,  35080,  29301,   1,   1,    0,      -1,      -1 }, // Band of the Eternal Champion
+  {   5415,  35083,  29305,   1,   1,    0,      -1,      -1 }, // Band of the Eternal Sage
+  {   5416,  35086,  29309,   2,   1,    0,      -1,      -1 }, // Band of the Eternal Restorer
+  {   5418,  35126,  29347,   1,   1,    0,      -1,      -1 }, // Silence Resistance 20%
+  {   5419,  35131,  29348,   0,   2,    0,      -1,      -1 }, // Bladestorm
+  {   5420,  43588,  29357,   1,   1,    0,      -1,      -1 }, // Disarm Duration Reduction
+  {   5425,  35163,  29370,   1,   0, 1141,  120000,   20000 }, // Blessing of the Silver Crescent
+  {   5426,  35165,  29376,   1,   0, 1141,  120000,   20000 }, // Essence of the Martyr
+  {   5427,  35166,  29383,   1,   0, 1141,  120000,   20000 }, // Lust for Battle
+  {   5428,  84213,  29387,   2,   0, 1141,  120000,   20000 }, // Gnome Ingenuity
+  {   5467,  23990,  29512,   0,   1,    0,      -1,      -1 }, // Item - Minor Run Speed
+  {   5479,  42292,  29592,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5480,  42292,  29593,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5483,  22801,  29606,   0,   1,    0,      -1,      -1 }, // Ghost Wolf Speed
+  {   5484, 144306,  29613,   0,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   5565,  35733,  29776,   0,   0, 1141,  120000,   20000 }, // Ancient Power
+  {   5595,  36041,  29962,   0,   2,    0,      -1,      -1 }, // Heartrazor
+  {   5596,  36070,  29996,   0,   2,    0,      -1,      -1 }, // Power of the Sun King
+  {   5597,  35126,  30008,   1,   1,    0,      -1,      -1 }, // Silence Resistance 20%
+  {   5598,  36111,  30090,   0,   2,    0,      -1,      -1 }, // World Breaker
+  {   5600,  33253,  30155,   0,   0,   11,       0,    1000 }, // Food
+  {   5604,  95677,  30188,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   5616,  36347,  30293,   0,   0, 1141,   90000,   15000 }, // Healing Power
+  {   5617,  36372,  30300,   0,   0,    0,   90000,       0 }, // Phalanx
+  {   5635,  36479,  30311,   1,   2,    0,      -1,      -1 }, // Speed Infusion
+  {   5636, 265285,  30312,   1,   1,    0,      -1,      -1 }, // Infinity Blade
+  {   5637,  36480,  30313,   2,   0,    0,      -1,      -1 }, // Mental Protection Field
+  {   5638,  36481,  30314,   0,   0,    0,   30000,      -1 }, // Arcane Barrier
+  {   5639,  36479,  30316,   1,   2,    0,      -1,      -1 }, // Speed Infusion
+  {   5640,  36488,  30317,   2,   1,    0,      -1,      -1 }, // Infernal Protection
+  {  19989,  36413,  30318,   1,   1,    0,      -1,      -1 }, // Mortal Shots
+  {  19990,  36482,  30318,   3,   2,    0,      -1,      -1 }, // Armor Disruption
+  {   5651,  36432,  30340,   0,   0, 1141,   90000,   15000 }, // Spell Power
+  {   5652,  42292,  30343,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5653,  42292,  30344,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5654,  42292,  30345,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5655,  42292,  30346,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5656,  42292,  30348,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5657,  42292,  30349,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5658,  42292,  30350,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5659,  42292,  30351,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   5663,  33269,  30357,   0,   0,   11,       0,    1000 }, // Food
+  {   5664,  33262,  30358,   0,   0,   11,       0,    1000 }, // Food
+  {   5665,  33255,  30359,   0,   0,   11,       0,    1000 }, // Food
+  {   5668,  33264,  30361,   0,   0,   11,       0,    1000 }, // Food
+  {   5679,  37536,  30446,   0,   1,    0,      -1,      -1 }, // Improved Battle Shout
+  {   5680,  37197,  30447,   0,   1,    0,      -1,      -1 }, // Spell Damage
+  {   5681,  37507,  30448,   0,   1,    0,      -1,      -1 }, // Improved Shots
+  {   5682,  37173,  30450,   0,   1,    0,      -1,      -1 }, // Armor Penetration
+  {   5704,  22778,  30487,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   5721,  38299,  30619,   0,   1,    0,      -1,      -1 }, // HoTs on Heals
+  {   5722,  38325,  30620,   0,   0,    0,  120000,       0 }, // Regeneration
+  {  36776,  38326,  30621,   0,   1,    0,      -1,      -1 }, // Crit Threat Reduction Melee
+  {  36777,  38327,  30621,   1,   1,    0,      -1,      -1 }, // Crit Threat Reduction Spell
+  {   5725,  38347,  30626,   0,   1,    0,      -1,      -1 }, // Crit Proc Spell Damage
+  {   5726,  42083,  30627,   0,   1,    0,      -1,      -1 }, // Fury of the Crashing Waves
+  {   5727,  38351,  30629,   0,   0,    0,  180000,      -1 }, // Displacement
+  {   5736,  37247,  30663,   0,   1,    0,      -1,      -1 }, // Regain Mana
+  {   5737,  37336,  30664,   0,   1,    0,      -1,      -1 }, // Druid Forms Trinket
+  {   5738,  40402,  30665,   1,   0,    0,  120000,      -1 }, // Deep Meditation
+  {   5742,  37360,  30696,   0,   0,    0, 1800000,      -1 }, // Consecrated Weapon
+  {   5750,  37447,  30720,   0,   1,    0,      -1,      -1 }, // Improved Mana Gems
+  {   5767,  37877,  30841,   1,   0, 1141,   60000,   15000 }, // Blessing of Faith
+  {  19991,  27206,  30892,   1,   1,    0,      -1,      -1 }, // Increased Pet Damage +3%
+  {  19992,  27043,  30892,   2,   1,    0,      -1,      -1 }, // Increased Pet Crit +2%
+  {  19993, 132375,  31279,   0,   1,    0,      -1,      -1 },
+  {  19994, 132372,  31279,   1,   1,    0,      -1,      -1 },
+  {   5811,  38282,  31318,   0,   2,    0,      -1,      -1 }, // The Blade's Song
+  {   5812,  38284,  31322,   0,   2,    0,      -1,      -1 }, // Destiny Fulfilled
+  {   5813,  38290,  31323,   0,   1,    0,      -1,      -1 }, // Santos' Blessing
+  {   5814,  38307,  31331,   0,   2,    0,      -1,      -1 }, // The Dark of Night
+  {   5815, 182395,  31332,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {   5816,  23217,  31333,   1,   1,    0,      -1,      -1 }, // Stealth Detection
+  {   5817,  38314,  31334,   1,   1,    0,      -1,      -1 }, // Cheaper Druid Shapeshifting
+  {   5818,  38319,  31336,   1,   1,    0,      -1,      -1 }, // Forgotten Knowledge
+  {   5842,  96148,  31375,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   5856,  38501,  31397,   0,   1,    0,      -1,      -1 }, // Shaman Healing Surge Crit Chance
+  {   5862,  23044,  31409,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   5878,  38522,  31614,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   5879, 144073,  31615,   0,   0, 1141,   90000,   15000 }, // Arcane Energy
+  {   5880, 144074,  31617,   0,   0, 1141,   90000,   15000 }, // Ferocity
+  {   5896,  35271,  31672,   0,   0,   11,       0,    1000 }, // Food
+  {   5897,  33264,  31673,   0,   0,   11,       0,    1000 }, // Food
+  {   5905,  38954,  31679,   0,   0,   79,       0,    3000 }, // Fel Strength Elixir
+  {  36872,  39438,  31856,   0,   1,    0,      -1,      -1 }, // Aura of the Crusade
+  {  36873,  39440,  31856,   1,   1,    0,      -1,      -1 }, // Aura of the Crusade
+  {   5962,  39442,  31857,   0,   1,    0,      -1,      -1 }, // Aura of Wrath
+  {   5963,  39444,  31858,   0,   1,    0,      -1,      -1 }, // Aura of Vengeance
+  {   5964,  39446,  31859,   0,   1,    0,      -1,      -1 }, // Aura of Madness
+  {   6020,  28539,  31961,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   6021,  96148,  31967,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6022,  95677,  31973,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6023,  95677,  31981,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6024,  96148,  31987,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6025,  38522,  31993,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6027,  61249,  31998,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   6028,  33020,  32005,   0,   1,    0,      -1,      -1 }, // Shaman Lightning Shield Bonus
+  {   6029,  32973,  32010,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6030,  23044,  32015,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   6031,  38522,  32021,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6032,  38501,  32030,   0,   1,    0,      -1,      -1 }, // Shaman Healing Surge Crit Chance
+  {   6033,  23044,  32034,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   6034, 144311,  32040,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   6035,  33066,  32049,   0,   1,    0,      -1,      -1 }, // Mage Fire Blast Range Bonus
+  {   6036,  96148,  32056,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6039,  39627,  32067,   0,   0,   79,       0,    3000 }, // Elixir of Draenic Wisdom
+  {   6040,  39628,  32068,   0,   0,   79,       0,    3000 }, // Elixir of Ironskin
+  {   6048,  33063,  32093,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   6049,  23044,  32100,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   6050,  23044,  32103,   0,   1,    0,      -1,      -1 }, // Psychic Scream Duration Increase
+  {   6051,  33066,  32110,   0,   1,    0,      -1,      -1 }, // Mage Fire Blast Range Bonus
+  {   6052,  96148,  32113,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6053,  96148,  32118,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6054,  61249,  32124,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   6055,  96148,  32128,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6056,  28539,  32134,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   6057,  33020,  32139,   0,   1,    0,      -1,      -1 }, // Shaman Lightning Shield Bonus
+  {   6058,  32973,  32144,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6059,  32973,  32149,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6060, 144307,  32154,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   6061, 144307,  32159,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   6062,  22778,  32164,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   6063, 144307,  32169,   1,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {   6066,  47524,  32235,   1,   0,    0,  600000,      -1 }, // Sense Demons
+  {   6068,  40291,  32262,   1,   2,    0,      -1,      -1 }, // Siphon Essence
+  {   6149,  40407,  32375,   0,   1,    0,      -1,      -1 }, // Illidan Tank Shield
+  {   6203,  12883,  32461,   2,   0,    0,    3000,      -1 }, // Longsight
+  {   6207,  40393,  32471,   1,   2,    0,      -1,      -1 }, // Embers of Azzinoth
+  {   6208,  12883,  32472,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6209,  12883,  32473,   2,   0,    0,    3000,      -1 }, // Longsight
+  {   6210,  12883,  32474,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6211,  12883,  32475,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6212,  12883,  32476,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6213,  12883,  32478,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6214,  12883,  32479,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6215,  12883,  32480,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6217,  40396,  32483,   1,   0, 1141,  120000,   20000 }, // Fel Infusion
+  {   6218,  40458,  32485,   0,   1,    0,      -1,      -1 }, // Warrior Tier 6 Trinket
+  {   6219,  40442,  32486,   0,   1,    0,      -1,      -1 }, // Druid Tier 6 Trinket
+  {   6220,  40485,  32487,   0,   1,    0,      -1,      -1 }, // Hunter Tier 6 Trinket
+  {   6221,  40482,  32488,   0,   1,    0,      -1,      -1 }, // Mage Tier 6 Trinket
+  {   6222,  40470,  32489,   0,   1,    0,      -1,      -1 }, // Paladin Tier 6 Trinket
+  {   6223,  40438,  32490,   0,   1,    0,      -1,      -1 }, // Priest Tier 6 Trinket
+  {   6224,  40463,  32491,   0,   1,    0,      -1,      -1 }, // Shaman Tier 6 Trinket
+  {   6225,  40460,  32492,   0,   1,    0,      -1,      -1 }, // Rogue Tier 6 Trinket
+  {   6226,  40478,  32493,   0,   1,    0,      -1,      -1 }, // Warlock Tier 6 Trinket
+  {   6227,  12883,  32494,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6228,  12883,  32495,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6229,  37655,  32496,   1,   1,    0,      -1,      -1 }, // Bonus Mana Regen
+  {   6232,  40971,  32500,   2,   1,    0,      -1,      -1 }, // Bonus Healing
+  {   6233,  40464,  32501,   1,   0,    0,  180000,      -1 }, // Protector's Vigor
+  {   6235,  40475,  32505,   1,   1,    0,      -1,      -1 }, // Black Temple Melee Trinket
+  {   6236,  40538,  32534,   0,   0,    0,  300000,       0 }, // Tenacity
+  {   6237,  12438,  32538,   1,   0,    0, 1800000,      -1 }, // Slow Fall
+  {   6238,  12438,  32539,   1,   0,    0, 1800000,      -1 }, // Slow Fall
+  {  36855,  40724,  32654,   0,   0, 1141,   60000,   10000 }, // Valor
+  {  36856,  40723,  32654,   1,   1,    0,      -1,      -1 }, // Weapon Damage
+  {   6264,  40729,  32658,   0,   0, 1141,  120000,   20000 }, // Heightened Reflexes
+  {   6283,  40768,  32686,   0,   0,   11,       0,    1000 }, // Food
+  {   6284,  40811,  32694,   0,   0, 1183,  600000,  600000 }, // Netherwing Ally
+  {   6285,  40815,  32695,   0,   0, 1183,  600000,  600000 }, // Netherwing Ally
+  {   6288,  41030,  32721,   0,   0,   11,       0,    1000 }, // Food
+  {   6327,  28518,  32764,   0,   0,   79,       0,    3000 }, // Flask of Fortification
+  {   6328,  28520,  32765,   0,   0,   79,       0,    3000 }, // Flask of Relentless Assault
+  {   6329,  28519,  32766,   0,   0,   79,       0,    3000 }, // Flask of Mighty Versatility
+  {   6330,  17628,  32767,   0,   0,   79,       0,    3000 }, // Supreme Power
+  {   6333,  41260,  32770,   0,   1,    0,      -1,      -1 }, // Aviana's Purpose
+  {   6334,  41262,  32771,   0,   1,    0,      -1,      -1 }, // Aviana's Will
+  {   6364,  40815,  32864,   0,   0, 1183,  600000,  600000 }, // Netherwing Ally
+  {   6395,  64056,  33004,   0,   0,   11,       0,    1000 }, // Food
+  {   6399,  41943,  33018,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   6400,  41944,  33019,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   6401,  41945,  33020,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   6402,  41946,  33021,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   6424,  33258,  33052,   0,   0,   11,       0,    1000 }, // Food
+  {   6554,  43827,  33475,   0,   1,    0,      -1,      -1 }, // Frostmourne
+  {   6575,  28539,  33665,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   6576,  61252,  33671,   1,   1,    0,      -1,      -1 }, // Maim Damage
+  {   6577,  95677,  33676,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6578,  95677,  33684,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6579,  96148,  33690,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6580,  38522,  33696,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6581,  61249,  33700,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   6582,  32973,  33707,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6583,  32973,  33712,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6584,  44297,  33717,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   6585,  38522,  33723,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6586,  22778,  33729,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   6587,  32973,  33739,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6588,  44297,  33744,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   6589,  44300,  33750,   1,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   6590,  44301,  33759,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   6591,  96148,  33767,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6604,  43873,  33808,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
+  {  19995,   7823,  33820,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  {  19996,  43699,  33820,   1,   0,    0,  600000,      -1 }, // Fishing Hat Lure
+  {   6614,  43706,  33825,   0,   0,   11,       0,    1000 }, // Drink
+  {   6615,  43710,  33828,   1,   0, 1141,  120000,   20000 }, // Diabolic Remedy
+  {   6616,  43712,  33829,   1,   0, 1141,  120000,   20000 }, // Mojo Madness
+  {   6617,  43713,  33830,   0,   0,    0,  120000,      -1 }, // Hardened Skin
+  {   6618,  43716,  33831,   1,   0, 1141,  120000,   20000 }, // Call of the Berserker
+  {   6619,  44055,  33832,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6624,  43730,  33866,   0,   0,   11,       0,    1000 }, // Electrified
+  {   6625,  33253,  33867,   0,   0,   11,       0,    1000 }, // Food
+  {   6632,  43763,  33872,   0,   0,   11,       0,    1000 }, // Food
+  {   6638,  43777,  33924,   0,   0,   11,      -1,      -1 }, // Food
+  {   6676,  43995,  34029,   0,   0,   94,  600000,   60000 }, // Death by Voodoo Gnome
+  {   6682,  44055,  34049,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6683,  44055,  34050,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6713,  57287,  34125,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6720,  44540,  34140,   0,   0,   59, 3600000,    1000 }, // Dark Iron Alcohol
+  {   6730,  44055,  34162,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6731,  44055,  34163,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6742,  27867,  34227,   0,   1,    0,      -1,      -1 }, // Freeze
+  {   6759,  46699,  34334,   3,   1,    0,      -1,      -1 }, // Requires No Ammo
+  {   6761,  12883,  34353,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6762,  12883,  34354,   2,   0,    0,    3000,      -1 }, // Longsight
+  {   6763,  12883,  34355,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6764,  12883,  34356,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6765,  12883,  34357,   2,   0,    0,    3000,      -1 }, // Longsight
+  {   6768,  45020,  34411,   0,   0,   59,       0,    1000 }, // Holiday Drink
+  {   6776,  45355,  34427,   0,   1,    0,      -1,      -1 }, // Item - T7 Melee Trinket Base
+  {   6777,  45049,  34428,   0,   0,    0,  300000,      -1 }, // Tenacity
+  {   6778,  45042,  34429,   0,   0, 1141,   90000,   15000 }, // Power Circle
+  {   6779,  45052,  34430,   2,   0,    0,  300000,      -1 }, // Evocation
+  {   6781,  45054,  34470,   0,   1,    0,      -1,      -1 }, // Augment Pain
+  {  36774,  45059,  34471,   0,   1,    0,      -1,      -1 }, // Vessel of the Naaru
+  {  36775,  45064,  34471,   1,   0,    0,  120000,      -1 }, // Vessel of the Naaru
+  {   6784,  45354,  34472,   0,   1,    0,      -1,      -1 }, // Disdain
+  {   6785,  45057,  34473,   0,   1,    0,      -1,      -1 }, // Evasive Maneuvers
+  {   6817,  44055,  34576,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6818,  44055,  34577,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6819,  44055,  34578,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6820,  44055,  34579,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6821,  44055,  34580,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   6829,  45484,  34677,   2,   1,    0,      -1,      -1 }, // Sunwell Exalted Healer Neck
+  {   6830,  45481,  34678,   1,   1,    0,      -1,      -1 }, // Sunwell Exalted Caster Neck
+  {   6831,  45482,  34679,   1,   1,    0,      -1,      -1 }, // Sunwell Exalted Melee Neck
+  {   6832,  45483,  34680,   0,   1,    0,      -1,      -1 }, // Sunwell Exalted Tank Neck
+  {   6833,  45416,  34683,   0,   0,    0,    1000,      -1 }, // Feet of Flame
+  {   6835,  45418,  34685,   0,   0,    0,    1000,      -1 }, // Fire Dancing
+  {   6848,  57110,  34748,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6849,  57138,  34749,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6850,  57285,  34750,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6851,  57287,  34751,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6852,  57289,  34752,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6854,  57324,  34754,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6855,  57326,  34755,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6856,  57328,  34756,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6857,  57331,  34757,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6858,  57333,  34758,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6862,  57085,  34762,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6863,  57096,  34763,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6864,  57098,  34764,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6865,  57106,  34765,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6866,  57335,  34766,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6867,  57341,  34767,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6868,  57343,  34768,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6869,  57344,  34769,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   6885,  12883,  34847,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6910,  28539,  34991,   1,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {   6911,  61252,  34998,   1,   1,    0,      -1,      -1 }, // Maim Damage
+  {   6912,  95677,  35003,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6913,  95677,  35011,   0,   1,    0,      -1,      -1 }, // Increased Fear Break Threshold
+  {   6914,  96148,  35022,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6915,  38522,  35028,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6916,  61249,  35032,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   6917,  32973,  35043,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6918,  32973,  35049,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6919,  44297,  35053,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   6920,  38522,  35060,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   6921,  22778,  35067,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   6922,  32973,  35078,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   6923,  44297,  35083,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   6924,  44300,  35089,   1,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   6925,  44301,  35098,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   6926,  96148,  35111,   1,   1,    0,      -1,      -1 }, // Roots Range Increase
+  {   6931,  12883,  35181,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6932,  12883,  35182,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6933,  12883,  35183,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   6934,  12883,  35184,   4,   0,    0,    3000,      -1 }, // Longsight
+  {   6935,  12883,  35185,   3,   0,    0,    3000,      -1 }, // Longsight
+  {   7085, 160331,  35275,   0,   0,    0, 1800000,       0 }, // Blood Elf Illusion
+  {   7134,  44055,  35326,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   7135,  44055,  35327,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   7224,  46643,  35514,   1,   0,    0,   60000,      -1 }, // Frostscythe
+  {   7302,  46898,  35563,   0,   0,   11,       0,    1000 }, // Food
+  {   7305,  46683,  35565,   0,   0,   11,       0,    1000 }, // Food
+  {   7308,  51582,  35581,   2,   0, 1203,  300000,  300000 }, // Rocket Boots Engaged
+  {   7321,  46780,  35693,   0,   0,    0,  120000,       0 }, // Empyrean Tortoise
+  {   7322,  46782,  35694,   1,   0,    0,  300000,       0 }, // Khorium Boar
+  {   7333,  46783,  35700,   0,   0, 1141,  120000,   20000 }, // Crimson Serpent
+  {   7334,  46784,  35702,   2,   0, 1141,   90000,   15000 }, // Shadowsong Panther
+  {   7335,  46785,  35703,   1,   0,    0,  180000,       0 }, // Seaspray Albatross
+  {   7356,  17619,  35748,   0,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   7357,  17619,  35749,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   7358,  17619,  35750,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   7359,  17619,  35751,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   7396,  47215,  35935,   1,   0, 1141,  120000,   20000 }, // Runic Infusion
+  {   7397,  47217,  35937,   0,   0, 1141,  120000,   20000 }, // Foaming Rage
+  {   7464,  47806,  36871,   0,   0, 1141,   90000,   15000 }, // Towering Rage
+  {   7465,  47807,  36872,   2,   0, 1141,  120000,   20000 }, // Healing Focus
+  {   7467,  47816,  36874,   0,   0, 1141,  120000,   20000 }, // Spell Power
+  {   7482,  60471,  36972,   0,   0, 1141,  120000,   20000 }, // Tome of Arcane Phenomena
+  {   7483,  60214,  36993,   0,   0,    0,  120000,      -1 }, // Seal of the Pantheon
+  {   7492,  60306,  37064,   0,   1,    0,      -1,      -1 }, // Vestige of Haldor
+  {   7500,  60510,  37111,   0,   1,    0,      -1,      -1 }, // Soul Preserver
+  {   7503,  48041,  37127,   0,   0,   94,  600000,   60000 }, // Summon the Brewmaiden
+  {   7504,  48042,  37128,   0,   0,   94,  600000,   60000 }, // Summon the Black Brewmaiden
+  {   7513,  60305,  37166,   0,   0, 1141,  120000,   20000 }, // Heart of a Dragon
+  {   7518,  60221,  37220,   0,   1,    0,      -1,      -1 }, // Essence of Gossamer
+  {   7523,  60482,  37264,   0,   1,    0,      -1,      -1 }, // Pendulum of Telluric Currents
+  {   7571,  60301,  37390,   0,   1,    0,      -1,      -1 }, // Meteorite Whetstone
+  {   7597,  48846,  37555,   1,   0, 1141,  120000,   20000 }, // Runic Infusion
+  {   7598,  48847,  37556,   0,   0, 1141,  120000,   20000 }, // Precise Strikes
+  {   7599,  48848,  37557,   0,   0, 1141,  120000,   20000 }, // Feral Fury
+  {   7600,  48855,  37558,   1,   0, 1141,  120000,   20000 }, // Healing Purity
+  {   7602,  48865,  37560,   1,   0, 1141,  120000,   20000 }, // Perfumed Grace
+  {   7604,  48868,  37562,   0,   0, 1141,  120000,   20000 }, // Skycaller's Swiftness
+  {   7626,  60180,  37638,   0,   0,    0,  180000,      -1 }, // Resolute
+  {   7627,  60519,  37657,   0,   1,    0,      -1,      -1 }, // Spark of Life
+  {   7628,  60473,  37660,   0,   1,    0,      -1,      -1 }, // Forge Ember
+  {   7646,  60299,  37723,   0,   0, 1141,  120000,   20000 }, // Incisor Fragment
+  {   7648,  60517,  37734,   0,   0,    0,  120000,      -1 }, // Talisman of Troll Divinity
+  {   7657,  49622,  37835,   0,   1,    0,      -1,      -1 }, // Bonus Mana Regen
+  {   7658,  60521,  37844,   0,   0, 1141,  120000,   20000 }, // Winged Talisman
+  {   7662,  42292,  37864,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   7663,  42292,  37865,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   7664,  60215,  37872,   0,   0, 1141,  120000,   20000 }, // Lavanthor's Talisman
+  {   7665,  60480,  37873,   0,   0, 1141,  120000,   20000 }, // Mark of the War Prisoner
+  {   7673,  41943,  37894,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   7674,  41946,  37895,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   7675,  41945,  37896,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   7676,  41944,  37897,   0,   0,    0,    5000,      -1 }, // Use Filled Brewfest Stein
+  {   7698,  51985,  38070,   0,   0, 1141,  120000,   20000 }, // Far-Seeing Eyes
+  {   7699,  54838,  38071,   1,   1,    0,      -1,      -1 }, // Purified Spirit
+  {   7700,  54841,  38072,   1,   1,    0,      -1,      -1 }, // Thunder Capacitor
+  {   7701, 144108,  38073,   1,   0, 1141,  120000,   20000 }, // Arcane Energy
+  {   7708,  51978,  38080,   0,   0, 1141,  120000,   20000 }, // Jormungar Slime
+  {   7709,  51987,  38081,   2,   0, 1141,  120000,   20000 }, // Arcane Infusion
+  {   7713,  50070,  38175,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
+  {   7715,  48846,  38213,   1,   0, 1141,  120000,   20000 }, // Runic Infusion
+  {   7719,  47816,  38257,   1,   0, 1141,  120000,   20000 }, // Spell Power
+  {   7720,  50261,  38258,   1,   0, 1141,  120000,   20000 }, // Nimble Fingers
+  {   7721,  50263,  38259,   2,   0, 1141,  120000,   20000 }, // Quickness of the Sailor
+  {   7723,  51955,  38287,   1,   0, 1141,  120000,   20000 }, // Dire Drunkard
+  {   7724,  51954,  38288,   1,   0, 1141,  120000,   20000 }, // Hopped Up
+  {   7725,  51952,  38289,   2,   0, 1141,  120000,   20000 }, // Dark Iron Luck
+  {   7726,  51953,  38290,   1,   0, 1141,  120000,   20000 }, // Dark Iron Pipeweed
+  {   7757,  51352,  38358,   1,   1,    0,      -1,      -1 }, // Venture Company Beatdown!
+  {   7758,  51346,  38359,   1,   1,    0,      -1,      -1 }, // Venture Company Beatdown!
+  {  35762,  51359,  38572,   1,   1,    0,      -1,      -1 }, // Venture Company Beatdown
+  {  35763,  51349,  38572,   2,   1,    0,      -1,      -1 }, // Venture Company Beatdown
+  {   7816,  42292,  38588,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   7817,  42292,  38589,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   7865,  48875,  38760,   1,   0, 1141,  120000,   20000 }, // Spell Power
+  {   7866,  61778,  38761,   0,   0, 1141,  120000,   20000 }, // Scything Talons
+  {   7867,  48875,  38762,   1,   0, 1141,  120000,   20000 }, // Spell Power
+  {   7868,  61426,  38763,   1,   0,    0,  120000,   20000 }, // Infinite Spirit
+  {   7869,  61427,  38764,   0,   0, 1141,  120000,   20000 }, // Infinite Speed
+  {   7870,  61428,  38765,   1,   0, 1141,  120000,   20000 }, // Infinite Power
+  {   8100,  60490,  39229,   0,   1,    0,      -1,      -1 }, // Embrace of the Spider
+  {   8103,  60439,  39257,   0,   0, 1141,  120000,   20000 }, // Loatheb's Shadow
+  {   8109,  60180,  39292,   0,   0,    0,  180000,      -1 }, // Resolute
+  {   8120,  60527,  39388,   0,   0,    0,  120000,   20000 }, // Essence Flow
+  {   8141,  28497,  39666,   0,   0,   79,       0,    3000 }, // Mighty Agility
+  {   8148,  57285,  39691,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   8164,  53440,  39769,   0,   0,    0,   60000,      -1 }, // Arcanite Ripper
+  {   8165,  62088,  39811,   1,   0, 1141,  120000,   20000 }, // Infiltrator's Guile
+  {   8166,  48875,  39819,   1,   0, 1141,  120000,   20000 }, // Spell Power
+  {   8167, 144130,  39821,   1,   0, 1141,  120000,   20000 }, // Spell Power
+  {   8168,  55747,  39889,   0,   1,    0,      -1,      -1 }, // Argent Fury
+  {   8183,  53746,  40068,   0,   0,   79,       0,    3000 }, // Wrath Elixir
+  {   8184,  33721,  40070,   0,   0,   79,       0,    3000 }, // Spellpower Elixir
+  {   8185,  53747,  40072,   0,   0,   79,       0,    3000 }, // Elixir of Versatility
+  {   8186,  53748,  40073,   0,   0,   79,       0,    3000 }, // Mighty Strength
+  {   8187,  53749,  40076,   0,   0,   79,       0,    3000 }, // Guru's Elixir
+  {   8190,  53752,  40079,   0,   0,   79,       0,    3000 }, // Lesser Flask of Toughness
+  {   8196,  53762,  40093,   0,   0,    4,  300000,  300000 }, // Indestructible
+  {   8197,  53763,  40097,   0,   0,   79,       0,    3000 }, // Protection
+  {   8198,  53764,  40109,   0,   0,   79,       0,    3000 }, // Mighty Versatility
+  {   8202,  53908,  40211,   0,   0,    4,  300000,  300000 }, // Speed
+  {   8203,  53909,  40212,   0,   0,    4,  300000,  300000 }, // Wild Magic
+  {   8209,  60493,  40255,   0,   1,    0,      -1,      -1 }, // Dying Curse
+  {   8210,  60436,  40256,   0,   1,    0,      -1,      -1 }, // Grim Toll
+  {   8211,  60286,  40257,   0,   0,    0,  120000,      -1 }, // Defender's Code
+  {   8212,  60529,  40258,   0,   1,    0,      -1,      -1 }, // Forethought Talisman
+  {   8213,  54092,  40354,   0,   0, 1141,   60000,   10000 }, // Monster Slayer's Kit
+  {   8219,  60442,  40371,   0,   1,    0,      -1,      -1 }, // Bandit's Insignia
+  {   8220,  60258,  40372,   0,   0,    0,  120000,      -1 }, // Rune of Repulsion
+  {   8221,  60487,  40373,   0,   1,    0,      -1,      -1 }, // Extract of Necromatic Power
+  {   8222,  60537,  40382,   0,   1,    0,      -1,      -1 }, // Soul of the Dead
+  {   8227,  60524,  40430,   0,   1,    0,      -1,      -1 }, // Majestic Dragon Figurine
+  {   8228,  60313,  40431,   0,   1,    0,      -1,      -1 }, // Fury of the Five Flights
+  {   8229,  60485,  40432,   0,   1,    0,      -1,      -1 }, // Illustration of the Dragon Soul
+  {   8230,  62459,  40441,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8231,  42292,  40476,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8232,  42292,  40477,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8234,  42292,  40483,   0,   0, 1182,  300000,  300000 }, // PvP Trinket
+  {   8235,  54308,  40492,   0,   0,   94,  600000,   60000 }, // Summon Argent Knight
+  {   8236,  60319,  40531,   0,   0, 1141,  120000,   20000 }, // Mark of Norgannon
+  {   8237,  60526,  40532,   0,   0,    0,   60000,       0 }, // Living Ice Crystals
+  {   8241,  54406,  40585,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {   8242,  54406,  40586,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {   8244,  54418,  40593,   0,   0, 1141,   60000,   10000 }, // Argent Tome Bunny Spawn
+  {   8246,  54329,  40601,   0,   0, 1141,   60000,   10000 }, // Argent Dawn Banner
+  {   8252,  60063,  40682,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {   8253,  60054,  40683,   0,   0,    0,  120000,      -1 }, // Valor Medal of the First War
+  {   8254,  33648,  40684,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {   8255,  33953,  40685,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {   8263,  54707,  40767,   0,   1,    0,      -1,      -1 }, // Sonic Awareness (DND)
+  {   8273,  22778,  40797,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   8274,  44300,  40798,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   8275,  62459,  40799,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8276,  22778,  40801,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   8277,  44300,  40802,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   8278,  62459,  40803,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8279,  22778,  40804,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   8280,  44300,  40805,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   8281,  62459,  40806,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8282,  22778,  40807,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   8283,  44300,  40808,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   8284,  62459,  40809,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8285,  22778,  40810,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {   8286,  62459,  40811,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {   8287,  44300,  40812,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {   8289,  54808,  40865,   0,   1,    0,      -1,      -1 }, // Sonic Shield
+  {   8322,  38522,  40918,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   8335,  38522,  40925,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   8336,  38522,  40926,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   8337,  38522,  40927,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   8338,  38522,  40928,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {   8343,  32973,  40998,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8344,  32973,  40999,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8345,  32973,  41000,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8346,  32973,  41001,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8347,  32973,  41002,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8348,  32973,  41004,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8349,  32973,  41005,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8350,  32973,  41006,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8351,  32973,  41007,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8352,  32973,  41008,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  28267,  55115,  41100,   1,   0,    0,      -1,      -1 }, // Luminous Charger
+  {   8393,  61477,  41112,   0,   1,    0,      -1,      -1 }, // Increased Frost Resist 20
+  {   8398,  55039,  41121,   0,   0, 1141,   60000,   10000 }, // Gnomish Lightning Generator
+  {   8409,  32973,  41134,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8410,  32973,  41135,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8411,  32973,  41136,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8412,  32973,  41137,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8413,  32973,  41138,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {   8414,  61255,  41140,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {   8415,  61255,  41141,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {   8416,  61255,  41142,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {   8417,  61255,  41143,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {   8418,  61255,  41144,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {   8428,  33830,  41268,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8429,  33830,  41284,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8430,  33830,  41286,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8431,  33830,  41287,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8432,  33830,  41288,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8433,  33830,  41290,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8434,  33830,  41291,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8435,  33830,  41292,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8436,  33830,  41293,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8437,  33830,  41294,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {   8585, 144129,  41587,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8586, 144129,  41588,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8587, 144129,  41589,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8588, 144129,  41590,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8596,  61249,  41643,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   8697,  61249,  41765,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   8698,  61249,  41766,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   8699,  61249,  41767,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   8700,  61249,  41768,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {   8701,  61252,  41770,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {   8702,  61252,  41771,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {   8703,  61252,  41772,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {   8704,  61252,  41773,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {   8705,  61252,  41774,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {   8761,  44297,  41847,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8762,  44297,  41872,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8763,  44297,  41873,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8764,  44297,  41874,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8765,  44297,  41875,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8766,  44297,  41937,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8767,  44297,  41938,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8768,  44297,  41939,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8769,  44297,  41940,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8770,  44297,  41941,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {   8771,  44301,  41968,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   8772,  44301,  41969,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   8773,  44301,  41970,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   8774,  44301,  41971,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   8775,  44301,  41972,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {   8779,  33063,  42014,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   8780,  33063,  42015,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   8781,  33063,  42016,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   8782,  33063,  42017,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   8783,  33063,  42018,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {   8789,  42292,  42122,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8790,  42292,  42123,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8791,  42292,  42124,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8792,  42292,  42126,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   8793,  55915,  42128,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8794,  55915,  42129,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8795,  55915,  42130,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8796,  55915,  42131,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8797,  55915,  42132,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8798,  67596,  42133,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8799,  67596,  42134,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8800,  67596,  42135,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8801,  67596,  42136,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8802,  67596,  42137,   1,   0, 1190,  180000,  180000 }, // Tremendous Fortitude
+  {   8904,  56121,  42341,   0,   0,    0,  180000,       0 }, // Ruby Hare
+  {   8908,  56184,  42395,   0,   0, 1141,  120000,   20000 }, // Twilight Serpent
+  {   8943,  56186,  42413,   0,   0,    0,  300000,       0 }, // Sapphire Owl
+  {   8952,  56188,  42418,   1,   0,    0,  300000,       0 }, // Emerald Boar
+  {  28296,  56285,  42459,   1,   0,    0,      -1,      -1 }, // Felguard
+  {   9015,  12883,  42549,   3,   0,    0,    3000,       0 }, // Longsight
+  {   9016,  12883,  42550,   2,   0,    0,    3000,       0 }, // Longsight
+  {   9017,  12883,  42551,   2,   0,    0,    3000,       0 }, // Longsight
+  {   9018,  12883,  42552,   2,   0,    0,    3000,       0 }, // Longsight
+  {   9019,  12883,  42553,   2,   0,    0,    3000,       0 }, // Longsight
+  {   9020,  12883,  42554,   2,   0,    0,    3000,       0 }, // Longsight
+  {   9021,  12883,  42555,   2,   0,    0,    3000,       0 }, // Longsight
+  {  27043,  56599,  42751,   1,   0,    0,      -1,      -1 }, // Crittermorph
+  {   9092,  53283,  42779,   0,   0,   11,       0,    1000 }, // Food
+  {   9142,  57101,  42942,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9201,  57345,  42987,   0,   1,    0,      -1,      -1 }, // Darkmoon Card: Greatness
+  {   9202,  57350,  42988,   0,   0,    0,  300000,  300000 }, // Illusionary Barrier
+  {   9203,  57351,  42989,   0,   1,    0,      -1,      -1 }, // Berserker!
+  {   9204,  57352,  42990,   0,   1,    0,      -1,      -1 }, // Darkmoon Card: Death
+  {   9205,  59906,  42991,   0,   1,    0,      -1,      -1 }, // Swift Hand of Justice
+  {   9206,  59915,  42992,   0,   1,    0,      -1,      -1 }, // Discerning Eye of the Beast
+  {   9207,  57354,  42993,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9208,  57355,  42994,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9209,  57357,  42995,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9210,  57359,  42996,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9211,  57362,  42997,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9212,  57364,  42998,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9213,  57366,  42999,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9214,  57370,  43000,   0,   0,   11,       0,    1000 }, // Refreshment
+  {   9215,  57372,  43001,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  20001,  57818,  43154,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20002,  57819,  43154,   1,   1,    0,      -1,      -1 }, // Argent Champion
+  {  20003,  57818,  43155,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20004,  57820,  43155,   1,   1,    0,      -1,      -1 }, // Ebon Champion
+  {  20005,  57818,  43156,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20006,  57822,  43156,   1,   1,    0,      -1,      -1 }, // Wyrmrest Champion
+  {  20007,  57818,  43157,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20008,  57821,  43157,   1,   1,    0,      -1,      -1 }, // Champion of the Kirin Tor
+  {   9300,  58067,  43268,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  28310,  58158,  43334,   1,   0,    0,      -1,      -1 }, // The Ursol Chameleon
+  {  28261,  58188,  43350,   1,   0,    0,      -1,      -1 }, // Lesser Proportion
+  {  28270,  58244,  43366,   1,   0,    0,      -1,      -1 }, // Winged Vengeance
+  {  28269,  58247,  43369,   1,   0,    0,      -1,      -1 }, // Fire From the Heavens
+  {  28273,  58251,  43373,   1,   0,    0,      -1,      -1 }, // Shackle Undead
+  {  28280,  58261,  43386,   1,   0,    0,      -1,      -1 }, // Spectral Wolf
+  {  28295,  58275,  43394,   1,   0,    0,      -1,      -1 }, // Soulwell
+  {  28304,  58279,  43398,   1,   0,    0,      -1,      -1 }, // Gushing Wound
+  {  28297,  58281,  43400,   1,   0,    0,      -1,      -1 }, // Mighty Victory
+  {   9479,  58501,  43499,   0,   0,    0, 3600000,      -1 }, // Iron Boot Flask
+  {  28308,  58707,  43535,   1,   0,    0,      -1,      -1 }, // Geist
+  {  28307,  58723,  43551,   1,   0,    0,      -1,      -1 }, // Foul Menagerie
+  {   9537,  58783,  43555,   1,   1,    0,      -1,      -1 }, // Pure Awesome
+  {   9542,  58901,  43573,   1,   1,    0,      -1,      -1 }, // Tears of Anguish
+  {   9550,  59043,  43613,   0,   2,    0,      -1,      -1 }, // The Darkest Night
+  {   9576,  59191,  43656,   0,   0,  102,  600000,  600000 }, // Kingly
+  {   9577,  59195,  43657,   0,   0, 1153,  300000,   60000 }, // Heal
+  {   9578,  59197,  43660,   0,   0, 1141,  120000,   20000 }, // Fire Breath
+  {   9579,  59198,  43661,   0,   0, 1153,  120000,   60000 }, // Energize
+  {   9580,  59199,  43663,   0,   0,   24,  120000,   60000 }, // Lightning Bolt
+  {   9581,  60060,  43664,   0,   0, 1153,  300000,   60000 }, // Head in the Clouds
+  {   9582,  59202,  43667,   0,   0,    0,  300000,       0 }, // Clever
+  {   9604,  59345,  43829,   0,   1,    0,      -1,      -1 }, // Chagrin
+  {   9605,  61620,  43836,   0,   0, 1141,  120000,   20000 }, // Bleeding Heart
+  {   9606,  61617,  43837,   0,   0, 1141,  120000,   20000 }, // Warm Glow
+  {   9607,  61618,  43838,   0,   1,    0,      -1,      -1 }, // Tentacles
+  {   9652,  59657,  44013,   0,   0, 1141,  120000,   20000 }, // Argent Valor
+  {   9653,  59658,  44014,   0,   0, 1141,  120000,   20000 }, // Argent Heroism
+  {   9654,  59657,  44015,   0,   0, 1141,  120000,   20000 }, // Argent Valor
+  {  20009,  59731,  44050,   0,   1,    0,      -1,      -1 }, // +13 Fishing
+  {  20010,  11789,  44050,   1,   1,    0,      -1,      -1 }, // Water Breathing
+  {   9659,  59757,  44063,   0,   0, 1141,   60000,       0 }, // Figurine - Monarch Crab
+  {   9663,  59773,  44068,   0,   0,    0,      -1,      -1 }, // Inscription of Dominance
+  {   9666,  59818,  44073,   0,   1,    0,      -1,      -1 }, // Frenzyheart Fury
+  {   9667,  59787,  44074,   0,   1,    0,      -1,      -1 }, // Oracle Ablutions
+  {   9677, 182395,  44096,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {   9678,  42292,  44097,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   9679,  42292,  44098,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {   9752,  57345,  44253,   0,   1,    0,      -1,      -1 }, // Darkmoon Card: Greatness
+  {   9753,  57345,  44254,   0,   1,    0,      -1,      -1 }, // Darkmoon Card: Greatness
+  {   9754,  57345,  44255,   0,   1,    0,      -1,      -1 }, // Darkmoon Card: Greatness
+  {   9790,  60317,  44308,   0,   1,    0,      -1,      -1 }, // Signet of Edward the Odd
+  {   9793,  17619,  44322,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   9794,  17619,  44323,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   9795,  17619,  44324,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {   9796,  60340,  44325,   0,   0,   79,       0,    3000 }, // Accuracy
+  {   9797,  60341,  44327,   0,   0,   79,       0,    3000 }, // Deadly Strikes
+  {   9798,  60343,  44328,   0,   0,   79,       0,    3000 }, // Mighty Defense
+  {   9799,  60344,  44329,   0,   0,   79,       0,    3000 }, // Expertise
+  {   9800,  80532,  44330,   0,   0,   79,       0,    3000 }, // Armor Piercing
+  {   9801,  60346,  44331,   0,   0,   79,       0,    3000 }, // Lightning Speed
+  {   9872,  60871,  44505,   0,   2,    0,      -1,      -1 }, // Fireblast
+  {   9984,  60986,  44579,   0,   0, 1155,  120000,  120000 }, // Medallion of Heroism
+  {   9997,  60986,  44597,   0,   0, 1155,  120000,  120000 }, // Medallion of Heroism
+  {  10005,  61289,  44604,   0,   0,  330,      -1,    3000 }, // Borrowed Broom
+  {  10047,  61340,  44719,   0,   0,    0, 1800000,       0 }, // Frenzyheart Brew
+  {  10053,  61415,  44731,   0,   0,    0,  300000,      -1 }, // Cascade of Ebon Petals
+  {  10057,  61477,  44740,   0,   1,    0,      -1,      -1 }, // Increased Frost Resist 20
+  {  10058,  61477,  44741,   0,   1,    0,      -1,      -1 }, // Increased Frost Resist 20
+  {  10059,  61477,  44742,   0,   1,    0,      -1,      -1 }, // Increased Frost Resist 20
+  {  10070,  61818,  44800,   0,   0,    0,   60000,      -1 }, // Summon Flower
+  {  10071,  61810,  44802,   0,   0, 1203,      -1,   10000 }, // Egg Rush!
+  {  10089,  65421,  44836,   0,   0,   11,       0,    1000 }, // Food
+  {  10090,  65419,  44837,   0,   0,   11,       0,    1000 }, // Food
+  {  10091, 226803,  44838,   0,   0,   11,       0,    1000 }, // Food
+  {  10092,  65418,  44839,   0,   0,   11,       0,    1000 }, // Food
+  {  10093, 226806,  44840,   0,   0,   11,       0,    1000 }, // Food
+  {  10118,  59818,  44869,   0,   1,    0,      -1,      -1 }, // Frenzyheart Fury
+  {  10119,  59787,  44870,   0,   1,    0,      -1,      -1 }, // Oracle Ablutions
+  {  10127,  62114,  44912,   0,   1,    0,      -1,      -1 }, // Flow of Knowledge
+  {  10128,  62115,  44914,   0,   1,    0,      -1,      -1 }, // Strength of the Titans
+  {  10129,  26374,  44915,   0,   0,    0,    3000,      -1 }, // Elune's Candle
+  {  28700,  62134,  44922,   0,   0,    0,      -1,      -1 }, // Stars
+  {  10144, 132452,  44924,   0,   0,    0,   60000,      -1 }, // Sun-Lute's Song
+  {  10152,  54406,  44934,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10153,  54406,  44935,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10167,  12883,  44949,   2,   0,    0,    3000,       0 }, // Longsight
+  {  10169,  57359,  44953,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  10213,  53760,  45006,   0,   0,   79,       0,    3000 }, // Flask of Endless Rage
+  {  10214,  54212,  45007,   0,   0,   79,       0,    3000 }, // Flask of Pure Mojo
+  {  10216,  53755,  45009,   0,   0,   79,       0,    3000 }, // Flask of the Frost Wyrm
+  {  10240,  63604,  45037,   0,   0,    0,   10000,      -1 }, // Epic Purple Shirt Flex
+  {  20011,  62972,  45061,   0,   1,    0,      -1,      -1 }, // ON GUARD!
+  {  20012,  62973,  45061,   1,   0,    0,    2500,      -1 }, // Foam Sword Attack
+  {  10257,  61810,  45067,   0,   0, 1203,      -1,   10000 }, // Egg Rush!
+  {  10259,  61815,  45073,   0,   0,    0,  300000,      -1 }, // Sprung!
+  {  10302,  63251,  45131,   0,   1,    0,      -1,      -1 }, // Glory of the Jouster
+  {  10303,  64712,  45148,   0,   0, 1141,  120000,   20000 }, // Living Flame
+  {  10304,  64763,  45158,   0,   0,    0,  120000,      -1 }, // Heart of Iron
+  {  20013,  62972,  45176,   0,   1,    0,      -1,      -1 }, // ON GUARD!
+  {  20014,  62973,  45176,   1,   0,    0,    2500,      -1 }, // Foam Sword Attack
+  {  20015,  62972,  45177,   0,   1,    0,      -1,      -1 }, // ON GUARD!
+  {  20016,  62973,  45177,   1,   0,    0,    2500,      -1 }, // Foam Sword Attack
+  {  20017,  62972,  45178,   0,   1,    0,      -1,      -1 }, // ON GUARD!
+  {  20018,  62973,  45178,   1,   0,    0,    2500,      -1 }, // Foam Sword Attack
+  {  20019,  62972,  45179,   0,   1,    0,      -1,      -1 }, // ON GUARD!
+  {  20020,  62973,  45179,   1,   0,    0,    2500,      -1 }, // Foam Sword Attack
+  {  10315,  63251,  45219,   0,   1,    0,      -1,      -1 }, // Glory of the Jouster
+  {  10316,  64800,  45263,   0,   0, 1141,  120000,   20000 }, // Wrathstone
+  {  10322,  65013,  45286,   0,   1,    0,      -1,      -1 }, // Pyrite Infusion
+  {  10323,  65008,  45292,   0,   0, 1141,  120000,   20000 }, // Energy Siphon
+  {  10324,  65007,  45308,   0,   1,    0,      -1,      -1 }, // Eye of the Broodmother
+  {  10325,  65011,  45313,   0,   0, 1141,  120000,   20000 }, // Furnace Stone
+  {  10326,  64707,  45466,   0,   0, 1141,  120000,   20000 }, // Scale of Fates
+  {  10328,  64742,  45490,   0,   1,    0,      -1,      -1 }, // Pandora's Plea
+  {  10329,  64764,  45507,   0,   1,    0,      -1,      -1 }, // The General's Heart
+  {  10330,  64714,  45518,   0,   1,    0,      -1,      -1 }, // Flame of the Heavens
+  {  10331,  64792,  45522,   0,   1,    0,      -1,      -1 }, // Blood of the Old God
+  {  10332,  64738,  45535,   0,   1,    0,      -1,      -1 }, // Show of Faith
+  {  20021,  57818,  45574,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20022,  93795,  45574,   1,   1,    0,      -1,      -1 }, // Stormwind Champion
+  {  20023,  57818,  45577,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20024,  93805,  45577,   1,   1,    0,      -1,      -1 }, // Ironforge Champion
+  {  20025,  57818,  45578,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20026,  93821,  45578,   1,   1,    0,      -1,      -1 }, // Gnomeregan Champion
+  {  20027,  57818,  45579,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20028,  93806,  45579,   1,   1,    0,      -1,      -1 }, // Darnassus Champion
+  {  20029,  57818,  45580,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20030,  93811,  45580,   1,   1,    0,      -1,      -1 }, // Exodar Champion
+  {  20031,  57818,  45581,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20032,  93825,  45581,   1,   1,    0,      -1,      -1 }, // Orgrimmar Champion
+  {  20033,  57818,  45582,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20034,  93827,  45582,   1,   1,    0,      -1,      -1 }, // Darkspear Champion
+  {  20035,  57818,  45583,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20036,  94462,  45583,   1,   1,    0,      -1,      -1 }, // Undercity Champion
+  {  20037,  57818,  45584,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20038,  94463,  45584,   1,   1,    0,      -1,      -1 }, // Thunder Bluff Champion
+  {  20039,  57818,  45585,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20040,  93828,  45585,   1,   1,    0,      -1,      -1 }, // Silvermoon Champion
+  {  10388,  64786,  45609,   0,   1,    0,      -1,      -1 }, // Comet's Trail
+  {  10389,  63729,  45621,   0,   0,   79,       0,    3000 }, // Minor Accuracy
+  {  10397,  25823,  45631,   0,   0,    0,  600000,       0 }, // Spotlight
+  {  10400,  54406,  45688,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10401,  54406,  45689,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10402,  54406,  45690,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10403,  54406,  45691,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  10406,  65010,  45703,   0,   1,    0,      -1,      -1 }, // Spell Cost Reduction
+  {  28279,  63899,  45768,   1,   0,    0,      -1,      -1 }, // Disguise
+  {  28285,  63943,  45789,   1,   0,    0,      -1,      -1 }, // Crimson Banish
+  {  10539,  64048,  45850,   0,   0,  102,  600000,  600000 }, // New Moon
+  {  10540,  64047,  45851,   0,   0,  102,  600000,  600000 }, // New Moon
+  {  10541,  64049,  45852,   0,   0,  102,  600000,  600000 }, // New Moon
+  {  10542,  64046,  45853,   0,   0,  102,  600000,  600000 }, // New Moon
+  {  10543,  64052,  45854,   0,   0,  102,  600000,  600000 }, // New Moon
+  {  10545,  65005,  45866,   0,   1,    0,      -1,      -1 }, // Alacrity of the Elements
+  {  10555,  65002,  45929,   0,   1,    0,      -1,      -1 }, // Sif's Remembrance
+  {  10556,  65020,  45931,   0,   1,    0,      -1,      -1 }, // Mjolnir Runestone
+  {  20041,  64415,  46017,   0,   1,    0,      -1,      -1 }, // Val'anyr Hammer of Ancient Kings - Equip Effect
+  {  20042,  68496,  46017,   1,   1,    0,      -1,      -1 },
+  {  10566,  65012,  46021,   0,   0,    0,  120000,       0 }, // Royal Seal of King Llane
+  {  10572,  65025,  46038,   0,   1,    0,      -1,      -1 }, // Dark Matter
+  {  10573,  64999,  46051,   0,   0,    0,  120000,   20000 }, // Meteoric Inspiration
+  {  10577,  42292,  46081,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  10578,  42292,  46082,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  10579,  42292,  46083,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  10580,  42292,  46084,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  10581,  42292,  46085,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  10582,  64524,  46086,   0,   0, 1141,  120000,   20000 }, // Platinum Disks of Battle
+  {  10583,  64525,  46087,   0,   0, 1141,  120000,   20000 }, // Platinum Disks of Sorcery
+  {  10584,  64527,  46088,   0,   0, 1141,  120000,   20000 }, // Platinum Disks of Swiftness
+  {  10610, 282131,  46312,   0,   0, 1141,  120000,   45000 }, // Summon Random Vanquished Tentacle
+  { 111452, 282121,  46312,   1,   1,    0,      -1,      -1 }, // Vanquished Clutches of Yogg-Saron
+  {  10627,  53755,  46376,   0,   0,   79,       0,    3000 }, // Flask of the Frost Wyrm
+  {  10628,  53760,  46377,   0,   0,   79,       0,    3000 }, // Flask of Endless Rage
+  {  10629,  54212,  46378,   0,   0,   79,       0,    3000 }, // Flask of Pure Mojo
+  {  10776,  65393,  46861,   0,   0,    0,   30000,      -1 }, // Flowers of the Dead
+  {  10778,  66238,  46874,   0,   0,    0, 1800000,      -1 }, // Teleport: Argent Tournament
+  {  10940,  67698,  47041,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Healer Trinket
+  {  10941,  67752,  47059,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Healer Trinket
+  {  10942,  67699,  47080,   0,   0, 1190,  180000,  180000 }, // Fortitude
+  {  10943,  67753,  47088,   0,   0, 1190,  180000,  180000 }, // Fortitude
+  {  10948,  67702,  47115,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Melee Trinket
+  {  10949,  67771,  47131,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Melee Trinket
+  {  10954,  67712,  47182,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Caster Trinket
+  {  10955,  67758,  47188,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Caster Trinket
+  {  10956,  67670,  47213,   0,   1,    0,      -1,      -1 }, // Coliseum 5 CasterTrinket
+  {  10957,  67672,  47214,   0,   1,    0,      -1,      -1 }, // Coliseum 5 Melee Trinket
+  {  10958,  67667,  47215,   0,   1,    0,      -1,      -1 }, // Coliseum 5 Healer Trinket
+  {  10959,  67653,  47216,   0,   1,    0,      -1,      -1 }, // Coliseum 5 Tank Trinket
+  {  10960,  67698,  47271,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Healer Trinket
+  {  10961,  67699,  47290,   0,   0, 1190,  180000,  180000 }, // Fortitude
+  {  10962,  67702,  47303,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Melee Trinket
+  {  10963,  67712,  47316,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Caster Trinket
+  {  10964,  67752,  47432,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Healer Trinket
+  {  10965,  67753,  47451,   0,   0, 1190,  180000,  180000 }, // Fortitude
+  {  10966,  67771,  47464,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Melee Trinket
+  {  10967,  67758,  47477,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Heroic Caster Trinket
+  {  11041,  67738,  47725,   0,   0, 1141,  120000,   20000 }, // Rising Fury
+  {  11042,  67736,  47726,   0,   0, 1141,  120000,   20000 }, // Volatile Power
+  {  11043,  67728,  47727,   0,   0,    0,  120000,   20000 }, // Hardening Armor
+  {  11044,  67726,  47728,   0,   0, 1141,  120000,   20000 }, // Escalating Power
+  {  11045,  67695,  47734,   0,   0, 1141,  120000,   20000 }, // Rage
+  {  11046,  67694,  47735,   0,   0,    0,  120000,      -1 }, // Defensive Tactics
+  {  11052,  67736,  47879,   0,   0, 1141,  120000,   20000 }, // Volatile Power
+  {  11053,  67726,  47880,   0,   0, 1141,  120000,   20000 }, // Escalating Power
+  {  11054,  67738,  47881,   0,   0, 1141,  120000,   20000 }, // Rising Fury
+  {  11055,  67728,  47882,   0,   0,    0,  120000,     -10 }, // Hardening Armor
+  {  11056,  67744,  47946,   0,   0, 1141,  120000,   20000 }, // Volatile Power
+  {  11057,  67740,  47947,   0,   0, 1141,  120000,   20000 }, // Escalating Power
+  {  11058,  67747,  47948,   0,   0, 1141,  120000,   20000 }, // Rising Fury
+  {  11059,  67742,  47949,   0,   0,    0,  120000,   20000 }, // Hardening Armor
+  {  11060,  67744,  48018,   0,   0, 1141,  120000,   20000 }, // Volatile Power
+  {  11061,  67740,  48019,   0,   0, 1141,  120000,   20000 }, // Escalating Power
+  {  11062,  67747,  48020,   0,   0, 1141,  120000,   20000 }, // Rising Fury
+  {  11063,  67742,  48021,   0,   0,    0,  120000,     -10 }, // Hardening Armor
+  {  11095,  14595,  48718,   0,   1,    0,      -1,      -1 },
+  {  11098,  67683,  48722,   0,   0, 1141,  120000,   20000 }, // Celerity
+  {  11099,  67684,  48724,   0,   0, 1141,  120000,   20000 }, // Hospitality
+  {  11107,  54406,  48954,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11108,  54406,  48955,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11109,  54406,  48956,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11110,  54406,  48957,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11123,  33648,  49074,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {  11124,  60063,  49076,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {  11125,  33953,  49078,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {  11126,  68443,  49080,   0,   0,    0,  120000,      -1 }, // Drunken Evasiveness
+  {  28305,  68163,  49084,   1,   0,    0,      -1,      -1 }, // Thunder Strike
+  {  11139,  68271,  49116,   0,   0,   94,  600000,   60000 }, // Summon the Black Brewmaiden
+  {  11140,  68270,  49118,   0,   0,   94,  600000,   60000 }, // Summon the Brewmaiden
+  {  11141,  43873,  49126,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
+  {  11142,  50070,  49128,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
+  {  11149,    483,  49177,   0,   0,    0,      -1,      -1 }, // Learning
+  {  11150,  54197,  49177,   1,   6,    0,      -1,      -1 }, // Cold Weather Flying
+  {  20043,  68645,  49278,   0,   0,    0,      -1,      -1 }, // Rocket Pack
+  {  20044,  73077,  49278,   1,   1,    0,      -1,      -1 }, // Rocket Pack
+  {  11185, 265310,  49296,   0,   1,    0,      -1,      -1 }, // Singed Vis'kag the Bloodletter
+  {  11186,  69211,  49297,   0,   2,    0,      -1,      -1 }, // Shadow Bolt
+  {  11187, 144230,  49301,   0,   2,    0,      -1,      -1 }, // Chain Lightning
+  {  20045, 144231,  49302,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {  20046,  68787,  49302,   1,   0, 1150,      -1,      -1 }, // Summon Reclaimed Thunderstrike
+  {  11190, 265317,  49303,   0,   1,    0,      -1,      -1 }, // Gleaming Quel'Serrar
+  {  11191,  69206,  49308,   0,   0,   94,  900000,   60000 }, // Summon Skeleton
+  {  11212,  69180,  49437,   0,   2,    0,      -1,      -1 }, // Gutgore Ripper
+  {  11213,  69181,  49465,   0,   2,    0,      -1,      -1 }, // Gutgore Ripper
+  {  11214,  69206,  49490,   0,   0,   94,  900000,   60000 }, // Summon Skeleton
+  {  11215, 265327,  49495,   0,   1,    0,      -1,      -1 }, // Burnished Quel'Serrar
+  {  20047,  21170,  49496,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {  20048,  69419,  49496,   1,   0, 1150,      -1,      -1 }, // Summon Reinforced Thunderstrike
+  {  11218,  21179,  49497,   0,   2,    0,      -1,      -1 }, // Chain Lightning
+  {  11219,  69212,  49500,   0,   2,    0,      -1,      -1 }, // Shadow Bolt
+  {  11220, 265331,  49501,   0,   1,    0,      -1,      -1 }, // Tempered Vis'kag the Bloodletter
+  {  11227, 201312,  49602,   0,   0,   59,       0,    1000 }, // Drink
+  {  34666, 201314,  49602,   1,   0,   59,      -1,      -1 }, // Dignified
+  {  11231,  71903,  49623,   0,   1,    0,      -1,      -1 }, // Item - Shadowmourne Legendary
+  {  11288,  71168,  49888,   0,   1,    0,      -1,      -1 }, // Unsated Craving
+  {  11339,  71880,  49982,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Dagger Proc
+  {  11340,  71845,  49992,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Caster Weapon Proc
+  {  11341,  71865,  50028,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Healer Weapon Proc
+  {  11343,  71835,  50034,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Ranged Weapon Proc
+  {  11344, 309563,  50035,   0,   1,    0,      -1,      -1 }, // Black Bruise
+  {  11364,  71871,  50179,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Tank Weapon Proc
+  {  11365,  71404,  50198,   0,   1,    0,      -1,      -1 }, // Item - Icecrown Dungeon Melee Trinket
+  {  11369,  71569,  50235,   0,   0, 1190,  180000,  180000 }, // Increased Fortitude
+  {  11376,  71563,  50259,   0,   0, 1141,  180000,   20000 }, // Deadly Precision
+  {  36785,  71567,  50260,   0,   1,    0,      -1,      -1 }, // Item - Icecrown Dungeon Healer Trinket
+  {  36786,  71568,  50260,   1,   0, 1141,  120000,   20000 }, // Urgency
+  {  19717,  71435,  50287,   0,   1,    0,      -1,      -1 }, // +10 Fishing
+  {  19718,  71436,  50287,   1,   0,    0, 86400000,       0 }, // Teleport: Booty Bay
+  {  11387,  71565,  50339,   0,   0,    0,  120000,      -1 }, // Replenish Mana
+  {  11388,  71571,  50340,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Normal Caster Trinket
+  {  11389,  71576,  50341,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Normal Tank Trinket
+  {  11390,  71402,  50342,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Normal Melee Trinket
+  {  11391,  71540,  50343,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Heroic Melee Trinket
+  {  11392,  71578,  50344,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Heroic Tank Trinket
+  {  11393,  71573,  50345,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 10 Heroic Caster Trinket
+  {  11394,  71574,  50346,   0,   0,    0,  120000,     -10 }, // Replenish Mana
+  {  11395,  71645,  50348,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Caster Trinket 1 Base
+  {  11396,  71640,  50349,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Tank Trinket 1
+  {  11397,  71406,  50351,   0,   1,    0,      -1,      -1 }, // Anger Capacitor
+  {  11398,  71634,  50352,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Tank Trinket 1
+  {  11399,  71602,  50353,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Caster Trinket 1 Base
+  {  11400,  71607,  50354,   0,   0,    0,  120000,      -1 }, // Release of Light
+  {  11401,  71397,  50355,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Emblem Melee Trinket
+  {  11402,  71586,  50356,   0,   0,    0,  120000,   20000 }, // Hardened Skin
+  {  11403,  71579,  50357,   0,   0, 1141,  120000,   20000 }, // Elusive Power
+  {  11404,  71585,  50358,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Emblem Healer Trinket
+  {  11405,  71611,  50359,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Healer Trinket 2
+  {  11406,  71606,  50360,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Caster Trinket 2
+  {  11407,  71635,  50361,   0,   0,    0,   60000,      -1 }, // Aegis of Dalaran
+  {  11408,  71519,  50362,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Normal Melee Trinket
+  {  11409,  71562,  50363,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Melee Trinket
+  {  11410,  71638,  50364,   0,   0,    0,   60000,      -1 }, // Aegis of Dalaran
+  {  11411,  71637,  50365,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Caster Trinket 2
+  {  11412,  71642,  50366,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Healer Trinket 2
+  {  11413,  71653,  50375,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Tank Path
+  {  11414,  71650,  50376,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Melee Path
+  {  11415,  71581,  50377,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Caster Path
+  {  11416,  71655,  50378,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Healer Path
+  {  11418,  71581,  50384,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Caster Path
+  {  11419,  71655,  50386,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Healer Path
+  {  11420,  71650,  50387,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Melee Path
+  {  11421,  71653,  50388,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Tank Path
+  {  35131,  71581,  50397,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Caster Path
+  {  35132,  72417,  50397,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Caster Trigger
+  {  35124,  71581,  50398,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Caster Path
+  {  35125,  72417,  50398,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Caster Trigger
+  {  35135,  71655,  50399,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Healer Path
+  {  35136,  72419,  50399,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Healer Trigger
+  {  35128,  71655,  50400,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Healer Path
+  {  26697,  72419,  50400,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Healer Trigger
+  {  35133,  71650,  50401,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Melee Path
+  {  35134,  72413,  50401,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Melee
+  {  35126,  71650,  50402,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Melee Path
+  {  35127,  72413,  50402,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Melee
+  {  35129,  71653,  50403,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Tank Path
+  {  35130,  72415,  50403,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Tank Trigger
+  {  35122,  71653,  50404,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Tank Path
+  {  35123,  72415,  50404,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Tank Trigger
+  {  11442,  71838,  50415,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {  11456,  71836,  50638,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Ranged Weapon Proc
+  {  11457,  71892,  50641,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Dagger Proc
+  {  11458,  71846,  50648,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Caster Weapon Proc
+  {  11459,  71868,  50685,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Healer Weapon Proc
+  {  11460, 309563,  50692,   0,   1,    0,      -1,      -1 }, // Black Bruise
+  {  11461,  71545,  50706,   0,   1,    0,      -1,      -1 }, // Anger Capacitor
+  {  11462,  71873,  50708,   0,   1,    0,      -1,      -1 }, // Item - Icecrown 25 Heroic Tank Weapon Proc
+  {  11463,  71839,  50709,   0,   2,    0,      -1,      -1 }, // Drain Life
+  {  11464,  71646,  50726,   0,   0,    0,  120000,      -1 }, // Release of Light
+  {  20049,  71947,  50741,   0,   1,    0,      -1,      -1 }, // Gas Mask Visual (Purple)
+  {  20050,  71988,  50741,   1,   0,    0, 1200000,      -1 }, // Vile Fumes
+  {  11473,  72770,  50966,   0,   0,   94,  900000,   60000 }, // Abracadaver!
+  {  11475,  42292,  51377,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  11476,  42292,  51378,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  11477,  62459,  51414,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  11478,  33830,  51420,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  11479,  61252,  51426,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  11480,  33830,  51434,   1,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  11481,  61255,  51459,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  11482,  44301,  51464,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  11483,  38522,  51469,   1,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  11484,  44300,  51475,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  11485,  44297,  51483,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  11486,  44297,  51488,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  11487,  61249,  51493,   1,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  11488,  32973,  51498,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  11489,  32973,  51504,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  11490,  32973,  51510,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  11491,  33063,  51537,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  11492,  22778,  51542,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  11494,  54406,  51557,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11495,  54406,  51558,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11496,  54406,  51559,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11497,  54406,  51560,   1,   0, 1212, 1800000, 1800000 }, // Teleport: Dalaran
+  {  11500,  72770,  51887,   0,   0,   94,  900000,   60000 }, // Abracadaver!
+  {  11509,  72968,  52019,   0,   1,    0,      -1,      -1 }, // Precious's Ribbon
+  {  11519,  73549,  52199,   0,   0, 1141,  120000,   20000 }, // Demon Panther
+  {  11525,  73326,  52252,   0,   0,    0, 1800000,      -1 }, // Tabard of the Lightbringer
+  {  11537,  73522,  52351,   0,   0, 1141,  120000,   20000 }, // King of Boars
+  {  11538,  73550,  52352,   0,   0, 1141,  120000,   20000 }, // Earthen Guardian
+  {  11539,  73551,  52353,   0,   0, 1141,  120000,   20000 }, // Jeweled Serpent
+  {  11540,  73552,  52354,   0,   0, 1141,  120000,   20000 }, // Dream Owl
+  {  11769,  73961,  52569,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Strength Path
+  {  11770,  73961,  52570,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Strength Path
+  {  34249,  73961,  52571,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Strength Path
+  {  34250,  72413,  52571,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Melee
+  {  34251,  73961,  52572,   0,   5,    0,      -1,      -1 }, // Icecrown - Reputation Ring - Strength Path
+  {  34252,  72413,  52572,   1,   1,    0,      -1,      -1 }, // Item - Icecrown Reputation Ring Melee
+  {  11878,  93225,  53597,   0,   0, 1141,  900000,   60000 }, // Tilt at Windmills
+  {  11913,  75455,  54569,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Melee Trinket
+  {  11914,  75475,  54571,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Tank Trinket
+  {  11915,  75465,  54572,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Nuker Trinket
+  {  11916,  75490,  54573,   0,   0, 1141,  120000,   15000 }, // Eyes of Twilight
+  {  11917,  75474,  54588,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Heroic Nuker Trinket
+  {  11918,  75495,  54589,   0,   0,    0,  120000,      -1 }, // Eyes of Twilight
+  {  11919,  75457,  54590,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Heroic Melee Trinket
+  {  11920,  75481,  54591,   0,   1,    0,      -1,      -1 }, // Item - Chamber of Aspects 25 Heroic Tank Trinket
+  {  11962,  46643,  54806,   1,   0,    0,   60000,      -1 }, // Frostscythe
+  {  12021, 144204,  55237,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Rating
+  {  12024, 144205,  55251,   0,   0, 1141,   90000,   15000 }, // Typhoon
+  {  12025,  91135,  55256,   0,   0, 1141,  120000,   20000 }, // Leviathan
+  {  12026, 144202,  55266,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  12027,  90886,  55787,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12028,  92070,  55795,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  12030,  90897,  55810,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12031,  91351,  55814,   0,   0, 1141,   90000,   15000 }, // Polarization
+  {  12032,  92180,  55816,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  12033,  91137,  55819,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility On Crit
+  {  12034,  92186,  55845,   0,   0, 1190,  180000,  180000 }, // Amazing Fortitude
+  {  12035,  91142,  55854,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12036,  91361,  55868,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  12037,  92086,  55874,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  12038,  90998,  55879,   0,   1,    0,      -1,      -1 }, // Song of Sorrow
+  {  12039,  92199,  55881,   0,   0, 1141,   60000,   10000 }, // Blademaster
+  {  12041,  90990,  55889,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12046,  91148,  55995,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  12059,  91369,  56100,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength On Crit
+  {  12060,  92097,  56102,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility On Crit
+  {  12061,  92098,  56115,   0,   0, 1141,  120000,   20000 }, // Speed of Thought
+  {  12062,  92209,  56121,   0,   1,    0,      -1,      -1 }, // Item - Proc Dodge
+  {  12063,  91376,  56132,   0,   0, 1141,   90000,   15000 }, // Battle Prowess
+  {  36801,  91296,  56136,   0,   0,    0,  120000,      -1 }, // Egg Shell
+  {  36802,  96173,  56136,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
+  {  12067,  90943,  56138,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Spell Power
+  {  12084,  92175,  56280,   0,   1,    0,      -1,      -1 }, // Hardened Shell
+  {  12085,  91340,  56285,   0,   0, 1141,   90000,   15000 }, // Typhoon
+  {  12086,  91136,  56290,   0,   0, 1141,  120000,   20000 }, // Leviathan
+  {  12087,  92088,  56295,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  12088,  90888,  56320,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12089,  92093,  56328,   0,   1,    0,      -1,      -1 }, // Final Key
+  {  12090,  90899,  56339,   0,   1,    0,      -1,      -1 }, // Tendrils of Darkness
+  {  12091,  91352,  56345,   0,   0, 1141,   90000,   15000 }, // Polarization
+  {  12092,  92185,  56347,   0,   1,    0,      -1,      -1 }, // Lead Plating
+  {  12093,  91140,  56351,   0,   1,    0,      -1,      -1 }, // Cleansing Tears
+  {  12094,  92187,  56370,   0,   0, 1190,  180000,  180000 }, // Amazing Fortitude
+  {  12095,  91144,  56377,   0,   1,    0,      -1,      -1 }, // Anthem
+  {  12096,  91365,  56393,   0,   1,    0,      -1,      -1 }, // Heartened
+  {  12097,  92090,  56394,   0,   1,    0,      -1,      -1 }, // Grace
+  {  12098,  91003,  56400,   0,   1,    0,      -1,      -1 }, // Crescendo of Suffering
+  {  12099,  92200,  56406,   0,   0, 1141,   60000,   10000 }, // Blademaster
+  {  12100,  90993,  56407,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12101,  91150,  56414,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  12102,  92095,  56427,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility On Crit
+  {  12103,  91366,  56431,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength On Crit
+  {  12104,  92099,  56440,   0,   0, 1141,  120000,   20000 }, // Speed of Thought
+  {  12105,  92207,  56449,   0,   1,    0,      -1,      -1 }, // Duelist
+  {  12106,  91374,  56458,   0,   0, 1141,   90000,   15000 }, // Battle Prowess
+  {  12107,  90986,  56462,   0,   1,    0,      -1,      -1 }, // Dead Winds
+  {  36803,  91308,  56463,   0,   0,    0,  120000,      -1 }, // Egg Shell
+  {  36804,  96173,  56463,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
+  {  12135, 101582,  56836,   0,   0,    0,   30000,      -1 }, // Enjoying A Cold One
+  {  12137,  78830,  56847,   0,   0,    0,   60000,      -1 }, // Projectile Vomit
+  {  12138,  78922,  56849,   0,   0,   23,  120000,      -1 }, // Summon Goblin Nurse
+  {  12163,  91336,  57316,   0,   0, 1141,  120000,   20000 }, // Heavy Lifting
+  {  12164,  92044,  57325,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12165,  90842,  57346,   0,   0, 1141,  120000,   20000 }, // Mindfletcher
+  {  12169, 262569,  57519,   0,   0,   11,       0,    1000 }, // Food
+  {  12176,  79468,  58084,   0,   0,   79,       0,    3000 }, // Ghost Elixir
+  {  12177,  79469,  58085,   0,   0,   79,       0,    3000 }, // Flask of Steelskin
+  {  12178,  79470,  58086,   0,   0,   79,       0,    3000 }, // Flask of the Draconic Mind
+  {  12179,  79471,  58087,   0,   0,   79,       0,    3000 }, // Flask of the Winds
+  {  12180,  79472,  58088,   0,   0,   79,       0,    3000 }, // Flask of Titanic Strength
+  {  12181,  79474,  58089,   0,   0,   79,       0,    3000 }, // Elixir of the Naga
+  {  12182,  79475,  58090,   0,   0,    4,  300000,  300000 }, // Earthen Armor
+  {  12183,  79476,  58091,   0,   0,    4,  300000,  300000 }, // Volcanic Power
+  {  12184,  79477,  58092,   0,   0,   79,       0,    3000 }, // Elixir of the Cobra
+  {  12185,  79480,  58093,   0,   0,   79,       0,    3000 }, // Elixir of Deep Earth
+  {  12186,  79481,  58094,   0,   0,   79,       0,    3000 }, // Impossible Accuracy
+  {  12191, 134873,  58143,   0,   0,   79,       0,    3000 }, // Prismatic Elixir
+  {  12192,  79632,  58144,   0,   0,   79,       0,    3000 }, // Mighty Speed
+  {  12193,  79633,  58145,   0,   0,    4,  300000,  300000 }, // Tol'vir Agility
+  {  12194,  79634,  58146,   0,   0,    4,  300000,  300000 }, // Golem's Strength
+  {  12196,  79635,  58148,   0,   0,   79,       0,    3000 }, // Elixir of the Master
+  {  12205,  91811,  58180,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  12206,  92105,  58181,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  12207,  92234,  58182,   0,   1,    0,      -1,      -1 }, // Item - Proc Dodge Below 35%
+  {  12208,  91019,  58183,   0,   0, 1141,  120000,   20000 }, // Soul Power
+  {  12209,  91155,  58184,   0,   0, 1141,  120000,   20000 }, // Expansive Soul
+  {  12241,  17619,  58483,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  12267,  91817,  59224,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  12276,  91011,  59326,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power On Dmg
+  {  12277,  92236,  59332,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Below 35%
+  {  36791,  91321,  59354,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Versatility
+  {  36792,  91322,  59354,   1,   0,    0,  120000,      -1 }, // Blind Spot
+  {  12281,  92125,  59441,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  36793,  91833,  59461,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Activator (5)
+  {  36794,  91836,  59461,   1,   0, 1141,  120000,   20000 }, // Forged Fury
+  {  12284,  92127,  59473,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  12285,  91186,  59500,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  12286,  91822,  59506,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  36807,  91031,  59514,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Spell Power
+  {  36808,  91041,  59514,   1,   0, 1141,  120000,   20000 }, // Heart's Judgment
+  {  12289,  92213,  59515,   0,   0, 1141,  120000,   20000 }, // Memory of Invincibility
+  {  12290,  91025,  59519,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery
+  {  12291,  92114,  59520,   0,   1,    0,      -1,      -1 }, // Item - Proc Increased Attack Power
+  {  12299,  81945,  59600,   0,   0,    0, 1800000,      -1 }, // Lure
+  {  12300,  92162,  59617,   0,   0, 1141,   90000,   15000 }, // Mentally Prepared
+  {  12301,  90855,  59630,   0,   1,    0,      -1,      -1 }, // Item - Stacking Spell Power
+  {  12302,  90855,  59633,   0,   1,    0,      -1,      -1 }, // Item - Stacking Spell Power
+  {  12303,  90848,  59661,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12304,  90848,  59664,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12305,  91344,  59685,   0,   0, 1141,   60000,   10000 }, // Battle!
+  {  12306,  91344,  59689,   0,   0, 1141,   60000,   10000 }, // Battle!
+  {  12307,  92045,  59707,   0,   0, 1141,  120000,   20000 }, // Power of Focus
+  {  12308,  92045,  59710,   0,   0, 1141,  120000,   20000 }, // Power of Focus
+  {  12309,  91339,  59792,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  36811,  91171,  60233,   0,   1,    0,      -1,      -1 }, // Spell Cost Reduction
+  {  36812,  91173,  60233,   1,   0, 1141,   60000,   10000 }, // Celerity
+  {  12335,  82645,  60403,   0,   0,   94,  300000,   60000 }, // Elementium Dragonling
+  {  12337,  62459,  60409,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  12338,  44300,  60414,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  12339,  22778,  60419,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  12340,  61255,  60424,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  12341,  32973,  60429,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12342,  32973,  60434,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12343,  32973,  60439,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12344,  61252,  60443,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  12345,  33830,  60448,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  12346,  33830,  60453,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  12347,  61249,  60459,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  12348,  44301,  60463,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  12349,  44297,  60468,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  12350,  44297,  60473,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  12351,  33063,  60478,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  12357,  38522,  60602,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  12365,  42292,  60794,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12366,  42292,  60795,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12367,  42292,  60796,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12368,  42292,  60797,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12369,  42292,  60798,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12370,  42292,  60799,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12371,  42292,  60800,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12372,  42292,  60801,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12377,  42292,  60806,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12378,  42292,  60807,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12402,  84960,  61026,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12406,  84960,  61030,   1,   0, 1190,  180000,   20000 }, // Tremendous Fortitude
+  {  12407,  84960,  61031,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12408,  84960,  61032,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12409,  84969,  61033,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  12410,  84966,  61034,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  12411,  84968,  61035,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  12415,  85024,  61045,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  12416,  85034,  61046,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  12417,  85011,  61047,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  12439,  90892,  61411,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  12440,  90889,  61429,   0,   0, 1141,   90000,   15000 }, // Fury of the Earthen
+  {  12441,  92172,  61433,   0,   0, 1190,  180000,  180000 }, // Great Fortitude
+  {  12442,  91345,  61448,   0,   0, 1141,  120000,   20000 }, // Favored
+  {  12443,  92056,  61462,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste On Crit
+  {  12536,  89088,  62047,   0,   1,    0,      -1,      -1 }, // Volcano
+  {  12537,  89181,  62048,   0,   0,    0,  180000,       0 }, // Mighty Earthquake
+  {  12538,  89086,  62049,   0,   1,    0,      -1,      -1 }, // Hurricane
+  {  12539,  89183,  62050,   0,   1,    0,      -1,      -1 }, // Tsunami
+  {  12540,  89086,  62051,   0,   1,    0,      -1,      -1 }, // Hurricane
+  {  12552,  87644,  62290,   0,   0,    0,      -1,      -1 }, // Seafood Magnifique Feast
+  {  12574,  92123,  62463,   0,   0, 1141,  120000,   20000 }, // Enigma
+  {  12575,  91828,  62464,   0,   0, 1141,  120000,   20000 }, // Thrill of Victory
+  {  12576,  91048,  62465,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12577,  92222,  62466,   0,   0, 1141,   60000,   10000 }, // Image of Immortality
+  {  12578,  91193,  62467,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  12579,  92123,  62468,   0,   0, 1141,  120000,   20000 }, // Enigma
+  {  12580,  91828,  62469,   0,   0, 1141,  120000,   20000 }, // Thrill of Victory
+  {  12581,  91048,  62470,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power
+  {  12582,  92222,  62471,   0,   0, 1141,   60000,   10000 }, // Image of Immortality
+  {  12583,  91193,  62472,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  12601,  87604,  62649,   0,   0,   11,       0,    1000 }, // Food
+  {  12602,  87572,  62651,   0,   0,   11,       0,    1000 }, // Food
+  {  12603,  87571,  62652,   0,   0,   11,       0,    1000 }, // Food
+  {  12604,  87570,  62653,   0,   0,   11,       0,    1000 }, // Food
+  {  12605,  87636,  62654,   0,   0,   11,       0,    1000 }, // Food
+  {  12606,  87573,  62655,   0,   0,   11,       0,    1000 }, // Food
+  {  12607,  87568,  62656,   0,   0,   11,       0,    1000 }, // Food
+  {  12608,  87577,  62657,   0,   0,   11,       0,    1000 }, // Food
+  {  12609,  87566,  62658,   0,   0,   11,       0,    1000 }, // Food
+  {  12610,  87544,  62659,   0,   0,   11,       0,    1000 }, // Food
+  {  12611,  87567,  62660,   0,   0,   11,       0,    1000 }, // Food
+  {  12612,  87597,  62661,   0,   0,   11,       0,    1000 }, // Food
+  {  12613,  87595,  62662,   0,   0,   11,       0,    1000 }, // Food
+  {  12614,  87594,  62663,   0,   0,   11,       0,    1000 }, // Food
+  {  12615,  87637,  62664,   0,   0,   11,       0,    1000 }, // Food
+  {  12616,  87599,  62665,   0,   0,   11,       0,    1000 }, // Food
+  {  12617,  87588,  62666,   0,   0,   11,       0,    1000 }, // Food
+  {  12618,  87601,  62667,   0,   0,   11,       0,    1000 }, // Food
+  {  12619,  87602,  62668,   0,   0,   11,       0,    1000 }, // Food
+  {  12620,  87586,  62669,   0,   0,   11,       0,    1000 }, // Food
+  {  12621,  87584,  62670,   0,   0,   11,       0,    1000 }, // Food
+  {  12622,  87587,  62671,   0,   0,   11,       0,    1000 }, // Food
+  {  12662,  95880,  62966,   0,   0,    0,  120000,  120000 }, // Emissary's Watch
+  {  12663,  95879,  62978,   0,   0,    0,  120000,  120000 }, // Devourer's Stomach
+  {  12664,  95881,  62984,   0,   0,    0,  120000,  120000 }, // Omarion's Gift
+  {  12665,  95882,  62995,   0,   0,    0,  300000,  300000 }, // Underlord's Mandible
+  {  12705,  95227,  63192,   0,   0,    0,  600000,  600000 }, // Tosselwrench's Shrinker
+  {  12706,  95185,  63194,   0,   0,    0,  600000,  600000 }, // Rhea's Child
+  {  12707,  89157,  63206,   0,   0,    0, 14400000,      -1 }, // Teleport: Stormwind
+  {  12708,  89158,  63207,   0,   0,    0, 14400000,      -1 }, // Teleport: Orgrimmar
+  {  12709,  93791,  63241,   0,   0,    0,  600000,  600000 }, // Pilla
+  {  12710,  93749,  63245,   2,   0,    0,  120000,  120000 }, // Lunk's Kudos
+  {  12732,  89157,  63352,   0,   0,    0, 28800000,      -1 }, // Teleport: Stormwind
+  {  12733,  89158,  63353,   0,   0,    0, 28800000,      -1 }, // Teleport: Orgrimmar
+  {  12741,  89598,  63378,   0,   0,    0, 14400000,      -1 }, // Teleport: Tol Barad
+  {  12742,  89597,  63379,   0,   0,    0, 14400000,      -1 }, // Teleport: Tol Barad
+  {  12761, 265353,  63456,   0,   1,    0,      -1,      -1 }, // Meteor Shard
+  {  12775,  93248,  63632,   0,   0,    0,  300000,      -1 }, // Horn of the Traitor
+  {  12776,  93248,  63633,   0,   0,    0,  300000,      -1 }, // Horn of the Traitor
+  {  12784,  92188,  63742,   0,   0, 1141,   90000,   15000 }, // Master Tactician
+  {  12785,  92188,  63745,   0,   0, 1141,   90000,   15000 }, // Master Tactician
+  {  12786,  91353,  63838,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste On Crit
+  {  12787,  91080,  63839,   0,   1,    0,      -1,      -1 }, // Item - Proc Wandering DoT
+  {  12788,  92071,  63840,   0,   0, 1141,   90000,   15000 }, // Nimble
+  {  12789,  91353,  63841,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste On Crit
+  {  12790,  90900,  63842,   0,   0, 1141,  120000,   20000 }, // Focus
+  {  12791,  92071,  63843,   0,   0, 1141,   90000,   15000 }, // Nimble
+  {  12839,  95216,  64597,   0,   0,    0,  120000,  120000 }, // Light's Embrace
+  {  12840,  93229,  64627,   0,   0,    0,  120000,  120000 }, // Dying Breath
+  {  12845,  95061,  64644,   0,   0,    0,   60000,      -1 }, // Sight Beyond Sight
+  {  36890,  92272,  64645,   0,   1,    0,      -1,      -1 }, // Item - Collecting Mana
+  {  36891,  92601,  64645,   1,   0, 1141,   60000,   10000 }, // Detonate Mana
+  {  12853,  92226,  64687,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  12854,  92225,  64688,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  12855,  92224,  64689,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  12856,  61255,  64709,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  12857,  61252,  64727,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  12858,  62459,  64736,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  12859,  92223,  64740,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12860,  92223,  64741,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12861,  92223,  64742,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  12862,  33063,  64747,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  12863,  92221,  64761,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  12864,  92219,  64762,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  12865,  92217,  64763,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  12866,  33830,  64764,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  12867,  61249,  64769,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  12868,  32973,  64777,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12869,  32973,  64785,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12870,  42292,  64789,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12871,  42292,  64790,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12872,  42292,  64791,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12873,  42292,  64792,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12874,  42292,  64793,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12875,  42292,  64794,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  12876,  44297,  64795,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  12877,  38522,  64803,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  12878,  22778,  64812,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  12879,  32973,  64828,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  12880,  44297,  64838,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  12881,  44300,  64844,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  12882,  44301,  64855,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  12883,  33830,  64874,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  20053,  57818,  64882,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20054,  93816,  64882,   1,   1,    0,      -1,      -1 }, // Gilneas Champion
+  {  20055,  57818,  64884,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20056,  93830,  64884,   1,   1,    0,      -1,      -1 }, // Bilgewater Champion
+  {  12903,  92350,  65026,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  36795,  92330,  65029,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Versatility
+  {  36796,  92331,  65029,   1,   0,    0,  120000,      -1 }, // Blind Spot
+  {  12906,  92356,  65048,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Below 35%
+  {  12907,  92319,  65053,   0,   1,    0,      -1,      -1 }, // Item - Proc Spell Power On Dmg
+  {  12908,  92346,  65072,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  12910,  92322,  65105,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery
+  {  12911,  92357,  65109,   0,   0, 1141,  120000,   20000 }, // Memory of Invincibility
+  {  36809,  92326,  65110,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Spell Power
+  {  36810,  92328,  65110,   1,   0, 1141,  120000,   20000 }, // Heart's Judgment
+  {  12914,  92343,  65118,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  {  12915,  92333,  65124,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  12916,  92353,  65140,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  12919,  92336,  65175,   0,   0,   94,  360000,   60000 }, // Summon Fallen Footman
+  {  12920,  92337,  65176,   0,   0,   94,  360000,   60000 }, // Summon Fallen Grunt
+  {  12921,  89158,  65274,   0,   0,    0, 7200000,      -1 }, // Teleport: Orgrimmar
+  {  12922,  25750,  65286,   0,   0,    0,  300000,  300000 }, // Damage Absorb
+  {  12926,  89157,  65360,   0,   0,    0, 7200000,      -1 }, // Teleport: Stormwind
+  {  13003,  38522,  65521,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  13004,  32973,  65526,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13005,  33830,  65532,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13006,  33830,  65540,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13007,  61255,  65544,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  13008,  61249,  65548,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  13009,  44297,  65556,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13010,  32973,  65562,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13011,  44301,  65566,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  13012,  32973,  65570,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13013,  33063,  65572,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  13014,  44297,  65577,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13015,  22778,  65583,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  13016,  61252,  65589,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  13017,  44300,  65591,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  13018,  62459,  65596,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  13030,  89089,  65667,   0,   0,    0,    3000,      -1 }, // Shovel
+  {  13034,  92164,  65803,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Rating
+  {  13035,  95878,  65804,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Rating
+  {  13036,  92164,  65805,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery Rating
+  {  20057,  57818,  65904,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20058,  93337,  65904,   1,   1,    0,      -1,      -1 }, // Champion of Ramkahen
+  {  20059,  57818,  65905,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20060,  93339,  65905,   1,   1,    0,      -1,      -1 }, // Champion of the Earthen Ring
+  {  20061,  57818,  65906,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20062,  93341,  65906,   1,   1,    0,      -1,      -1 }, // Champion of the Guardians of Hyjal
+  {  20063,  57818,  65907,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20064,  93347,  65907,   1,   1,    0,      -1,      -1 }, // Champion of Therazane
+  {  20065,  57818,  65908,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20066,  93368,  65908,   1,   1,    0,      -1,      -1 }, // Champion of the Wildhammer Clan
+  {  20067,  57818,  65909,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20068,  94158,  65909,   1,   1,    0,      -1,      -1 }, // Champion of the Dragonmaw Clan
+  {  13052,  93742,  65923,   0,   0,   94,  600000,  600000 }, // Death by Peasant
+  {  13053,  93740,  65931,   0,   0, 1141,  900000,   45000 }, // Poison Cloud
+  {  13202,  95870,  66879,   0,   0, 1141,  120000,   20000 }, // Lightning in a Bottle
+  {  13206,  92054,  66969,   0,   1,    0,      -1,      -1 }, // Item - Proc Crit Rating
+  {  13207,  91341,  66994,   0,   0, 1141,   90000,   15000 }, // Typhoon
+  {  13282,  95874,  67037,   0,   0, 1141,  120000,   20000 }, // Searing Words
+  {  13376,  95872,  67101,   0,   0, 1141,  120000,   20000 }, // Undying Flames
+  {  13379,  95875,  67118,   0,   0, 1141,  120000,   20000 }, // Heartsparked
+  {  13384,  95877,  67152,   0,   0, 1141,  120000,   20000 }, // La-La's Song
+  {  13438,  94160,  67438,   0,   0,   79,       0,    3000 }, // Flask of Flowing Water
+  {  13474,  95678,  68163,   0,   2,    0,      -1,      -1 }, // The Deepest Night
+  {  13512,  91828,  68712,   0,   0, 1141,  120000,   20000 }, // Thrill of Victory
+  {  13523,  17619,  68775,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  13524,  17619,  68776,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  13525,  17619,  68777,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  36797,  96879,  68915,   0,   1,    0,      -1,      -1 }, // Weight of a Feather
+  {  36798,  96880,  68915,   1,   0,    0,   60000,      -1 }, // Tipping of the Scales
+  {  13568,  96887,  68925,   0,   1,    0,      -1,      -1 }, // Variable Pulse Lightning Capacitor
+  {  13569,  96908,  68926,   0,   0,    0,  120000,      -1 }, // Victory
+  {  13570,  96910,  68927,   0,   1,    0,      -1,      -1 }, // Hungerer
+  {  36799,  96924,  68972,   0,   1,    0,      -1,      -1 }, // Apparatus of Khaz'goroth
+  {  36800,  96934,  68972,   1,   0, 1141,  120000,   20000 }, // Blessing of Khaz'goroth
+  {  13575,  96947,  68981,   0,   1,    0,      -1,      -1 }, // Loom of Fate
+  {  13576,  96963,  68982,   0,   1,    0,      -1,      -1 }, // Necromantic Focus
+  {  13577,  96967,  68983,   0,   1,    0,      -1,      -1 }, // Eye of Blazing Power
+  {  13578,  96976,  68994,   0,   1,    0,      -1,      -1 }, // Matrix Restabilizer
+  {  13579,  96981,  68995,   0,   1,    0,      -1,      -1 }, // Vessel of Acceleration
+  {  13580,  96988,  68996,   0,   0,    0,  120000,      -1 }, // Stay of Execution
+  {  13582,  97007,  68998,   0,   0, 1141,   60000,   15000 }, // Mark of the Firelord
+  {  13583,  97008,  69000,   0,   0, 1141,   90000,   25000 }, // Fiery Quintessence
+  {  13584,  97009,  69001,   0,   0, 1141,   60000,   15000 }, // Ancient Petrified Seed
+  {  13585,  97010,  69002,   0,   0, 1141,   60000,   15000 }, // Essence of the Eternal Flame
+  {  36851,  97117,  69109,   0,   1,    0,      -1,      -1 }, // Weight of a Feather
+  {  36852,  96880,  69109,   1,   0,    0,   60000,      -1 }, // Tipping of the Scales
+  {  13589,  97119,  69110,   0,   1,    0,      -1,      -1 }, // Variable Pulse Lightning Capacitor
+  {  13590,  97121,  69111,   0,   0,    0,  120000,      -1 }, // Victory
+  {  13591,  97126,  69112,   0,   1,    0,      -1,      -1 }, // Hungerer
+  {  36853,  96924,  69113,   0,   1,    0,      -1,      -1 }, // Apparatus of Khaz'goroth
+  {  36854,  97127,  69113,   1,   0, 1141,  120000,   20000 }, // Blessing of Khaz'goroth
+  {  13594,  97130,  69138,   0,   1,    0,      -1,      -1 }, // Loom of Fate
+  {  13595,  97132,  69139,   0,   1,    0,      -1,      -1 }, // Necromantic Focus
+  {  13596,  97137,  69149,   0,   1,    0,      -1,      -1 }, // Eye of Blazing Power
+  {  13597,  97138,  69150,   0,   1,    0,      -1,      -1 }, // Matrix Restabilizer
+  {  13598,  97143,  69167,   0,   1,    0,      -1,      -1 }, // Vessel of Acceleration
+  {  13599,  97145,  69184,   0,   0,    0,  120000,      -1 }, // Stay of Execution
+  {  13600,  97146,  69185,   0,   0, 1141,   60000,   15000 }, // Mark of the Firelord
+  {  13610,  97176,  69198,   0,   0, 1141,   90000,   25000 }, // Fiery Quintessence
+  {  13611,  97177,  69199,   0,   0, 1141,   60000,   15000 }, // Ancient Petrified Seed
+  {  13612,  97179,  69200,   0,   0, 1141,   60000,   15000 }, // Essence of the Eternal Flame
+  {  13613,  97340,  69209,   0,   1,    0,      -1,      -1 }, // Guild Champion
+  {  13614,  97341,  69210,   0,   1,    0,      -1,      -1 }, // Guild Champion
+  {  13644,  24591,  69618,   0,   1,    0,      -1,      -1 }, // +10 Skinning
+  {  13653,  98275,  69762,   0,   0,   94,  600000,   60000 }, // Death by Voodoo Gnome
+  {  13654,  46643,  69771,   1,   0,    0,   60000,      -1 }, // Frostscythe
+  {  13677,  42292,  69861,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13678,  42292,  69862,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13684,  71354,  69892,   0,   1,    0,      -1,      -1 }, // Heirloom Experience Bonus +5%
+  {  20069,  99245,  69897,   0,   0,    0, 7200000,      -1 }, // Druid of the Flames
+  {  20070,  99246,  69897,   1,   1,    0,      -1,      -1 }, // Druid of the Flames
+  {  36880,  99915,  70141,   0,   0,    0,  180000,      -1 }, // Caber Toss
+  {  36881, 100309,  70141,   1,   1,    0,      -1,      -1 }, // Pumped Up Aura
+  {  13753, 100612,  70142,   0,   0, 1141,  120000,   20000 }, // Summon Moonwell
+  {  36876, 101492,  70143,   0,   0, 1141,  120000,   20000 }, // Summon Splashing Waters
+  {  36877, 108819,  70143,   1,   1,    0,      -1,      -1 },
+  {  36878,  95871,  70144,   0,   1,    0,      -1,      -1 }, // Meteor Magnet
+  {  36879, 101515,  70144,   1,   0, 1141,  120000,   20000 }, // Charged Blows
+  {  13768,  99732,  70159,   0,   0,    0, 3000000,       0 }, // Mylune's Call
+  {  13796,  62459,  70245,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  13797,  44300,  70250,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  13798,  22778,  70255,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  13799,  61255,  70260,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  13800,  32973,  70265,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13801,  32973,  70270,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13802,  32973,  70275,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13803,  61252,  70279,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  13804,  33830,  70284,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13805,  33830,  70289,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13806,  61249,  70295,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  13807,  44301,  70299,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  13808,  44297,  70304,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13809,  44297,  70309,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13810,  33063,  70314,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  13811,  38522,  70354,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  13812,  42292,  70390,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13813,  42292,  70391,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13814,  42292,  70392,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13815,  42292,  70393,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13816,  42292,  70394,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13817,  42292,  70395,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13818,  99737,  70396,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13819,  99737,  70397,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13820,  99737,  70398,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13821,  99739,  70399,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  13822,  99740,  70400,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  13823,  99741,  70401,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  13824,  99743,  70402,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  13825,  99747,  70403,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  13826,  99749,  70404,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  13827,  38522,  70418,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  13828,  32973,  70423,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13829,  33830,  70429,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13830,  33830,  70437,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13831,  61255,  70441,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  13832,  61249,  70445,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  13833,  44297,  70453,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13834,  32973,  70459,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13835,  44301,  70463,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  13836,  32973,  70467,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13837,  33063,  70469,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  13838,  44297,  70474,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13839,  22778,  70480,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  13840,  61252,  70486,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  13841,  44300,  70488,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  13842,  62459,  70493,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  13843,  99711,  70517,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  13844,  99712,  70518,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  13845,  99713,  70519,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  13846,  61255,  70534,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  13847,  61252,  70550,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  13848,  62459,  70559,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  13849,  99714,  70563,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13850,  99714,  70564,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13851,  99714,  70565,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  13852,  33063,  70568,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  13853,  99718,  70577,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  13854,  99720,  70578,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  13855,  99722,  70579,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  13856,  33830,  70580,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13857,  61249,  70585,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  13858,  32973,  70591,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13859,  32973,  70598,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13860,  42292,  70602,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13861,  42292,  70603,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13862,  42292,  70604,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13863,  42292,  70605,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13864,  42292,  70606,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13865,  42292,  70607,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  13866,  44297,  70608,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13867,  38522,  70616,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  13868,  22778,  70624,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  13869,  32973,  70633,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  13870,  44297,  70643,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  13871,  44300,  70649,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  13872,  44301,  70657,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  13873,  33830,  70671,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  13884, 100343,  70923,   0,   0,    0,   10000,      -1 }, // Festive Song
+  {  13885, 100365,  70924,   0,   0,   11,   60000,    1000 }, // Bountiful Food
+  {  13886, 100374,  70925,   0,   0,   11,   60000,    1000 }, // Bountiful Food
+  {  13887, 100376,  70926,   0,   0,   11,   60000,    1000 }, // Bountiful Food
+  {  13888, 100379,  70927,   0,   0,   11,   60000,    1000 }, // Bountiful Food
+  {  13910, 100785,  71084,   0,   1,    0,      -1,      -1 }, // Master Whisper Aura
+  {  20073, 100873,  71085,   0,   1,    0,      -1,      -1 }, // Master Whisper Aura II
+  {  20074, 101140,  71085,   1,   0,    0,   10000,      -1 }, // Siphon Essence
+  {  20075, 101056,  71086,   0,   1,    0,      -1,      -1 }, // Wrath of Tarecgosa
+  {  20076, 101641,  71086,   1,   0,  330,    1500,    1500 }, // Tarecgosa's Visage
+  {  20077, 101151,  71086,   2,   1,    0,      -1,      -1 }, // Master Whisper Aura FINAL
+  {  13927,  50070,  71325,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
+  {  13928,  43873,  71326,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
+  {  13929, 101285,  71333,   0,   0,   94,  600000,   60000 }, // Summon the Black Brewmaiden
+  {  13930, 101286,  71334,   0,   0,   94,  600000,   60000 }, // Summon the Brewmaiden
+  {  13931, 101288,  71335,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {  13932, 101290,  71336,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {  13933, 101292,  71337,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {  13934, 101293,  71338,   0,   0, 1141,  120000,   20000 }, // Drunken Evasiveness
+  {  20078,  99245,  71466,   0,   0,    0, 7200000,      -1 }, // Druid of the Flames
+  {  20079,  99246,  71466,   1,   1,    0,      -1,      -1 }, // Druid of the Flames
+  {  14199, 102441,  72304,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  14200, 102440,  72309,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  14201,  62459,  72333,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  14202,  61252,  72337,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  14203,  33830,  72345,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14204,  33830,  72353,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14205, 102438,  72359,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14206, 102438,  72360,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14207, 102438,  72361,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14208,  61255,  72369,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  14209,  44301,  72373,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  14210,  44300,  72379,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  14211,  38522,  72390,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  14212,  44297,  72400,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14213,  44297,  72405,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14214,  42292,  72410,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14215,  42292,  72411,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14216,  42292,  72412,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14217,  42292,  72413,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14218,  42292,  72414,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14219,  42292,  72415,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14220,  61249,  72423,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  14221,  32973,  72433,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14222,  32973,  72438,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14223,  32973,  72444,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14224, 102437,  72448,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  14225, 102436,  72449,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  14226, 102434,  72450,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  14227, 102433,  72455,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  14228,  33063,  72459,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  14229,  22778,  72465,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  14236, 102658,  72897,   0,   1,    0,      -1,      -1 }, // Arrow of Time
+  {  36815, 102663,  72898,   0,   1,    0,      -1,      -1 }, // Foul Gift
+  {  36816, 109908,  72898,   1,   0,    0,  300000,       0 }, // Foul Gift
+  {  36813, 102665,  72899,   0,   1,    0,      -1,      -1 }, // Varo'then's Brooch
+  {  36814, 109888,  72899,   1,   0,    0,  180000,       0 }, // Magistrike
+  {  14241, 102666,  72900,   0,   1,    0,      -1,      -1 }, // Veil of Lies
+  {  36805, 102661,  72901,   0,   1,    0,      -1,      -1 }, // Rosary of Light
+  {  36806, 110008,  72901,   1,   0,    0,  300000,       0 }, // Rosary of Light
+  {  14246, 102776,  73042,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14247, 102778,  73060,   0,   1,    0,      -1,      -1 }, // Avoidance of the Snake
+  {  14248, 102776,  73061,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14249, 102775,  73062,   0,   1,    0,      -1,      -1 }, // Strength of Courage
+  {  14250, 102780,  73063,   0,   1,    0,      -1,      -1 }, // Spirit of Wisdom
+  {  14251, 102777,  73064,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14252, 102745,  73065,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14253, 102779,  73066,   0,   1,    0,      -1,      -1 }, // Intellect of the Sage
+  {  14254, 102776,  73067,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14255, 102743,  73068,   0,   1,    0,      -1,      -1 }, // Agility of the Tiger
+  {  14258, 102745,  73101,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14259, 102779,  73104,   0,   1,    0,      -1,      -1 }, // Intellect of the Sage
+  {  14260, 102745,  73106,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14261, 102779,  73109,   0,   1,    0,      -1,      -1 }, // Intellect of the Sage
+  {  14262, 102777,  73111,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14263, 102780,  73114,   0,   1,    0,      -1,      -1 }, // Spirit of Wisdom
+  {  14264, 102745,  73116,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14265, 102779,  73119,   0,   1,    0,      -1,      -1 }, // Intellect of the Sage
+  {  14266, 102776,  73121,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14267, 102743,  73124,   0,   1,    0,      -1,      -1 }, // Agility of the Tiger
+  {  14268, 102777,  73126,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14269, 102780,  73129,   0,   1,    0,      -1,      -1 }, // Spirit of Wisdom
+  {  14270, 102743,  73132,   0,   1,    0,      -1,      -1 }, // Agility of the Tiger
+  {  14271, 102776,  73135,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14272, 102779,  73137,   0,   1,    0,      -1,      -1 }, // Intellect of the Sage
+  {  14273, 102745,  73140,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14274, 102780,  73142,   0,   1,    0,      -1,      -1 }, // Spirit of Wisdom
+  {  14275, 102777,  73145,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  14276, 102743,  73147,   0,   1,    0,      -1,      -1 }, // Agility of the Tiger
+  {  14277, 102776,  73150,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14278, 102776,  73154,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14279, 102775,  73155,   0,   1,    0,      -1,      -1 }, // Strength of Courage
+  {  14280, 102778,  73157,   0,   1,    0,      -1,      -1 }, // Avoidance of the Snake
+  {  14281, 102776,  73160,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14282, 102776,  73164,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14283, 102775,  73165,   0,   1,    0,      -1,      -1 }, // Strength of Courage
+  {  14284, 102778,  73167,   0,   1,    0,      -1,      -1 }, // Avoidance of the Snake
+  {  14285, 102776,  73170,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  14295,  22778,  73481,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  14296,  33063,  73487,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  14297, 105140,  73491,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  14298, 105133,  73496,   1,   0, 1141,  120000,   20000 }, // Call of Victory
+  {  14299, 105138,  73497,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  14300, 105134,  73498,   1,   0, 1141,  120000,   20000 }, // Call of Dominance
+  {  14301,  32973,  73505,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14302,  32973,  73511,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14303,  32973,  73516,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14304,  61249,  73526,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  14305,  42292,  73534,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14306,  42292,  73535,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14307,  42292,  73536,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14308,  42292,  73537,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14309,  42292,  73538,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14310,  42292,  73539,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  14311,  44297,  73544,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14312,  44297,  73549,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14313,  38522,  73559,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  14314,  44300,  73570,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  14315,  44301,  73576,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  14316,  61255,  73583,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  14317, 105144,  73591,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14318, 105144,  73592,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14319, 105144,  73593,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  14320,  33830,  73599,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14321,  33830,  73607,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14322,  61252,  73615,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  14323,  62459,  73619,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  14324, 105136,  73643,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  14325, 105132,  73648,   1,   0, 1141,  120000,   20000 }, // Call of Conquest
+  {  14326,  22778,  73654,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  14327,  33063,  73660,   0,   1,    0,      -1,      -1 }, // Demonic Circle Cooldown Reduction
+  {  14328,  32973,  73664,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14329,  32973,  73669,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14330,  32973,  73674,   0,   1,    0,      -1,      -1 }, // Shaman Shock Range Bonus
+  {  14331,  61249,  73681,   0,   1,    0,      -1,      -1 }, // Improved Recuperate
+  {  14332,  44297,  73689,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14333,  44297,  73694,   0,   1,    0,      -1,      -1 }, // Improved Psychic Scream
+  {  14334,  38522,  73700,   0,   1,    0,      -1,      -1 }, // Increased Flash of Light Crit Chance
+  {  14335,  44300,  73707,   0,   1,    0,      -1,      -1 }, // Improved Crusader Strike
+  {  14336,  44301,  73713,   0,   1,    0,      -1,      -1 }, // Reduced Blink GCD
+  {  14337,  61255,  73717,   0,   1,    0,      -1,      -1 }, // Trap Cooldown Reduction
+  {  14338,  33830,  73725,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14339,  33830,  73731,   0,   1,    0,      -1,      -1 }, // Cyclone Range Increase
+  {  14340,  61252,  73737,   0,   1,    0,      -1,      -1 }, // Maim Damage
+  {  14341,  62459,  73741,   0,   1,    0,      -1,      -1 }, // Chains of Ice Runic Power
+  {  14370, 109996,  74035,   0,   1,    0,      -1,      -1 }, // Master Pit Fighter
+  {  14379, 103977,  74278,   0,   0,    0,   10000,      -1 }, // Cranial Cooktop
+  {  14395, 104263,  74642,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14396, 104286,  74643,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14397, 104266,  74644,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14398, 104284,  74645,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14399, 104285,  74646,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14400, 104287,  74647,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14401, 104288,  74648,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14402, 104290,  74649,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14403, 104289,  74650,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14404, 104291,  74651,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14405, 104292,  74652,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14406, 104293,  74653,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14407, 104294,  74654,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14408, 104295,  74655,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14409, 104296,  74656,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14502, 105222,  75038,   0,   0,   11,       0,    1000 }, // Imbibe
+  {  36874, 105574,  75274,   0,   1,    0,      -1,      -1 }, // Zen Alchemist Stone
+  {  36875,  17619,  75274,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  14516, 105681,  76075,   0,   0,   79,       0,    3000 }, // Mantid Elixir
+  {  14517, 105682,  76076,   0,   0,   79,       0,    3000 }, // Mad Hozen Elixir
+  {  14518, 105683,  76077,   0,   0,   79,       0,    3000 }, // Elixir of Weaponry
+  {  14519, 105684,  76078,   0,   0,   79,       0,    3000 }, // Elixir of the Rapids
+  {  14520, 105685,  76079,   0,   0,   79,       0,    3000 }, // Elixir of Peace
+  {  14521, 105686,  76080,   0,   0,   79,       0,    3000 }, // Elixir of Perfection
+  {  14522, 105687,  76081,   0,   0,   79,       0,    3000 }, // Elixir of Mirrors
+  {  14523, 105688,  76083,   0,   0,   79,       0,    3000 }, // Monk's Elixir
+  {  14524, 105689,  76084,   0,   0,   79,       0,    3000 }, // Flask of Spring Blossoms
+  {  14525, 105691,  76085,   0,   0,   79,       0,    3000 }, // Flask of the Warm Sun
+  {  14526, 105693,  76086,   0,   0,   79,       0,    3000 }, // Flask of Falling Leaves
+  {  14527, 105694,  76087,   0,   0,   79,       0,    3000 }, // Flask of the Earth
+  {  14528, 105696,  76088,   0,   0,   79,       0,    3000 }, // Flask of Winter's Bite
+  {  14529, 105697,  76089,   0,   0,    4,  300000,  300000 }, // Virmen's Bite
+  {  14530, 105698,  76090,   0,   0,    4,  300000,  300000 }, // Potion of the Mountains
+  {  14533, 105702,  76093,   0,   0,    4,  300000,  300000 }, // Potion of the Jade Serpent
+  {  14535, 105706,  76095,   0,   0,    4,  300000,  300000 }, // Potion of Mogu Power
+  {  28699, 107905,  77101,   0,   0,    0,      -1,      -1 }, // Shadow
+  {  14571, 107947,  77113,   0,   0, 1141,   90000,   15000 }, // Agile
+  {  14572, 107948,  77114,   0,   0, 1141,   90000,   15000 }, // Ultimate Power
+  {  14573, 107948,  77115,   0,   0, 1141,   90000,   15000 }, // Ultimate Power
+  {  14574, 107949,  77116,   0,   0, 1141,   90000,   15000 }, // Titanic Strength
+  {  14575, 107951,  77117,   0,   0,    0,   90000,      -1 }, // Elusive
+  {  14577, 107786,  77188,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee 1H Axe
+  {  14578, 107805,  77190,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Versatile Staff
+  {  14579, 107810,  77191,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Melee 2H Sword
+  {  14580, 107895,  77193,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Tank Sword
+  {  14581, 107824,  77194,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee Polearm
+  {  14582, 107832,  77195,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Hit Dagger
+  {  14583, 107836,  77196,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Spirit Mace 1H
+  {  14584, 107961,  77197,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Agility Trinket
+  {  14585, 107971,  77198,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Caster Trinket
+  {  14586, 107963,  77199,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Healer Trinket
+  {  14587, 107967,  77200,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Strength Trinket
+  {  14588, 107969,  77201,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Dodge Trinket
+  {  14589, 107983,  77202,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14590, 107983,  77203,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14591, 107984,  77204,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14592, 107989,  77205,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14593, 107987,  77206,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14594, 107995,  77207,   0,   1,    0,      -1,      -1 }, // Lightning Strike
+  {  14595, 108006,  77208,   0,   1,    0,      -1,      -1 }, // Shadowbolt Volley
+  {  14596, 108002,  77209,   0,   1,    0,      -1,      -1 }, // Nick of Time
+  {  14597, 107998,  77210,   0,   1,    0,      -1,      -1 }, // Whirling Maw
+  {  14598, 108007,  77211,   0,   1,    0,      -1,      -1 }, // Indomitable
+  {  14599, 108029,  77264,   0,   0,   11,       0,    1000 }, // Food
+  {  14600, 108034,  77272,   0,   0,   11,       0,    1000 }, // Food
+  {  14601, 108033,  77273,   0,   0,   11,       0,    1000 }, // Food
+  {  14611, 109078,  77530,   0,   1,    0,      -1,      -1 }, // Pandaren Dragonling
+  {  14616,  13959,  77596,   0,   1,    0,      -1,      -1 }, // Electrostatic Charge
+  {  14617,  13959,  77597,   0,   1,    0,      -1,      -1 }, // Electrostatic Charge
+  {  14627,  23217,  77666,   0,   1,    0,      -1,      -1 }, // Stealth Detection
+  {  14628,  28539,  77677,   0,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {  14629, 144318,  77681,   1,   1,    0,      -1,      -1 }, // Mana Shield Absorb Increase
+  {  14630, 144306,  77685,   0,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {  14631,  23043,  77693,   1,   1,    0,      -1,      -1 }, // Mind Blast Cast Pushback Reduction
+  {  14632,  23049,  77699,   0,   1,    0,      -1,      -1 }, // Sprint Duration Increase
+  {  14633,  22801,  77702,   0,   1,    0,      -1,      -1 }, // Ghost Wolf Speed
+  {  14634,  23046,  77713,   0,   1,    0,      -1,      -1 }, // Searing Pain Cast Pushback Reduction
+  {  14635,  22778,  77716,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  14660,  23217,  77879,   0,   1,    0,      -1,      -1 }, // Stealth Detection
+  {  14661,  28539,  77885,   0,   1,    0,      -1,      -1 }, // Multi-Shot Damage Increase
+  {  14662, 144318,  77887,   0,   1,    0,      -1,      -1 }, // Mana Shield Absorb Increase
+  {  14663, 144306,  77895,   0,   1,    0,      -1,      -1 }, // Seal of the Crusader Judgment Increase
+  {  14664,  23043,  77898,   0,   1,    0,      -1,      -1 }, // Mind Blast Cast Pushback Reduction
+  {  14665,  23049,  77904,   0,   1,    0,      -1,      -1 }, // Sprint Duration Increase
+  {  14666,  22801,  77911,   0,   1,    0,      -1,      -1 }, // Ghost Wolf Speed
+  {  14667,  23046,  77916,   0,   1,    0,      -1,      -1 }, // Searing Pain Cast Pushback Reduction
+  {  14668,  22778,  77925,   0,   1,    0,      -1,      -1 }, // Hamstring Rage Reduction
+  {  14670, 110211,  77945,   0,   1,    0,      -1,      -1 }, // Weighted Blades
+  {  14671, 110211,  77947,   0,   1,    0,      -1,      -1 }, // Weighted Blades
+  {  20080, 107082,  77949,   0,   0, 1335,  300000,  300000 }, // Embrace of the Destroyer
+  {  14674, 107082,  77950,   0,   0, 1335,  300000,  300000 }, // Embrace of the Destroyer
+  {  14676, 109803,  77969,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14677, 109775,  77970,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14678, 109788,  77971,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14679, 109743,  77972,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14680, 109710,  77973,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14681, 109718,  77974,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Agility Trinket
+  {  14682, 109794,  77975,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Caster Trinket
+  {  14683, 109812,  77976,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Healer Trinket
+  {  14684, 109749,  77977,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Strength Trinket
+  {  14685, 109781,  77978,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Dodge Trinket
+  {  14686, 109722,  77979,   0,   1,    0,      -1,      -1 }, // Lightning Strike
+  {  14687, 109799,  77980,   0,   1,    0,      -1,      -1 }, // Shadowbolt Volley
+  {  14688, 109823,  77981,   0,   1,    0,      -1,      -1 }, // Nick of Time
+  {  14689, 109753,  77982,   0,   1,    0,      -1,      -1 }, // Whirling Maw
+  {  14690, 109785,  77983,   0,   1,    0,      -1,      -1 }, // Indomitable
+  {  14691, 109714,  77984,   0,   0, 1141,   90000,   15000 }, // Agile
+  {  14692, 109791,  77985,   0,   0, 1141,   90000,   15000 }, // Ultimate Power
+  {  14693, 109791,  77986,   0,   0, 1141,   90000,   15000 }, // Ultimate Power
+  {  14694, 109746,  77987,   0,   0, 1141,   90000,   15000 }, // Titanic Strength
+  {  14695, 109778,  77988,   0,   0,    0,   90000,      -1 }, // Elusive
+  {  14696, 109805,  77989,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14697, 109777,  77990,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14698, 109790,  77991,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14699, 109745,  77992,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14700, 109712,  77993,   0,   1,    0,      -1,      -1 }, // Haste
+  {  14701, 109720,  77994,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Agility Trinket
+  {  14702, 109796,  77995,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Caster Trinket
+  {  14703, 109814,  77996,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Healer Trinket
+  {  14704, 109751,  77997,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Strength Trinket
+  {  14705, 109783,  77998,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul Stacking Dodge Trinket
+  {  14706, 109725,  77999,   0,   1,    0,      -1,      -1 }, // Lightning Strike
+  {  14707, 109801,  78000,   0,   1,    0,      -1,      -1 }, // Shadowbolt Volley
+  { 111503, 109826,  78001,   0,   1,    0,      -1,      -1 }, // Nick of Time
+  {  14709, 109755,  78002,   0,   1,    0,      -1,      -1 }, // Whirling Maw
+  {  14710, 109786,  78003,   0,   1,    0,      -1,      -1 }, // Indomitable
+  {  14728, 107822,  78359,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Ranged Gun
+  {  14729, 109859,  78471,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Ranged Gun Heroic
+  {  14730, 109873,  78472,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee 1H Axe Heroic
+  {  14731, 109865,  78473,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee Polearm Heroic
+  {  14732, 109855,  78475,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Hit Dagger Heroic
+  {  14733, 109850,  78476,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Spirit Mace 1H Heroic
+  {  14734, 109846,  78477,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Versatile Staff Heroic
+  {  14735, 109841,  78478,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Melee 2H Sword Heroic
+  {  14736, 109832,  78479,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Tank Sword Heroic
+  {  14737, 109857,  78480,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Ranged Gun LFR
+  {  14738, 109866,  78481,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee 1H Axe LFR
+  {  14739, 109862,  78482,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Agi Melee Polearm LFR
+  {  14740, 109853,  78484,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Hit Dagger LFR
+  {  14741, 109848,  78485,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Spirit Mace 1H LFR
+  {  14742, 109843,  78486,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Int Versatile Staff LFR
+  {  14743, 109839,  78487,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Melee 2H Sword LFR
+  {  14744, 109829,  78488,   0,   1,    0,      -1,      -1 }, // Item - Dragon Soul - Proc - Str Tank Sword LFR
+  {  14745, 109933,  78883,   0,   0,   79,       0,    3000 }, // Darkmoon Firewater
+  {  14808, 111842,  79320,   0,   0,   11,   60000,    1000 }, // Refreshing Food
+  {  14809, 128989,  79327,   0,   1,    0,      -1,      -1 }, // Relic of Xuen
+  {  14810, 128445,  79328,   0,   1,    0,      -1,      -1 }, // Relic of Xuen
+  {  14811, 128988,  79329,   0,   0, 1141,   60000,   10000 }, // Protection of the Celestials
+  {  14812, 128991,  79330,   0,   1,    0,      -1,      -1 }, // Relic of Chi Ji
+  {  14813, 128990,  79331,   0,   1,    0,      -1,      -1 }, // Relic of Yu'lon
+  {  28272, 112660,  79538,   1,   0,    0,      -1,      -1 }, // Heavens
+  {  28302, 112792,  80587,   1,   0,    0,      -1,      -1 }, // Hawk Feast
+  {  28303, 112793,  80588,   1,   0,    0,      -1,      -1 }, // Burning Anger
+  {  14914, 117652,  80773,   0,   1,    0,      -1,      -1 }, // Singing Cricket Medallion
+  {  14915, 117653,  80774,   0,   1,    0,      -1,      -1 }, // Grove Viper Medallion
+  {  14916, 117654,  80775,   0,   1,    0,      -1,      -1 }, // Coral Adder Medallion
+  {  14917, 117655,  80776,   0,   1,    0,      -1,      -1 }, // Flamelager Medallion
+  {  14918, 117656,  80777,   0,   1,    0,      -1,      -1 }, // Amberfly Idol
+  {  14919, 117657,  80778,   0,   1,    0,      -1,      -1 }, // Silkbead Emblem
+  {  14920, 117658,  80779,   0,   1,    0,      -1,      -1 }, // Mirror Strider Emblem
+  {  14921, 117659,  80780,   0,   1,    0,      -1,      -1 }, // Greenpaw Idol
+  {  14922, 117660,  80781,   0,   1,    0,      -1,      -1 }, // Shoots of Life
+  {  14923, 117661,  80782,   0,   1,    0,      -1,      -1 }, // Misty Jade Idol
+  {  14929, 116765,  80960,   0,   1,    0,      -1,      -1 }, // Scavenger's Medal
+  {  14930, 116764,  80961,   0,   1,    0,      -1,      -1 }, // Scavenger's Emblem
+  {  14931, 116763,  80962,   0,   1,    0,      -1,      -1 }, // Scavenger's Medallion
+  {  14932, 116767,  80963,   0,   1,    0,      -1,      -1 }, // Scavenger's Badge
+  {  14933, 116766,  80964,   0,   1,    0,      -1,      -1 }, // Scavenger's Insignia
+  {  14935, 126482,  81125,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  14936, 126268,  81133,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  14937, 105693,  81136,   0,   0,    0,      -1,      -1 }, // Flask of Falling Leaves
+  {  14938, 126516,  81138,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Crit
+  {  20082,  11789,  81143,   0,   1,    0,      -1,      -1 }, // Water Breathing
+  {  20083, 117053,  81143,   1,   0,    0,      -1,   60000 }, // Advanced Deepdive Helm
+  {  14944, 126260,  81181,   0,   0, 1141,  120000,   20000 }, // Heart of Fire
+  {  14945, 126473,  81192,   0,   1,    0,      -1,      -1 }, // Predation
+  {  14947, 126237,  81243,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  14948, 126478,  81263,   0,   0, 1141,  150000,   25000 }, // Flashfreeze
+  {  14949, 126270,  81264,   0,   0,    0,  120000,   20000 }, // Vial of Ichorous Blood
+  {  14950, 126484,  81265,   0,   0, 1141,   90000,   15000 }, // Flashing Steel
+  {  14951, 126468,  81266,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  14952, 126490,  81267,   0,   1,    0,      -1,      -1 }, // Item - Attack Crits Proc Agi
+  {  14953, 126519,  81268,   0,   0, 1141,  120000,   20000 }, // Lessons of the Darkmaster
+  {  14959, 124239,  81400,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14960, 124240,  81401,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14961, 124241,  81402,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14962, 125074,  81403,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14963, 124243,  81404,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14964, 124241,  81405,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14965, 124242,  81406,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14967, 124245,  81408,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14968, 124246,  81409,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14969, 124247,  81410,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14970, 125073,  81411,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14971, 124249,  81412,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14972, 124247,  81413,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14973, 124248,  81414,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  14977, 118616,  81527,   0,   1,    0,      -1,      -1 }, // Mist Incarnation Medallion
+  {  14978, 118617,  81528,   0,   1,    0,      -1,      -1 }, // Bluetip Medallion
+  {  14979, 118618,  81529,   0,   1,    0,      -1,      -1 }, // Badger Medallion
+  {  14980, 118619,  81530,   0,   1,    0,      -1,      -1 }, // Mauler Medallion
+  {  14981, 118620,  81531,   0,   1,    0,      -1,      -1 }, // Glade Singer Medallion
+  {  14982, 118621,  81532,   0,   1,    0,      -1,      -1 }, // Silkspawn Carving
+  {  14983, 118622,  81533,   0,   1,    0,      -1,      -1 }, // Archivist's Emblem
+  {  14984, 118623,  81534,   0,   1,    0,      -1,      -1 }, // Carp Hunter Feather
+  {  14985, 118624,  81535,   0,   1,    0,      -1,      -1 }, // Glade Pincher Feather
+  {  14986, 118625,  81536,   0,   1,    0,      -1,      -1 }, // Jungle Huntress Idol
+  {  14989, 118762,  81661,   0,   1,    0,      -1,      -1 }, // Faded Forest Medallion
+  {  14990, 118763,  81662,   0,   1,    0,      -1,      -1 }, // Faded Forest Emblem
+  {  14991, 118764,  81663,   0,   1,    0,      -1,      -1 }, // Faded Forest Medal
+  {  14992, 118765,  81664,   0,   1,    0,      -1,      -1 }, // Faded Forest Insignia
+  {  14993, 118766,  81665,   0,   1,    0,      -1,      -1 }, // Faded Forest Badge
+  {  14996, 118876,  81829,   0,   1,    0,      -1,      -1 }, // Lucky Springtail Foot
+  {  14997, 118877,  81830,   0,   1,    0,      -1,      -1 }, // Maizer Leaf
+  {  14998, 118878,  81831,   0,   1,    0,      -1,      -1 }, // Shadow Fox Tail
+  {  14999, 118879,  81832,   0,   1,    0,      -1,      -1 }, // Mushan Horn
+  {  15000, 118880,  81833,   0,   1,    0,      -1,      -1 }, // Longfang Tooth
+  {  15001, 118881,  81834,   0,   1,    0,      -1,      -1 }, // Silkspawn Wing
+  {  15002, 118882,  81835,   0,   1,    0,      -1,      -1 }, // Plainshawk Feather
+  {  15003, 118883,  81836,   0,   1,    0,      -1,      -1 }, // Lucky "Rabbit's" Foot
+  {  15004, 118884,  81837,   0,   1,    0,      -1,      -1 }, // Viseclaw Carapace
+  {  15005, 118885,  81838,   0,   1,    0,      -1,      -1 }, // Tawnyhide Antler
+  {  15054, 120181,  82574,   0,   1,    0,      -1,      -1 }, // Coin of Blessings
+  {  15055, 120182,  82575,   0,   1,    0,      -1,      -1 }, // Coin of Serendipity
+  {  15056, 120183,  82576,   0,   1,    0,      -1,      -1 }, // Coin of Luck
+  {  15057, 120184,  82577,   0,   1,    0,      -1,      -1 }, // Coin of Good Fortune
+  {  15058, 120185,  82578,   0,   1,    0,      -1,      -1 }, // Luckydo Coin
+  {  15059, 120186,  82579,   0,   1,    0,      -1,      -1 }, // Lorewalker's Mark
+  {  15060, 120187,  82580,   0,   1,    0,      -1,      -1 }, // Lorewalker's Emblem
+  {  15061, 120188,  82581,   0,   1,    0,      -1,      -1 }, // Lorewalker's Sigil
+  {  15062, 120189,  82582,   0,   1,    0,      -1,      -1 }, // Lorewalker's Medallion
+  {  15063, 120190,  82583,   0,   1,    0,      -1,      -1 }, // Lorewalker's Insignia
+  {  15064, 120259,  82696,   0,   1,    0,      -1,      -1 }, // Mountainscaler Mark
+  {  15065, 120260,  82697,   0,   1,    0,      -1,      -1 }, // Mountainscaler Medal
+  {  15066, 120261,  82698,   0,   1,    0,      -1,      -1 }, // Mountainscaler Emblem
+  {  15067, 120262,  82699,   0,   1,    0,      -1,      -1 }, // Mountainscaler Insignia
+  {  15068, 120263,  82700,   0,   1,    0,      -1,      -1 }, // Mountainscaler Badge
+  {  36598, 122732,  82984,   0,   1,    0,      -1,      -1 }, // Jade Raccoon Despawn Aura - HW
+  {  36599, 121717,  82984,   1,   0,   94,  180000,  180000 }, // Socks
+  {  20084,  57818,  83079,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20085, 126434,  83079,   1,   1,    0,      -1,      -1 }, // Tushui Champion
+  {  20086,  57818,  83080,   0,   1,    0,      -1,      -1 }, // Has Tabard
+  {  20087, 126436,  83080,   1,   1,    0,      -1,      -1 }, // Huojin Champion
+  {  15118, 122273,  83245,   0,   1,    0,      -1,      -1 }, // Wasteland Relic
+  {  15119, 122274,  83246,   0,   1,    0,      -1,      -1 }, // Wasteland Sigil
+  {  15120, 122275,  83247,   0,   1,    0,      -1,      -1 }, // Wasteland Emblem
+  {  15121, 122276,  83248,   0,   1,    0,      -1,      -1 }, // Wasteland Insignia
+  {  15122, 122277,  83249,   0,   1,    0,      -1,      -1 }, // Wasteland Badge
+  {  15137, 122319,  83731,   0,   1,    0,      -1,      -1 }, // Mark of the Catacombs
+  {  15138, 122320,  83732,   0,   1,    0,      -1,      -1 }, // Sigil of the Catacombs
+  {  15139, 122321,  83733,   0,   1,    0,      -1,      -1 }, // Emblem of the Catacombs
+  {  15140, 122322,  83734,   0,   1,    0,      -1,      -1 }, // Medallion of the Catacombs
+  {  15141, 122323,  83735,   0,   1,    0,      -1,      -1 }, // Symbol of the Catacombs
+  {  15142, 122324,  83736,   0,   1,    0,      -1,      -1 }, // Sigil of Compassion
+  {  15143, 122325,  83737,   0,   1,    0,      -1,      -1 }, // Sigil of Fidelity
+  {  15144, 122326,  83738,   0,   1,    0,      -1,      -1 }, // Sigil of Grace
+  {  15145, 122327,  83739,   0,   1,    0,      -1,      -1 }, // Sigil of Patience
+  {  15146, 122328,  83740,   0,   1,    0,      -1,      -1 }, // Sigil of Devotion
+  {  15202, 122696,  84070,   0,   1,    0,      -1,      -1 }, // Fearwurm Relic
+  {  15203, 122697,  84071,   0,   1,    0,      -1,      -1 }, // Charm of Ten Songs
+  {  15204, 122698,  84072,   0,   1,    0,      -1,      -1 }, // Braid of Ten Songs
+  {  15205, 122699,  84073,   0,   1,    0,      -1,      -1 }, // Knot of Ten Songs
+  {  15206, 122700,  84074,   0,   1,    0,      -1,      -1 }, // Fearwurm Badge
+  {  15207, 122701,  84075,   0,   1,    0,      -1,      -1 }, // Relic of Kypari Zar
+  {  15208, 122702,  84076,   0,   1,    0,      -1,      -1 }, // Sigil of Kypari Zar
+  {  15209, 122703,  84077,   0,   1,    0,      -1,      -1 }, // Emblem of Kypari Zar
+  {  15210, 122704,  84078,   0,   1,    0,      -1,      -1 }, // Insignia of Kypari Zar
+  {  15211, 122705,  84079,   0,   1,    0,      -1,      -1 }, // Badge of Kypari Zar
+  {  15284, 122901,  84286,   0,   1,    0,      -1,      -1 }, // Skittering Relic
+  {  15285, 122902,  84287,   0,   1,    0,      -1,      -1 }, // Skittering Sigil
+  {  15286, 122903,  84288,   0,   1,    0,      -1,      -1 }, // Skittering Emblem
+  {  15287, 122904,  84289,   0,   1,    0,      -1,      -1 }, // Skittering Insignia
+  {  15288, 122905,  84290,   0,   1,    0,      -1,      -1 }, // Skittering Badge
+  {  15289, 122922,  84334,   0,   1,    0,      -1,      -1 }, // Golden Dream Relic
+  {  15290, 122923,  84335,   0,   1,    0,      -1,      -1 }, // Golden Dream Sigil
+  {  15291, 122924,  84336,   0,   1,    0,      -1,      -1 }, // Golden Dream Emblem
+  {  15292, 122925,  84337,   0,   1,    0,      -1,      -1 }, // Golden Dream Insignia
+  {  15293, 122926,  84338,   0,   1,    0,      -1,      -1 }, // Golden Dream Badge
+  {  15294, 126690,  84344,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  15295, 126708,  84349,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  15300, 126697,  84399,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15301, 126697,  84400,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15302, 126697,  84401,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15309,  42292,  84450,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15310,  42292,  84451,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15311,  42292,  84452,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15312,  42292,  84453,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15313,  42292,  84454,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15314,  42292,  84455,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15319, 126683,  84488,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  15320, 126706,  84489,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  15321, 126679,  84490,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  15322, 126702,  84495,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  15344, 132586,  84707,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15345, 132586,  84717,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15346, 132586,  84721,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15347, 132586,  84722,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15348, 132586,  84723,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15349, 132586,  84724,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15350, 132586,  84725,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15360, 132586,  84785,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15361, 132586,  84786,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15362, 132586,  84787,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15363, 132586,  84788,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15364, 132586,  84789,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15365, 132586,  84790,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15366, 132586,  84791,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15385,  42292,  84931,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15386,  42292,  84932,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15387,  42292,  84933,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15388, 126690,  84934,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  15389, 126708,  84935,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  15390, 126697,  84936,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15391, 126702,  84937,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  15392, 126697,  84938,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15393, 126697,  84939,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  15394, 126683,  84940,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  15395, 126706,  84941,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  15396, 126679,  84942,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  15397,  42292,  84943,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15398,  42292,  84944,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15399,  42292,  84945,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  15418, 132586,  85107,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15419, 132586,  85108,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15420, 132586,  85109,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15421, 132586,  85110,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15422, 132586,  85111,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15423, 132586,  85112,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15424, 132586,  85113,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  15429, 126237,  85181,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  28301, 123780,  85221,   1,   0,    0,      -1,      -1 }, // Blazing Trail
+  {  15525, 124349,  85777,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  15543, 126599,  86042,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15544, 126599,  86043,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15545, 126605,  86044,   0,   0, 1141,   60000,   15000 }, // Blossom
+  {  15546, 126606,  86045,   0,   0, 1141,   60000,   15000 }, // Scroll of Revered Ancestors
+  {  15547, 126597,  86046,   0,   0, 1141,   60000,   15000 }, // Jade Warlord Figurine
+  {  15549, 125109,  86069,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  15550, 125107,  86070,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  15551, 125114,  86073,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  15552, 125116,  86074,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  15553, 125282,  86125,   0,   0,    4,  300000,  300000 }, // Kafa Boost
+  {  15554, 126534,  86131,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  15555, 126552,  86132,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  15556, 126579,  86133,   0,   1,    0,      -1,      -1 }, // Item - Periodics Proc Int
+  {  15558, 126583,  86144,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  15559, 126590,  86147,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  15560, 126207,  86198,   0,   1,    0,      -1,      -1 }, // Hammer of Ten Thunders
+  {  15561, 126208,  86199,   0,   1,    0,      -1,      -1 }, // Jade Infused Blade
+  {  15562, 132602,  86227,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15665, 126647,  86323,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Dodge
+  {  15666, 126641,  86327,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Versatility
+  {  15667, 126650,  86332,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Critical Strike
+  {  15668, 132602,  86335,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15669, 126658,  86336,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  15724, 126660,  86388,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  15734, 125889,  86512,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15736, 126212,  86518,   0,   1,    0,      -1,      -1 }, // Yaungol Fire
+  {  15737, 128896,  86525,   0,   1,    0,      -1,      -1 }, // Bloodseeker's Fury
+  {  15738, 128887,  86526,   0,   1,    0,      -1,      -1 }, // Swarmkeeper's Speed
+  {  15739, 128853,  86529,   0,   1,    0,      -1,      -1 }, // Manipulator's Wrath
+  {  15748, 125889,  86550,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15749, 125889,  86551,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15750, 125889,  86552,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15751, 125889,  86553,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15752, 125889,  86554,   0,   0,    0,      -1,      -1 }, // Apprentice Cookbook
+  {  15764, 126555,  86567,   0,   0,    0,  120000,      -1 }, // Yaungol Wind Chime
+  {  15766, 127230,  86569,   0,   0,   79,  900000,    3000 }, // Visions of Insanity
+  {  36691, 127233,  86570,   0,   0,    0, 3600000,      -1 }, // Release Puppies
+  {  36692, 130119,  86570,   1,   1,    0,      -1,      -1 }, // Kidnapped Puppies Despawn Aura
+  {  36695, 127247,  86572,   0,   0,    0, 3600000,      -1 }, // Summon Terracotta Warrior
+  {  36696, 130067,  86572,   1,   1,    0,      -1,      -1 }, // Terracotta Warrior Despawn Aura
+  {  36697, 127265,  86576,   0,   0,    0, 3600000,      -1 }, // Summon Whirlwind of Blades
+  {  36698, 130070,  86576,   1,   1,    0,      -1,      -1 }, // Whirlwind of Blades Despawn Aura
+  {  15785, 129737,  86585,   0,   1,    0,      -1,      -1 }, // Golden Fleece Main
+  {  36699, 130146,  86587,   0,   0,    0, 3600000,      -1 }, // Summon Tranquil Sprout
+  {  36700, 130156,  86587,   1,   1,    0,      -1,      -1 }, // Tranquil Sprout Despawn Aura
+  {  15800, 126599,  86771,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15801, 126599,  86772,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15802, 126605,  86773,   0,   0, 1141,   60000,   15000 }, // Blossom
+  {  15803, 126606,  86774,   0,   0, 1141,   60000,   15000 }, // Scroll of Revered Ancestors
+  {  15804, 126597,  86775,   0,   0, 1141,   60000,   15000 }, // Jade Warlord Figurine
+  {  15805, 126534,  86790,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  15806, 126552,  86791,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  15807, 126579,  86792,   0,   1,    0,      -1,      -1 }, // Item - Periodics Proc Int
+  {  15808, 126583,  86802,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  15809, 126590,  86805,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  15810, 132602,  86865,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15811, 126647,  86881,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Dodge
+  {  15812, 126641,  86885,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Versatility
+  {  15813, 126650,  86890,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Critical Strike
+  {  15814, 132602,  86893,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15815, 126658,  86894,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  15816, 126660,  86907,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  15817, 132602,  86990,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15818, 126552,  87057,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  15819, 126534,  87063,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  15820, 126579,  87065,   0,   1,    0,      -1,      -1 }, // Item - Periodics Proc Int
+  {  15821, 126583,  87072,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  15822, 126590,  87075,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  15823, 126599,  87079,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15824, 126605,  87080,   0,   0, 1141,   60000,   15000 }, // Blossom
+  {  15825, 126606,  87081,   0,   0, 1141,   60000,   15000 }, // Scroll of Revered Ancestors
+  {  15826, 126599,  87082,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  15827, 126597,  87083,   0,   0, 1141,   60000,   15000 }, // Jade Warlord Figurine
+  {  15828, 126647,  87160,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Dodge
+  {  15829, 126641,  87163,   0,   1,    0,      -1,      -1 }, // Item - Heals Proc Versatility
+  {  15830, 126650,  87167,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Critical Strike
+  {  15831, 132602,  87170,   0,   1,    0,      -1,      -1 }, // Sha-dowfiend
+  {  15832, 126658,  87172,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  15833, 126660,  87175,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  28275, 126695,  87277,   1,   0,    0,      -1,      -1 }, // The Val'kyr
+  {  30665, 126797,  87392,   1,   0,    0,      -1,      -1 }, // Shadowy Friends
+  {  15915, 127575,  87495,   0,   0, 1141,  120000,   20000 }, // Perfection
+  {  15916, 127577,  87496,   0,   0, 1141,   90000,   10000 }, // Final Word
+  {  15917, 127573,  87497,   0,   1,    0,      -1,      -1 }, // Item - Healing Proc Spellpower
+  {  15918, 127570,  87498,   0,   0,    0,  120000,       0 }, // Whisper of Spirits
+  {  15919, 127569,  87499,   0,   0, 1141,  120000,   20000 }, // Gleaming
+  {  15920, 127549,  87500,   0,   0, 1141,  120000,   20000 }, // Munificence
+  {  15932,  43873,  87569,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
+  {  15933,  50070,  87570,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
+  {  15934, 127967,  87571,   0,   0, 1141,  120000,   20000 }, // Drunken Evasiveness
+  {  15935, 127924,  87572,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {  15936, 127914,  87573,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {  15937, 127926,  87574,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {  15938, 101286,  87575,   0,   0,   94,  600000,   60000 }, // Summon the Brewmaiden
+  {  15939, 101285,  87576,   0,   0,   94,  600000,   60000 }, // Summon the Black Brewmaiden
+  {  36693, 127464,  87780,   0,   0,    0, 3600000,      -1 }, // Summon Martar
+  {  36694, 130108,  87780,   1,   1,    0,      -1,      -1 }, // Martar Despawn Aura
+  {  28263, 125932,  87881,   1,   0,    0,      -1,      -1 }, // Crackling Tiger Lightning
+  {  28265, 125739,  87883,   1,   0,    0,      -1,      -1 }, // Honor
+  {  28266, 125152,  87885,   1,   0,    0,      -1,      -1 }, // Rising Tiger Kick
+  {  28264, 125874,  87888,   1,   0,    0,      -1,      -1 }, // Fighting Pose
+  {  16113, 127890,  88149,   0,   2,    0,      -1,      -1 }, // The Deepest Night
+  {  16116, 245998,  88294,   0,   0, 1141,   90000,   15000 }, // Flashing Steel
+  {  16118, 250047,  88358,   0,   0, 1141,  120000,   20000 }, // Lessons of the Darkmaster
+  {  36900, 127789,  88368,   0,   0, 1141,  300000,   60000 }, // Flamelager's Summer Keg
+  {  36901, 128529,  88368,   1,   1,    0,      -1,      -1 }, // Flamelager Kegwell Despawn Aura
+  {  16122, 127793,  88369,   0,   0, 1141,  120000,   60000 }, // Alerage's Reserve Keg
+  {  36600, 128520,  88371,   0,   1,    0,      -1,      -1 }, // Watermelon Bomb
+  {  36601, 127721,  88371,   1,   0,    0,  300000,       0 }, // Watermelon Bomb
+  {  36602, 128522,  88376,   0,   1,    0,      -1,      -1 }, // Painted Turnip
+  {  36603, 127819,  88376,   1,   0,    0,  300000,       0 }, // Painted Turnip
+  {  36898, 128525,  88378,   0,   1,    0,      -1,      -1 }, // Mothallus' Spinneret
+  {  36899, 127763,  88378,   1,   0,    0,  120000,       0 }, // Webbed
+  {  16132, 127843,  88379,   0,   0,   11,       0,    1000 }, // Grummlecake
+  {  16140, 127882,  88388,   0,   0,   11,       0,    1000 }, // Squirmy Delight
+  {  16153, 128329,  88535,   0,   0,    0,  600000,      -1 }, // Summon Tuskarr Fishing Spear
+  {  16156, 127858,  88577,   0,   0, 1141,  120000,   60000 }, // Explosive Barrel
+  {  16162, 128365,  88583,   0,   0, 1141,  180000,   60000 }, // Ban's Bomb
+  {  16164, 128387,  88585,   0,   1,    0,      -1,      -1 }, // Mantid Poison
+  {  16169, 128191,  88590,   0,   0, 1141,  120000,   60000 }, // Nurong's Gun Blast
+  {  16171, 102776,  88634,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  16172, 102778,  88636,   0,   1,    0,      -1,      -1 }, // Avoidance of the Snake
+  {  16173, 102776,  88639,   0,   1,    0,      -1,      -1 }, // Mastery of Nimbleness
+  {  16174, 102743,  88642,   0,   1,    0,      -1,      -1 }, // Agility of the Tiger
+  {  16175, 102777,  88644,   0,   1,    0,      -1,      -1 }, // Haste of the Mongoose
+  {  16176, 102780,  88647,   0,   1,    0,      -1,      -1 }, // Spirit of Wisdom
+  {  20088,   7823,  88710,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  {  20089, 128587,  88710,   1,   0,    0,  600000,      -1 }, // Fishing Hat Lure
+  {  16188, 129115,  88995,   0,   0, 1141,   60000,   60000 }, // Shado-Pan Dragon Gun
+  {  16190, 126597,  89079,   0,   0, 1141,   60000,   15000 }, // Jade Warlord Figurine
+  {  16191, 126606,  89080,   0,   0, 1141,   60000,   15000 }, // Scroll of Revered Ancestors
+  {  16192, 126605,  89081,   0,   0, 1141,   60000,   15000 }, // Blossom
+  {  16193, 126599,  89082,   0,   0, 1141,   60000,   15000 }, // Velocity
+  {  16194, 129812,  89083,   0,   0, 1141,   60000,   15000 }, // Hunger
+  {  16204, 129624,  89196,   0,   0, 1246,      -1,  180000 }, // Theramore Banner
+  {  16214, 129554,  89232,   0,   0,    0,   60000,       0 }, // Mogu Rune of Paralysis
+  {  16250, 130359,  89588,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16251, 130360,  89589,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16252, 130361,  89590,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16253, 130362,  89591,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16254, 130363,  89592,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16255, 130364,  89593,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16256, 130365,  89594,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16257, 130366,  89595,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16258, 130367,  89596,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16259, 130368,  89597,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16260, 130369,  89598,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16261, 130370,  89599,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16262, 130371,  89600,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  16263, 130372,  89601,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36888, 130484,  89611,   0,   1,    0,      -1,      -1 }, // Quilen Statuette Despawn Aura
+  {  36889, 130486,  89611,   1,   0,   94,  600000,  600000 }, // Quilen Statuette
+  {  16340, 131829,  90457,   0,   0,   11,      -1,    1000 }, // Refreshment
+  {  16420, 132586,  91087,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16421, 132586,  91088,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16422, 132586,  91089,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16423, 132586,  91090,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16424, 132586,  91091,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16425, 132586,  91092,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16426, 126690,  91099,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  16427, 126708,  91104,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  16428, 132586,  91133,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16429, 132586,  91134,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16436, 132586,  91182,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16437, 132586,  91183,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16440, 132586,  91207,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16441, 132586,  91208,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16442, 126697,  91209,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16443, 126697,  91210,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16444, 126697,  91211,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16457, 132586,  91307,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16458, 132586,  91308,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16477, 126683,  91400,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  16478, 126706,  91401,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  16479, 126679,  91410,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  16480, 126702,  91415,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  16485, 132586,  91440,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16486, 132586,  91442,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16487, 132586,  91444,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16488, 126690,  91452,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  16489, 126708,  91457,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  16490, 132586,  91486,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16494, 132586,  91535,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16496, 132586,  91560,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16497, 126697,  91562,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16498, 126697,  91563,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16499, 126697,  91564,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16506, 132586,  91660,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  16509,  42292,  91682,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16510,  42292,  91683,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16511,  42292,  91684,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16512,  42292,  91685,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16513,  42292,  91686,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16514,  42292,  91687,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16519, 126683,  91753,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  16520, 126706,  91754,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  16521, 126679,  91763,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  16522, 126702,  91768,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  16527, 133024,  91803,   0,   0,    4,  300000,  300000 }, // Snap Root Tuber
+  {  16731, 134944,  92782,   0,   0,    0,   60000,      -1 }, // Footman's Resolve
+  {  16732, 134953,  92783,   0,   0,    0,   60000,      -1 }, // Grunt's Tenacity
+  {  16733, 134945,  92784,   0,   0, 1141,   60000,   30000 }, // SI:7 Training
+  {  16734, 134954,  92785,   0,   0, 1141,   60000,   30000 }, // Kor'kron Elite
+  {  16735, 134946,  92786,   0,   0, 1182,   60000,   60000 }, // Supremacy of the Alliance
+  {  16736, 134956,  92787,   0,   0, 1182,   60000,   60000 }, // Supremacy of the Horde
+  {  16744, 134986,  92941,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Might
+  {  16745, 134987,  92942,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Cunning
+  {  16746, 134989,  92943,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Deftness
+  {  16831, 136086,  93253,   0,   0, 1141,   60000,   15000 }, // Archer's Grace
+  {  16832, 136082,  93254,   0,   0, 1141,   60000,   15000 }, // Static Charge
+  {  16833, 136083,  93255,   0,   0, 1141,   60000,   15000 }, // Needle and Thread
+  {  16834, 136084,  93256,   0,   0, 1141,   60000,   15000 }, // Sense for Weakness
+  {  16835, 136085,  93257,   0,   0, 1141,   60000,   15000 }, // Vapor Lock
+  {  16836, 136086,  93258,   0,   0, 1141,   60000,   15000 }, // Archer's Grace
+  {  16837, 136082,  93259,   0,   0, 1141,   60000,   15000 }, // Static Charge
+  {  16838, 136087,  93260,   0,   0, 1141,   60000,   15000 }, // Heartwarmer
+  {  16839, 136084,  93261,   0,   0, 1141,   60000,   15000 }, // Sense for Weakness
+  {  16840, 136085,  93262,   0,   0, 1141,   60000,   15000 }, // Vapor Lock
+  {  16842, 136088,  93341,   0,   0, 1141,   60000,   15000 }, // Deadeye
+  {  16843, 136089,  93342,   0,   0, 1141,   60000,   15000 }, // Arcane Sight
+  {  16844, 136090,  93343,   0,   0, 1141,   60000,   15000 }, // Mender's Charm
+  {  16845, 136091,  93344,   0,   0, 1141,   60000,   15000 }, // Knightly Valor
+  {  16846, 136092,  93345,   0,   0, 1141,   60000,   15000 }, // Superior Durability
+  {  16847, 136088,  93346,   0,   0, 1141,   60000,   15000 }, // Deadeye
+  {  16848, 136089,  93347,   0,   0, 1141,   60000,   15000 }, // Arcane Sight
+  {  16849, 136090,  93348,   0,   0, 1141,   60000,   15000 }, // Mender's Charm
+  {  16850, 136091,  93349,   0,   0, 1141,   60000,   15000 }, // Knightly Valor
+  {  16851, 136092,  93350,   0,   0, 1141,   60000,   15000 }, // Superior Durability
+  {  21127, 171615,  93391,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21128, 171615,  93392,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21129, 171615,  93393,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21130, 171615,  93394,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21131, 171615,  93395,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  16865, 126690,  93419,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  16866, 126708,  93424,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  16874, 126697,  93485,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16875, 126697,  93486,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16876, 126697,  93487,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  16888,  42292,  93560,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16889,  42292,  93561,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16890,  42292,  93562,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16891,  42292,  93563,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16892,  42292,  93564,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16893,  42292,  93565,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16898, 126683,  93600,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  16899, 126706,  93601,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  16900, 126679,  93606,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  16901, 126702,  93611,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  20098, 136600,  93732,   0,   0,    0, 3600000,      -1 }, // Darkmoon Fishing Cap
+  {  20099,   7823,  93732,   1,   1,    0,      -1,      -1 }, // +5 Fishing
+  {  16927,  14595,  93846,   0,   1,    0,      -1,      -1 },
+  {  16928, 182395,  93848,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {  16950,  59906,  93896,   0,   1,    0,      -1,      -1 }, // Swift Hand of Justice
+  {  16951,  59915,  93897,   0,   1,    0,      -1,      -1 }, // Discerning Eye of the Beast
+  {  16952,  42292,  93898,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16953,  42292,  93899,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  16954, 137211,  93900,   0,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17040, 132586,  94307,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17041, 132586,  94311,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17042, 132586,  94313,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17043, 132586,  94319,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17044, 132586,  94320,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17045, 132586,  94323,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17046, 132586,  94324,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17048, 126697,  94329,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17050,  42292,  94338,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17053, 126683,  94346,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17054, 126679,  94349,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17055, 126708,  94356,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17056,  42292,  94361,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17059, 126690,  94373,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17061,  42292,  94386,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17062,  42292,  94387,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17063,  42292,  94388,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17065, 126697,  94396,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17068, 126702,  94415,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17069, 126697,  94422,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17075,  42292,  94454,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17078, 126706,  94482,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17080, 138728,  94507,   0,   0,    0,  120000,       0 }, // Change of Tactics
+  {  17081, 138701,  94508,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17082, 138724,  94509,   0,   0,    0,  180000,       0 }, // Lifeblood
+  {  17083, 138704,  94510,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17084, 138700,  94511,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17085, 138757,  94512,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  17086, 138790,  94513,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Intellect
+  {  17087, 138849,  94514,   0,   1,    0,      -1,      -1 }, // Item - Proc Mana Per Time
+  {  17088, 138758,  94515,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  17089, 126697,  94516,   0,   0, 1190,  120000,  120000 }, // Tremendous Fortitude
+  {  17090, 138865,  94518,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery On Dodge
+  {  17091, 138871,  94519,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17092, 138924,  94520,   0,   1,    0,      -1,      -1 }, // Item - Proc Absorb
+  {  17093, 138896,  94521,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17094, 138894,  94522,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  17095, 138939,  94523,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility and Voodoo Gnomes
+  {  17096, 138964,  94524,   0,   1,    0,      -1,      -1 }, // Item - Spell Damage Proc 100% Critical Strike
+  {  36819, 138968,  94525,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Use Absorb
+  {  36820, 138925,  94525,   1,   0,    0,   20000,       0 }, // Zandalari Warding
+  {  17099, 138957,  94526,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Strength Transform
+  {  17100, 138972,  94527,   0,   1,    0,      -1,      -1 }, // Item - Proc Heal Below 35%
+  {  17101, 138979,  94528,   0,   0,    0,  120000,       0 }, // Soul Barrier
+  {  17102, 139171,  94529,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Stacking Crit
+  {  17103, 139190,  94530,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Smart Heal
+  {  17104, 139134,  94531,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  17105, 139116,  94532,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Highest Rating
+  {  17106, 124248,  94535,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17153, 139432,  95050,   1,   0,    0, 3600000,       0 }, // Teleport: Brawl'gar Arena
+  {  17154, 139437,  95051,   1,   0,    0, 3600000,       0 }, // Teleport: Bizmo's Brewpub
+  {  17190,  46643,  95426,   1,   0,    0,   60000,      -1 }, // Frostscythe
+  {  17244, 138757,  95625,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  17245, 138849,  95641,   0,   1,    0,      -1,      -1 }, // Item - Proc Mana Per Time
+  {  17246, 138957,  95654,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Strength Transform
+  {  17247, 138939,  95665,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility and Voodoo Gnomes
+  {  17248, 138790,  95669,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Intellect
+  {  17249, 126697,  95677,   0,   0, 1190,  120000,  120000 }, // Tremendous Fortitude
+  {  17250, 138896,  95711,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17251, 138924,  95712,   0,   1,    0,      -1,      -1 }, // Item - Proc Absorb
+  {  17252, 138758,  95726,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  17253, 138972,  95727,   0,   1,    0,      -1,      -1 }, // Item - Proc Heal Below 35%
+  {  17254, 138894,  95748,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  17255, 138871,  95757,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  36817, 138968,  95763,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Use Absorb
+  {  36818, 138925,  95763,   1,   0,    0,   20000,       0 }, // Zandalari Warding
+  {  17258, 139134,  95772,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  17259, 138865,  95779,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery On Dodge
+  {  17260, 139171,  95799,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Stacking Crit
+  {  17261, 139116,  95802,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Highest Rating
+  {  17262, 138979,  95811,   0,   0,    0,  120000,       0 }, // Soul Barrier
+  {  17263, 138964,  95814,   0,   1,    0,      -1,      -1 }, // Item - Spell Damage Proc 100% Critical Strike
+  {  17264, 139190,  95817,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Smart Heal
+  {  17265, 138757,  95997,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  17266, 138849,  96013,   0,   1,    0,      -1,      -1 }, // Item - Proc Mana Per Time
+  {  17267, 138957,  96026,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Strength Transform
+  {  17268, 138939,  96037,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility and Voodoo Gnomes
+  {  17269, 138790,  96041,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Intellect
+  {  17270, 126697,  96049,   0,   0, 1190,  120000,  120000 }, // Tremendous Fortitude
+  {  17271, 138896,  96083,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17272, 138924,  96084,   0,   1,    0,      -1,      -1 }, // Item - Proc Absorb
+  {  17273, 138758,  96098,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  17274, 138972,  96099,   0,   1,    0,      -1,      -1 }, // Item - Proc Heal Below 35%
+  {  17275, 138894,  96120,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  17276, 138871,  96129,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  35017, 138968,  96135,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Use Absorb
+  {  35018, 138925,  96135,   1,   0,    0,   20000,       0 }, // Zandalari Warding
+  {  17279, 139134,  96144,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  17280, 138865,  96151,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery On Dodge
+  {  17281, 139171,  96171,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Stacking Crit
+  {  17282, 139116,  96174,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Highest Rating
+  {  17283, 138979,  96183,   0,   0,    0,  120000,       0 }, // Soul Barrier
+  {  17284, 138964,  96186,   0,   1,    0,      -1,      -1 }, // Item - Spell Damage Proc 100% Critical Strike
+  {  17285, 139190,  96189,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Smart Heal
+  {  17286, 138757,  96369,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  17287, 138849,  96385,   0,   1,    0,      -1,      -1 }, // Item - Proc Mana Per Time
+  {  17288, 138957,  96398,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Strength Transform
+  {  17289, 138939,  96409,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility and Voodoo Gnomes
+  {  17290, 138790,  96413,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Intellect
+  {  17291, 126697,  96421,   0,   0, 1190,  120000,  120000 }, // Tremendous Fortitude
+  {  17292, 138896,  96455,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17293, 138924,  96456,   0,   1,    0,      -1,      -1 }, // Item - Proc Absorb
+  {  17294, 138758,  96470,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  17295, 138972,  96471,   0,   1,    0,      -1,      -1 }, // Item - Proc Heal Below 35%
+  {  17296, 138894,  96492,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  17297, 138871,  96501,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  36821, 138968,  96507,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Use Absorb
+  {  36822, 138925,  96507,   1,   0,    0,   20000,       0 }, // Zandalari Warding
+  {  17300, 139134,  96516,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  17301, 138865,  96523,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery On Dodge
+  {  17302, 139171,  96543,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Stacking Crit
+  {  17303, 139116,  96546,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Highest Rating
+  {  17304, 138979,  96555,   0,   0,    0,  120000,       0 }, // Soul Barrier
+  {  17305, 138964,  96558,   0,   1,    0,      -1,      -1 }, // Item - Spell Damage Proc 100% Critical Strike
+  {  17306, 139190,  96561,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Smart Heal
+  {  17307, 138757,  96741,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Agility
+  {  17308, 138849,  96757,   0,   1,    0,      -1,      -1 }, // Item - Proc Mana Per Time
+  {  17309, 138957,  96770,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Strength Transform
+  {  17310, 138939,  96781,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility and Voodoo Gnomes
+  {  17311, 138790,  96785,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Intellect
+  {  17312, 126697,  96793,   0,   0, 1190,  120000,  120000 }, // Tremendous Fortitude
+  {  17313, 138896,  96827,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17314, 138924,  96828,   0,   1,    0,      -1,      -1 }, // Item - Proc Absorb
+  {  17315, 138758,  96842,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Strength
+  {  17316, 138972,  96843,   0,   1,    0,      -1,      -1 }, // Item - Proc Heal Below 35%
+  {  17317, 138894,  96864,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  17318, 138871,  96873,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  35019, 138968,  96879,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Use Absorb
+  {  35020, 138925,  96879,   1,   0,    0,   20000,       0 }, // Zandalari Warding
+  {  17321, 139134,  96888,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  17322, 138865,  96895,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery On Dodge
+  {  17323, 139171,  96915,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Stacking Crit
+  {  17324, 139116,  96918,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Highest Rating
+  {  17325, 138979,  96927,   0,   0,    0,  120000,       0 }, // Soul Barrier
+  {  17326, 138964,  96930,   0,   1,    0,      -1,      -1 }, // Item - Spell Damage Proc 100% Critical Strike
+  {  17327, 139190,  96933,   0,   1,    0,      -1,      -1 }, // Item - Proc Charges For Smart Heal
+  {  17396, 141861,  97826,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Breastplate
+  {  17397, 141863,  97827,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Boots
+  {  17398, 141864,  97828,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Gloves
+  {  17399, 141865,  97829,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Helm
+  {  17400, 141866,  97830,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Leggings
+  {  17401, 141867,  97831,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Shoulders
+  {  17402, 141843,  97832,   0,   0,    0,      -1,      -1 }, // Infuse Armor - Belt
+  {  17429, 134989,  98061,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Deftness
+  {  17430, 134987,  98062,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Cunning
+  {  17431, 134986,  98063,   0,   0,    4,  300000,  300000 }, // Potion of Brawler's Might
+  {  17450, 142273,  98111,   0,   0,   11,      -1,      -1 }, // Refreshment
+  {  17453, 142281,  98116,   0,   0,   11,      -1,      -1 }, // Refreshment
+  {  17455, 142287,  98118,   0,   0,   11,      -1,      -1 }, // Refreshment
+  {  17457, 124246,  98122,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17458, 124247,  98123,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17459, 125073,  98124,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17460, 124249,  98125,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17461, 124247,  98126,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17462, 124248,  98127,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17473, 143625,  98543,   0,   1,    0,      -1,      -1 }, // Brawling Champion
+  {  17487, 126690,  98755,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17488, 126708,  98760,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17493, 126697,  98811,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17494, 126697,  98812,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17495, 126697,  98813,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17504,  42292,  98875,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17505,  42292,  98876,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17506,  42292,  98877,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17507,  42292,  98878,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17508,  42292,  98879,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17509,  42292,  98880,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17514, 126683,  98910,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17515, 126706,  98911,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17516, 126679,  98912,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17517, 126702,  98917,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17520, 132586,  99766,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17521, 132586,  99767,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17522, 132586,  99768,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17523, 126690,  99772,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17524, 126708,  99777,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17525, 132586,  99796,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17529, 132586,  99824,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17531, 132586,  99837,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17532, 126697,  99838,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17533, 126697,  99839,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17534, 126697,  99840,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17541, 132586,  99892,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17548, 126683,  99937,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17549, 126706,  99938,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17550, 126679,  99943,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17551, 126702,  99948,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17554, 132586,  99968,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17555, 132586,  99972,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17556, 132586,  99974,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17557, 132586,  99980,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17558, 132586,  99981,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17559, 132586,  99984,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17560, 132586,  99985,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17562, 126697,  99990,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17564,  42292, 100006,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17567, 126683, 100016,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17568, 126679, 100019,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17569, 126708, 100026,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17570,  42292, 100031,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17573, 126690, 100043,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17575,  42292, 100056,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17576,  42292, 100057,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17577,  42292, 100058,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17579, 126697, 100066,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17582, 126702, 100085,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17583, 126697, 100092,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17589,  42292, 100124,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17592, 126706, 100152,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17594, 132586, 100183,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17595, 132586, 100185,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17596, 132586, 100187,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17597, 126690, 100195,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17598, 126708, 100200,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17599, 132586, 100229,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17603, 132586, 100278,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17605, 132586, 100303,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17606, 126697, 100305,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17607, 126697, 100306,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17608, 126697, 100307,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17615, 132586, 100403,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17622, 126683, 100490,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17623, 126706, 100491,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17624, 126679, 100500,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17625, 126702, 100505,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17628, 132586, 100537,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17629, 132586, 100541,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17630, 132586, 100543,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17631, 132586, 100549,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17632, 132586, 100550,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17633, 132586, 100553,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17634, 132586, 100554,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17636, 126697, 100559,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17638,  42292, 100568,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17641, 126683, 100576,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17642, 126679, 100579,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17643, 126708, 100586,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17644,  42292, 100591,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17647, 126690, 100603,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17649,  42292, 100616,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17650,  42292, 100617,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17651,  42292, 100618,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17653, 126697, 100626,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17656, 126702, 100645,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17657, 126697, 100652,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17663,  42292, 100684,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17666, 126706, 100712,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17688, 126478, 100951,   0,   0, 1141,  150000,   25000 }, // Flashfreeze
+  {  17689, 126270, 100963,   0,   0,    0,  120000,   20000 }, // Vial of Ichorous Blood
+  {  17690, 133631, 100990,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17691, 126583, 100991,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17692, 126237, 100999,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  17693, 133631, 101002,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17694, 126552, 101009,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17695, 133631, 101012,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17696, 126660, 101023,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17697, 133631, 101026,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17698, 126468, 101038,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  17699, 126268, 101041,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17700, 126552, 101054,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17701, 133631, 101057,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17702, 126660, 101069,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17703, 133631, 101072,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17704, 133631, 101087,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17705, 126237, 101089,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  17706, 126468, 101102,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  17707, 126268, 101107,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17708, 126552, 101113,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17709, 133631, 101117,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17710, 126468, 101135,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  17711, 126268, 101138,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17712, 133631, 101151,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17713, 126583, 101152,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17714, 126237, 101160,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  17715, 133631, 101163,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17716, 126660, 101168,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17717, 133631, 101171,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17718, 126468, 101179,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  17719, 126268, 101183,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17720, 126552, 101200,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17721, 133631, 101203,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17722, 126552, 101217,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17723, 133631, 101220,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17724, 126660, 101222,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17725, 133631, 101225,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17726, 126468, 101247,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  17727, 126268, 101250,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17728, 126660, 101263,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  17729, 133631, 101266,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17730, 133631, 101294,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17731, 126583, 101295,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17732, 126237, 101303,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  17733, 133631, 101306,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17764, 145300, 101745,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17765, 145266, 101746,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17766, 145301, 101747,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17767, 145267, 101748,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17768, 145302, 101749,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17769, 145303, 101750,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  17797, 146193, 102245,   0,   1,    0,      -1,      -1 }, // Endurance of Niuzao
+  {  17798, 146197, 102246,   0,   1,    0,      -1,      -1 }, // Essence of Yu'lon
+  {  17799, 146199, 102247,   0,   1,    0,      -1,      -1 }, // Spirit of Chi-Ji
+  {  17800, 146195, 102248,   0,   1,    0,      -1,      -1 }, // Flurry of Xuen
+  {  17801, 146195, 102249,   0,   1,    0,      -1,      -1 }, // Flurry of Xuen
+  {  17802, 146193, 102250,   0,   1,    0,      -1,      -1 }, // Endurance of Niuzao
+  {  17803, 146238, 102263,   0,   0,    0,      -1,      -1 }, // Create Chestpiece
+  {  17804, 146237, 102264,   0,   0,    0,      -1,      -1 }, // Create Boots
+  {  17805, 146239, 102265,   0,   0,    0,      -1,      -1 }, // Create Gloves
+  {  17806, 146240, 102266,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  17807, 146241, 102267,   0,   0,    0,      -1,      -1 }, // Create Leggings
+  {  17808, 146242, 102268,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  17809, 146236, 102269,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  17810, 146261, 102270,   0,   0,    0,      -1,      -1 }, // Create Chestpiece
+  {  17811, 146260, 102271,   0,   0,    0,      -1,      -1 }, // Create Boots
+  {  17812, 146263, 102272,   0,   0,    0,      -1,      -1 }, // Create Gloves
+  {  17813, 146264, 102273,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  17814, 146265, 102274,   0,   0,    0,      -1,      -1 }, // Create Leggings
+  {  17815, 146266, 102275,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  17816, 146259, 102276,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  17817, 146270, 102277,   0,   0,    0,      -1,      -1 }, // Create Chestpiece
+  {  17818, 146269, 102278,   0,   0,    0,      -1,      -1 }, // Create Boots
+  {  17819, 146271, 102279,   0,   0,    0,      -1,      -1 }, // Create Gloves
+  {  17820, 146272, 102280,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  17821, 146273, 102281,   0,   0,    0,      -1,      -1 }, // Create Leggings
+  {  17822, 146274, 102282,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  17823, 146268, 102283,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  17824, 146278, 102284,   0,   0,    0,      -1,      -1 }, // Create Robes
+  {  17825, 146277, 102285,   0,   0,    0,      -1,      -1 }, // Create Boots
+  {  17826, 146279, 102286,   0,   0,    0,      -1,      -1 }, // Create Gloves
+  {  17827, 146280, 102287,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  17828, 146281, 102288,   0,   0,    0,      -1,      -1 }, // Create Leggings
+  {  17829, 146282, 102289,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  17830, 146276, 102290,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  17831, 146244, 102291,   0,   0,    0,      -1,      -1 }, // Create Ring
+  {  17832, 146019, 102292,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20480, 146309, 102292,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19581, 146047, 102293,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20461, 146051, 102293,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  19568, 148909, 102294,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  17837, 146136, 102295,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20426, 148901, 102295,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  17838, 146343, 102296,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  17839, 145955, 102298,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20487, 146247, 102298,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  19575, 146051, 102299,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20454, 146315, 102299,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19562, 148907, 102300,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19556, 148904, 102301,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19587, 146136, 102302,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20440, 148895, 102302,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19544, 146136, 102303,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20433, 148898, 102303,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19593, 148233, 102304,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20447, 148912, 102304,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19599, 146051, 102305,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20468, 146251, 102305,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20494, 146025, 102306,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  17854, 146395, 102307,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  17855, 146286, 102308,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  17856, 146316, 102309,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  17857, 146183, 102310,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  17858, 146311, 102311,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  17859, 146313, 102312,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  17860, 146219, 102313,   0,   1,    0,      -1,      -1 }, // Item - Spells Proc Crit
+  {  17861, 146323, 102314,   0,   0,    0,   90000,       0 }, // Inward Contemplation
+  {  17862, 146295, 102315,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  17863, 146344, 102316,   0,   0,    0,  120000,       0 }, // Defensive Maneuvers
+  {  17864, 146246, 102318,   0,   0,    0,      -1,      -1 }, // Create Cloak
+  {  17865, 146243, 102320,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  17866, 146283, 102321,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  17867, 146275, 102322,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  17868, 146267, 102323,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  17877,  42292, 102480,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17878,  42292, 102481,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17879,  42292, 102483,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17889, 132586, 102595,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17890, 132586, 102599,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17891, 132586, 102601,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17892, 132586, 102606,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17893, 132586, 102607,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17894, 132586, 102610,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17895, 132586, 102611,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17897, 126697, 102616,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17899,  42292, 102625,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17902, 126683, 102633,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17903, 126679, 102636,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17904, 126708, 102643,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17907, 126690, 102659,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17909,  42292, 102672,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17911, 126697, 102680,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17914, 126702, 102699,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17915, 126697, 102706,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17921,  42292, 102738,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17924, 126706, 102766,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17926, 132586, 102792,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17927, 132586, 102796,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17928, 132586, 102798,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17929, 132586, 102803,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17930, 132586, 102804,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17931, 132586, 102807,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17932, 132586, 102808,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17934, 126697, 102813,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17936,  42292, 102822,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17939, 126683, 102830,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17940, 126679, 102833,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17941, 126708, 102840,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17944, 126690, 102856,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17946,  42292, 102869,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17948, 126697, 102877,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17951, 126702, 102896,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17952, 126697, 102903,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17958,  42292, 102935,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17961, 126706, 102963,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17963, 132586, 103139,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17964, 132586, 103140,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17965, 132586, 103141,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17966, 126690, 103145,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  17967, 126708, 103150,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  17968, 132586, 103169,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17972, 132586, 103197,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17974, 132586, 103209,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17975, 126697, 103210,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17976, 126697, 103211,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17977, 126697, 103212,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  17984, 132586, 103264,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  17991, 126683, 103308,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  17992, 126706, 103309,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  17993, 126679, 103314,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  17994, 126702, 103319,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  17997,  42292, 103333,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17998,  42292, 103334,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  17999,  42292, 103335,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  18000, 132586, 103336,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18001, 132586, 103337,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18002, 132586, 103338,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18003, 126690, 103342,   1,   0, 1141,   60000,   20000 }, // Call of Conquest
+  {  18004, 126708, 103347,   1,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  18005, 132586, 103366,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18009, 132586, 103394,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18011, 132586, 103406,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18012, 126697, 103407,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  18013, 126697, 103408,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  18014, 126697, 103409,   1,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  18021, 132586, 103461,   0,   1,    0,      -1,      -1 }, // Increased PVP Power (2H PVP Weapon Budget)
+  {  18028, 126683, 103505,   1,   0, 1141,   60000,   20000 }, // Call of Dominance
+  {  18029, 126706, 103506,   1,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  18030, 126679, 103511,   1,   0, 1141,   60000,   20000 }, // Call of Victory
+  {  18031, 126702, 103516,   1,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  18034,  42292, 103530,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  18035,  42292, 103531,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  18036,  42292, 103532,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  18046, 148388, 103639,   0,   0, 1141,   60000,   30000 }, // White Ash
+  {  20132, 147057, 103649,   0,   1,    0,      -1,      -1 },
+  {  20133, 147084, 103649,   1,   1,    0,      -1,      -1 },
+  {  36882, 145430, 103678,   0,   0,    0,   60000,      -1 }, // Call of the Mists
+  {  36883, 148446, 103678,   1,   1,    0,      -1,      -1 }, // Winds of Time
+  {  18067, 146313, 103686,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  18068, 146219, 103687,   0,   1,    0,      -1,      -1 }, // Item - Spells Proc Crit
+  {  18069, 146323, 103688,   0,   0,    0,   90000,       0 }, // Inward Contemplation
+  {  18070, 146295, 103689,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  18071, 146344, 103690,   0,   0,    0,  120000,       0 }, // Defensive Maneuvers
+  {  18076, 124349, 103908,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  18077, 147343, 103982,   0,   0,    0,      -1,      -1 }, // Burden of Eternity
+  {  18078, 146313, 103986,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  18079, 146219, 103987,   0,   1,    0,      -1,      -1 }, // Item - Spells Proc Crit
+  {  18080, 146323, 103988,   0,   0,    0,   90000,       0 }, // Inward Contemplation
+  {  18081, 146295, 103989,   0,   1,    0,      -1,      -1 }, // Item - Hits Proc Haste
+  {  18082, 146344, 103990,   0,   0,    0,  120000,       0 }, // Defensive Maneuvers
+  {  28309, 147963, 104099,   1,   0,    0,      -1,      -1 }, // Skeleton
+  {  28246, 147970, 104104,   1,   0,    0,      -1,      -1 }, // Unbound Elemental
+  {  28247, 147971, 104105,   1,   0,    0,      -1,      -1 }, // Evaporation
+  {  28271, 147974, 104108,   1,   0,    0,      -1,      -1 }, // Pillar of Light
+  {  28274, 148071, 104120,   1,   0,    0,      -1,      -1 }, // Sha
+  {  28277, 148074, 104122,   1,   0,    0,      -1,      -1 }, // Inspired Hymns
+  {  28281, 148079, 104126,   1,   0,    0,      -1,      -1 }, // Spirit Raptors
+  {  28282, 148080, 104127,   1,   0,    0,      -1,      -1 }, // Lingering Ancestors
+  {  28300, 148114, 104138,   1,   0,    0,      -1,      -1 }, // Weaponmaster
+  {  18223, 148238, 104196,   0,   7,    0,      -1,      -1 }, // Consume Ogre Queasine
+  {  18340, 148534, 104298,   0,   0, 1141,  120000,    1500 }, // Ordon Death Chime
+  {  18352, 148558, 104313,   0,   1,    0,      -1,      -1 }, // Golden Moss
+  {  36701, 148597, 104321,   0,   0,    0, 3600000,      -1 }, // Summon Crew of the Barnacle
+  {  36702, 148596, 104321,   1,   1,    0,      -1,      -1 }, // Barnacle Crew Despawn Aura
+  {  18379, 148744, 104339,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18380, 148720, 104340,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18381, 148745, 104341,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18382, 148749, 104342,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18383, 148747, 104343,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18384, 148749, 104344,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18385, 148740, 104345,   0,   0,    0,      -1,      -1 }, // Create Lavalliere
+  {  18387, 148746, 104347,   0,   0,    0,      -1,      -1 }, // Create Curio
+  {  19582, 146047, 104426,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20463, 146051, 104426,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  18393, 146343, 104442,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  19551, 146136, 104463,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20428, 148901, 104463,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18396, 146019, 104476,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20482, 146309, 104476,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19576, 146051, 104478,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20456, 146315, 104478,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  18399, 145955, 104495,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20489, 146247, 104495,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18400, 124349, 104508,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  19557, 148904, 104531,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19563, 148907, 104544,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19569, 148909, 104553,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20496, 146025, 104572,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  19546, 146136, 104576,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20435, 148898, 104576,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19588, 146136, 104584,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20442, 148895, 104584,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19594, 148233, 104611,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20449, 148912, 104611,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19600, 146051, 104613,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20470, 146251, 104613,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18416, 146311, 104616,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  18417, 146316, 104619,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  18418, 146286, 104636,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20136, 147057, 104648,   0,   1,    0,      -1,      -1 },
+  {  20137, 147084, 104648,   1,   1,    0,      -1,      -1 },
+  {  18421, 146395, 104649,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  18422, 146183, 104652,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  19583, 146047, 104675,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20459, 146051, 104675,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  18425, 146343, 104691,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  19552, 146136, 104712,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20424, 148901, 104712,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18428, 146019, 104725,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20478, 146309, 104725,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19577, 146051, 104727,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20452, 146315, 104727,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  18431, 145955, 104744,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20486, 146247, 104744,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18432, 124349, 104757,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  19558, 148904, 104780,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19564, 148907, 104793,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19570, 148909, 104802,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20492, 146025, 104821,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  19547, 146136, 104825,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20432, 148898, 104825,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19589, 146136, 104833,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20438, 148895, 104833,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19595, 148233, 104860,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20446, 148912, 104860,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19601, 146051, 104862,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20467, 146251, 104862,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18448, 146311, 104865,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  18449, 146316, 104868,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  18450, 146286, 104885,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20138, 147057, 104897,   0,   1,    0,      -1,      -1 },
+  {  20139, 147084, 104897,   1,   1,    0,      -1,      -1 },
+  {  18453, 146395, 104898,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  18454, 146183, 104901,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  19584, 146047, 104924,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20458, 146051, 104924,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  18457, 146343, 104940,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  19553, 146136, 104961,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20423, 148901, 104961,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18460, 146019, 104974,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20477, 146309, 104974,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19578, 146051, 104976,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20451, 146315, 104976,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  18463, 145955, 104993,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20484, 146247, 104993,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18464, 124349, 105006,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  19559, 148904, 105029,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19565, 148907, 105042,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19571, 148909, 105051,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20491, 146025, 105070,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  19548, 146136, 105074,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20430, 148898, 105074,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19590, 146136, 105082,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20437, 148895, 105082,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19596, 148233, 105109,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20444, 148912, 105109,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19602, 146051, 105111,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20465, 146251, 105111,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18480, 146311, 105114,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  18481, 146316, 105117,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  18482, 146286, 105134,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20140, 147057, 105146,   0,   1,    0,      -1,      -1 },
+  {  20141, 147084, 105146,   1,   1,    0,      -1,      -1 },
+  {  18485, 146395, 105147,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  18486, 146183, 105150,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  19585, 146047, 105173,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20462, 146051, 105173,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  18489, 146343, 105189,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  19554, 146136, 105210,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20427, 148901, 105210,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18492, 146019, 105223,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20481, 146309, 105223,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19579, 146051, 105225,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20455, 146315, 105225,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  18495, 145955, 105242,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20488, 146247, 105242,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18496, 124349, 105255,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  19560, 148904, 105278,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19566, 148907, 105291,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19573, 148909, 105300,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20495, 146025, 105319,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  19549, 146136, 105323,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20434, 148898, 105323,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19591, 146136, 105331,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20441, 148895, 105331,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19597, 148233, 105358,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20448, 148912, 105358,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19603, 146051, 105360,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20469, 146251, 105360,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18512, 146311, 105363,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  18513, 146316, 105366,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  18514, 146286, 105383,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20142, 147057, 105395,   0,   1,    0,      -1,      -1 },
+  {  20143, 147084, 105395,   1,   1,    0,      -1,      -1 },
+  {  18517, 146395, 105396,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  18518, 146183, 105399,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  19586, 146047, 105422,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20464, 146051, 105422,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  18521, 146343, 105438,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  19555, 146136, 105459,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20429, 148901, 105459,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18524, 146019, 105472,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20483, 146309, 105472,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19580, 146051, 105474,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20457, 146315, 105474,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  18527, 145955, 105491,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20490, 146247, 105491,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18528, 124349, 105504,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  19561, 148904, 105527,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19567, 148907, 105540,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19574, 148909, 105549,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20497, 146025, 105568,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  19550, 146136, 105572,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20436, 148898, 105572,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  19592, 146136, 105580,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20443, 148895, 105580,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19598, 148233, 105607,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20450, 148912, 105607,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  19604, 146051, 105609,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20471, 146251, 105609,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  18544, 146311, 105612,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  18545, 146316, 105615,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  18546, 146286, 105632,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20144, 147057, 105644,   0,   1,    0,      -1,      -1 },
+  {  20145, 147084, 105644,   1,   1,    0,      -1,      -1 },
+  {  18549, 146395, 105645,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  18550, 146183, 105648,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  18562, 124249, 105717,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18564, 124247, 105719,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18565, 125073, 105720,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18566, 124248, 105721,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18567, 124245, 105722,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18568, 124247, 105723,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18569, 124246, 105724,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  18610, 156654, 106899,   0,   1,    0,      -1,      -1 }, // Frostwolf Veteran's Keepsake
+  {  18625, 150806, 107195,   0,   1,    0,      -1,      -1 }, // Firefury Spirit
+  {  18768, 155447, 108902,   0,   0,    0,  120000,      -1 }, // Armored Elekk Tusk
+  {  18769, 167362, 108903,   0,   0, 1141,  120000,   60000 }, // Tiny Iron Star
+  {  18770, 155449, 108907,   0,   1,    0,      -1,      -1 }, // Mushroom of Destiny
+  {  18772, 155485, 108945,   1,   1,    0,      -1,      -1 }, // Void-Boiled Squirrel
+  {  18990, 155853, 109057,   0,   1,    0,      -1,      -1 }, // Frogskin Diving Cap
+  {  18999, 156073, 109145,   0,   0,   79,       0,    3000 }, // Draenic Agility Flask
+  {  19001, 156070, 109147,   0,   0,   79,       0,    3000 }, // Draenic Intellect Flask
+  {  19002, 156071, 109148,   0,   0,   79,       0,    3000 }, // Draenic Strength Flask
+  {  19006, 156077, 109152,   0,   0,   79,       0,    3000 }, // Draenic Stamina Flask
+  {  19007, 156064, 109153,   0,   0,   79,       0,    3000 }, // Greater Draenic Agility Flask
+  {  19009, 156079, 109155,   0,   0,   79,       0,    3000 }, // Greater Draenic Intellect Flask
+  {  19010, 156080, 109156,   0,   0,   79,       0,    3000 }, // Greater Draenic Strength Flask
+  {  19014, 156084, 109160,   0,   0,   79,       0,    3000 }, // Greater Draenic Stamina Flask
+  {  24687,  12883, 109171,   0,   0,    0,       0,       0 }, // Longsight
+  {  24688,  12883, 109172,   0,   0,    0,       0,       0 }, // Longsight
+  {  24689,  12883, 109173,   0,   0,    0,       0,       0 }, // Longsight
+  {  24690,  12883, 109174,   0,   0,    0,       0,       0 }, // Longsight
+  {  19023, 156423, 109217,   0,   0,    4,  300000,  300000 }, // Draenic Agility Potion
+  {  19024, 156426, 109218,   0,   0,    4,  300000,  300000 }, // Draenic Intellect Potion
+  {  19025, 156428, 109219,   0,   0,    4,  300000,  300000 }, // Draenic Strength Potion
+  {  19026, 156430, 109220,   0,   0,    4,  300000,  300000 }, // Draenic Versatility Potion
+  {  19644, 157136, 109262,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  19645,  17619, 109262,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  20333, 165485, 109997,   0,   0, 1141,  120000,   20000 }, // Mastery
+  {  20334, 165542, 109998,   0,   0, 1141,   90000,   15000 }, // Critical Strike
+  {  20357, 165821, 109999,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20335, 165531, 110002,   0,   0, 1141,  120000,   20000 }, // Haste
+  {  20336, 165543, 110003,   0,   0, 1141,   90000,   15000 }, // Versatility
+  {  20359, 165838, 110004,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  20337, 165532, 110007,   0,   0, 1141,  120000,   20000 }, // Critical Strike
+  {  20338, 165535, 110008,   0,   0, 1141,   90000,   15000 }, // Mastery
+  {  20360, 165840, 110009,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility
+  {  20339, 165532, 110012,   0,   0, 1141,  120000,   20000 }, // Critical Strike
+  {  20340, 165543, 110013,   0,   0, 1141,   90000,   15000 }, // Versatility
+  {  20361, 165821, 110014,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20341, 165534, 110017,   0,   0, 1141,  120000,   20000 }, // Versatility
+  {  20342, 165535, 110018,   0,   0, 1141,   90000,   15000 }, // Mastery
+  {  20362, 165825, 110019,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  19271,    483, 110672,   0,   0,    0,      -1,      -1 }, // Learning
+  {  19272, 115913, 110672,   1,   6,    0,      -1,      -1 }, // Wisdom of the Four Winds
+  {  19506, 182073, 111222,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  19507, 182060, 111223,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  19508, 181706, 111224,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  19509, 181706, 111225,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  19510, 181706, 111226,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  19511, 182073, 111227,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  19512, 182058, 111228,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  19513,  42292, 111229,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  19514,  42292, 111230,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  19515,  42292, 111231,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  19516, 182073, 111232,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  19517, 182063, 111233,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  19521,  42292, 111305,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  19522,  42292, 111306,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  19606, 160506, 111431,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19607, 160723, 111432,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19608, 174303, 111433,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19609, 174304, 111434,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19610, 160777, 111435,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19611, 174305, 111436,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19612, 174306, 111437,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19613, 174307, 111438,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19614, 160846, 111439,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19615, 160865, 111440,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19616, 160869, 111441,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19617, 160872, 111442,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19618, 160877, 111443,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19619, 160879, 111444,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19620, 160880, 111445,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19621, 160881, 111446,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19622, 160884, 111447,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19623, 160887, 111448,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19624, 160890, 111449,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19625, 160894, 111450,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19626, 160896, 111451,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19627, 160898, 111452,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19628, 160901, 111453,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  19629, 160903, 111454,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  20229, 163759, 111484,   0,   1,    0,      -1,      -1 }, // Cold Bite
+  {  20345, 165678, 111490,   0,   1,    0,      -1,      -1 }, // Item - 1H Weapon Proc Instant Damage
+  {  19646, 126552, 111530,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19647, 160819, 111533,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  20230, 163762, 111545,   0,   1,    0,      -1,      -1 }, // Molten Punch
+  {  19649, 126552, 111546,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  19650, 148901, 111547,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  19651, 139134, 111548,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  20231, 163764, 111554,   0,   1,    0,      -1,      -1 }, // Rimefrost Guardian
+  {  19758, 161940, 111948,   0,   1,    0,      -1,      -1 }, // Evil Eye
+  {  20152, 162914, 112317,   0,   1,    0,      -1,      -1 }, // Winged Hourglass
+  {  20153, 162916, 112318,   0,   1,    0,      -1,      -1 }, // Skull of War
+  {  20154, 162918, 112319,   0,   1,    0,      -1,      -1 }, // Knight's Badge
+  {  20155, 162920, 112320,   0,   1,    0,      -1,      -1 }, // Sandman's Pouch
+  {  20187, 146047, 112426,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20460, 146051, 112426,   1,   1,    0,      -1,      -1 }, // Amplification
+  {  20879, 169256, 112435,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Hands
+  {  20880, 169256, 112436,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Hands
+  {  20881, 169256, 112437,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Hands
+  {  20882, 169256, 112438,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Hands
+  {  20883, 169257, 112468,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Wrist
+  {  20884, 169257, 112469,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Wrist
+  {  20885, 169257, 112470,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Wrist
+  {  20886, 169257, 112471,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Wrist
+  {  20876, 169255, 112472,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Ring
+  {  20877, 169255, 112473,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Ring
+  {  20878, 169255, 112474,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Ring
+  {  20203, 146343, 112476,   0,   0,    0,   90000,       0 }, // Avoidance
+  {  20211, 146136, 112503,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20425, 148901, 112503,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20872, 169254, 112659,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Boots
+  {  20873, 169254, 112660,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Boots
+  {  20874, 169254, 112661,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Boots
+  {  20875, 169254, 112662,   0,   7,    0,      -1,      -1 }, // Flag Tanaan Boots
+  {  20248, 145955, 112703,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20485, 146247, 112703,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20249, 124349, 112736,   0,   5,    0,      -1,      -1 }, // +10 Mining
+  {  20251, 148904, 112754,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20252, 148907, 112768,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20253, 148909, 112778,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Intellect
+  {  20493, 146025, 112792,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20255, 146136, 112815,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20431, 148898, 112815,   1,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20256, 146136, 112825,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20439, 148895, 112825,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20258, 148233, 112849,   0,   1,    0,      -1,      -1 }, // Cleave
+  {  20445, 148912, 112849,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  20259, 146051, 112850,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20466, 146251, 112850,   1,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20260, 146316, 112877,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  {  20261, 146311, 112879,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20314, 126516, 112884,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Crit
+  {  20315, 126583, 112885,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20316, 126490, 112886,   0,   1,    0,      -1,      -1 }, // Item - Attack Crits Proc Agi
+  {  20317, 126482, 112887,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20318, 139134, 112888,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  20313, 146047, 112889,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20272, 146286, 112913,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  20273, 146395, 112924,   0,   0, 1141,   90000,   15000 }, // Tactician
+  {  20274, 147057, 112925,   0,   1,    0,      -1,      -1 },
+  {  20275, 147084, 112925,   1,   1,    0,      -1,      -1 },
+  {  20276, 146183, 112938,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  20277, 146019, 112947,   0,   1,    0,      -1,      -1 }, // Readiness
+  {  20479, 146309, 112947,   1,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20278, 146051, 112948,   0,   1,    0,      -1,      -1 }, // Amplification
+  {  20453, 146315, 112948,   1,   1,    0,      -1,      -1 }, // Item - Heals Proc Int
+  {  20311, 148907, 113023,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20310, 146309, 113024,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20309, 148901, 113025,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20319, 164987, 113082,   0,   0,    0,  300000,      -1 }, // Ring of Thorns
+  {  20351, 126583, 113158,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20352, 126516, 113159,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Crit
+  {  20353, 146047, 113160,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  20354, 139134, 113161,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  20355, 126482, 113162,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20356, 126490, 113163,   0,   1,    0,      -1,      -1 }, // Item - Attack Crits Proc Agi
+  {  20388, 126583, 113253,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20389, 133631, 113254,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20390, 133631, 113255,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20512, 146251, 113408,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20532, 133631, 113527,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20540, 167326, 113548,   0,   0,   94,  900000,   60000 }, // Lobstrokomancy
+  {  20541, 167329, 113553,   0,   1,    0,      -1,      -1 }, // Windfang Bite
+  {  23888, 177039, 113612,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Balanced Fate]
+  {  23904, 177041, 113645,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike [Tectus' Beating Heart]
+  {  20574, 165825, 113663,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20576, 176876, 113834,   0,   0, 1141,  120000,   20000 }, // Vision of the Cyclops
+  {  20577, 176875, 113835,   0,   0, 1141,  120000,   20000 }, // Void Shards
+  {  20578, 176879, 113842,   0,   0, 1141,  120000,   20000 }, // Caustic Healing
+  {  20581, 177055, 113861,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility [Gazing Eye]
+  {  20582, 177064, 113889,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike [Elemental Shield]
+  {  20583, 177057, 113893,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Blast Furnace]
+  {  20584, 176873, 113905,   0,   0, 1141,  120000,   20000 }, // Turnbuckle Terror
+  {  23785, 176878, 113931,   0,   0, 1141,  120000,   20000 }, // Lub-Dub
+  {  20585, 177052, 113948,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Instability]
+  {  23784, 176874, 113969,   0,   0, 1141,  120000,   20000 }, // Convulsive Shadows
+  {  23914, 177098, 113983,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery
+  {  20586, 177085, 113984,   0,   1,    0,      -1,      -1 }, // Item - Proc Mastery
+  {  23912, 177071, 113985,   0,   1,    0,      -1,      -1 }, // Item - Proc Critical Strike
+  {  23913, 177090, 113986,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  20588, 177104, 113987,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste
+  {  20639, 168751, 114082,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  20640, 168750, 114083,   0,   0,    0,      -1,      -1 }, // Create Chest
+  {  20641, 168749, 114084,   0,   0,    0,      -1,      -1 }, // Create Boot
+  {  20642, 168745, 114085,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  20643, 168742, 114086,   0,   0,    0,      -1,      -1 }, // Create Neck
+  {  20644, 168740, 114087,   0,   0,    0,      -1,      -1 }, // Create Trinket
+  {  20645, 168764, 114088,   0,   0,    0,      -1,      -1 }, // Create Bracer
+  {  20646, 168763, 114089,   0,   0,    0,      -1,      -1 }, // Create Chest
+  {  20647, 168762, 114090,   0,   0,    0,      -1,      -1 }, // Create Boot
+  {  20648, 168758, 114091,   0,   0,    0,      -1,      -1 }, // Create Shoulders
+  {  20649, 168755, 114092,   0,   0,    0,      -1,      -1 }, // Create Neck
+  {  20650, 168753, 114093,   0,   0,    0,      -1,      -1 }, // Create Trinket
+  {  20667, 168752, 114111,   0,   0,    0,      -1,      -1 }, // Create Weapon
+  {  20668, 168739, 114112,   0,   0,    0,      -1,      -1 }, // Create Weapon
+  {  23790, 165531, 114366,   0,   0, 1141,  120000,   20000 }, // Haste
+  {  23787, 165540, 114367,   0,   0, 1141,   90000,   15000 }, // Critical Strike
+  {  23788, 165534, 114368,   0,   0, 1141,  120000,   20000 }, // Versatility
+  {  23786, 165485, 114369,   0,   0, 1141,  120000,   20000 }, // Mastery
+  {  23789, 165543, 114370,   0,   0, 1141,   90000,   15000 }, // Versatility
+  {  23813, 165835, 114427,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  23811, 165840, 114428,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility
+  {  23810, 165825, 114429,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23812, 165821, 114430,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  23809, 165840, 114431,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility
+  {  23793, 176883, 114488,   0,   0, 1141,   90000,   15000 }, // Turbulent Vial of Toxin
+  {  23792, 176882, 114489,   0,   0, 1141,  120000,   20000 }, // Turbulent Focusing Crystal
+  {  23794, 176884, 114490,   0,   0, 1141,   90000,   15000 }, // Turbulent Relic of Mendacity
+  {  23791, 176881, 114491,   0,   0, 1141,  120000,   20000 }, // Turbulent Emblem
+  {  23795, 176885, 114492,   0,   0, 1141,   90000,   15000 }, // Turbulent Seal of Defiance
+  {  23817, 176940, 114610,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Formidable Jar of Doom]
+  {  23818, 176942, 114611,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Formidable Orb of Putrescence]
+  {  23819, 176944, 114612,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Formidable Censer of Faith]
+  {  23815, 176936, 114613,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Formidable Fang]
+  {  23816, 176938, 114614,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Formidable Relic of Blood]
+  {  20827, 133631, 114886,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20828, 126552, 114887,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20829, 139134, 114888,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  20830, 133631, 114889,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20831, 126583, 114890,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  20832, 133631, 114891,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20864, 133631, 114957,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20865, 173520, 114958,   0,   1,    0,      -1,      -1 }, // Watch Commander Branson's Lapel
+  {  20866, 126552, 114959,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  20867, 133631, 114960,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20868, 139134, 114961,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  20900, 182073, 115149,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20901, 182060, 115150,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  20902, 181706, 115151,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  20903, 181706, 115152,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  20904, 181706, 115153,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  20905, 182073, 115154,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20906, 182058, 115155,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  20907,  42292, 115156,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  20908,  42292, 115157,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  20909,  42292, 115158,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  20910, 182073, 115159,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20911, 182063, 115160,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  20951, 182073, 115495,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20952, 182073, 115496,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20970, 182073, 115521,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  20999, 182073, 115749,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21000, 182060, 115750,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  21001, 181706, 115751,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21002, 181706, 115752,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21003, 181706, 115753,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21004, 182073, 115754,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21005, 182058, 115755,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  21006,  42292, 115756,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21007,  42292, 115757,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21008,  42292, 115758,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21009, 182073, 115759,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21010, 182063, 115760,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  21025, 133631, 116075,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21026, 139134, 116077,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  21091, 170830, 116110,   0,   1,    0,      -1,      -1 }, // Zorkra's Paranoia
+  {  21095, 170876, 116116,   0,   1,    0,      -1,      -1 }, // Blazegrease
+  {  21102, 170935, 116126,   0,   1,    0,      -1,      -1 }, // Talador Venom
+  {  21103, 126534, 116127,   2,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  21123, 170612, 116154,   0,   0,   94, 3600000, 3600000 }, // Summon Peons/Lumberjacks Master
+  {  21161,  17528, 116275,   0,   0,    4,  300000,  300000 }, // Mighty Rage
+  {  23831, 176979, 116291,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike [Immaculate Living Mushroom]
+  {  23830, 176976, 116292,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility [Mote of the Mountain]
+  {  23835, 176987, 116314,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Blackheart Enforcer's Medallion]
+  {  23832, 176981, 116315,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Heart of the Fury]
+  {  23834, 176983, 116318,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike [Stoneheart Idol]
+  {  21247,  65420, 116405,   0,   0,   11,       0,    1000 }, // Food
+  {  21248,  65418, 116406,   0,   0,   11,       0,    1000 }, // Food
+  {  21249,  65422, 116407,   0,   0,   11,       0,    1000 }, // Food
+  {  21250,  65419, 116408,   0,   0,   11,       0,    1000 }, // Food
+  {  21251,  65421, 116409,   0,   0,   11,       0,    1000 }, // Food
+  {  21387, 171804, 116765,   0,   1,    0,      -1,      -1 }, // Positive
+  {  21444, 133631, 116799,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21479, 126268, 116823,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21480, 126552, 116824,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21481,  59731, 116825,   0,   1,    0,      -1,      -1 }, // +13 Fishing
+  {  21625, 175369, 116825,   1,   0,    0, 1200000,      -1 }, // Nat's Allure
+  {  21482, 175369, 116826,   0,   0,    0, 1200000,      -1 }, // Nat's Allure
+  {  21626,  59731, 116826,   1,   1,    0,      -1,      -1 }, // +13 Fishing
+  {  21493, 172023, 116855,   0,   1,    0,      -1,      -1 }, // Stingtail Venom
+  {  21499, 172074, 116907,   0,   1,    0,      -1,      -1 }, // Boomstick Boom
+  {  21502, 172100, 116913,   0,   5,    0,      -1,      -1 }, // Peon's Mining Pick
+  {  21504, 172107, 116916,   0,   5,    0,      -1,      -1 }, // Gorepetal's Gentle Grasp
+  {  21517,  95061, 116985,   0,   0,    0,   60000,      -1 }, // Sight Beyond Sight
+  {  21547, 133631, 117033,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21548, 126583, 117034,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  21549, 126237, 117042,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  21550, 133631, 117045,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21551, 126552, 117052,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21552, 133631, 117055,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21553, 126660, 117066,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  21554, 133631, 117069,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21555, 126468, 117081,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  21556, 126268, 117084,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21557, 126552, 117097,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21558, 133631, 117100,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21559, 126660, 117112,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  21560, 133631, 117115,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21561, 133631, 117130,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21562, 126237, 117132,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  21563, 126468, 117145,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  21564, 126268, 117150,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21565, 126552, 117156,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21566, 133631, 117160,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21567, 126468, 117178,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  21568, 126268, 117181,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21569, 133631, 117194,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21570, 126583, 117195,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  21571, 126237, 117203,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  21572, 133631, 117206,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21573, 126660, 117211,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  21574, 133631, 117214,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21575, 126468, 117222,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  21576, 126268, 117226,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21577, 126552, 117243,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21578, 133631, 117246,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21579, 126552, 117260,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21580, 133631, 117263,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21581, 126660, 117265,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  21582, 133631, 117268,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21583, 126468, 117290,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  21584, 126268, 117293,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  21585, 126660, 117306,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  21586, 133631, 117309,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21587, 133631, 117337,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21588, 126583, 117338,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  21589, 126237, 117346,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  21590, 133631, 117349,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21593,  43873, 117355,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
+  {  21594, 177944, 117356,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
+  {  21595, 127967, 117357,   0,   0, 1141,  120000,   20000 }, // Drunken Evasiveness
+  {  21596, 127924, 117358,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {  21597, 127914, 117359,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {  21598, 127926, 117360,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {  21599, 101285, 117361,   0,   0,   94,  180000,   60000 }, // Summon the Black Brewmaiden
+  { 111879, 286542, 117361,   1,   1,    0,      -1,      -1 }, // Summon the Black Brewmaiden
+  {  21600, 171615, 117366,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21601, 171615, 117367,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21602, 171615, 117368,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21603, 171615, 117369,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21604, 171615, 117370,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  21605,  46643, 117373,   1,   0,    0,   60000,      -1 }, // Frostscythe
+  {  21611, 178422, 117391,   0,   0,   94,  180000,   60000 }, // Summon the Brewmaiden
+  { 111882, 286577, 117391,   1,   1,    0,      -1,      -1 }, // Summon the Brewmaiden
+  {  21617, 172691, 117402,   0,   0,    0,  180000,      -1 }, // Shadow Reflector
+  {  21618, 172693, 117403,   0,   0,    0,  180000,      -1 }, // Frostfire Reflector
+  {  21621, 124034, 117405,   0,   1,    0,      -1,      -1 }, // +8 Fishing
+  {  21622, 128587, 117405,   1,   0,    0,  600000,      -1 }, // Fishing Hat Lure
+  {  21629, 172775, 117438,   0,   0,    0,  180000,      -1 }, // Net Launcher
+  {  21670, 126552, 117537,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  21671, 133631, 117540,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  21681, 173120, 117566,   0,   0,    0, 1800000,      -1 }, // Frost Storm
+  {  21685, 182073, 117729,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21686, 182060, 117730,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  21687, 181706, 117731,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21688, 181706, 117732,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21689, 181706, 117733,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21690, 182073, 117734,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21691, 182058, 117735,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  21692,  42292, 117736,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21693,  42292, 117737,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21694,  42292, 117738,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21695, 182073, 117739,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21696, 182063, 117740,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  21697, 182073, 117773,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21698, 182073, 117774,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21699, 182073, 117930,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21700, 182060, 117931,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  21701, 181706, 117932,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21702, 181706, 117933,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21703, 181706, 117934,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  21704, 182073, 117935,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21705, 182058, 117936,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  21706,  42292, 117937,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21707,  42292, 117938,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21708,  42292, 117939,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  21709, 182073, 117940,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  21710, 182063, 117941,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  21720, 126516, 118016,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Crit
+  {  21721, 126490, 118017,   0,   1,    0,      -1,      -1 }, // Item - Attack Crits Proc Agi
+  {  21722, 139134, 118018,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  21723, 126583, 118019,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  21724, 126482, 118020,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  21725, 146047, 118021,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  21740, 171891, 118061,   1,   0,    0,      -1,      -1 }, // The Sun
+  {  23881, 177036, 118114,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Meaty Dragonspine Trophy]
+  {  21803, 173793, 118199,   0,   0, 1141,  120000,   60000 }, // Poison Cask
+  {  21804, 139134, 118202,   0,   1,    0,      -1,      -1 }, // Item - Crits Proc Intellect
+  {  21807, 173835, 118211,   0,   1,    0,      -1,      -1 }, // ROLKOR SMASH
+  {  21813, 173914, 118228,   0,   1,    0,      -1,      -1 }, // Smashalupagus
+  {  21814, 160819, 118229,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  21815, 148907, 118230,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Intellect
+  {  21818, 173982, 118246,   0,   1,    0,      -1,      -1 }, // Call of the Wolfmother
+  {  21820, 174014, 118264,   0,   1,    0,      -1,      -1 }, // Void Shard
+  {  21823, 160794, 118268,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  21824, 160830, 118269,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  21825, 160727, 118270,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  21826, 160840, 118271,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  21827, 160725, 118272,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  21828, 174079, 118273,   0,   0,   11,       0,    1000 }, // Well Fed
+  {  21829, 174077, 118274,   0,   0,   11,       0,    1000 }, // Well Fed
+  {  21830, 174062, 118275,   0,   0,   11,       0,    1000 }, // Well Fed
+  {  21831, 174080, 118276,   0,   0,   11,       0,    1000 }, // Well Fed
+  {  21832, 174078, 118277,   0,   0,   11,       0,    1000 }, // Well Fed
+  {  24212, 177059, 118295,   0,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  24211, 177073, 118296,   0,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  24209, 177072, 118297,   0,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  24213, 178033, 118298,   0,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  24210, 178036, 118299,   0,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23925, 177163, 118300,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Incandescence
+  {  24217, 178031, 118300,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23924, 177163, 118301,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Incandescence
+  {  24216, 176906, 118301,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23916, 177163, 118302,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Incandescence
+  {  24214, 177068, 118302,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23923, 177163, 118303,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Incandescence
+  {  24218, 178034, 118303,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23922, 177163, 118304,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Incandescence
+  {  24215, 178037, 118304,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23929, 177171, 118305,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Greater Incandescence
+  {  24222, 178032, 118305,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23928, 177171, 118306,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Greater Incandescence
+  {  24221, 176394, 118306,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23921, 177171, 118307,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Greater Incandescence
+  {  24219, 178030, 118307,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23927, 177171, 118308,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Greater Incandescence
+  {  24223, 178035, 118308,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  23926, 177171, 118309,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Archmage's Greater Incandescence
+  {  24220, 178038, 118309,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  21923, 174665, 118424,   0,   0,    0,      -1,      -1 }, // Refreshment
+  {  23599, 175724, 118677,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Frostwolf Orcs - Honored - Trinket Proc Summon Guardian
+  {  23600, 175732, 118680,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Council of Exarchs - Honored - Trinket Proc Summon Guardian
+  {  23601, 175734, 118682,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Outcast Arakkoa - Honored - Trinket Proc Summon Guardian
+  {  23602, 175736, 118683,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Steamwheedle Preservation Society - Honored - Trinket Proc Summon Guardian
+  {  23603, 175738, 118684,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Laughing Skull Orcs - Honored - Trinket Proc Summon Guardian
+  {  23604, 175740, 118685,   0,   1,    0,      -1,      -1 }, // Item - 6.0 Reputation - Sha'tari Defense - Honored - Trinket Proc Summon Guardian
+  {  23605, 175754, 118690,   0,   1,    0,      -1,      -1 }, // Mr. Pinchy's Wild Ride
+  {  23622, 175877, 118718,   0,   1,    0,      -1,      -1 }, // Bloodthief
+  {  23623, 292824, 118719,   0,   1,    0,      -1,      -1 }, // Petrified Willow
+  {  23624,  16718, 118724,   0,   1,    0,      -1,      -1 }, // +10 Skinning
+  {  23634, 292975, 118737,   0,   1,    0,      -1,      -1 }, // Blackhand Doomcutter
+  {  23635, 292991, 118740,   0,   1,    0,      -1,      -1 }, // Bleakblade of Shahram
+  {  23638, 265421, 118755,   0,   1,    0,      -1,      -1 }, // Dripping Willow
+  {  23639,  16718, 118756,   0,   1,    0,      -1,      -1 }, // +10 Skinning
+  {  23641, 165825, 118776,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23642, 165835, 118777,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  23643, 165825, 118778,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23644, 165821, 118779,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  23645, 165825, 118780,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23646, 176918, 118875,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Agility [Pajeet-Nov's Perpetual Puzzle]
+  {  23647, 177597, 118876,   0,   0, 1141,  120000,   20000 }, // "Lucky" Flip
+  {  23648, 176904, 118877,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Fizzlebang's Folly]
+  {  23649, 177594, 118878,   0,   0, 1141,  120000,   20000 }, // Sudden Clarity
+  {  23650, 176915, 118879,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste [Everblooming Thorny Hibiscus]
+  {  23651, 177592, 118880,   0,   0,    0,  120000,       0 }, // Whisper of Spirits
+  {  23652, 176913, 118881,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Strength [Bajheric Bangle]
+  {  23653, 177189, 118882,   0,   0, 1141,   90000,   10000 }, // Sword Technique
+  {  23654, 176930, 118883,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility [Bronzed Elekk Statue]
+  {  23655, 176460, 118884,   0,   0, 1141,  120000,   20000 }, // Kyb's Foolish Perseverance
+  {  23661, 139437, 118907,   1,   0,    0,      -1,      -1 }, // Teleport: Bizmo's Brewpub
+  {  23662, 139432, 118908,   1,   0,    0,      -1,      -1 }, // Teleport: Brawl'gar Arena
+  {  23663, 176107, 118910,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Agility Potion
+  {  23664, 176108, 118911,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Intellect Potion
+  {  23665, 176109, 118912,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Strength Potion
+  {  23666, 176107, 118913,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Agility Potion
+  {  23667, 176108, 118914,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Intellect Potion
+  {  23668, 176109, 118915,   0,   0,    4,  300000,  300000 }, // Brawler's Draenic Strength Potion
+  {  23675, 176151, 118922,   0,   0,   79,  900000,    3000 }, // Whispers of Insanity
+  {  23679, 176166, 118936,   0,   0,    0, 3600000,      -1 }, // Summon Voidcaller
+  {  23680, 176168, 118936,   1,   1,    0,      -1,      -1 }, // Voidcaller Despawn Aura
+  {  23722, 168748, 119114,   0,   0,    0,      -1,      -1 }, // Create Glove
+  {  23723, 168761, 119115,   0,   0,    0,      -1,      -1 }, // Create Glove
+  {  23724, 168747, 119116,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  23725, 168760, 119117,   0,   0,    0,      -1,      -1 }, // Create Helm
+  {  23726, 168746, 119118,   0,   0,    0,      -1,      -1 }, // Create Legs
+  {  23727, 168759, 119119,   0,   0,    0,      -1,      -1 }, // Create Legs
+  {  23728, 168744, 119120,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  23729, 168757, 119121,   0,   0,    0,      -1,      -1 }, // Create Belt
+  {  23730, 168743, 119122,   0,   0,    0,      -1,      -1 }, // Create Ring
+  {  23731, 168756, 119123,   0,   0,    0,      -1,      -1 }, // Create Ring
+  {  23732, 168741, 119124,   0,   0,    0,      -1,      -1 }, // Create Cloak
+  {  23733, 168754, 119125,   0,   0,    0,      -1,      -1 }, // Create Cloak
+  {  23782, 177062, 119192,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Spirit [Squeak Squeak]
+  {  23905, 177044, 119193,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery [Screaming Spirits]
+  {  23783, 177047, 119194,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike [Howling Soul]
+  {  23833, 172074, 119226,   0,   1,    0,      -1,      -1 }, // Boomstick Boom
+  {  23961, 133631, 119483,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23962, 126583, 119484,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  23963, 126237, 119492,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  23964, 133631, 119495,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23965, 126552, 119502,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  23966, 133631, 119505,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23967, 126660, 119516,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  23968, 133631, 119519,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23969, 126468, 119531,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  23970, 126268, 119534,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  23971, 126552, 119547,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  23972, 133631, 119550,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23973, 126660, 119562,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  23974, 133631, 119565,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23975, 133631, 119580,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23976, 126237, 119582,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  23977, 126468, 119595,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  23978, 126268, 119600,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  23979, 126552, 119606,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  23980, 133631, 119610,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23981, 126468, 119628,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  23982, 126268, 119631,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  23983, 133631, 119644,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23984, 126583, 119645,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  23985, 126237, 119653,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  23986, 133631, 119656,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23987, 126660, 119661,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  23988, 133631, 119664,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23989, 126468, 119672,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  23990, 126268, 119676,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  23991, 126552, 119693,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  23992, 133631, 119696,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23993, 126552, 119710,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  23994, 133631, 119713,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23995, 126660, 119715,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  23996, 133631, 119718,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  23997, 126468, 119740,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  23998, 126268, 119743,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  23999, 126660, 119756,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24000, 133631, 119759,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24001, 133631, 119787,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24002, 126583, 119788,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  24003, 126237, 119796,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  24004, 133631, 119799,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24005, 126552, 119805,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24006, 133631, 119808,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24010, 182073, 119926,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  24011, 182060, 119927,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  24012, 181706, 119928,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  24013, 181706, 119929,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  24014, 181706, 119930,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  24015, 182073, 119931,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  24016, 182058, 119932,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  24017,  42292, 119933,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24018,  42292, 119934,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24019,  42292, 119935,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24020, 182073, 119936,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  24021, 182063, 119937,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  24022, 182073, 120049,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  24085, 177934, 120168,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24336, 126583, 120337,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  24337, 133631, 120341,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  26151, 225110, 120978,   0,   7,    0,      -1,      -1 }, // Retrieving the Ashbringer
+  {  26937, 196118, 120978,   1,   1,    0,      -1,      -1 },
+  {  27160, 197886, 120978,   2,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  31921, 214083, 120978,   4,   1,    0,      -1,      -1 }, // Wake of Ashes
+  {  24422, 202811, 121490,   0,   1,    0,      -1,      -1 }, // Ooker Dooker
+  {  24423, 202838, 121491,   0,   1,    0,      -1,      -1 }, // Velvety Cadavernet
+  {  24424, 202811, 121492,   0,   1,    0,      -1,      -1 }, // Ooker Dooker
+  {  24426, 202811, 121494,   0,   1,    0,      -1,      -1 }, // Ooker Dooker
+  {  24429, 202745, 121570,   0,   1,    0,      -1,      -1 }, // Cursed Fortitude
+  {  24431, 202762, 121572,   0,   1,    0,      -1,      -1 }, // Banshee's Blight
+  {  24433, 202916, 121647,   0,   1,    0,      -1,      -1 }, // Wrath of Elune
+  {  24435, 202911, 121649,   0,   1,    0,      -1,      -1 }, // Wrath of Elune
+  {  24438, 126268, 121652,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24439, 202904, 121726,   0,   1,    0,      -1,      -1 }, // Navarrogg's Guidance
+  {  24440, 202909, 121727,   0,   1,    0,      -1,      -1 }, // Rivermane Purification
+  {  24442, 201854, 121729,   0,   0, 1141,   60000,   60000 }, // Bug Spray
+  {  31694,  47524, 121745,   0,   0,    0,  600000,      -1 }, // Sense Demons
+  {  24446, 224164, 121806,   0,   1,    0,      -1,      -1 }, // Ettin's Brawn
+  {  24448, 224153, 121808,   0,   1,    0,      -1,      -1 }, // Nether Energy
+  {  24450, 224158, 121810,   0,   1,    0,      -1,      -1 }, // Vortex Bomb
+  {  24475, 133631, 121848,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24476, 126583, 121849,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  24477, 126237, 121852,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  24478, 133631, 121855,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24479, 126552, 121860,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24480, 133631, 121863,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24481, 126552, 121866,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24482, 133631, 121869,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24483, 126660, 121876,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24484, 133631, 121879,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24485, 126468, 121882,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  24486, 126268, 121885,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24487, 126552, 121892,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24488, 133631, 121895,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24489, 126660, 121909,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24490, 133631, 121912,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24491, 133631, 121924,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24492, 126237, 121925,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  24493, 126468, 121934,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  24494, 126268, 121936,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24495, 126552, 121939,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24496, 133631, 121941,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24497, 126468, 121949,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  24498, 126268, 121952,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24499, 133631, 121960,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24500, 126583, 121961,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  24501, 126237, 121964,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  24502, 133631, 121967,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24503, 126660, 121975,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24504, 133631, 121978,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24505, 126468, 121981,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  24506, 126268, 121984,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24507, 126552, 121992,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24508, 133631, 121995,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24509, 126552, 122006,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  24510, 133631, 122009,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24511, 126660, 122017,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24512, 133631, 122020,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24513, 126468, 122023,   0,   1,    0,      -1,      -1 }, // Price of Progress - Item - Proc Mana Energize
+  {  24514, 126268, 122026,   0,   1,    0,      -1,      -1 }, // Item - Proc Intellect
+  {  24515, 126660, 122037,   0,   1,    0,      -1,      -1 }, // Item - Spell Hits Proc Haste
+  {  24516, 133631, 122040,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24517, 133631, 122056,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24518, 126583, 122057,   0,   1,    0,      -1,      -1 }, // Item - Proc Strength
+  {  24519, 126237, 122060,   0,   1,    0,      -1,      -1 }, // Item - Proc Armor
+  {  24520, 133631, 122063,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  24637, 180752, 122343,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24638, 180753, 122344,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24639, 180751, 122345,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24640, 180754, 122346,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24641, 180755, 122347,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24642, 180756, 122348,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  24649,  59906, 122361,   0,   1,    0,      -1,      -1 }, // Swift Hand of Justice
+  {  24650,  59915, 122362,   0,   1,    0,      -1,      -1 }, // Discerning Eye of the Beast
+  {  24651, 182395, 122369,   0,   1,    0,      -1,      -1 }, // Thrash Blade
+  {  24652,  42292, 122370,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24653,  42292, 122371,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24693, 156423, 122453,   0,   0,    4,  300000,  300000 }, // Draenic Agility Potion
+  {  24694, 156426, 122454,   0,   0,    4,  300000,  300000 }, // Draenic Intellect Potion
+  {  24695, 156428, 122455,   0,   0,    4,  300000,  300000 }, // Draenic Strength Potion
+  {  24696, 156430, 122456,   0,   0,    4,  300000,  300000 }, // Draenic Versatility Potion
+  {  24754, 137211, 122530,   0,   0, 1190,  120000,   20000 }, // Tremendous Fortitude
+  {  24854, 157136, 122601,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25015,  17619, 122601,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  24856, 157136, 122602,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25018,  17619, 122602,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  24858, 157136, 122603,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25017,  17619, 122603,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  24859, 157136, 122604,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25016,  17619, 122604,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  24922, 181867, 122662,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24918, 181867, 122663,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24920, 181867, 122664,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24923, 181867, 122666,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24919, 181867, 122667,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24917, 181867, 122668,   0,   0,   30,  300000,  300000 }, // Heal
+  {  24937,  42292, 122706,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24938,  42292, 122707,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24939,  42292, 122708,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  24940,  42292, 122709,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  31809, 226221, 123891,   0,   5,    0,      -1,      -1 },
+  {  31808, 226221, 123892,   0,   5,    0,      -1,      -1 },
+  {  31807, 226221, 123893,   0,   5,    0,      -1,      -1 },
+  {  31515, 226221, 123894,   0,   5,    0,      -1,      -1 },
+  {  31806, 226221, 123895,   0,   5,    0,      -1,      -1 },
+  {  31805, 226221, 123896,   0,   5,    0,      -1,      -1 },
+  {  31804, 226221, 123897,   0,   5,    0,      -1,      -1 },
+  {  31803, 226221, 123898,   0,   5,    0,      -1,      -1 },
+  {  25142,  33089, 123992,   0,   0,    0,  120000,       0 }, // Vigilance of the Colossus
+  {  25145, 196446, 124030,   1,   1,    0,      -1,      -1 }, // Bladefist
+  {  25146, 182080, 124036,   0,   0,   11,       0,    1000 }, // Food
+  {  25249, 184270, 124224,   0,   0,    0,   60000,      -1 }, // Burning Mirror
+  {  25168, 184291, 124225,   0,   1,    0,      -1,      -1 }, // Soul Capacitor
+  {  25169, 183927, 124226,   0,   1,    0,      -1,      -1 }, // Malicious Censer
+  {  25250, 183775, 124228,   0,   1,    0,      -1,      -1 }, // Desecrated Shadowmoon Insignia
+  {  25171, 183951, 124229,   0,   1,    0,      -1,      -1 }, // Sethe's Harsh Gaze
+  {  25172, 184066, 124230,   0,   1,    0,      -1,      -1 }, // Prophecy of Fear
+  {  25251, 183929, 124232,   0,   0,    0,   90000,      -1 }, // Sudden Intuition
+  {  25174, 184618, 124233,   0,   1,    0,      -1,      -1 }, // Coalesce Spirits
+  {  25175, 184670, 124234,   0,   1,    0,      -1,      -1 }, // Shadowfel Emission
+  {  25252, 183942, 124236,   0,   1,    0,      -1,      -1 }, // Unending Hunger
+  {  25177, 184249, 124237,   0,   1,    0,      -1,      -1 }, // Howling Madness
+  {  25178, 184257, 124238,   0,   1,    0,      -1,      -1 }, // Pit Lord Blood Spray
+  {  25179, 184762, 124240,   0,   1,    0,      -1,      -1 }, // Kilrogg's Dead Eye
+  {  25180, 183932, 124241,   0,   1,    0,      -1,      -1 }, // Anzu's Cursed Plume
+  {  25181, 184767, 124242,   0,   1,    0,      -1,      -1 }, // Tyrant's Decree
+  {  25299, 184897, 124513,   0,   1,    0,      -1,      -1 }, // Unholy Coil
+  {  25300, 184898, 124513,   1,   1,    0,      -1,      -1 }, // Frozen Obliteration
+  {  25301, 184983, 124513,   2,   1,    0,      -1,      -1 }, // Wandering Plague
+  {  25259, 184876, 124514,   0,   1,    0,      -1,      -1 }, // Starshards
+  {  25260, 184877, 124514,   1,   1,    0,      -1,      -1 }, // Wildcat Celerity
+  {  25261, 184878, 124514,   2,   1,    0,      -1,      -1 }, // Stalwart Guardian
+  {  25262, 184879, 124514,   3,   1,    0,      -1,      -1 }, // Flourish
+  {  25263, 184900, 124515,   0,   1,    0,      -1,      -1 }, // Beastlord
+  {  25264, 184901, 124515,   1,   1,    0,      -1,      -1 }, // Longview
+  {  25265, 184902, 124515,   2,   1,    0,      -1,      -1 }, // Blackness
+  {  25267, 184903, 124516,   0,   1,    0,      -1,      -1 }, // Wild Arcanist
+  {  25268, 184904, 124516,   1,   1,    0,      -1,      -1 }, // Pyrosurge
+  {  25269, 184905, 124516,   2,   1,    0,      -1,      -1 }, // Shatterlance
+  {  25271, 184906, 124517,   0,   1,    0,      -1,      -1 }, // Eluding Movements
+  {  25272, 184907, 124517,   1,   1,    0,      -1,      -1 }, // Soothing Breeze
+  {  25273, 184908, 124517,   2,   1,    0,      -1,      -1 }, // Furious Sun
+  {  25275, 184909, 124518,   0,   1,    0,      -1,      -1 }, // Magnifying Light
+  {  25276, 184910, 124518,   1,   1,    0,      -1,      -1 }, // Savior's Boon
+  {  25277, 184911, 124518,   2,   1,    0,      -1,      -1 }, // Focus of Vengeance
+  {  25279, 184912, 124519,   0,   1,    0,      -1,      -1 }, // Naaru's Discipline
+  {  25280, 184914, 124519,   1,   1,    0,      -1,      -1 }, // Complete Healing
+  {  25281, 184915, 124519,   2,   1,    0,      -1,      -1 }, // Mental Fatigue
+  {  25283, 184916, 124520,   0,   1,    0,      -1,      -1 }, // Toxic Mutilator
+  {  25284, 184917, 124520,   1,   1,    0,      -1,      -1 }, // Eviscerating Blade
+  {  25285, 184918, 124520,   2,   1,    0,      -1,      -1 }, // From the Shadows
+  {  25287, 184919, 124521,   0,   1,    0,      -1,      -1 }, // Elemental Bellows
+  {  25288, 184920, 124521,   1,   1,    0,      -1,      -1 }, // Furious Winds
+  {  25289, 184921, 124521,   2,   1,    0,      -1,      -1 }, // Low Tide
+  {  25291, 184922, 124522,   0,   1,    0,      -1,      -1 }, // Epidemic
+  {  25292, 184923, 124522,   1,   1,    0,      -1,      -1 }, // Swarm of Gul'dan
+  {  25293, 184924, 124522,   2,   1,    0,      -1,      -1 }, // Flamelicked
+  {  25295, 184925, 124523,   0,   1,    0,      -1,      -1 }, // Tactical Surge
+  {  25296, 184926, 124523,   1,   1,    0,      -1,      -1 }, // Berserker's Fury
+  {  25297, 184927, 124523,   2,   1,    0,      -1,      -1 }, // Shield Mastery
+  {  25326, 187608, 124634,   0,   1,    0,      -1,      -1 }, // Thorasus
+  {  25327, 178032, 124634,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  25697, 187614, 124634,   2,   0,    0,      -1,      -1 }, // Thorasus
+  {  25328, 187607, 124635,   0,   1,    0,      -1,      -1 }, // Nithramus
+  {  25329, 176394, 124635,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  25698, 187611, 124635,   2,   0,    0,      -1,      -1 }, // Nithramus
+  {  25330, 187605, 124636,   0,   1,    0,      -1,      -1 }, // Maalus
+  {  25331, 178030, 124636,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  25695, 187615, 124636,   2,   0,    0,      -1,      -1 }, // Maalus
+  {  25332, 187609, 124637,   0,   1,    0,      -1,      -1 }, // Sanctus
+  {  25333, 178035, 124637,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  25696, 187613, 124637,   2,   0,    0,      -1,      -1 }, // Sanctus
+  {  25334, 187610, 124638,   0,   1,    0,      -1,      -1 }, // Etheralus
+  {  25335, 178038, 124638,   1,   5,    0,      -1,      -1 }, // [DND]Upgrade Ring
+  {  25699, 187612, 124638,   2,   0,    0,      -1,      -1 }, // Etheralus
+  {  25365, 182073, 124856,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25366, 182060, 124857,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25367, 181706, 124858,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25368, 181706, 124859,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25369, 181706, 124860,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25370, 182073, 124861,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25371, 182058, 124862,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25372,  42292, 124863,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25373,  42292, 124864,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25374,  42292, 124865,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25375,  42292, 124866,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25376, 182073, 124867,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25377, 182063, 124868,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25378, 182073, 124869,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25379, 182073, 125030,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25380, 182060, 125031,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25381, 181706, 125032,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25382, 181706, 125033,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25383, 181706, 125034,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25384, 182073, 125035,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25385, 182058, 125036,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25386,  42292, 125037,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25387,  42292, 125038,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25388,  42292, 125039,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25389,  42292, 125040,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25390, 182073, 125041,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25391, 182063, 125042,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25392, 182073, 125043,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25393, 182073, 125335,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25394, 182060, 125336,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25395, 181706, 125337,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25396, 181706, 125338,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25397, 181706, 125339,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25398, 182073, 125340,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25399, 182058, 125341,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25400,  42292, 125342,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25401,  42292, 125343,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25402, 182073, 125344,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25403, 182063, 125345,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25404, 182073, 125346,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25405, 182073, 125507,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25406, 182060, 125508,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25407, 181706, 125509,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25408, 181706, 125510,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25409, 181706, 125511,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25410, 182073, 125512,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25411, 182058, 125513,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25412,  42292, 125514,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25413,  42292, 125515,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25414,  42292, 125516,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25415,  42292, 125517,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25416, 182073, 125518,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25417, 182063, 125519,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25418, 182073, 125520,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25423, 182073, 125970,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25424, 182060, 125971,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25425, 181706, 125972,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25426, 181706, 125973,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25427, 181706, 125974,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25428, 182073, 125975,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25429, 182058, 125976,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25430,  42292, 125977,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25431,  42292, 125978,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25432,  42292, 125979,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25433,  42292, 125980,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25434, 182073, 125981,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25435, 182063, 125982,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25436, 182073, 125983,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25437, 182073, 126144,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25438, 182060, 126145,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25439, 181706, 126146,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25440, 181706, 126147,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25441, 181706, 126148,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25442, 182073, 126149,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25443, 182058, 126150,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25444,  42292, 126151,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25445,  42292, 126152,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25446,  42292, 126153,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25447,  42292, 126154,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25448, 182073, 126155,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25449, 182063, 126156,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25450, 182073, 126157,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25451, 182073, 126449,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25452, 182060, 126450,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25453, 181706, 126451,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25454, 181706, 126452,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25455, 181706, 126453,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25456, 182073, 126454,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25457, 182058, 126455,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25458,  42292, 126456,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25459,  42292, 126457,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25460, 182073, 126458,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25461, 182063, 126459,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25462, 182073, 126460,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25463, 182073, 126621,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25464, 182060, 126622,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  25465, 181706, 126623,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25466, 181706, 126624,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25467, 181706, 126625,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  25468, 182073, 126626,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25469, 182058, 126627,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  25470,  42292, 126628,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25471,  42292, 126629,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25472,  42292, 126630,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25473,  42292, 126631,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25474, 182073, 126632,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25475, 182063, 126633,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  25476, 182073, 126634,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  25490, 185703, 126934,   0,   0,   11,       0,    1000 }, // Lemon Herb Filet
+  {  25496, 186323, 126948,   0,   0, 1190,  120000,   20000 }, // Champion's Fortitude
+  {  25497, 186325, 126949,   0,   0, 1190,  120000,   20000 }, // Champion's Diligence
+  {  31802, 226221, 126987,   0,   5,    0,      -1,      -1 },
+  {  31801, 226221, 126988,   0,   5,    0,      -1,      -1 },
+  {  31800, 226221, 126989,   0,   5,    0,      -1,      -1 },
+  {  31799, 226221, 126990,   0,   5,    0,      -1,      -1 },
+  {  31798, 226221, 126991,   0,   5,    0,      -1,      -1 },
+  {  31797, 226221, 126992,   0,   5,    0,      -1,      -1 },
+  {  31796, 226221, 126993,   0,   5,    0,      -1,      -1 },
+  {  31795, 226221, 126994,   0,   5,    0,      -1,      -1 },
+  {  31794, 226221, 127016,   0,   5,    0,      -1,      -1 },
+  {  31793, 226221, 127017,   0,   5,    0,      -1,      -1 },
+  {  31792, 226221, 127031,   0,   5,    0,      -1,      -1 },
+  {  31791, 226221, 127032,   0,   5,    0,      -1,      -1 },
+  {  25525,  42292, 127123,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25526,  42292, 127124,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25527,  42292, 127125,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25528,  42292, 127126,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25545,  34320, 127173,   0,   1,    0,      -1,      -1 }, // Call of the Nexus
+  {  25546,  31771, 127184,   0,   0,    0,  120000,       0 }, // Shell of Deterrence
+  {  25547,  33297, 127201,   1,   1,    0,      -1,      -1 }, // Fungal Frenzy
+  {  25548,  33400, 127245,   1,   0, 1141,  120000,   20000 }, // Accelerated Mending
+  {  25998, 188696, 127356,   0,   1,    0,      -1,      -1 }, // Bat Musk
+  {  25585,  60066, 127441,   0,   1,    0,      -1,      -1 }, // Rage of the Unraveller
+  {  25586,  60061, 127448,   1,   1,    0,      -1,      -1 }, // Flow of Time
+  {  25587,  60306, 127474,   0,   1,    0,      -1,      -1 }, // Vestige of Haldor
+  {  25588,  60301, 127493,   0,   1,    0,      -1,      -1 }, // Meteorite Whetstone
+  {  25589,  60521, 127512,   0,   0, 1141,  120000,   20000 }, // Winged Talisman
+  {  25590, 234793, 127550,   0,   0,    0,  180000,      -1 }, // Resolute
+  {  25591,  60305, 127594,   0,   0, 1141,  120000,   20000 }, // Heart of a Dragon
+  {  25599,  42292, 127673,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25600,  42292, 127674,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
+  {  25718, 187958, 127785,   0,   0,    0,      -1,      -1 }, // Power Infusion
+  {  26071, 189916, 127829,   0,   7,    0,      -1,      -1 }, // The Twinblades of the Deceiver
+  {  27124, 197886, 127829,   1,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27125, 214796, 127829,   3,   1,    0,      -1,      -1 }, // Chaos Blades
+  {  25769, 188026, 127842,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  {  25770,  17619, 127842,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  25771, 188027, 127843,   0,   0,    4,  300000,  300000 }, // Potion of Deadly Grace
+  {  25772, 188028, 127844,   0,   0,    4,  300000,  300000 }, // Potion of the Old War
+  {  25773, 188029, 127845,   0,   0,    4,  300000,  300000 }, // Unbending Potion
+  {  25775, 188031, 127847,   0,   0,   79,       0,    3000 }, // Flask of the Whispered Pact
+  {  25776, 188033, 127848,   0,   0,   79,       0,    3000 }, // Flask of the Seventh Demon
+  {  25777, 188034, 127849,   0,   0,   79,       0,    3000 }, // Flask of the Countless Armies
+  {  25778, 188035, 127850,   0,   0,   79,       0,    3000 }, // Flask of Ten Thousand Scars
+  {  27142, 197886, 127857,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27143, 211954, 127857,   1,   7,    0,      -1,      -1 }, // Aluneth
+  {  27442, 214849, 127857,   3,   1,    0,      -1,      -1 }, // Mark of Aluneth
+  {  25978, 157136, 128023,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25979,  17619, 128023,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  25980, 157136, 128024,   0,   1,    0,      -1,      -1 }, // Draenic Philosopher's Stone
+  {  25981,  17619, 128024,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  26012, 188845, 128225,   0,   0,    0,      -1,      -1 }, // Empowering Item
+  {  34341, 240856, 128288,   0,   1,    0,      -1,      -1 }, // Flail Applicator
+  {  27730, 214872, 128289,   0,   1,    0,      -1,      -1 }, // Neltharion's Fury
+  {  28114, 208571, 128289,   1,   7,    0,      -1,      -1 }, // Scale of the Earthwarden
+  {  28319, 197886, 128289,   2,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27119, 197886, 128292,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27120, 214838, 128292,   3,   1,    0,      -1,      -1 }, // Crystalline Swords
+  {  27435, 190435, 128292,   4,   7,    0,      -1,      -1 }, // The Blades of the Fallen Prince
+  {  27134, 197886, 128306,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27135, 214845, 128306,   2,   1,    0,      -1,      -1 }, // Essence of G'Hanir
+  {  27439, 207560, 128306,   4,   7,    0,      -1,      -1 }, // G'Hanir, the Mother Tree
+  {  26046, 189421, 128318,   0,   0,    0,  120000,      -1 }, // Void Tendrils
+  {  27117, 197886, 128402,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27118, 214837, 128402,   1,   1,    0,      -1,      -1 }, // Consumption
+  {  27243, 200152, 128402,   2,   7,    0,      -1,      -1 }, // Maw of the Damned
+  {  27122, 197886, 128403,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27123, 214839, 128403,   2,   1,    0,      -1,      -1 }, // Apocalypse
+  {  27436, 202618, 128403,   3,   7,    0,      -1,      -1 }, // Apocalypse
+  {  26122, 209816, 128476,   0,   7,    0,      -1,      -1 }, // Fangs of the Devourer
+  {  27172, 197886, 128476,   1,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27173, 214863, 128476,   4,   1,    0,      -1,      -1 }, // Dummy Tooltip and General Passive
+  {  26127, 190435, 128479,   0,   7,    0,      -1,      -1 }, // The Blades of the Fallen Prince
+  {  26372, 191563, 128705,   0,   1,    0,      -1,      -1 }, // Dominion Deck
+  {  26412, 191661, 128705,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  {  26377, 191611, 128709,   0,   1,    0,      -1,      -1 }, // Hellfire Deck
+  {  32018, 191661, 128709,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  {  26378, 191623, 128710,   0,   1,    0,      -1,      -1 }, // Promises Deck
+  {  32020, 191661, 128710,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  {  26379, 191632, 128711,   0,   1,    0,      -1,      -1 }, // Immortality Deck
+  {  32019, 191661, 128711,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  {  27140, 197886, 128808,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27141, 203919, 128808,   1,   1,    0,      -1,      -1 }, // Talonclaw Debuff Driver
+  {  27752, 214848, 128808,   2,   1,    0,      -1,      -1 }, // Fury of the Eagle
+  {  31210, 208602, 128808,   4,   7,    0,      -1,      -1 }, // Talonclaw
+  {  27176, 197886, 128819,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27177, 193749, 128819,   1,   7,    0,      -1,      -1 }, // Retrieving the Doomhammer
+  {  31502, 214284, 128819,   2,   1,    0,      -1,      -1 }, // Doom Winds
+  {  26928, 196023, 128820,   0,   7,    0,      -1,      -1 }, // Felo'melorn
+  {  27144, 197886, 128820,   1,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27145, 211918, 128820,   2,   1,    0,      -1,      -1 }, // Immolation
+  {  27132, 197886, 128821,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27133, 199963, 128821,   1,   7,    0,      -1,      -1 }, // Retrieving the Claws of Ursoc
+  {  27231, 214844, 128821,   4,   1,    0,      -1,      -1 }, // Rage of the Sleeper
+  {  27156, 197886, 128823,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27157, 216318, 128823,   1,   1,    0,      -1,      -1 }, // The Silver Hand
+  {  27447, 214855, 128823,   2,   1,    0,      -1,      -1 }, // Tyr's Deliverance
+  {  30129, 211838, 128823,   4,   7,    0,      -1,      -1 }, // Silver Hand
+  {  27164, 197886, 128825,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27165, 210733, 128825,   1,   7,    0,      -1,      -1 }, // T'uure
+  {  27450, 214859, 128825,   2,   1,    0,      -1,      -1 }, // Dummy Tooltip and General Passive
+  {  27138, 197886, 128826,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27139, 200279, 128826,   2,   7,    0,      -1,      -1 }, // Thas'dorah
+  {  27251, 214812, 128826,   3,   1,    0,      -1,      -1 }, // Windburst
+  {  27166, 197886, 128827,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27167, 221441, 128827,   1,   1,    0,      -1,      -1 },
+  {  27433, 201780, 128827,   2,   7,    0,      -1,      -1 }, // Blade of the Black Empire
+  {  30734, 214860, 128827,   3,   1,    0,      -1,      -1 }, // Void Torrent
+  {  27126, 197886, 128832,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27127, 214740, 128832,   3,   1,    0,      -1,      -1 }, // Soul Carver
+  {  27792, 225107, 128832,   4,   7,    0,      -1,      -1 }, // The Aldrachi Warblades
+  {  27128, 197886, 128858,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27129, 214842, 128858,   2,   1,    0,      -1,      -1 }, // New Moon
+  {  27793, 205387, 128858,   3,   7,    0,      -1,      -1 }, // Scythe of Elune
+  {  27130, 197886, 128860,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27131, 214843, 128860,   1,   1,    0,      -1,      -1 }, // Ashamane's Frenzy
+  {  28382, 212994, 128860,   3,   7,    0,      -1,      -1 }, // Retrieving the Fangs of Ashamane
+  {  27136, 197886, 128861,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27137, 212009, 128861,   1,   7,    0,      -1,      -1 }, // Titanstrike
+  {  27440, 197344, 128861,   2,   1,    0,      -1,      -1 }, // Hati's Bond
+  {  27146, 197886, 128862,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27147, 214775, 128862,   1,   7,    0,      -1,      -1 }, // Ebonchill
+  {  30010, 214851, 128862,   3,   1,    0,      -1,      -1 }, // Ebonbolt
+  {  28260, 210132, 128866,   0,   7,    0,      -1,      -1 }, // Truthguard
+  {  28317, 197886, 128866,   1,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  28318, 214856, 128866,   2,   1,    0,      -1,      -1 }, // Eye of Tyr
+  {  34342, 240863, 128867,   0,   1,    0,      -1,      -1 }, // Flail Applicator
+  {  27162, 197886, 128868,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27163, 214858, 128868,   2,   1,    0,      -1,      -1 }, // Light's Wrath
+  {  27449, 208011, 128868,   4,   7,    0,      -1,      -1 }, // Light's Wrath
+  {  27168, 197886, 128870,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27169, 215112, 128870,   1,   7,    0,      -1,      -1 }, // The Kingslayers
+  {  27452, 214320, 128870,   2,   1,    0,      -1,      -1 }, // Kingsbane
+  {  30020, 205075, 128870,   3,   1,    0,      -1,      -1 }, // DW Weapon Equipped Passive
+  {  27170, 197886, 128872,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27171, 232684, 128872,   2,   7,    0,      -1,      -1 }, // The Dreadblades
+  {  27510, 214862, 128872,   3,   1,    0,      -1,      -1 }, // Curse of the Dreadblades
+  {  31790, 226221, 128876,   0,   5,    0,      -1,      -1 },
+  {  31789, 226221, 128877,   0,   5,    0,      -1,      -1 },
+  {  31788, 226221, 128878,   0,   5,    0,      -1,      -1 },
+  {  31787, 226221, 128879,   0,   5,    0,      -1,      -1 },
+  {  31786, 226221, 128880,   0,   5,    0,      -1,      -1 },
+  {  31785, 226221, 128881,   0,   5,    0,      -1,      -1 },
+  {  31784, 226221, 128882,   0,   5,    0,      -1,      -1 },
+  {  31783, 226221, 128883,   0,   5,    0,      -1,      -1 },
+  {  31782, 226221, 128892,   0,   5,    0,      -1,      -1 },
+  {  31781, 226221, 128893,   0,   5,    0,      -1,      -1 },
+  {  31780, 226221, 128894,   0,   5,    0,      -1,      -1 },
+  {  31779, 226221, 128895,   0,   5,    0,      -1,      -1 },
+  {  31778, 226221, 128896,   0,   5,    0,      -1,      -1 },
+  {  31777, 226221, 128897,   0,   5,    0,      -1,      -1 },
+  {  31776, 226221, 128898,   0,   5,    0,      -1,      -1 },
+  {  31775, 226221, 128899,   0,   5,    0,      -1,      -1 },
+  {  27188, 197886, 128908,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27189, 214871, 128908,   2,   1,    0,      -1,      -1 }, // Odyn's Fury
+  {  27458, 205443, 128908,   4,   7,    0,      -1,      -1 }, // Warswords of Valor
+  {  27186, 197886, 128910,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27187, 206429, 128910,   3,   7,    0,      -1,      -1 }, // The Warbreaker
+  {  27802, 214870, 128910,   4,   1,    0,      -1,      -1 }, // Warbreaker
+  {  27178, 197886, 128911,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27179, 214866, 128911,   2,   1,    0,      -1,      -1 }, // Dummy Tooltip and General Passive
+  {  27803, 209684, 128911,   4,   7,    0,      -1,      -1 }, // Sharas'dal, Scepter of the Tides
+  {  27174, 197886, 128935,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27175, 199859, 128935,   1,   7,    0,      -1,      -1 }, // Retrieving the Weapons of Storm
+  {  31501, 214864, 128935,   3,   1,    0,      -1,      -1 }, // Stormkeeper
+  {  27150, 197886, 128937,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27151, 202435, 128937,   1,   7,    0,      -1,      -1 }, // Retrieving Sheilun, Staff of the Mists
+  {  31503, 214483, 128937,   2,   1,    0,      -1,      -1 }, // Sheilun's Gift
+  {  27148, 197886, 128938,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27149, 217814, 128938,   1,   7,    0,      -1,      -1 }, // Retrieving Fu Zan
+  {  30463, 214852, 128938,   2,   1,    0,      -1,      -1 }, // Flaming Keg
+  {  27152, 197886, 128940,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27153, 199502, 128940,   2,   7,    0,      -1,      -1 }, // Al'burq
+  {  27223, 214854, 128940,   3,   1,    0,      -1,      -1 }, // Strike of the Windlord
+  {  27184, 197886, 128941,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  30539, 214869, 128941,   1,   1,    0,      -1,      -1 }, // Dimensional Rift
+  {  30590, 219839, 128941,   2,   7,    0,      -1,      -1 }, // Scepter of Sargeras
+  {  27180, 197886, 128942,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27181, 204819, 128942,   3,   7,    0,      -1,      -1 }, // Ulthalesh
+  {  27456, 214867, 128942,   4,   1,    0,      -1,      -1 }, // Dummy Tooltip and General Passive
+  {  27182, 197886, 128943,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27183, 222649, 128943,   1,   1,    0,      -1,      -1 }, // Thal'kiel Main Area Talk Buff
+  {  28679, 209046, 128943,   2,   1,    0,      -1,      -1 }, // Thal'kiel's Consumption
+  {  30957, 211766, 128943,   3,   7,    0,      -1,      -1 }, // Retrieving the Skull of the Man'ari
+  {  26933, 226990, 128958,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  31774, 226221, 128978,   0,   5,    0,      -1,      -1 },
+  {  26576, 219670, 129017,   1,   0,    0,      -1,      -1 }, // Ghostly Fade
+  {  26578, 219425, 129018,   1,   0,    0,      -1,      -1 }, // Fel Imp
+  {  26580, 219574, 129019,   1,   0,    0,      -1,      -1 }, // Sparkles
+  {  26582, 219679, 129020,   1,   0,    0,      -1,      -1 }, // Flash Bang
+  {  26586, 219511, 129022,   1,   0,    0,      -1,      -1 }, // Crackling Ox Lightning
+  {  26598, 219714, 129028,   1,   0,    0,      -1,      -1 }, // Fel Touched Souls
+  {  26600, 219832, 129029,   1,   0,    0,      -1,      -1 }, // Crackling Flames
+  {  26608, 193339, 129044,   0,   1,    0,      -1,      -1 }, // Fenri's Bite
+  {  26618, 193179, 129101,   0,   1,    0,      -1,      -1 }, // 7.0 Item - Vignette - Stormheim - Wolf Pack Proc
+  {  26635, 193346, 129163,   0,   0,    0,  180000,      -1 }, // Caber Toss
+  {  26642, 193397, 129179,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  26652, 193456, 129192,   0,   0,   79,  900000,    3000 }, // Gaze of the Legion
+  {  26666, 202762, 129258,   0,   1,    0,      -1,      -1 }, // Banshee's Blight
+  {  26668, 202745, 129260,   0,   1,    0,      -1,      -1 }, // Cursed Fortitude
+  {  26708, 202887, 129317,   0,   1,    0,      -1,      -1 }, // Lightning Charged
+  {  26710, 202889, 129319,   0,   0, 1141,   60000,   20000 }, // Stormbreaker's Bulwark
+  {  26797, 194632, 129848,   1,   0, 1141,  120000,   20000 }, // Lust for Battle
+  {  26798, 194543, 129849,   2,   0, 1141,  120000,   20000 }, // Gnome Ingenuity
+  {  26799, 194645, 129850,   1,   0, 1141,  120000,   20000 }, // Blessing of the Silver Crescent
+  {  26800, 194637, 129851,   1,   0, 1141,  120000,   20000 }, // Essence of the Martyr
+  {  26803, 194626, 129893,   0,   1,    0,      -1,      -1 }, // Now is the Time!
+  {  26804, 194625, 129895,   0,   0,    0,  120000,      -1 }, // Valor Medal of the First War
+  {  26805, 194607, 129896,   0,   1,    0,      -1,      -1 }, // Reflection of Torment
+  {  26806, 195008, 129897,   0,   1,    0,      -1,      -1 }, // Essence of Life
+  {  26807, 194618, 129898,   0,   0, 1141,  120000,   20000 }, // Rage
+  {  26818, 194638, 129937,   1,   0, 1141,  120000,   20000 }, // Lust for Battle
+  {  26875, 195405, 130185,   0,   0, 1182,  120000,  120000 }, // Mercenary PvP Trinket
+  {  31773, 226221, 130223,   0,   5,    0,      -1,      -1 },
+  {  31772, 226221, 130224,   0,   5,    0,      -1,      -1 },
+  {  31771, 226221, 130225,   0,   5,    0,      -1,      -1 },
+  {  31770, 226221, 130226,   0,   5,    0,      -1,      -1 },
+  {  31769, 226221, 130227,   0,   5,    0,      -1,      -1 },
+  {  31768, 226221, 130228,   0,   5,    0,      -1,      -1 },
+  {  30904, 222276, 130233,   0,   0,    0,  300000,      -1 }, // Wanton Sorcery
+  {  30903, 222275, 130234,   0,   0,    0,  300000,      -1 }, // Blessing
+  {  34398, 241712, 130234,   1,   1,    0,      -1,      -1 }, // Light's Blessing
+  {  30902, 222274, 130235,   0,   1,    0,      -1,      -1 }, // Utterly Twisted
+  {  30901, 222273, 130236,   0,   1,    0,      -1,      -1 }, // Subtle Advantage
+  {  30900, 222272, 130237,   0,   1,    0,      -1,      -1 }, // Tranquil Presence
+  {  30899, 222271, 130238,   0,   0,    0,  300000,      -1 }, // Vindictiveness
+  {  30898, 222270, 130239,   0,   1,    0,      -1,      -1 }, // Sylvan Walker
+  {  30893, 222040, 130240,   0,   1,    0,      -1,      -1 }, // Intrepid
+  {  30897, 222269, 130241,   0,   1,    0,      -1,      -1 }, // Maelstrom's Guidance
+  {  30896, 222268, 130242,   0,   1,    0,      -1,      -1 }, // Dawnlight Righteousness
+  {  27398, 222266, 130243,   0,   1,    0,      -1,      -1 }, // Raging Fury
+  {  30895, 222267, 130244,   0,   1,    0,      -1,      -1 }, // Grim Resolve
+  {  26927, 196000, 130259,   0,   0,    0,      -1,      -1 }, // True Rogue
+  {  27751, 196777, 131735,   0,   1,    0,      -1,      -1 }, // Imp Generator
+  {  30082, 215767, 131773,   0,   1,    0,      -1,      -1 }, // Flamescale
+  {  27005, 133631, 131799,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  27007, 126552, 131803,   0,   1,    0,      -1,      -1 }, // Item - Proc Agility
+  {  27023, 202898, 132091,   0,   1,    0,      -1,      -1 }, // Uriah's Blessing
+  {  27039, 197382, 132178,   0,   0,    0,       0,    3000 }, // Honed Weaponry
+  {  27061, 217519, 132357,   0,   1,    0,      -1,      -1 }, // Pillars of the Dark Portal
+  {  27063, 209228, 132365,   0,   1,    0,      -1,      -1 }, // Shackles of Bryndaor
+  {  27064, 208782, 132366,   0,   1,    0,      -1,      -1 }, // Koltira's Newfound Will
+  {  27065, 208706, 132367,   0,   1,    0,      -1,      -1 }, // Service of Gorefiend
+  {  29948, 214345, 132369,   0,   1,    0,      -1,      -1 }, // Wilfred's Sigil of Superior Summoning
+  {  29943, 214225, 132374,   0,   1,    0,      -1,      -1 }, // Kazaak's Final Curse
+  {  28709, 212172, 132375,   0,   1,    0,      -1,      -1 }, // Odr, Shawl of the Ymirjar
+  {  27072, 210852, 132376,   0,   1,    0,      -1,      -1 }, // Acherus Drapes
+  {  27073, 207952, 132378,   0,   1,    0,      -1,      -1 }, // Sacrolash's Dark Strike
+  {  27074, 208868, 132379,   0,   1,    0,      -1,      -1 }, // Sin'dorei Spite
+  {  27076, 208821, 132381,   0,   1,    0,      -1,      -1 }, // Streten's Insanity
+  {  27077, 205721, 132393,   0,   1,    0,      -1,      -1 }, // Recurrent Ritual
+  {  27078, 205797, 132394,   0,   1,    0,      -1,      -1 }, // Hood of Eternal Disdain
+  {  27079, 209450, 132406,   0,   1,    0,      -1,      -1 }, // Marquee Bindings of the Sun King
+  {  28815, 213014, 132407,   0,   1,    0,      -1,      -1 }, // Varo'then's Restraint
+  {  27082, 215209, 132409,   0,   1,    0,      -1,      -1 }, // Anund's Last Breath
+  {  27084, 207970, 132410,   0,   1,    0,      -1,      -1 }, // Shard of the Exodar
+  {  27085, 208146, 132411,   0,   1,    0,      -1,      -1 }, // Lady Vashj's Grasp
+  {  27089, 208080, 132413,   0,   1,    0,      -1,      -1 }, // Rhonin's Assaulting Armwraps
+  {  27090, 214576, 132436,   0,   1,    0,      -1,      -1 }, // Skjoldr, Sanctuary of Ivagont
+  {  27091, 236523, 132437,   0,   1,    0,      -1,      -1 }, // Mother Shahraz's Seduction
+  {  27093, 208161, 132441,   0,   1,    0,      -1,      -1 }, // Draugr, Girdle of the Everlasting King
+  {  27095, 281263, 132442,   0,   1,    0,      -1,      -1 }, // Cord of Infinity
+  { 111356, 209311, 132442,   1,   1,    0,      -1,      -1 }, // Cord of Infinity
+  {  30489, 207438, 132443,   0,   1,    0,      -1,      -1 }, // Aggramar's Stride
+  {  28672, 207428, 132444,   0,   1,    0,      -1,      -1 }, // Xavaric's Magnum Opus
+  {  27098, 211435, 132445,   0,   1,    0,      -1,      -1 }, // Al'maiesh, the Cord of Hope
+  {  27099, 207555, 132447,   0,   1,    0,      -1,      -1 }, // An'juna's Trance
+  {  27100, 208713, 132448,   0,   1,    0,      -1,      -1 }, // Lesson of Razuvious
+  {  27101, 234689, 132449,   0,   1,    0,      -1,      -1 }, // Phyrix's Embrace
+  {  27107, 210632, 132450,   0,   1,    0,      -1,      -1 }, // Muze's Unwavering Will
+  {  27108, 209280, 132451,   0,   1,    0,      -1,      -1 }, // Mystic Kilt of the Rune Master
+  {  34966, 208051, 132452,   0,   1,    0,      -1,      -1 }, // Sephuz's Secret
+  {  34967, 234867, 132452,   1,   1,    0,      -1,      -1 }, // Sephuz's Secret
+  {  27110, 205816, 132453,   0,   1,    0,      -1,      -1 }, // Rattlegore Bone Legplates
+  {  27111, 208099, 132454,   0,   1,    0,      -1,      -1 }, // Koralon's Burning Touch
+  {  27112, 236373, 132455,   0,   1,    0,      -1,      -1 }, // Norgannon's Foresight
+  {  27113, 205702, 132456,   0,   1,    0,      -1,      -1 }, // Feretory of Souls
+  {  27114, 205753, 132457,   0,   1,    0,      -1,      -1 }, // Power Cord of Lethtendris
+  {  27115, 205658, 132458,   0,   1,    0,      -1,      -1 }, // Toravon's Whiteout Bindings
+  {  30101, 216059, 132459,   0,   1,    0,      -1,      -1 }, // Perseverance of the Ebon Martyr
+  {  27121, 205678, 132460,   0,   1,    0,      -1,      -1 }, // Alythess's Pyrogenics
+  {  29994, 214620, 132461,   0,   1,    0,      -1,      -1 }, // Xalan the Feared's Clench
+  {  27193, 233665, 132466,   0,   1,    0,      -1,      -1 }, // Roots of Shaladrassil
+  {  31538, 226221, 132500,   0,   5,    0,      -1,      -1 },
+  {  31767, 201360, 132500,   1,   0,    0,       0,      -1 }, // Head Shot
+  {  31535, 226221, 132501,   0,   5,    0,      -1,      -1 },
+  {  31766, 201360, 132501,   1,   0,    0,       0,      -1 }, // Head Shot
+  {  31537, 226221, 132502,   0,   5,    0,      -1,      -1 },
+  {  31765, 201360, 132502,   1,   0,    4,  300000,  300000 }, // Head Shot
+  {  31536, 226221, 132503,   0,   5,    0,      -1,      -1 },
+  {  31764, 201360, 132503,   1,   0,    4,  300000,  300000 }, // Head Shot
+  {  27397, 201360, 132504,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  31532, 201360, 132505,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  31534, 201360, 132506,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  31533, 201360, 132507,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  27230, 281456, 132861,   0,   1,    0,      -1,      -1 }, // Dejahna's Inspiration
+  { 111372, 214633, 132861,   1,   1,    0,      -1,      -1 }, // Dejahna's Inspiration
+  {  27232, 207547, 132863,   0,   1,    0,      -1,      -1 }, // Darckli's Dragonfire Diadem
+  {  27233, 207701, 132864,   0,   1,    0,      -1,      -1 }, // Mangaza's Madness
+  {  27249, 227098, 132895,   0,   1,    0,      -1,      -1 }, // Inspiration
+  {  27688, 202847, 132963,   0,   0,    0,  120000,      -1 }, // Nether Drake Impulse
+  {  27687, 202840, 132964,   0,   1,    0,      -1,      -1 }, // Stellagosa's Breath
+  {  27260, 202874, 132970,   0,   1,    0,      -1,      -1 }, // Ley Surge
+  {  27261, 202863, 132971,   0,   1,    0,      -1,      -1 }, // Desperation
+  {  27292,  92175, 133192,   0,   1,    0,      -1,      -1 }, // Hardened Shell
+  {  27293,  91340, 133197,   0,   0, 1141,   90000,   20000 }, // Typhoon
+  {  27294,  91136, 133201,   0,   0, 1141,   90000,   20000 }, // Leviathan
+  {  27295,  92093, 133206,   0,   1,    0,      -1,      -1 }, // Final Key
+  {  27296,  90899, 133216,   0,   1,    0,      -1,      -1 }, // Tendrils of Darkness
+  {  27297,  91352, 133222,   0,   0, 1141,   90000,   15000 }, // Polarization
+  {  27298,  92185, 133224,   0,   1,    0,      -1,      -1 }, // Lead Plating
+  {  27299,  91140, 133227,   0,   1,    0,      -1,      -1 }, // Cleansing Tears
+  {  27300,  92187, 133246,   0,   0, 1190,  120000,   20000 }, // Amazing Fortitude
+  {  27301,  91144, 133252,   0,   1,    0,      -1,      -1 }, // Anthem
+  {  27302,  91365, 133268,   0,   1,    0,      -1,      -1 }, // Heartened
+  {  27303,  92090, 133269,   0,   1,    0,      -1,      -1 }, // Grace
+  {  27304,  91003, 133275,   0,   1,    0,      -1,      -1 }, // Crescendo of Suffering
+  {  27305,  92200, 133281,   0,   0, 1141,   60000,   10000 }, // Blademaster
+  {  27306,  92099, 133282,   0,   0, 1141,  120000,   20000 }, // Speed of Thought
+  {  27307,  92207, 133291,   0,   1,    0,      -1,      -1 }, // Duelist
+  {  27308,  91374, 133300,   0,   0, 1141,   90000,   15000 }, // Battle Prowess
+  {  27309,  90986, 133304,   0,   1,    0,      -1,      -1 }, // Dead Winds
+  {  27310,  91308, 133305,   0,   0,    0,  120000,      -1 }, // Egg Shell
+  {  27311,  96173, 133305,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
+  {  27334, 102658, 133420,   0,   1,    0,      -1,      -1 }, // Arrow of Time
+  {  27339,  45054, 133461,   0,   1,    0,      -1,      -1 }, // Augment Pain
+  {  27340,  45059, 133462,   0,   1,    0,      -1,      -1 }, // Vessel of the Naaru
+  {  27341,  45064, 133462,   1,   0,    0,  120000,      -1 }, // Vessel of the Naaru
+  {  27342,  45354, 133463,   0,   1,    0,      -1,      -1 }, // Disdain
+  {  27343,  45057, 133464,   0,   1,    0,      -1,      -1 }, // Evasive Maneuvers
+  {  27348, 109714, 133537,   0,   0, 1141,   90000,   20000 }, // Agile
+  {  27349, 109791, 133538,   0,   0, 1141,   90000,   20000 }, // Ultimate Power
+  {  27350, 109791, 133539,   0,   0, 1141,   90000,   20000 }, // Ultimate Power
+  {  27351, 109746, 133540,   0,   0, 1141,   90000,   20000 }, // Titanic Strength
+  {  27352, 109778, 133541,   0,   0, 1141,   90000,   20000 }, // Elusive
+  {  27373, 201213, 133557,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27376, 201329, 133561,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27377, 201331, 133562,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27378, 201333, 133563,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27379, 201335, 133564,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27380, 225607, 133565,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27381, 225608, 133566,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27382, 225609, 133567,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27383, 225610, 133568,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27384, 225611, 133569,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27385, 225613, 133570,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27386, 225614, 133571,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27387, 225615, 133572,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27388, 225616, 133573,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27389, 225617, 133574,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27391, 201349, 133576,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27392, 193397, 133577,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  27393, 201351, 133578,   0,   0,   11,       0,    1000 }, // Hearty Feast
+  {  27394, 201352, 133579,   0,   0,   11,       0,    1000 }, // Lavish Suramar Feast
+  {  27395, 201348, 133580,   0,   0, 1141,   60000,   10000 }, // Brutarg's Sword Tip
+  {  27401, 201371, 133585,   0,   0,    0,   60000,      -1 }, // Divine Judgment
+  {  27404, 201404, 133595,   0,   1,    0,      -1,      -1 }, // Demonbane
+  {  27405, 201409, 133596,   0,   1,    0,      -1,      -1 }, // Voidsight
+  {  27406, 201407, 133597,   0,   1,    0,      -1,      -1 }, // Demonbane
+  {  27407, 201414, 133598,   0,   0,    0,   60000,      -1 }, // Bulwark of Purity
+  {  31982, 228463, 133636,   0,   1,    0,      -1,      -1 }, // Brysngamen, Torc of Helheim
+  {  29927, 214054, 133641,   0,   1,    0,      -1,      -1 }, // Fel Meteor
+  {  30095, 215956, 133642,   0,   0,    0,      -1,      -1 }, // Valarjar's Path
+  {  30000, 214798, 133644,   0,   1,    0,      -1,      -1 }, // Screams of the Dead
+  {  30001, 214817, 133644,   1,   1,    0,      -1,      -1 }, // Screams of the Dead
+  {  30054, 215247, 133645,   0,   1,    0,      -1,      -1 }, // Shroud of the Naglfar
+  {  29940, 214198, 133646,   0,   0,    0,      -1,      -1 }, // Expel Light
+  {  29941, 214203, 133647,   0,   0,    0,      -1,      -1 }, // Spear of Light
+  {  29936, 214140, 133766,   0,   1,    0,      -1,      -1 }, // Nether Anti-Toxin
+  {  27512, 202135, 133796,   1,   0,    0,      -1,      -1 }, // Fearsome Metamorphosis
+  {  27514, 214484, 133800,   0,   1,    0,      -1,      -1 }, // Cord of Maiev, Priestess of the Moon
+  {  27699, 206397, 133970,   0,   1,    0,      -1,      -1 }, // Zann'esu Journey
+  {  27700, 224999, 133971,   0,   1,    0,      -1,      -1 }, // Iridi's Empowerment
+  {  27701, 207721, 133973,   0,   1,    0,      -1,      -1 }, // The Twins' Painful Touch
+  {  28766, 212974, 133974,   0,   1,    0,      -1,      -1 }, // Lanathel's Lament
+  {  27703, 207692, 133976,   0,   1,    0,      -1,      -1 }, // Cinidaria, the Symbiote
+  {  27704, 207277, 133977,   0,   1,    0,      -1,      -1 }, // Belo'vir's Final Stand
+  {  27737,  52172, 134017,   0,   1,    0,      -1,      -1 }, // Don Carlos' Famous Hat
+  {  27738,  51149, 134017,   1,   0,    0,    1500,      -1 }, // Summon Coyote Spirit
+  {  31979, 228450, 134488,   0,   1,    0,      -1,      -1 }, // Stabilized Energy
+  {  31980, 228461, 134526,   0,   0,    0,      -1,      -1 }, // Taste of Mana
+  {  31981, 228462, 134542,   0,   1,    0,      -1,      -1 }, // Signet of Melandrus
+  {  32713, 233001, 134542,   1,   1,    0,      -1,      -1 }, // Signet of Melandrus
+  {  32715, 233005, 134542,   2,   1,    0,      -1,      -1 }, // Signet of Melandrus
+  {  27827, 197886, 134562,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  27828, 200845, 134562,   2,   1,    0,      -1,      -1 }, // Rage of the Valarjar
+  {  27829, 205077, 134562,   3,   1,    0,      -1,      -1 }, // 1H Weapon Equipped Passive
+  {  27958, 206859, 135582,   0,   7,    0,      -1,      -1 }, // Loot Corrupted G'Hanir
+  {  27960, 170397, 135691,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27961, 190028, 135693,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  27962, 181706, 135694,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27963, 181706, 135695,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27964, 181706, 135696,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27965, 170397, 135697,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27966, 190030, 135699,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  27967, 170397, 135700,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27968, 190029, 135702,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  27969, 170397, 135703,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27970, 170397, 135804,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27971, 190028, 135806,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  27972, 181706, 135807,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27973, 181706, 135808,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27974, 181706, 135809,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27975, 170397, 135810,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27976, 190030, 135812,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  27977, 170397, 135813,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27978, 190029, 135815,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  27979, 170397, 135816,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27980, 170397, 135917,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27981, 190028, 135919,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  27982, 181706, 135920,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27983, 181706, 135921,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27984, 181706, 135922,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27985, 170397, 135923,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27986, 190030, 135925,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  27987, 170397, 135926,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27988, 190029, 135928,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  27989, 170397, 135929,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27990, 170397, 136030,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27991, 190028, 136032,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  27992, 181706, 136033,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27993, 181706, 136034,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27994, 181706, 136035,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  27995, 170397, 136036,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27996, 190030, 136038,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  27997, 170397, 136039,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  27998, 190029, 136041,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  27999, 170397, 136042,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28000, 170397, 136143,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28001, 190028, 136145,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  28002, 181706, 136146,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28003, 181706, 136147,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28004, 181706, 136148,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28005, 170397, 136149,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28006, 190030, 136151,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  28007, 170397, 136152,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28008, 190029, 136154,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  28009, 170397, 136155,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28010, 170397, 136256,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28011, 190028, 136258,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  28012, 181706, 136259,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28013, 181706, 136260,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28014, 181706, 136261,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  28015, 170397, 136262,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28016, 190030, 136264,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  28017, 170397, 136265,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  28018, 190029, 136267,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  28019, 170397, 136268,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  31763, 226221, 136711,   0,   5,    0,      -1,      -1 },
+  {  31762, 226221, 136712,   0,   5,    0,      -1,      -1 },
+  {  30061, 215266, 136714,   0,   1,    0,      -1,      -1 }, // Fragile Echoes
+  {  29939, 214168, 136715,   0,   1,    0,      -1,      -1 }, // Brutal Haymaker
+  {  30087, 215444, 136716,   0,   1,    0,      -1,      -1 }, // Dark Blast
+  {  28311, 210334, 136825,   1,   0,    0,      -1,      -1 }, // The Feral Chameleon
+  {  28312, 210343, 136826,   1,   0,    0,      -1,      -1 }, // Autumnal Bloom
+  {  29230, 213887, 136975,   0,   1,    0,      -1,      -1 }, // Scent of Blood
+  {  29986, 214449, 136978,   0,   1,    0,      -1,      -1 }, // Choking Flames
+  {  28594, 208985, 137014,   0,   1,    0,      -1,      -1 }, // Eternal Hunger
+  {  28595, 210667, 137015,   0,   1,    0,      -1,      -1 }, // Ekowraith, Creator of Worlds
+  {  30413, 212935, 137016,   0,   1,    0,      -1,      -1 }, // Sal'salabim's Strength
+  {  28596, 207628, 137017,   0,   1,    0,      -1,      -1 }, // Gift of the Golden Val'kyr
+  {  28597, 215090, 137018,   0,   1,    0,      -1,      -1 }, // Destiny Driver
+  {  28598, 208842, 137019,   0,   1,    0,      -1,      -1 }, // Cenedril, Reflector of Hatred
+  {  28599, 207633, 137020,   0,   1,    0,      -1,      -1 }, // Whisper of the Nathrezim
+  {  28600, 208692, 137021,   0,   1,    0,      -1,      -1 }, // The Dreadlord's Deceit
+  {  28601, 209002, 137022,   0,   1,    0,      -1,      -1 }, // Loramus Thalipedes' Sacrifice
+  {  28602, 208283, 137023,   0,   1,    0,      -1,      -1 }, // Promise of Elune, the Moon Goddess
+  {  28603, 208209, 137024,   0,   1,    0,      -1,      -1 }, // Ailuro Pouncers
+  {  28604, 208219, 137025,   0,   1,    0,      -1,      -1 }, // Skysec's Hold
+  {  28605, 208191, 137026,   0,   1,    0,      -1,      -1 }, // Essence of Infusion
+  {  28606, 224489, 137027,   0,   1,    0,      -1,      -1 }, // Firestone Walker's Vintage Brew
+  {  28607, 281521, 137028,   0,   1,    0,      -1,      -1 }, // Lunar Glide
+  { 111379, 217153, 137028,   1,   1,    0,      -1,      -1 }, // Lunar Glide
+  {  28608, 208045, 137029,   0,   1,    0,      -1,      -1 }, // Katsuo's Eclipse
+  {  28609, 208895, 137030,   0,   1,    0,      -1,      -1 }, // Duskwalker Footpads
+  {  28734, 212539, 137031,   0,   1,    0,      -1,      -1 }, // Thraxi's Tricksy Treads
+  {  28610, 208436, 137032,   0,   1,    0,      -1,      -1 }, // Shadow Satyr's Walk
+  {  28611, 206889, 137033,   0,   1,    0,      -1,      -1 }, // Ullr's Featherweight Snowshoes
+  {  28612, 212574, 137034,   0,   1,    0,      -1,      -1 }, // Nesingwary's Trapping Treads
+  {  29933, 214131, 137035,   0,   1,    0,      -1,      -1 }, // The Deceiver's Blood Pact
+  {  30494, 208776, 137036,   0,   1,    0,      -1,      -1 }, // Elemental Rebalancers
+  {  28613, 208786, 137037,   0,   1,    0,      -1,      -1 }, // Uvanimor, the Unbeautiful
+  {  28614, 208827, 137038,   0,   1,    0,      -1,      -1 }, // Anger of the Half-Giants
+  {  28615, 208199, 137039,   0,   1,    0,      -1,      -1 }, // Manipulated Fel Energy
+  {  28616, 207523, 137040,   0,   1,    0,      -1,      -1 }, // Chatoyant Signet
+  {  28617, 208228, 137041,   0,   1,    0,      -1,      -1 }, // Dual Determination
+  {  28618, 207932, 137042,   0,   1,    0,      -1,      -1 }, // Tearstone of Elune
+  {  28749, 281262, 137043,   0,   1,    0,      -1,      -1 }, // Frizzo's Fingertrap
+  { 111355, 225155, 137043,   1,   1,    0,      -1,      -1 }, // Frizzo's Fingertrap
+  {  28619, 208881, 137044,   0,   1,    0,      -1,      -1 }, // Gift of Veri'thas
+  {  28620, 217473, 137045,   0,   1,    0,      -1,      -1 }, // Collidus the Warp-Watcher's Gaze
+  {  28621, 207587, 137046,   0,   1,    0,      -1,      -1 }, // Ilterendi, Crown Jewel of Silvermoon
+  {  28622, 207599, 137047,   0,   1,    0,      -1,      -1 }, // Heathcliff's Immortality
+  {  28623, 208408, 137048,   0,   1,    0,      -1,      -1 }, // Liadrin's Fury Unleashed
+  {  28624, 209041, 137049,   0,   1,    0,      -1,      -1 }, // Insignia of Ravenholdt
+  {  28625, 207994, 137050,   0,   1,    0,      -1,      -1 }, // Eye of the Twisting Nether
+  {  28806, 210606, 137051,   0,   1,    0,      -1,      -1 }, // Focuser of Jonat, the Elder
+  {  28626, 207767, 137052,   0,   1,    0,      -1,      -1 }, // Ayala's Stone Heart
+  {  28627, 207775, 137053,   0,   1,    0,      -1,      -1 }, // Fujieda's Fury
+  {  28628, 215057, 137054,   0,   1,    0,      -1,      -1 }, // The Walls Fell
+  {  28629, 280737, 137055,   0,   1,    0,      -1,      -1 }, // Legion Legendary - Increase Damage Done
+  { 111385, 224550, 137055,   1,   1,    0,      -1,      -1 }, // Zevrim's Hunger
+  {  31485, 208681, 137056,   0,   1,    0,      -1,      -1 }, // Luffa Wrappings
+  {  28774, 213112, 137057,   0,   1,    0,      -1,      -1 }, // Hidden Master's Forbidden Touch
+  {  31164, 210604, 137058,   0,   1,    0,      -1,      -1 }, // Praetorian's Tidecallers
+  {  28631, 206380, 137059,   0,   1,    0,      -1,      -1 }, // Tyr's Hand of Faith
+  {  28632, 205144, 137060,   0,   1,    0,      -1,      -1 }, // Archavon's Heavy Hand
+  {  30025, 215149, 137061,   0,   1,    0,      -1,      -1 }, // Raddon's Cascading Eyes
+  {  28633, 208190, 137062,   0,   1,    0,      -1,      -1 }, // The Emerald Dreamcatcher
+  {  28634, 208878, 137063,   0,   1,    0,      -1,      -1 }, // Fundamental Observation
+  {  28635, 208884, 137064,   0,   1,    0,      -1,      -1 }, // The Shadow Hunter's Voodoo Mask
+  {  28636, 211557, 137065,   0,   1,    0,      -1,      -1 }, // Justice Gaze
+  {  28637, 217735, 137066,   0,   1,    0,      -1,      -1 }, // Cloak of Fel Flames
+  {  28638, 208342, 137067,   0,   1,    0,      -1,      -1 }, // Elize's Everlasting Encasement
+  {  30390, 216506, 137068,   0,   1,    0,      -1,      -1 }, // The Black Flame's Gamble
+  {  28639, 208402, 137069,   0,   1,    0,      -1,      -1 }, // Will of Valeera
+  {  28640, 207614, 137070,   0,   1,    0,      -1,      -1 }, // Ferren Marcus's Strength
+  {  28642, 210867, 137071,   0,   1,    0,      -1,      -1 }, // Runemaster's Pauldrons
+  {  28643, 208220, 137072,   0,   1,    0,      -1,      -1 }, // Aman'Thul's Wisdom
+  {  29228, 212123, 137073,   0,   1,    0,      -1,      -1 }, // Unison
+  {  30496, 208722, 137074,   0,   1,    0,      -1,      -1 }, // Echoes of the Great Sundering
+  {  30013, 215068, 137075,   0,   1,    0,      -1,      -1 }, // Tak'theritrix's Command
+  {  28644, 210992, 137076,   0,   1,    0,      -1,      -1 }, // Obsidian Stone Spaulders
+  {  31275, 208177, 137077,   0,   1,    0,      -1,      -1 }, // Weight of the Earth
+  {  28646, 207271, 137078,   0,   1,    0,      -1,      -1 }, // The Dark Titan's Advice
+  {  28647, 208837, 137079,   0,   1,    0,      -1,      -1 }, // Gai Plin's Imperial Brew
+  {  28648, 207280, 137080,   0,   1,    0,      -1,      -1 }, // Roar of the Seven Lions
+  {  28649, 208912, 137081,   0,   1,    0,      -1,      -1 }, // Sentinel's Sight
+  {  28793, 213154, 137082,   0,   1,    0,      -1,      -1 }, // Helbrine, Rope of the Mist Marauder
+  {  28650, 224837, 137083,   0,   1,    0,      -1,      -1 }, // Pristine Proto-Scale Girdle
+  {  28651, 213359, 137084,   0,   1,    0,      -1,      -1 }, // Akainu's Absolute Justice
+  {  28652, 208207, 137085,   0,   1,    0,      -1,      -1 }, // Intact Nazjatar Molting
+  {  28653, 206338, 137086,   0,   1,    0,      -1,      -1 }, // Chain of Thrayn
+  {  30016, 215096, 137087,   0,   1,    0,      -1,      -1 }, // Naj'entus's Vertebrae
+  {  28654, 207779, 137088,   0,   1,    0,      -1,      -1 }, // Ceann-Ar Rage
+  {  28655, 215176, 137089,   0,   1,    0,      -1,      -1 }, // Thundergod's Vigor
+  {  28656, 208826, 137090,   0,   1,    0,      -1,      -1 }, // Mo'arg Bionic Stabilizers
+  {  28657, 210840, 137091,   0,   1,    0,      -1,      -1 }, // Razelikh's Defilement
+  {  28658, 209405, 137092,   0,   1,    0,      -1,      -1 }, // Oneth's Intuition
+  {  28660, 208319, 137094,   0,   1,    0,      -1,      -1 }, // The Wildshaper's Clutch
+  {  28661, 207943, 137095,   0,   1,    0,      -1,      -1 }, // Edraith, Bonds of Aglaya
+  {  28662, 206902, 137096,   0,   1,    0,      -1,      -1 }, // Petrichor Lagniappe
+  {  28663, 209256, 137097,   0,   1,    0,      -1,      -1 }, // Drinking Horn Cover
+  {  29992, 214569, 137098,   0,   1,    0,      -1,      -1 }, // Zodyck Family Training Shackles
+  {  28664, 209420, 137099,   0,   1,    0,      -1,      -1 }, // Greenskin's Waterlogged Wristcuffs
+  {  28665, 208892, 137100,   0,   1,    0,      -1,      -1 }, // Denial of the Half-Giants
+  {  28666, 206332, 137101,   0,   1,    0,      -1,      -1 }, // Call of the Wild
+  {  28667, 208699, 137102,   0,   1,    0,      -1,      -1 }, // Al'Akir's Acrimony
+  {  29985, 214260, 137103,   0,   1,    0,      -1,      -1 }, // Storm Tempests
+  {  30495, 208763, 137104,   0,   1,    0,      -1,      -1 }, // Nobundo's Redemption
+  {  28668, 207558, 137105,   0,   1,    0,      -1,      -1 }, // Uther's Guard
+  {  28670, 208908, 137107,   0,   1,    0,      -1,      -1 }, // Mannoroth's Bloodletting Manacles
+  {  28671, 207841, 137108,   0,   1,    0,      -1,      -1 }, // Kakushan's Stormscale Gauntlets
+  {  28673, 211317, 137109,   0,   1,    0,      -1,      -1 }, // Archbishop Benedictus' Restitution
+  {  28682, 211830, 137188,   1,   0,    0,      -1,      -1 }, // Blazing Savior
+  {  28685, 211900, 137191,   1,   0,    0,      -1,      -1 }, // Inquisitor's Eye
+  {  28706, 212132, 137220,   0,   1,    0,      -1,      -1 }, // March of the Legion
+  {  28711, 212216, 137223,   0,   1,    0,      -1,      -1 }, // Seal of Necrofantasia
+  {  28712, 212278, 137227,   0,   1,    0,      -1,      -1 }, // Qa'pla, Eredun War Order
+  {  28717, 212343, 137238,   1,   0,    0,      -1,      -1 }, // Trident
+  {  28718, 212355, 137239,   1,   0,    0,      -1,      -1 }, // Hook
+  {  28723, 205077, 137246,   4,   1,    0,      -1,      -1 }, // 1H Weapon Equipped Passive
+  {  28725, 212408, 137249,   1,   0,    0,      -1,      -1 }, // Arachnophobia
+  {  28726, 212411, 137250,   1,   0,    0,      -1,      -1 }, // Nesingwary's Nemeses
+  {  28729, 212452, 137267,   1,   0,    0,      -1,      -1 }, // Goblin Anti-Grav Flare
+  {  28730, 212463, 137269,   1,   0,    0,      -1,      -1 }, // Stellar Flare
+  {  28732, 212525, 137274,   1,   0,    0,      -1,      -1 }, // Cracked Ice
+  {  28735, 225683, 137276,   0,   1,    0,      -1,      -1 }, // Promises of N'ero
+  {  28737, 212633, 137287,   1,   0,    0,      -1,      -1 }, // Spectral Raptor
+  {  28738, 212634, 137288,   1,   0,    0,      -1,      -1 }, // Pebbles
+  {  28739, 212637, 137289,   1,   0,    0,      -1,      -1 }, // Flickering
+  {  28740, 212643, 137293,   1,   0,    0,      -1,      -1 }, // Queen
+  {  29213, 213782, 137301,   0,   1,    0,      -1,      -1 }, // Nightfall
+  {  29946, 214349, 137306,   0,   1,    0,      -1,      -1 }, // Nightmare Essence
+  {  30011, 214340, 137312,   0,   1,    0,      -1,      -1 }, // Down Draft
+  {  29942, 214224, 137315,   0,   1,    0,      -1,      -1 }, // Feed on the Weak
+  {  30079, 215670, 137329,   0,   0,    0,      -1,      -1 }, // Taint of the Sea
+  {  29947, 214366, 137338,   0,   0,    0,      -1,      -1 }, // Crystalline Body
+  {  29984, 214423, 137344,   0,   0,    0,      -1,      -1 }, // Stance of the Mountain
+  {  30063, 215404, 137349,   0,   1,    0,      -1,      -1 }, // Rancid Maw
+  {  29954, 214396, 137357,   0,   1,    0,      -1,      -1 }, // Landslide
+  {  29995, 214622, 137362,   0,   1,    0,      -1,      -1 }, // Warlord's Fortitude
+  {  30075, 215630, 137367,   0,   1,    0,      -1,      -1 }, // Focused Lightning
+  {  30005, 214971, 137369,   0,   0,    0,      -1,      -1 }, // Gaseous Bubble
+  {  30081, 215745, 137373,   0,   1,    0,      -1,      -1 }, // Spawn of Serpentrix
+  {  30059, 215293, 137378,   0,   1,    0,      -1,      -1 }, // Raging Storm
+  {  30060, 215296, 137378,   1,   0,    0,      -1,      -1 }, // Raging Storm
+  {  28750, 212329, 137382,   0,   1,    0,      -1,      -1 }, // The Apex Predator's Claw
+  {  30085, 215857, 137398,   0,   1,    0,      -1,      -1 }, // Volatile Magic
+  {  29990, 214571, 137400,   0,   1,    0,      -1,      -1 }, // Nightwell Energy
+  {  29991, 214577, 137400,   1,   0,    0,      -1,      -1 }, // Nightwell Energy
+  {  30021, 215089, 137406,   0,   1,    0,      -1,      -1 }, // Shadow Wave
+  {  29932, 214120, 137419,   0,   1,    0,      -1,      -1 }, // Acceleration
+  {  29989, 214492, 137430,   0,   1,    0,      -1,      -1 }, // Nerubian Chitin
+  {  30065, 215467, 137433,   0,   0,    0,      -1,      -1 }, // Collapsing Shadow
+  {  30023, 215120, 137439,   0,   1,    0,      -1,      -1 }, // Congealing Goo
+  {  31237, 215127, 137439,   1,   0,    0,      -1,      -1 }, // Fetid Regurgitation
+  {  29993, 214584, 137440,   0,   0,    0,      -1,      -1 }, // Ice Bomb
+  {  30105, 216085, 137446,   0,   1,    0,      -1,      -1 }, // Mechanical Bomb Squirrel
+  {  30037, 215196, 137452,   0,   1,    0,      -1,      -1 }, // Phased Webbing
+  {  30002, 214829, 137459,   0,   1,    0,      -1,      -1 }, // Chaotic Energy
+  {  30038, 215206, 137462,   0,   0, 1631,      -1,      -1 }, // Vampyr's Kiss
+  {  30046, 215224, 137484,   0,   1,    0,      -1,      -1 }, // Flask of the Solemn Night
+  {  30083, 215813, 137485,   0,   1,    0,      -1,      -1 }, // Burning Intensity
+  {  30006, 214980, 137486,   0,   0,    0,      -1,      -1 }, // Slicing Maelstrom
+  {  30077, 215658, 137537,   0,   0,    0,      -1,      -1 }, // Darkstrikes
+  {  30093, 215936, 137538,   0,   0,    0,      -1,      -1 }, // Soul Sap
+  {  30004, 214962, 137539,   0,   0,    0,      -1,      -1 }, // Sheathed in Frost
+  {  30057, 215264, 137540,   0,   1,    0,      -1,      -1 }, // Pulse
+  {  30076, 215648, 137541,   0,   0,    0,      -1,      -1 }, // Elune's Light
+  {  28794, 180850, 137581,   0,   7,    0,      -1,      -1 }, // Retrieving the Ashbringer
+  {  28795, 205076, 137581,   1,   1,    0,      -1,      -1 }, // 2H Weapon Equipped Passive
+  {  28796, 197886, 137581,   2,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  28797, 179546, 137581,   4,   1,    0,      -1,      -1 }, // Ashes to Ashes
+  {  28798, 180850, 137582,   0,   7,    0,      -1,      -1 }, // Retrieving the Ashbringer
+  {  28799, 205076, 137582,   1,   1,    0,      -1,      -1 }, // 2H Weapon Equipped Passive
+  {  28800, 197886, 137582,   2,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  28801, 209122, 137582,   3,   0,    0,      -1,      -1 }, // Wake of Ashes
+  {  28820, 208741, 137616,   0,   1,    0,      -1,      -1 }, // Emalon 's Charged Core
+  {  29183, 197886, 137660,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  29184, 210510, 137660,   1,   1,    0,      -1,      -1 }, // Holy Paladin Temp Libram Passive
+  {  29185, 200652, 137660,   2,   0,    0,      -1,      -1 }, // Tyr's Deliverance
+  {  29186, 205076, 137660,   3,   1,    0,      -1,      -1 }, // 2H Weapon Equipped Passive
+  {  29187, 211838, 137660,   4,   7,    0,      -1,      -1 }, // Silver Hand
+  {  29188, 210132, 137661,   0,   7,    0,      -1,      -1 }, // Truthguard
+  {  29189, 197886, 137661,   1,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
+  {  29190, 205077, 137661,   2,   1,    0,      -1,      -1 }, // 1H Weapon Equipped Passive
+  {  29191, 209202, 137661,   3,   0,    0,      -1,      -1 }, // Eye of Tyr
+  {  29918, 190028, 138084,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  29923, 190030, 138090,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  29925, 190029, 138093,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  29937, 214147, 138117,   0,   1,    0,      -1,      -1 }, // Spiritual Journey
+  {  29955, 214403, 138140,   0,   1,    0,      -1,      -1 }, // Magtheridon's Might
+  {  30007, 221873, 138222,   0,   1,    0,      -1,      -1 }, // Spirit Fragment
+  {  30008, 222187, 138224,   0,   1,    0,      -1,      -1 }, // Volatile Ichor
+  {  30009, 222478, 138225,   0,   1,    0,      -1,      -1 }, // Shadowy Reflection
+  {  30097, 216042, 138429,   0,   1,    0,      -1,      -1 }, // Item Aura
+  {  30424, 218844, 138823,   0,   1,    0,      -1,      -1 }, // Starlance Vigil
+  {  30432, 218844, 138837,   0,   1,    0,      -1,      -1 }, // Starlance Vigil
+  {  30435, 217496, 138854,   0,   1,    0,      -1,      -1 }, // Fragment of the Betrayer's Prison
+  {  30449, 217634, 138879,   0,   1,    0,      -1,      -1 }, // Ovyd's Winter Wrap
+  {  30459, 210970, 138949,   0,   1,    0,      -1,      -1 }, // Kirel Narak
+  {  30540, 218983, 139270,   1,   0,    0,      -1,      -1 }, // Crimson Shell
+  {  30541, 218991, 139271,   1,   0,    0,      -1,      -1 }, // Chilled Shell
+  {  30545, 219094, 139278,   1,   0,    0,      -1,      -1 }, // The Forest Path
+  {  30547, 219184, 139288,   1,   0,    0,      -1,      -1 }, // Dire Stable
+  {  30548, 219214, 139289,   1,   0,    0,      -1,      -1 }, // Critterhex
+  {  30549, 219437, 139310,   1,   0,    0,      -1,      -1 }, // Shivarra
+  {  30550, 219446, 139311,   1,   0,    0,      -1,      -1 }, // Voidlord
+  {  30551, 219451, 139312,   1,   0,    0,      -1,      -1 }, // Observer
+  {  30552, 219456, 139313,   1,   0,    0,      -1,      -1 }, // Terrorguard
+  {  30554, 219468, 139315,   1,   0,    0,      -1,      -1 }, // Wrathguard
+  {  30555, 221803, 139320,   0,   0,    0,      -1,      -1 }, // Infested Ground
+  {  30556, 221811, 139321,   0,   1,    0,      -1,      -1 }, // Plague Swarm
+  {  30557, 221837, 139322,   0,   0,    0,      -1,      -1 }, // Solitude
+  {  30558, 221845, 139323,   0,   1,    0,      -1,      -1 }, // Tormenting Cyclone
+  {  30559, 222015, 139324,   0,   1,    0,      -1,      -1 }, // Nightmarish Ichor
+  {  30560, 222167, 139325,   0,   1,    0,      -1,      -1 }, // Horrific Appendages
+  {  30561, 222046, 139326,   0,   0,    0,      -1,      -1 }, // Maddening Whispers
+  {  30562, 221695, 139327,   0,   0,    0,      -1,      -1 }, // Wild God's Fury
+  {  30563, 221767, 139328,   0,   1,    0,      -1,      -1 }, // Fleshrending
+  {  30564, 221786, 139329,   0,   1,    0,      -1,      -1 }, // Bloodthirsty Instinct
+  {  30565, 221748, 139330,   0,   1,    0,      -1,      -1 }, // Heightened Senses
+  {  30568, 221992, 139333,   0,   0,    0,      -1,      -1 }, // Cleansing Wisp
+  {  30569, 222512, 139334,   0,   1,    0,      -1,      -1 }, // Allies of Nature
+  {  30570, 222207, 139335,   0,   1,    0,      -1,      -1 }, // Darkening Soul
+  {  30571, 222705, 139336,   0,   1,    0,      -1,      -1 }, // Poisoned Dreams
+  {  30573, 219514, 139338,   1,   0,    0,      -1,      -1 }, // Crackling Crane Lightning
+  {  30574, 219558, 139339,   1,   0,    0,      -1,      -1 }, // Yu'lon's Grace
+  {  30579, 219594, 139348,   1,   0,    0,      -1,      -1 }, // Smolder
+  {  30581, 219632, 139352,   1,   0,    0,      -1,      -1 }, // Polymorphic Proportions
+  {  30586, 219694, 139358,   1,   0,    0,      -1,      -1 }, // Blackout
+  {  30589, 219746, 139362,   1,   0,    0,      -1,      -1 }, // Mana Touched Souls
+  {  30598, 220158, 139417,   1,   0,    0,      -1,      -1 }, // Fallow Wings
+  {  30611, 220230, 139435,   1,   0,    0,      -1,      -1 }, // Fel Wings
+  {  30612, 220231, 139436,   1,   0,    0,      -1,      -1 }, // Tattered Wings
+  {  30613, 220241, 139437,   1,   0,    0,      -1,      -1 }, // Fel-Enemies
+  {  30614, 220245, 139438,   1,   0,    0,      -1,      -1 }, // Shadow-Enemies
+  {  30617, 220280, 139442,   1,   0,    0,      -1,      -1 }, // Burnout
+  {  30721, 220989, 139599,   1,   0,    0, 1800000,      -1 }, // Teleport: Dalaran
+  {  31704, 227171, 139905,   0,   1,    0,      -1,      -1 }, // Arcane Blast
+  {  31692,  47524, 139909,   0,   0,    0,  600000,      -1 }, // Sense Demons
+  {  31705, 227171, 139934,   0,   1,    0,      -1,      -1 }, // Arcane Blast
+  {  31691,  47524, 139946,   0,   0,    0,  600000,      -1 }, // Sense Demons
+  {  31706, 227171, 139965,   0,   1,    0,      -1,      -1 }, // Arcane Blast
+  {  31707, 227171, 139997,   0,   1,    0,      -1,      -1 }, // Arcane Blast
+  {  31693,  47524, 140005,   0,   0,    0,  600000,      -1 }, // Sense Demons
+  {  30921, 224073, 140026,   1,   1,    0,      -1,      -1 }, // Devilsaur's Bite
+  {  32552, 231941, 140027,   0,   1,    0,      -1,      -1 }, // Ley Spark
+  {  30925, 224076, 140030,   1,   1,    0,      -1,      -1 }, // Devilsaur Shock Leash
+  {  32551, 231939, 140031,   0,   1,    0,      -1,      -1 }, // Mana Spark
+  {  30929, 224059, 140034,   0,   1,    0,      -1,      -1 }, // Devilsaur's Stampede
+  {  32553, 231943, 140035,   0,   1,    0,      -1,      -1 }, // Fluctuating Arc Capacitor
+  {  30956, 222634, 140161,   0,   0,    0,  120000,      -1 }, // Bladestorm
+  {  31077,   5005, 140338,   0,   0,   11,       0,    1000 }, // Food
+  {  31081,  35271, 140342,   0,   0,   11,       0,    1000 }, // Food
+  {  31082, 127882, 140343,   0,   0,   11,       0,    1000 }, // Squirmy Delight
+  {  31110, 223676, 140400,   0,   1,    0,      -1,      -1 }, // Perfect Dreamgrove Blossom
+  {  31144, 224169, 140533,   0,   1,    0,      -1,      -1 }, // Huntmaster's Infusion
+  {  31281, 225033, 140789,   0,   0,    0,      -1,      -1 }, // Living Carapace
+  {  31282, 225123, 140790,   0,   1,    0,      -1,      -1 }, // Crystalline Shockwave
+  {  31283, 225124, 140791,   0,   1,    0,      -1,      -1 }, // Sands of Time
+  {  31284, 225125, 140792,   0,   1,    0,      -1,      -1 }, // Accelerando
+  {  31285, 225126, 140793,   0,   0,    0,      -1,      -1 }, // Delicious Cake!
+  {  31286, 225127, 140794,   0,   1,    0,      -1,      -1 }, // Arcane Swipe
+  {  31287, 225128, 140795,   0,   1,    0,      -1,      -1 }, // Nightwell Tranquility
+  {  32198, 229670, 140795,   1,   1,    0,      -1,      -1 }, // Nightwell Tranquility
+  {  31288, 225129, 140796,   0,   1,    0,      -1,      -1 }, // Triumvirate
+  {  31289, 225130, 140797,   0,   0,    0,      -1,      -1 }, // Vampiric Aura
+  {  31290, 225131, 140798,   0,   1,    0,      -1,      -1 }, // Carrion Swarm
+  {  31291, 225132, 140799,   0,   0,    0,      -1,      -1 }, // Colossal Slam
+  {  31292, 225133, 140800,   0,   0,    0,      -1,      -1 }, // Orb of Destruction
+  {  35789, 250998, 140800,   1,   1,    0,      -1,      -1 }, // Tome of Unraveling Sanity
+  {  31293, 225134, 140801,   0,   1,    0,      -1,      -1 }, // Solar Collapse
+  {  31294, 225135, 140802,   0,   1,    0,      -1,      -1 }, // Recursive Strikes
+  {  31295, 225136, 140803,   0,   1,    0,      -1,      -1 }, // Constellations
+  {  31296, 225137, 140804,   0,   1,    0,      -1,      -1 }, // Star Gate
+  {  31297, 225138, 140805,   0,   1,    0,      -1,      -1 }, // Temporal Shift
+  {  31298, 225139, 140806,   0,   1,    0,      -1,      -1 }, // Prescience
+  {  31299, 225140, 140807,   0,   0,    0,      -1,      -1 }, // Infernal Contract
+  {  31300, 225141, 140808,   0,   0,    0,      -1,      -1 }, // Fel-Crazed Rage
+  {  31301, 225142, 140809,   0,   1,    0,      -1,      -1 }, // Nefarious Pact
+  {  31302, 225036, 140846,   0,   1,    0,      -1,      -1 }, // Aegisjalmur, the Armguards of Awe
+  {  31335, 225161, 140963,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31337, 225161, 140965,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31339, 225161, 140967,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31341, 225161, 140969,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31343, 225161, 140971,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31345, 225161, 140973,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31347, 225161, 140975,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31349, 225161, 140977,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31351, 225161, 140979,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31353, 225161, 140981,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31355, 225161, 140983,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31357, 225161, 140985,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  31511, 226045, 141321,   0,   1,    0,      -1,      -1 }, // Shivarran Symmetry
+  {  31541, 226841, 141353,   0,   1,    0,      -1,      -1 }, // Magnetized Blasting Cap Launcher
+  {  31758, 227388, 141584,   0,   0,    0,      -1,      -1 }, // Opening Hand
+  {  32781, 233428, 141584,   1,   1,    0,      -1,      -1 }, // Opening Hand
+  {  31865, 227868, 141585,   0,   1,    0,      -1,      -1 }, // Six-Feather Fan
+  {  31914, 228141, 141586,   0,   1,    0,      -1,      -1 }, // Marfisi's Giant Censer
+  {  31759, 227409, 141618,   0,   1,    0,      -1,      -1 }, // New Growth
+  {  31760, 227414, 141619,   0,   1,    0,      -1,      -1 }, // Mana Infuse
+  {  31942, 228379, 141898,   1,   0,    0,      -1,      -1 }, // Falling Thunder
+  {  32147, 229206, 142117,   0,   0,    4,  300000,  300000 }, // Potion of Prolonged Power
+  {  32264, 230257, 142157,   0,   1,    0,      -1,      -1 }, // Flame Wreath
+  {  32239, 230015, 142158,   0,   0,    0,      -1,      -1 }, // Holy Bolt
+  {  32238, 230011, 142159,   0,   0,    0,      -1,      -1 }, // Cruel Garrote
+  {  32262, 230222, 142160,   0,   0,    0,      -1,      -1 }, // Thunder Ritual
+  {  32254, 230080, 142161,   0,   1,    0,      -1,      -1 }, // Intangible Presence
+  {  32256, 230140, 142162,   0,   1,    0,      -1,      -1 }, // Loose Mana
+  {  32261, 231952, 142164,   0,   0,    0,      -1,      -1 }, // Flame Gale
+  {  32263, 230236, 142165,   0,   1,    0,      -1,      -1 }, // Volatile Energy
+  {  32579, 232043, 142166,   0,   0,    0,      -1,      -1 }, // Heroic Resolve
+  {  32257, 230150, 142167,   0,   1,    0,      -1,      -1 }, // Legion's Gaze
+  {  32255, 230101, 142168,   0,   0,    0,      -1,      -1 }, // Dinner Bell
+  {  34207, 239990, 142168,   1,   1,    0,      -1,      -1 }, // Dinner Bell
+  {  32260, 230121, 142169,   0,   0,    0,      -1,      -1 }, // Guardian's Familiar
+  {  32821, 234109, 142170,   0,   1,    0,      -1,      -1 }, // Shame
+  {  32822, 234113, 142171,   0,   1,    0,      -1,      -1 }, // Arrogance
+  {  32823, 234142, 142173,   0,   0,    0,      -1,      -1 }, // Collapse
+  {  32819, 234106, 142174,   0,   1,    0,      -1,      -1 }, // Barbed Rebuke
+  {  32517, 231626, 142203,   0,   1,    0,      -1,      -1 }, // Chest Armor Bonus
+  {  32820, 234110, 142206,   0,   1,    0,      -1,      -1 }, // Swelter
+  {  32516, 231626, 142297,   0,   1,    0,      -1,      -1 }, // Chest Armor Bonus
+  {  32700,  39937, 142298,   0,   0, 1176, 1800000, 1800000 }, // There's No Place Like Home
+  {  32518, 231626, 142301,   0,   1,    0,      -1,      -1 }, // Chest Armor Bonus
+  {  32519, 231626, 142303,   0,   1,    0,      -1,      -1 }, // Chest Armor Bonus
+  {  32244, 230039, 142326,   0,   0,    4,  300000,  300000 }, // Brawler's Potion of Prolonged Power
+  {  32250, 230058, 142334,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  32280, 230400, 142368,   0,   0, 1141,  180000,   30000 }, // Falcosaur Frenzy
+  {  32347, 231054, 142469,   0,   0,    0,      -1,      -1 }, // Teleport
+  {  32419, 170397, 142660,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32420, 190028, 142662,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32421, 181706, 142663,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32422, 181706, 142664,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32423, 181706, 142665,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32424, 170397, 142666,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32425, 190030, 142668,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32426, 170397, 142669,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32427, 190029, 142671,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32428, 170397, 142672,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32429, 170397, 142773,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32430, 190028, 142775,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32431, 181706, 142776,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32432, 181706, 142777,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32433, 181706, 142778,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32434, 170397, 142779,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32435, 190030, 142781,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32436, 170397, 142782,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32437, 190029, 142784,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32438, 170397, 142785,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32439, 170397, 142886,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32440, 190028, 142888,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32441, 181706, 142889,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32442, 181706, 142890,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32443, 181706, 142891,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32444, 170397, 142892,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32445, 190030, 142894,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32446, 170397, 142895,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32447, 190029, 142897,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32448, 170397, 142898,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32449, 170397, 142999,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32450, 190028, 143001,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32451, 181706, 143002,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32452, 181706, 143003,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32453, 181706, 143004,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32454, 170397, 143005,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32455, 190030, 143007,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32456, 170397, 143008,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32457, 190029, 143010,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32458, 170397, 143011,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32459, 170397, 143112,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32460, 190028, 143114,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32461, 181706, 143115,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32462, 181706, 143116,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32463, 181706, 143117,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32464, 170397, 143118,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32465, 190030, 143120,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32466, 170397, 143121,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32467, 190029, 143123,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32468, 170397, 143124,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32469, 170397, 143225,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32470, 190028, 143227,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  32471, 181706, 143228,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32472, 181706, 143229,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32473, 181706, 143230,   0,   0, 1190,  120000,   20000 }, // Savage Fortitude
+  {  32474, 170397, 143231,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32475, 190030, 143233,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  32476, 170397, 143234,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32477, 190029, 143236,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  32478, 170397, 143237,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  32550, 147343, 143560,   0,   0,    0,      -1,      -1 }, // Burden of Eternity
+  {  32576, 231997, 143588,   1,   0,    0,      -1,      -1 }, // Trusted Steed
+  {  32675, 232419, 143633,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  32676, 232493, 143634,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  32677, 232494, 143635,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  32727, 208091, 143728,   0,   1,    0,      -1,      -1 }, // Timeless Strategem
+  {  32730, 234814, 143732,   0,   1,    0,      -1,      -1 }, // Uncertain Reminder
+  {  32749, 233277, 143750,   1,   0,    0,      -1,      -1 }, // Twilight Bloom
+  {  32836, 171615, 143905,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  32837, 171615, 143906,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  32838, 171615, 143907,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  32839, 171615, 143908,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  32840, 171615, 143909,   0,   0,    0,  600000,      -1 }, // Love Rocket
+  {  32876, 129115, 144070,   0,   0, 1141,   60000,   60000 }, // Shado-Pan Dragon Gun
+  {  32884, 235019, 144113,   0,   1,    0,      -1,      -1 }, // Windswept
+  {  32885, 235015, 144119,   0,   1,    0,      -1,      -1 }, // Melon-choly
+  {  32886, 105693, 144121,   0,   0,    0,      -1,      -1 }, // Flask of Falling Leaves
+  {  32887, 235017, 144122,   0,   1,    0,      -1,      -1 }, // Fermenting Furuncle
+  {  32888, 126260, 144128,   0,   0, 1141,  120000,   20000 }, // Heart of Fire
+  {  32889, 126473, 144136,   0,   1,    0,      -1,      -1 }, // Predation
+  {  32890, 235003, 144146,   0,   1,    0,      -1,      -1 }, // Iron Protection
+  {  32891, 126478, 144156,   0,   0, 1141,  150000,   25000 }, // Flashfreeze
+  {  32892, 126270, 144157,   0,   0,    0,  120000,   20000 }, // Vial of Ichorous Blood
+  {  32893, 126484, 144158,   0,   0, 1141,   90000,   15000 }, // Flashing Steel
+  {  32894, 235011, 144159,   0,   1,    0,      -1,      -1 }, // Price of Progress
+  {  32895, 235007, 144160,   0,   1,    0,      -1,      -1 }, // Searing Words
+  {  32896, 126519, 144161,   0,   0, 1141,  120000,   20000 }, // Lessons of the Darkmaster
+  {  32907, 235022, 144236,   0,   1,    0,      -1,      -1 }, // Master Assassin's Initiative
+  {  32908, 235053, 144239,   0,   1,    0,      -1,      -1 }, // The Emperor's Capacitor
+  {  32909, 235039, 144242,   0,   1,    0,      -1,      -1 }, // X'oni's Caress
+  {  32911, 281457, 144244,   0,   1,    0,      -1,      -1 }, // Kam Xi'raff
+  { 111373, 233978, 144244,   1,   1,    0,      -1,      -1 }, // Kam Xi'raff
+  {  32914, 234710, 144247,   0,   1,    0,      -1,      -1 }, // Rammal's Ulterior Motive
+  {  32916, 235169, 144249,   0,   0,    0,      -1,      -1 }, // Archimonde's Hatred Reborn
+  {  33015, 235966, 144258,   0,   0,    0,      -1,      -1 }, // Velen's Future Sight
+  {  32982, 235991, 144259,   0,   0,    0,      -1,      -1 }, // Kil'jaeden's Burning Wish
+  {  33016, 236062, 144259,   1,   1,    0,      -1,      -1 }, // Kil'jaeden's Burning Wish
+  {  32923, 235227, 144260,   0,   1,    0,      -1,      -1 }, // Ice Time
+  {  32931, 234848, 144273,   0,   1,    0,      -1,      -1 }, // Maraad's Dying Breath
+  {  32937, 235273, 144274,   0,   1,    0,      -1,      -1 }, // Gravity Spiral
+  {  32938, 234653, 144275,   0,   1,    0,      -1,      -1 }, // Saruan's Resolve
+  {  32940, 235300, 144277,   0,   1,    0,      -1,      -1 }, // Anvil & Stave
+  {  32942, 209354, 144279,   0,   1,    0,      -1,      -1 }, // Delusions of Grandeur
+  {  32943, 235556, 144280,   0,   1,    0,      -1,      -1 }, // Death March
+  {  32944, 235558, 144281,   0,   1,    0,      -1,      -1 }, // Skullflower's Haemostasis
+  {  32947, 235524, 144292,   0,   1,    0,      -1,      -1 }, // Spirit of the Darkness Flame
+  {  32948, 235605, 144293,   0,   1,    0,      -1,      -1 }, // Consort's Cold Core
+  {  32949, 200818, 144295,   0,   1,    0,      -1,      -1 }, // Twin Moonfire
+  {  32953, 235691, 144303,   0,   1,    0,      -1,      -1 }, // MKII Gyroscopic Stabilizer
+  {  32983, 235721, 144326,   0,   1,    0,      -1,      -1 }, // The Mantle of Command
+  {  32987, 201360, 144331,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  32988, 201360, 144332,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  32989, 201360, 144333,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  32990, 201360, 144334,   0,   0,    4,  300000,  300000 }, // Head Shot
+  {  33000, 281301, 144340,   0,   1,    0,      -1,      -1 }, // Shelter of Rin
+  { 111363, 235719, 144340,   1,   1,    0,      -1,      -1 }, // Shelter of Rin
+  {  33012, 280737, 144354,   0,   1,    0,      -1,      -1 }, // Legion Legendary - Increase Damage Done
+  { 111387, 212875, 144354,   1,   1,    0,      -1,      -1 }, // Fiery Red Maimers
+  {  33013, 235940, 144355,   0,   1,    0,      -1,      -1 }, // Pyrotex Ignition Cloth
+  {  33018, 236106, 144358,   0,   1,    0,      -1,      -1 }, // Ashes to Dust
+  {  33065, 236447, 144361,   0,   1,    0,      -1,      -1 }, // Butcher's Bone Apron
+  {  33020, 281494, 144364,   0,   1,    0,      -1,      -1 }, // Reap and Sow
+  { 111376, 236114, 144364,   1,   1,    0,      -1,      -1 }, // Reap and Sow
+  {  33021, 281496, 144369,   0,   1,    0,      -1,      -1 }, // Lessons of Space-Time
+  { 111378, 236174, 144369,   1,   1,    0,      -1,      -1 }, // Lessons of Space-Time
+  {  33027, 281495, 144385,   0,   1,    0,      -1,      -1 }, // Wakener's Loyalty
+  { 111377, 236199, 144385,   1,   1,    0,      -1,      -1 }, // Wakener's Loyalty
+  {  33033, 139437, 144391,   1,   0,    0,      -1,      -1 }, // Teleport: Bizmo's Brewpub
+  {  33034, 139432, 144392,   1,   0,    0,      -1,      -1 }, // Teleport: Brawl'gar Arena
+  {  33042, 237876, 144397,   0,   0,    4,  300000,  300000 }, // Valorous Potion of Armor
+  {  33046, 236820, 144411,   0,   0,   59,       0,    1000 }, // Drink
+  {  33068, 236478, 144432,   0,   1,    0,      -1,      -1 }, // Oakheart's Puny Quods
+  {  33074, 236545, 144438,   0,   1,    0,      -1,      -1 }, // Zeks Exterminatus
+  {  33872, 238524, 144477,   0,   1,    0,      -1,      -1 }, // Fel Barbs
+  {  33871, 238498, 144480,   0,   1,    0,      -1,      -1 }, // Dreadstone
+  {  33873, 238534, 144482,   0,   0,    0,      -1,      -1 }, // Grease the Gears
+  {  33077, 170397, 144730,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33078, 170397, 144731,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33079, 190028, 144734,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33080, 190028, 144735,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33081, 170397, 144736,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33082, 170397, 144737,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33083, 190030, 144740,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33084, 190030, 144741,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33085, 170397, 144742,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33086, 170397, 144743,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33087, 190029, 144746,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33088, 190029, 144747,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33089, 170397, 144976,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33090, 170397, 144977,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33091, 190028, 144980,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33092, 190028, 144981,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33093, 170397, 144982,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33094, 170397, 144983,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33095, 190030, 144986,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33096, 190030, 144987,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33097, 170397, 144988,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33098, 170397, 144989,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33099, 190029, 144992,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33100, 190029, 144993,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33101, 170397, 145222,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33102, 170397, 145223,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33103, 190028, 145226,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33104, 190028, 145227,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33105, 170397, 145228,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33106, 170397, 145229,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33107, 190030, 145232,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33108, 190030, 145233,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33109, 170397, 145234,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33110, 170397, 145235,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33111, 190029, 145238,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33112, 190029, 145239,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33145, 170397, 145572,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33146, 170397, 145573,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33147, 190028, 145576,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33148, 190028, 145577,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33149, 170397, 145578,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33150, 170397, 145579,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33151, 190030, 145582,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33152, 190030, 145583,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33153, 170397, 145584,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33154, 170397, 145585,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33155, 190029, 145588,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33156, 190029, 145589,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33157, 170397, 145818,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33158, 170397, 145819,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33159, 190028, 145822,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33160, 190028, 145823,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33161, 170397, 145824,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33162, 170397, 145825,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33163, 190030, 145828,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33164, 190030, 145829,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33165, 170397, 145830,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33166, 170397, 145831,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33167, 190029, 145834,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33168, 190029, 145835,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33169, 170397, 146064,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33170, 170397, 146065,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33171, 190028, 146068,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33172, 190028, 146069,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  33173, 170397, 146070,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33174, 170397, 146071,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33175, 190030, 146074,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33176, 190030, 146075,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  33177, 170397, 146076,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33178, 170397, 146077,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  33179, 190029, 146080,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  33180, 190029, 146081,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34431, 241334, 146666,   0,   1,    0,      -1,      -1 }, // The Night's Dichotomy
+  {  34575, 241330, 146667,   0,   1,    0,      -1,      -1 }, // Rethu's Incessant Courage
+  {  34449, 241332, 146668,   0,   1,    0,      -1,      -1 }, // Vigilance Perch
+  {  34430, 241331, 146669,   0,   1,    0,      -1,      -1 }, // The Sentinel's Eternal Refuge
+  {  34141, 239242, 146716,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34142, 239242, 146717,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34143, 239242, 146718,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34144, 239242, 146719,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34145, 239242, 146720,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34146, 239242, 146721,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34147, 239242, 146722,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34148, 239242, 146723,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34149, 239242, 146724,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34150, 239242, 146725,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34151, 239242, 146726,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34152, 239242, 146727,   0,   0,    0,      -1,      -1 }, // Upgrade Armor
+  {  34590, 242458, 147002,   0,   0,    0,      -1,      -1 }, // Rising Tides
+  {  34588, 242325, 147003,   0,   1,    0,      -1,      -1 }, // Guilty Conscience
+  {  34591, 242459, 147004,   0,   1,    0,      -1,      -1 }, // Ocean's Embrace
+  {  34581, 242541, 147005,   0,   1,    0,      -1,      -1 }, // Chalice of Moonlight
+  {  34601, 242619, 147006,   0,   0,    0,      -1,      -1 }, // Cleansing Matrix
+  {  34604, 242622, 147007,   0,   0,    0,      -1,      -1 }, // Guiding Hand
+  {  35513, 248747, 147007,   1,   1,    0,      -1,      -1 }, // Guiding Hand
+  {  34586, 242215, 147009,   0,   1,    0,      -1,      -1 }, // Infernal Cinders
+  {  34587, 246654, 147009,   1,   1,    0,      -1,      -1 }, // Dancing Flames
+  {  34589, 242640, 147010,   0,   1,    0,      -1,      -1 }, // Strength of Will
+  {  34594, 242497, 147011,   0,   0,    0,      -1,      -1 }, // Ceaseless Toxin
+  {  34595, 242553, 147012,   0,   0,    0,      -1,      -1 }, // Umbral Glaive Storm
+  {  34596, 242561, 147012,   1,   1,    0,      -1,      -1 }, // Umbral Glaive Storm
+  {  34584, 242611, 147015,   0,   1,    0,      -1,      -1 }, // Demonic Vigor
+  {  34593, 242524, 147016,   0,   1,    0,      -1,      -1 }, // Terror From Below
+  {  34597, 242570, 147017,   0,   0,    0,      -1,      -1 }, // Spectral Owl
+  {  34599, 242605, 147018,   0,   1,    0,      -1,      -1 }, // Spear of Anguish
+  {  34605, 243941, 147019,   0,   0,    0,      -1,      -1 }, // Insidious Corruption
+  {  34985, 243952, 147019,   1,   1,    0,      -1,      -1 }, // Tome of Unraveling Sanity
+  {  34585, 242207, 147022,   0,   1,    0,      -1,      -1 }, // Infernal Skin
+  {  34592, 242536, 147023,   0,   0,    0,      -1,      -1 }, // Unending Hunger
+  {  34598, 242609, 147024,   0,   0,    0,      -1,      -1 }, // Wailing Souls
+  {  34600, 242616, 147025,   0,   1,    0,      -1,      -1 }, // Grace of the Creators
+  {  34602, 242628, 147026,   0,   1,    0,      -1,      -1 }, // Cunning of the Deceiver
+  {  34603, 242629, 147026,   1,   0,    0,      -1,      -1 }, // Cunning of the Deceiver
+  {  34242, 240268, 147117,   1,   0,    0,      -1,      -1 }, // Fel Succubus
+  {  34245, 240271, 147119,   1,   0,    0,      -1,      -1 }, // Shadow Succubus
+  {  34567, 242551, 147707,   0,   0,   79,  900000,    3000 }, // Fel Focus
+  {  34716, 170397, 148105,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34717, 170397, 148106,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34718, 190028, 148109,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34719, 190028, 148110,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34720, 170397, 148111,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34721, 170397, 148112,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34722, 190030, 148115,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34723, 190030, 148116,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34724, 170397, 148117,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34725, 170397, 148118,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34726, 190029, 148121,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34727, 190029, 148122,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34728, 170397, 148351,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34729, 170397, 148352,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34730, 190028, 148355,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34731, 190028, 148356,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34732, 170397, 148357,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34733, 170397, 148358,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34734, 190030, 148361,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34735, 190030, 148362,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34736, 170397, 148363,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34737, 170397, 148364,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34738, 190029, 148367,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34739, 190029, 148368,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34741, 170397, 148598,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34742, 170397, 148599,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34743, 190028, 148602,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34744, 190028, 148603,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34745, 170397, 148604,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34746, 170397, 148605,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34747, 190030, 148608,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34748, 190030, 148609,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34749, 170397, 148610,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34750, 170397, 148611,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34751, 190029, 148614,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34752, 190029, 148615,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34753, 170397, 148844,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34754, 170397, 148845,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34755, 190028, 148848,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34756, 190028, 148849,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34757, 170397, 148850,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34758, 170397, 148851,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34759, 190030, 148854,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34760, 190030, 148855,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34761, 170397, 148856,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34762, 170397, 148857,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34763, 190029, 148860,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34764, 190029, 148861,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34765, 170397, 149090,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34766, 170397, 149091,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34767, 190028, 149094,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34768, 190028, 149095,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34769, 170397, 149096,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34770, 170397, 149097,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34771, 190030, 149100,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34772, 190030, 149101,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34773, 170397, 149102,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34774, 170397, 149103,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34775, 190029, 149106,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34776, 190029, 149107,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34777, 170397, 149336,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34778, 170397, 149337,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34779, 190028, 149340,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34780, 190028, 149341,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34781, 170397, 149342,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34782, 170397, 149343,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34783, 190030, 149346,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34784, 190030, 149347,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34785, 170397, 149348,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34786, 170397, 149349,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34787, 190029, 149352,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34788, 190029, 149353,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34891, 170397, 149702,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34892, 170397, 149703,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34893, 190028, 149706,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34894, 190028, 149707,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34895, 170397, 149708,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34896, 170397, 149709,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34897, 190030, 149712,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34898, 190030, 149713,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34899, 170397, 149714,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34900, 170397, 149715,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34901, 190029, 149718,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34902, 190029, 149719,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34903, 243677, 149755,   1,   0,    0,      -1,      -1 }, // Angels
+  {  34904, 170397, 149952,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34905, 170397, 149953,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34906, 190028, 149956,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34907, 190028, 149957,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34908, 170397, 149958,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34909, 170397, 149959,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34910, 190030, 149962,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34911, 190030, 149963,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34912, 170397, 149964,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34913, 170397, 149965,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34914, 190029, 149968,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34915, 190029, 149969,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34916, 170397, 150198,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34917, 170397, 150199,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34918, 190028, 150202,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34919, 190028, 150203,   0,   1,    0,      -1,      -1 }, // Surge of Conquest
+  {  34920, 170397, 150204,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34921, 170397, 150205,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34922, 190030, 150208,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34923, 190030, 150209,   0,   1,    0,      -1,      -1 }, // Surge of Dominance
+  {  34924, 170397, 150210,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34925, 170397, 150211,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
+  {  34926, 190029, 150214,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34927, 190029, 150215,   0,   1,    0,      -1,      -1 }, // Surge of Victory
+  {  34979, 243815, 150387,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34960, 243877, 150388,   0,   0, 1141,      -1,      -1 }, // Wisdom of the Ages
+  {  34982, 243815, 150395,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34981, 243815, 150397,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34980, 243815, 150408,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34978, 243815, 150410,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34961, 243815, 150411,   0,   1,    0,      -1,      -1 }, // Nature Resistance
+  {  34962, 243988, 150426,   0,   1,    0,      -1,      -1 }, // Blazefury Medallion
+  {  34963, 243994, 150427,   0,   1,    0,      -1,      -1 }, // Empyrean Demolisher
+  {  34964, 244041, 150428,   0,   1,    0,      -1,      -1 }, // Eskhandar's Rake
+  {  34965, 244034, 150429,   0,   1,    0,      -1,      -1 }, // Emerald Shadowfang
+  {  34968,  47524, 150436,   1,   0,    0,  600000,      -1 }, // Sense Demons
+  {  34969, 244330, 150460,   1,   1,    0,      -1,      -1 }, // Siphon Essence
+  {  34970, 244292, 150518,   0,   1,    0,      -1,      -1 }, // Unbreakable
+  {  34971, 244193, 150521,   1,   1,    0,      -1,      -1 }, // Embers of Azzinoth
+  {  34972, 244176, 150522,   1,   0, 1141,  120000,   20000 }, // Fel Infusion
+  {  34973, 244134, 150523,   1,   1,    0,      -1,      -1 }, // Memento of Tyrande
+  {  34974, 244381, 150525,   2,   1,    0,      -1,      -1 }, // Blessing of Karabor
+  {  34975, 244189, 150526,   1,   0,    0,   60000,      -1 }, // Protector's Vigor
+  {  34976, 244066, 150527,   1,   1,    0,      -1,      -1 }, // Madness of the Betrayer
+  {  35004, 247191, 150743,   0,   0,    0,      -1,      -1 }, // Surviving Kalimdor
+  {  35515, 247212, 150744,   0,   0,    0,      -1,      -1 }, // Walking Kalimdor with the Earthmother
+  {  35514, 247227, 150745,   0,   0,    0,      -1,      -1 }, // The Azeroth Campaign
+  {  35007, 247129, 150746,   0,   0,    0,      -1,      -1 }, // Provisioning Azeroth
+  {  35034, 247509, 150936,   0,   1,    0,      -1,      -1 }, // Soul of the Shadowblade
+  {  35294, 245011, 150936,   1,   1,    0,      -1,      -1 }, // Soul of the Shadowblade
+  {  35077, 245686, 151116,   0,   1,    0,      -1,      -1 }, // Fashionable!
+  {  35113, 246461, 151190,   0,   0,    0,      -1,      -1 }, // Summon Dread Reflection
+  {  35182, 246466, 151190,   1,   1,    0,      -1,      -1 }, // Dread Reflections
+  {  35150, 246193, 151255,   0,   0,    0,  300000,      -1 }, // Resonating Death Notes
+  {  35780, 250966, 151307,   0,   0,    0,      -1,      -1 }, // Call of the Void Stalker
+  {  35809, 250908, 151307,   1,   1,    0,      -1,      -1 }, // Call of the Void Stalker
+  {  35781, 250846, 151310,   0,   1,    0,      -1,      -1 }, // Void Tendril
+  {  35771, 250765, 151312,   0,   0,    0,      -1,      -1 }, // Leeching Void
+  {  35786, 250896, 151312,   1,   1,    0,      -1,      -1 }, // Leeching Void
+  {  36039, 253807, 151313,   0,   1,    0,      -1,      -1 }, // Void's Embrace
+  {  36038, 253802, 151323,   0,   1,    0,      -1,      -1 }, // Void Hunter
+  {  36037, 253793, 151332,   0,   1,    0,      -1,      -1 }, // Voidclaw
+  {  35774, 250768, 151340,   0,   0,    0,      -1,      -1 }, // Whispers of L'ura
+  {  35177, 246422, 151351,   0,   0,    0,      -1,      -1 }, // The Perfect Gift
+  {  35230, 246981, 151538,   1,   0,    0,      -1,      -1 }, // Ember Shards
+  {  35233, 246983, 151540,   1,   0,    0,      -1,      -1 }, // Floating Shards
+  {  35236, 246998, 151542,   1,   0,    0,      -1,      -1 }, // Fel-Touched Shards
+  {  35266, 188026, 151607,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  {  35267,  17619, 151607,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  35349, 247625, 151608,   0,   0,   79,      -1,    3000 }, // Lightblood Elixir
+  {  35289, 247508, 151636,   0,   1,    0,      -1,      -1 }, // Soul of the Archdruid
+  {  35290, 247503, 151636,   1,   1,    0,      -1,      -1 }, // Soul of the Archdruid
+  {  35291, 247505, 151636,   2,   1,    0,      -1,      -1 }, // Soul of the Archdruid
+  {  35292, 247506, 151636,   3,   1,    0,      -1,      -1 }, // Soul of the Archdruid
+  {  35293, 247507, 151636,   4,   1,    0,      -1,      -1 }, // Soul of the Archdruid
+  {  35296, 247786, 151639,   0,   1,    0,      -1,      -1 }, // Soul of the Slayer
+  {  35297, 247520, 151639,   1,   1,    0,      -1,      -1 }, // Soul of the Slayer
+  {  35298, 247521, 151639,   2,   1,    0,      -1,      -1 }, // Soul of the Slayer
+  {  35299, 247518, 151640,   0,   1,    0,      -1,      -1 }, // Soul of the Deathlord
+  {  35300, 247523, 151640,   1,   1,    0,      -1,      -1 }, // Soul of the Deathlord
+  {  35301, 247524, 151640,   2,   1,    0,      -1,      -1 }, // Soul of the Deathlord
+  {  35302, 247525, 151640,   3,   1,    0,      -1,      -1 }, // Soul of the Deathlord
+  {  35303, 247529, 151641,   0,   1,    0,      -1,      -1 }, // Soul of the Huntmaster
+  {  35304, 247530, 151641,   1,   1,    0,      -1,      -1 }, // Soul of the Huntmaster
+  {  35305, 247531, 151641,   2,   1,    0,      -1,      -1 }, // Soul of the Huntmaster
+  {  35306, 247533, 151641,   3,   1,    0,      -1,      -1 }, // Soul of the Huntmaster
+  {  35307, 247553, 151642,   0,   1,    0,      -1,      -1 }, // Soul of the Archmage
+  {  35308, 247554, 151642,   1,   1,    0,      -1,      -1 }, // Soul of the Archmage
+  {  35309, 247555, 151642,   2,   1,    0,      -1,      -1 }, // Soul of the Archmage
+  {  35310, 247556, 151642,   3,   1,    0,      -1,      -1 }, // Soul of the Archmage
+  {  35311, 247558, 151643,   0,   1,    0,      -1,      -1 }, // Soul of the Grandmaster
+  {  35312, 247559, 151643,   1,   1,    0,      -1,      -1 }, // Soul of the Grandmaster
+  {  35313, 247560, 151643,   2,   1,    0,      -1,      -1 }, // Soul of the Grandmaster
+  {  35314, 247561, 151643,   3,   1,    0,      -1,      -1 }, // Soul of the Grandmaster
+  {  35315, 247566, 151644,   0,   1,    0,      -1,      -1 }, // Soul of the Highlord
+  {  35316, 247578, 151644,   1,   1,    0,      -1,      -1 }, // Soul of the Highlord
+  {  35317, 247579, 151644,   2,   1,    0,      -1,      -1 }, // Soul of the Highlord
+  {  35318, 247580, 151644,   3,   1,    0,      -1,      -1 }, // Soul of the Highlord
+  {  35321, 247591, 151646,   0,   1,    0,      -1,      -1 }, // Soul of the High Priest
+  {  35322, 247593, 151646,   1,   1,    0,      -1,      -1 }, // Soul of the High Priest
+  {  35323, 247594, 151646,   2,   1,    0,      -1,      -1 }, // Soul of the High Priest
+  {  35324, 247595, 151646,   3,   1,    0,      -1,      -1 }, // Soul of the High Priest
+  {  35325, 247598, 151647,   0,   1,    0,      -1,      -1 }, // Soul of the Farseer
+  {  35326, 247600, 151647,   1,   1,    0,      -1,      -1 }, // Soul of the Farseer
+  {  35327, 247601, 151647,   2,   1,    0,      -1,      -1 }, // Soul of the Farseer
+  {  35328, 247602, 151647,   3,   1,    0,      -1,      -1 }, // Soul of the Farseer
+  {  35329, 247603, 151649,   0,   1,    0,      -1,      -1 }, // Soul of the Netherlord
+  {  35330, 247605, 151649,   1,   1,    0,      -1,      -1 }, // Soul of the Netherlord
+  {  35331, 247607, 151649,   2,   1,    0,      -1,      -1 }, // Soul of the Netherlord
+  {  35332, 247608, 151649,   3,   1,    0,      -1,      -1 }, // Soul of the Netherlord
+  {  35333, 247610, 151650,   0,   1,    0,      -1,      -1 }, // Soul of the Battlelord
+  {  35334, 247611, 151650,   1,   1,    0,      -1,      -1 }, // Soul of the Battlelord
+  {  35335, 247612, 151650,   2,   1,    0,      -1,      -1 }, // Soul of the Battlelord
+  {  35336, 247618, 151650,   3,   1,    0,      -1,      -1 }, // Soul of the Battlelord
+  {  35451, 281613, 151782,   0,   1,    0,      -1,      -1 }, // The Topless Tower
+  {  35452, 248034, 151783,   0,   1,    0,      -1,      -1 }, // Chameleon Song
+  {  35453, 248035, 151784,   0,   1,    0,      -1,      -1 }, // Doorway to Nowhere
+  {  35454, 248036, 151785,   0,   1,    0,      -1,      -1 }, // Fire in the Deep
+  {  35455, 248037, 151786,   0,   1,    0,      -1,      -1 }, // Inner Hallation
+  {  35456, 248295, 151787,   0,   1,    0,      -1,      -1 }, // The Alabaster Lady
+  {  35457, 248044, 151788,   0,   1,    0,      -1,      -1 }, // Stormstout's Last Gasp
+  {  35459, 248066, 151795,   0,   1,    0,      -1,      -1 }, // Soulflayer's Corruption
+  {  35460, 235592, 151796,   0,   1,    0,      -1,      -1 }, // Chilled Heart
+  {  35462, 248072, 151798,   0,   1,    0,      -1,      -1 }, // Chaos Theory
+  {  35463, 248074, 151799,   0,   1,    0,      -1,      -1 }, // Oblivion's Embrace
+  {  35464, 248163, 151800,   0,   1,    0,      -1,      -1 }, // Radiant Moonlight
+  {  35465, 248081, 151801,   0,   1,    0,      -1,      -1 }, // Behemoth Headdress
+  {  35466, 248083, 151802,   0,   1,    0,      -1,      -1 }, // Fury of Nature
+  {  35467, 281297, 151803,   0,   1,    0,      -1,      -1 }, // Celerity of the Windrunners
+  { 111361, 248087, 151803,   1,   1,    0,      -1,      -1 }, // Celerity of the Windrunners
+  {  35468, 248084, 151805,   0,   1,    0,      -1,      -1 }, // Parsel's Tongue
+  {  35470, 280737, 151807,   0,   1,    0,      -1,      -1 }, // Legion Legendary - Increase Damage Done
+  { 111386, 248089, 151807,   1,   1,    0,      -1,      -1 }, // Unseen Predator's Cloak
+  {  35471, 248098, 151808,   0,   1,    0,      -1,      -1 }, // Arcane Barrage Procs Arcane Orb
+  {  35472, 248099, 151809,   0,   1,    0,      -1,      -1 }, // Contained Infernal Core
+  {  35473, 248100, 151810,   0,   1,    0,      -1,      -1 }, // Shattered Fragments of Sindragosa
+  {  35474, 281452, 151811,   0,   1,    0,      -1,      -1 }, // The Wind Blows
+  { 111371, 248101, 151811,   1,   1,    0,      -1,      -1 }, // The Wind Blows
+  {  35475, 281291, 151812,   0,   1,    0,      -1,      -1 }, // Pillars of Inmost Ligiht
+  { 111360, 248102, 151812,   1,   1,    0,      -1,      -1 }, // Pillars of Inmost Ligiht
+  {  35476, 248103, 151813,   0,   1,    0,      -1,      -1 }, // Scarlet Inquisitor's Expurgation
+  {  35477, 248296, 151814,   0,   1,    0,      -1,      -1 }, // Heart of the Void
+  {  35478, 281492, 151815,   0,   1,    0,      -1,      -1 }, // The Empty Crown
+  { 111374, 248106, 151815,   1,   1,    0,      -1,      -1 }, // The Empty Crown
+  {  35480, 281493, 151817,   0,   1,    0,      -1,      -1 }, // The Curse of Restlessness
+  { 111375, 248107, 151817,   1,   1,    0,      -1,      -1 }, // The Curse of Restlessness
+  {  35481, 248110, 151818,   0,   1,    0,      -1,      -1 }, // The First of the Dead
+  {  35482, 248029, 151819,   0,   1,    0,      -1,      -1 }, // Smoldering Heart
+  {  35484, 248113, 151821,   0,   1,    0,      -1,      -1 }, // The Master Harvester
+  {  35485, 248117, 151822,   0,   1,    0,      -1,      -1 }, // Ararat's Bloodmirrors
+  {  35486, 248118, 151823,   0,   1,    0,      -1,      -1 }, // The Great Storm's Eye
+  {  35487, 248120, 151824,   0,   1,    0,      -1,      -1 }, // Valarjar Berserkers
+  {  35990, 253259, 151955,   0,   1,    0,      -1,      -1 }, // Cycle of the Legion
+  {  35992, 253268, 151956,   0,   1,    0,      -1,      -1 }, // Feedback Loop
+  {  35993, 253277, 151957,   0,   0,    0,      -1,      -1 }, // Felshield
+  {  36390, 256055, 151957,   1,   1,    0,      -1,      -1 }, // Felshield
+  {  35994, 255924, 151958,   0,   0,    0,      -1,      -1 }, // Tarratus Keystone
+  {  35995, 253284, 151960,   0,   0,    0,      -1,      -1 }, // Refreshing Agony
+  {  36383, 255980, 151960,   1,   1,    0,      -1,      -1 }, // Refreshing Agony
+  {  35987, 253242, 151962,   0,   1,    0,      -1,      -1 }, // Prototype Personnel Decimator
+  {  36001, 253310, 151963,   0,   1,    0,      -1,      -1 }, // Fire Mines
+  {  36002, 253322, 151963,   1,   0,    0,      -1,      -1 }, // Fire Mines
+  {  36003, 253323, 151964,   0,   1,    0,      -1,      -1 }, // Shadow Strike
+  {  35998, 253305, 151968,   0,   1,    0,      -1,      -1 }, // Flames of F'harg
+  {  35999, 253304, 151968,   1,   1,    0,      -1,      -1 }, // Corruption of Shatug
+  {  35988, 255724, 151969,   0,   0,    0,      -1,      -1 }, // Legion Bombardment
+  {  36439, 256325, 151969,   1,   1,    0,      -1,      -1 }, // Legion Bombardment
+  {  35989, 253258, 151970,   0,   0,    0,      -1,      -1 }, // Reverberating Vitality
+  {  35991, 253263, 151971,   0,   1,    0,      -1,      -1 }, // Shadow Blades
+  {  35903, 251963, 151974,   0,   1,    0,      -1,      -1 }, // Eye of the Hounds
+  {  35904, 252075, 151974,   1,   0,    0,      -1,      -1 }, // Swap Hounds
+  {  35879, 251949, 151975,   0,   1,    0,      -1,      -1 }, // Hammer-Forged
+  {  35880, 251952, 151975,   1,   0,    0,      -1,      -1 }, // Hammer-Forged
+  {  35875, 251925, 151976,   0,   1,    0,      -1,      -1 }, // Unstable Portals
+  {  35877, 251940, 151977,   0,   0,    0,      -1,      -1 }, // Chilling Nova
+  {  35878, 251946, 151978,   0,   0,    0,      -1,      -1 }, // Bulwark of Flame
+  {  36350, 255587, 151978,   1,   1,    0,      -1,      -1 }, // Bulwark of Flame
+  {  36004, 253326, 152093,   0,   1,    0,      -1,      -1 }, // Echo of Gorshalach
+  {  35996, 253285, 152289,   0,   1,    0,      -1,      -1 }, // Highfather's Timekeeping
+  {  36381, 255932, 152289,   1,   1,    0,      -1,      -1 }, // Highfather's Timekeeping
+  {  35814, 251231, 152557,   0,   0,    4,      -1,  300000 }, // Steelskin Potion
+  {  35816, 269853, 152559,   0,   0,    4,      -1,  300000 }, // Potion of Rising Death
+  {  35817, 251316, 152560,   0,   0,    4,      -1,  300000 }, // Potion of Bursting Blood
+  {  35854, 280740, 152626,   0,   1,    0,      -1,      -1 }, // Legion Legendary - Increase Healing Done and Damage Done
+  { 111384, 251977, 152626,   1,   1,    0,      -1,      -1 }, // Insignia of the Grand Army
+  {  35857, 188026, 152632,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  {  35858,  17619, 152632,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 104613, 265477, 152634,   0,   1,    0,      -1,      -1 }, // Endless Tincture of Renewed Combat
+  {  35865, 265440, 152636,   0,   0,    0,   60000,      -1 }, // Tincture of Fractional Power
+  {  35867, 188026, 152637,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  {  35868,  17619, 152637,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  {  35869, 251836, 152638,   0,   0,   79,       0,    3000 }, // Flask of the Currents
+  {  35870, 251837, 152639,   0,   0,   79,       0,    3000 }, // Flask of Endless Fathoms
+  {  35871, 251838, 152640,   0,   0,   79,       0,    3000 }, // Flask of the Vast Horizon
+  {  35872, 251839, 152641,   0,   0,   79,       0,    3000 }, // Flask of the Undertow
+  {  35905, 255769, 152645,   0,   1,    0,      -1,      -1 }, // Eye of the Hounds
+  {  35906, 255770, 152645,   1,   0,    0,      -1,      -1 }, // Swap Hounds
+  {  35908, 272818, 152698,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36126, 254226, 153031,   1,   0,    0,      -1,      -1 }, // Lightspawn
+  {  36129, 254230, 153033,   1,   0,    0,      -1,      -1 }, // Voidling
+  {  36133, 254237, 153036,   1,   0,    0,      -1,      -1 }, // Dark Absolution
+  {  36188, 254409, 153130,   0,   0,   30,  300000,      -1 }, // Man'ari Training Amulet
+  {  36223, 254466, 153174,   1,   0,    0,      -1,      -1 }, // Valorous Charger's Bridle
+  {  36224, 254468, 153175,   1,   0,    0,      -1,      -1 }, // Vengeful Charger's Bridle
+  {  36225, 254470, 153176,   1,   0,    0,      -1,      -1 }, // Vigilant Charger's Bridle
+  {  36226, 254476, 153177,   1,   0,    0,      -1,      -1 }, // Golden Charger's Bridle
+  {  36272, 254767, 153290,   0,   5,    0,      -1,      -1 }, // Krokul Mining Pick
+  {  36366, 255768, 153544,   0,   1,    0,      -1,      -1 }, // Eye of the Hounds
+  {  36367, 255771, 153544,   1,   0,    0,      -1,      -1 }, // Swap Hounds
+  {  36398, 263442, 153602,   1,   0,   59,       0,       0 }, // Goldtusk Visions
+  {  36465, 256814, 154172,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36466, 256817, 154172,   2,   1,    0,      -1,      -1 }, // Mark of Aman'thul
+  {  36467, 256814, 154173,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36468, 256815, 154173,   2,   1,    0,      -1,      -1 }, // Mark of Aggramar
+  {  36469, 256814, 154174,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36470, 256819, 154174,   2,   1,    0,      -1,      -1 }, // Mark of Golganneth
+  {  36471, 256814, 154175,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36472, 256822, 154175,   2,   1,    0,      -1,      -1 }, // Mark of Eonar
+  {  36473, 256814, 154176,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36474, 256825, 154176,   2,   1,    0,      -1,      -1 }, // Mark of Khaz'goroth
+  {  36475, 256814, 154177,   0,   1,    0,      -1,      -1 }, // Mark of the Pantheon
+  {  36476, 256827, 154177,   2,   1,    0,      -1,      -1 }, // Mark of Norgannon
+  {  36539, 257409, 154881,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36540, 257411, 154882,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36541, 257414, 154883,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36542, 257417, 154884,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36543, 257423, 154885,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36544, 257425, 154886,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36545, 257419, 154887,   0,   0,   11,       0,    1000 }, // Refreshment
+  {  36546, 257421, 154888,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 109489,   7823, 155459,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  { 109490,   7823, 155468,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  { 109491,   7823, 155476,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  { 109492,   7823, 155484,   0,   1,    0,      -1,      -1 }, // +5 Fishing
+  { 109284, 268523, 155564,   0,   0,    0,      -1,      -1 }, // Potency
+  { 109287, 268526, 155565,   0,   0,    0,      -1,      -1 }, // Mud Dive
+  { 109279, 268504, 155567,   0,   0,    0,      -1,      -1 }, // Tea Time!
+  { 109280, 268506, 155568,   0,   1,    0,      -1,      -1 }, // Galewind Chimes
+  { 109283, 268514, 155569,   0,   0,    0,      -1,      -1 }, // Civil Servant
+  { 109473, 274835, 155881,   0,   1,    0,      -1,      -1 }, // Sweete's Sweet Dice
+  {  36733,  64712, 155947,   0,   0, 1141,      -1,      -1 }, // Living Flame
+  {  36734,  64763, 155952,   0,   0,    0,      -1,      -1 }, // Heart of Iron
+  {  36735,  64800, 156000,   0,   0, 1141,      -1,      -1 }, // Wrathstone
+  {  36736,  65013, 156016,   0,   1,    0,      -1,      -1 }, // Pyrite Infusion
+  {  36737,  65008, 156021,   0,   0, 1141,      -1,      -1 }, // Energy Siphon
+  {  36738,  65007, 156036,   0,   1,    0,      -1,      -1 }, // Eye of the Broodmother
+  {  36739,  65011, 156041,   0,   0, 1141,      -1,      -1 }, // Furnace Stone
+  {  36740,  64707, 156187,   0,   0, 1141,      -1,      -1 }, // Scale of Fates
+  {  36741,  64742, 156207,   0,   1,    0,      -1,      -1 }, // Pandora's Plea
+  {  36742,  64764, 156221,   0,   1,    0,      -1,      -1 }, // The General's Heart
+  {  36743,  64714, 156230,   0,   1,    0,      -1,      -1 }, // Flame of the Heavens
+  {  36744,  64792, 156234,   0,   1,    0,      -1,      -1 }, // Blood of the Old God
+  {  36745,  64738, 156245,   0,   1,    0,      -1,      -1 }, // Show of Faith
+  {  36746,  65010, 156277,   0,   1,    0,      -1,      -1 }, // Spell Cost Reduction
+  {  36747,  65005, 156288,   0,   1,    0,      -1,      -1 }, // Alacrity of the Elements
+  {  36748,  65002, 156308,   0,   1,    0,      -1,      -1 }, // Sif's Remembrance
+  {  36749,  65020, 156310,   0,   1,    0,      -1,      -1 }, // Mjolnir Runestone
+  {  36752,  65012, 156345,   0,   0,    0,      -1,      -1 }, // Royal Seal of King Llane
+  {  36753,  64981, 156458,   0,   0,    0,      -1,      -1 }, // Summon Random Vanquished Tentacle
+  {  36781, 259384, 156458,   1,   1,    0,      -1,      -1 }, // Vanquished Clutches of Yogg-Saron
+  {  36778, 259409, 156525,   0,   0,   11,       0,    1000 }, // Galley Banquet
+  {  36779, 259410, 156526,   0,   0,   11,       0,    1000 }, // Bountiful Captain's Feast
+  {  74538, 262505, 157763,   0,   1,    0,      -1,      -1 }, // Demonic Vigor
+  {  74539, 262507, 157764,   0,   1,    0,      -1,      -1 }, // Crystalline Shockwave
+  {  74540, 262511, 157765,   0,   0,    0,      -1,      -1 }, // Fel-Crazed Rage
+  {  74541, 262514, 157766,   0,   1,    0,      -1,      -1 },
+  { 110248, 277253, 158075,   0,   1,    0,      -1,      -1 }, // Heart of Azeroth
+  { 109579, 273975, 158153,   0,   1,    0,      -1,      -1 }, // Will of the Loa
+  { 109581, 273991, 158154,   0,   1,    0,      -1,      -1 }, // Speed of the Spirits
+  { 109580, 273987, 158155,   0,   1,    0,      -1,      -1 }, // Primal Instinct
+  { 109576, 273935, 158162,   0,   0,    0,      -1,      -1 }, // True North
+  { 109578, 273955, 158163,   0,   0,    0,      -1,      -1 }, // Spyglass Sight
+  { 109577, 273942, 158164,   0,   0,    0,      -1,      -1 }, // Bolstered Spirits
+  { 109303, 268550, 158215,   0,   0,    0,      -1,      -1 }, // Gryphon's Pride
+  { 109304, 268553, 158216,   0,   0,    0,      -1,      -1 }, // Living Oil Canister
+  { 109294, 268531, 158218,   0,   1,    0,      -1,      -1 }, // Sound Barrier
+  { 109295, 268533, 158219,   0,   1,    0,      -1,      -1 }, // Want For Nothing
+  { 109296, 268535, 158220,   0,   1,    0,      -1,      -1 }, // Best In Show
+  { 109300, 268544, 158224,   0,   0,    0,      -1,      -1 }, // Bottled Lightning
+  { 109301, 268546, 158225,   0,   1,    0,      -1,      -1 }, // Exposure
+  { 109205, 265954, 158319,   0,   0,    0,      -1,      -1 }, // Touch of Gold
+  { 109207, 266018, 158320,   0,   0,    0,      -1,      -1 }, // Touch of the Voodoo
+  { 109209, 267402, 158367,   0,   0,    0,      -1,      -1 }, // Noxious Venom Gland
+  { 109431, 271054, 158368,   0,   0,    0,      -1,      -1 }, // Fangs of Intertwined Essence
+  { 111398, 281723, 158371,   0,   1,    0,      -1,      -1 }, // Seabreeze
+  { 109208, 267177, 158374,   0,   1,    0,      -1,      -1 }, // Tiny Elemental in a Jar
+  { 109285, 268516, 158555,   0,   1,    0,      -1,      -1 }, // Dread Spore
+  { 109289, 268512, 158556,   0,   1,    0,      -1,      -1 }, // Siren's Melody
+  { 109281, 268507, 158557,   0,   1,    0,      -1,      -1 }, // Bargain For Power
+  { 109582, 268557, 158558,   0,   1,    0,      -1,      -1 }, // Luminous Honey Jar
+  { 109291, 273799, 158679,   0,   1,    0,      -1,      -1 }, // Maokka's Carving
+  { 109292, 268566, 158680,   0,   1,    0,      -1,      -1 }, // Rikal's Ritual Beads
+  { 109293, 256067, 158681,   0,   1,    0,      -1,      -1 }, // Lightning Jolt
+  { 109206, 271102, 158712,   0,   1,    0,      -1,      -1 }, // Rezan's Gleaming Eye
+  { 109271, 268603, 159074,   0,   1,    0,      -1,      -1 }, // Master's Sight
+  { 109272, 268605, 159075,   0,   1,    0,      -1,      -1 }, // Blood Crazed
+  { 109273, 268608, 159077,   0,   1,    0,      -1,      -1 }, // PH Crit Buff - Nazmir
+  { 109274, 268610, 159078,   0,   1,    0,      -1,      -1 }, // Potency Manipulator
+  { 109172, 276176, 159125,   0,   1,    0,      -1,      -1 }, // Fathoms Deck
+  { 109173, 191661, 159125,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  { 109174, 276123, 159126,   0,   1,    0,      -1,      -1 }, // Squalls Deck
+  { 109175, 191661, 159126,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  { 109176, 276135, 159127,   0,   1,    0,      -1,      -1 }, // Tides Deck
+  { 109177, 191661, 159127,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  { 109178, 276202, 159128,   0,   1,    0,      -1,      -1 }, // Blockades Deck
+  { 109179, 191661, 159128,   1,   1,    0,      -1,      -1 }, // Shuffle Aura
+  { 111399, 281725, 159237,   0,   1,    0,      -1,      -1 }, // Captain's Dustfinders
+  { 111406, 281735, 159288,   0,   1,    0,      -1,      -1 }, // Restlessness
+  { 111400, 281726, 159386,   0,   1,    0,      -1,      -1 }, // Anchor Chain Girdle
+  { 109415, 270809, 159610,   0,   1,    0,      -1,      -1 }, // Webweaver's Soul Gem
+  { 109469, 271374, 159611,   0,   0,    0,      -1,      -1 }, // Razdunk's Big Red Button
+  { 111890, 286603, 159611,   1,   1,    0,      -1,      -1 }, // Razdunk's Big Red Button
+  { 109318, 268441, 159612,   0,   1,    0,      -1,      -1 }, // Resonating Elemental Heart
+  { 109265, 268314, 159614,   0,   0,    0,      -1,      -1 }, // Galecaller's Boon
+  { 111394, 281651, 159614,   1,   1,    0,      -1,      -1 }, // Galecaller's Boon
+  { 109429, 271117, 159615,   0,   0,    0,      -1,      -1 }, // Ignition Mage's Fuse
+  { 109430, 271104, 159616,   0,   1,    0,      -1,      -1 }, // Butcher's Eye
+  { 109427, 271107, 159617,   0,   0,    0,      -1,      -1 }, // Golden Luster
+  { 109211, 265946, 159618,   0,   0,    0,      -1,      -1 }, // Ritual Wraps
+  { 109319, 268191, 159619,   0,   1,    0,      -1,      -1 }, // Briny Barnacle
+  { 109428, 271072, 159620,   0,   1,    0,      -1,      -1 }, // Conch of Dark Whispers
+  { 109414, 270921, 159622,   0,   1,    0,      -1,      -1 }, // Hadal's Nautilus
+  { 109316, 268771, 159623,   0,   1,    0,      -1,      -1 }, // Dread Captain's Spyglass
+  { 109317, 268758, 159623,   1,   1,    0,      -1,      -1 }, // Dead Ahead
+  { 109470, 271462, 159624,   0,   0,    0,      -1,      -1 }, // Rotcrusted Voodoo Doll
+  { 109336, 268828, 159625,   0,   0,    0,      -1,      -1 }, // Blood of My Enemies
+  { 109320, 268035, 159626,   0,   1,    0,      -1,      -1 }, // Lingering Spore Pods
+  { 109210, 266047, 159627,   0,   0,    0,      -1,      -1 }, // Motivating Howl
+  { 109434, 271190, 159628,   0,   1,    0,      -1,      -1 }, // Kul Tiran Cannonball Runner
+  { 109338, 268999, 159630,   0,   0,    0,      -1,      -1 }, // Balefire Branch
+  { 109471, 271683, 159631,   0,   1,    0,      -1,      -1 }, // Lady Waycrest's Music Box
+  { 109472, 271631, 159631,   1,   1,    0,      -1,      -1 }, // Lady Waycrest's Music Box
+  { 111396, 281712, 159644,   0,   1,    0,      -1,      -1 }, // Cut of Death
+  { 111397, 281720, 159653,   0,   1,    0,      -1,      -1 }, // Vile Bile
+  { 110827, 279426, 159660,   0,   1,    0,      -1,      -1 }, // Butcher Cut
+  { 109275, 268617, 159763,   0,   1,    0,      -1,      -1 }, // Swell of Voodoo
+  { 109276, 268620, 159764,   0,   1,    0,      -1,      -1 }, // Diemetradon Frenzy
+  { 109277, 268624, 159765,   0,   1,    0,      -1,      -1 }, // Shark's Bite
+  { 111097,  18086, 159840,   0,   2,    0,      -1,      -1 }, // Firebolt
+  { 109381, 269884, 159976,   0,   1,    0,      -1,      -1 }, // Unbound Power of Zem'lan
+  { 109382, 269886, 159977,   0,   1,    0,      -1,      -1 }, // Residual Viciousness
+  { 109383, 269888, 159978,   0,   1,    0,      -1,      -1 }, // Boiling Time
+  { 109384, 269891, 159979,   0,   1,    0,      -1,      -1 }, // Searing Zap
+  { 109394, 270058, 160053,   0,   0,    0,      -1,      -1 }, // Battle-Scarred Augmentation
+  { 109423, 268508, 160262,   0,   1,    0,      -1,      -1 }, // Relic of the Makers
+  { 109424, 268517, 160263,   0,   1,    0,      -1,      -1 }, // Sharpened Claws
+  { 110803, 279347, 160488,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 110809, 279347, 160489,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 110810, 279347, 160490,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 110813, 279347, 160491,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 110327, 278140, 160648,   0,   1,    0,      -1,      -1 }, // Frenetic Corpuscle
+  { 110307, 278081, 160649,   0,   0,    0,      -1,      -1 }, // Mutating Antibodies Inoculation
+  { 110328, 278152, 160650,   0,   1,    0,      -1,      -1 }, // Systematic Regression
+  { 110305, 278053, 160651,   0,   1,    0,      -1,      -1 }, // Bloodshaping
+  { 110306, 278067, 160652,   0,   1,    0,      -1,      -1 }, // Titanic Momentum
+  { 110330, 278158, 160653,   0,   1,    0,      -1,      -1 }, // Xalzaix's Gaze
+  { 110331, 278161, 160654,   0,   1,    0,      -1,      -1 }, // Vanquished Tendril of G'huun
+  { 110310, 278112, 160655,   0,   1,    0,      -1,      -1 }, // Syringe of Bloodborne Infirmity
+  { 110311, 278109, 160655,   1,   1,    0,      -1,      -1 }, // Critical Prowess
+  { 110329, 278154, 160656,   0,   1,    0,      -1,      -1 }, // Lingering Power
+  { 109563, 273516, 160753,   0,   0,    0,   90000,      -1 }, // Blood Siphon
+  { 109566, 273559, 160833,   0,   0,    0,   90000,      -1 }, // Doubting Mind
+  { 109586, 274072, 160984,   0,   1,    0,      -1,      -1 }, // Adapt
+  { 109587, 274086, 160985,   0,   1,    0,      -1,      -1 }, // Glompmaw's Ring
+  { 109588, 274106, 160987,   0,   1,    0,      -1,      -1 }, // Consume Whole
+  { 109591, 274145, 160990,   0,   1,    0,      -1,      -1 }, // Summon Swainbeak
+  { 109592, 274155, 161007,   0,   1,    0,      -1,      -1 }, // Direhorn Studded Belt
+  { 109602, 274429, 161113,   0,   1,    0,      -1,      -1 }, // Incessantly Ticking Clock
+  { 109603, 274458, 161115,   0,   1,    0,      -1,      -1 }, // Soulguard
+  { 109604, 274472, 161117,   0,   0,    0,      -1,      -1 }, // Berserker's Frenzy
+  { 109605, 274477, 161119,   0,   1,    0,      -1,      -1 }, // Summon Skeletal Raptor
+  { 109607, 274484, 161125,   0,   1,    0,      -1,      -1 }, // Kaja-fied Banana
+  { 109625, 274790, 161182,   0,   1,    0,      -1,      -1 }, // Summon Crawg
+  { 109629, 274155, 161218,   0,   1,    0,      -1,      -1 }, // Direhorn Studded Belt
+  { 109630, 268610, 161222,   0,   1,    0,      -1,      -1 }, // Potency Manipulator
+  { 109631, 268610, 161223,   0,   1,    0,      -1,      -1 }, // Potency Manipulator
+  { 109635, 268566, 161289,   0,   1,    0,      -1,      -1 }, // Rikal's Ritual Beads
+  { 110527, 278831, 161374,   0,   1,    0,      -1,      -1 }, // Augmented Ruthlessness
+  { 110526, 278376, 161375,   0,   0,    0,      -1,      -1 }, // Re-Sharpened
+  { 110528, 278378, 161376,   0,   1,    0,      -1,      -1 }, // Dark Intensity
+  { 110530, 278383, 161377,   0,   0,    0,      -1,      -1 }, // Ruffling Tempest
+  { 110529, 278382, 161378,   0,   1,    0,      -1,      -1 }, // Seaborne Tempest
+  { 110531, 278385, 161379,   0,   0,    0,      -1,      -1 }, // Gale Call
+  { 110641, 278859, 161380,   0,   1,    0,      -1,      -1 }, // Chill of the Runes
+  { 110544, 278389, 161381,   0,   1,    0,      -1,      -1 }, // Cold-Hearted Instincts
+  { 110645, 278869, 161382,   0,   0,    0,      -1,      -1 }, // Wind-Up Utility Pylon
+  { 110505, 278227, 161411,   0,   0,    0,      -1,      -1 }, // Barkspines
+  { 110504, 278224, 161412,   0,   1,    0,      -1,      -1 }, // Coalesced Essence
+  { 110506, 278231, 161413,   0,   0,    0,      -1,      -1 }, // Fury of the Forest Lord
+  { 110514, 278251, 161414,   0,   1,    0,      -1,      -1 }, // Avian Tempest
+  { 110512, 278248, 161415,   0,   1,    0,      -1,      -1 }, // Razorleaf Tempest
+  { 110515, 278864, 161416,   0,   1,    0,      -1,      -1 }, // Turbo-Chaged
+  { 110518, 278267, 161417,   0,   0,    0,      -1,      -1 }, // Wisdom of the Forest Lord
+  { 110516, 278260, 161418,   0,   0,    0,      -1,      -1 }, // Vibro Enhanced
+  { 110519, 278287, 161419,   0,   1,    0,      -1,      -1 }, // Kraulok's Strength
+  { 110521, 278356, 161461,   0,   1,    0,      -1,      -1 }, // Blood Hatred
+  { 110520, 278317, 161462,   0,   0,    0,      -1,      -1 }, // Doom's Wake
+  { 110523, 278364, 161463,   0,   0,    0,      -1,      -1 }, // Bristling Fury
+  { 110620, 278815, 161472,   0,   1,    0,      -1,      -1 }, // Lion's Grace
+  { 110619, 278806, 161473,   0,   0,    0,      -1,      -1 }, // Lion's Guile
+  { 110621, 278819, 161474,   0,   0,    0,      -1,      -1 }, // Lion's Strength
+  { 110239, 277179, 161674,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 110241, 277187, 161675,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 110236, 277182, 161676,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 110237, 277185, 161902,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 110507, 277179, 162897,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 110508, 277187, 162898,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 110509, 277182, 162899,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 110510, 277185, 162966,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 110580, 257423, 163081,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 110701, 279151, 163222,   0,   0,    4,      -1,  300000 }, // Battle Potion of Intellect
+  { 110702, 279152, 163223,   0,   0,    4,      -1,  300000 }, // Battle Potion of Agility
+  { 110703, 279153, 163224,   0,   0,    4,      -1,  300000 }, // Battle Potion of Strength
+  { 110704, 279154, 163225,   0,   0,    4,      -1,  300000 }, // Battle Potion of Stamina
+  { 110905, 279786, 163703,   0,   1,    0,      -1,      -1 }, // Bone Throw
+  { 110968, 280276, 163781,   0,   0,   11,       0,    1000 }, // Hexwurst
+  { 111408, 281544, 163935,   0,   1,    0,      -1,      -1 }, // Landoi's Scrutiny
+  { 111407, 281543, 163936,   0,   0,    0,      -1,      -1 }, // Process Improvement
+  { 111409, 281797, 163936,   1,   1,    0,      -1,      -1 }, // Process Improvement
+  { 111065, 281547, 163937,   0,   1,    0,      -1,      -1 }, // Leyshock's Grand Compilation
+  { 111369, 281423, 164380,   0,   0,    0,      -1,      -1 }, // Binding
+  { 111546, 277179, 165055,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 111547, 277187, 165056,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 111548, 277182, 165057,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 111549, 277185, 165058,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 111551, 277179, 165220,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 111552, 277187, 165221,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 111553, 277182, 165222,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 111554, 277185, 165223,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 112673, 290255, 165522,   0,   1,    0,      -1,      -1 }, // Mech-Jockey
+  { 112695, 290333, 165526,   0,   0,    0,      -1,      -1 }, // Pry Gem
+  { 112671, 290243, 165541,   0,   1,    0,      -1,      -1 }, // Gilded Path
+  { 112669, 290234, 165561,   0,   1,    0,      -1,      -1 }, // Coin Stamp
+  { 112391, 289521, 165568,   0,   0,    0,      -1,      -1 }, // Invocation of Yu'lon
+  { 111715, 287568, 165569,   0,   0,    0,      -1,      -1 }, // Enveloping Protection
+  { 112286, 287603, 165569,   1,   1,    0,      -1,      -1 }, // Enveloping Protection
+  { 112588, 289525, 165570,   0,   1,    0,      -1,      -1 }, // Everchill
+  { 112587, 289522, 165571,   0,   1,    0,      -1,      -1 }, // Incandescent Luster
+  { 112339, 287915, 165572,   0,   1,    0,      -1,      -1 }, // V.I.G.O.R. Engaged
+  { 112340, 287917, 165572,   1,   0,    0,      -1,      -1 }, // Oscillating Overload
+  { 112354, 288034, 165573,   0,   1,    0,      -1,      -1 }, // Diamond Barrier
+  { 112389, 289520, 165574,   0,   0,    0,      -1,      -1 }, // Primal Rage
+  { 112376, 288046, 165576,   1,   1,    0,      -1,      -1 }, // Surging Elemental
+  { 112377, 289885, 165576,   2,   0,    0,      -1,      -1 }, // Surging Waters
+  { 112379, 288186, 165577,   0,   1,    0,      -1,      -1 }, // Bwonsamdi's Bargain
+  { 112347, 287999, 165578,   0,   0,    0,      -1,      -1 }, // Mirror of Entwined Fate
+  { 112403, 288328, 165579,   0,   1,    0,      -1,      -1 }, // Kimbul's Razor Claw
+  { 112371, 288173, 165580,   0,   0,    0,      -1,      -1 }, // R.A.G.E.
+  { 112402, 288304, 165581,   0,   1,    0,      -1,      -1 }, // Gift of Wind
+  { 112411, 288391, 165581,   1,   0,    0,      -1,      -1 }, // Windswept
+  { 112672, 290249, 165583,   0,   1,    0,      -1,      -1 }, // Light of the Sea
+  { 112583, 289391, 165600,   0,   1,    0,      -1,      -1 }, // Buster Shot
+  { 111764, 285469, 165660,   0,   1,    0,      -1,      -1 }, // Thunder Jolt
+  { 111765, 285471, 165661,   0,   1,    0,      -1,      -1 }, // Frozen Flow
+  { 111766, 285475, 165662,   0,   0,    0,      -1,      -1 }, // Kaja'mite Surge
+  { 111767, 285482, 165664,   0,   0,    0,      -1,      -1 }, // Ferocity of the Skrog
+  { 111768, 285489, 165665,   0,   0,    0,      -1,      -1 }, // Might of the Blackmaw
+  { 111769, 285495, 165666,   0,   1,    0,      -1,      -1 }, // Moon Touched
+  { 111770, 285499, 165667,   0,   1,    0,      -1,      -1 }, // Gurubashi Pride
+  { 111841, 286124, 165755,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 114884, 305251, 165806,   0,   1,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 114885, 305252, 165806,   1,   0,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 111850, 286341, 165807,   0,   1,    0,      -1,      -1 }, // Gladiator's Safeguard
+  { 112693, 290333, 165818,   0,   0,    0,      -1,      -1 }, // Pry Gem
+  { 112692, 290333, 165820,   0,   0,    0,      -1,      -1 }, // Pry Gem
+  { 112694, 290333, 165821,   0,   0,    0,      -1,      -1 }, // Pry Gem
+  { 111899, 279347, 165885,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111900, 279347, 165886,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111901, 279347, 165887,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111902, 279347, 165888,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111903, 279347, 165890,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111904, 279347, 165891,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111905, 279347, 165892,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111906, 279347, 165893,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111909, 279347, 165895,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111910, 279347, 165896,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111911, 279347, 165897,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 111912, 279347, 165898,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112670, 290240, 165924,   0,   1,    0,      -1,      -1 }, // High Tinker's Expertise
+  { 111939, 188026, 165926,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 111940,  17619, 165926,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 111941, 188026, 165927,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 111942,  17619, 165927,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 111943, 188026, 165928,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 111944,  17619, 165928,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 112242, 286050, 166240,   0,   0,   11,       0,    1000 }, // Sanguinated Feast
+  { 112345, 288073, 166343,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 112346, 288076, 166344,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 112410, 288304, 166418,   0,   1,    0,      -1,      -1 }, // Gift of Wind
+  { 112442, 288602, 166444,   0,   0,    0,      -1,      -1 }, // Honorbound Scouting Map
+  { 112443, 288601, 166445,   0,   0,    0,      -1,      -1 }, // 7th Legion Scouting Map
+  { 112558, 289283, 166559,   0,   0,    0,      -1,      -1 }, // Teleport: Dazar'alor
+  { 112559, 289284, 166560,   0,   0,    0,      -1,      -1 }, // Teleport: Boralus
+  { 112566, 289312, 166583,   1,   0,    0,      -1,      -1 }, // Glyph of the Tides
+  { 112573, 289354, 166664,   1,   0,    0,      -1,      -1 }, // Storm's Wake
+  { 112632, 289982, 166750,   0,   0,   79,       0,    3000 }, // Draught of Ten Lands
+  { 112633, 289982, 166751,   0,   0,   79,       0,    3000 }, // Draught of Ten Lands
+  { 112635, 290033, 166753,   0,   0,    0,  120000,      -1 }, // Bolstering Bellow
+  { 112636, 298717, 166754,   0,   0,    0,  120000,      -1 }, // Hymn of Battle
+  { 112637, 290031, 166755,   0,   0,    0,  120000,      -1 }, // Gloaming Powder
+  { 112638, 290028, 166756,   0,   0,    0,  120000,      -1 }, // Primal Enchantment
+  { 112641, 298722, 166766,   0,   0,    0,  120000,      -1 }, // Tidal Enchantment
+  { 112642, 298721, 166767,   0,   0,    0,  120000,      -1 }, // Twilight Powder
+  { 112643, 290032, 166768,   0,   0,    0,  120000,      -1 }, // Hymn of Zeal
+  { 112644, 298719, 166769,   0,   0,    0,  120000,      -1 }, // Invigorating Bellow
+  { 112681, 278267, 166793,   0,   0,    0,      -1,      -1 }, // Wisdom of the Forest Lord
+  { 112682, 278248, 166794,   0,   1,    0,      -1,      -1 }, // Razorleaf Tempest
+  { 112683, 278231, 166795,   0,   0,    0,      -1,      -1 }, // Fury of the Forest Lord
+  { 112696, 290464, 166804,   0,   0,   11,       0,    1000 }, // Feast
+  { 112716, 188026, 166974,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 112717,  17619, 166974,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 112718, 188026, 166975,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 112719,  17619, 166975,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 112720, 188026, 166976,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 112721,  17619, 166976,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 112726, 279347, 166979,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112727, 279347, 166980,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112728, 279347, 166981,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112729, 279347, 166982,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112730, 279347, 166983,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112731, 279347, 166984,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112732, 279347, 166985,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 112733, 279347, 166986,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113188, 295427, 167217,   0,   1,    0,      -1,      -1 }, // Unbound Anguish
+  { 113140, 295154, 167218,   0,   1,    0,      -1,      -1 }, // Deepstrider
+  { 113147, 295193, 167219,   0,   0,    0,      -1,      -1 }, // Undying Pact
+  { 113148, 295198, 167219,   1,   1,    0,      -1,      -1 }, // Undying Pact
+  { 112848, 277179, 167377,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 112849, 277187, 167378,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 112850, 277182, 167379,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 112851, 277185, 167380,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 112852, 305252, 167383,   0,   0,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 114883, 305251, 167383,   1,   1,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 112853, 286341, 167384,   0,   1,    0,      -1,      -1 }, // Gladiator's Safeguard
+  { 112854, 277179, 167525,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 112855, 277187, 167526,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 112856, 277182, 167527,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 112857, 277185, 167528,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 112858, 292849, 167539,   0,   0,    0,      -1,      -1 }, // Dalaran Brilliance
+  { 114301, 302359, 167752,   0,   1,    0,      -1,      -1 }, // Sea Floor Acrobatics
+  { 114312, 302381, 167753,   0,   1,    0,      -1,      -1 }, // Elemental Instincts
+  { 114320, 302383, 167755,   0,   1,    0,      -1,      -1 }, // Seabed Runner
+  { 114324, 302382, 167757,   0,   1,    0,      -1,      -1 }, // Damage to Aberrations
+  { 114298, 303133, 167758,   0,   1,    0,      -1,      -1 }, // Exploding Pufferfish
+  { 114302, 302359, 167760,   0,   1,    0,      -1,      -1 }, // Sea Floor Acrobatics
+  { 114311, 302381, 167761,   0,   1,    0,      -1,      -1 }, // Elemental Instincts
+  { 114319, 302383, 167763,   0,   1,    0,      -1,      -1 }, // Seabed Runner
+  { 114323, 302382, 167765,   0,   1,    0,      -1,      -1 }, // Damage to Aberrations
+  { 114297, 303133, 167766,   0,   1,    0,      -1,      -1 }, // Exploding Pufferfish
+  { 114300, 302359, 167768,   0,   1,    0,      -1,      -1 }, // Sea Floor Acrobatics
+  { 114310, 302381, 167769,   0,   1,    0,      -1,      -1 }, // Elemental Instincts
+  { 114317, 302383, 167771,   0,   1,    0,      -1,      -1 }, // Seabed Runner
+  { 114322, 302382, 167773,   0,   1,    0,      -1,      -1 }, // Damage to Aberrations
+  { 114296, 303133, 167774,   0,   1,    0,      -1,      -1 }, // Exploding Pufferfish
+  { 114299, 302359, 167776,   0,   1,    0,      -1,      -1 }, // Sea Floor Acrobatics
+  { 114309, 302381, 167777,   0,   1,    0,      -1,      -1 }, // Elemental Instincts
+  { 114318, 302383, 167780,   0,   1,    0,      -1,      -1 }, // Seabed Runner
+  { 114321, 302382, 167782,   0,   1,    0,      -1,      -1 }, // Damage to Aberrations
+  { 114295, 303133, 167783,   0,   1,    0,      -1,      -1 }, // Exploding Pufferfish
+  { 113028, 294361, 167832,   0,   0,   11,      -1,    1000 }, // Refreshment
+  { 113122, 295131, 167833,   0,   1,    0,      -1,      -1 }, // Dredged Vitality
+  { 113163, 295277, 167834,   0,   1,    0,      -1,      -1 }, // Untouchable
+  { 113145, 295174, 167835,   0,   0,    0,      -1,      -1 }, // Void Embrace
+  { 113136, 295133, 167837,   0,   1,    0,      -1,      -1 }, // Scouring Wake
+  { 113144, 295812, 167838,   0,   1,    0,      -1,      -1 }, // Storm Nimbus
+  { 113151, 295175, 167839,   0,   1,    0,      -1,      -1 }, // Spiteful Binding
+  { 113198, 295446, 167840,   0,   1,    0,      -1,      -1 }, // Phantom Pain
+  { 113196, 295430, 167841,   0,   1,    0,      -1,      -1 }, // Ephemeral Vigor
+  { 113187, 295254, 167842,   0,   1,    0,      -1,      -1 }, // Drowning Tide
+  { 113185, 295411, 167863,   0,   0,    0,      -1,      -1 }, // Mariner's Ward
+  { 113260, 296456, 167863,   1,   1,    0,      -1,      -1 }, // Mariner's Ward
+  { 113167, 292650, 167864,   0,   1,    0,      -1,      -1 }, // Custody of the Deep
+  { 113161, 295271, 167865,   0,   0,    0,      -1,      -1 }, // Umbral Shell
+  { 113186, 295501, 167866,   0,   0, 1141,  120000,   20000 }, // Insidious Gift
+  { 113199, 295508, 167866,   1,   1,    0,      -1,      -1 }, // Insidious Gift
+  { 113205, 295513, 167866,   2,   1,    0,      -1,      -1 }, // Insidious Gift
+  { 113183, 295391, 167867,   0,   1,    0,      -1,      -1 }, // Oblivion Spear
+  { 113176, 295962, 167868,   0,   0,    0,      -1,      -1 }, // Indiscriminate Consumption
+  { 113429, 295440, 167868,   1,   1,    0,      -1,      -1 }, // Indiscriminate Consumption
+  { 113084, 294626, 167918,   0,   0,    4,      -1,  300000 }, // Brawler's Battle Potion of Strength
+  { 113085, 294625, 167919,   0,   0,    4,      -1,  300000 }, // Brawler's Battle Potion of Agility
+  { 113086, 294627, 167920,   0,   0,    4,      -1,  300000 }, // Brawler's Battle Potion of Intellect
+  { 113101,  44540, 167998,   0,   0,   59, 3600000,    1000 }, // Dark Iron Alcohol
+  { 113259, 296453, 168232,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 114416, 303358, 168273,   0,   1,    0,      -1,      -1 }, // Venomous Bolt
+  { 114380, 302986, 168275,   0,   1,    0,      -1,      -1 }, // Prodigy's Potency
+  { 114387, 302988, 168275,   1,   1,    0,      -1,      -1 }, // Prodigy's Potency
+  { 114417, 303361, 168306,   0,   1,    0,      -1,      -1 }, // Shivering Lance
+  { 113282, 297045, 168310,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 113283, 297043, 168311,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 113284, 297050, 168312,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 113285, 297042, 168313,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 113286, 297044, 168314,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 113287, 297048, 168315,   0,   0,   11,       0,    1000 }, // Famine Evaluator And Snack Table
+  { 113720, 299583, 168416,   0,   0,    0,      -1,      -1 }, // Anglers' Water Striders
+  { 113392, 298146, 168489,   0,   0,    4,      -1,  300000 }, // Superior Battle Potion of Agility
+  { 113400, 298152, 168498,   0,   0,    4,      -1,  300000 }, // Superior Battle Potion of Intellect
+  { 113401, 298153, 168499,   0,   0,    4,      -1,  300000 }, // Superior Battle Potion of Stamina
+  { 113402, 298154, 168500,   0,   0,    4,      -1,  300000 }, // Superior Battle Potion of Strength
+  { 113403, 298155, 168501,   0,   0,    4,      -1,  300000 }, // Superior Steelskin Potion
+  { 113407, 298317, 168506,   0,   0,    4,      -1,  300000 }, // Potion of Focused Resolve
+  { 113422, 298225, 168529,   0,   0,    4,      -1,  300000 }, // Potion of Empowered Proximity
+  { 113539, 298836, 168651,   0,   0,   79,       0,    3000 }, // Greater Flask of the Currents
+  { 113540, 298837, 168652,   0,   0,   79,       0,    3000 }, // Greater Flask of Endless Fathoms
+  { 113541, 298839, 168653,   0,   0,   79,       0,    3000 }, // Greater Flask of the Vast Horizon
+  { 113542, 298841, 168654,   0,   0,   79,       0,    3000 }, // Greater Flask of the Undertow
+  { 113552, 188026, 168674,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 113553,  17619, 168674,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 113554, 188026, 168675,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 113555,  17619, 168675,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 113556, 188026, 168676,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 113557,  17619, 168676,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 113558, 279347, 168689,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113559, 279347, 168690,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113560, 279347, 168691,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113561, 279347, 168692,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113562, 279347, 168693,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113563, 279347, 168694,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113564, 279347, 168695,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113565, 279347, 168696,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113566, 279347, 168697,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113567, 279347, 168698,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113568, 279347, 168699,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113569, 279347, 168700,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 113629, 224781, 168804,   0,   1,    0,      -1,      -1 }, // +15 Fishing
+  { 113764, 299087, 168804,   1,   1,    0,      -1,      -1 }, // Shockingly Effective
+  { 114627, 303718, 168869,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114628, 303733, 168869,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114619, 303718, 168871,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114620, 303735, 168871,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114625, 303718, 168873,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114626, 303735, 168873,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114623, 303718, 168874,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114624, 303734, 168874,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114621, 303718, 168878,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114622, 303732, 168878,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114613, 303718, 168880,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114614, 303734, 168880,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114617, 303718, 168887,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114618, 303733, 168887,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114615, 303718, 168888,   0,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114616, 303732, 168888,   1,   1,    0,      -1,      -1 }, // Storm of the Eternal
+  { 114591, 303854, 168891,   0,   0,    0,      -1,      -1 }, // Cursed Lover's Ring
+  { 114592, 304922, 168891,   1,   1,    0,      -1,      -1 }, // Cursed Lover's Ring
+  { 114411, 303350, 168899,   0,   0,    0,      -1,      -1 }, // Paralytic Spines
+  { 114889, 305191, 168899,   1,   1,    0,      -1,      -1 }, // Paralytic Spines
+  { 114412, 303353, 168900,   0,   1,    0,      -1,      -1 }, // Bioelectric Charge
+  { 114534, 303356, 168902,   0,   1,    0,      -1,      -1 }, // Delirious Frenzy
+  { 114023, 301576, 168905,   0,   1,    0,      -1,      -1 }, // Shiver Venom
+  { 114241, 301834, 168905,   1,   0,    0,      -1,      -1 }, // Venomous Shivers
+  { 114026, 301641, 168957,   0,   1,    0,      -1,      -1 }, // Gladiatorial Echoes
+  { 113731, 299906, 168963,   0,   1,    0,      -1,      -1 }, // Fusion Burn
+  { 113732, 299869, 168965,   0,   0,    0,      -1,      -1 }, // Platinum Plating
+  { 113776, 300143, 168967,   0,   1,    0,      -1,      -1 }, // Gold-Coated Superconductors
+  { 113773, 300134, 168970,   0,   1,    0,      -1,      -1 }, // Trashmaster
+  { 113883, 300612, 168973,   0,   0,    0,      -1,      -1 }, // Enhance Synapses
+  { 113757, 299910, 168977,   0,   1,    0,      -1,      -1 }, // Rebooting Bit Band
+  { 113774, 300140, 168978,   0,   0,    0,      -1,      -1 }, // Anodized Deflectors
+  { 113775, 300142, 168989,   0,   0,    0,      -1,      -1 }, // Hyperthread Wristwraps
+  { 114022, 301564, 168989,   1,   1,    0,      -1,      -1 }, // Hyperthread Wristwraps
+  { 114383, 303011, 169003,   0,   0,    0,      -1,      -1 }, // Zoom In
+  { 114384, 303011, 169004,   0,   0,    0,      -1,      -1 }, // Zoom In
+  { 114385, 303011, 169005,   0,   0,    0,      -1,      -1 }, // Zoom In
+  { 114386, 303011, 169006,   0,   0,    0,      -1,      -1 }, // Zoom In
+  { 114215, 301753, 169035,   0,   1,    0,      -1,      -1 }, // Tessellated Lightning
+  { 113762, 300025, 169055,   0,   1,    0,      -1,      -1 }, // Acid Resistance
+  { 113739, 299906, 169058,   0,   1,    0,      -1,      -1 }, // Fusion Burn
+  { 113763, 300047, 169064,   0,   0,    0,      -1,      -1 }, // Mountebank's Colorful Cloak
+  { 114283, 302258, 169068,   0,   1,    0,      -1,      -1 }, // Salvaged Mekacycle Shielding
+  { 113777, 300145, 169069,   0,   0,    0,      -1,      -1 }, // Electrostatic Induction
+  { 113756, 299909, 169076,   0,   1,    0,      -1,      -1 }, // Logic Loop of Maintenance
+  { 113766, 300123, 169156,   0,   1,    0,      -1,      -1 }, // Logic Loop of Synergy
+  { 113767, 300124, 169157,   0,   1,    0,      -1,      -1 }, // Logic Loop of Division
+  { 113768, 300125, 169158,   0,   1,    0,      -1,      -1 }, // Logic Loop of Recursion
+  { 113769, 300126, 169159,   0,   1,    0,      -1,      -1 }, // Overclocking Bit Band
+  { 113770, 300127, 169160,   0,   1,    0,      -1,      -1 }, // Shorting Bit Band
+  { 113771, 300128, 169161,   0,   1,    0,      -1,      -1 }, // Protecting Bit Band
+  { 113890, 300714, 169299,   0,   0,    4,      -1,  300000 }, // Potion of Unbridled Fury
+  { 113891, 300741, 169300,   0,   0,    4,      -1,  300000 }, // Potion of Wild Mending
+  { 113892, 300805, 169301,   0,   1,    0,      -1,      -1 }, // Swirling Tides
+  { 113893, 300813, 169302,   0,   1,    0,      -1,      -1 }, // Mystical Bulwark
+  { 114364, 302773, 169304,   0,   1,    0,      -1,      -1 }, // Leviathan Chomp
+  { 114365, 302776, 169304,   1,   1,    0,      -1,      -1 }, // Luminous Algae
+  { 114358, 306146, 169305,   0,   0, 1141,      -1,      -1 }, // Surging Flood
+  { 114359, 302579, 169305,   1,   1,    0,      -1,      -1 }, // Surging Flood
+  { 114379, 302696, 169306,   0,   1,    0,      -1,      -1 }, // Void Negotiation
+  { 114406, 303277, 169307,   0,   0,    0,      -1,      -1 }, // Vision of Demise
+  { 114427, 303455, 169307,   1,   1,    0,      -1,      -1 }, // Vision of Demise
+  { 114273, 297104, 169308,   0,   0,    0,      -1,      -1 }, // Chain of Suffering
+  { 114887, 305188, 169308,   1,   1,    0,      -1,      -1 }, // Chain of Suffering
+  { 114375, 302918, 169309,   0,   1,    0,      -1,      -1 }, // Summon Zoatroid
+  { 114575, 303137, 169309,   1,   1,    0,      -1,      -1 }, // Resource Proc Spell (DNT)
+  { 114520, 303499, 169310,   0,   1,    0,      -1,      -1 }, // Bloodthirsty Coral
+  { 114527, 303564, 169311,   0,   0,    0,      -1,      -1 }, // Razor Coral
+  { 114528, 303573, 169311,   1,   1,    0,      -1,      -1 }, // Razor Coral
+  { 114877, 304877, 169311,   2,   1,    0,      -1,      -1 }, // Razor Coral
+  { 114543, 303696, 169312,   0,   1,    0,      -1,      -1 }, // Luminous Jellyweed
+  { 114363, 304471, 169313,   0,   1,    0,      -1,      -1 }, // Arcane Tempest
+  { 114286, 296971, 169314,   0,   0,    0,      -1,      -1 }, // Latent Arcana
+  { 114888, 305190, 169314,   1,   1,    0,      -1,      -1 }, // Latent Arcana
+  { 114875, 303036, 169315,   0,   1,    0,      -1,      -1 }, // Edicts of the Faithless
+  { 114876, 303028, 169315,   1,   0,    0,      -1,      -1 }, // Declare Edict
+  { 114361, 302645, 169316,   0,   1,    0,      -1,      -1 }, // Deferred Sentence
+  { 114586, 303937, 169317,   0,   1,    0,      -1,      -1 }, // Enthraller's Influence
+  { 114587, 303953, 169318,   0,   0,    0,      -1,      -1 }, // Shockbitten
+  { 114343, 296963, 169319,   0,   1,    0,      -1,      -1 }, // Conductive Ink
+  { 113896, 300830, 169321,   0,   1,    0,      -1,      -1 }, // Highborne Compendium of Sundering
+  { 113900, 300913, 169328,   0,   1,    0,      -1,      -1 }, // Highborne Compendium of Storms
+  { 113902, 300968, 169344,   0,   0,    0,      -1,      -1 }, // Imbue Power
+  { 113903, 300969, 169344,   1,   1,    0,      -1,      -1 }, // Ingenious Mana Battery
+  { 114307, 302357, 169486,   0,   1,    0,      -1,      -1 }, // Frost Resistance
+  { 114308, 302358, 169487,   0,   1,    0,      -1,      -1 }, // Fishy Fiends
+  { 114325, 302385, 169488,   0,   1,    0,      -1,      -1 }, // Resurrect Health
+  { 114331, 302380, 169489,   0,   1,    0,      -1,      -1 }, // Trader's Stock
+  { 114287, 302307, 169769,   0,   0,    0,      -1,      -1 }, // Remote Guidance Device
+  { 114290, 302308, 169769,   1,   1,    0,      -1,      -1 }, // Remote Guidance Device
+  { 114313, 302356, 169790,   0,   1,    0,      -1,      -1 }, // Shadow Resistance
+  { 114314, 302356, 169791,   0,   1,    0,      -1,      -1 }, // Shadow Resistance
+  { 114315, 302356, 169792,   0,   1,    0,      -1,      -1 }, // Shadow Resistance
+  { 114316, 302356, 169793,   0,   1,    0,      -1,      -1 }, // Shadow Resistance
+  { 114332, 302459, 169808,   0,   1,    0,      -1,      -1 }, // Swimmer's Legs
+  { 114333, 302459, 169809,   0,   1,    0,      -1,      -1 }, // Swimmer's Legs
+  { 114334, 302459, 169810,   0,   1,    0,      -1,      -1 }, // Swimmer's Legs
+  { 114335, 302459, 169811,   0,   1,    0,      -1,      -1 }, // Swimmer's Legs
+  { 114337, 302467, 169812,   0,   1,    0,      -1,      -1 }, // Intra-Ocean Navigation
+  { 114338, 302467, 169813,   0,   1,    0,      -1,      -1 }, // Intra-Ocean Navigation
+  { 114339, 302467, 169814,   0,   1,    0,      -1,      -1 }, // Intra-Ocean Navigation
+  { 114340, 302467, 169815,   0,   1,    0,      -1,      -1 }, // Intra-Ocean Navigation
+  { 114381, 303003, 169878,   0,   1,    0,      -1,      -1 }, // Irradiated Undercoat
+  { 114382, 302987, 169878,   1,   0,    0, 86400000,      -1 }, // Unstable Regeneration
+  { 114394, 303134, 169891,   0,   1,    0,      -1,      -1 }, // Hunter of Nightmares
+  { 114395, 303134, 169892,   0,   1,    0,      -1,      -1 }, // Hunter of Nightmares
+  { 114396, 303134, 169893,   0,   1,    0,      -1,      -1 }, // Hunter of Nightmares
+  { 114397, 303134, 169894,   0,   1,    0,      -1,      -1 }, // Hunter of Nightmares
+  { 114578, 302502, 170103,   0,   1,    0,      -1,      -1 }, // Benthic Environmentalist
+  { 114579, 302502, 170104,   0,   1,    0,      -1,      -1 }, // Benthic Environmentalist
+  { 114580, 302502, 170105,   0,   1,    0,      -1,      -1 }, // Benthic Environmentalist
+  { 114581, 302502, 170106,   0,   1,    0,      -1,      -1 }, // Benthic Environmentalist
+  { 114582, 303872, 170107,   0,   1,    0,      -1,      -1 }, // Hatred of Her Court
+  { 114583, 303872, 170108,   0,   1,    0,      -1,      -1 }, // Hatred of Her Court
+  { 114584, 303872, 170109,   0,   1,    0,      -1,      -1 }, // Hatred of Her Court
+  { 114585, 303872, 170110,   0,   1,    0,      -1,      -1 }, // Hatred of Her Court
+  { 114588, 303919, 170111,   0,   1,    0,      -1,      -1 }, // Eel-ectrified Defenses
+  { 114589, 303919, 170121,   0,   1,    0,      -1,      -1 }, // Eel-ectrified Defenses
+  { 114590, 303919, 170122,   0,   1,    0,      -1,      -1 }, // Eel-ectrified Defenses
+  { 114593, 303919, 170123,   0,   1,    0,      -1,      -1 }, // Eel-ectrified Defenses
+  { 114594, 303893, 170133,   0,   1,    0,      -1,      -1 }, // Carnivore of the Deep
+  { 114595, 303893, 170134,   0,   1,    0,      -1,      -1 }, // Carnivore of the Deep
+  { 114596, 303893, 170135,   0,   1,    0,      -1,      -1 }, // Carnivore of the Deep
+  { 114597, 303893, 170136,   0,   1,    0,      -1,      -1 }, // Carnivore of the Deep
+  { 114598, 304637, 170140,   0,   1,    0,      -1,      -1 }, // Fathom Hunter
+  { 114599, 304637, 170141,   0,   1,    0,      -1,      -1 }, // Fathom Hunter
+  { 114600, 304637, 170142,   0,   1,    0,      -1,      -1 }, // Fathom Hunter
+  { 114601, 304637, 170143,   0,   1,    0,      -1,      -1 }, // Fathom Hunter
+  { 114643, 304029, 170164,   1,   0,    0,      -1,      -1 }, // Glyph of the Dark Depths
+  { 114644, 304032, 170165,   1,   0,    0,      -1,      -1 }, // Glyph of Steaming Fury
+  { 114648, 304035, 170168,   1,   0,    0,      -1,      -1 }, // Glyph of the Cold Waves
+  { 114654, 304041, 170173,   1,   0,    0,      -1,      -1 }, // Dire Bees
+  { 114717, 304110, 170273,   0,   1,    0,      -1,      -1 }, // Rusty Scrap
+  { 114720, 304640, 170303,   0,   1,    0,      -1,      -1 }, // Frost Blast
+  { 114996, 304640, 170304,   0,   1,    0,      -1,      -1 }, // Frost Blast
+  { 114997, 304640, 170305,   0,   1,    0,      -1,      -1 }, // Frost Blast
+  { 114998, 304640, 170306,   0,   1,    0,      -1,      -1 }, // Frost Blast
+  { 114724, 304711, 170328,   0,   1,    0,      -1,      -1 }, // Sharp Fins
+  { 114725, 304711, 170329,   0,   1,    0,      -1,      -1 }, // Sharp Fins
+  { 114726, 304711, 170330,   0,   1,    0,      -1,      -1 }, // Sharp Fins
+  { 114727, 304711, 170331,   0,   1,    0,      -1,      -1 }, // Sharp Fins
+  { 114994, 304715, 170333,   0,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114995, 305271, 170333,   1,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114992, 304715, 170334,   0,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114993, 305271, 170334,   1,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114990, 304715, 170335,   0,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114991, 305271, 170335,   1,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114731, 304715, 170336,   0,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114989, 305271, 170336,   1,   1,    0,      -1,      -1 }, // Tidal Droplet
+  { 114732, 304697, 170367,   0,   1,    0,      -1,      -1 }, // Conch Strike
+  { 114733, 304697, 170368,   0,   1,    0,      -1,      -1 }, // Conch Strike
+  { 114734, 304697, 170369,   0,   1,    0,      -1,      -1 }, // Conch Strike
+  { 114735, 304697, 170370,   0,   1,    0,      -1,      -1 }, // Conch Strike
+  { 114736, 302360, 170371,   0,   1,    0,      -1,      -1 }, // Inter-Ocean Navigation
+  { 114737, 302360, 170372,   0,   1,    0,      -1,      -1 }, // Inter-Ocean Navigation
+  { 114738, 302360, 170373,   0,   1,    0,      -1,      -1 }, // Inter-Ocean Navigation
+  { 114739, 302360, 170374,   0,   1,    0,      -1,      -1 }, // Inter-Ocean Navigation
+  { 114740, 304628, 170375,   0,   1,    0,      -1,      -1 }, // Waveblade Discipline
+  { 114741, 304628, 170376,   0,   1,    0,      -1,      -1 }, // Waveblade Discipline
+  { 114742, 304628, 170377,   0,   1,    0,      -1,      -1 }, // Waveblade Discipline
+  { 114743, 304628, 170378,   0,   1,    0,      -1,      -1 }, // Waveblade Discipline
+  { 114939, 279347, 171003,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114940, 279347, 171004,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114941, 279347, 171005,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114942, 279347, 171006,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114943, 279347, 171007,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114944, 279347, 171008,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114945, 279347, 171009,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114946, 279347, 171010,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114947, 279347, 171011,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114948, 279347, 171012,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114949, 279347, 171013,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114950, 279347, 171014,   0,   1,    0,      -1,      -1 }, // +20 Kul Tiran Engineering
+  { 114961, 188026, 171085,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 114962,  17619, 171085,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 114965, 188026, 171087,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 114966,  17619, 171087,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 114967, 188026, 171088,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 114968,  17619, 171088,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 115083, 307159, 171270,   0,   0,    4,      -1,  300000 }, // Potion of Spectral Agility
+  { 115084, 307160, 171271,   0,   0,    4,      -1,  300000 }, // Potion of Hardened Shadows
+  { 115086, 307162, 171273,   0,   0,    4,      -1,  300000 }, // Potion of Spectral Intellect
+  { 115087, 307163, 171274,   0,   0,    4,      -1,  300000 }, // Potion of Spectral Stamina
+  { 115088, 307164, 171275,   0,   0,    4,      -1,  300000 }, // Potion of Spectral Strength
+  { 115089, 307185, 171276,   0,   0,   79,       0,    3000 }, // Spectral Flask of Power
+  { 115091, 307187, 171278,   0,   0,   79,       0,    3000 }, // Spectral Stamina Flask
+  { 115093, 307166, 171280,   0,   0,   79,       0,    3000 }, // Eternal Flask
+  { 115117, 188026, 171323,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 115118,  17619, 171323,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 115120, 307495, 171349,   0,   0,    4,      -1,  300000 }, // Potion of Phantom Fire
+  { 115121, 307496, 171350,   0,   0,    4,      -1,  300000 }, // Potion of Divine Awakening
+  { 115122, 307497, 171351,   0,   0,    4,      -1,  300000 }, // Potion of Deathly Fixation
+  { 115123, 307494, 171352,   0,   0,    4,      -1,  300000 }, // Potion of Empowered Exorcisms
+  { 115148,  38326, 171482,   0,   1,    0,      -1,      -1 }, // Crit Threat Reduction Melee
+  { 115149,  38327, 171482,   1,   1,    0,      -1,      -1 }, // Crit Threat Reduction Spell
+  { 115150,  36070, 171493,   0,   2,    0,      -1,      -1 }, // Power of the Sun King
+  { 115151,  67712, 171528,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Caster Trinket
+  { 115152,  67712, 171549,   0,   1,    0,      -1,      -1 }, // Item - Coliseum 25 Normal Caster Trinket
+  { 115153,  92125, 171631,   0,   1,    0,      -1,      -1 }, // Item - Proc Haste Rating
+  { 115154,  96887, 171640,   0,   1,    0,      -1,      -1 }, // Variable Pulse Lightning Capacitor
+  { 115155,  96908, 171641,   0,   0,    0,  120000,      -1 }, // Victory
+  { 115156,  96910, 171642,   0,   1,    0,      -1,      -1 }, // Hungerer
+  { 115157,  96947, 171643,   0,   1,    0,      -1,      -1 }, // Loom of Fate
+  { 115158,  96963, 171644,   0,   1,    0,      -1,      -1 }, // Necromantic Focus
+  { 115159,  96967, 171645,   0,   1,    0,      -1,      -1 }, // Eye of Blazing Power
+  { 115160,  96976, 171646,   0,   1,    0,      -1,      -1 }, // Matrix Restabilizer
+  { 115161,  96981, 171647,   0,   1,    0,      -1,      -1 }, // Vessel of Acceleration
+  { 115162,  99245, 171648,   0,   0,    0, 7200000,      -1 }, // Druid of the Flames
+  { 115163,  99246, 171648,   1,   1,    0,      -1,      -1 }, // Druid of the Flames
+  { 115164,  91186, 171852,   0,   1,    0,      -1,      -1 }, // Item - Proc Versatility
+  { 115214, 308431, 172040,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115215, 308435, 172041,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115217, 308462, 172043,   0,   0,   11,       0,    1000 }, // Feast of Gluttonous Hedonism
+  { 115218, 308475, 172044,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115219, 308489, 172045,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115222, 308505, 172048,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115223, 308507, 172049,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115224, 308510, 172050,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115225, 308515, 172051,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115227, 327714, 172061,   0,   0,   11,       0,    1000 }, // Well Fed
+  { 115228, 327877, 172062,   0,   0,   11,       0,    1000 }, // Well Fed
+  { 115229, 327860, 172063,   0,   0,   11,       0,    1000 }, // Well Fed
+  { 115234, 308521, 172068,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115235, 308526, 172069,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 115259, 308690, 172114,   0,   1,    0,      -1,      -1 }, // Frost Blast
+  { 115260, 308688, 172115,   0,   1,    0,      -1,      -1 }, // Lightning Bolt
+  { 115288, 308915, 172129,   0,   1,    0,      -1,      -1 }, // Touch of the Arcane
+  { 115290, 308914, 172130,   0,   1,    0,      -1,      -1 }, // Shadow Force
+  { 115291, 308912, 172131,   0,   1,    0,      -1,      -1 }, // Ice Lord's Touch
+  { 115289, 308913, 172132,   0,   1,    0,      -1,      -1 }, // Fiery Arcana
+  { 115292, 308917, 172133,   0,   1,    0,      -1,      -1 }, // Lei of the Lifegiver
+  { 115287, 308911, 172134,   0,   1,    0,      -1,      -1 }, // Therazane's Touch
+  { 115262, 308811, 172136,   1,   1,    0,      -1,      -1 }, // Stun
+  { 115263, 308776, 172137,   0,   1,    0,      -1,      -1 }, // Brain Damage
+  { 115401, 309441, 172449,   1,   0,    0,      -1,      -1 }, // Lavish Servings
+  { 115488, 277179, 172666,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 115489, 277187, 172667,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 115490, 277182, 172668,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 115491, 277185, 172669,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 115492, 305252, 172672,   0,   0,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 115493, 305251, 172672,   1,   1,    0,      -1,      -1 }, // Gladiator's Maledict
+  { 115494, 286341, 172673,   0,   1,    0,      -1,      -1 }, // Gladiator's Safeguard
+  { 115495, 277179, 172846,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 115496, 277187, 172847,   0,   0,    0,      -1,      -1 }, // Gladiator's Emblem
+  { 115497, 277182, 172848,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 115498, 277185, 172849,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 117121, 329998, 172905,   0,   1,    0,      -1,      -1 }, // +20 Shadowlands Engineering
+  { 117979, 321547, 172905,   1,   0,    0,      -1,      -1 }, // Longsight
+  { 117120, 329998, 172906,   0,   1,    0,      -1,      -1 }, // +20 Shadowlands Engineering
+  { 117978, 321547, 172906,   1,   0,    0,      -1,      -1 }, // Longsight
+  { 117119, 329998, 172907,   0,   1,    0,      -1,      -1 }, // +20 Shadowlands Engineering
+  { 117977, 321547, 172907,   1,   0,    0,      -1,      -1 }, // Longsight
+  { 117981, 329998, 172908,   0,   1,    0,      -1,      -1 }, // +20 Shadowlands Engineering
+  { 117982, 321547, 172908,   1,   0,    0,      -1,      -1 }, // Longsight
+  { 116990, 334058, 173069,   0,   0,    0,      -1,      -1 }, // Putrid Burst
+  { 125754, 333885, 173069,   1,   1,    0,      -1,      -1 }, // Darkmoon Deck: Putrescence
+  { 116991, 333734, 173078,   0,   0,    0,      -1,      -1 }, // Web of Repose
+  { 125720, 333721, 173078,   1,   1,    0,      -1,      -1 }, // Darkmoon Deck: Repose
+  { 116993, 331624, 173087,   0,   0,    0,      -1,      -1 }, // Voracious Hunger
+  { 117957, 329446, 173087,   1,   1,    0,      -1,      -1 }, // Darkmoon Deck: Voracity
+  { 116992, 311444, 173096,   0,   0,    0,      -1,      -1 }, // Indomitable Deck
+  { 117936, 328741, 173096,   1,   1,    0,      -1,      -1 }, // Darkmoon Deck: Indomitable
+  { 135894, 344117, 173349,   0,   1,    0,      -1,      -1 }, // Synaptic Feedback
+  { 115990, 313060, 173940,   1,   0,    0,      -1,      -1 }, // Stoneskin
+  { 115991, 313087, 173943,   1,   1,    0,      -1,      -1 }, // Torment in a Jar
+  { 115992, 313148, 173944,   0,   0,    0,      -1,      -1 }, // Obsidian Claw
+  { 115997, 313194, 173944,   1,   1,    0,      -1,      -1 }, // Obsidian Claw
+  { 115993, 313113, 173946,   1,   0,    0,      -1,      -1 }, // Spine Eruption
+  { 117154, 316944, 174044,   0,   0,    0,  120000,      -1 }, // Draconic Descent
+  { 116008, 313568, 174044,   1,   1,    0,      -1,      -1 }, // Dragon's Flight - Cover
+  { 116009, 310362, 174050,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116010, 312643, 174050,   1,   1,    0,      -1,      -1 }, // Revel in Violence
+  { 116011, 310362, 174051,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116012, 313168, 174051,   1,   1,    0,      -1,      -1 }, // Spontaneous Fury
+  { 116013, 310362, 174052,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116014, 313211, 174052,   1,   1,    0,      -1,      -1 }, // Masochistic
+  { 116015, 310362, 174053,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116016, 313216, 174053,   1,   1,    0,      -1,      -1 }, // Overconfident
+  { 116017, 310362, 174054,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116018, 313246, 174054,   1,   1,    0,      -1,      -1 }, // Last Grasp
+  { 116019, 310362, 174055,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116020, 313301, 174055,   1,   1,    0,      -1,      -1 }, // Thing From Beyond
+  { 116021, 310362, 174056,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116022, 313377, 174056,   1,   1,    0,      -1,      -1 }, // Face the Truth
+  { 116023, 310362, 174057,   0,   1,    0,      -1,      -1 }, // Purified
+  { 116024, 313532, 174057,   1,   1,    0,      -1,      -1 }, // Mesmerizing
+  { 116026, 313640, 174060,   1,   1,    0,      -1,      -1 }, // Psyche Shredder
+  { 116040, 313948, 174103,   0,   0,    0,      -1,      -1 }, // Manifesto of Madness: Chapter One
+  { 116039, 314042, 174103,   1,   1,    0,      -1,      -1 }, // Manifesto of Madness
+  { 116064, 314070, 174180,   1,   1,    0,      -1,      -1 }, // Oozing Coagulum
+  { 116080, 314572, 174276,   0,   0,    0,      -1,      -1 }, // Gladiator's Breach
+  { 116106, 314576, 174276,   1,   1,    0,      -1,      -1 }, // Gladiator's Breach
+  { 116081, 314585, 174277,   0,   0,    0,      -1,      -1 }, // Psychic Shell
+  { 116082, 314621, 174277,   1,   1,    0,      -1,      -1 }, // Psychic Shell
+  { 116107, 316736, 174348,   0,   0,   11,       0,    1000 }, // R'frshmnt
+  { 116108, 316741, 174349,   0,   0,   11,       0,    1000 }, // R'frshmnt
+  { 116109, 316740, 174350,   0,   0,   11,       0,    1000 }, // R'frshmnt
+  { 116110, 316739, 174351,   0,   0,   11,  180000,    1000 }, // R'frshmnt
+  { 116111, 316738, 174352,   0,   0,   11,       0,    1000 }, // R'frshmnt
+  { 125797, 334108, 174380,   0,   1,    0,      -1,      -1 }, // 9.0 PvP Power
+  { 116176, 315362, 174472,   0,   0,    0,      -1,      -1 }, // Gladiator's Spite
+  { 116258, 316008, 174472,   1,   1,    0,      -1,      -1 }, // Gladiator's Spite
+  { 116199, 315586, 174500,   1,   1,    0,      -1,      -1 }, // Vita Charged
+  { 116215, 315736, 174528,   1,   1,    0,      -1,      -1 }, // Void Charged
+  { 116700, 317700, 174953,   0,   5,    0,      -1,      -1 }, // Curious Corruption
+  { 116699, 317700, 174954,   0,   5,    0,      -1,      -1 }, // Curious Corruption
+  { 116698, 317700, 174955,   0,   5,    0,      -1,      -1 }, // Curious Corruption
+  { 116697, 317700, 174956,   0,   5,    0,      -1,      -1 }, // Curious Corruption
+  { 117960, 329490, 175711,   0,   1,    0,      -1,      -1 }, // Slumberwood Band
+  { 117968, 329756, 175722,   0,   1,    0,      -1,      -1 }, // Caustic Liquid
+  { 117498, 326376, 175723,   0,   1,    0,      -1,      -1 }, // Rejuvenating Serum
+  { 117468, 325687, 175726,   0,   1,    0,      -1,      -1 }, // Primalist's Kelpling
+  { 117469, 268503, 175727,   0,   1,    0,      -1,      -1 }, // Elder's Stormseed
+  { 126158, 336606, 175728,   0,   1,    0,      -1,      -1 }, // Soulsifter Root
+  { 117961, 329536, 175729,   0,   1,    0,      -1,      -1 }, // Rotbriar Sprout
+  { 126119, 336219, 175730,   0,   1,    0,      -1,      -1 }, // Dueling Form
+  { 126120, 336236, 175730,   1,   1,    0,      -1,      -1 }, // Dueling Form
+  { 126129, 336371, 175731,   0,   1,    0,      -1,      -1 }, // Critical Resistance
+  { 126116, 336182, 175732,   0,   0,    0,      -1,      -1 }, // Growing Despair
+  { 126207, 336866, 175733,   0,   0,    0,      -1,      -1 }, // Ember Focus
+  { 135863, 343538, 175733,   1,   1,    0,      -1,      -1 }, // Ember Blast
+  { 116983, 188026, 175941,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 116984,  17619, 175941,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 116985, 188026, 175942,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 116986,  17619, 175942,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 116987, 188026, 175943,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
+  { 116988,  17619, 175943,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
+  { 117140, 322302, 176811,   0,   0,    4,      -1,  300000 }, // Potion of Sacrificial Anima
+  { 126133, 336465, 177657,   0,   0,    0,      -1,      -1 }, // Pulsating Light Shield
+  { 117368, 324375, 177906,   0,   1,    0,      -1,      -1 }, // Alchemical Longevity
+  { 117369, 324376, 177907,   0,   1,    0,      -1,      -1 }, // Culinary Longevity
+  { 125670, 330747, 178708,   0,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125524, 330747, 178708,   1,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125564, 331011, 178754,   0,   1,    0,      -1,      -1 }, // Poxstorm
+  { 125588, 331462, 178763,   0,   1,    0,      -1,      -1 }, // Stinky
+  { 125902, 334512, 178770,   0,   1,    0,      -1,      -1 }, // Slimy Consumptive Organ
+  { 135855, 343399, 178825,   0,   0,    0,      -1,      -1 }, // Heart of a Gargoyle
+  { 135856, 343401, 178825,   1,   1,    0,      -1,      -1 }, // Heart of a Gargoyle
+  { 135853, 343393, 178826,   0,   0,    0,      -1,      -1 }, // Tear Anima
+  { 135854, 343397, 178826,   1,   1,    0,      -1,      -1 }, // Tear Anima
+  { 135851, 343385, 178849,   0,   0,    0,      -1,      -1 }, // Overflowing Anima Prison
+  { 135852, 343387, 178849,   1,   1,    0,      -1,      -1 }, // Overflowing Anima Prison
+  { 127479, 342432, 178850,   0,   0,    0,      -1,      -1 }, // Lingering Sunmote
+  { 127480, 342433, 178850,   1,   1,    0,      -1,      -1 }, // Lingering Sunmote
+  { 127478, 342427, 178861,   0,   1,    0,      -1,      -1 }, // Splash of Anima-Charged Wind
+  { 127477, 342423, 178862,   0,   0,    0,      -1,      -1 }, // Bladedancer's Armor
+  { 117971, 329840, 179331,   0,   0,    0,      -1,      -1 }, // Blood Barrier
+  { 117972, 329852, 179331,   1,   1,    0,      -1,      -1 }, // Blood Barrier
+  { 117970, 329831, 179342,   0,   0,    0,      -1,      -1 }, // Power Overwhelming
+  { 117969, 331523, 179356,   0,   0,    0,      -1,      -1 }, // Shadowgrasp Totem
+  { 117973, 329878, 179356,   1,   1,    0,      -1,      -1 }, // Shadowgrasp Totem
+  { 126494, 339700, 179518,   0,   1,    0,      -1,      -1 }, // Glimmering Light
+  { 126491, 339643, 179534,   0,   0,    0,      -1,      -1 }, // Gift of Life
+  { 117937, 329028, 179653,   0,   0,    0,      -1,      -1 }, // Limited Holy Resistance
+  { 117938, 329028, 179924,   0,   0,    0,      -1,      -1 }, // Limited Holy Resistance
+  { 117939, 329028, 179925,   0,   0,    0,      -1,      -1 }, // Limited Holy Resistance
+  { 117940, 329028, 179926,   0,   0,    0,      -1,      -1 }, // Limited Holy Resistance
+  { 118025, 224781, 180136,   0,   1,    0,      -1,      -1 }, // +15 Fishing
+  { 126777, 310674, 180136,   1,   1,    0,      -1,      -1 }, // The Brokers Angle'r - Bait Aura
+  { 126046, 335840, 180273,   0,   1,    0,      -1,      -1 }, // Sorrowbane
+  { 125618, 331993, 180349,   0,   1,    0,      -1,      -1 }, // Call of the Shadows
+  { 125895, 334436, 180771,   0,   0,    4,      -1,      -1 }, // Potion of Unusual Strength
+  { 125934, 334885, 180827,   0,   0,    0,  120000,      -1 }, // Call of War
+  { 126112, 336126, 181333,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 126113, 336128, 181335,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 126121, 336182, 181357,   0,   0,    0,      -1,      -1 }, // Growing Despair
+  { 126122, 336219, 181358,   0,   1,    0,      -1,      -1 }, // Dueling Form
+  { 126123, 336236, 181358,   1,   1,    0,      -1,      -1 }, // Dueling Form
+  { 126205, 336465, 181359,   0,   0,    0,      -1,      -1 }, // Pulsating Light Shield
+  { 126206, 336866, 181360,   0,   0,    0,      -1,      -1 }, // Ember Focus
+  { 135864, 343538, 181360,   1,   1,    0,      -1,      -1 }, // Ember Blast
+  { 126156, 336588, 181457,   0,   0,    0,      -1,      -1 }, // Wakener's Frond
+  { 126157, 336592, 181458,   0,   1,    0,      -1,      -1 }, // Queensguard's Vigil
+  { 126155, 336586, 181459,   0,   1,    0,      -1,      -1 }, // Withergrove Shardling
+  { 126201, 336841, 181501,   0,   0,    0,      -1,      -1 }, // Bladesworn Trinket
+  { 126202, 326376, 181502,   0,   1,    0,      -1,      -1 }, // Rejuvenating Serum
+  { 126203, 329756, 181503,   0,   1,    0,      -1,      -1 }, // Caustic Liquid
+  { 126208, 336865, 181507,   0,   1,    0,      -1,      -1 }, // Abomination Trinket
+  { 126316, 337317, 181620,   0,   0,    0,      -1,      -1 }, // Gorm Protein Burst
+  { 126336, 336135, 181816,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 126413, 338385, 182163,   0,   0,    4,      -1,      -1 }, // Strength of Blood
+  { 126441, 338715, 182298,   0,   0,    4,      -1,  300000 }, // Kaja'Mind!
+  { 126477, 339517, 182451,   0,   0,    0,      -1,      -1 }, // Glimmering Dust
+  { 126455, 339303, 182452,   0,   1,    0,      -1,      -1 }, // Everchill Brambles
+  { 126482, 339547, 182453,   0,   1,    0,      -1,      -1 }, // Twilight Restoration
+  { 126456, 339343, 182454,   0,   1,    0,      -1,      -1 }, // Murmurs in the Dark
+  { 126500, 339735, 182455,   0,   1,    0,      -1,      -1 }, // Dreamer's Mending
+  { 126487, 308435, 182592,   0,   0,   11,       0,    1000 }, // Refreshment
+  { 126545, 339979, 182682,   0,   1,    0,      -1,      -1 }, // Booksmart
+  { 135926, 331854, 182689,   0,   7,    0,      -1,      -1 }, // Kill Credit
+  { 126579, 340111, 182737,   0,   0,   11,       0,    1000 }, // Well Fed
+  { 135850, 343378, 183019,   0,   0,    0,      -1,      -1 }, // Precisely Calibrated Chronometer
+  { 135880, 343817, 183040,   0,   0,    0,      -1,      -1 }, // Charm of Eternal Winter
+  { 127436, 344311, 183624,   0,   1,    0,      -1,      -1 }, // Serrated Edge
+  { 127437,  71406, 183650,   0,   1,    0,      -1,      -1 }, // Anger Capacitor
+  { 127511, 336606, 183849,   0,   1,    0,      -1,      -1 }, // Soulsifter Root
+  { 127512, 336588, 183850,   0,   0,    0,      -1,      -1 }, // Wakener's Frond
+  { 127513, 336586, 183851,   0,   1,    0,      -1,      -1 }, // Withergrove Shardling
+  { 127521, 343191, 183857,   0,   0,    0,      -1,      -1 }, // Strength of Fire
+  { 135906, 344221, 184022,   0,   1,    0,      -1,      -1 }, // Nathria Trinket (DNT)
+  { 135893, 344063, 184023,   0,   1,    0,      -1,      -1 }, // Nathria Trinket (DNT)
+  { 135910, 344243, 184029,   0,   1,    0,      -1,      -1 }, // Nathria Trinket (DNT)
+  { 135911, 344245, 184029,   1,   0,    0,      -1,      -1 }, // Nathria Trinket (DNT)
+  { 135909, 344231, 184031,   0,   0,    0,      -1,      -1 }, // Nathria Trinket (DNT)
+  { 135897, 336126, 184052,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 135898, 336128, 184053,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 135899, 336135, 184054,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 135900, 336126, 184055,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 135901, 336128, 184056,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 135902, 336135, 184057,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 135903, 336126, 184058,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 135904, 336128, 184059,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 135905, 336135, 184060,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 135917, 344337, 184096,   1,   0,    0,      -1,      -1 }, // The Swift Chameleon
+  { 135918, 344339, 184097,   1,   0,    0,      -1,      -1 }, // The Aquatic Chameleon
+  { 135923, 344343, 184100,   1,   0,    0,      -1,      -1 }, // The Aerial Chameleon
+} };
+
+static const std::array<uint16_t, 6660> __ptr_item_effect_id_index { {
+    292,   293,   294,   295,   296,   297,   300,   301,
+    302,   303,   304,   305,   306,   307,   310,   311,
+    312,   313,   314,   315,   316,   317,   318,   319,
+    320,   321,   322,   323,   324,   325,   326,   327,
+    328,   329,   330,   331,   332,   333,   334,   335,
+    336,   337,   338,   339,   340,   341,   342,   343,
+    344,   345,   346,   347,   348,   349,   350,   351,
+    352,   353,   354,   355,   356,   357,   358,   359,
+    360,   361,   362,   363,   364,   365,   366,   367,
+    368,   369,   370,   371,   372,   373,   374,   375,
+    376,   377,   378,   379,   380,   381,   382,   383,
+    384,   385,   386,   387,   388,   389,   390,   391,
+    392,   393,   394,   395,   396,   397,   398,   399,
+    400,   401,   402,   403,   404,   405,   406,   407,
+    408,   409,   410,   411,   412,   413,   414,   415,
+    416,   417,   418,   419,   420,   421,   422,   423,
+    424,   425,   426,   427,   428,   429,   430,   431,
+    432,   433,   434,   435,   436,   437,   440,   441,
+    442,   443,   444,   445,   446,   447,   448,   449,
+    450,   451,   452,   453,   454,   455,   456,   457,
+    458,   459,   460,   461,   462,   463,   464,   465,
+    466,   467,   468,   469,   470,   471,   472,   473,
+    474,   475,   476,   477,   478,   479,   480,   481,
+    482,   483,   484,   485,   486,   487,   488,   489,
+    490,   491,   492,   493,   494,   495,   496,   497,
+    498,   499,   500,   501,   502,   503,   504,   505,
+    506,   507,   508,   509,   510,   511,   512,   515,
+    516,   517,   518,   519,   520,   523,   524,   525,
+    526,   529,   530,   531,   532,   533,   534,   535,
+    536,   537,   538,   540,   541,   542,   543,   544,
+    545,   546,   547,   548,   549,   550,   553,   554,
+    555,   558,   559,   560,   561,   562,   563,   564,
+    565,   566,   567,   568,   569,   570,   571,   572,
+    573,   574,   575,   576,   577,   578,   579,   580,
+    581,   582,   583,   584,   585,   586,   587,   588,
+    589,   590,   591,   593,   594,   595,   596,   597,
+    598,   599,   600,   601,   602,   603,   604,   605,
+    606,   607,   608,   609,   610,   611,   612,   613,
+    614,   615,   616,   617,   618,   619,   620,   621,
+    622,   623,   624,   625,   626,   627,   628,   629,
+    630,   631,   632,   633,   634,   635,   636,   637,
+    638,   639,   640,   641,   642,   643,   644,   645,
+    646,   647,   648,   649,   650,   651,   652,   653,
+    654,   655,   656,   657,   658,   659,   660,   661,
+    662,   663,   664,   665,   666,   667,   668,   669,
+    670,   671,   672,   673,   674,   675,   676,   677,
+    678,   679,   680,   681,   682,   683,   684,   685,
+    686,   687,   688,   689,   690,   691,   692,   693,
+    694,   699,   700,   701,   702,   703,   704,   705,
+    706,   707,   708,   709,   710,   711,   712,   713,
+    714,   717,   718,   731,   732,   736,   737,   738,
+    739,   740,   741,   742,   743,   744,   745,   746,
+    747,   748,   749,   750,   751,   752,   753,   754,
+    755,   756,   757,   758,   759,   760,   761,   762,
+    763,   764,   765,   766,   768,   769,   770,   771,
+    772,   773,   774,   775,   776,   777,   778,   779,
+    780,   781,   782,   783,   784,   785,   786,   787,
+    788,   789,   790,   791,   792,   793,   794,   795,
+    796,   797,   798,   799,   800,   803,   804,   805,
+    806,   807,   808,   809,   810,   811,   812,   813,
+    814,   815,   816,   817,   818,   819,   820,   821,
+    822,   823,   824,   825,   826,   827,   828,   829,
+    830,   831,   832,   833,   834,   835,   836,   837,
+    838,   839,   840,   841,   842,   843,   844,   845,
+    846,   847,   848,   849,   850,   851,   852,   853,
+    854,   855,   856,   857,   858,   859,   860,   861,
+    862,   863,   864,   865,   866,   867,   868,   869,
+    870,   871,   872,   873,   874,   875,   876,   877,
+    878,   879,   880,   881,   882,   883,   886,   891,
+    892,   893,   894,   895,   896,   897,   898,   899,
+    900,   901,   902,   903,   904,   905,   906,   907,
+    908,   909,   910,   911,   912,   913,   914,   915,
+    916,   917,   918,   919,   920,   921,   922,   923,
+    924,   925,   926,   927,   928,   929,   930,   931,
+    932,   933,   934,   935,   936,   937,   938,   939,
+    940,   941,   942,   943,   944,   945,   946,   947,
+    948,   951,   952,   953,   954,   955,   956,   957,
+    958,   959,   960,   961,   962,   963,   964,   965,
+    966,   967,   968,   969,   970,   973,   974,   975,
+    976,   977,   978,   979,   980,   981,   986,   987,
+    988,   989,   990,   991,   992,   993,   994,   995,
+    996,   997,   998,   999,  1000,  1001,  1002,  1005,
+   1006,  1007,  1008,  1009,  1010,  1011,  1012,  1013,
+   1014,  1015,  1016,  1017,  1018,  1019,  1020,  1021,
+   1022,  1023,  1024,  1025,  1026,  1027,  1028,  1029,
+   1030,  1031,  1032,  1033,  1034,  1035,  1036,  1037,
+   1038,  1039,  1040,  1041,  1042,  1043,  1044,  1045,
+   1046,  1047,  1048,  1049,  1050,  1051,  1052,  1053,
+   1054,  1055,  1056,  1057,  1058,  1059,  1060,  1061,
+   1062,  1063,  1064,  1065,  1066,  1067,  1068,  1069,
+   1070,  1071,  1072,  1073,  1076,  1077,  1078,  1079,
+   1080,  1081,  1082,  1083,  1084,  1085,  1086,  1087,
+   1088,  1089,  1090,  1091,  1092,  1093,  1094,  1095,
+   1096,  1097,  1098,  1099,  1100,  1101,  1102,  1103,
+   1104,  1105,  1106,  1107,  1108,  1109,  1110,  1111,
+   1112,  1115,  1116,  1117,  1118,  1119,  1120,  1121,
+   1122,  1123,  1124,  1125,  1126,  1127,  1128,  1129,
+   1130,  1131,  1132,  1133,  1134,  1135,  1136,  1137,
+   1138,  1139,  1140,  1141,  1142,  1143,  1144,  1147,
+   1148,  1149,  1150,  1151,  1152,  1153,  1154,  1155,
+   1156,  1157,  1158,  1159,  1160,  1161,  1162,  1163,
+   1164,  1165,  1166,  1167,  1168,  1169,  1170,  1171,
+   1172,  1173,  1174,  1175,  1176,  1177,  1178,  1179,
+   1180,  1181,  1182,  1183,  1184,  1185,  1186,  1187,
+   1188,  1189,  1190,  1191,  1192,  1193,  1194,  1195,
+   1196,  1197,  1198,  1199,  1200,  1201,  1202,  1203,
+   1204,  1205,  1206,  1207,  1208,  1209,  1210,  1211,
+   1212,  1213,  1214,  1215,  1216,  1217,  1218,  1219,
+   1220,  1221,  1222,  1223,  1224,  1225,  1226,  1227,
+   1228,  1229,  1230,  1231,  1232,  1233,  1234,  1235,
+   1236,  1237,  1238,  1239,  1240,  1241,  1242,  1243,
+   1244,  1245,  1246,  1247,  1248,  1249,  1250,  1251,
+   1252,  1253,  1254,  1255,  1256,  1257,  1258,  1259,
+   1260,  1261,  1262,  1263,  1264,  1265,  1266,  1267,
+   1268,  1269,  1272,  1273,  1274,  1275,  1276,  1277,
+   1278,  1279,  1280,  1281,  1282,  1283,  1284,  1285,
+   1286,  1287,  1288,  1289,  1290,  1291,  1292,  1293,
+   1294,  1295,  1296,  1297,  1298,  1299,  1300,  1301,
+   1302,  1303,  1304,  1305,  1306,  1307,  1308,  1309,
+   1310,  1311,  1312,  1313,  1314,  1315,  1316,  1317,
+   1318,  1319,  1320,  1321,  1322,  1323,  1324,  1325,
+   1326,  1327,  1328,  1329,  1330,  1331,  1332,  1333,
+   1334,  1335,  1336,  1337,  1338,  1339,  1340,  1341,
+   1342,  1343,  1344,  1345,  1346,  1347,  1348,  1349,
+   1350,  1351,  1352,  1353,  1354,  1355,  1356,  1357,
+   1358,  1359,  1360,  1362,  1363,  1364,  1365,  1366,
+   1367,  1368,  1369,  1370,  1371,  1372,  1373,  1374,
+   1375,  1376,  1377,  1378,  1379,  1380,  1381,  1382,
+   1383,  1384,  1385,  1386,  1387,  1388,  1389,  1390,
+   1391,  1392,  1393,  1394,  1395,  1396,  1397,  1398,
+   1399,  1400,  1401,  1402,  1403,  1404,  1405,  1406,
+   1407,  1408,  1409,  1410,  1411,  1412,  1413,  1414,
+   1415,  1416,  1417,  1418,  1419,  1420,  1421,  1422,
+   1423,  1424,  1425,  1426,  1427,  1428,  1429,  1430,
+   1431,  1432,  1433,  1434,  1435,  1437,  1438,  1439,
+   1440,  1441,  1442,  1443,  1445,  1446,  1447,  1448,
+   1449,  1450,  1451,  1452,  1453,  1454,  1455,  1456,
+   1457,  1458,  1459,  1460,  1461,  1470,  1480,  1483,
+   1484,  1485,  1486,  1487,  1488,  1489,  1490,  1491,
+   1492,  1493,  1494,  1495,  1496,  1497,  1498,  1499,
+   1502,  1503,  1504,  1505,  1506,  1507,  1508,  1509,
+   1510,  1511,  1512,  1513,  1514,  1515,  1516,  1517,
+   1518,  1519,  1520,  1521,  1522,  1523,  1524,  1525,
+   1526,  1527,  1528,  1529,  1530,  1531,  1532,  1533,
+   1534,  1535,  1536,  1537,  1538,  1539,  1540,  1541,
+   1542,  1544,  1545,  1546,  1547,  1548,  1549,  1550,
+   1551,  1552,  1555,  1556,  1557,  1558,  1559,  1568,
+   1569,  1570,  1571,  1572,  1573,  1574,  1575,  1576,
+   1577,  1578,  1579,  1600,  1601,  1602,  1603,  1604,
+   1605,  1606,  1607,  1610,  1611,  1612,  1613,  1614,
+   1615,  1616,  1617,  1620,  1621,  1622,  1623,  1624,
+   1625,  1626,  1627,  1628,  1629,  1630,  1631,  1633,
+   1634,  1635,  1636,  1637,  1638,  1639,  1640,  1641,
+   1642,  1643,  1644,  1645,  1646,  1647,  1648,  1649,
+   1650,  1651,  1652,  1653,  1654,  1655,  1656,  1657,
+   1658,  1659,  1660,  1661,  1662,  1663,  1664,  1665,
+   1666,  1667,  1668,  1669,  1670,  1671,  1672,  1673,
+   1674,  1675,  1676,  1677,  1678,  1679,  1680,  1681,
+   1682,  1683,  1684,  1685,  1686,  1688,  1689,  1690,
+   1691,  1692,  1693,  1696,  1697,  1698,  1701,  1702,
+   1703,  1704,  1705,  1706,  1709,  1710,  1711,  1712,
+   1714,  1715,  1716,  1717,  1718,  1719,  1720,  1721,
+   1722,  1723,  1724,  1729,  1730,  1731,  1732,  1733,
+   1734,  1735,  1736,  1737,  1738,  1739,  1740,  1741,
+   1742,  1743,  1744,  1745,  1746,  1747,  1748,  1749,
+   1750,  1751,  1752,  1753,  1754,  1755,  1756,  1757,
+   1758,  1759,  1760,  1761,  1762,  1779,  1780,  1781,
+   1782,  1783,  1784,  1785,  1786,  1787,  1788,  1791,
+   1792,  1793,  1794,  1795,  1796,  1797,  1798,  1799,
+   1800,  1801,  1802,  1803,  1804,  1805,  1806,  1807,
+   1808,  1809,  1810,  1811,  1812,  1813,  1814,  1815,
+   1816,  1817,  1818,  1819,  1820,  1821,  1822,  1823,
+   1828,  1829,  1830,  1831,  1832,  1833,  1834,  1835,
+   1836,  1837,  1838,  1839,  1840,  1841,  1842,  1843,
+   1844,  1845,  1846,  1847,  1848,  1849,  1850,  1851,
+   1852,  1853,  1854,  1855,  1856,  1857,  1858,  1859,
+   1860,  1863,  1864,  1865,  1866,  1867,  1868,  1869,
+   1870,  1871,  1872,  1873,  1874,  1875,  1876,  1877,
+   1878,  1879,  1880,  1881,  1882,  1883,  1884,  1885,
+   1886,  1887,  1890,  1891,  1892,  1893,  1894,  1895,
+   1896,  1897,  1898,  1899,  1900,  1901,  1902,  1903,
+   1904,  1905,  1906,  1907,  1908,  1909,  1910,  1911,
+   1912,  1913,  1914,  1915,  1916,  1917,  1918,  1919,
+   1920,  1921,  1924,  1927,  1928,  1929,  1932,  1933,
+   1934,  1935,  1936,  1937,  1938,  1939,  1940,  1941,
+   1942,  1943,  1944,  1945,  1948,  1949,  1950,  1951,
+   1952,  1953,  1954,  1955,  1956,  1957,  1958,  1959,
+   1960,  1961,  1962,  1963,  1964,  1965,  1966,  1967,
+   1968,  1969,  1970,  1971,  1972,  1973,  1974,  1975,
+   1976,  1977,  1978,  1979,  1980,  1981,  1982,  1983,
+   1984,  1985,  1986,  1987,  1988,  1989,  1990,  1991,
+   1992,  1993,  1994,  1995,  1996,  1997,  1998,  1999,
+   2000,  2001,  2002,  2003,  2004,  2005,  2006,  2007,
+   2008,  2009,  2010,  2011,  2012,  2013,  2014,  2015,
+   2016,  2017,  2018,  2019,  2020,  2021,  2022,  2023,
+   2024,  2025,  2026,  2027,  2028,  2029,  2030,  2031,
+   2032,  2033,  2034,  2035,  2036,  2037,  2038,  2039,
+   2040,  2041,  2042,  2043,  2044,  2045,  2046,  2047,
+   2048,  2049,  2050,  2051,  2052,  2053,  2054,  2055,
+   2058,  2059,  2060,  2061,  2062,  2063,  2064,  2065,
+   2066,  2067,  2068,  2069,  2070,  2071,  2072,  2073,
+   2074,  2075,  2076,  2077,  2078,  2079,  2080,  2081,
+   2082,  2083,  2084,  2085,  2086,  2087,  2088,  2093,
+   2096,  2097,  2098,  2099,  2100,  2103,  2104,  2105,
+   2106,  2107,  2108,  2109,  2110,  2111,  2112,  2113,
+   2114,  2115,  2116,  2117,  2118,  2119,  2120,  2121,
+   2122,  2123,  2124,  2125,  2126,  2127,  2128,  2129,
+   2130,  2143,  2144,  2145,  2146,  2147,  2148,  2149,
+   2150,  2151,  2152,  2153,  2154,  2155,  2156,  2157,
+   2160,  2161,  2162,  2165,  2166,  2167,  2168,  2169,
+   2170,  2171,  2172,  2173,  2174,  2177,  2178,  2179,
+   2182,  2183,  2184,  2185,  2186,  2187,  2188,  2189,
+   2190,  2191,  2192,  2193,  2194,  2195,  2196,  2197,
+   2198,  2199,  2204,  2209,  2210,  2211,  2212,  2213,
+   2214,  2215,  2216,  2217,  2218,  2219,  2220,  2221,
+   2222,  2223,  2224,  2225,  2226,  2227,  2228,  2229,
+   2230,  2231,  2232,  2233,  2234,  2235,  2236,  2237,
+   2238,  2239,  2240,  2241,  2242,  2243,  2244,  2245,
+   2246,  2247,  2248,  2249,  2250,  2251,  2252,  2253,
+   2254,  2255,  2256,  2257,  2258,  2259,  2260,  2261,
+   2262,  2263,  2264,  2265,  2266,  2267,  2268,  2269,
+   2270,  2271,  2272,  2273,  2274,  2275,  2276,  2277,
+   2278,  2279,  2280,  2281,  2282,  2283,  2284,  2285,
+   2286,  2287,  2288,  2289,  2290,  2291,  2292,  2293,
+   2299,  2300,  2301,  2302,  2303,  2304,  2305,  2306,
+   2309,  2310,  2311,  2312,  2313,  2314,  2315,  2316,
+   2317,  2318,  2319,  2320,  2321,  2322,  2323,  2324,
+   2325,  2326,  2327,  2328,  2329,  2330,  2331,  2332,
+   2333,  2334,  2335,  2336,  2337,  2338,  2339,  2340,
+   2345,  2348,  2349,  2350,  2351,  2352,  2353,  2354,
+   2355,  2356,  2357,  2358,  2359,  2360,  2361,  2362,
+   2363,  2364,  2365,  2366,  2367,  2368,  2369,  2370,
+   2371,  2372,  2373,  2374,  2375,  2376,  2377,  2378,
+   2379,  2380,  2381,  2382,  2383,  2384,  2385,  2386,
+   2387,  2388,  2389,  2390,  2391,  2392,  2393,  2394,
+   2395,  2396,  2397,  2398,  2399,  2400,  2401,  2402,
+   2403,  2404,  2405,  2406,  2407,  2408,  2409,  2410,
+   2411,  2412,  2413,  2414,  2415,  2416,  2417,  2418,
+   2419,  2420,  2421,  2422,  2423,  2424,  2425,  2426,
+   2427,  2428,  2429,  2430,  2431,  2432,  2433,  2434,
+   2435,  2436,  2437,  2438,  2439,  2440,  2441,  2442,
+   2443,  2444,  2445,  2446,  2447,  2448,  2449,  2450,
+   2453,  2454,  2455,  2456,  2457,  2458,  2459,  2460,
+   2461,  2462,  2463,  2464,  2465,  2466,  2467,  2468,
+   2469,  2471,  2472,  2473,  2474,  2475,  2476,  2477,
+   2478,  2479,  2480,  2481,  2482,  2483,  2484,  2485,
+   2486,  2487,  2488,  2489,  2490,  2491,  2492,  2493,
+   2494,  2495,  2496,  2497,  2498,  2499,  2500,  2501,
+   2502,  2503,  2504,  2505,  2506,  2507,  2508,  2509,
+   2510,  2511,  2512,  2513,  2514,  2515,  2516,  2517,
+   2518,  2519,  2520,  2521,  2522,  2523,  2525,  2526,
+   2527,  2528,  2529,  2530,  2531,  2532,  2533,  2534,
+   2535,  2536,  2537,  2538,  2539,  2540,  2541,  2542,
+   2543,  2544,  2545,  2546,  2547,  2548,  2549,  2550,
+   2551,  2552,  2553,  2554,  2555,  2556,  2557,  2559,
+   2560,  2561,  2562,  2563,  2564,  2565,  2566,  2567,
+   2568,  2569,  2570,  2571,  2572,  2573,  2574,  2575,
+   2576,  2577,  2578,  2579,  2580,  2581,  2582,  2583,
+   2584,  2588,  2589,  2590,  2591,  2592,  2593,  2594,
+   2595,  2596,  2597,  2598,  2599,  2600,  2601,  2602,
+   2603,  2604,  2605,  2606,  2609,  2610,  2611,  2612,
+   2613,  2614,  2615,  2616,  2617,  2618,  2619,  2620,
+   2621,  2622,  2623,  2624,  2625,  2626,  2627,  2628,
+   2629,  2630,  2631,  2632,  2633,  2634,  2635,  2636,
+   2637,  2638,  2639,  2640,  2641,  2642,  2643,  2644,
+   2645,  2646,  2647,  2648,  2649,  2650,  2651,  2652,
+   2653,  2654,  2655,  2656,  2657,  2658,  2659,  2660,
+   2661,  2662,  2663,  2664,  2665,  2666,  2667,  2668,
+   2669,  2670,  2671,  2678,  2679,  2680,  2681,  2682,
+   2683,  2684,  2685,  2686,  2687,  2688,  2689,  2690,
+   2691,  2692,  2693,  2694,  2695,  2696,  2697,  2698,
+   2699,  2700,  2701,  2702,  2703,  2704,  2705,  2706,
+   2707,  2708,  2709,  2710,  2711,  2712,  2713,  2714,
+   2715,  2716,  2717,  2718,  2719,  2720,  2721,  2722,
+   2723,  2724,  2725,  2726,  2727,  2728,  2729,  2730,
+   2731,  2732,  2733,  2734,  2735,  2736,  2737,  2738,
+   2739,  2740,  2741,  2742,  2743,  2744,  2745,  2746,
+   2747,  2748,  2749,  2750,  2751,  2752,  2753,  2754,
+   2755,  2756,  2757,  2758,  2759,  2760,  2761,  2762,
+   2763,  2764,  2766,  2767,  2768,  2769,  2770,  2771,
+   2772,  2773,  2774,  2775,  2776,  2777,  2778,  2779,
+   2780,  2781,  2782,  2783,  2784,  2785,  2786,  2787,
+   2788,  2789,  2790,  2791,  2792,  2793,  2794,  2795,
+   2796,  2797,  2798,  2799,  2800,  2801,  2802,  2809,
+   2812,  2813,  2814,  2815,  2816,  2817,  2818,  2819,
+   2820,  2821,  2822,  2823,  2824,  2825,  2826,  2827,
+   2828,  2829,  2830,  2831,  2832,  2833,  2834,  2835,
+   2836,  2837,  2838,  2839,  2840,  2841,  2842,  2843,
+   2844,  2845,  2848,  2849,  2850,  2851,  2852,  2853,
+   2854,  2855,  2856,  2857,  2858,  2859,  2860,  2861,
+   2868,  2869,  2870,  2873,  2880,  2881,  2882,  2883,
+   2884,  2885,  2886,  2887,  2888,  2889,  2890,  2891,
+   2892,  2895,  2896,  2897,  2898,  2899,  2900,  2901,
+   2902,  2903,  2904,  2905,  2906,  2907,  2908,  2909,
+   2910,  2911,  2912,  2913,  2914,  2915,  2916,  2919,
+   2920,  2921,  2922,  2923,  2924,  2925,  2926,  2927,
+   2928,  2929,  2930,  2931,  2932,  2933,  2934,  2935,
+   2936,  2937,  2938,  2939,  2940,  2941,  2942,  2943,
+   2944,  2945,  2946,  2947,  2948,  2949,  2950,  2951,
+   2952,  2953,  2954,  2955,  2956,  2957,  2958,  2959,
+   2960,  2961,  2962,  2963,  2964,  2965,  2966,  2967,
+   2968,  2969,  2970,  2971,  2972,  2973,  2974,  2975,
+   2976,  2977,  2978,  2979,  2980,  2981,  2982,  2983,
+   2984,  2985,  2986,  2987,  2988,  2989,  2990,  2991,
+   2992,  2993,  2994,  3000,  3001,  3002,  3003,  3004,
+   3005,  3006,  3007,  3008,  3009,  3010,  3011,  3012,
+   3013,  3014,  3017,  3018,  3019,  3020,  3021,  3022,
+   3023,  3024,  3025,  3026,  3027,  3028,  3029,  3030,
+   3031,  3032,  3033,  3034,  3035,  3036,  3037,  3038,
+   3039,  3040,  3041,  3042,  3043,  3044,  3045,  3046,
+   3047,  3048,  3049,  3050,  3051,  3052,  3053,  3054,
+   3055,  3056,  3057,  3058,  3059,  3060,  3061,  3062,
+   3065,  3066,  3067,  3068,  3069,  3070,  3071,  3072,
+   3073,  3074,  3075,  3076,  3077,  3078,  3079,  3080,
+   3081,  3082,  3083,  3084,  3085,  3086,  3087,  3090,
+   3091,  3092,  3093,  3094,  3095,  3096,  3097,  3098,
+   3099,  3100,  3101,  3102,  3103,  3104,  3105,  3106,
+   3107,  3108,  3111,  3112,  3113,  3114,  3115,  3116,
+   3117,  3118,  3119,  3120,  3121,  3122,  3123,  3124,
+   3125,  3126,  3127,  3128,  3129,  3132,  3133,  3134,
+   3135,  3136,  3137,  3138,  3139,  3140,  3141,  3142,
+   3143,  3144,  3145,  3146,  3147,  3148,  3149,  3150,
+   3153,  3154,  3155,  3156,  3157,  3158,  3159,  3160,
+   3161,  3162,  3163,  3164,  3165,  3166,  3167,  3168,
+   3169,  3170,  3171,  3172,  3173,  3174,  3175,  3176,
+   3177,  3178,  3179,  3180,  3181,  3182,  3183,  3184,
+   3185,  3186,  3187,  3188,  3189,  3190,  3191,  3192,
+   3193,  3194,  3195,  3196,  3197,  3198,  3199,  3200,
+   3201,  3202,  3203,  3204,  3205,  3206,  3207,  3208,
+   3209,  3210,  3211,  3212,  3213,  3214,  3215,  3216,
+   3217,  3218,  3219,  3220,  3221,  3222,  3223,  3224,
+   3225,  3226,  3227,  3228,  3229,  3230,  3231,  3232,
+   3233,  3234,  3235,  3236,  3237,  3238,  3239,  3240,
+   3241,  3242,  3243,  3244,  3245,  3246,  3247,  3248,
+   3249,  3250,  3251,  3252,  3253,  3254,  3255,  3256,
+   3257,  3258,  3259,  3260,  3261,  3262,  3263,  3264,
+   3265,  3266,  3267,  3268,  3269,  3270,  3271,  3272,
+   3273,  3274,  3275,  3276,  3277,  3278,  3279,  3280,
+   3281,  3282,  3283,  3284,  3285,  3286,  3287,  3288,
+   3289,  3290,  3291,  3292,  3293,  3294,  3295,  3296,
+   3297,  3298,  3299,  3300,  3301,  3302,  3303,  3304,
+   3305,  3306,  3307,  3308,  3309,  3310,  3311,  3312,
+   3313,  3314,  3315,  3316,  3317,  3318,  3319,  3320,
+   3321,  3322,  3323,  3324,  3325,  3326,  3327,  3328,
+   3329,  3330,  3331,  3332,  3333,  3334,  3335,  3336,
+   3337,  3338,  3339,  3340,  3341,  3342,  3343,  3344,
+   3345,  3346,  3347,  3348,  3349,  3350,  3351,  3352,
+   3353,  3354,  3355,  3356,  3357,  3358,  3363,  3365,
+   3366,  3381,  3382,  3383,  3384,  3385,  3386,  3387,
+   3388,  3389,  3390,  3391,  3392,  3393,  3394,  3395,
+   3396,  3397,  3398,  3399,  3400,  3401,  3402,  3403,
+   3404,  3405,  3406,  3407,  3408,  3409,  3410,  3411,
+   3412,  3413,  3414,  3415,  3416,  3417,  3418,  3419,
+   3420,  3421,  3422,  3423,  3424,  3425,  3426,  3427,
+   3428,  3429,  3430,  3431,  3432,  3433,  3434,  3435,
+   3436,  3437,  3438,  3439,  3440,  3441,  3442,  3443,
+   3444,  3445,  3446,  3447,  3448,  3449,  3450,  3451,
+   3452,  3453,  3454,  3455,  3456,  3457,  3458,  3459,
+   3460,  3461,  3462,  3463,  3464,  3465,  3466,  3467,
+   3468,  3469,  3470,  3471,  3472,  3473,  3474,  3475,
+   3480,  3481,  3482,  3483,  3484,  3485,  3486,  3487,
+   3488,  3489,  3490,  3491,  3501,  3502,  3503,  3506,
+   3507,  3508,  3509,  3510,  3511,  3512,  3513,  3516,
+   3519,  3523,  3525,  3538,  3539,  3540,  3543,  3544,
+   3547,  3550,  3554,  3556,  3569,  3570,  3571,  3574,
+   3575,  3578,  3581,  3585,  3587,  3600,  3601,  3602,
+   3605,  3606,  3609,  3612,  3616,  3618,  3631,  3632,
+   3633,  3636,  3637,  3640,  3643,  3647,  3649,  3662,
+   3663,  3664,  3667,  3668,  3669,  3670,  3671,  3672,
+   3673,  3674,  3675,  3676,  3677,  3678,  3679,  3680,
+   3681,  3682,  3683,  3684,  3685,  3686,  3687,  3688,
+   3689,  3690,  3695,  3696,  3697,  3698,  3716,  3717,
+   3718,  3719,  3720,  3721,  3722,  3723,  3724,  3725,
+   3726,  3727,  3728,  3729,  3730,  3731,  3374,  3530,
+   3561,  3592,  3623,  3654,  3517,  3548,  3579,  3610,
+   3641,  3371,  3526,  3557,  3588,  3619,  3650,  3370,
+   3527,  3558,  3589,  3620,  3651,  3362,  3528,  3559,
+   3590,  3621,  3652,  3368,  3521,  3552,  3583,  3614,
+   3645,  3360,  3514,  3545,  3576,  3607,  3638,  3372,
+   3532,  3563,  3594,  3625,  3656,  3376,  3534,  3565,
+   3596,  3627,  3658,  3378,  3536,  3567,  3598,  3629,
+   3660,  3732,  3733,  3734,  3735,  3736,  3737,  3738,
+   3739,  3740,  3741,  3742,  3743,  3744,  3745,  3746,
+   3747,  3748,  3749,  3750,  3751,  3752,  3753,  3754,
+   3755,  3699,  3700,  3758,  3759,  3761,  3762,  3763,
+   1727,  1728,  3765,   308,   309,   438,   439,   513,
+    514,   521,   522,   527,   528,   551,   552,   556,
+    557,   715,   716,   719,   720,   721,   722,   723,
+    724,   725,   726,   727,   728,   729,   730,   733,
+    734,   735,   887,   888,   889,   890,   949,   950,
+    982,   983,   984,   985,  1113,  1114,  1462,  1463,
+   1464,  1465,  1466,  1467,  1468,  1469,  1500,  1501,
+   1553,  1554,  1560,  1561,  1562,  1563,  1564,  1565,
+   1566,  1567,  1580,  1581,  1582,  1583,  1584,  1585,
+   1586,  1587,  1588,  1589,  1590,  1591,  1592,  1593,
+   1594,  1595,  1596,  1597,  1598,  1599,  1618,  1619,
+   1694,  1695,  1699,  1700,  1707,  1708,  1789,  1790,
+   2089,  2090,  2091,  2092,  2131,  2132,  2133,  2134,
+   2135,  2136,  2137,  2138,  2139,  2140,  2141,  2142,
+   2200,  2201,  2294,  2295,  2296,  2297,  2298,  2307,
+   2308,  2524,  2607,  2608,  2674,  2675,  2676,  2677,
+   2893,  2894,  3015,  3016,  3476,  3477,  3541,  3542,
+   3572,  3573,  3603,  3604,  3634,  3635,  3665,  3666,
+   3766,  3767,  3768,  3769,  3770,  3783,  3784,  3756,
+   3760,  3764,  3790,  3792,  3793,  3794,  3795,  3797,
+   3799,  3801,  3803,  3805,  3806,  3813,  3814,  3815,
+   3816,  3817,  3818,  3820,  3824,  3823,  3822,  3812,
+   3807,  3808,  3809,  3810,  3811,  3825,  3701,  3702,
+   3704,  3705,  3707,  3708,  3710,  3711,  3713,  3714,
+   3757,  3826,  3827,  3828,  3829,  3830,  3831,  3703,
+   3706,  3709,  3712,  3715,  3832,  3833,  3834,  3580,
+   3549,  3785,  3364,  3611,  3518,  3642,  3593,  3798,
+   3562,  3375,  3624,  3531,  3655,  3595,  3564,  3800,
+   3373,  3626,  3533,  3657,  3597,  3802,  3566,  3377,
+   3628,  3535,  3659,  3584,  3553,  3821,  3369,  3615,
+   3522,  3646,  3577,  3546,  3771,  3361,  3608,  3515,
+   3639,  3599,  3804,  3568,  3379,  3630,  3537,  3661,
+   3582,  3551,  3819,  3359,  3613,  3520,  3644,  3586,
+   3791,  3555,  3367,  3617,  3524,  3648,  3591,  3560,
+   3796,  3380,  3622,  3529,  3653,  3835,  3836,  3837,
+   3838,  3841,  3842,  3843,  3844,  3845,  3846,  3847,
+   3848,  3850,  3853,  3856,  3857,  3858,  3859,  3860,
+   3861,  3862,  3863,  3864,  3865,  3866,  3867,  3868,
+   3869,  3870,  3891,  3892,  3893,  3894,  3895,  3896,
+   3897,  3898,  3899,  3900,  3901,  3786,  3787,  3788,
+   3789,  3780,  3781,  3782,  3772,  3773,  3774,  3775,
+   3776,  3777,  3778,  3779,  3902,  3903,  3904,  3905,
+   3906,  3907,  3908,  3909,  3910,  3911,  3912,  3913,
+   3914,  3915,  3916,  3917,  3918,  3919,  3920,  3921,
+   3922,  3923,  3924,  3925,  3926,  3927,  3928,  3929,
+   3930,  3931,  3932,  3933,  3934,  3935,  2995,  2996,
+   2997,  2998,  2999,  3936,  3942,  3943,  3944,  3945,
+   3946,  3947,  3948,  3949,  3950,  3951,  3953,  3955,
+   3956,  3957,  3958,  3959,  3960,  3961,  3962,  3963,
+   3964,  3965,  3966,  3967,  3968,  3969,  3970,  3971,
+   3972,  3973,  3974,  3975,  3976,  3977,  3978,  3979,
+   3980,  3981,  3982,  3983,  3984,  3985,  3986,  3987,
+   3988,  3989,  3990,  3991,  3992,  3993,  3994,  3995,
+   3996,  3997,  3998,  3999,  4000,  4001,  4002,  4003,
+   4004,  4005,  4006,  4007,  4008,  4009,  4010,  4012,
+   4013,  4014,  4015,  4016,  4017,  4018,  4020,  4021,
+   4022,  4023,  3952,  3954,  4024,  4025,  4026,  4027,
+   4028,  4029,  4030,  4031,  4032,  4033,  4034,  4035,
+   4036,  4037,  4038,  4039,  4040,  4041,  4042,  4043,
+   4044,  4045,  4046,  4047,  4048,  4049,  4050,  4051,
+   4052,  4053,  4054,  4055,  4056,  4057,  4058,  4059,
+   4060,  4062,  4063,  4064,  4065,  4066,  4067,  4068,
+   4069,  4070,  4071,  4072,  4073,  4074,  4075,  4076,
+   4077,  4078,  4079,  4105,  4106,  4107,  4108,  4109,
+   4110,  4111,  4112,  4113,  4114,  4115,  4116,  4117,
+   4118,  4119,  4120,  4121,  4122,  4123,  4124,  4125,
+   4126,  4127,  4128,  4129,  4130,  4131,  4132,  4133,
+   4134,  4135,  4136,  4137,  4138,  4139,  4140,  4141,
+   4142,  4143,  4144,  4145,  4146,  4147,  4148,  4149,
+   4150,  4151,  4152,  4153,  4154,  4155,  4156,  4157,
+   4158,  4160,  3851,  3849,  3874,  3872,  3873,  3875,
+   3871,  3884,  3882,  3881,  3883,  3885,  3880,  3878,
+   3877,  3879,  3876,  3889,  3890,  3886,  3887,  3888,
+   3938,  3937,  3940,  4161,  3941,  3939,  4061,  3839,
+   3840,  4159,  3854,  3855,  3852,  4089,  4099,  4093,
+   4091,  4087,  4085,  4103,  4101,  4097,  4095,  4162,
+   4163,  4164,  4165,  4166,  4167,  4168,  4169,  4170,
+   4171,  4172,  4173,  4174,  4175,  4176,  4177,  4178,
+   4179,  4180,  4181,  4182,  4183,  4184,  4185,  4186,
+   4187,  4188,  4189,  4190,  4191,  4192,  4193,  4194,
+   4195,  4196,  4197,  4198,  4199,  4200,  4201,  4202,
+   4203,  4204,  4205,  4206,  4207,  4208,  4209,  4210,
+   4211,  4212,  4213,  4214,  4215,  4216,  4217,  4218,
+   4219,  4220,  4221,  4082,  4084,  4081,  4080,  4083,
+   4090,  4094,  4088,  4086,  4092,  4100,  4104,  4098,
+   4096,  4102,   539,  4222,  4223,  4228,  4229,  4230,
+   4231,  4232,  4233,  4234,  4235,  4236,  4237,  4238,
+   4239,  4241,  4242,  4243,  4244,  4245,  4246,  4247,
+   4248,  4249,  4250,  4251,  4252,  4253,  4254,  4255,
+   4256,  4257,  4258,  4259,  4260,  4261,  4262,  4263,
+   4264,  4265,  4266,  4267,  4268,  4269,  4270,  4271,
+   4272,  4273,  4274,  4275,  4276,  4277,  4278,  4279,
+   4280,  4281,  4282,  4283,  4284,  4285,  4286,  4287,
+   4288,  4289,  4290,  4291,  4292,  4293,  4294,  4295,
+   4296,  4297,  4298,  4299,  4300,  3691,  3692,  3693,
+   3694,  4301,  4302,  4303,  4304,  4305,  4306,  4308,
+   4310,  4312,  4319,  4315,  4318,  4316,  4314,  4317,
+   4320,  4321,  4322,  4323,  4307,  4313,  4311,  4309,
+   4332,  4333,  4334,  4336,  4337,  4339,  4340,  4342,
+   4343,  4345,  4346,  4347,  4348,  4349,  4335,  4338,
+   4341,  4344,  4353,  4354,  4355,  4356,  4357,  4358,
+   4359,  4360,  4361,  4362,  4363,  4364,  4365,  4366,
+   4367,  4368,  4369,  4370,  4371,  4372,  4373,  4374,
+   4375,  4376,  4377,  4378,  4379,  4380,  4381,  4382,
+   4383,  4350,  4351,  4352,  4384,  4385,  4387,  4388,
+   4390,  4391,  4393,  4394,  4396,  4397,  4399,  4400,
+   4401,  4402,  4403,  4404,  4405,  4406,  4407,  4408,
+   4409,  4410,  4411,  4412,  4413,  4414,  4415,  4416,
+   4417,  4418,  4419,  4420,  4421,  4422,  4423,  4424,
+   4425,  4426,  4427,  4428,  4429,  4430,  4431,  4432,
+   4433,  4434,  4435,  4436,  4437,  4438,  4439,  4440,
+   4441,  4442,  4443,  4444,  4445,  4446,  4447,  4448,
+   4449,  4450,  4451,  4452,  4453,  4454,  4455,  4456,
+   4457,  4458,  4459,  4460,  4461,  4462,  4463,  4464,
+   4465,  4466,  4467,  4468,  4469,  4470,  4471,  4472,
+   4473,  4474,  4475,  4476,  4477,  4478,  4479,  4480,
+   4481,  4482,  4483,  4484,  4485,  4486,  4487,  4488,
+   4489,  4490,  4491,  4492,  4493,  4494,  4495,  4496,
+   4497,  4498,  4499,  4500,  4501,  4502,  4503,  4504,
+   4505,  4506,  4507,  4508,  4509,  4522,  4523,  4524,
+   4525,   592,  4526,  4527,  4528,  4529,  4531,  4532,
+   4533,  4534,  4535,  4536,  4537,  4538,  4539,  4392,
+   4395,  4386,  4389,  4398,  4540,  4544,  4545,  4546,
+   4547,  4548,  4549,  4550,  4551,  4552,  4556,  4557,
+   4558,  4559,  4530,  4560,  4571,  4541,  4578,  4581,
+   4224,  4582,  4584,  4586,  4588,  4583,  4695,  4696,
+   4697,  4698,  4699,  4700,  4701,  4702,  4703,  4704,
+   4705,  4706,  4707,  4708,   884,   885,  1770,  4709,
+   4710,  4711,  4712,  4713,  4714,  4715,  4716,  4717,
+   4718,  4719,  4720,  4721,  4741,  4597,  4693,  4225,
+   4744,  4745,  4746,  4747,  1444,  4748,  4749,  4750,
+   4751,  4755,  4756,  4757,  4758,  4759,  4760,  4761,
+   4763,  4764,  4765,  4766,  4767,  4768,  4769,  4770,
+   4774,  4775,  4776,  4777,  4778,  4779,  4782,  4783,
+   4784,  4785,  4786,  4787,  4572,  4573,  4565,  4566,
+   4789,  4575,  4576,  4542,  4543,  4617,  4618,  4620,
+   4621,  4623,  4624,  4600,  4601,  4568,  4569,  4626,
+   4627,  4610,  4611,  4590,  4591,  4553,  4554,  4598,
+   4599,  4629,  4630,  4677,  4678,  4674,  4675,  4680,
+   4681,  4603,  4604,  4226,  4636,  4637,  4607,  4608,
+   4613,  4614,  4639,  4640,  4643,  4644,  4579,  4580,
+   4671,  4672,  4594,  4595,  4668,  4669,  4686,  4687,
+   4689,  4690,  4683,  4665,  4666,  4662,  4663,  4791,
+   4682,  4804,  4602,  4806,  4807,  4574,  4808,  4612,
+   4811,  4812,  4813,  4814,  4815,  4816,  4817,  4818,
+   4819,  4820,  4821,  4822,  4823,  4824,  4825,  4826,
+   4827,  4828,  4829,  4830,  4831,  4832,  4833,  4834,
+   4835,  4836,  4837,  4838,  4839,  4840,  4841,  4842,
+   4843,  4844,  4845,  4846,  4847,  4848,  4849,  4850,
+   4851,  4852,  4853,  4854,  4855,  4856,  4857,  4858,
+   4859,  4860,  4861,  4862,  4863,  4800,  4739,  4864,
+   4865,  4866,  4867,  4868,  4615,  4567,  4577,  4570,
+   4628,  4555,  4605,  4638,  4609,  4641,  4688,  4664,
+   4645,  4878,  4879,  4810,  4809,  4880,  4881,  4882,
+   4884,  4885,  4562,  4886,  4887,  4742,  4592,  4619,
+   4622,  4667,  4670,  4893,  4894,  4895,  4896,  4897,
+   4898,  4899,  4900,  4901,  4902,  4903,  4904,  4905,
+   4906,  4907,  4908,  4909,  4910,  4911,  4912,  4913,
+   4914,  4915,  4916,  4917,  4918,  4919,  4920,  4921,
+   4922,  4923,  4924,  4925,  4926,  4927,  4928,  4929,
+   4930,  4931,  4932,  4933,  4934,  4935,  4936,  4937,
+   4938,  4939,  4940,  4941,  4942,  4943,  4944,  4945,
+   4946,  4947,  4948,  4949,  4950,  4951,  4952,  4953,
+   4954,  4955,  4956,  4563,  3493,  3494,  4632,  1472,
+   2864,  2867,  2865,  2866,  1361,  1474,  1473,  3495,
+   2585,  1475,  3496,  2846,  3497,  1608,  1476,  3498,
+   3499,  1609,  1477,  1436,  1479,  3500,  2765,  2586,
+   2587,  1478,  1687,  1482,  1481,  3492,  1471,  4962,
+   4963,  4633,  4634,  4564,  4625,  4966,  4967,  4969,
+   4970,  4971,  4972,  4973,  4974,  4975,  4976,  4977,
+   4978,  4979,  4980,  4982,  4983,  4985,  4986,  4987,
+   4990,  4991,  4992,  4993,  4994,  4995,  4998,  4999,
+   5000,  5001,  5002,  5003,  5004,  5006,  5007,  5008,
+   5009,  5014,  5015,  5017,  5018,  5019,  5020,  5021,
+   5022,  5024,  5025,  5026,  5027,  5031,  5033,  5034,
+   5035,  5036,  5038,  5039,  5040,  5041,  5043,  5044,
+   5045,  5046,  5047,  5048,  5049,  5050,  5051,  5053,
+   5054,  5055,  5056,  5059,  5060,  5061,  4773,  5062,
+   4691,  5063,  5064,  2470,  1543,  5065,  4754,  5066,
+   5067,  5068,  5069,  5070,  5071,  5072,  5073,  5074,
+   5075,  4984,  5076,  5077,  5078,  5079,  5080,  4996,
+   5096,  4883,  5012,  5037,  5119,  5120,  5121,  5122,
+   5123,  5124,  5125,  5126,  5005,  4762,  5127,  5128,
+   5129,  5130,  5131,  5132,  5133,  5134,  5135,  5136,
+   5081,  5028,  4964,  5137,  5138,  5139,  4870,  5101,
+   4988,  4877,  5140,  4960,  4875,  4876,  5084,  4753,
+   5082,  5086,  4752,  5089,  5141,  5087,  5057,  4965,
+   5102,  5098,  5099,  5052,  5106,  4790,  5090,  4872,
+   4873,  5109,  5116,  5092,  5113,  5142,  5143,  5144,
+   4631,  5083,  5030,  5042,  4642,  5100,  5104,  5016,
+   5108,  5110,  5111,  4874,  5117,  5094,  5095,  4959,
+   5088,  5103,  5091,  5118,  5114,  5085,  5093,  4743,
+   5112,  5097,  4961,  5115,  4871,   767,  5145,  4788,
+   5107,  4606,  5023,  4968,  5146,  5147,  5148,  5149,
+   5150,  4679,  4772,  4989,  5058,  5029,  4684,  5151,
+   5152,  5153,  5154,  5155,  5156,  5157,  5158,  5159,
+   5160,  5161,  5162,  5163,  5164,  5165,  5166,  5167,
+   5168,  5169,  5170,  5171,  5172,  5173,  5174,  5175,
+   5176,  5177,  5178,  5179,  5180,  5181,  4685,  5182,
+   5183,  5184,  5185,  5186,  5187,  2847,  5188,  4616,
+   4736,  4740,  4738,  4737,  4735,  4734,  4733,  4732,
+   4731,  4729,  4728,  5196,  5198,  5200,  5202,  4692,
+   5203,  5204,  5205,  5206,  5207,  5013,  4593,  5105,
+   5032,  5208,  5209,  5210,  5211,  5212,  5213,  5214,
+   5216,  5217,  5218,  5219,  5220,  5222,  5223,  5224,
+   5225,  5226,  5227,  5228,  5229,  5230,  5231,  5232,
+   5233,  5234,  5235,  5236,  5237,  5238,  5239,  5240,
+   5241,  5242,  5243,  5011,  4673,  4596,  4676,  5244,
+   4327,  4801,  4803,  4802,  4794,  4798,  4796,  4792,
+   5245,  5192,  5190,  5195,  4240,  5189,  5191,  5193,
+   5194,  5246,  5250,  5251,  4958,  4957,  4799,  4797,
+   4795,  4793,  4727,  4726,  4725,  4724,  4723,  4722,
+   4694,  4661,  4660,  4659,  4658,  4657,  4656,  4655,
+   4654,  4653,  4652,  4651,  4650,  4649,  4648,  4647,
+   4646,  4521,  4520,  4519,  4518,  4517,  4516,  4515,
+   4514,  4513,  4512,  4511,  4510,  4331,  4330,  4329,
+   4328,  4326,  4325,  4324,  5248,  5249,  4227,  5252,
+   4888,  4889,  4890,  4869,  4585,  4589,  4587,  5253,
+   5215,  5256,  5255,  5277,  5278,  5258,  5264,  5259,
+   5263,  5266,  5260,  5257,  5261,  5254,  5279,  5280,
+   5281,  5282,  5283,  5284,  5285,  5286,  5287,  5288,
+   5289,  5290,  5291,  5292,  5293,  5294,  5295,  5296,
+   5297,  5298,  5299,  5300,  5301,  5302,  5303,  5304,
+   5305,  5306,  5307,  5308,  5309,  5310,  5311,  5312,
+   5313,  5314,  5315,  5316,  5317,  5318,  5319,  5320,
+   5321,  5322,  5323,  5324,  5325,  5326,  5327,  5328,
+   5329,  5330,  5331,  5332,  5333,  5334,  5335,  5336,
+   5337,  5338,  5339,  5340,  5273,  5271,  5275,  5276,
+   5341,  5199,  5197,  5201,  5342,  5262,  5343,  5344,
+   5345,  5274,  4891,  4892,  5346,  5347,  5348,  5247,
+   5270,  5272,  5267,  5268,  5269,  5349,  5350,  5351,
+   5352,  5353,  5354,  5355,  5356,  5357,  5358,  5359,
+   5360,  5361,  5362,  5363,  5364,  5365,  5366,  5367,
+   5368,  5369,  5370,  5371,  5373,  5374,  5378,  5379,
+   5380,  5381,  5382,  5383,  5384,  5385,  5386,  5387,
+   5388,  5389,  5376,  5390,  5391,  5392,  5393,  5394,
+   5395,  5397,  5399,  5375,  5377,  5400,  5402,  5404,
+   5406,  5408,  5409,  5410,  5411,  5401,  5412,  5413,
+   5417,  5418,  5419,  5420,  5421,  5422,  5423,  5424,
+   5425,  5426,  5427,  5428,  5429,  5430,  5431,  5432,
+   5433,  5434,  5435,  5436,  5437,  5438,  5439,  5440,
+   5441,  5442,  5443,  5444,  5445,  5446,  5447,  5448,
+   5449,  5450,  5451,  5452,  5453,  5454,  5455,  5456,
+   5457,  5458,  5459,  5460,  5461,  5462,  5463,  5464,
+   5465,  5466,  5467,  5468,  5469,  5470,  5471,  5472,
+   5473,  5474,  5475,  5476,  5477,  5478,  5479,  5480,
+   5481,  5482,  5483,  5484,  5485,  5486,  5487,  5488,
+   5415,  5414,  5416,  5493,  5494,  5495,  5496,  5497,
+   5498,  5499,  5500,  5501,  5502,  5503,  5504,  5265,
+   5530,  5531,  1824,  1825,  1826,  1827,  4561,  4635,
+   4730,  5492,  5489,  5491,  5532,  5490,  5508,  5518,
+   5524,  5512,  5513,  5506,  5514,  5505,  5507,  5525,
+   5519,  5515,  5516,  5517,  5520,  5526,  5521,  5527,
+   5509,  5528,  5529,  5510,  5522,  1713,  5533,  5534,
+   5535,  5536,  5537,  5538,  5539,  5540,  5541,  5542,
+   5543,  5544,  5545,  5546,  5547,  5548,  5549,  5550,
+   5551,  5552,  5553,  5554,  5555,  5556,  5557,  5558,
+   5559,  5560,  5561,  5562,  5563,  5564,  5565,  5566,
+   5567,  5568,  5569,  5570,  5571,  5572,  5573,  5574,
+   5575,  5576,  5577,  5578,  5579,  5580,  5581,  5582,
+   5583,  5584,  5585,  5586,  5587,  5588,  5589,  5590,
+   5591,  5592,  5593,  5594,  5595,  5596,  5597,  5598,
+   5599,  5600,  5601,  5602,  5603,  5604,  5605,  5606,
+   5607,  5608,  5609,  5610,  5611,  5612,  5613,  5614,
+   5615,  5616,  5617,  5618,  5619,  5620,  5621,  5622,
+   5623,  5624,  5625,  5626,  5627,  5628,  5629,  5630,
+   5631,  5632,  5633,  5634,  5635,  5636,  5637,  5638,
+   5639,  5640,  5641,  5643,  5648,  5649,  5650,  5651,
+   5652,  4780,  4781,  5653,  5654,  5655,  5656,  5657,
+   5658,  5659,  5660,  5661,  5647,  5642,  5646,  5645,
+   5644,  5523,  5662,  5665,  3109,  3110,  3151,  3152,
+   5666,  5668,  5669,  1777,  1778,  1765,  1766,  1773,
+   1774,  1769,  1775,  1776,  1763,  1764,  1771,  1772,
+   1767,  1768,  5671,  5681,  5670,  5682,  5683,  5684,
+   5685,  5686,  5688,  5689,  5690,  5691,  5692,  5667,
+   5693,  5694,  5695,  5696,  5697,  5698,  5699,  5700,
+   5701,  5702,  5703,  5704,  5705,  5706,  5707,  5708,
+   5709,  5710,  5711,  5712,  5713,  5714,  5715,  5716,
+   5717,  5718,  5719,  5720,  5721,  5722,  5723,  5724,
+   5725,  5726,  5727,  5728,  5729,  5730,  5731,  5687,
+   5732,  5733,  5734,  5735,  5736,  5737,  5738,  5739,
+   5740,  5741,  5742,  5743,  5744,  5745,  5746,  5748,
+   5749,  5751,  5752,  5753,  5754,  5756,  5758,  5759,
+   5760,  5762,  5764,  5765,  5766,  5767,  5768,  5769,
+   5511,  5664,  5663,  1270,  1271,  5675,  5680,  5672,
+   5674,  5676,  5221,  5673,  5798,  5799,  5800,  5801,
+   5803,  5804,  5806,  5807,  5808,  5809,  5810,  5811,
+   5812,  5791,  5792,  5793,  5789,  5790,  5787,  5788,
+   5813,  5814,  5815,  5777,  5783,  5785,  5770,  5786,
+   5771,  5772,  5774,  5775,  5796,  5781,  5782,  5778,
+   5779,  5780,  5795,  5679,  5678,  5677,  5816,  5817,
+   5818,  5819,  5820,  5821,  5822,  5823,  5824,  5794,
+   5825,  5826,  5797,  5776,  5773,  5827,  5784,  5828,
+   5829,  5830,  5831,  5832,  5833,  5834,  5835,  5836,
+   5837,  5838,  5839,  5840,  5841,  5842,  5843,  5844,
+   5845,  5846,  5847,  2672,  2673,  2874,  2875,  2876,
+   2877,   695,   696,   298,   299,  2803,  2804,  2862,
+   2863,  2805,  2806,  2807,  2808,  2810,  2811,  3504,
+   3505,  5858,  5859,  5860,  5861,  5862,  5863,  5864,
+   5865,  5866,  5867,  5868,  5869,  5870,  5871,  5872,
+   5873,  5874,  5875,  5876,  1145,  1146,   971,   972,
+   5878,  5879,  5877,  1725,  1726,  1922,  1923,  1925,
+   1926,  2094,  2095,  2158,  2159,  2163,  2164,  1861,
+   1862,  1888,  1889,  2346,  2347,  1930,  1931,  2101,
+   2102,  1946,  1947,  2343,  2344,  2341,  2342,  3088,
+   3089,  3063,  3064,  3130,  3131,   697,   698,   801,
+    802,  2175,  2176,  2180,  2181,  1074,  1075,  1003,
+   1004,  2451,  2452,  2205,  2206,  2207,  2208,  2202,
+   2203,  3478,  3479,  2917,  2918,  2056,  2057,  2878,
+   2879,  2871,  2872,  5880,  5881,  5882,  5883,  5805,
+   5916,  5917,  5918,  5919,  5920,  5921,  5922,  5923,
+   5898,  5911,  5899,  5903,  5900,  5945,  5936,  5931,
+   5912,  5913,  5914,  5915,  5953,  5954,  5955,  5854,
+   5855,  5906,  5856,  5852,  5904,  5853,  5905,  5908,
+   5909,  5910,  5893,  5894,  5895,  5896,  5897,  5891,
+   5892,  5940,  5941,  5930,  5937,  5944,  5943,  5947,
+   5957,  5958,  5959,  5960,  5961,  5939,  5927,  5962,
+   5963,  5935,  5938,  5933,  5934,  5901,  5946,  5928,
+   5942,  5948,  5949,  5857,  5848,  5849,  5850,  5851,
+   5978,  5979,  5888,  5890,  5889,  5885,  5887,  5886,
+   5907,  5980,  5981,  5982,  5983,  5984,  5985,  5986,
+   5987,  5988,  5989,  5990,  5991,  5992,  5993,  5994,
+   6021,  6022,  6019,  6020,  5884,  5971,  5972,  5969,
+   5975,  5976,  5968,  5970,  5977,  5973,  5974,  6005,
+   6004,  6006,  6023,  6024,  6025,  6026,  6008,  6007,
+   6009,  6011,  6010,  6012,  6014,  6013,  6015,  5996,
+   5995,  5997,  5999,  5998,  6000,  6002,  6027,  6017,
+   6016,  6018,  6001,  6003,  6028,  6029,  6030,  6031,
+   5964,  5965,  5966,  5967,  5952,  6032,  6033,  6037,
+   5956,  4997,  4771,  5757,  5747,  5396,  6038,  5755,
+   4805,  5372,  5761,  5763,  5403,  5407,  5405,  4981,
+   5802,  5010,  5750,  5398,  5932,  5950,  5951,  5902,
+   5924,  5926,  5925,  6035,  6034,  6036,  1632,  2558,
+   6039,  6040,  6041,  6042,  6043,  6044,  6045,  6046,
+   6052,  6070,  6071,  6072,  6073,  6074,  6075,  6076,
+   6077,  6080,  4011,  4019,  5929,  6084,  6085,  6086,
+   6087,  6088,  6089,  6090,  6091,  6092,  6093,  6094,
+   6095,  6097,  6098,  6099,  6100,  6101,  6102,  6103,
+   6053,  6056,  6057,  6104,  6105,  6063,  6058,  6065,
+   6060,  6061,  6062,  6059,  6051,  6066,  6064,  6106,
+   6067,  6107,  6108,  6109,  6110,  6111,  6112,  6069,
+   6055,  6054,  6113,  6114,  6115,  6116,  6117,  6118,
+   6119,  6120,  6121,  6122,  6050,  6096,  6049,  6068,
+   6047,  6123,  6124,  6125,  6082,  6081,  6083,  6048,
+   6126,  6127,  6128,  6129,  6130,  6131,  6132,  6133,
+   6134,  6135,  6136,  6137,  6138,  6139,  6140,  6145,
+   6146,  6147,  6148,  6149,  6151,  6152,  6153,  6154,
+   6155,  6156,  6177,  6197,  6198,  6199,  6200,  6178,
+   6181,  6142,  6182,  6180,  6143,  6144,  6183,  6190,
+   6179,  6189,  6195,  6194,  6187,  6191,  6186,  6141,
+   6185,  6184,  6192,  6193,  6201,  6188,  6206,  6207,
+   6208,  6209,  6210,  6211,  6213,  6214,  6215,  6216,
+   6217,  6218,  6219,  6196,  6220,  6221,  6222,  6223,
+   6224,  6225,  6226,  6227,  6228,  6229,  6230,  6231,
+   6232,  6233,  6234,  6235,  6236,  6237,  6238,  6239,
+   6240,  6241,  6242,  6212,  6269,  6270,  6284,  6288,
+   6274,  6283,  6285,  6243,  6289,  6290,  6291,  6292,
+   6293,  6294,  6272,  6275,  6276,  6271,  6287,  6273,
+   6295,  6296,  6297,  6298,  6324,  6325,  6326,  6327,
+   6277,  6266,  6268,  6282,  6267,  6306,  6286,  6316,
+   6332,  6333,  6176,  6171,  6166,  6161,  6172,  6167,
+   6157,  6162,  6328,  6329,  6173,  6168,  6163,  6158,
+   6334,  6335,  6336,  6337,  6169,  6174,  6164,  6159,
+   6175,  6170,  6165,  6160,  6330,  6331,  6338,  6339,
+   6340,  6341,  6342,  6343,  6344,  6345,  6323,  6301,
+   6302,  6320,  6315,  6299,  6300,  6308,  6303,  6203,
+   6346,  6347,  6278,  6279,  6280,  6281,  6204,  6348,
+   6349,  6350,  6351,  6304,  6262,  6264,  6202,  6205,
+   6305,  6310,  6311,  6312,  6265,  6314,  6309,  6352,
+   6353,  6354,  6355,  6356,  6357,  6358,  6359,  6321,
+   6322,  6360,  6361,  6362,  6260,  6261,  6363,  6364,
+   6365,  6366,  6367,  6368,  6369,  6370,  6371,  6254,
+   6255,  6258,  6259,  6256,  6257,  6246,  6247,  6252,
+   6253,  6250,  6251,  6248,  6249,  6244,  6245,  6372,
+   6373,  6374,  6375,  6376,  6377,  6381,  6382,  6383,
+   6384,  6391,  6393,  6394,  6395,  6396,  6397,  6398,
+   6399,  6400,  6401,  6402,  6403,  6404,  6318,  6319,
+   6313,  6150,  6078,  6079,  6307,  6317,  6263,  6405,
+   6406,  6407,  6408,  6409,  6410,  6411,  6412,  6413,
+   6414,  6415,  6416,  6417,  6418,  6419,  6420,  6421,
+   6422,  6392,  6389,  6390,  6387,  6388,  6385,  6386,
+   6378,  6379,  6380,  6423,  6424,  6425,  6426,  6427,
+   6428,  6429,  6430,  6431,  6432,  6433,  6434,  6435,
+   6436,  6437,  6438,  6439,  6440,  6441,  6442,  6443,
+   6444,  6445,  6446,  6447,  6448,  6449,  6450,  6451,
+   6452,  6453,  6454,  6455,  6456,  6457,  6458,  6459,
+   6460,  6461,  6462,  6463,  6464,  6465,  6466,  6467,
+   6468,  6469,  6476,  6477,  6475,  6470,  6473,  6471,
+   6472,  6474,  6478,  6479,  6480,  6481,  6482,  6483,
+   6484,  6485,  6486,  6487,  6488,  6489,  6507,  6508,
+   6509,  6511,  6510,  6513,  6514,  6515,  6516,  6517,
+   6518,  6519,  6520,  6521,  6522,  6523,  6524,  6525,
+   6526,  6527,  6528,  6529,  6530,  6532,  6531,  6533,
+   6534,  6536,  6537,  6535,  6538,  6539,  6540,  6541,
+   6542,   225,   290,   291,  6544,  6546,  6547,   226,
+    227,   228,   229,   230,   231,   232,   233,   234,
+    235,   236,   237,   238,   239,   240,   241,   242,
+    243,   244,  6545,     0,     1,     2,     3,     4,
+      5,     6,     7,     8,     9,    10,    11,    12,
+     13,    14,  6551,  6550,  6549,  6548,    15,    16,
+    245,   246,   247,   248,   249,   250,   251,   252,
+    253,   254,   255,   256,   257,   258,   259,   260,
+    261,   262,   263,   264,   265,   266,   267,   268,
+    269,   270,   271,   272,   273,   274,   275,   276,
+    277,   278,   279,   280,   281,    17,  6565,  6566,
+   6567,  6568,  6569,  6570,  6498,  6500,  6504,  6502,
+   6494,  6492,  6490,  6571,  6512,  6573,  6574,  6555,
+   6556,  6554,    18,    19,    20,    21,    22,    23,
+     24,    25,    26,    27,  6505,  6597,  6598,  6599,
+   6600,    28,  6503,  6552,  6558,  6553,  6593,  6592,
+   6590,  6591,  6594,  6495,  6493,  6491,  6496,  6497,
+   6601,   282,  6576,   283,   284,   285,  6577,  6578,
+   6604,   286,   287,   288,   289,  6575,    29,    30,
+     31,    32,    33,    34,    35,    36,    37,    38,
+     39,    40,    41,  6501,  6499,  6543,  6605,    42,
+   6579,    43,    44,    45,    46,    47,    48,    49,
+     50,    51,  6606,    52,    53,    54,    55,    56,
+     57,    58,    59,    60,    61,    62,    63,    64,
+     65,    66,    67,    68,    69,    70,    71,    72,
+   6603,  6607,  6608,  6562,  6559,  6560,  6609,  6610,
+   6611,  6561,  6572,    73,  6617,  6615,  6616,  6557,
+     74,    75,    76,    77,    78,    79,    80,    81,
+     82,    83,    84,    85,    86,    87,    88,    89,
+     90,    91,    92,    93,    94,    95,    96,    97,
+     98,    99,   100,   101,  6618,  6619,  6620,  6612,
+   6613,  6563,  6621,   102,   103,   104,   105,   106,
+    107,   108,   109,   110,   111,   112,   113,   114,
+    115,   116,   117,   118,   119,   120,   121,   122,
+    123,   124,   125,   126,   127,   128,   129,   130,
+    131,   132,   133,   134,  6622,   135,   136,   137,
+    138,   139,   140,   141,   142,   143,   144,  6623,
+    145,   146,   147,   148,   149,   150,   151,   152,
+    153,   154,   155,   156,   157,   158,   159,   160,
+    161,   162,   163,  6624,   164,   165,   166,   167,
+    168,   169,   170,   171,   172,   173,   174,   175,
+   6625,  6627,  6629,   176,   177,   178,   179,   180,
+    181,   182,   183,   184,   185,   186,   187,   188,
+    189,   190,   191,  6626,  6628,  6631,  6596,  6595,
+   6630,   192,   193,   194,   195,   196,   197,   198,
+    199,  6632,   200,   201,   202,   203,   204,   205,
+    206,   207,   208,   209,   210,   211,   212,   213,
+    214,   215,   216,   217,   218,  6634,   219,  6602,
+    220,   221,   222,  6637,  6638,   223,  6589,  6588,
+   6586,  6587,  6639,  6640,  6641,  6642,  6635,  6584,
+   6585,  6582,  6583,  6580,  6581,  6564,  6614,  6636,
+    224,  6644,  6506,  6648,  6649,  6650,  6651,  6652,
+   6653,  6654,  6655,  6656,  6643,  6647,  6645,  6646,
+   6657,  6658,  6659,  6633,
 } };
 

@@ -1199,18 +1199,6 @@ struct void_bolt_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = action_t::composite_target_da_multiplier( t );
-
-    if ( priest().hungering_void_active( t ) )
-    {
-      tdm *= 1 + priest().talents.hungering_void->effectN( 1 ).percent();
-    }
-
-    return tdm;
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1223,22 +1211,20 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->schedule_execute();
     }
 
-    if ( priest().talents.hungering_void->ok() && priest().buffs.voidform->check() )
+    if ( priest().talents.hungering_void->ok() )
     {
       priest_td_t& td = get_td( s->target );
       // Check if this buff is active, every Void Bolt after the first should get this
-      if ( td.buffs.hungering_void_tracking->up() )
+      if ( td.buffs.hungering_void->up() && priest().buffs.voidform->check() )
       {
-        timespan_t seconds_to_add_to_voidform = s->result == RESULT_CRIT
-                                                    ? hungering_void_base_duration + hungering_void_crit_duration
-                                                    : hungering_void_base_duration;
+        timespan_t seconds_to_add_to_voidform =
+            s->result == RESULT_CRIT ? hungering_void_crit_duration : hungering_void_base_duration;
         sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
         // TODO: add some type of tracking for this increase
         priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
-
-        td.buffs.hungering_void->trigger();
       }
-      td.buffs.hungering_void_tracking->trigger();
+      priest().remove_hungering_void( s->target );
+      td.buffs.hungering_void->trigger();
     }
   }
 };
@@ -1745,13 +1731,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
     }
 
-    // It is expected that this tracking buff resets after each voidform, right now this is just universal and will
-    // count every subsequent void bolt after the first for the increase
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/703
-    if ( priest().talents.hungering_void->ok() && !priest().bugs )
-    {
-      priest().remove_hungering_void_tracking();
-    }
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -2038,6 +2017,7 @@ void priest_t::init_spells_shadow()
   // T50
   talents.ancient_madness      = find_talent_spell( "Ancient Madness" );
   talents.hungering_void       = find_talent_spell( "Hungering Void" );
+  talents.hungering_void_buff  = find_spell( 345219 );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
@@ -2190,18 +2170,33 @@ void priest_t::generate_apl_shadow()
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
   default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3" );
+  default_list->add_action(
+      "variable,name=pi_or_vf_sync_condition,op=set,value=(priest.self_power_infusion|runeforge.twins_of_the_sun_"
+      "priestess.equipped)&level>=58&cooldown.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_"
+      "of_the_sun_priestess.equipped)&cooldown.void_eruption.up",
+      "Variable to switch between syncing cooldown usage to Power Infusion or Void Eruption depenending whether "
+      "priest_self_power_infusion is in use or we don't have power infusion learned." );
 
   // Racials
   if ( race == RACE_DARK_IRON_DWARF )
-    default_list->add_action( "fireblood,if=buff.power_infusion.up" );
+    default_list->add_action(
+        "fireblood,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
+        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
+        "sun_priestess.equipped)&buff.voidform.up" );
   if ( race == RACE_TROLL )
-    default_list->add_action( "berserking,if=buff.power_infusion.up" );
+    default_list->add_action(
+        "berserking,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
+        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
+        "sun_priestess.equipped)&buff.voidform.up" );
   if ( race == RACE_LIGHTFORGED_DRAENEI )
     default_list->add_action(
         "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
         "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   if ( race == RACE_MAGHAR_ORC )
-    default_list->add_action( "ancestral_call,if=buff.power_infusion.up" );
+    default_list->add_action(
+        "ancestral_call,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
+        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
+        "sun_priestess.equipped)&buff.voidform.up" );
 
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
@@ -2242,7 +2237,7 @@ void priest_t::generate_apl_shadow()
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
   cwc->add_talent( this, "Searing Nightmare",
-                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
+                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_or_vf_sync_condition)|("
                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
                    "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
                    "ready, or to refresh SW:P on two or more targets." );
@@ -2255,7 +2250,7 @@ void priest_t::generate_apl_shadow()
 
   // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40",
+  main->add_action( this, "Void Eruption", "if=variable.pi_or_vf_sync_condition&insanity>=40",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
@@ -2267,7 +2262,7 @@ void priest_t::generate_apl_shadow()
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action( this, "Devouring Plague",
-                    "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare."
+                    "target_if=(refreshable|insanity>75)&!variable.pi_or_vf_sync_condition&(!talent.searing_nightmare."
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
@@ -2320,8 +2315,9 @@ void priest_t::generate_apl_shadow()
                     "using Psychic Link and NOT Misery." );
   main->add_action(
       this, "Shadow Word: Pain",
-      "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_"
-      "link.enabled&spell_targets.mind_sear<=2))",
+      "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_"
+      "targets.mind_sear>(variable.mind_sear_cutoff+1))&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&"
+      "spell_targets.mind_sear<=2))",
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
   main->add_action( this, "Mind Sear",
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
@@ -2401,22 +2397,19 @@ bool priest_t::hungering_void_active( player_t* target ) const
 }
 
 // ==========================================================================
-// Helper function to expire all tracking debuffs after Voidform expires
+// Remove Hungering Void on any targets that don't match
 // ==========================================================================
-void priest_t::remove_hungering_void_tracking()
+void priest_t::remove_hungering_void( player_t* target )
 {
   if ( !talents.hungering_void->ok() )
-  {
     return;
-  }
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
   {
-    if ( priest_td && priest_td->buffs.hungering_void_tracking->check() )
+    if ( priest_td && ( priest_td->target != target ) && priest_td->buffs.hungering_void->check() )
     {
-      priest_td->buffs.hungering_void_tracking->expire();
+      priest_td->buffs.hungering_void->expire();
     }
   }
 }
-
 }  // namespace priestspace

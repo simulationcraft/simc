@@ -1194,8 +1194,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.hungering_void_tracking =
-      make_buff( *this, "hungering_void_tracking", p.talents.hungering_void )->set_quiet( true )->set_duration( 0_ms );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
@@ -1376,49 +1374,60 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
   auto splits = util::string_split<util::string_view>( expression_str, "." );
   // pet.fiend.X refers to either shadowfiend or mindbender
-  if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
+  if ( splits.size() >= 2 )
   {
-    if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
+    if ( splits[ 0 ] == "pet" )
     {
-      pet_t* pet = get_current_main_pet();
-      if ( !pet )
+      if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
       {
-        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
-      }
-      if ( splits.size() == 2 )
-      {
-        return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
-      }
-      // pet.foo.blah
-      else
-      {
-        if ( splits[ 2 ] == "active" )
+        pet_t* pet = get_current_main_pet();
+        if ( !pet )
         {
-          return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
+          throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
         }
-        else if ( splits[ 2 ] == "remains" )
+        if ( splits.size() == 2 )
         {
-          return make_fn_expr( expression_str, [ pet ] {
-            if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
-            {
-              return pet->expiration->remains().total_seconds();
-            }
-            else
-            {
-              return 0.0;
-            };
-          } );
+          return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
         }
+        // pet.foo.blah
+        else
+        {
+          if ( splits[ 2 ] == "active" )
+          {
+            return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
+          }
+          else if ( splits[ 2 ] == "remains" )
+          {
+            return make_fn_expr( expression_str, [ pet ] {
+              if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
+              {
+                return pet->expiration->remains().total_seconds();
+              }
+              else
+              {
+                return 0.0;
+              };
+            } );
+          }
 
-        // build player/pet expression from the tail of the expression string.
-        auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
-        if ( auto e = pet->create_expression( tail ) )
-        {
-          return e;
-        }
+          // build player/pet expression from the tail of the expression string.
+          auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
+          if ( auto e = pet->create_expression( tail ) )
+          {
+            return e;
+          }
 
-        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+          throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+        }
       }
+    }
+    else if ( util::str_compare_ci( splits[ 0 ], "priest" ))
+    {
+      if ( util::str_compare_ci(splits[ 1 ], "self_power_infusion" ))
+      {
+        return expr_t::create_constant( "self_power_infusion", options.priest_self_power_infusion );
+      }
+      throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[1] ) );
     }
   }
 
@@ -1503,6 +1512,11 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
   if ( target_data && target_data->buffs.schism->check() )
   {
     m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
+  }
+
+  if ( hungering_void_active( t ) )
+  {
+    m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
   }
 
   return m;
@@ -1655,10 +1669,9 @@ void priest_t::trigger_lucid_dreams( double cost )
     return;
 
   double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
-  double proc_chance = ( specialization() == PRIEST_SHADOW )
-                           ? options.priest_lucid_dreams_proc_chance_shadow
-                           : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
-                                                                 : options.priest_lucid_dreams_proc_chance_disc;
+  double proc_chance = ( specialization() == PRIEST_SHADOW ) ? options.priest_lucid_dreams_proc_chance_shadow
+                       : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
+                                                             : options.priest_lucid_dreams_proc_chance_disc;
 
   if ( rng().roll( proc_chance ) )
   {
