@@ -1217,7 +1217,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   debuff.judgment_of_light = make_buff( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   debuff.final_reckoning = make_buff( *this, "final_reckoning", paladin -> talents.final_reckoning );
   debuff.reckoning = make_buff( *this, "reckoning", paladin -> spells.reckoning );
-  debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin -> find_spell( 340007 ) );
+  debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin -> conduit.vengeful_shock->effectN( 1 ).trigger() )
+        -> set_default_value( paladin -> conduit.vengeful_shock.percent() );
 }
 
 // paladin_t::create_actions ================================================

@@ -38,10 +38,8 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  double veangful_shock_value;
   avengers_shield_base_t( const std::string& n, paladin_t* p, const spell_data_t* s, const std::string& options_str ) :
-    paladin_spell_t( n, p, s ),
-    veangful_shock_value( p -> conduit.vengeful_shock.percent() )
+    paladin_spell_t( n, p, s )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -85,7 +83,7 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     if ( p() -> conduit.vengeful_shock -> ok() )
     {
-      td( s -> target ) -> debuff.vengeful_shock -> trigger( 1, veangful_shock_value );
+      td( s -> target ) -> debuff.vengeful_shock -> trigger();
     }
   }
 };
@@ -773,6 +771,7 @@ void paladin_t::init_spells_protection()
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
+  spec.hammer_of_the_righteous_2 = find_rank_spell( "Hammer of the Righteous", "Rank 2" );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -780,7 +779,6 @@ void paladin_t::init_spells_protection()
     spec.consecration_2 = find_rank_spell( "Consecration", "Rank 2" );
     spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
-    spec.hammer_of_the_righteous_2 = find_rank_spell( "Hammer of the Righteous", "Rank 2" );
 
     spells.judgment_debuff = find_spell( 197277 );
   }
