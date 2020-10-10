@@ -1679,6 +1679,7 @@ void priest_t::trigger_lucid_dreams( double cost )
     {
       case PRIEST_SHADOW:
         // TODO: Figure this out for prepatch?
+        generate_insanity(cost * multiplier, gains.insanity_lucid_dreams, nullptr);
         // generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
         break;
       case PRIEST_HOLY:
