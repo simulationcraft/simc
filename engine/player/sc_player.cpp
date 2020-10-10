@@ -7619,11 +7619,9 @@ struct lights_judgment_t : public racial_spell_t
   };
 
   action_t* damage;
-  bool precombat;
 
   lights_judgment_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ) ),
-    precombat()
+    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ) )
   {
     parse_options( options_str );
     // The cast doesn't trigger combat
@@ -7636,18 +7634,11 @@ struct lights_judgment_t : public racial_spell_t
     add_child( damage );
   }
 
-  void init_finished() override
-  {
-    racial_spell_t::init_finished();
-
-    precombat =  action_list -> name_str == "precombat";
-  }
-
   void execute() override
   {
     racial_spell_t::execute();
     // Reduce the cooldown by the player's gcd when used during precombat
-    if ( ! player -> in_combat && precombat )
+    if ( ! player -> in_combat && is_precombat )
     {
       cooldown -> adjust( - player -> base_gcd );
 
@@ -7660,7 +7651,7 @@ struct lights_judgment_t : public racial_spell_t
   timespan_t travel_time() const override
   {
     // Reduce the delay before the hit by the player's gcd when used during precombat
-    if ( ! player -> in_combat && precombat )
+    if ( ! player -> in_combat && is_precombat )
       return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
 
     return timespan_t::from_seconds( travel_speed );
