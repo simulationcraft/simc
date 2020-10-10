@@ -58,7 +58,7 @@ def test_covenants(klass: str, path: str):
             # Add conduits specific to selected covenant
             for conduit in conduits:
                 if covenant in conduit.covenants:
-                    rank = random.choice(conduit.ranks) + 1
+                    rank = random.choice(conduit.ranks)
                     soulbind_argument = '{}:{}'.format(conduit.id, rank)
                     Test('{:<40} {:<10} Rank {:>2}'.format(conduit.full_name, "({})".format(conduit.id), rank), group=grp, args=[
                         ('covenant', covenant.simc_name), ('level', 60), ('soulbind', soulbind_argument)])
