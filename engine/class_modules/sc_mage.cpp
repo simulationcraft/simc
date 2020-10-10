@@ -6018,18 +6018,18 @@ void mage_t::merge( player_t& other )
 
   for ( size_t i = 0; i < cooldown_waste_data_list.size(); i++ )
   {
-    auto our = cooldown_waste_data_list[ i ];
+    auto ours = cooldown_waste_data_list[ i ];
     auto theirs = mage.cooldown_waste_data_list[ i ];
-    assert( our->cd->name_str == theirs->cd->name_str );
-    our->merge( *theirs );
+    assert( ours->cd->name_str == theirs->cd->name_str );
+    ours->merge( *theirs );
   }
 
   for ( size_t i = 0; i < shatter_source_list.size(); i++ )
   {
-    auto our = shatter_source_list[ i ];
+    auto ours = shatter_source_list[ i ];
     auto theirs = mage.shatter_source_list[ i ];
-    assert( our->name_str == theirs->name_str );
-    our->merge( *theirs );
+    assert( ours->name_str == theirs->name_str );
+    ours->merge( *theirs );
   }
 
   switch ( specialization() )
