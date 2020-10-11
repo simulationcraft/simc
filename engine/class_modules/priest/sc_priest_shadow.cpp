@@ -2274,7 +2274,7 @@ void priest_t::generate_apl_shadow()
                     "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
-  main->add_talent( this, "Mindbender" );
+  main->add_talent( this, "Mindbender", "if=variable.dots_up" );
   main->add_talent( this, "Void Torrent",
                     "target_if=variable.dots_up&target.time_to_die>4&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
                     "talent.twist_of_fate.enabled))",
