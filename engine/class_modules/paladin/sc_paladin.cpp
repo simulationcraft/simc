@@ -172,7 +172,6 @@ struct avenging_wrath_t : public paladin_spell_t
       background = true;
 
     harmful = false;
-    use_off_gcd = true;
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
@@ -2030,7 +2029,7 @@ double paladin_t::composite_player_target_multiplier ( player_t* target, school_
 {
   paladin_td_t* td = get_target_data( target );
   double cptm = player_t::composite_player_target_multiplier( target, school );
-  if ( school == SCHOOL_HOLY && td -> debuff.vengeful_shock -> up() )
+  if ( dbc::is_school( school, SCHOOL_HOLY ) && td -> debuff.vengeful_shock -> up() )
   {
     cptm *= 1.0 + td -> debuff.vengeful_shock -> value();
   }

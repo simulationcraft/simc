@@ -133,10 +133,7 @@ struct moment_of_glory_t : public paladin_spell_t
     paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
   {
     parse_options( options_str );
-
     harmful = false;
-    use_off_gcd = true;
-    trigger_gcd = 0_ms;
   }
 
   void execute() override
@@ -196,10 +193,10 @@ struct blessed_hammer_t : public paladin_spell_t
       sim -> error( "{} invalid blessed_hammer strikes, value changed to 2", p -> name() );
     }
 
-    // dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
+    dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
+    base_tick_time = 0_ms;
 
     may_miss = false;
-    base_tick_time = data().duration();
     cooldown -> hasted = true;
 
     tick_may_crit = true;
@@ -210,7 +207,7 @@ struct blessed_hammer_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : 0_ms;
+    timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
     // Let strikes be a decimal rather than int, and roll a random number to decide
     // hits each time.
     int roll_strikes = static_cast<int>(floor(num_strikes));
@@ -222,7 +219,7 @@ struct blessed_hammer_t : public paladin_spell_t
           // spawn at feet of player
           .x( execute_state -> action -> player -> x_position )
           .y( execute_state -> action -> player -> y_position )
-          .pulse_time( base_tick_time/roll_strikes )
+          .pulse_time( data().duration()/roll_strikes )
           .n_pulses( roll_strikes )
           .start_time( sim -> current_time() + initial_delay )
           .action( hammer ), true );

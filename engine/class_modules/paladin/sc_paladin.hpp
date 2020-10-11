@@ -1089,8 +1089,7 @@ struct holy_power_consumer_t : public Base
   public:
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
-  holy_power_consumer_t( const std::string& n, paladin_t* player,
-      const spell_data_t* s = spell_data_t::nil() ) :
+  holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false )
   { }
