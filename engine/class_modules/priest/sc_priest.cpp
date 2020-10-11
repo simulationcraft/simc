@@ -1421,13 +1421,13 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         }
       }
     }
-    else if ( util::str_compare_ci( splits[ 0 ], "priest" ))
+    else if ( util::str_compare_ci( splits[ 0 ], "priest" ) )
     {
-      if ( util::str_compare_ci(splits[ 1 ], "self_power_infusion" ))
+      if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
       {
         return expr_t::create_constant( "self_power_infusion", options.priest_self_power_infusion );
       }
-      throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[1] ) );
+      throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
 
@@ -1669,9 +1669,10 @@ void priest_t::trigger_lucid_dreams( double cost )
     return;
 
   double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
-  double proc_chance = ( specialization() == PRIEST_SHADOW ) ? options.priest_lucid_dreams_proc_chance_shadow
-                       : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
-                                                             : options.priest_lucid_dreams_proc_chance_disc;
+  double proc_chance = ( specialization() == PRIEST_SHADOW )
+                           ? options.priest_lucid_dreams_proc_chance_shadow
+                           : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
+                                                                 : options.priest_lucid_dreams_proc_chance_disc;
 
   if ( rng().roll( proc_chance ) )
   {
@@ -1679,7 +1680,7 @@ void priest_t::trigger_lucid_dreams( double cost )
     {
       case PRIEST_SHADOW:
         // TODO: Figure this out for prepatch?
-        generate_insanity(cost * multiplier, gains.insanity_lucid_dreams, nullptr);
+        generate_insanity( cost * multiplier, gains.insanity_lucid_dreams, nullptr );
         // generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
         break;
       case PRIEST_HOLY:
@@ -1756,6 +1757,13 @@ void priest_t::init_scaling()
   base_t::init_scaling();
 }
 
+void priest_t::init_finished()
+{
+  base_t::init_finished();
+  
+  buffs.sephuzs_proclamation = buff_t::find( this, "sephuzs_proclamation" );
+}
+
 void priest_t::init_spells()
 {
   base_t::init_spells();
@@ -1804,6 +1812,7 @@ void priest_t::init_spells()
       azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
 
   // Generic Legendaries
+  legendary.sephuzs_proclamation       = find_runeforge_legendary( "Sephuz's Proclamation" );
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
@@ -1845,6 +1854,8 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
+  
+
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
 
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )

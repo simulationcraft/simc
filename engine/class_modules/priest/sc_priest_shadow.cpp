@@ -592,17 +592,17 @@ struct silence_t final : public priest_spell_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    priest_spell_t::execute();
+    priest_spell_t::impact( state );
 
-    // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be
-    // completely silenced.
-    // Removed to not break Casting Patchwerk - 2017-09-22
-    // if ( target->debuffs.casting )
-    //{
-    // target->debuffs.casting->expire();
-    //}
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      if ( priest().legendary.sephuzs_proclamation->ok() && priest().buffs.sephuzs_proclamation )
+      {
+        priest().buffs.sephuzs_proclamation->trigger();
+      }
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -611,6 +611,9 @@ struct silence_t final : public priest_spell_t
       return false;
 
     if ( candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() )
+      return true;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
       return true;
 
     // Check if the target can get blank silenced
@@ -2216,6 +2219,9 @@ void priest_t::generate_apl_shadow()
 
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
+  cds->add_action( this, "Silence",
+                   "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
+                   "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
   cds->add_action( this, covenant.mindgames, "Mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
