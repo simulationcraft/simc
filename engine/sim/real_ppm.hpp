@@ -40,8 +40,8 @@ private:
     blp_state( BLP_ENABLED )
   { }
 
-  static constexpr timespan_t max_interval = 3.5_s;
-  static constexpr timespan_t max_bad_luck_prot = 1000_s;
+  static timespan_t max_interval() { return 3.5_s; }
+  static timespan_t max_bad_luck_prot() { return 1000_s; }
 public:
   static double proc_chance( player_t*  player,
                              double     PPM,

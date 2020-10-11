@@ -28,7 +28,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
 {
   auto sim       = player->sim;
   double coeff   = 1.0;
-  double seconds = std::min( sim->current_time() - last_trigger, max_interval ).total_seconds();
+  double seconds = std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
 
   if ( scales_with & RPPM_HASTE )
     coeff *= player->cache.rppm_haste_coeff();
@@ -50,7 +50,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
   {
     // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
     // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-    double last_success = std::min( accumulated_blp, max_bad_luck_prot ).total_seconds();
+    double last_success = std::min( accumulated_blp, max_bad_luck_prot() ).total_seconds();
     double expected_average_proc_interval = 60.0 / real_ppm;
 
     rppm_chance =
@@ -85,7 +85,7 @@ bool real_ppm_t::trigger()
 
   // 2020-10-11: Instead of using the aboslute time to the last successful proc, it appears
   // that the amount of time that is added on each trigger attempt is capped at max_interval
-  accumulated_blp += std::min( player->sim->current_time() - last_trigger_attempt, max_interval );
+  accumulated_blp += std::min( player->sim->current_time() - last_trigger_attempt, max_interval() );
   double chance = proc_chance( player, rppm, last_trigger_attempt, accumulated_blp, scales_with, blp_state );
   bool success  = player->rng().roll( chance );
 
