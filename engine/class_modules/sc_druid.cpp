@@ -8875,38 +8875,7 @@ void druid_t::apl_precombat()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  if ( specialization() == DRUID_FERAL )
-  {
-    precombat->add_action( this, "Cat Form" );
-  }
-
-  if ( specialization() == DRUID_BALANCE )
-  {
-    precombat->add_action( this, "Moonkin Form" );
-  }
-
-  if ( specialization() == DRUID_GUARDIAN )
-  {
-    precombat->add_action(this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-    precombat->add_action(this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-    precombat->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
-    precombat->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
-  }
-
-  if ( specialization() == DRUID_RESTORATION )
-  {
-    if ( talent.feral_affinity->ok() )
-    {
-      precombat->add_action( this, "Cat Form" );
-    }
-    if ( talent.balance_affinity->ok() )
-    {
-      precombat->add_action( this, "Moonkin Form" );
-    }
-  }
 }
-
 // NO Spec Combat Action Priority List ======================================
 
 void druid_t::apl_default()
@@ -8935,6 +8904,7 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
 //    Good              Okay        Stinky
 //   ------            ----         -----
@@ -8942,6 +8912,8 @@ void druid_t::apl_feral()
 //  Venthyr  _| . . |_
 //           >_  W  _<
 //             |   |
+  pre->add_action( this, "Cat Form" );
+
   def->add_action( "auto_attack" );
   def->add_action( this, "Shred" );
 }
@@ -8950,7 +8922,10 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
+
+  pre->add_action( this, "Moonkin Form" );
 
   def->add_action( this, "Wrath" );
 }
@@ -8959,9 +8934,8 @@ void druid_t::apl_balance()
 
 void druid_t::apl_guardian()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
-
   action_priority_list_t* pre      = get_action_priority_list( "precombat" );
+  action_priority_list_t* def      = get_action_priority_list( "default" );
   action_priority_list_t* bear     = get_action_priority_list( "bear" );
   action_priority_list_t* catweave = get_action_priority_list( "catweave" );
   action_priority_list_t* owlweave = get_action_priority_list( "owlweave" );
@@ -8969,6 +8943,10 @@ void druid_t::apl_guardian()
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
 
+  pre->add_action( this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+  pre->add_action( this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+  pre->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&druid.owlweave_bear" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
 
@@ -9066,18 +9044,22 @@ void druid_t::apl_guardian()
 
 void druid_t::apl_restoration()
 {
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def     = get_action_priority_list( "default" );
-  action_priority_list_t* balance = get_action_priority_list( "balance" );
+  action_priority_list_t* owl = get_action_priority_list( "balance" );
 
-  def->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
+  pre->add_action( this, "Cat Form", "if=talent.feral_affinity.enabled" );
+  pre->add_action( this, "Moonkin Form", "if=talent.balance_affinity.enabled" );
 
-  balance->add_action( this, "Moonfire", "target_if=refreshable" );
-  balance->add_action( this, "Sunfire", "target_if=refreshable" );
-  balance->add_talent( this, "Heart of the Wild" );
-  balance->add_action( "convoke_the_spirits,if=buff.eclipse_solar.up" );
-  balance->add_action( this, "Starsurge" );
-  balance->add_action( this, "Wrath", "if=buff.eclipse_solar.up|eclipse.lunar_next" );
-  balance->add_action( this, "Starfire" );
+  def->add_action( "run_action_list,name=owl,if=talent.balance_affinity.enabled" );
+
+  owl->add_action( this, "Moonfire", "target_if=refreshable" );
+  owl->add_action( this, "Sunfire", "target_if=refreshable" );
+  owl->add_talent( this, "Heart of the Wild" );
+  owl->add_action( "convoke_the_spirits,if=buff.eclipse_solar.up" );
+  owl->add_action( this, "Starsurge" );
+  owl->add_action( this, "Wrath", "if=buff.eclipse_solar.up|eclipse.lunar_next" );
+  owl->add_action( this, "Starfire" );
 }
 
 // druid_t::init_scaling ====================================================
