@@ -5127,7 +5127,7 @@ void weapon_info_t::callback_state( current_weapon_e weapon, bool state )
       cb_data[ weapon ][ i ] -> activate();
       if ( cb_data[ weapon ][ i ] -> rppm )
       {
-        cb_data[ weapon ][ i ] -> rppm -> set_last_trigger_success( sim -> current_time() );
+        cb_data[ weapon ][ i ] -> rppm -> set_accumulated_blp( timespan_t::zero() );
         cb_data[ weapon ][ i ] -> rppm -> set_last_trigger_attempt( sim -> current_time() );
       }
 
