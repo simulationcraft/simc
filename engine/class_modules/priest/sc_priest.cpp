@@ -1760,7 +1760,7 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
-  
+
   buffs.sephuzs_proclamation = buff_t::find( this, "sephuzs_proclamation" );
 }
 
@@ -1854,8 +1854,6 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  
-
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
 
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
