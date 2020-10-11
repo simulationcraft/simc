@@ -2269,7 +2269,8 @@ void priest_t::generate_apl_shadow()
                     "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
                     "with conduit)." );
   main->add_action( this, "Shadow Word: Death",
-                    "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
+                    "target_if=(target.health.pct<20&spell_targets.mind_sear<4)|(pet.fiend.active&runeforge."
+                    "shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
                     "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
@@ -2324,7 +2325,8 @@ void priest_t::generate_apl_shadow()
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
                     "interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
-  main->add_action( this, "Shadow Word: Pain" );
+  main->add_action( this, "Shadow Word: Death", "Use SW:D as last resort if on the move" );
+  main->add_action( this, "Shadow Word: Pain", "Use SW:P as last resort if on the move and SW:D is on CD" );
 }
 
 void priest_t::init_background_actions_shadow()
