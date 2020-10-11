@@ -1007,7 +1007,7 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::consume_resource();
 
-    if ( priest().buffs.mind_devourer->up() )
+    if ( priest().buffs.mind_devourer->up() && casted )
     {
       priest().buffs.mind_devourer->decrement();
     }
@@ -1451,8 +1451,6 @@ struct void_torrent_t final : public priest_spell_t
 
     priest().buffs.void_torrent->trigger();
 
-    // TODO: Verify if this triggers just the DoT, or the upfront damage as well
-    // Void Torrent just applies Devouring Plague, it does not refresh it per tick
     child_dp->set_target( target );
     child_dp->execute();
   }
@@ -2236,11 +2234,12 @@ void priest_t::generate_apl_shadow()
                     "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
-  cwc->add_talent( this, "Searing Nightmare",
-                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_or_vf_sync_condition)|("
-                   "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-                   "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
-                   "ready, or to refresh SW:P on two or more targets." );
+  cwc->add_talent(
+      this, "Searing Nightmare",
+      "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_or_vf_sync_condition)|("
+      "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
+      "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
+      "ready, or to refresh SW:P on two or more targets." );
   cwc->add_talent( this, "Searing Nightmare",
                    "use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&"
                    "spell_targets.mind_sear>2",
@@ -2270,14 +2269,17 @@ void priest_t::generate_apl_shadow()
                     "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
                     "with conduit)." );
   main->add_action( this, "Shadow Word: Death",
-                    "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
+                    "target_if=(target.health.pct<20&spell_targets.mind_sear<4)|(pet.fiend.active&runeforge."
+                    "shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
                     "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
-  main->add_talent( this, "Mindbender" );
-  main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
-                    "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
+  main->add_talent( this, "Mindbender", "if=variable.dots_up" );
+  main->add_talent( this, "Void Torrent",
+                    "target_if=variable.dots_up&target.time_to_die>4&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
+                    "talent.twist_of_fate.enabled))",
+                    "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
   main->add_action(
       this, "Shadow Word: Death",
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
@@ -2323,7 +2325,8 @@ void priest_t::generate_apl_shadow()
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
                     "interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
-  main->add_action( this, "Shadow Word: Pain" );
+  main->add_action( this, "Shadow Word: Death", "Use SW:D as last resort if on the move" );
+  main->add_action( this, "Shadow Word: Pain", "Use SW:P as last resort if on the move and SW:D is on CD" );
 }
 
 void priest_t::init_background_actions_shadow()

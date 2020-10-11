@@ -677,14 +677,10 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
 
-  double    composite_attack_power_multiplier() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
-  double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
-  double    composite_spell_haste() const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
-  double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
@@ -765,7 +761,6 @@ private:
   using ab = Base;
 public:
 
-  bool precombat = false;
   bool track_cd_waste;
   maybe_bool triggers_wild_spirits;
 
@@ -865,14 +860,6 @@ public:
 
     if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
-  }
-
-  void init_finished() override
-  {
-    ab::init_finished();
-
-    if( ab::action_list )
-      precombat = ab::action_list -> name_str == "precombat";
   }
 
   timespan_t gcd() const override
@@ -1069,7 +1056,7 @@ public:
   {
     const bool in_combat = ab::player -> in_combat;
     const bool triggered = buff -> trigger();
-    if ( triggered && precombat && !in_combat && precast_time > 0_ms )
+    if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
       buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
@@ -1080,7 +1067,7 @@ public:
   void adjust_precast_cooldown( timespan_t precast_time ) const
   {
     const bool in_combat = ab::player -> in_combat;
-    if ( precombat && !in_combat && precast_time > 0_ms )
+    if ( ab::is_precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
   }
 };
@@ -1372,10 +1359,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double ah = hunter_pet_t::composite_melee_speed();
 
     if ( buffs.frenzy -> check() )
-      ah *= 1.0 / ( 1 + buffs.frenzy -> check_stack_value() );
+      ah /= 1 + buffs.frenzy -> check_stack_value();
 
     if ( buffs.predator && buffs.predator -> check() )
-      ah *= 1.0 / ( 1 + buffs.predator -> check_stack_value() );
+      ah /= 1 + buffs.predator -> check_stack_value();
 
     return ah;
   }
@@ -1902,6 +1889,10 @@ struct kill_command_bm_t: public kill_command_base_t
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } killer_instinct;
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } dire_command;
   timespan_t ferocious_appetite_reduction;
 
   kill_command_bm_t( hunter_main_pet_base_t* p ):
@@ -1919,6 +1910,24 @@ struct kill_command_bm_t: public kill_command_base_t
 
     if ( o() -> conduits.ferocious_appetite.ok() )
       ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
+
+    if ( o() -> legendary.dire_command.ok() )
+    {
+      // assume it's a flat % without any bs /shrug
+      dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = o() -> get_proc( "Dire Command" );
+    }
+  }
+
+  void execute() override
+  {
+    kill_command_base_t::execute();
+
+    if ( rng().roll( dire_command.chance ) )
+    {
+      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
+      dire_command.proc -> occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4779,10 +4788,6 @@ struct kill_command_t: public hunter_spell_t
     real_ppm_t* rppm = nullptr;
     proc_t* proc;
   } dire_consequences;
-  struct {
-    double chance = 0;
-    proc_t* proc;
-  } dire_command;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> specs.kill_command )
@@ -4793,13 +4798,6 @@ struct kill_command_t: public hunter_spell_t
     {
       flankers_advantage.chance = data().effectN( 2 ).percent();
       flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
-    }
-
-    if ( p -> legendary.dire_command.ok() )
-    {
-      // assume it's a flat % without any bs /shrug
-      dire_command.chance = p -> legendary.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = p -> get_proc( "Dire Command" );
     }
 
     if ( p -> azerite.dire_consequences.ok() )
@@ -4844,12 +4842,6 @@ struct kill_command_t: public hunter_spell_t
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
       }
-    }
-
-    if ( rng().roll( dire_command.chance ) )
-    {
-      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      dire_command.proc -> occur();
     }
 
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
@@ -4983,7 +4975,7 @@ struct bestial_wrath_t: public hunter_spell_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
       // Assume the pet is out of range / not engaged when precasting.
-      if ( !precombat )
+      if ( !is_precombat )
       {
         pet -> active.bestial_wrath -> set_target( target );
         pet -> active.bestial_wrath -> execute();
@@ -6245,7 +6237,7 @@ void hunter_t::create_buffs()
   buffs.dire_beast =
     make_buff( this, "dire_beast", find_spell( 120679 ) -> effectN( 2 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> add_invalidate( CACHE_HASTE );
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
@@ -6279,8 +6271,7 @@ void hunter_t::create_buffs()
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
       -> set_default_value_from_effect( 1 )
-      -> set_max_stack( 1 )
-      -> add_invalidate( CACHE_HASTE )
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       -> set_trigger_spell( talents.steady_focus );
 
   buffs.streamline =
@@ -7300,13 +7291,6 @@ void hunter_t::datacollection_end()
   player_t::datacollection_end();
 }
 
-// hunter_t::composite_attack_power_multiplier ==============================
-
-double hunter_t::composite_attack_power_multiplier() const
-{
-  return player_t::composite_attack_power_multiplier();
-}
-
 // hunter_t::composite_melee_crit_chance ===========================================
 
 double hunter_t::composite_melee_crit_chance() const
@@ -7329,21 +7313,6 @@ double hunter_t::composite_spell_crit_chance() const
   return crit;
 }
 
-// hunter_t::composite_melee_haste ===========================================
-
-double hunter_t::composite_melee_haste() const
-{
-  double h = player_t::composite_melee_haste();
-
-  if ( buffs.dire_beast -> check() )
-    h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
-
-  if ( buffs.steady_focus -> check() )
-    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
-
-  return h;
-}
-
 // hunter_t::composite_melee_speed ==========================================
 
 double hunter_t::composite_melee_speed() const
@@ -7351,24 +7320,9 @@ double hunter_t::composite_melee_speed() const
   double s = player_t::composite_melee_speed();
 
   if ( buffs.predator -> check() )
-    s *= 1.0 / ( 1 + buffs.predator -> check_stack_value() );
+    s /= 1 + buffs.predator -> check_stack_value();
 
   return s;
-}
-
-// hunter_t::composite_spell_haste ===========================================
-
-double hunter_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buffs.dire_beast -> check() )
-    h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
-
-  if ( buffs.steady_focus -> check() )
-    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
-
-  return h;
 }
 
 // hunter_t::composite_player_target_crit_chance ============================
@@ -7380,15 +7334,6 @@ double hunter_t::composite_player_target_crit_chance( player_t* target ) const
   crit += buffs.resonating_arrow -> check_value();
 
   return crit;
-}
-
-// hunter_t::composite_player_critical_damage_multiplier ====================
-
-double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  return cdm;
 }
 
 // hunter_t::composite_player_multiplier ====================================

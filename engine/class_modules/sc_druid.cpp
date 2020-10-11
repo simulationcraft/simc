@@ -1644,7 +1644,8 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
   bt_dummy_buff_t( druid_t& p, util::string_view n )
     : base_t( p, n ), count( as<int>( p.talent.bloodtalons->effectN( 2 ).base_value() ) )
   {
-    set_duration( timespan_t::from_seconds( p.talent.bloodtalons->effectN( 1 ).base_value() ) );
+    // The counting starts from the end of the triggering ability gcd.
+    set_duration( timespan_t::from_seconds( p.talent.bloodtalons->effectN( 1 ).base_value() ) + timespan_t::from_seconds(1.0) );
     set_max_stack( 1 );
     set_quiet( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -6574,7 +6575,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::init_finished();
 
-    if ( p()->specialization() == DRUID_BALANCE && action_list && action_list->name_str == "precombat" )
+    if ( is_precombat )
     {
       auto apl = player->precombat_action_list;
 
@@ -6827,17 +6828,23 @@ struct starsurge_t : public druid_spell_t
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
   }
 
-  timespan_t travel_time() const override  // hack to allow bypassing of action_t::init() precombat check
+  void init() override
   {
-    return action_list && action_list->name_str == "precombat" ? 100_ms : druid_spell_t::travel_time();
+    // Need to set is_precombat first to bypass action_t::init() checks
+    if ( action_list && action_list->name_str == "precombat" )
+      is_precombat = true;
+
+    druid_spell_t::init();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return is_precombat ? 100_ms : druid_spell_t::travel_time();
   }
 
   bool ready() override
   {
-    if ( !p()->spec.starsurge->ok() )
-      return false;
-
-    if ( p()->in_combat )
+    if ( !is_precombat )
       return druid_spell_t::ready();
 
     // in precombat, so hijack standard ready() procedure

@@ -936,9 +936,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( base_execute_time == timespan_t::zero() )
       return timespan_t::zero();
 
-    if ( !harmful && !player->in_combat )
-      return timespan_t::zero();
-
     return base_execute_time * player->cache.spell_speed();
   }
 
@@ -1345,7 +1342,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::consume_resource();
 
-    if ( priest().specialization() != PRIEST_SHADOW )
+    if (priest().azerite_essence.lucid_dreams )
       priest().trigger_lucid_dreams( last_resource_cost );
   }
 
@@ -1375,6 +1372,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_wrathful_faerie_fermata();
         }
+      }
+
+      if (priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
+      {
+        // TODO: Remove after pre-patch?
+        // Just an approximation of the value added by Lucid Minor, not accurate
+        priest().trigger_lucid_dreams( 4.0 );
       }
     }
   }
