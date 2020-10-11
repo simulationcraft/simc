@@ -32,10 +32,7 @@ private:
   double       modifier;
   double       rppm;
   timespan_t   last_trigger_attempt;
-  timespan_t   last_successful_trigger;
-  double       mean_trigger_attempt;
-  unsigned     trigger_attempts;
-  double       mean_base_trigger_chance;
+  timespan_t   accumulated_blp;
   unsigned     scales_with;
   blp          blp_state;
 
@@ -43,19 +40,24 @@ private:
     blp_state( BLP_ENABLED )
   { }
 
-  static double max_interval() { return 3.5; }
-  static double max_bad_luck_prot() { return 1000.0; }
-  double proc_chance();
-
+  static timespan_t max_interval() { return 3.5_s; }
+  static timespan_t max_bad_luck_prot() { return 1000_s; }
 public:
+  static double proc_chance( player_t*  player,
+                             double     PPM,
+                             timespan_t last_trigger,
+                             timespan_t last_successful_proc,
+                             unsigned   scales_with,
+                             blp        blp_state );
+
   real_ppm_t( util::string_view name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),
     name_str( name ),
     freq( frequency ),
     modifier( mod ),
     rppm( freq * mod ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
+    last_trigger_attempt( 0_ms ),
+    accumulated_blp( 0_ms ),
     scales_with( s ),
     blp_state( b )
   { }
@@ -97,16 +99,13 @@ public:
   void set_last_trigger_attempt( timespan_t ts )
   { last_trigger_attempt = ts; }
 
-  void set_last_trigger_success( timespan_t ts )
-  { last_successful_trigger = ts; }
+  void set_accumulated_blp( timespan_t ts )
+  { accumulated_blp = ts; }
 
   void reset()
   {
-    last_trigger_attempt = timespan_t::zero();
-    last_successful_trigger = timespan_t::zero();
-    mean_trigger_attempt = 0;
-    trigger_attempts = 0;
-    mean_base_trigger_chance = 0;
+    last_trigger_attempt = 0_ms;
+    accumulated_blp = 0_ms;
   }
 
   bool trigger();

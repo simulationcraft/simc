@@ -493,6 +493,9 @@ public:
     // Conduits
     buff_t* eradicating_blow;
     buff_t* unleashed_frenzy;
+
+    // Legendaries
+    buff_t* frenzied_monstrosity;
   } buffs;
 
   struct runeforge_t {
@@ -951,7 +954,7 @@ public:
     // Unholy
     // item_runeforge_t deadliest_coil; // 6952
     // item_runeforge_t deaths_certainty; // 6951
-    // item_runeforge_t frenzied_monstrosity; // 6950
+    item_runeforge_t frenzied_monstrosity;        // 6950
     // item_runeforge_t reanimated_shambler; // 6949
 
     // Defensive/Utility
@@ -1036,6 +1039,7 @@ public:
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
   // double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
@@ -1971,7 +1975,24 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       m *= 1.0 + o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
     }
 
+    if ( o() -> buffs.frenzied_monstrosity->up() )
+    {
+      m *= 1.0 + o() -> buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
+    }
+
     return m;
+  }
+
+  double composite_melee_speed() const override
+  {
+    double haste = base_ghoul_pet_t::composite_melee_speed();
+
+    if ( o() -> buffs.frenzied_monstrosity->up() )
+    {
+      haste *= 1.0 / ( 1.0 + o() -> buffs.frenzied_monstrosity->data().effectN( 1 ).percent() );
+    }
+
+    return haste;
   }
 
   void init_base_stats() override
@@ -4078,6 +4099,11 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p() -> talent.unholy_pact -> ok() )
     {
       p() -> buffs.unholy_pact -> trigger();
+    }
+
+    if ( p() -> legendary.frenzied_monstrosity.ok() )
+    {
+      p() -> buffs.frenzied_monstrosity -> trigger();
     }
   }
 
@@ -8410,7 +8436,7 @@ void death_knight_t::init_spells()
   // Unholy
   // legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   // legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
-  // legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
+  legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
   // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
 
   // Defensive/Utility
@@ -9103,6 +9129,10 @@ void death_knight_t::create_buffs()
   else
      buffs.unleashed_frenzy = make_buff<stat_buff_t>( this, "unleashed_frenzy", conduits.unleashed_frenzy -> effectN( 1 ).trigger() )
     -> add_stat( STAT_STRENGTH, conduits.unleashed_frenzy.percent() * base.stats.attribute[ STAT_STRENGTH ] );
+
+  // Legendaries
+  buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
+    -> add_invalidate( CACHE_ATTACK_SPEED );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9500,6 +9530,18 @@ double death_knight_t::composite_parry() const
   return parry;
 }
 
+double death_knight_t::composite_player_multiplier( school_e school ) const 
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.frenzied_monstrosity->up() )
+  {
+    m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
+  }
+
+  return m;
+}
+
 double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( state );
@@ -9539,6 +9581,11 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.icy_talons -> up() )
   {
     haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
+  }
+
+  if (buffs.frenzied_monstrosity -> up())
+  {
+    haste *= 1.0 / ( 1.0 + buffs.frenzied_monstrosity -> data().effectN( 1 ).percent() );
   }
 
   return haste;
