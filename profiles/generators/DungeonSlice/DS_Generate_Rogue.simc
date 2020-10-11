@@ -29,7 +29,7 @@ save=DS_Rogue_Assassination.simc
 
 
 rogue="DS_Rogue_Outlaw"
-level=120
+level=50
 race=human
 spec=outlaw
 role=attack
@@ -59,7 +59,7 @@ save=DS_Rogue_Outlaw.simc
 
 
 rogue="DS_Rogue_Subtlety"
-level=120
+level=50
 race=night_elf
 spec=subtlety
 role=attack
