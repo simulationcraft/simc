@@ -1116,7 +1116,7 @@ enum effect_subtype_t : unsigned {
     A_303 = 303,
     A_304 = 304,
     A_MOD_MINIMUM_SPEED = 305,
-    A_306 = 306,
+    A_MOD_CRIT_CHANCE_FROM_CASTER = 306,
     A_307 = 307,
     A_308 = 308,
     A_309 = 309,
@@ -1280,6 +1280,7 @@ enum spell_attribute : unsigned
   SX_REQ_LINE_OF_SIGHT    = 186u,
   SX_DISABLE_PLAYER_MULT  = 221u,
   SX_TICK_MAY_CRIT        = 265u,
+  SX_FIXED_TRAVEL_TIME    = 292u,
   SX_SCALE_ILEVEL         = 354u,
 };
 

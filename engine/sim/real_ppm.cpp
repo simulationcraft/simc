@@ -18,17 +18,20 @@ real_ppm_t::real_ppm_t( util::string_view name, player_t* p, const spell_data_t*
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::zero() ),
     last_successful_trigger( timespan_t::zero() ),
+    mean_trigger_attempt( 0 ),
+    trigger_attempts( 0 ),
+    mean_base_trigger_chance( 0 ),
     scales_with( p->dbc->real_ppm_scale( data->id() ) ),
     blp_state( BLP_ENABLED )
 {
 }
 
-double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_trigger,
-                                timespan_t last_successful_proc, unsigned scales_with, blp blp_state )
+double real_ppm_t::proc_chance()
 {
-  auto sim       = player->sim;
-  double coeff   = 1.0;
-  double seconds = std::min( ( sim->current_time() - last_trigger ).total_seconds(), max_interval() );
+  auto sim                    = player->sim;
+  double coeff                = 1.0;
+  double last_trigger_seconds = ( sim->current_time() - last_trigger_attempt ).total_seconds();
+  double seconds              = std::min( last_trigger_seconds, max_interval() );
 
   if ( scales_with & RPPM_HASTE )
     coeff *= player->cache.rppm_haste_coeff();
@@ -42,7 +45,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
   if ( scales_with & RPPM_ATTACK_SPEED )
     coeff *= 1.0 / player->cache.attack_speed();
 
-  double real_ppm        = PPM * coeff;
+  double real_ppm        = rppm * coeff;
   double old_rppm_chance = real_ppm * ( seconds / 60.0 );
   double rppm_chance     = 0;
 
@@ -51,8 +54,16 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
     // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
     // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
     double last_success =
-        std::min( ( sim->current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
-    double expected_average_proc_interval = 60.0 / real_ppm;
+        std::min( ( sim->current_time() - last_successful_trigger ).total_seconds(), max_bad_luck_prot() );
+
+    // 2020-10-05: The old implementation was fine when all trigger attempts were within max_interval() of each other,
+    // but was wrong in cases where less frequent trigger attempts occur. This is most noticeable with effects that
+    // also have ICDs. Instead, the calculation needs to take the distribution of recent trigger attempts into account
+    // in some way to estimate how many procs should be expected. In game, this expected interval may be calculated in
+    // a different way because these averages don't seem to perfectly match observed behavior, although they are close.
+    mean_base_trigger_chance = ( mean_base_trigger_chance * trigger_attempts + old_rppm_chance ) / ( trigger_attempts + 1 );
+    mean_trigger_attempt = ( mean_trigger_attempt * trigger_attempts + last_trigger_seconds ) / ( trigger_attempts + 1 );
+    double expected_average_proc_interval = mean_trigger_attempt / mean_base_trigger_chance;
 
     rppm_chance =
         std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) ) * old_rppm_chance;
@@ -67,7 +78,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
     sim->out_debug.print(
         "base={:.3f} coeff={:.3f} last_trig={:.3f} last_proc={:.3f}"
         " scales={} blp={} chance={:.5f}%",
-        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+        rppm, coeff, last_trigger_attempt.total_seconds(), last_successful_trigger.total_seconds(), scales_with,
         blp_state == BLP_ENABLED ? "enabled" : "disabled", rppm_chance * 100.0 );
   }
 
@@ -84,12 +95,18 @@ bool real_ppm_t::trigger()
   if ( last_trigger_attempt == player->sim->current_time() )
     return false;
 
-  double chance = proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with, blp_state );
+  double chance = proc_chance();
   bool success  = player->rng().roll( chance );
 
   last_trigger_attempt = player->sim->current_time();
+  trigger_attempts++;
 
   if ( success )
+  {
+    mean_base_trigger_chance = 0;
+    mean_trigger_attempt = 0;
+    trigger_attempts = 0;
     last_successful_trigger = player->sim->current_time();
+  }
   return success;
 }

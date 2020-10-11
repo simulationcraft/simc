@@ -300,6 +300,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     harmful( true ),
     proc(),
     is_interrupt( false ),
+    is_precombat(),
     initialized(),
     may_hit( true ),
     may_miss(),
@@ -940,7 +941,7 @@ double action_t::base_cost() const
  */
 double action_t::cost() const
 {
-  if ( !harmful && !player->in_combat )
+  if ( !harmful && is_precombat )
     return 0;
 
   resource_e cr = current_resource();
@@ -992,7 +993,7 @@ double action_t::cost_per_tick( resource_e r ) const
 
 timespan_t action_t::gcd() const
 {
-  if ( ( !harmful && !player->in_combat ) || trigger_gcd == timespan_t::zero() )
+  if ( trigger_gcd == timespan_t::zero() )
     return timespan_t::zero();
 
   timespan_t gcd_ = trigger_gcd;
@@ -2588,6 +2589,9 @@ void action_t::init_finished()
             option.cancel_if_expr_str ) );
     }
   }
+
+  if ( action_list && action_list->name_str == "precombat" )
+    is_precombat = true;
 }
 
 void action_t::reset()
@@ -3820,12 +3824,12 @@ void action_t::impact( action_state_t* s )
 void action_t::trigger_dot( action_state_t* s )
 {
   timespan_t duration = composite_dot_duration( s );
-  if ( duration <= timespan_t::zero() && ( !tick_zero || !tick_on_application ) )
+  if ( duration <= timespan_t::zero() )
     return;
 
   // To simulate precasting HoTs, remove one tick worth of duration if precombat.
   // We also add a fake zero_tick in dot_t::check_tick_zero().
-  if ( !harmful && !player->in_combat && ( !tick_zero || !tick_on_application ) )
+  if ( !harmful && is_precombat && !tick_zero && !tick_on_application )
     duration -= tick_time( s );
 
   dot_t* dot = get_dot( s->target );
@@ -4691,7 +4695,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   if ( !effect.ok() || effect.type() != E_APPLY_AURA )
     return;
 
-  if ( !data().affected_by_all( *player->dbc, effect ) )
+  if ( !data().affected_by_all( effect ) )
   {
     return;
   }
@@ -4913,7 +4917,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
   // Category-based Auras
-  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  else if ( data().affected_by_category( effect ) )
   {
     switch ( effect.subtype() )
     {

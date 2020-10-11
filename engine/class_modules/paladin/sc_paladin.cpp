@@ -945,14 +945,14 @@ void judgment_t::do_ctor_common( paladin_t* p )
 }
 
 judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+    paladin_melee_attack_t( "judgment", p, p -> find_class_spell("Judgment") )
 {
   parse_options( options_str );
   do_ctor_common( p );
 }
 
 judgment_t::judgment_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+    paladin_melee_attack_t( "judgment", p, p -> find_class_spell("Judgment") )
 {
   do_ctor_common( p );
 }
@@ -1551,11 +1551,9 @@ void paladin_t::init_base_stats()
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
   }
 
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
+
     // Boundless Conviction raises max holy power to 5
     resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
-  }
 
   if ( specialization() == PALADIN_HOLY )
   {
@@ -2260,7 +2258,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
-    ap *= 1.0 + cache.mastery() * mastery.divine_bulwark -> effectN( 3 ).mastery_value();
+    ap *= 1.0 + cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value();
 
   return ap;
 }

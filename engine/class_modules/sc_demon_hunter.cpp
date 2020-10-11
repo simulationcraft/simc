@@ -4609,7 +4609,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "exposed_wound", p.conduit.serrated_glaive->effectN( 1 ).trigger() )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
 
-  target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
+  target->register_on_demise_callback( &p, [this]( player_t* ) { target_demise(); } );
 }
 
 void demon_hunter_td_t::target_demise()
@@ -5422,7 +5422,7 @@ void demon_hunter_t::init_spells()
   // Legendary Items ========================================================
 
   legendary.half_giant_empowerment        = find_runeforge_legendary( "Half-Giant Empowerment" );
-  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Boon" );
+  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Medallion" ); // Note: Blizzard typo in item runeforge data
   legendary.collective_anguish            = find_runeforge_legendary( "Collective Anguish" );
   legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
 

@@ -15,6 +15,7 @@
 #include "interfaces/wowhead.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "player/unique_gear.hpp"
+#include "util/util.hpp"
 
 #include <sstream>
 

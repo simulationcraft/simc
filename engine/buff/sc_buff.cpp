@@ -850,6 +850,19 @@ buff_t* buff_t::add_invalidate( cache_e c )
   return this;
 }
 
+buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
+{
+  if ( !player || type == STAT_PCT_BUFF_MAX )
+    return this;
+
+  auto& buffs = player->buffs.stat_pct_buffs[ type ];
+  if ( range::find( buffs, this ) == buffs.end() )
+    buffs.push_back( this );
+  add_invalidate( cache_from_stat_pct_buff( type ) );
+
+  return this;
+}
+
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
   // Ensure we are not errantly overwriting a value that is already set to a given effect
@@ -1083,7 +1096,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
   if ( !effect.ok() || effect.type() != E_APPLY_AURA )
     return this;
 
-  if ( !data().affected_by_all( *player->dbc, effect ) )
+  if ( !data().affected_by_all( effect ) )
     return this;
 
   if ( sim->debug )
@@ -1247,7 +1260,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
     }
   }
-  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  else if ( data().affected_by_category( effect ) )
   {
     switch ( effect.subtype() )
     {
@@ -1682,12 +1695,7 @@ void buff_t::decrement( int stacks, double value )
   }
   else
   {
-    adjust_haste();
-
     int old_stack = current_stack;
-
-    if ( requires_invalidation )
-      invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( false, sim->current_time() );
@@ -1712,6 +1720,10 @@ void buff_t::decrement( int stacks, double value )
       if ( stack_change_callback )
         stack_change_callback( this, old_stack, current_stack );
     }
+
+    if ( requires_invalidation )
+      invalidate_cache();
+    adjust_haste();
   }
 }
 
@@ -1961,28 +1973,25 @@ void buff_t::bump( int stacks, double value )
   if ( _max_stack == 0 )
     return;
 
-  bool haste_to_be_adjusted = false; // Flag to check if we need to adjust haste at the end of bump
+  bool changes_stack_value = false; // Flag to check if we need to adjust haste and invalidate cache at the end of bump
 
   if ( value != current_value )
   {
-    haste_to_be_adjusted = true;
+    changes_stack_value = true;
   }
   current_value = value;
-
-  if ( requires_invalidation )
-    invalidate_cache();
 
   int old_stack = current_stack;
 
   if ( max_stack() < 0 )
   {
     current_stack += stacks;
-    haste_to_be_adjusted = true;
+    changes_stack_value = true;
   }
   // Asynchronous buffs need to adjust their expiration even when bumped at max stacks.
   else if ( current_stack < max_stack() || stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    haste_to_be_adjusted = true;
+    changes_stack_value = true;
     int before_stack = current_stack;
 
     current_stack += stacks;
@@ -2079,8 +2088,10 @@ void buff_t::bump( int stacks, double value )
       stack_change_callback( this, old_stack, current_stack );
   }
 
-  if (haste_to_be_adjusted)
+  if (changes_stack_value)
   {
+    if ( requires_invalidation )
+      invalidate_cache();
     adjust_haste();
   }
 
@@ -2207,9 +2218,6 @@ void buff_t::expire( timespan_t delay )
 
   current_value = 0;
 
-  if ( requires_invalidation )
-    invalidate_cache();
-
   aura_loss();
 
   if ( stack_change_callback )
@@ -2217,6 +2225,8 @@ void buff_t::expire( timespan_t delay )
     stack_change_callback( this, old_stack, current_stack );
   }
 
+  if ( requires_invalidation )
+    invalidate_cache();
   adjust_haste();
 
   if ( player )

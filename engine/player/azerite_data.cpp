@@ -1901,7 +1901,7 @@ void blood_rite( special_effect_t& effect )
       return;
     }
 
-    target->callbacks_on_demise.emplace_back([buff]( player_t* ) {
+    target->register_on_demise_callback( buff->player, [buff]( player_t* ) {
       if ( buff->up( ) )
       {
         buff->refresh();
@@ -5464,7 +5464,7 @@ void aegis_of_the_deep( special_effect_t& effect )
 
   //Spelldata shows a buff trigger every 1s, but in-game observation show an immediate change
   //Add a callback on arise and demise to each enemy in the simulation
-  range::for_each( effect.player -> sim -> actor_list, [ effect, aegis_buff ]( player_t* target )
+  range::for_each( effect.player -> sim -> actor_list, [ p = effect.player, aegis_buff ]( player_t* target )
   {
     // Don't do anything on players
     if ( !target -> is_enemy() )
@@ -5472,18 +5472,18 @@ void aegis_of_the_deep( special_effect_t& effect )
       return;
     }
 
-    target -> callbacks_on_arise.emplace_back([ effect, aegis_buff ] ()
+    target -> register_on_arise_callback( p, [ p, aegis_buff ] ()
     {
       if ( aegis_buff )
       {
-        effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground on player {} is increased by one stack",
-                                             effect.player -> name_str );
+        p -> sim -> print_debug( "An enemy arises! Stand your Ground on player {} is increased by one stack",
+                                 p -> name_str );
         aegis_buff -> trigger();
       }
     } );
 
 
-    target -> callbacks_on_demise.emplace_back([ effect, aegis_buff ] ( player_t* target )
+    target -> register_on_demise_callback( p, [ p, aegis_buff ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
@@ -5494,7 +5494,7 @@ void aegis_of_the_deep( special_effect_t& effect )
       if ( aegis_buff )
       {
         target -> sim -> print_debug( "Enemy {} demises! Stand your Ground on player {} is reduced by one stack",
-                                      target -> name_str, effect.player -> name_str );
+                                      target -> name_str, p -> name_str );
         aegis_buff -> decrement();
       }
     } );
@@ -5550,7 +5550,7 @@ void register_essence_corruption_resistance( special_effect_t& effect )
   {
     buff = make_buff<resolute_courage_t>( effect.player );
     // this needs to happen on arise which is before snapshot stats
-    effect.player->callbacks_on_arise.emplace_back( [ buff ] {
+    effect.player->register_on_arise_callback( effect.player, [ buff ] {
       buff -> trigger();
     });
   }
@@ -5666,7 +5666,7 @@ struct reaping_flames_t : public azerite_essence_major_t
         if ( !target->is_enemy() )
           return;
 
-        target->callbacks_on_demise.emplace_back( [ this ] ( player_t* enemy )
+        target->register_on_demise_callback( player, [ this ] ( player_t* enemy )
         {
           if ( player->get_target_data( enemy )->debuff.reaping_flames_tracker->check() )
           {

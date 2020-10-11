@@ -1226,11 +1226,13 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
+         # Sunblod Amethyst Trinket
+         343395, 343396,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
+         323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
         ),
 
         # Warrior:
@@ -1390,6 +1392,9 @@ class SpellDataGenerator(DataGenerator):
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
             ( 345452, 0 ),          # Fae Fermata target Debuff
+            ( 345219, 0 ),          # Hungering Void target Debuff
+            ( 346111, 0 ),          # Shadow Weaving Mastery spell
+            ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
         ),
 
         # Death Knight:
@@ -1585,7 +1590,8 @@ class SpellDataGenerator(DataGenerator):
           ( 265391, 3 ),    # Roaring Blaze Debuff
           ( 266087, 3 ),    # Rain of Chaos Buff
           ( 339784, 2 ),    # Tyrant's Soul Buff
-          ( 337142, 2 )     # Grim Inquisitor's Dread Calling Buff
+          ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
+          ( 342997, 2 )     # Grim Inquisitor's Dread Calling Buff 2     
         ),
 
         # Monk:
@@ -2501,6 +2507,10 @@ class SpellDataGenerator(DataGenerator):
         # Souldbind conduits
         for spell_id in ConduitSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
+
+        # Explicitly add Shadowlands legendaries
+        for entry in self.db('RuneforgeLegendaryAbility').values():
+            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]

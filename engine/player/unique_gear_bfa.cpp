@@ -210,7 +210,6 @@ void anodized_deflectors( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
-void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
 void torment_in_a_jar( special_effect_t& );
 void draconic_empowerment( special_effect_t& );
@@ -251,11 +250,6 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
     else if ( new_ == 0 )
       callback->deactivate();
   };
-}
-
-bool is_adjustable_class_spell( action_t* a )
-{
-  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
 }
 
 }  // namespace util
@@ -1670,7 +1664,7 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target->callbacks_on_demise.emplace_back( [p, explosion]( player_t* target ) {
+    target->register_on_demise_callback( p, [p, explosion]( player_t* target ) {
       // Don't do anything if the sim is ending
       if ( target->sim->event_mgr.canceled )
       {
@@ -2375,7 +2369,7 @@ struct vigor_engaged_t : public special_effect_t
     overload_spell = effect.player->find_spell( 287917 );
     overload_cd    = effect.player->get_cooldown( "oscillating_overload_" + ::util::to_string( overload_spell->id() ) );
 
-    effect.player->callbacks_on_arise.emplace_back( [this]() {
+    effect.player->register_on_arise_callback( effect.player, [this]() {
       reset_oscillation();
 
       if ( !player->sim->bfa_opts.randomize_oscillation )
@@ -5667,53 +5661,6 @@ void items::manifesto_of_madness( special_effect_t& effect )
   effect.custom_buff = first_buff;
 }
 
-// Whispering Eldritch Bow
-void items::whispering_eldritch_bow( special_effect_t& effect )
-{
-  struct whispered_truths_callback_t : public dbc_proc_callback_t
-  {
-    std::vector<cooldown_t*> cooldowns;
-    timespan_t amount;
-
-    whispered_truths_callback_t( const special_effect_t& effect )
-      : dbc_proc_callback_t( effect.item, effect ),
-        amount( timespan_t::from_millis( -effect.driver()->effectN( 1 ).base_value() ) )
-    {
-      for ( action_t* a : effect.player->action_list )
-      {
-        if ( util::is_adjustable_class_spell( a ) &&
-             range::find( cooldowns, a->cooldown ) == cooldowns.end() )
-        {
-          cooldowns.push_back( a->cooldown );
-        }
-      }
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      if ( !rng().roll( effect.player->sim->bfa_opts.whispered_truths_offensive_chance ) )
-        return;
-
-      const auto it = range::partition( cooldowns, &cooldown_t::down );
-      auto down_cooldowns = ::util::make_span( cooldowns ).subspan( 0, it - cooldowns.begin() );
-      if ( !down_cooldowns.empty() )
-      {
-        cooldown_t* chosen = down_cooldowns[ rng().range( down_cooldowns.size() ) ];
-        chosen->adjust( amount );
-
-        if ( effect.player->sim->debug )
-        {
-          effect.player->sim->out_debug.print( "{} of {} adjusted cooldown for {}, remains={}", effect.item->name(),
-                                               effect.player->name(), chosen->name(), chosen->remains() );
-        }
-      }
-    }
-  };
-
-  if ( effect.player->type == HUNTER )
-    new whispered_truths_callback_t( effect );
-}
-
 /**Psyche Shredder
  * id=313640 driver and damage from hitting the debuffed target
  * id=313663 debuff and initial damage
@@ -5817,12 +5764,6 @@ void items::psyche_shredder( special_effect_t& effect )
 
   // Create the action for the debuff damage here, before any debuff initialization takes place.
   create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
-
-  // Note that this is not necessarily a bug, we just don't know how the updated RPPM formula
-  // introduced in BfA interacts with ICD/infrequent trigger attempts. Disabling RPPM BLP
-  // makes the simmed ppm roughly match the observed ppm.
-  if ( effect.player->bugs )
-    effect.rppm_blp_ = real_ppm_t::BLP_DISABLED;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -6213,12 +6154,12 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 317290, corruption_effect );
   register_special_effect( 318299, corruption_effect );
   register_special_effect( 316651, corruption_effect );
+  register_special_effect( 316780, corruption_effect );
 
   // 8.3 Special Effects
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
-  register_special_effect( 316780, items::whispering_eldritch_bow );
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
   register_special_effect( 317860, items::draconic_empowerment );

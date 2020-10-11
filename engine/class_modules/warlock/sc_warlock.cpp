@@ -114,7 +114,7 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    double value = p()->buffs.decimating_bolt->default_value - 0.02 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -160,16 +160,6 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       p()->warlock_pet_list.active = nullptr;
       p()->buffs.grimoire_of_sacrifice->trigger();
     }
-  }
-};
-
-struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
-{
-  grimoire_of_sacrifice_damage_t( warlock_t* p )
-    : warlock_spell_t( "grimoire_of_sacrifice", p, p->find_spell( 196100 ) )
-  {
-    background = true;
-    proc       = true;
   }
 };
 }  // namespace actions
@@ -227,7 +217,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) );
 
-  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
 void warlock_td_t::target_demise()
@@ -277,6 +267,13 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
                            warlock.gains.shadowburn_refund );
+  }
+
+  if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
   }
 }
 
@@ -640,8 +637,11 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(4)
+                              ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
+
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
+                               ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells()
@@ -673,7 +673,6 @@ void warlock_t::init_spells()
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -682,6 +681,8 @@ void warlock_t::init_spells()
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
+  //Wrath is implemented here to catch any potential cross-spec periodic effects
+  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
@@ -737,6 +738,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
@@ -761,6 +763,9 @@ void warlock_t::init_procs()
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+  procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
 
@@ -940,6 +945,27 @@ void warlock_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+}
+
+void warlock_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  auto const effect = new special_effect_t( this );
+  effect->name_str = "grimoire_of_sacrifice_effect";
+  effect->spell_id = 196099;
+  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+  special_effects.push_back( effect );
+
+  auto cb = new dbc_proc_callback_t( this, *effect );
+
+  cb->initialize();
+  cb->deactivate();
+
+  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+      if ( new_ == 1 ) cb->activate();
+      else cb->deactivate();
+    } );
 }
 
 void warlock_t::combat_begin()

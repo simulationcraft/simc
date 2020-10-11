@@ -169,6 +169,9 @@ public:
   /// Whether or not the action is an interrupt (specifically triggers PF2_CAST_INTERRUPT callbacks)
   bool is_interrupt;
 
+  /// Whether the action is used from the precombat action list. Will be set up automatically by action_t::init_finished
+  bool is_precombat;
+
   /// Is the action initialized? (action_t::init ran successfully)
   bool initialized;
 

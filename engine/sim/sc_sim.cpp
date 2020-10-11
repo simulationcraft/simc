@@ -1534,6 +1534,7 @@ sim_t::sim_t() :
   pause_mutex( nullptr ),
   paused( false ),
   chart_show_relative_difference( false ),
+  relative_difference_base(),
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
@@ -2327,9 +2328,9 @@ void sim_t::init_fight_style()
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
-        "/adds,name=Boss,count=1,cooldown=500,duration=140,type=add_boss,duration_stddev=2"
+        "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
-        "/adds,name=BigAdd,count=2,count_range=1,first=155,cooldown=45,duration=30,duration_stddev=2";
+        "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
   }
   else
   {
@@ -3244,6 +3245,11 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "fight_remains" ) )
     return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
 
+  if ( util::str_compare_ci( name_str, "interpolated_fight_remains" ) )
+    return make_fn_expr( name_str, [ this ] {
+      return max_time * ( 1.0 - event_mgr.current_time / expected_iteration_time );
+    } );
+
   if ( name_str == "channel_lag" )
     return expr_t::create_constant( name_str, channel_lag );
 
@@ -3612,6 +3618,7 @@ void sim_t::create_options()
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_string( "relative_difference_base", relative_difference_base ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
@@ -3781,6 +3788,8 @@ void sim_t::create_options()
     shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby",
     shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
+  add_option( opt_uint( "shadowlands.lead_by_example_nearby",
+    shadowlands_opts.lead_by_example_nearby, 0, 3 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",

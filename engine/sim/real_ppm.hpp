@@ -33,6 +33,9 @@ private:
   double       rppm;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
+  double       mean_trigger_attempt;
+  unsigned     trigger_attempts;
+  double       mean_base_trigger_chance;
   unsigned     scales_with;
   blp          blp_state;
 
@@ -42,14 +45,9 @@ private:
 
   static double max_interval() { return 3.5; }
   static double max_bad_luck_prot() { return 1000.0; }
-public:
-  static double proc_chance( player_t*  player,
-                             double     PPM,
-                             timespan_t last_trigger,
-                             timespan_t last_successful_proc,
-                             unsigned   scales_with,
-                             blp        blp_state );
+  double proc_chance();
 
+public:
   real_ppm_t( util::string_view name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),
     name_str( name ),
@@ -106,6 +104,9 @@ public:
   {
     last_trigger_attempt = timespan_t::zero();
     last_successful_trigger = timespan_t::zero();
+    mean_trigger_attempt = 0;
+    trigger_attempts = 0;
+    mean_base_trigger_chance = 0;
   }
 
   bool trigger();

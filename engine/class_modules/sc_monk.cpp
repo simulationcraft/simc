@@ -467,6 +467,7 @@ public:
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* touch_of_death_3_mw;
     const spell_data_t* touch_of_death_3_ww;
+    const spell_data_t* two_hand_adjustment;
     const spell_data_t* vivify;
     const spell_data_t* vivify_2_brm;
     const spell_data_t* vivify_2_mw;
@@ -3439,12 +3440,20 @@ public:
       }
     }
 
-    // Initial damage does Square Root damage
+    // For more than 5 targets damage is based on a logarithmic function.
+    // This is the closest we can figure out what that function is
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      return cam / std::sqrt( state->n_targets );
+      if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
+        // this is the closest we can come up without Blizzard flat out giving us the function
+        // Primary takes 100% damage
+        // Secondary targets get reduced damage
+        if ( state->target != target )
+          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+      return cam;
     }
 
     double action_multiplier() const override
@@ -3505,7 +3514,10 @@ public:
       {
         double cam = spell_t::composite_aoe_multiplier( state );
 
-        return cam / std::sqrt( state->n_targets );
+        if ( state->target != target )
+          return cam / std::sqrt( state->n_targets );
+
+        return cam;
       }
     };
 
@@ -5571,7 +5583,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    aoe               = -1;
+    aoe               = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -6354,12 +6366,20 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // Initial damage does Square Root damage
+  // For more than 5 targets damage is based on a logarithmic function.
+  // This is the closest we can figure out what that function is
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->n_targets > p()->spec.keg_smash->effectN( 7 ).base_value() )
+      // this is the closest we can come up without Blizzard flat out giving us the function
+      // Primary takes the 100% damage
+      // Secondary targets get reduced damage
+      if ( state->target != target )
+        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+    return cam;
   }
 
   double action_multiplier() const override
@@ -7063,7 +7083,10 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->target != target )
+        return cam / std::sqrt( state->n_targets );
+
+    return cam;
   }
 
   void execute() override
@@ -8472,6 +8495,9 @@ struct expel_harm_t : public monk_heal_t
     target           = player;
     may_combo_strike = true;
 
+    if ( p.spec.expel_harm_2_brm->ok() )
+      cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
+
     add_child( dmg );
   }
 
@@ -9749,6 +9775,7 @@ void monk_t::init_spells()
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
   spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
+  spec.two_hand_adjustment       = find_spell( 346104 );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );
@@ -10264,7 +10291,8 @@ void monk_t::create_buffs()
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
-                           ->set_default_value_from_effect( 1 );
+                           ->set_default_value_from_effect( 1 )
+                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
@@ -12421,6 +12449,10 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.brewmaster_monk );
   action.apply_affecting_aura( spec.windwalker_monk );
   action.apply_affecting_aura( spec.mistweaver_monk );
+
+  if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
+      main_hand_weapon.group() == weapon_e::WEAPON_2H )
+        action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
   //   action.gcd_type = gcd_haste_type::HASTE;

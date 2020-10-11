@@ -347,6 +347,8 @@ struct sim_t : private sc_thread_t
     double combat_meditation_extend_chance = 0.5;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
+    /// Number of nearby allies when you proc lead by example
+    unsigned lead_by_example_nearby = 3;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
@@ -542,6 +544,8 @@ struct sim_t : private sc_thread_t
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
+  // Which actor to use as the base for computing relative difference.
+  std::string relative_difference_base;
   double chart_boxplot_percentile;
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to

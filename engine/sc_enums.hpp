@@ -1093,6 +1093,20 @@ enum cache_e
   CACHE_MAX
 };
 
+enum stat_pct_buff_type
+{
+  STAT_PCT_BUFF_CRIT,
+  STAT_PCT_BUFF_HASTE,
+  STAT_PCT_BUFF_VERSATILITY,
+  STAT_PCT_BUFF_MASTERY,
+  STAT_PCT_BUFF_STRENGTH,
+  STAT_PCT_BUFF_AGILITY,
+  STAT_PCT_BUFF_STAMINA,
+  STAT_PCT_BUFF_INTELLECT,
+  STAT_PCT_BUFF_SPIRIT,
+  STAT_PCT_BUFF_MAX
+};
+
 #define check( x )                                                   \
   static_assert(                                                     \
       static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
@@ -1155,6 +1169,24 @@ inline cache_e cache_from_stat( stat_e st )
         break;
     }
   return CACHE_NONE;
+}
+
+inline cache_e cache_from_stat_pct_buff( stat_pct_buff_type spb )
+{
+  switch ( spb )
+  {
+    case STAT_PCT_BUFF_CRIT: return CACHE_CRIT_CHANCE;
+    case STAT_PCT_BUFF_HASTE: return CACHE_HASTE;
+    case STAT_PCT_BUFF_VERSATILITY: return CACHE_VERSATILITY;
+    case STAT_PCT_BUFF_MASTERY: return CACHE_MASTERY;
+    case STAT_PCT_BUFF_STRENGTH: return CACHE_STRENGTH;
+    case STAT_PCT_BUFF_AGILITY: return CACHE_AGILITY;
+    case STAT_PCT_BUFF_STAMINA: return CACHE_STAMINA;
+    case STAT_PCT_BUFF_INTELLECT: return CACHE_INTELLECT;
+    case STAT_PCT_BUFF_SPIRIT: return CACHE_SPIRIT;
+    case STAT_PCT_BUFF_MAX: break;
+  }
+  assert( false ); return CACHE_NONE;
 }
 
 // Gear Rating Conversions ==================================================

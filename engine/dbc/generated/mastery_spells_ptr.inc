@@ -1,4 +1,4 @@
-// Mastery abilities, wow build 9.0.1.35282
+// Mastery abilities, wow build 9.0.1.36163
 static const std::array<mastery_spell_entry_t, 36> __ptr_mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
@@ -21,7 +21,7 @@ static const std::array<mastery_spell_entry_t, 36> __ptr_mastery_spell_data { {
   {  255, 263135 }, // Mastery: Spirit Bond (Survival Hunter)
   {  256, 271534 }, // Mastery: Grace (Discipline Priest)
   {  257,  77485 }, // Mastery: Echo of Light (Holy Priest)
-  {  258,  77486 }, // Mastery: Madness (Shadow Priest)
+  {  258, 343690 }, // Mastery: Shadow Weaving (Shadow Priest)
   {  259,  76803 }, // Mastery: Potent Assassin (Assassination Rogue)
   {  260,  76806 }, // Mastery: Main Gauche (Outlaw Rogue)
   {  261,  76808 }, // Mastery: Executioner (Subtlety Rogue)

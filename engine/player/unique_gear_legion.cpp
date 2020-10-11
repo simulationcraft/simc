@@ -1509,7 +1509,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
            ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
   }
 
-  effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
+  effect.player -> register_on_arise_callback( effect.player, [ buff, effect ]() {
     buff -> trigger( buff -> data().max_stacks() );
     if ( buff -> sim -> legion_opts.cradle_of_anguish_resets.size() )
     {
@@ -3000,7 +3000,7 @@ struct ceaseless_toxin_t : public proc_spell_t
         return;
       }
 
-      target -> callbacks_on_demise.emplace_back([ this ]( player_t* actor ) {
+      target -> register_on_demise_callback( player, [ this ]( player_t* actor ) {
         if ( get_dot( actor ) -> is_ticking() )
         {
           cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );

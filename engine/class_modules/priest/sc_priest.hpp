@@ -43,7 +43,6 @@ struct psychic_link_t;
 namespace heals
 {
 struct power_word_shield_t;
-struct insanity_drain_stacks_t;
 }  // namespace heals
 }  // namespace actions
 
@@ -85,6 +84,7 @@ public:
     propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
+    propagate_const<buff_t*> hungering_void;
   } buffs;
 
   priest_t& priest()
@@ -127,7 +127,6 @@ public:
 
     // Shadow
     propagate_const<buffs::dispersion_t*> dispersion;
-    propagate_const<buff_t*> insanity_drain_stacks;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> shadowy_insight;
@@ -141,7 +140,6 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thoughts;
-    propagate_const<buff_t*> dark_passion;
 
     // Azerite Powers
     // Shadow
@@ -243,7 +241,8 @@ public:
     const spell_data_t* damnation;
     const spell_data_t* void_torrent;
     // T50
-    const spell_data_t* legacy_of_the_void;
+    const spell_data_t* hungering_void;
+    const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
     const spell_data_t* ancient_madness;
     const spell_data_t* surrender_to_madness;
   } talents;
@@ -252,6 +251,7 @@ public:
   struct
   {
     const spell_data_t* priest;  // General priest data
+    const spell_data_t* mind_sear;
 
     // Discipline
     const spell_data_t* discipline;  // General discipline data
@@ -280,6 +280,7 @@ public:
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
     const spell_data_t* dark_thoughts;
+    const spell_data_t* mind_flay;
   } specs;
 
   // DoT Spells
@@ -327,7 +328,6 @@ public:
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_dispersion;
-    propagate_const<gain_t*> insanity_drain;
     propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> insanity_blessing;
@@ -381,7 +381,8 @@ public:
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
-  } active_spells;
+    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+  } background_actions;
 
   // Items
   struct
@@ -429,11 +430,6 @@ public:
     int priest_ascended_eruption_additional_targets = 10;
   } options;
 
-  struct actions_t
-  {
-    actions::spells::ascended_eruption_t* ascended_eruption;
-  } action;
-
   // Azerite
   struct azerite_t
   {
@@ -451,6 +447,7 @@ public:
     azerite_power_t whispers_of_the_damned;
   } azerite;
 
+  // Essences
   struct
   {
     const spell_data_t* lucid_dreams;
@@ -460,6 +457,7 @@ public:
     const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
 
+  // Legendaries
   struct
   {
     // Generic Priest
@@ -477,6 +475,7 @@ public:
     item_runeforge_t talbadars_stratagem;
   } legendary;
 
+  // Conduits
   struct
   {
     // Generic Priest
@@ -497,6 +496,7 @@ public:
     conduit_data_t shattered_perceptions;
   } conduits;
 
+  // Covenants
   struct
   {
     const spell_data_t* fae_guardians;
@@ -504,8 +504,6 @@ public:
     const spell_data_t* mindgames;
     const spell_data_t* boon_of_the_ascended;
   } covenant;
-
-  struct insanity_end_event_t;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -557,7 +555,6 @@ private:
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();
-
   void create_buffs_shadow();
   void init_rng_shadow();
   void init_spells_shadow();
@@ -586,15 +583,15 @@ private:
 
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
-  void lose_insanity( double amount, gain_t* g, action_t* action );
   void trigger_lucid_dreams( double cost );
-  bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  bool hungering_void_active( player_t* target ) const;
+  void remove_hungering_void( player_t* target );
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
@@ -606,62 +603,6 @@ public:
   {
     return _target_data[ target ];
   }
-
-  /**
-   * Insanity tracking
-   *
-   * Handles the resource gaining from abilities, and insanity draining and manages an event that forcibly punts the
-   * actor out of Voidform the exact moment insanity hits zero (millisecond resolution).
-   */
-  struct insanity_state_t final
-  {
-    event_t* end;             // End event for dropping out of voidform (insanity reaches 0)
-    timespan_t last_drained;  // Timestamp when insanity was last drained
-    priest_t& actor;
-
-    const double base_drain_per_sec;
-    const double stack_drain_multiplier;
-    double base_drain_multiplier;
-
-    insanity_state_t( priest_t& a );
-
-    // Deferred init for actor dependent stuff not ready in the ctor
-    void init();
-
-    // Start the insanity drain tracking
-    void set_last_drained();
-
-    // Start (or re-start) tracking of the insanity drain plus end event
-    void begin_tracking();
-
-    timespan_t time_to_end() const;
-
-    void reset();
-
-    // Compute insanity drain per second with current state of the actor
-    double insanity_drain_per_second() const;
-
-    // Gain some insanity
-    void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
-
-    // Lose some insanity
-    void lose( double value, gain_t* gain_obj, action_t* source_action = nullptr );
-
-    /**
-     * Triggers the insanity drain, and is called in places that changes the insanity state of the actor in a relevant
-     * way.
-     * These are:
-     * - Right before the actor decides to do something (scans APL for an ability to use)
-     * - Right before insanity drain stack increases (every second)
-     */
-    void drain();
-
-    /**
-     * Predict (with current state) when insanity is going to be fully depleted, and adjust (or create) an event for it.
-     * Called in conjunction with insanity_state_t::drain(), after the insanity drain occurs (and potentially after a
-     * relevant state change such as insanity drain stack buff increase occurs). */
-    void adjust_end_event();
-  } insanity;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -749,6 +690,15 @@ struct priest_pet_melee_t : public melee_attack_t
   {
     melee_attack_t::reset();
     first_swing = true;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double mul = attack_t::composite_target_multiplier( target );
+
+    mul *= debug_cast<priest_t*>( debug_cast<priest_pet_t*>( player )->owner )->shadow_weaving_multiplier( target, 0 );
+
+    return mul;
   }
 
   timespan_t execute_time() const override
@@ -898,7 +848,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 0.6;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
+    direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -923,7 +873,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
     : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell( 123051 ) )
   {
-    direct_power_mod = 0.65;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
+    direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -986,9 +936,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( base_execute_time == timespan_t::zero() )
       return timespan_t::zero();
 
-    if ( !harmful && !player->in_combat )
-      return timespan_t::zero();
-
     return base_execute_time * player->cache.spell_speed();
   }
 
@@ -1008,7 +955,7 @@ struct fiend_melee_t : public priest_pet_melee_t
               ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 2 ).percent() ) ) - amount,
               p().o().gains.insanity_surrender_to_madness );
         }
-        p().o().insanity.gain( amount, p().gains.fiend, nullptr );
+        p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
       }
       else
       {
@@ -1031,8 +978,19 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
   {
     background = true;
-    // This is hard coded in the spell, base SP is 3.0
-    spell_power_mod.direct *= 0.6;
+    // This is hard coded in the spell
+    // Depending on Mindbender or Shadowfiend this hits differently
+    switch ( p.pet_type )
+    {
+      case PET_MINDBENDER:
+      {
+        spell_power_mod.direct *= 0.442;
+      }
+      break;
+      default:
+        spell_power_mod.direct *= 0.408;
+        break;
+    }
   }
 };
 
@@ -1045,8 +1003,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   shadowflame_prism_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
-      duration( timespan_t::from_seconds( as<double>( data().effectN( 3 ).base_value() ) +
-                                          0.5 ) )  // This 0.5 is hardcoded in spell data
+      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
@@ -1154,13 +1111,11 @@ public:
 
     if ( affected_by.voidform_da )
     {
-      vf_da_multiplier = 1 + priest().buffs.voidform->data().effectN( 1 ).percent() +
-                         priest().talents.legacy_of_the_void->effectN( 4 ).percent();
+      vf_da_multiplier = 1 + priest().buffs.voidform->data().effectN( 1 ).percent();
     }
     if ( affected_by.voidform_ta )
     {
-      vf_ta_multiplier = 1 + priest().buffs.voidform->data().effectN( 2 ).percent() +
-                         priest().talents.legacy_of_the_void->effectN( 4 ).percent();
+      vf_ta_multiplier = 1 + priest().buffs.voidform->data().effectN( 2 ).percent();
     }
   }
 
@@ -1348,9 +1303,12 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false )
+    : base_t( name, player, s ),
+      affected_by_shadow_weaving( false ),
+      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
   }
@@ -1384,12 +1342,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::consume_resource();
 
-    if ( resource == RESOURCE_INSANITY )
-    {
-      priest().insanity.adjust_end_event();
-    }
-
-    if ( priest().specialization() != PRIEST_SHADOW )
+    if (priest().azerite_essence.lucid_dreams )
       priest().trigger_lucid_dreams( last_resource_cost );
   }
 
@@ -1419,6 +1372,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_wrathful_faerie_fermata();
         }
+      }
+
+      if (priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
+      {
+        // TODO: Remove after pre-patch?
+        // Just an approximation of the value added by Lucid Minor, not accurate
+        priest().trigger_lucid_dreams( 4.0 );
       }
     }
   }
@@ -1462,8 +1422,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return 0.0;
   }
 
-  void trigger_dark_thoughts( const player_t* target, proc_t* proc )
+  void trigger_dark_thoughts( const player_t* target, proc_t* proc, action_state_t* s )
   {
+    auto action_id = s->action->id;
+
     if ( !priest().specs.dark_thoughts->ok() )
       return;
     const priest_td_t* td = find_td( target );
@@ -1473,13 +1435,22 @@ struct priest_spell_t : public priest_action_t<spell_t>
     const dot_t* vt  = td->dots.vampiric_touch;
     const dot_t* dp  = td->dots.devouring_plague;
 
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
+    int dots                          = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+    double dark_thoughts_proc_percent = priest().specs.dark_thoughts->effectN( 1 ).percent();
+
+    // Currently Mind-Sear has half the proc rate of Mind Flay
+    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/101
+    if ( priest().bugs && action_id == mind_sear_id )
+    {
+      dark_thoughts_proc_percent /= 2;
+    }
+
+    if ( rng().roll( dark_thoughts_proc_percent * dots ) )
     {
       if ( sim->debug )
       {
         sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
-                          priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+                          dark_thoughts_proc_percent * dots, dots );
       }
       priest().buffs.dark_thoughts->trigger();
       proc->occur();
@@ -1562,8 +1533,6 @@ protected:
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
-  bool no_insanity_drain;
-
   dispersion_t( priest_t& p );
 };
 
