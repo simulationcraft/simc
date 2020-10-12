@@ -149,6 +149,7 @@ public:
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
+    propagate_const<buff_t*> sephuzs_proclamation;
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
@@ -461,6 +462,7 @@ public:
   struct
   {
     // Generic Priest
+    item_runeforge_t sephuzs_proclamation;
     item_runeforge_t twins_of_the_sun_priestess;
     // Holy
     item_runeforge_t divine_image;          // NYI
@@ -513,6 +515,7 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
+  void init_finished() override;
   void init_background_actions() override;
   void reset() override;
   void create_options() override;

@@ -6514,6 +6514,12 @@ struct prowl_t : public druid_spell_t
     if ( p()->buff.prowl->check() )
       return false;
 
+    if ( p()->sim->target_non_sleeping_list.empty() )
+      return true;
+
+    if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD)
+      return true;
+
     if ( p()->in_combat && !p()->buff.jungle_stalker->check() )
       return false;
 
@@ -8875,38 +8881,7 @@ void druid_t::apl_precombat()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  if ( specialization() == DRUID_FERAL )
-  {
-    precombat->add_action( this, "Cat Form" );
-  }
-
-  if ( specialization() == DRUID_BALANCE )
-  {
-    precombat->add_action( this, "Moonkin Form" );
-  }
-
-  if ( specialization() == DRUID_GUARDIAN )
-  {
-    precombat->add_action(this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-    precombat->add_action(this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-    precombat->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
-    precombat->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
-  }
-
-  if ( specialization() == DRUID_RESTORATION )
-  {
-    if ( talent.feral_affinity->ok() )
-    {
-      precombat->add_action( this, "Cat Form" );
-    }
-    if ( talent.balance_affinity->ok() )
-    {
-      precombat->add_action( this, "Moonkin Form" );
-    }
-  }
 }
-
 // NO Spec Combat Action Priority List ======================================
 
 void druid_t::apl_default()
@@ -8935,6 +8910,7 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
 //    Good              Okay        Stinky
 //   ------            ----         -----
@@ -8942,6 +8918,8 @@ void druid_t::apl_feral()
 //  Venthyr  _| . . |_
 //           >_  W  _<
 //             |   |
+  pre->add_action( this, "Cat Form" );
+
   def->add_action( "auto_attack" );
   def->add_action( this, "Shred" );
 }
@@ -8950,17 +8928,147 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
+  // Annotated APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
+  // ### BALANCE_APL_START ###
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* st = get_action_priority_list( "st" );
+  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+  action_priority_list_t* dreambinder = get_action_priority_list( "dreambinder" );
+  action_priority_list_t* boat = get_action_priority_list( "boat" );
+  action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
-  def->add_action( this, "Wrath" );
+  precombat->add_action( "moonkin_form" );
+  precombat->add_action( "wrath" );
+  precombat->add_action( "wrath" );
+  precombat->add_action( "starsurge,if=spell_targets.starfall<4" );
+  precombat->add_action( "variable,name=convoke_desync,value=floor((interpolated_fight_remains-20)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(4*conduit.precise_alignment.enabled))%180)" );
+
+  def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
+  def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
+  def->add_action( "potion,if=buff.ca_inc.up" );
+  def->add_action( "use_items" );
+  def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
+  def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
+  def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
+  def->add_action( "run_action_list,name=st" );
+
+  st->add_action( "moonfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&ap_check" );
+  st->add_action( "sunfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&ap_check" );
+  st->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16,if=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&ap_check" );
+  st->add_action( "force_of_nature,if=ap_check" );
+  st->add_action( "ravenous_frenzy,if=buff.ca_inc.up" );
+  st->add_action( "kindred_spirits,if=((buff.eclipse_solar.remains>10|buff.eclipse_lunar.remains>10)&cooldown.ca_inc.remains>30&(buff.primordial_arcanic_pulsar.value<240|!runeforge.primordial_arcanic_pulsar.equipped))|buff.primordial_arcanic_pulsar.value>=270|cooldown.ca_inc.ready&(astral_power>90|variable.is_aoe)" );
+  st->add_action( "celestial_alignment,if=(astral_power>90&(buff.kindred_empowerment_energize.up|!covenant.kyrian)|covenant.night_fae|variable.is_aoe|buff.bloodlust.up&buff.bloodlust.remains<20+((9*runeforge.primordial_arcanic_pulsar.equipped)+(4*conduit.precise_alignment.enabled)))&!buff.ca_inc.up&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains<22+(9*(buff.primordial_arcanic_pulsar.value>100))|interpolated_fight_remains%%180<22|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  st->add_action( "incarnation,if=(astral_power>90&(buff.kindred_empowerment_energize.up|!covenant.kyrian)|covenant.night_fae|variable.is_aoe|buff.bloodlust.up&buff.bloodlust.remains<30+((9*runeforge.primordial_arcanic_pulsar.equipped)+(4*conduit.precise_alignment.enabled)))&!buff.ca_inc.up&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains<32+(9*(buff.primordial_arcanic_pulsar.value>100))|interpolated_fight_remains%%180<32|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  st->add_action( "variable,name=convoke_condition,value=covenant.night_fae&(buff.primordial_arcanic_pulsar.value<240&(cooldown.ca_inc.remains+10>interpolated_fight_remains|cooldown.ca_inc.remains+30<interpolated_fight_remains&interpolated_fight_remains>130|buff.ca_inc.remains>7)&buff.eclipse_solar.remains>10|interpolated_fight_remains%%120<15)" );
+  st->add_action( "variable,name=save_for_ca_inc,value=(!cooldown.ca_inc.ready|!variable.convoke_condition&covenant.night_fae)" );
+  st->add_action( "convoke_the_spirits,if=variable.convoke_condition&astral_power<30" );
+  st->add_action( "fury_of_elune,if=eclipse.in_any&ap_check&buff.primordial_arcanic_pulsar.value<240&(dot.adaptive_swarm_damage.ticking|!covenant.necrolord)&variable.save_for_ca_inc" );
+  st->add_action( "adaptive_swarm,if=" );
+  st->add_action( "starfall,if=buff.oneths_perception.up&buff.starfall.refreshable" );
+  st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<6&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&astral_power>90" );
+  st->add_action( "starsurge,if=covenant.night_fae&variable.convoke_condition&cooldown.convoke_the_spirits.remains<gcd.max*ceil(astral_power%30)" );
+  st->add_action( "starfall,if=talent.stellar_drift.enabled&!talent.starlord.enabled&buff.starfall.refreshable&(buff.eclipse_lunar.remains>6&eclipse.in_lunar&buff.primordial_arcanic_pulsar.value<250|buff.primordial_arcanic_pulsar.value>=250&astral_power>90|dot.adaptive_swarm_damage.remains>8|action.adaptive_swarm_damage.in_flight)&!cooldown.ca_inc.ready" );
+  st->add_action( "starsurge,if=buff.oneths_clear_vision.up|buff.kindred_empowerment_energize.up|buff.ca_inc.up&(buff.ravenous_frenzy.remains<gcd.max*ceil(astral_power%30)&buff.ravenous_frenzy.up|!buff.ravenous_frenzy.up&!cooldown.ravenous_frenzy.ready|!covenant.venthyr)|astral_power>90&eclipse.in_any" );
+  st->add_action( "starsurge,if=talent.starlord.enabled&(buff.starlord.up|astral_power>90)&buff.starlord.stack<3&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&buff.primordial_arcanic_pulsar.value<270&(cooldown.ca_inc.remains>10|!variable.convoke_condition&covenant.night_fae)" );
+  st->add_action( "starsurge,if=(buff.primordial_arcanic_pulsar.value<270|buff.primordial_arcanic_pulsar.value<250&talent.stellar_drift.enabled)&buff.eclipse_solar.remains>7&eclipse.in_solar&!buff.oneths_perception.up&!talent.starlord.enabled&cooldown.ca_inc.remains>7&(cooldown.kindred_spirits.remains>7|!covenant.kyrian)" );
+  st->add_action( "new_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check&variable.save_for_ca_inc" );
+  st->add_action( "half_moon,if=(buff.eclipse_lunar.up&!covenant.kyrian|(buff.kindred_empowerment_energize.up&covenant.kyrian)|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
+  st->add_action( "full_moon,if=(buff.eclipse_lunar.up&!covenant.kyrian|(buff.kindred_empowerment_energize.up&covenant.kyrian)|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
+  st->add_action( "warrior_of_elune" );
+  st->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&buff.eclipse_lunar.up|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
+  st->add_action( "wrath" );
+  st->add_action( "run_action_list,name=fallthru" );
+
+  aoe->add_action( "starfall,if=buff.starfall.refreshable&(!runeforge.lycaras_fleeting_glimpse.equipped|time%%45>buff.starfall.remains+2)" );
+  aoe->add_action( "sunfire,target_if=refreshable&target.time_to_die>14-spell_targets+remains,if=ap_check&eclipse.in_any" );
+  aoe->add_action( "moonfire,target_if=refreshable&target.time_to_die>(14+(spell_targets.starfire*1.5))%spell_targets+remains,if=(cooldown.ca_inc.ready|spell_targets.starfire<3|(eclipse.in_solar|eclipse.in_both|eclipse.in_lunar&!talent.soul_of_the_forest.enabled)&(spell_targets.starfire<10*(1+talent.twin_moons.enabled))&astral_power>50-buff.starfall.remains*6)&!buff.kindred_empowerment_energize.up&ap_check" );
+  aoe->add_action( "force_of_nature,if=ap_check" );
+  aoe->add_action( "ravenous_frenzy,if=buff.ca_inc.up" );
+  aoe->add_action( "celestial_alignment,if=ap_check&!buff.ca_inc.up&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains%%180<22|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  aoe->add_action( "incarnation,if=ap_check&!buff.ca_inc.up&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains%%180<32|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  aoe->add_action( "kindred_spirits,if=interpolated_fight_remains<15|(buff.primordial_arcanic_pulsar.value<250|buff.primordial_arcanic_pulsar.value>=250)&buff.starfall.up&cooldown.ca_inc.remains>50" );
+  aoe->add_action( "stellar_flare,target_if=refreshable&time_to_die>15,if=spell_targets.starfire<4&ap_check&(buff.ca_inc.remains>10|!buff.ca_inc.up)" );
+  aoe->add_action( "variable,name=convoke_condition,value=buff.primordial_arcanic_pulsar.value<250-astral_power&(cooldown.ca_inc.remains+10>interpolated_fight_remains|cooldown.ca_inc.remains+30<interpolated_fight_remains&interpolated_fight_remains>130|buff.ca_inc.remains>7)&eclipse.in_any|interpolated_fight_remains%%120<15" );
+  aoe->add_action( "convoke_the_spirits,if=variable.convoke_condition&astral_power<50" );
+  aoe->add_action( "fury_of_elune,if=eclipse.in_any&ap_check&buff.primordial_arcanic_pulsar.value<250&(dot.adaptive_swarm_damage.ticking|!covenant.necrolord|spell_targets>2)" );
+  aoe->add_action( "adaptive_swarm,target_if=!ticking,if=spell_targets.starfall<9" );
+  aoe->add_action( "starfall,if=buff.oneths_perception.up&(buff.starfall.refreshable|astral_power>90)" );
+  aoe->add_action( "starfall,if=covenant.night_fae&variable.convoke_condition&cooldown.convoke_the_spirits.remains<gcd.max*ceil(astral_power%50)&buff.starfall.refreshable" );
+  aoe->add_action( "starsurge,if=covenant.night_fae&variable.convoke_condition&cooldown.convoke_the_spirits.remains<gcd.max*ceil(astral_power%30)&buff.starfall.up" );
+  aoe->add_action( "variable,name=starfall_wont_fall_off,value=astral_power>80-(buff.starfall.remains*3%spell_haste)-(dot.fury_of_elune.remains*5)&buff.starfall.up" );
+  aoe->add_action( "starsurge,if=buff.oneths_clear_vision.up|!starfire.ap_check|(buff.ca_inc.remains<5&buff.ca_inc.up|(buff.ravenous_frenzy.remains<gcd.max*ceil(astral_power%30)&buff.ravenous_frenzy.up))&variable.starfall_wont_fall_off&spell_targets.starfall<3" );
+  aoe->add_action( "new_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  aoe->add_action( "half_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  aoe->add_action( "full_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  aoe->add_action( "warrior_of_elune" );
+  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>8+floor(mastery_value%20)+floor(buff.starsurge_empowerment.stack%4)" );
+  aoe->add_action( "wrath,if=eclipse.lunar_next|eclipse.any_next|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&spell_haste>0.6" );
+  aoe->add_action( "starfire" );
+  aoe->add_action( "run_action_list,name=fallthru" );
+
+  dreambinder->add_action( "variable,name=safe_to_use_spell,value=(buff.timeworn_dreambinder.remains>gcd.max&!eclipse.in_lunar&!eclipse.solar_next&!eclipse.any_next|buff.timeworn_dreambinder.remains>action.starfire.execute_time&(spell_targets.starfire>1|eclipse.in_lunar|eclipse.solar_next|eclipse.any_next))|!buff.timeworn_dreambinder.up" );
+  dreambinder->add_action( "starsurge,if=(!variable.safe_to_use_spell|((buff.eclipse_solar.remains<gcd.max&buff.eclipse_solar.up)|(buff.ravenous_frenzy.remains<gcd.max*ceil(astral_power%30)&buff.ravenous_frenzy.up)))&(buff.eclipse_solar.up|eclipse.solar_next|eclipse.any_next)|astral_power>90" );
+  dreambinder->add_action( "moonfire,target_if=refreshable&target.time_to_die>16,if=!buff.kindred_empowerment_energize.up" );
+  dreambinder->add_action( "sunfire,target_if=refreshable&target.time_to_die>16,if=!buff.kindred_empowerment_energize.up" );
+  dreambinder->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16,if=(buff.ca_inc.remains>10|!buff.ca_inc.up)&ap_check&!buff.kindred_empowerment_energize.up" );
+  dreambinder->add_action( "ravenous_frenzy,if=astral_power<70&(buff.timeworn_dreambinder.remains>gcd.max*2|!buff.timeworn_dreambinder.up)" );
+  dreambinder->add_action( "celestial_alignment,if=ap_check&!buff.ca_inc.up&(buff.timeworn_dreambinder.remains>gcd.max|!buff.timeworn_dreambinder.up)&ap_check&!buff.ca_inc.up&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains%%180<22|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  dreambinder->add_action( "incarnation,if=ap_check&!buff.ca_inc.up&(buff.timeworn_dreambinder.remains>gcd.max|!buff.timeworn_dreambinder.up)&(interpolated_fight_remains<cooldown.convoke_the_spirits.remains+7|interpolated_fight_remains%%180<32|cooldown.convoke_the_spirits.up|!covenant.night_fae)" );
+  dreambinder->add_action( "force_of_nature,if=ap_check" );
+  dreambinder->add_action( "kindred_spirits,if=buff.timeworn_dreambinder.remains>gcd.max&(floor((interpolated_fight_remains-10)%cooldown)>floor((interpolated_fight_remains-10-cooldown.ca_inc.remains)%cooldown)&(eclipse.in_solar|eclipse.solar_next|buff.ca_inc.remains>10|buff.primordial_arcanic_pulsar.value>=270&astral_power>50))" );
+  dreambinder->add_action( "variable,name=convoke_condition,value=buff.primordial_arcanic_pulsar.value<240&(cooldown.ca_inc.remains+10>interpolated_fight_remains|cooldown.ca_inc.remains+30<interpolated_fight_remains&interpolated_fight_remains>130|interpolated_fight_remains%%120<15|buff.ca_inc.remains>7)&eclipse.in_any" );
+  dreambinder->add_action( "convoke_the_spirits,if=variable.convoke_condition&(astral_power<50&variable.is_aoe|astral_power<30)&(buff.timeworn_dreambinder.remains>execute_time|!buff.timeworn_dreambinder.up)" );
+  dreambinder->add_action( "fury_of_elune,if=eclipse.in_any&ap_check&variable.safe_to_use_spell&(dot.adaptive_swarm_damage.ticking|!covenant.necrolord|spell_targets>2)" );
+  dreambinder->add_action( "adaptive_swarm,if=" );
+  dreambinder->add_action( "starsurge,if=!covenant.night_fae&cooldown.ca_inc.ready&astral_power>70" );
+  dreambinder->add_action( "starsurge,if=covenant.night_fae&variable.convoke_condition&astral_power>=30&cooldown.convoke_the_spirits.remains<gcd.max*ceil(astral_power%30)" );
+  dreambinder->add_action( "new_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  dreambinder->add_action( "half_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check&(buff.timeworn_dreambinder.remains>execute_time|!buff.timeworn_dreambinder.up)" );
+  dreambinder->add_action( "full_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check&(buff.timeworn_dreambinder.remains>execute_time|!buff.timeworn_dreambinder.up)" );
+  dreambinder->add_action( "warrior_of_elune" );
+  dreambinder->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&buff.eclipse_lunar.up|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
+  dreambinder->add_action( "wrath" );
+  dreambinder->add_action( "run_action_list,name=fallthru" );
+
+  boat->add_action( "ravenous_frenzy,if=buff.ca_inc.up" );
+  boat->add_action( "variable,name=critnotup,value=!buff.balance_of_all_things_nature.up&!buff.balance_of_all_things_arcane.up" );
+  boat->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<15&(buff.balance_of_all_things_nature.remains>4.5|buff.balance_of_all_things_arcane.remains>4.5)&astral_power>=60&(cooldown.ca_inc.remains>7|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))" );
+  boat->add_action( "starsurge,if=!variable.critnotup&((!cooldown.convoke_the_spirits.up|!variable.convoke_condition|!covenant.night_fae)&(covenant.night_fae|(cooldown.ca_inc.remains>7|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))))|(cooldown.convoke_the_spirits.up&cooldown.ca_inc.ready&covenant.night_fae)" );
+  boat->add_action( "sunfire,target_if=refreshable&target.time_to_die>16,if=ap_check&(variable.critnotup|(astral_power<30&!buff.ca_inc.up)|cooldown.ca_inc.ready)" );
+  boat->add_action( "moonfire,target_if=refreshable&target.time_to_die>13.5,if=ap_check&(variable.critnotup|(astral_power<30&!buff.ca_inc.up)|cooldown.ca_inc.ready)&!buff.kindred_empowerment_energize.up" );
+  boat->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16+remains,if=ap_check&(variable.critnotup|astral_power<30|cooldown.ca_inc.ready)" );
+  boat->add_action( "force_of_nature,if=ap_check" );
+  boat->add_action( "fury_of_elune,if=(eclipse.in_any|eclipse.solar_in_1|eclipse.lunar_in_1)&(!covenant.night_fae|(astral_power<95&(variable.critnotup|astral_power<30|variable.is_aoe)&(variable.convoke_desync&!cooldown.convoke_the_spirits.up|!variable.convoke_desync&!cooldown.ca_inc.up)))&(cooldown.ca_inc.remains>30|astral_power>90&cooldown.ca_inc.up&(cooldown.empower_bond.remains<action.starfire.execute_time|!covenant.kyrian)|interpolated_fight_remains<10)&(dot.adaptive_swarm_damage.remains>4|!covenant.necrolord)" );
+  boat->add_action( "kindred_spirits,if=(eclipse.lunar_next|eclipse.solar_next|eclipse.any_next|buff.balance_of_all_things_nature.remains>4.5|buff.balance_of_all_things_arcane.remains>4.5|astral_power>90&cooldown.ca_inc.ready)&(cooldown.ca_inc.remains>30|cooldown.ca_inc.ready)|interpolated_fight_remains<10" );
+  boat->add_action( "celestial_alignment,if=(astral_power>90&(buff.kindred_empowerment_energize.up|!covenant.kyrian)|covenant.night_fae|buff.bloodlust.up&buff.bloodlust.remains<20+(4*conduit.precise_alignment.enabled))&(!covenant.night_fae|cooldown.convoke_the_spirits.up|interpolated_fight_remains<cooldown.convoke_the_spirits.remains+6|interpolated_fight_remains%%180<20+(4*conduit.precise_alignment.enabled))" );
+  boat->add_action( "incarnation,if=(astral_power>90&(buff.kindred_empowerment_energize.up|!covenant.kyrian)|covenant.night_fae|buff.bloodlust.up&buff.bloodlust.remains<30+(4*conduit.precise_alignment.enabled))&(!covenant.night_fae|cooldown.convoke_the_spirits.up|variable.convoke_desync&interpolated_fight_remains>180+20+(4*conduit.precise_alignment.enabled)|interpolated_fight_remains<cooldown.convoke_the_spirits.remains+6|interpolated_fight_remains<30+(4*conduit.precise_alignment.enabled))" );
+  boat->add_action( "convoke_the_spirits,if=(variable.convoke_desync&interpolated_fight_remains>130|buff.ca_inc.up)&(buff.balance_of_all_things_nature.stack_value>30|buff.balance_of_all_things_arcane.stack_value>30)|interpolated_fight_remains<10" );
+  boat->add_action( "adaptive_swarm,if=" );
+  boat->add_action( "starsurge,if=covenant.night_fae&(variable.convoke_desync|cooldown.ca_inc.remains<10)&astral_power>50&cooldown.convoke_the_spirits.remains<10" );
+  boat->add_action( "variable,name=aspPerSec,value=eclipse.in_lunar*8%action.starfire.execute_time+!eclipse.in_lunar*6%action.wrath.execute_time+0.2%spell_haste" );
+  boat->add_action( "starsurge,if=((interpolated_fight_remains<4|(buff.ravenous_frenzy.remains<gcd.max*ceil(astral_power%30)&buff.ravenous_frenzy.up))|(astral_power+variable.aspPerSec*buff.eclipse_solar.remains+dot.fury_of_elune.ticks_remain*2.5>120|astral_power+variable.aspPerSec*buff.eclipse_lunar.remains+dot.fury_of_elune.ticks_remain*2.5>120)&eclipse.in_any&((!cooldown.ca_inc.up|covenant.kyrian&!cooldown.empower_bond.up)|covenant.night_fae)|buff.ca_inc.remains>8&!buff.ravenous_frenzy.up)" );
+  boat->add_action( "new_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  boat->add_action( "half_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  boat->add_action( "full_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
+  boat->add_action( "warrior_of_elune" );
+  boat->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&eclipse.in_lunar|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
+  boat->add_action( "wrath" );
+  boat->add_action( "run_action_list,name=fallthru" );
+
+  fallthru->add_action( "starsurge,if=!runeforge.balance_of_all_things.equipped" );
+  fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains" );
+  fallthru->add_action( "moonfire" );
+  // ### BALANCE_APL_END ###
 }
 
 // Guardian Combat Action Priority List =====================================
 
 void druid_t::apl_guardian()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
-
+  action_priority_list_t* pre      = get_action_priority_list( "precombat" );
+  action_priority_list_t* def      = get_action_priority_list( "default" );
   action_priority_list_t* bear     = get_action_priority_list( "bear" );
   action_priority_list_t* catweave = get_action_priority_list( "catweave" );
   action_priority_list_t* owlweave = get_action_priority_list( "owlweave" );
@@ -8968,7 +9076,18 @@ void druid_t::apl_guardian()
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
 
+  pre->add_action( this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+  pre->add_action( this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
+  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+  pre->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
+  pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&druid.owlweave_bear" );
+  pre->add_action( "wrath,if=druid.owlweave_bear" );
+
   def->add_action( "auto_attack" );
+  def->add_action( "use_items" );
+  def->add_action(
+      "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
+      "bear))" );
 
   lycara_owl->add_action( this, "Moonkin Form" );
   lycara_cat->add_action( this, "Cat Form" );
@@ -8978,13 +9097,15 @@ void druid_t::apl_guardian()
       "dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff."
       "galactic_guardian.down)|(buff.cat_form.up&energy>25)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_"
       "the_elder_druid.up&(buff.cat_form.up&energy>20))|(runeforge.oath_of_the_elder_druid.equipped&buff.heart_of_the_"
-      "wild.remains<10)&(buff.cat_form.up&energy>20))" );
+      "wild.remains<10)&(buff.cat_form.up&energy>20)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<"
+      "2))" );
   def->add_action(
       "run_action_list,name=owlweave,if=druid.owlweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
-      "dot.moonfire.remains>=gcd+0.5&rage<20&buff.incarnation.down&buff.berserk_bear.down&buff.galactic_guardian.down)|"
-      "(buff.moonkin_form.up&buff.heart_of_the_wild.up)|(buff.moonkin_form.up&(buff.eclipse_lunar.up|buff.eclipse_"
-      "solar.up)&!runeforge.oath_of_the_elder_druid.equipped)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_"
-      "of_the_elder_druid.up&(buff.moonkin_form.up&buff.heart_of_the_wild.up)))" );
+      "rage<20&buff.incarnation.down&buff.berserk_bear.down)|(buff.moonkin_form.up&dot.sunfire.refreshable)|(buff."
+      "moonkin_form.up&buff.heart_of_the_wild.up)|(buff.moonkin_form.up&(buff.eclipse_lunar.up|buff.eclipse_solar.up)&!"
+      "runeforge.oath_of_the_elder_druid.equipped)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_"
+      "druid.up)|(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1)|(covenant.kyrian&cooldown.empower_bond."
+      "remains<=1&active_enemies<2))" );
   def->add_action(
       "run_action_list,name=lycarao,if=((runeforge.lycaras_fleeting_glimpse.equipped)&(talent.balance_affinity.enabled)"
       "&(buff.lycaras_fleeting_glimpse.up)&(buff.lycaras_fleeting_glimpse.remains<=2))" );
@@ -8993,51 +9114,58 @@ void druid_t::apl_guardian()
       "buff.lycaras_fleeting_glimpse.up)&(buff.lycaras_fleeting_glimpse.remains<=2))" );
   def->add_action( "run_action_list,name=bear" );
 
-  bear->add_action( this, "Bear Form" );
-  bear->add_action( "ravenous_frenzy" );
-  bear->add_action( "potion,if=buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up" );
-  bear->add_action( "use_items" );
-  bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear" );
-  bear->add_action( "berserk_bear,if=buff.ravenous_frenzy.up|!covenant.venthyr" );
-  bear->add_action( "incarnation,if=buff.ravenous_frenzy.up|!covenant.venthyr" );
-  bear->add_action( "empower_bond,if=!druid.catweave_bear&!druid.owlweave_bear" );
-  bear->add_action( "barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)" );
-  bear->add_action( this, "Maul", "if=(rage.deficit<10)&active_enemies<4" );
-  bear->add_action( "ironfur,if=buff.ironfur.remains<0.5" );
+  bear->add_action( "bear_form,if=!buff.bear_form.up" );
   bear->add_action(
-      "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|dot.thrash_bear.stack<4&runeforge.luffainfused_"
-      "embrace.equipped" );
-  bear->add_action( this, "Thrash",
-                    "if=(buff.incarnation.down&buff.berserk_bear.down&active_enemies>1)|(buff.incarnation.up&buff."
-                    "berserk_bear.down&active_enemies>4)" );
-  bear->add_action( "adaptive_swarm,target_if=!ticking" );
-  bear->add_action( this, "Moonfire", "target_if=refreshable&active_enemies<=2" );
-  bear->add_action( this, "Moonfire", "if=buff.galactic_guardian.up&buff.galactic_guardian.remains<1.5" );
-  bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>4" );
-  bear->add_action( this, "Maul", "if=(buff.tooth_and_claw.stack>=2)&active_enemies<4" );
-  bear->add_action( this, "Maul", "if=(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)&active_enemies<4" );
-  bear->add_action( this, "Maul", "if=(buff.savage_combatant.stack>=3)&active_enemies<4" );
-  bear->add_action( this, "Mangle", "if=rage<80|!buff.berserk_bear.up&!buff.incarnation_guardian_of_ursoc.up" );
+      "potion,if=((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_"
+      "bear))" );
+  bear->add_action( "ravenous_frenzy" );
+  bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear" );
+  bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
+  bear->add_action( "incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
+  bear->add_action( "empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2" );
+  bear->add_action( "barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)" );
+  bear->add_action( "ironfur,if=buff.ironfur.remains<0.5" );
+  bear->add_action( "adaptive_swarm,target_if=refreshable" );
+  bear->add_action( "moonfire,if=(buff.galactic_guardian.up&druid.owlweave_bear)&active_enemies<=3" );
+  bear->add_action(
+      "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_"
+      "embrace.equipped)|active_enemies>5" );
+  bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
+  bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2" );
+  bear->add_action(
+      "maul,if=(buff.savage_combatant.stack>=1)&(buff.tooth_and_claw.up)&buff.incarnation.up&active_enemies=2" );
+  bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
+  bear->add_action( "moonfire,target_if=refreshable&active_enemies<=3" );
+  bear->add_action(
+      "maul,if=(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_"
+      "combatant.stack>=3)" );
+  bear->add_action( "thrash_bear,if=active_enemies>1" );
+  bear->add_action(
+      "moonfire,if=(buff.galactic_guardian.up&druid.catweave_bear)&active_enemies<=3|(buff.galactic_guardian.up&!druid."
+      "catweave_bear&!druid.owlweave_bear)&active_enemies<=3" );
+  bear->add_action( "mangle,if=(rage<80)&active_enemies<4" );
   bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
   bear->add_action( "thrash_bear" );
-  bear->add_action( this, "Maul" );
+  bear->add_action( "maul" );
   bear->add_action( "swipe_bear" );
 
-  catweave->add_action( this, "Cat form" );
+  catweave->add_action( "cat_form,if=!buff.cat_form.up" );
   catweave->add_action( this, "Rake", "if=buff.prowl.up" );
   catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   catweave->add_action( "empower_bond,if=druid.catweave_bear" );
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
-  catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points=5" );
-  catweave->add_action( "ferocious_bite,if=combo_points=5" );
-  catweave->add_action( this, "Rake", "if=dot.rake.refreshable&combo_points<5" );
+  catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points>=4" );
+  catweave->add_action( "ferocious_bite,if=combo_points>=4" );
+  catweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  catweave->add_action( this, "Rake", "if=dot.rake.refreshable&combo_points<4" );
   catweave->add_action( this, "Shred" );
 
-  owlweave->add_action( this, "Moonkin Form" );
+  owlweave->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
   owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   owlweave->add_action( "empower_bond,if=druid.owlweave_bear" );
   owlweave->add_action( "convoke_the_spirits,if=druid.owlweave_bear" );
-  owlweave->add_action( "moonfire,target_if=refreshable" );
+  owlweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  owlweave->add_action( "moonfire,target_if=refreshable|buff.galactic_guardian.up" );
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( this, "Starfire",
@@ -9049,18 +9177,22 @@ void druid_t::apl_guardian()
 
 void druid_t::apl_restoration()
 {
-  action_priority_list_t* def     = get_action_priority_list( "default" );
-  action_priority_list_t* balance = get_action_priority_list( "balance" );
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* owl = get_action_priority_list( "balance" );
 
-  def->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
+  pre->add_action( this, "Cat Form", "if=talent.feral_affinity.enabled" );
+  pre->add_action( this, "Moonkin Form", "if=talent.balance_affinity.enabled" );
 
-  balance->add_action( this, "Moonfire", "target_if=refreshable" );
-  balance->add_action( this, "Sunfire", "target_if=refreshable" );
-  balance->add_talent( this, "Heart of the Wild" );
-  balance->add_action( "convoke_the_spirits,if=buff.eclipse_solar.up" );
-  balance->add_action( this, "Starsurge" );
-  balance->add_action( this, "Wrath", "if=buff.eclipse_solar.up|eclipse.lunar_next" );
-  balance->add_action( this, "Starfire" );
+  def->add_action( "run_action_list,name=owl,if=talent.balance_affinity.enabled" );
+
+  owl->add_action( this, "Moonfire", "target_if=refreshable" );
+  owl->add_action( this, "Sunfire", "target_if=refreshable" );
+  owl->add_talent( this, "Heart of the Wild" );
+  owl->add_action( "convoke_the_spirits,if=buff.eclipse_solar.up" );
+  owl->add_action( this, "Starsurge" );
+  owl->add_action( this, "Wrath", "if=buff.eclipse_solar.up|eclipse.lunar_next" );
+  owl->add_action( this, "Starfire" );
 }
 
 // druid_t::init_scaling ====================================================
@@ -9939,6 +10071,20 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     return make_fn_expr( "active_bt_triggers", [ this ]() {
       return buff.bt_rake->check() + buff.bt_shred->check() + buff.bt_swipe->check() +
              buff.bt_thrash->check() + buff.bt_moonfire->check() + buff.bt_brutal_slash->check();
+    } );
+  }
+
+  if ( util::str_compare_ci( name_str, "bt_trigger_remains" ) )
+  {
+    return make_fn_expr( "bt_trigger_remains", [ this ]() {
+      return std::min( std::initializer_list<double>( {
+          buff.bt_rake->check() ? buff.bt_rake->remains().total_seconds() : 6.0,
+          buff.bt_shred->check() ? buff.bt_shred->remains().total_seconds() : 6.0,
+          buff.bt_moonfire->check() ? buff.bt_moonfire->remains().total_seconds() : 6.0,
+          buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
+          buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
+          buff.bt_brutal_slash->check() ? buff.bt_brutal_slash->remains().total_seconds() : 6.0,
+      } ) );
     } );
   }
 
