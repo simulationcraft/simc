@@ -6514,14 +6514,19 @@ struct prowl_t : public druid_spell_t
     if ( p()->buff.prowl->check() )
       return false;
 
-    if ( p()->sim->target_non_sleeping_list.empty() )
-      return true;
-
-    if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD)
-      return true;
-
-    if ( p()->in_combat && !p()->buff.jungle_stalker->check() )
+    if ( p()->in_combat )
+    {
+      if ( p()->buff.jungle_stalker->check() )
+        return druid_spell_t::ready();
+      
+      if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
+        return druid_spell_t::ready();
+       
+      if ( p()->sim->target_non_sleeping_list.empty() )
+        return druid_spell_t::ready();
+       
       return false;
+    }
 
     return druid_spell_t::ready();
   }
