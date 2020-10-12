@@ -8525,7 +8525,7 @@ struct expel_harm_t : public monk_heal_t
 
     if ( p()->azerite.conflict_and_strife.is_major() )
     {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.expel_harm );
+      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 2 ).base_value(), p()->gain.expel_harm );
     }
     else if ( p()->spec.expel_harm_2_ww->ok() )
     {
