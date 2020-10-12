@@ -1226,6 +1226,7 @@ void warlock_t::create_apl_destruction()
   action_priority_list_t* cds   = get_action_priority_list( "cds" );
   action_priority_list_t* havoc = get_action_priority_list( "havoc" );
   action_priority_list_t* aoe   = get_action_priority_list( "aoe" );
+  action_priority_list_t* ess   = get_action_priority_list( "essences" );
 
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
   def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
@@ -1234,6 +1235,7 @@ void warlock_t::create_apl_destruction()
   def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
   def->add_action( "call_action_list,name=cds" );
+  def->add_action( "call_action_list,name=essences" );
   def->add_action( "channel_demonfire" );
   def->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)" );
   def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=15&talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)" );
@@ -1250,6 +1252,7 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
+  aoe->add_action( "call_action_list,name=essences" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
   aoe->add_action( "rain_of_fire" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
@@ -1273,5 +1276,16 @@ void warlock_t::create_apl_destruction()
   havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
+
+  ess->add_action( "worldvein_resonance" );
+  ess->add_action( "memory_of_lucid_dreams" );
+  ess->add_action( "blood_of_the_enemy" );
+  ess->add_action( "guardian_of_azeroth" );
+  ess->add_action( "ripple_in_space" );
+  ess->add_action( "focused_azerite_beam" );
+  ess->add_action( "purifying_blast" );
+  ess->add_action( "reaping_flames" );
+  ess->add_action( "concentrated_flame" );
+  ess->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
 }
 }  // namespace warlock
