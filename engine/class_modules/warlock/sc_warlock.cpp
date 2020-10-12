@@ -841,7 +841,10 @@ void warlock_t::apl_precombat()
     precombat->add_action( "potion" );
   }
   if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
     precombat->add_action( "demonbolt" );
+    precombat->add_action( "variable,name=tyrant_ready,value=0" );
+  }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     precombat->add_talent( this, "Soul Fire" );
