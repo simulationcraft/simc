@@ -450,6 +450,7 @@ public:
     item_runeforge_t the_magistrates_judgment;
     item_runeforge_t bulwark_of_righteous_fury;
     item_runeforge_t holy_avengers_engraved_sigil;
+    item_runeforge_t the_ardent_protectors_sanctum;
   } legendary;
 
   // Paladin options

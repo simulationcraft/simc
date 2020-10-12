@@ -510,6 +510,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
       ctm *= 1.0 + punish_the_guilty_value;
     ctm *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+    // Range increase on bulwark of righteous fury not implemented.
     return ctm;
   }
 };
@@ -551,7 +552,8 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.ardent_defender -> up() )
   {
-    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent()
+      + legendary.the_ardent_protectors_sanctum -> effectN( 1 ).percent();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
   }
