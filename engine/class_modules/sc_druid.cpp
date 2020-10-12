@@ -8948,6 +8948,7 @@ void druid_t::apl_balance()
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
   def->add_action( "potion,if=buff.ca_inc.up" );
   def->add_action( "use_items" );
+  def->add_action( "heart_essence,if=level=50" );
   def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
   def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
   def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
