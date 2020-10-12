@@ -57,7 +57,6 @@
 // Enhancement
 // - Lightning Shield? Maelstrom gen? Do we proc for sims?
 // - Windfury Totem - Does this need to be implemented as a raid buff?
-// - Feral Spirits Malestrom weapon gen
 // - Do we need to custom code frost/flame shock shared CD?
 // - Spec Legendaries
 // - Spec Conduits
@@ -424,12 +423,14 @@ public:
     buff_t* maelstrom_weapon;
     buff_t* flametongue_weapon;
     buff_t* windfury_weapon;
+    buff_t* feral_spirit_maelstrom;
 
     buff_t* crash_lightning;     // Buffs stormstrike and lava lash after using crash lightning
     buff_t* cl_crash_lightning;  // Buffs crash lightning with extra damage, after using chain lightning
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* stormbringer;
+
 
     buff_t* forceful_winds;
     buff_t* icy_edge;
@@ -563,7 +564,6 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
-    const spell_data_t* feral_spirit_2;  // 7.1 Feral Spirit Maelstrom gain passive
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* stormbringer;
 
@@ -956,10 +956,6 @@ struct ascendance_buff_t : public buff_t
       lava_burst( nullptr )
   {
     set_trigger_spell( p->talent.ascendance );
-    set_tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
-      double g = b->data().effectN( 4 ).base_value();
-      p->trigger_maelstrom_gain( g, p->gain.ascendance );
-    } );
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
   }
 
@@ -2138,19 +2134,13 @@ struct spirit_wolf_t : public base_wolf_t
   {
     const spell_data_t* maelstrom;
 
-    fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
+    fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" )
     {
     }
 
     void impact( action_state_t* state ) override
     {
       melee_attack_t::impact( state );
-
-      shaman_t* o = p()->o();
-      if ( o->spec.feral_spirit_2->ok() )
-      {
-        o->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ), o->gain.feral_spirit );
-      }
     }
   };
 
@@ -2172,18 +2162,8 @@ struct elemental_wolf_base_t : public base_wolf_t
 {
   struct dw_melee_t : public wolf_base_auto_attack_t<elemental_wolf_base_t>
   {
-    const spell_data_t* maelstrom;
-
-    dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
+    dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" )
     {
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      super::impact( state );
-
-      p()->o()->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                                        p()->o()->gain.feral_spirit );
     }
   };
 
@@ -4735,6 +4715,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->summon_feral_spirits( p()->spell.feral_spirit->duration() );
+    p()->buff.feral_spirit_maelstrom->trigger();
   }
 };
 
@@ -6552,7 +6533,6 @@ void shaman_t::init_spells()
   spec.critical_strikes   = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield         = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
-  spec.feral_spirit_2     = find_specialization_spell( 231723 );
   spec.maelstrom_weapon   = find_specialization_spell( "Maelstrom Weapon" );
   spec.stormbringer       = find_specialization_spell( "Stormbringer" );
   spec.windfury           = find_specialization_spell( "Windfury Weapon" );
@@ -7228,8 +7208,16 @@ void shaman_t::create_buffs()
   //
   buff.windfury_weapon    = make_buff( this, "windfury_weapon", find_spell( 33757 ) );
   buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 318038 ) );
-
   buff.lightning_shield = new lightning_shield_buff_t( this );
+  buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
+                                    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                      double g = b->data().effectN( 1 ).base_value();
+                                      // Do we need to record this gain anywhere else? proc.maelstrom_weapon seems like
+                                      // when a melee procs it. Do we need to present maelstrom_weapon as a resource 
+                                      // and track it that way for the purposes of reporting?
+                                      buff.maelstrom_weapon->increment();
+                                    } );
+
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                             ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
@@ -7542,7 +7530,9 @@ void shaman_t::init_action_list_enhancement()
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
   def->add_action( "windstrike" );
-  def->add_action( this, "Crash Lightning", "if=spell_targets.chain_lightning>1" );
+  def->add_action( this, "Stormstrike" );
+  def->add_action( this, "Lava Lash" );
+  def->add_action( this, "Crash Lightning" );
   def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1&&buff.maelstrom_weapon.stack>=5" );
   def->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5" );
   def->add_action( this, "Feral Spirit" );
@@ -7552,8 +7542,6 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Sundering" );
   def->add_action( this, "Earthen Spike" );
   def->add_action( this, "Elemental Blast" );
-  def->add_action( this, "Lava Lash" );
-  def->add_action( this, "Stormstrike" );
   def->add_action( this, "Crash Lightning" );
   def->add_action( this, "Flame Shock" );
   def->add_action( this, "Frost Shock" );
