@@ -103,6 +103,8 @@ public:
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         vop_infernals;  // Infernal(s) summoned by Vision of Perfection
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
+        roc_infernals;  // Infernal(s) summoned by Rain of Chaos
 
     //TODO: SL Beta - Vision of Perfection spawns should be removed once SL launches
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
@@ -457,6 +459,7 @@ public:
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
     propagate_const<buff_t*> reverse_entropy;
+    propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> grimoire_of_supremacy_driver; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
     propagate_const<buff_t*> grimoire_of_supremacy; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
     propagate_const<buff_t*> dark_soul_instability;
@@ -564,6 +567,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   timespan_t shard_react; //Was this planned to be used for RNG soul shard reaction timing? Currently unused
+  shuffled_rng_t* rain_of_chaos_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

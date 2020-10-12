@@ -1509,6 +1509,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     vop_infernals( "vop_infernal", w ),
+    roc_infernals( "roc_infernal", w ),
     vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),

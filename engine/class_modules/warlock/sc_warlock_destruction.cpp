@@ -37,6 +37,19 @@ public:
   void consume_resource() override
   {
     warlock_spell_t::consume_resource();
+
+    if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
+    {
+      for ( int i = 0; i < as<int>( cost() ); i++ )
+      {
+        //trigger deck of cards draw
+        if ( p()->rain_of_chaos_rng->trigger() )
+        {
+          //Currently storing infernal duration (spell 335286) in buff default value
+          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ), 1u);
+        }
+      }
+    }
   }
 
   void execute() override
@@ -756,6 +769,11 @@ struct summon_infernal_t : public destruction_spell_t
       }
     }
 
+    if ( p()->talents.rain_of_chaos->ok() )
+    {
+      p()->buffs.rain_of_chaos->trigger();
+    }
+
     // BFA - Azerite
     if ( p()->azerite.crashing_chaos.ok() )
     {
@@ -1055,6 +1073,10 @@ void warlock_t::create_buffs_destruction()
                               ->set_trigger_spell( talents.reverse_entropy )
                               ->add_invalidate( CACHE_HASTE );
 
+  //Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use later
+  buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
+                            ->set_default_value( find_spell( 335236 )->_duration );
+
   buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
                                     ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
                                     ->add_invalidate( CACHE_CRIT_CHANCE )
@@ -1138,6 +1160,7 @@ void warlock_t::init_spells_destruction()
   talents.cataclysm          = find_talent_spell( "Cataclysm" );
 
   talents.roaring_blaze = find_talent_spell( "Roaring Blaze" );
+  talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
   talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
@@ -1180,6 +1203,10 @@ void warlock_t::init_gains_destruction()
 
 void warlock_t::init_rng_destruction()
 {
+  //TOCHECK: SPELL DATA LISTS % CHANCE BUT THIS IS SUPPOSEDLY DECK OF CARDS
+  //2020-10-12: PTR for prepatch says 15% but beta still says 20%. 20% version was supposedly 2 out of 10
+  //PTR version is untested, using 3 out of 20 for now. Hopefully there is a way to tie this to spell data later.
+  rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
 }
 
 void warlock_t::init_procs_destruction()
