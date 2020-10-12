@@ -8931,7 +8931,7 @@ void druid_t::apl_balance()
   // Annotated APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
   // ### BALANCE_APL_START ###
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* default = get_action_priority_list( "default" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* dreambinder = get_action_priority_list( "dreambinder" );
@@ -8944,14 +8944,14 @@ void druid_t::apl_balance()
   precombat->add_action( "starsurge,if=spell_targets.starfall<4" );
   precombat->add_action( "variable,name=convoke_desync,value=floor((interpolated_fight_remains-20)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(4*conduit.precise_alignment.enabled))%180)" );
 
-  default->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
-  default->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
-  default->add_action( "potion,if=buff.ca_inc.up" );
-  default->add_action( "use_items" );
-  default->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
-  default->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
-  default->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
-  default->add_action( "run_action_list,name=st" );
+  def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
+  def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
+  def->add_action( "potion,if=buff.ca_inc.up" );
+  def->add_action( "use_items" );
+  def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
+  def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
+  def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
+  def->add_action( "run_action_list,name=st" );
 
   st->add_action( "moonfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&ap_check" );
   st->add_action( "sunfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5&(buff.ravenous_frenzy.remains>5|!buff.ravenous_frenzy.up)|!buff.ca_inc.up|astral_power<30)&(!buff.kindred_empowerment_energize.up|astral_power<30)&ap_check" );
