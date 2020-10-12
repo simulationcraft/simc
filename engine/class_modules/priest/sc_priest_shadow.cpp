@@ -1716,11 +1716,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.shadowform->trigger();
     }
 
-    if ( priest().azerite.chorus_of_insanity.enabled() )
+    /*if ( priest().azerite.chorus_of_insanity.enabled() )
     {
       priest().buffs.chorus_of_insanity->expire();
-      priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
-    }
+      priest().buffs.chorus_of_insanity->trigger( expiration_stacks  );
+    }*/
 
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
