@@ -4103,6 +4103,14 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
     background = dual = proc = true;
     may_miss = may_dodge = may_parry = false;
   }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    // since residual periodic action states are inherited from action_state_t, we need to bypass
+    // druid_action_t::schedule_travel() as it calls set_state_free_cast() which is only valid on druid_action_state_t
+    melee_attack_t::schedule_travel( s );
+  }
+
 };
 
 // Lunar Inspiration ========================================================
