@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.1.36163
-static const std::array<spelltext_data_t, 15577> __ptr_spelltext_data { {
+// Spell text, wow build 9.0.1.36200
+static const std::array<spelltext_data_t, 15579> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5825,6 +5825,7 @@ static const std::array<spelltext_data_t, 15577> __ptr_spelltext_data { {
   { 182062, "Increases Strength by $s1 for $d.", "Increases Strength by $s1.", 0 },
   { 182063, "When you deal damage you have a chance to gain $182062s1 Strength for $182062d.", 0, 0 },
   { 182073, "Increases Versatility by $s1 for $d.", "Increases Versatility by $s1.", 0 },
+  { 182104, "@$spelldesc321136", "After ${$321136s1~-$w1} Shield of the Righteous, your next Word of Glory is free.", 0 },
   { 182226, "Applies a razor sharp barb to your fishing pole for $d, automatically filleting any Draenor fish you catch.", "Draenor fish are automatically filleted when they are caught.", 0 },
   { 182284, "Gaze deep in to the reflection in the pearl. Only usable underwater in Draenor.", "Transformed into a deep murloc! Swim speed greatly increased.", 0 },
   { 182303, "When you use Vanish, you gain $s1 Combo Points and the critical strike chance of your next Saber Slash, Run Through, Between the Eyes, or Ambush is increased by $182304s1%.", 0, 0 },
@@ -14245,6 +14246,7 @@ static const std::array<spelltext_data_t, 15577> __ptr_spelltext_data { {
   { 327498, "$@spelldesc327492", 0, 0 },
   { 327508, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1%, stacking up to $327509u times.", 0, 0 },
   { 327509, "$@spelldesc327508", "Cast time of Frostbolt reduced by $s1%.", 0 },
+  { 327510, "@$spelldesc321136", "Your next Word of Glory is free.", 0 },
   { 327511, "$@spelldesc327508", 0, 0 },
   { 327541, "Casting Starfall extends the duration of active Moonfires and Sunfires by $s1 sec.", 0, "Rank 2" },
   { 327574, "Sacrifice your ghoul to deal $327611s1 Shadow damage to $327611s2 nearby enemies and heal for $s1% of your maximum health.", 0, 0 },
@@ -15579,7 +15581,7 @@ static const std::array<spelltext_data_t, 15577> __ptr_spelltext_data { {
   { 346104, 0, 0, "Passive" },
 } };
 
-// spelltext hotfix entries, wow build 9.0.1.36163
+// spelltext hotfix entries, wow build 9.0.1.36200
 static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
   {  227563,  0, "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot be used above level $ctrmax2067.", "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot be used above level $maxcast." },
   {  257284,  0, "Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%. The target can always be seen and tracked by the Hunter.\r\n\r\nOnly one Hunter's Mark can be applied at a time.\r\n\r\nThe cooldown of Hunter's Mark is reset if the target dies.", "Apply Hunter's Mark to the target, causing the target to always be seen and tracked by the Hunter.\r\n\r\nOnly one Hunter's Mark can be applied at a time." },
@@ -15592,7 +15594,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_ho
   {  345218,  0, "Your second Void Bolt cast on the same target will deal $m1% more damage, cause the target to receive $m2% more damage from you for $d, and extend the duration of your Void Form by $m3 sec. If your Void Bolt critically hits, your Void Form is extended by $m4 sec.", "Void Bolt causes the target to become vulnerable to the void, causing them to take an increased $345219m2% damage from you for $345219d. This effect can only be active on one target at any one time.\r\n\r\nVoid Bolt cast on vulnerable targets will also extend the duration of your Void Form by $m3 sec. If your Void Bolt critically hits, your Void Form is extended by $m4 sec." },
 } };
 
-// Spell description variables, wow build 9.0.1.36163
+// Spell description variables, wow build 9.0.1.36200
 static const std::array<spelldesc_vars_data_t, 274> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15870,7 +15872,7 @@ static const std::array<spelldesc_vars_data_t, 274> __ptr_spelldesc_vars_data { 
   {  343527, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.1.36163
+// spelldesc_vars hotfix entries, wow build 9.0.1.36200
 static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __ptr_spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.36}][${1}]\r\n$shield=${$SP*2*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  296320,  0, "$cooldownValue=${($m1+2896)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1", "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
