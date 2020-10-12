@@ -62,7 +62,6 @@
 // - Spec Conduits
 
 // - Talents
-// - (15) Lashing Flames, Elemental Blast(shared)
 // - (25) Stormflurry
 // - (35) Elemental Assault, Hailstorm, Fire Nova
 // - (45) Stormkeeper (Ele/Enhance - CL enhance has more bonus damage)
@@ -260,6 +259,7 @@ struct shaman_td_t : public actor_target_data_t
 
     // Enhancement
     buff_t* earthen_spike;
+    buff_t* lashing_flames;
   } debuff;
 
   struct heals
@@ -630,7 +630,7 @@ public:
 
     // Enhancement
 
-    // lashing flames
+    const spell_data_t* lashing_flames;
     const spell_data_t* forceful_winds;
     // elemental blast - shared
 
@@ -977,6 +977,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              ->set_cooldown( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
                              ->set_default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
+  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames )
+                              ->set_cooldown( timespan_t::zero() );  // Handled by the action
 }
 
 // ==========================================================================
@@ -3098,6 +3100,7 @@ struct lava_lash_t : public shaman_attack_t
       mw_dot = new molten_weapon_dot_t( player );
       add_child( mw_dot );
     }
+
   }
 
   void init() override
@@ -3161,6 +3164,11 @@ struct lava_lash_t : public shaman_attack_t
     if ( p()->buff.molten_weapon->up() )
     {
       trigger_molten_weapon_dot( state->target, state->result_amount );
+    }
+
+    if ( p()->talent.lashing_flames->ok() )
+    {
+      td( target )->debuff.lashing_flames->trigger();
     }
   }
 
@@ -3662,7 +3670,7 @@ struct storm_elemental_t : public shaman_spell_t
   }
 };
 
-// Eathen Spike =============================================================
+// Earthen Spike =============================================================
 
 struct earthen_spike_t : public shaman_attack_t
 {
@@ -4915,12 +4923,14 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
+  const spell_data_t* lashing_flames_spell;  // This information isn't found in the talent, only the spell data
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ), options_str ),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
       elemental_resource( player->find_spell( 263819 ) ),
-      skybreakers_effect( player->find_spell( 336734 ) )
+      skybreakers_effect( player->find_spell( 336734 ) ),
+      lashing_flames_spell( player->find_spell( 334168 ) )
   {
     tick_may_crit  = true;
     track_cd_waste = false;
@@ -4938,10 +4948,14 @@ struct flame_shock_t : public shaman_spell_t
     return m;
   }
 
-  double action_ta_multiplier() const override
+  double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_ta_multiplier();
+    double m = shaman_spell_t::action_multiplier();
 
+    if ( td( target )->debuff.lashing_flames->up() )
+    {
+      m *= 1 + lashing_flames_spell->effectN( 1 ).percent();
+    }
     return m;
   }
 
@@ -6587,7 +6601,7 @@ void shaman_t::init_spells()
   talent.unlimited_power = find_talent_spell( "Unlimited Power" );
 
   // Enhancement
-  // lashing flames
+  talent.lashing_flames  = find_talent_spell( "Lashing Flames" );
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
   // elemental blast
 
@@ -7534,6 +7548,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Lava Lash" );
   def->add_action( this, "Crash Lightning" );
   def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1&&buff.maelstrom_weapon.stack>=5" );
+  def->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&&buff.maelstrom_weapon.stack>=5" );
   def->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5" );
   def->add_action( this, "Feral Spirit" );
   def->add_action( this, "Earth Elemental" );
@@ -7541,9 +7556,9 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Stormkeeper" );
   def->add_action( this, "Sundering" );
   def->add_action( this, "Earthen Spike" );
-  def->add_action( this, "Elemental Blast" );
+ 
   def->add_action( this, "Crash Lightning" );
-  def->add_action( this, "Flame Shock" );
+  def->add_action( this, "Flame Shock", "target_if=refreshable" );
   def->add_action( this, "Frost Shock" );
 
   // def->add_action( "call_action_list,name=opener" );
