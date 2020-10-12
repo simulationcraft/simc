@@ -62,7 +62,7 @@
 // - Spec Conduits
 
 // - Talents
-// - (35) Elemental Assault, Hailstorm, Fire Nova
+// - (35) Fire Nova
 // - (45) Stormkeeper (Ele/Enhance - CL enhance has more bonus damage)
 // - (50) Ascendance (needs to shoot lightning on activate)
 // - Make sure fully removed: Boulderfist, Hailstorm, Fury of Air, Landslide, Overcharge, Searing Assault, Stormfury, totem mastery
@@ -429,7 +429,7 @@ public:
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* stormbringer;
-
+    buff_t* hailstorm;
 
     buff_t* forceful_winds;
     buff_t* icy_edge;
@@ -641,7 +641,7 @@ public:
     // earth shield - shared
     // static charge - shared
 
-    // cycle of the elements
+    const spell_data_t* elemental_assault;
     const spell_data_t* hailstorm;
     // fire nova
 
@@ -1568,7 +1568,7 @@ public:
     if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() )
     {
       // Can only consume up to 5 stacks
-      int stacks = std::max( p()->buff.maelstrom_weapon->stack(), 5 );
+      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       m *= ( 1.0 + ( p()->spell.maelstrom_weapon->effectN( 2 ).percent() * stacks ) );
     }
 
@@ -1581,7 +1581,7 @@ public:
 
     if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() )
     {
-      int stacks = std::max( p()->buff.maelstrom_weapon->stack(), 5 );
+      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       t *= 1.0 + ( p()->spell.maelstrom_weapon->effectN( 1 ).percent() * stacks );
     }
     return t;
@@ -1612,8 +1612,12 @@ public:
 
     if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() && !background )
     {
-      int stacks = std::max( p()->buff.maelstrom_weapon->stack(), 5 );
+      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       p()->buff.maelstrom_weapon->decrement( stacks );
+      if ( p()->talent.hailstorm->ok() )
+      {
+        p()->buff.hailstorm->increment( stacks );
+      }
     }
 
     p()->trigger_vesper_totem( execute_state );
@@ -2733,6 +2737,11 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->buff.gathering_storms->check_value();
     }
 
+    if ( p()->talent.elemental_assault->ok() )
+    {
+      m *= 1.0 + p()->talent.elemental_assault->effectN( 1 ).percent();
+    }
+
     if ( stormflurry )
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
@@ -2758,6 +2767,11 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    if ( p()->talent.elemental_assault->ok() )
+    {
+      p()->buff.maelstrom_weapon->increment( p()->talent.elemental_assault->effectN( 2 ).base_value() );
+    }
 
     stormflurry = false;
   }
@@ -4514,7 +4528,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( p()->buff.maelstrom_weapon->up() )
     {
       // Can only consume up to 5 stacks
-      int stacks = std::max( p()->buff.maelstrom_weapon->stack(), 5 );
+      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       m *= 1.0 + ( p()->spell.maelstrom_weapon->effectN( 2 ).percent() * stacks );
     }
     return m;
@@ -4535,7 +4549,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() )
     {
       timespan_t t = shaman_spell_t::execute_time();
-      int stacks   = std::max( p()->buff.maelstrom_weapon->stack(), 5 );
+      int stacks   = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       t *= 1.0 + ( p()->spell.maelstrom_weapon->effectN( 1 ).percent() * stacks );
       return t;
     }
@@ -5053,7 +5067,15 @@ struct frost_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.icefury->value();
+    if ( p()->buff.icefury->up() )
+    {
+      m *= 1.0 + p()->buff.icefury->value();
+    }
+
+    if ( p()->buff.hailstorm->up() )
+    {
+      m *= 1.0 + p()->buff.hailstorm->stack_value();
+    }
 
     return m;
   }
@@ -5067,12 +5089,22 @@ struct frost_shock_t : public shaman_spell_t
       maelstrom_gain = 8.0;
     }
 
+    if ( p()->buff.hailstorm->up() )
+    {
+      aoe = p()->buff.hailstorm->stack();
+    }
+
     shaman_spell_t::execute();
 
     // Echoed Frost Shock does not consume Icefury
     if ( !is_echoed_spell() )
     {
       p()->buff.icefury->decrement();
+    }
+
+    if ( p()->buff.hailstorm->up() )
+    {
+      p()->buff.hailstorm->decrement( p()->buff.hailstorm->stack() );
     }
   }
 
@@ -6624,7 +6656,7 @@ void shaman_t::init_spells()
   talent.hot_hand    = find_talent_spell( "Hot Hand" );
   talent.ice_strike  = find_talent_spell( "Ice Strike" );
 
-  // cycle of the elements
+  talent.elemental_assault = find_talent_spell( "Elemental Assault" );
   talent.hailstorm = find_talent_spell( "Hailstorm" );
   // fire nova
 
@@ -7267,6 +7299,8 @@ void shaman_t::create_buffs()
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
+  buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
+                            ->set_max_stack( find_spell( 334196 )->max_stacks() );
 
   //
   // Restoration
