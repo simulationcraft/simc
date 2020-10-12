@@ -1065,8 +1065,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
-      base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
+    if ( p -> legendary.the_mad_paragon -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.the_mad_paragon -> effectN( 2 ).percent();
 
     if ( p -> legendary.vanguards_momentum -> ok() )
     {
@@ -1088,15 +1088,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( p() -> legendary.badge_of_the_mad_paragon -> ok() )
+    if ( p() -> legendary.the_mad_paragon -> ok() )
     {
       if ( p() -> buffs.avenging_wrath -> up() )
       {
-        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.the_mad_paragon -> effectN( 1 ).base_value() ) );
       }
       else if ( p() -> buffs.crusade -> up() )
       {
-        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.the_mad_paragon -> effectN( 1 ).base_value() ) );
       }
     }
 
@@ -1810,7 +1810,7 @@ void paladin_t::init_spells()
 
   // Shadowlands legendaries
   legendary.vanguards_momentum = find_runeforge_legendary( "Vanguard's Momentum" );
-  legendary.badge_of_the_mad_paragon = find_runeforge_legendary( "Badge of the Mad Paragon" );
+  legendary.the_mad_paragon = find_runeforge_legendary( "The Mad Paragon" );
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
   legendary.from_dusk_till_dawn = find_runeforge_legendary( "From Dusk till Dawn" );
   legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );

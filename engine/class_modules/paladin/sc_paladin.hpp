@@ -444,7 +444,7 @@ public:
 
   struct legendaries_t {
     item_runeforge_t vanguards_momentum;
-    item_runeforge_t badge_of_the_mad_paragon;
+    item_runeforge_t the_mad_paragon;
     item_runeforge_t final_verdict;
     item_runeforge_t from_dusk_till_dawn;
     item_runeforge_t the_magistrates_judgment;
