@@ -210,8 +210,6 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
-    gain_t* hp_avengers_shield;
-    gain_t* hp_hammer_of_wrath;
   } gains;
 
   // Spec Passives
