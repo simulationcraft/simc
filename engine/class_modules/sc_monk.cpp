@@ -4229,13 +4229,27 @@ public:
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Dance of Chi-Ji talent triggers from spending chi
-      if ( p()->talent.dance_of_chiji->ok() )
-        p()->buff.dance_of_chiji->trigger();
+      // Bug: Dance of Chi-Ji cannot proc during Serenity
+      if ( !p()->bugs )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
 
-      // Dance of Chi-Ji azerite trait triggers from spending chi
-      if ( p()->azerite.dance_of_chiji.ok() )
-        p()->buff.dance_of_chiji_azerite->trigger();
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
+      else if ( !p()->buff.serenity->up() )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
+
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
     }
 
     trigger_bonedust_brew( s );
@@ -4867,7 +4881,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery                    = true;
     may_combo_strike              = true;
     trigger_chiji                 = true;
-    sef_ability                   = SEF_TIGER_PALM;
+    if ( !p->bugs )
+      sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
@@ -5720,7 +5735,21 @@ struct sck_tick_action_t : public monk_melee_attack_t
     double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
     if ( p()->conduit.calculated_strikes->ok() )
-      motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    {
+      if ( p()->bugs )
+      {
+        // Bug: Mastery does not get applied if Calculated Strikes is applied
+        if ( p()->buff.combo_strikes->up() )
+          am /= 1 + p()->cache.mastery_value();
+        if ( p()->buff.hit_combo->up() )
+          am /= 1 + p()->buff.hit_combo->stack_value();
+
+        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
+        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
+      }
+      else
+        motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    }
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
@@ -6203,6 +6232,10 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
+
+    // Bug: Fist of the White Tiger is incorrectly giving Emperor's Capacitor stacks
+    if ( p()->bugs && p()->legendary.last_emperors_capacitor->ok() )
+      p()->buff.the_emperors_capacitor->trigger();
 
     // Apply Mark of the Crane
     if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
