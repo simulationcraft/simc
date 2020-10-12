@@ -102,8 +102,10 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
 
 struct avengers_shield_t : public avengers_shield_base_t
 {
+  double holy_avenger_proc_chance;
   avengers_shield_t( paladin_t* p, const std::string& options_str ) :
-    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
+    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str ),
+    holy_avenger_proc_chance( p -> legendary.holy_avengers_engraved_sigil -> proc_chance() )
   {
     cooldown = p -> cooldowns.avengers_shield;
   }
@@ -115,6 +117,10 @@ struct avengers_shield_t : public avengers_shield_base_t
     {
       p() -> cooldowns.avengers_shield -> reset( false );
       p() -> buffs.moment_of_glory -> decrement( 1 );
+    }
+    if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() && rng().roll( holy_avenger_proc_chance ) )
+    {
+      p() -> cooldowns.avengers_shield -> reset( false );
     }
   }
 
