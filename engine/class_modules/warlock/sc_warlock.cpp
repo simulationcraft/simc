@@ -67,11 +67,11 @@ struct impending_catastrophe_dot_t : public warlock_spell_t
   }
   
   timespan_t composite_dot_duration( const action_state_t* s ) const override
-{
-  if ( s->chain_target = 0 ) // main target
-    return dot_duration * ( 1 + p->conduit.catastrophic_origin.percent() );
-  return dot_duration;
-}
+  {
+   if ( s->chain_target = 0 ) // main target
+     return dot_duration * ( 1 + p->conduit.catastrophic_origin.percent() );
+   return dot_duration;
+  }
   
 };
 
