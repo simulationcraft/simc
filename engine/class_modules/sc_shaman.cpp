@@ -62,7 +62,6 @@
 // - Spec Conduits
 
 // - Talents
-// - (25) Stormflurry
 // - (35) Elemental Assault, Hailstorm, Fire Nova
 // - (45) Stormkeeper (Ele/Enhance - CL enhance has more bonus damage)
 // - (50) Ascendance (needs to shoot lightning on activate)
@@ -634,7 +633,7 @@ public:
     const spell_data_t* forceful_winds;
     // elemental blast - shared
 
-    // stormfury
+    const spell_data_t* stormflurry;
     const spell_data_t* hot_hand;
     const spell_data_t* ice_strike;
 
@@ -2695,8 +2694,10 @@ struct icy_edge_attack_t : public shaman_attack_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
+  bool stormflurry;
+
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : shaman_attack_t( n, player, s )
+    : shaman_attack_t( n, player, s ), stormflurry( false )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -2732,6 +2733,11 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->buff.gathering_storms->check_value();
     }
 
+    if ( stormflurry )
+    {
+      m *= p()->talent.stormflurry->effectN( 2 ).percent();
+    }
+
     return m;
   }
 
@@ -2752,6 +2758,8 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    stormflurry = false;
   }
 };
 
@@ -3187,11 +3195,13 @@ struct lava_lash_t : public shaman_attack_t
 struct stormstrike_base_t : public shaman_attack_t
 {
   stormstrike_attack_t *mh, *oh;
+  bool stormflurry;
   bool background_action;
 
   stormstrike_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell,
                       const std::string& options_str )
-    : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ), background_action( false )
+    : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ),
+      stormflurry( false ), background_action( false )
   {
     parse_options( options_str );
 
@@ -3220,27 +3230,17 @@ struct stormstrike_base_t : public shaman_attack_t
     shaman_attack_t::update_ready( cd_duration );
   }
 
-  double cost() const override
-  {
-    double c = shaman_attack_t::cost();
-
-    if ( p()->buff.stormbringer->check() )
-    {
-      c *= 1.0 + p()->buff.stormbringer->data().effectN( 3 ).percent();
-    }
-
-    return c;
-  }
-
   void execute() override
   {
     shaman_attack_t::execute();
 
     if ( result_is_hit( execute_state->result ) )
     {
+      mh->stormflurry = stormflurry;
       mh->execute();
       if ( oh )
       {
+        oh->stormflurry = stormflurry;
         oh->execute();
       }
 
@@ -3249,6 +3249,20 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->action.crash_lightning_aoe->set_target( execute_state->target );
         p()->action.crash_lightning_aoe->execute();
       }
+    }
+
+    // Don't try this at home, or anywhere else ..
+    if ( p()->talent.stormflurry->ok() && rng().roll( p()->talent.stormflurry->effectN( 1 ).percent() ) )
+    {
+      background = dual = stormflurry = true;
+      schedule_execute();
+    }
+    // Potential stormflurrying ends, reset things
+    else
+    {
+      background  = background_action;
+      dual        = false;
+      stormflurry = false;
     }
 
     p()->buff.gathering_storms->decrement();
@@ -6605,9 +6619,10 @@ void shaman_t::init_spells()
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
   // elemental blast
 
-  // stormfury
-  talent.hot_hand   = find_talent_spell( "Hot Hand" );
-  talent.ice_strike = find_talent_spell( "Ice Strike" );
+  
+  talent.stormflurry = find_talent_spell( "Stormflurry" );
+  talent.hot_hand    = find_talent_spell( "Hot Hand" );
+  talent.ice_strike  = find_talent_spell( "Ice Strike" );
 
   // cycle of the elements
   talent.hailstorm = find_talent_spell( "Hailstorm" );
