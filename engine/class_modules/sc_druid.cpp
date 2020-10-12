@@ -8928,12 +8928,15 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
+  // Annotated APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
+  // ### BALANCE_APL_START ###
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   pre->add_action( this, "Moonkin Form" );
 
   def->add_action( this, "Wrath" );
+  // ### BALANCE_APL_END ###
 }
 
 // Guardian Combat Action Priority List =====================================
@@ -9051,7 +9054,7 @@ void druid_t::apl_guardian()
 void druid_t::apl_restoration()
 {
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
-  action_priority_list_t* def     = get_action_priority_list( "default" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* owl = get_action_priority_list( "balance" );
 
   pre->add_action( this, "Cat Form", "if=talent.feral_affinity.enabled" );
