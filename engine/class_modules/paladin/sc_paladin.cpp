@@ -1936,7 +1936,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.vanguards_momentum -> up() )
+  if ( dbc::is_school( school, SCHOOL_HOLY) && buffs.vanguards_momentum -> up() )
   {
     m *= 1.0 + buffs.vanguards_momentum -> stack_value();
   }
