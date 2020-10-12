@@ -6507,6 +6507,8 @@ struct prowl_t : public druid_spell_t
 
     p()->buff.jungle_stalker->expire();
     p()->buff.prowl->trigger();
+    
+    druid_spell_t::execute();
   }
 
   bool ready() override
