@@ -459,6 +459,7 @@ public:
     const spell_data_t* roll_2;
     const spell_data_t* spear_hand_strike;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
     const spell_data_t* spinning_crane_kick_2_ww;
     const spell_data_t* tiger_palm;
@@ -5804,7 +5805,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
+    : monk_melee_attack_t( "spinning_crane_kick", p, 
+        ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
+      chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -9793,6 +9796,7 @@ void monk_t::init_spells()
   spec.roll_2                    = find_rank_spell( "Roll", "Rank 2" );
   spec.spear_hand_strike         = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick       = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick_brm   = find_spell( 322729 );
   spec.spinning_crane_kick_2_brm = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_BREWMASTER );
   spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
   spec.tiger_palm                = find_class_spell( "Tiger Palm" );
