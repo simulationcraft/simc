@@ -551,6 +551,7 @@ public:
 
     // destro
     proc_t* reverse_entropy;
+    proc_t* rain_of_chaos;
   } procs;
 
   //TODO: SL Beta - Why does this catchall struct exist but is barely used?

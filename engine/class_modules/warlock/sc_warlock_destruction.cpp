@@ -47,6 +47,7 @@ public:
         {
           //Currently storing infernal duration (spell 335286) in buff default value
           p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ), 1u);
+          p()->procs.rain_of_chaos->occur();
         }
       }
     }
@@ -1212,6 +1213,7 @@ void warlock_t::init_rng_destruction()
 void warlock_t::init_procs_destruction()
 {
   procs.reverse_entropy = get_proc( "reverse_entropy" );
+  procs.rain_of_chaos = get_proc( "rain_of_chaos" );
 }
 
 void warlock_t::create_options_destruction()
