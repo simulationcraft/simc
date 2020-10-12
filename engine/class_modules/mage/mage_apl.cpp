@@ -259,7 +259,6 @@ void fire( player_t* p )
   precombat->add_action( "use_item,name=azsharas_font_of_power,if=!variable.disable_combustion" );
 
   precombat->add_action( "mirror_image" );
-  precombat->add_action( "potion" );
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "counterspell,if=!runeforge.disciplinary_command.equipped" );
@@ -391,7 +390,6 @@ void frost( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "summon_water_elemental" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "potion" );
   precombat->add_action( "frostbolt" );
 
   default_->add_action( "counterspell" );
