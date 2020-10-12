@@ -3,24 +3,28 @@
 
 namespace mage_apl {
 
-std::string potion( const player_t* )
+std::string potion( const player_t* p )
 {
-  return "disabled"; // TODO
+  return p->true_level >= 50 ? "superior_battle_potion_of_intellect"
+                             : "disabled";
 }
 
-std::string flask( const player_t* )
+std::string flask( const player_t* p )
 {
-  return "disabled"; // TODO
+  return p->true_level >= 50 ? "greater_flask_of_endless_fathoms"
+                             : "disabled";
 }
 
-std::string food( const player_t* )
+std::string food( const player_t* p )
 {
-  return "disabled"; // TODO
+  return p->true_level >= 50 ? "famine_evaluator_and_snack_table"
+                             : "disabled";
 }
 
-std::string rune( const player_t* )
+std::string rune( const player_t* p )
 {
-  return "disabled";
+  return p->true_level >= 50 ? "battle_scarred"
+                             : "disabled";
 }
 
 void arcane( player_t* p )
