@@ -821,40 +821,40 @@ void brons_call_to_action( special_effect_t& effect )
 
 void volatile_solvent( special_effect_t& effect )
 {
-    const spell_data_t* volatile_solvent_dragonkin = effect.player->find_spell( 323502 );
-    const spell_data_t* volatile_solvent_humanoid = effect.player->find_spell( 323491 );
-    const spell_data_t* volatile_solvent_beast = effect.player->find_spell( 323498 );
-
-    double amount = 0.02;
-    double mastery_amount = 2.0;
-
-    buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent_dragonkin )
-      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-      ->set_default_value( amount )
-      ->set_duration( timespan_t::from_seconds( 360 ) );
-
     if ( effect.player->sim->shadowlands_opts.volatile_solvent_crit )
+    {
+      const spell_data_t* volatile_solvent_dragonkin = effect.player->find_spell( 323502 );
+
+      buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent_dragonkin )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+
       effect.player->register_combat_begin( [ buff_crit ]( player_t* p ) { buff_crit->trigger(); } );
+    }
 
-
-    buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beast", volatile_solvent_beast )
-      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-      ->set_default_value( amount )
-      ->set_duration( timespan_t::from_seconds( 360 ) );
 
     if ( effect.player->sim->shadowlands_opts.volatile_solvent_primary )
+    {
+      const spell_data_t* volatile_solvent_beast = effect.player->find_spell( 323498 );
+
+      buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beast", volatile_solvent_beast )
+        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+        ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+      
       effect.player->register_combat_begin( [ buff_primary ]( player_t* p ) { buff_primary->trigger(); } );
+    }
 
-
-    buff_t* buff_mastery = make_buff( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid )        
-      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-      ->set_default_value( mastery_amount ) 
-      ->set_duration( timespan_t::from_seconds( 360 ) );
 
     if ( effect.player->sim->shadowlands_opts.volatile_solvent_mastery )
+    {
+      const spell_data_t* volatile_solvent_humanoid = effect.player->find_spell( 323491 );
+
+      auto buff_mastery = make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid );
+
       effect.player->register_combat_begin( [ buff_mastery ]( player_t* p ) { buff_mastery->trigger(); } );
+    }
 
     //Todo: Add the buffs for Magic Damage percent and Physical damage preseont
 }
