@@ -1814,6 +1814,7 @@ void paladin_t::init_spells()
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
   legendary.from_dusk_till_dawn = find_runeforge_legendary( "From Dusk till Dawn" );
   legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );
+  legendary.bulwark_of_righteous_fury = find_runeforge_legendary( "Bulwark of Righteous Fury" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );

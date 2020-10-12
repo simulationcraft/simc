@@ -192,6 +192,7 @@ public:
 
     // Legendaries
     buff_t* vanguards_momentum;
+    buff_t* bulwark_of_righteous_fury;
   } buffs;
 
   // Gains
@@ -447,6 +448,7 @@ public:
     item_runeforge_t final_verdict;
     item_runeforge_t from_dusk_till_dawn;
     item_runeforge_t the_magistrates_judgment;
+    item_runeforge_t bulwark_of_righteous_fury;
   } legendary;
 
   // Paladin options

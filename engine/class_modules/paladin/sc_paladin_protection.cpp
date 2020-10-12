@@ -85,6 +85,9 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       td( s -> target ) -> debuff.vengeful_shock -> trigger();
     }
+
+    if ( p() -> legendary.bulwark_of_righteous_fury -> ok() )
+      p() -> buffs.bulwark_of_righteous_fury -> trigger();
   }
 };
 
@@ -500,6 +503,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     double ctm = holy_power_consumer_t::composite_target_multiplier( t );
     if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
       ctm *= 1.0 + punish_the_guilty_value;
+    ctm *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
     return ctm;
   }
 };
@@ -741,8 +745,10 @@ void paladin_t::create_buffs_protection()
         -> add_invalidate( CACHE_STRENGTH )
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.moment_of_glory = make_buff(this, "moment_of_glory", talents.moment_of_glory )
+  buffs.moment_of_glory = make_buff( this, "moment_of_glory", talents.moment_of_glory )
         -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
+  buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
+        -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
