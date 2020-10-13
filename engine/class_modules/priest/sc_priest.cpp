@@ -716,11 +716,9 @@ struct summon_shadowfiend_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
 
-    // Increases duration of Shadowfiend (not Mindbender) - 319904
-    auto rank2 = p.find_rank_spell( "Shadowfiend", "Rank 2", PRIEST_SHADOW );
-    if ( rank2->ok() )
+    if ( priest().bugs )
     {
-      summoning_duration += rank2->effectN( 1 ).time_value();
+      summoning_duration = timespan_t::from_seconds( 15 );
     }
   }
 
