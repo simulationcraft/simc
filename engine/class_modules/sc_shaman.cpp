@@ -60,9 +60,6 @@
 // - Spec Conduits
 // - Review target caps
 
-// - Talents
-// - Make sure fully removed: Overcharge
-
 // Resto DPS?
 
 namespace
@@ -1392,11 +1389,6 @@ public:
     if ( may_proc_hot_hand )
     {
       proc_hh = player->get_proc( std::string( "Hot Hand: " ) + full_name() );
-    }
-
-    if ( may_proc_lightning_shield )  // Needs to refactor to defensive version
-    {
-      proc_ls = player->get_proc( std::string( "Lightning Shield Overcharge: " ) + full_name() );
     }
 
     if ( may_proc_stormbringer )
@@ -4715,7 +4707,6 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  double m_overcharge;
   stats_t* primordial_wave_stats, *normal_stats;
   // Action-specific switch for Primordial Wave; Lightning Bolt can use a simpler method
   // than Lava Burst for "Primordial Wave state", since it has no travel time (impacts
@@ -4724,7 +4715,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_class_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 ), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
+      primordial_wave_stats( nullptr ), normal_stats( nullptr ),
       pw_cast( false )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -4843,11 +4834,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
-  {
-    return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
   }
 
   timespan_t execute_time() const override
