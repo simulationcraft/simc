@@ -69,7 +69,6 @@ void arcane( player_t* p )
   precombat->add_action( "conjure_mana_gem" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
-  precombat->add_action( "potion" );
   precombat->add_action( "frostbolt,if=variable.prepull_evo=0" );
   precombat->add_action( "evocation,if=variable.prepull_evo=1" );
 
@@ -100,6 +99,7 @@ void arcane( player_t* p )
   opener->add_action( "lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   opener->add_action( "bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   opener->add_action( "use_items,if=buff.arcane_power.up" );
+  opener->add_action( "potion,if=buff.arcane_power.up" );
   opener->add_action( "berserking,if=buff.arcane_power.up" );
   opener->add_action( "blood_fury,if=buff.arcane_power.up" );
   opener->add_action( "fireblood,if=buff.arcane_power.up" );
@@ -131,6 +131,7 @@ void arcane( player_t* p )
   cooldowns->add_action( "lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   cooldowns->add_action( "bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   cooldowns->add_action( "use_items,if=buff.arcane_power.up" );
+  cooldowns->add_action( "potion,if=buff.arcane_power.up" );
   cooldowns->add_action( "berserking,if=buff.arcane_power.up" );
   cooldowns->add_action( "blood_fury,if=buff.arcane_power.up" );
   cooldowns->add_action( "fireblood,if=buff.arcane_power.up" );
@@ -189,6 +190,7 @@ void arcane( player_t* p )
   aoe->add_action( "lights_judgment,if=buff.arcane_power.down" );
   aoe->add_action( "bag_of_tricks,if=buff.arcane_power.down" );
   aoe->add_action( "use_items,if=buff.arcane_power.up" );
+  aoe->add_action( "potion,if=buff.arcane_power.up" );
   aoe->add_action( "berserking,if=buff.arcane_power.up" );
   aoe->add_action( "blood_fury,if=buff.arcane_power.up" );
   aoe->add_action( "fireblood,if=buff.arcane_power.up" );
