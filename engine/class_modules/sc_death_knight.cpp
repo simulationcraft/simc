@@ -952,7 +952,7 @@ public:
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
     // Unholy
-    // item_runeforge_t deadliest_coil; // 6952
+    item_runeforge_t deadliest_coil; // 6952
     // item_runeforge_t deaths_certainty; // 6951
     item_runeforge_t frenzied_monstrosity;        // 6950
     // item_runeforge_t reanimated_shambler; // 6949
@@ -4535,7 +4535,14 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
 
-    return death_knight_spell_t::cost();
+    double cost = death_knight_spell_t::cost();
+
+    if ( p() -> legendary.deadliest_coil.ok() )
+    {
+      cost += (p() -> legendary.deadliest_coil->effectN( 1 ).base_value() / 10);
+    }
+
+    return cost;
   }
 
   void execute() override
@@ -4552,6 +4559,8 @@ struct death_coil_t : public death_knight_spell_t
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
+
+    p() -> buffs.dark_transformation->extend_duration(p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value()) );
 
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -8434,7 +8443,7 @@ void death_knight_t::init_spells()
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
 
   // Unholy
-  // legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
+  legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   // legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
   // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
