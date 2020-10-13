@@ -362,6 +362,18 @@ double vulnerable_fight_length( player_t* actor )
   return fight_length;
 }
 
+void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const stats_t* stats, double& count )
+{
+  compound_stats->merge( *stats );
+  count += stats->has_direct_amount_results()
+    ? stats->num_direct_results.mean()
+    : stats->num_tick_results.mean();
+
+  range::for_each( stats->children, [&]( stats_t* s ) {
+    collect_compound_stats( compound_stats, s, count );
+  } );
+}
+
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t& s,
                                 const player_t& p )
 {
@@ -381,16 +393,10 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   if ( s.children.size() )
   {
     auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
-    compound_stats->merge( s );
 
-    double compound_count = count;
+    double compound_count = 0.0;
 
-    for ( auto& c : s.children )
-    {
-      compound_stats->merge( *c );
-      compound_count += c->has_direct_amount_results() ? c->num_direct_results.mean() : c->num_tick_results.mean();
-    }
-
+    collect_compound_stats( compound_stats, &s, compound_count );
     compound_stats->analyze();
 
     count_str = "&#160;(" + util::to_string( compound_count, 1 ) + ")";
@@ -484,6 +490,16 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   }
 }
 
+void collect_aps( const stats_t* stats, double& caps, double& capspct )
+{
+  caps += stats->portion_apse.mean();
+  capspct += stats->portion_amount;
+
+  range::for_each( stats->children, [&]( const stats_t* s ) {
+    collect_aps( s, caps, capspct );
+  } );
+}
+
 void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, const stats_t& s, int n_columns,
                              const player_t* actor = nullptr, int indentation = 0 )
 {
@@ -524,14 +540,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   {
     std::string compound_aps     = "";
     std::string compound_aps_pct = "";
-    double cAPS                  = s.portion_aps.mean();
-    double cAPSpct               = s.portion_amount;
+    double cAPS                  = 0.0;
+    double cAPSpct               = 0.0;
 
-    for ( auto& elem : s.children )
-    {
-      cAPS += elem->portion_apse.mean();
-      cAPSpct += elem->portion_amount;
-    }
+    collect_aps( &s, cAPS, cAPSpct );
 
     if ( cAPS > s.portion_aps.mean() )
       compound_aps = "&#160;(" + util::to_string( cAPS, 0 ) + ")";
