@@ -116,7 +116,6 @@ void arcane( player_t* p )
   opener->add_action( "arcane_power" );
   opener->add_action( "rune_of_power,if=buff.rune_of_power.down" );
   opener->add_action( "use_mana_gem,if=(talent.enlightened.enabled&mana.pct<=80&mana.pct>=65)|(!talent.enlightened.enabled&mana.pct<=85)" );
-  opener->add_action( "berserking,if=buff.arcane_power.up" );
   opener->add_action( "time_warp,if=runeforge.temporal_warp.equipped" );
   opener->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   opener->add_action( "arcane_blast,if=dot.radiant_spark.remains>5|debuff.radiant_spark_vulnerability.stack>0" );
