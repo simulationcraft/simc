@@ -8729,7 +8729,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike", "if=conduit.unleashed_frenzy.enabled&buff.unleashed_frenzy.remains<3|conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
-  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&rune.time_to_4>=gcd" );
   standard -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   standard -> add_action( this, "Frost Strike" );
