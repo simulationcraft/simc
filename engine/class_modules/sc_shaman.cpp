@@ -407,6 +407,7 @@ public:
     // Elemental
     buff_t* earthen_rage;
     buff_t* echoing_shock;
+    buff_t* fire_elemental;
     buff_t* master_of_the_elements;
     buff_t* static_discharge;
     buff_t* surge_of_power;
@@ -552,6 +553,7 @@ public:
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_fury;     // general crit multiplier
     const spell_data_t* elemental_shaman;   // general spec multiplier
+    const spell_data_t* fire_elemental_2;   // Fire Elemental Totem Rank 2
     const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
 
@@ -3644,6 +3646,7 @@ struct fire_elemental_t : public shaman_spell_t
     }
 
     p()->summon_fire_elemental( fire_elemental_duration );
+    p()->buff.fire_elemental->trigger();
   }
 
   bool ready() override
@@ -4713,10 +4716,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
+  stats_t* primordial_wave_stats, *normal_stats;
+  // Action-specific switch for Primordial Wave; Lightning Bolt can use a simpler method
+  // than Lava Burst for "Primordial Wave state", since it has no travel time (impacts
+  // instantly).
+  bool pw_cast;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_class_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 )
+      m_overcharge( 0 ), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
+      pw_cast( false )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -4729,6 +4738,37 @@ struct lightning_bolt_t : public shaman_spell_t
       overload = new lightning_bolt_overload_t( player );
       add_child( overload );
     }
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      // Cache normal Lava Burst stats into a pointer so we can restore behavior when
+      // Primordial Wave Lava Burst has finished impacting
+      normal_stats = stats;
+
+      // Collect Primordial Wave Lava burst stats separately
+      if ( p()->covenant.necrolord->ok() )
+      {
+        auto pw = p()->find_action( "primordial_wave" );
+        if ( pw )
+        {
+          primordial_wave_stats = p()->get_stats( "lightning_bolt_pw", this );
+          primordial_wave_stats->school = get_school();
+          pw->stats->add_child( primordial_wave_stats );
+        }
+      }
+    }
+  }
+
+  void reset() override
+  {
+    shaman_spell_t::reset();
+
+    pw_cast = false;
   }
 
   // TODO: once bug is fixed, uncomment this
@@ -4835,7 +4875,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
   int n_targets() const override
   {
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up() )
+    if ( !background && p()->specialization() == SHAMAN_ENHANCEMENT &&
+          p()->buff.primordial_wave->check() )
     {
       return -1;
     }
@@ -4845,17 +4886,20 @@ struct lightning_bolt_t : public shaman_spell_t
 
   void execute() override
   {
+    pw_cast = !background &&
+      p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up();
+
+    if ( pw_cast )
+    {
+      stats = primordial_wave_stats;
+    }
+
     shaman_spell_t::execute();
 
     // TODO: remove this when the high voltage bug is fixed and it properly generates double instead of 5
     if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
     {
       p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
-    }
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up() )
-    {
-      p()->buff.primordial_wave->expire();
     }
 
     p()->buff.stormkeeper->decrement();
@@ -4875,6 +4919,12 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->buff.wind_gust->trigger();
       }
+    }
+
+    if ( pw_cast )
+    {
+      p()->buff.primordial_wave->expire();
+      stats = normal_stats;
     }
   }
 
@@ -5288,6 +5338,27 @@ struct flame_shock_t : public shaman_spell_t
       m *= 1 + lashing_flames_spell->effectN( 1 ).percent();
     }
     return m;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto d = shaman_spell_t::composite_dot_duration( s );
+
+    if ( p()->buff.fire_elemental->check() && p()->spec.fire_elemental_2->ok() )
+    {
+      d *= 1.0 + p()->spec.fire_elemental_2->effectN( 1 ).percent();
+    }
+
+    return d;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    auto tt = shaman_spell_t::tick_time( state );
+
+    tt *= 1.0 + p()->buff.fire_elemental->stack_value();
+
+    return tt;
   }
 
   void tick( dot_t* d ) override
@@ -6978,11 +7049,13 @@ void shaman_t::init_spells()
   spec.shaman                       = find_spell( 137038 );
 
   // Elemental
-  spec.chain_lightning_2 = find_specialization_spell( 231722 );
   spec.elemental_fury    = find_specialization_spell( "Elemental Fury" );
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
-  spec.lava_burst_2      = find_specialization_spell( 231721 );
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
+
+  spec.chain_lightning_2 = find_rank_spell( "Chain Lightning", "Rank 2" );
+  spec.fire_elemental_2  = find_rank_spell( "Fire Elemental Totem", "Rank 2" );
+  spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
 
   // Enhancement
   spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
@@ -7657,6 +7730,9 @@ void shaman_t::create_buffs()
                            } );
 
   buff.echoing_shock = make_buff( this, "echoing_shock", talent.echoing_shock );
+
+  buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
 
   //
   // Enhancement

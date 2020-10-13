@@ -848,8 +848,11 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
+  double power_leech_insanity;
+
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
-    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
+    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -865,16 +868,19 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    return power_leech_insanity;
   }
 };
 
 struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
+  double power_leech_insanity;
 
   mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell( 123051 ) )
+    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
+      mindbender_spell( owner.find_spell( 123051 ) ),
+      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -897,7 +903,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     }
     else
     {
-      return o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+      return power_leech_insanity;
     }
   }
 };
