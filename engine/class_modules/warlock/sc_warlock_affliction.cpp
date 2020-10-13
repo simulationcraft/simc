@@ -136,7 +136,9 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
 
-    if ( !p()->prolonged_decimation_trigger() )
+    if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
+      p()->procs.prolonged_decimation->occur();
+    else
       p()->buffs.decimating_bolt->decrement();
   }
 };
@@ -687,9 +689,11 @@ struct drain_soul_t : public affliction_spell_t
   void last_tick( dot_t* d ) override
   {
     affliction_spell_t::last_tick( d );
-    if ( !p()->prolonged_decimation_trigger() )
+    if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
+      p()->procs.prolonged_decimation->occur();
+    else
       p()->buffs.decimating_bolt
-          ->decrement();  // Not sure if this should be a 'reset' instead since Decimating Bolt now no longer is
+          ->decrement();  // Not sure if this should be e.g. a 'reset' instead since Decimating Bolt now no longer is
                           // supposed to have stacks when using the drain soul talent
   }
 };

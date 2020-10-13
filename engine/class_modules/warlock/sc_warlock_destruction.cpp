@@ -497,7 +497,10 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->set_target( target );
       fnb_action->execute();
     }
-    if ( !p()->prolonged_decimation_trigger() )
+
+    if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
+      p()->procs.prolonged_decimation->occur();
+    else
       p()->buffs.decimating_bolt->decrement();
   }
 

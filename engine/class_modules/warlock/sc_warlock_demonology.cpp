@@ -302,7 +302,9 @@ struct demonbolt_t : public demonology_spell_t
 
     p()->buffs.balespiders_burning_core->expire();
 
-    if ( !p()->prolonged_decimation_trigger() )
+    if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
+      p()->procs.prolonged_decimation->occur();
+    else
       p()->buffs.decimating_bolt->decrement();
   }
 

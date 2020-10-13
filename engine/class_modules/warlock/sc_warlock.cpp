@@ -1061,16 +1061,6 @@ void warlock_t::malignancy_reduction_helper()
   }
 }
 
-bool warlock_t::prolonged_decimation_trigger()
-{
-  if ( rng().roll( conduit.prolonged_decimation.percent() ) )
-  {
-    procs.prolonged_decimation->occur();
-    return true;
-  }
-  return false;
-}
-
 // Function for returning the the number of imps that will spawn in a specified time period.
 int warlock_t::imps_spawned_during( timespan_t period )
 {
