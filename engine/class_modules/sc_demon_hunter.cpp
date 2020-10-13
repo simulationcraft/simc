@@ -4825,7 +4825,7 @@ void demon_hunter_t::create_buffs()
   
   // Furious Gaze doesn't have a trigger reference in the Azerite trait for some reason...
   const spell_data_t* furious_gaze_buff = azerite.furious_gaze.spell()->ok() ? find_spell( 273232 ) : spell_data_t::not_found();
-  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze", furious_gaze_buff )
+  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze_azerite", furious_gaze_buff )
     ->add_stat( STAT_HASTE_RATING, azerite.furious_gaze.value( 1 ) )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_trigger_spell( azerite.furious_gaze );
