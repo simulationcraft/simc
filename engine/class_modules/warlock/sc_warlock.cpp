@@ -754,13 +754,13 @@ void warlock_t::init_procs()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_procs_destruction();
 
-  procs.one_shard_hog   = get_proc( "one_shard_hog" );
-  procs.two_shard_hog   = get_proc( "two_shard_hog" );
-  procs.three_shard_hog = get_proc( "three_shard_hog" );
-  procs.portal_summon   = get_proc( "portal_summon" );
-  procs.demonic_calling = get_proc( "demonic_calling" );
-  procs.soul_conduit    = get_proc( "soul_conduit" );
-  procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.one_shard_hog        = get_proc( "one_shard_hog" );
+  procs.two_shard_hog        = get_proc( "two_shard_hog" );
+  procs.three_shard_hog      = get_proc( "three_shard_hog" );
+  procs.portal_summon        = get_proc( "portal_summon" );
+  procs.demonic_calling      = get_proc( "demonic_calling" );
+  procs.soul_conduit         = get_proc( "soul_conduit" );
+  procs.corrupting_leer      = get_proc( "corrupting_leer" );
   procs.prolonged_decimation = get_proc( "prolonged_decimation" );
 }
 

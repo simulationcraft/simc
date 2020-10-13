@@ -658,9 +658,6 @@ struct drain_soul_t : public affliction_spell_t
   void execute() override
   {
     dot_t* dot = get_dot( target );
-    if ( dot->is_ticking() && !p()->prolonged_decimation_trigger() )
-      p()->buffs.decimating_bolt->decrement();
-
     affliction_spell_t::execute();
   }
 
@@ -691,9 +688,10 @@ struct drain_soul_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
     if ( !p()->prolonged_decimation_trigger() )
-      p()->buffs.decimating_bolt->decrement();
+      p()->buffs.decimating_bolt
+          ->decrement();  // Not sure if this should be a 'reset' instead since Decimating Bolt now no longer is
+                          // supposed to have stacks when using the drain soul talent
   }
-
 };
 
 struct haunt_t : public affliction_spell_t

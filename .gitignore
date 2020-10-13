@@ -141,3 +141,4 @@ env/
 
 # Visual Studio CMake settings
 CMakeSettings.json
+/WLtest.simc
