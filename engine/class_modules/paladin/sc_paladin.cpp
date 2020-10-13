@@ -1469,6 +1469,7 @@ void paladin_t::init_procs()
   procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
   procs.final_reckoning           = get_proc( "Final Reckoning"  );
   procs.empyrean_power            = get_proc( "Empyrean Power"   );
+  procs.holy_avengers_engraved_sigil = get_proc( "Holy Avenger's Engraved Sigil" );
 }
 
 // paladin_t::init_scaling ==================================================

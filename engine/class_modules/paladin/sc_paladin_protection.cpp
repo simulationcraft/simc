@@ -121,6 +121,7 @@ struct avengers_shield_t : public avengers_shield_base_t
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() && rng().roll( holy_avenger_proc_chance ) )
     {
       p() -> cooldowns.avengers_shield -> reset( false );
+      p() -> procs.holy_avengers_engraved_sigil -> occur();
     }
   }
 
@@ -448,7 +449,6 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  double punish_the_guilty_value;
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
   {
@@ -468,9 +468,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-
-    if ( p -> conduit.punish_the_guilty -> ok() )
-      punish_the_guilty_value = p -> conduit.punish_the_guilty.percent();
   }
 
   void execute() override
@@ -508,7 +505,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   {
     double ctm = holy_power_consumer_t::composite_target_multiplier( t );
     if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
-      ctm *= 1.0 + punish_the_guilty_value;
+      ctm *= 1.0 + p() -> conduit.punish_the_guilty.percent();
     ctm *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
     // Range increase on bulwark of righteous fury not implemented.
     return ctm;

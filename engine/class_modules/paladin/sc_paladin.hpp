@@ -290,6 +290,7 @@ public:
     proc_t* grand_crusader;
     proc_t* prot_lucid_dreams;
     proc_t* empyrean_power;
+    proc_t* holy_avengers_engraved_sigil;
   } procs;
 
   // Spells
