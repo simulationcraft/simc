@@ -1163,7 +1163,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.biting_cold.percent() );
 
-  debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
+  debuff.unholy_blight     = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
 
 }
