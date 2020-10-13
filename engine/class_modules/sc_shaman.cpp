@@ -5472,7 +5472,7 @@ struct wind_shear_t : public shaman_spell_t
 struct ascendance_damage_t : public shaman_spell_t
 {
   ascendance_damage_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "ascendance", player, player->find_spell( 344548 ), options_str )
+    : shaman_spell_t( "ascendance_damage", player, player->find_spell( 344548 ), options_str )
   {
     aoe = -1;
   }
@@ -5505,10 +5505,6 @@ struct ascendance_t : public shaman_spell_t
     }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
-
-    cooldown           = player->cooldown.ascendance;
-    cooldown->duration = data().cooldown();
-    cooldown->action   = this;
   }
 
   void execute() override
