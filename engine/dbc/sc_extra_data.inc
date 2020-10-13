@@ -1129,7 +1129,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warlock    // TODO: Get values for under 60
+  { // Warlock    // TODO: Get values 1-49, 51-59
     //    Str     Agi     Sta     Int     Spi
     {      6,     12,     11,     12,      0 },
     {      7,     13,     12,     13,      0 },
@@ -1180,7 +1180,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {     54,     97,     88,    102,      0 },
     {     55,     99,     89,    104,      0 },
     {     56,    101,     91,    106,      0 },
-    {     57,    103,     93,    108,      0 }, // 50
+    {     59,    120,    148,    155,      0 }, // 50
     {     58,    104,     94,    110,      0 },
     {     60,    107,     97,    113,      0 },
     {     61,    109,     99,    115,      0 },
