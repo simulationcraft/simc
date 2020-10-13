@@ -1032,13 +1032,6 @@ public:
   {
     ab::impact( s );
 
-    if ( p()->talents.collateral_damage->ok() && affected_by.sweeping_strikes && p()->buff.sweeping_strikes->up() &&
-         s->chain_target == 1 )
-    {
-      p()->resource_gain( RESOURCE_RAGE,
-                          ( ab::last_resource_cost * p()->talents.collateral_damage->effectN( 1 ).percent() ),
-                          p()->gain.collateral_damage );
-    }
     if ( ab::sim->log )
     {
       ab::sim->out_debug.printf(
