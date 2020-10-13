@@ -8672,8 +8672,8 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
 
   // Cold Heart
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=target.1.time_to_die<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled" );
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.obliteration.enabled&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19)" );
+  cold_heart -> add_action( "call_action_list,name=cold_heart,if=target.1.time_to_die<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled" );
+  cold_heart -> add_action( "call_action_list,name=cold_heart,if=talent.obliteration.enabled&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19)" );
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before BoS is available" );
@@ -8724,7 +8724,7 @@ void death_knight_t::default_apl_frost()
 
   // Standard rotation
   standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.biting_cold.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
-  stabdard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
+  standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Frost Strike", "if=conduit.unleashed_frenzy.enabled&buff.unleashed_frenzy.remains<3|conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
