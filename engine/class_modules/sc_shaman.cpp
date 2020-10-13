@@ -5467,7 +5467,7 @@ struct wind_shear_t : public shaman_spell_t
   }
 };
 
-// Ascendance Damage Spell =========================================================
+// Ascendance Enhance Damage Spell =========================================================
 
 struct ascendance_damage_t : public shaman_spell_t
 {
@@ -5489,18 +5489,20 @@ struct ascendance_t : public shaman_spell_t
 {
   lava_burst_t* lvb;
   flame_shock_t* fs;
-  ascendance_damage_t* ascendance_attack;
+  ascendance_damage_t* ascendance_damage;
 
   ascendance_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str ),
       lvb( player->specialization() == SHAMAN_ELEMENTAL ? new lava_burst_t( player, "" ) : nullptr ),
       fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
-      ascendance_attack( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player, options_str )
+      ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player, options_str )
                                                                         : nullptr )
   {
     harmful = false;
-    if ( ascendance_attack )
-      add_child( ascendance_attack );
+    if ( ascendance_damage )
+    {
+      add_child( ascendance_damage );
+    }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
 
@@ -5512,8 +5514,10 @@ struct ascendance_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( ascendance_attack )
-      ascendance_attack->execute();
+    if ( ascendance_damage )
+    {
+      ascendance_damage->execute();
+    }
 
     p()->cooldown.strike->reset( false );
     p()->buff.ascendance->trigger();
@@ -7881,6 +7885,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   if ( options.rotation == ROTATION_STANDARD ) {
     def->add_action( this, "Bloodlust" );
+    def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
     def->add_action( this, "Lightning Bolt" );
   } else if (options.rotation == ROTATION_SIMPLE) {
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
