@@ -8751,7 +8751,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10))&runic_power.deficit>(25+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
   aoe -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   aoe -> add_talent( this, "Glacial Advance" );
-  aoe -> add_action( this, "Frost Strike", ",target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10))&!talent.frostscythe.enabled" );
+  aoe -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10))&!talent.frostscythe.enabled" );
   aoe -> add_action( this, "Frost Strike" );
   aoe -> add_talent( this, "Horn of Winter" );
   aoe -> add_action( "arcane_torrent" );
