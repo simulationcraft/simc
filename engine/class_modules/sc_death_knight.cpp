@@ -4560,7 +4560,10 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
-    p() -> buffs.dark_transformation->extend_duration(p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value()) );
+    if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
+    {
+      p() -> buffs.dark_transformation->extend_duration(p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value()) );
+    }
 
     p() -> buffs.sudden_doom -> decrement();
   }
