@@ -412,6 +412,7 @@ public:
     // Elemental
     buff_t* earthen_rage;
     buff_t* echoing_shock;
+    buff_t* fire_elemental;
     buff_t* master_of_the_elements;
     buff_t* static_discharge;
     buff_t* surge_of_power;
@@ -554,6 +555,7 @@ public:
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_fury;     // general crit multiplier
     const spell_data_t* elemental_shaman;   // general spec multiplier
+    const spell_data_t* fire_elemental_2;   // Fire Elemental Totem Rank 2
     const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
 
@@ -3643,6 +3645,7 @@ struct fire_elemental_t : public shaman_spell_t
     }
 
     p()->summon_fire_elemental( fire_elemental_duration );
+    p()->buff.fire_elemental->trigger();
   }
 
   bool ready() override
@@ -5194,6 +5197,15 @@ struct flame_shock_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    auto tt = shaman_spell_t::tick_time( state );
+
+    tt *= 1.0 + p()->buff.fire_elemental->stack_value();
+
+    return tt;
   }
 
   void tick( dot_t* d ) override
@@ -6840,11 +6852,13 @@ void shaman_t::init_spells()
   spec.shaman                       = find_spell( 137038 );
 
   // Elemental
-  spec.chain_lightning_2 = find_specialization_spell( 231722 );
   spec.elemental_fury    = find_specialization_spell( "Elemental Fury" );
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
-  spec.lava_burst_2      = find_specialization_spell( 231721 );
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
+
+  spec.chain_lightning_2 = find_rank_spell( "Chain Lightning", "Rank 2" );
+  spec.fire_elemental_2  = find_rank_spell( "Fire Elemental Totem", "Rank 2" );
+  spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
 
   // Enhancement
   spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
@@ -7519,6 +7533,9 @@ void shaman_t::create_buffs()
                            } );
 
   buff.echoing_shock = make_buff( this, "echoing_shock", talent.echoing_shock );
+
+  buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
 
   //
   // Enhancement
