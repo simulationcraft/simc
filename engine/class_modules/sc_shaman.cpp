@@ -5163,7 +5163,7 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.hailstorm->up() )
     {
-      aoe = p()->buff.hailstorm->stack();
+      aoe = 1 + p()->buff.hailstorm->stack(); // The initial cast, plus an extra target for each stack
     }
 
     shaman_spell_t::execute();
