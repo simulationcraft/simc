@@ -1197,11 +1197,13 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( p()->talents.sudden_death->ok() && p()->buff.sudden_death->trigger() )
     {
       p()->cooldown.execute->reset( true );
+      p()->cooldown.condemn->reset( true );
     }
 
     if ( p()->buff.ayalas_stone_heart->trigger() )
     {
       p()->cooldown.execute->reset( true );
+      p()->cooldown.condemn->reset( true );
     }
 
     if ( affected_by.crushing_assault )
@@ -6048,6 +6050,7 @@ void warrior_t::init_spells()
 
   cooldown.charge                           = get_cooldown( "charge" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
+  cooldown.condemn                          = get_cooldown( "condemn" );
   cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
   cooldown.deadly_calm                      = get_cooldown( "deadly_calm" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );

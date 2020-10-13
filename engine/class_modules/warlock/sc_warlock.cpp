@@ -841,7 +841,10 @@ void warlock_t::apl_precombat()
     precombat->add_action( "potion" );
   }
   if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
     precombat->add_action( "demonbolt" );
+    precombat->add_action( "variable,name=tyrant_ready,value=0" );
+  }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     precombat->add_talent( this, "Soul Fire" );
@@ -1509,6 +1512,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     vop_infernals( "vop_infernal", w ),
+    roc_infernals( "roc_infernal", w ),
     vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),

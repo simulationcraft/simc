@@ -349,7 +349,6 @@ struct mind_flay_t final : public priest_spell_t
 
     if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
     {
-      priest().cooldowns.void_bolt->reset( true );
       priest().buffs.dissonant_echoes->trigger();
       priest().procs.dissonant_echoes->occur();
     }
@@ -361,15 +360,6 @@ struct mind_flay_t final : public priest_spell_t
 
     priest().trigger_eternal_call_to_the_void( d->state );
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
-    trigger_mind_flay_dissonant_echoes();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    // Dissonant Echoes can proc on tick or on initial execute
-    // since it doesn't have a tick_zero we put it in both places
     trigger_mind_flay_dissonant_echoes();
   }
 
@@ -592,17 +582,17 @@ struct silence_t final : public priest_spell_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    priest_spell_t::execute();
+    priest_spell_t::impact( state );
 
-    // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be
-    // completely silenced.
-    // Removed to not break Casting Patchwerk - 2017-09-22
-    // if ( target->debuffs.casting )
-    //{
-    // target->debuffs.casting->expire();
-    //}
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      if ( priest().legendary.sephuzs_proclamation->ok() && priest().buffs.sephuzs_proclamation )
+      {
+        priest().buffs.sephuzs_proclamation->trigger();
+      }
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -611,6 +601,9 @@ struct silence_t final : public priest_spell_t
       return false;
 
     if ( candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() )
+      return true;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
       return true;
 
     // Check if the target can get blank silenced
@@ -1726,7 +1719,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().azerite.chorus_of_insanity.enabled() )
     {
       priest().buffs.chorus_of_insanity->expire();
-      priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
+      priest().buffs.chorus_of_insanity->trigger();
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -1847,6 +1840,7 @@ struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
     add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
     set_reverse( true );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_max_stack( 1 );
   }
 };
 
@@ -2216,6 +2210,9 @@ void priest_t::generate_apl_shadow()
 
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
+  cds->add_action( this, "Silence",
+                   "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
+                   "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
   cds->add_action( this, covenant.mindgames, "Mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );

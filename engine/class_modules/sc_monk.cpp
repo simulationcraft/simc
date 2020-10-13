@@ -459,6 +459,7 @@ public:
     const spell_data_t* roll_2;
     const spell_data_t* spear_hand_strike;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
     const spell_data_t* spinning_crane_kick_2_ww;
     const spell_data_t* tiger_palm;
@@ -4229,13 +4230,27 @@ public:
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Dance of Chi-Ji talent triggers from spending chi
-      if ( p()->talent.dance_of_chiji->ok() )
-        p()->buff.dance_of_chiji->trigger();
+      // Bug: Dance of Chi-Ji cannot proc during Serenity
+      if ( !p()->bugs )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
 
-      // Dance of Chi-Ji azerite trait triggers from spending chi
-      if ( p()->azerite.dance_of_chiji.ok() )
-        p()->buff.dance_of_chiji_azerite->trigger();
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
+      else if ( !p()->buff.serenity->up() )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
+
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
     }
 
     trigger_bonedust_brew( s );
@@ -4867,7 +4882,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery                    = true;
     may_combo_strike              = true;
     trigger_chiji                 = true;
-    sef_ability                   = SEF_TIGER_PALM;
+    if ( !p->bugs )
+      sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
@@ -5720,7 +5736,21 @@ struct sck_tick_action_t : public monk_melee_attack_t
     double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
     if ( p()->conduit.calculated_strikes->ok() )
-      motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    {
+      if ( p()->bugs )
+      {
+        // Bug: Mastery does not get applied if Calculated Strikes is applied
+        if ( p()->buff.combo_strikes->up() )
+          am /= 1 + p()->cache.mastery_value();
+        if ( p()->buff.hit_combo->up() )
+          am /= 1 + p()->buff.hit_combo->stack_value();
+
+        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
+        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
+      }
+      else
+        motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    }
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
@@ -5775,7 +5805,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
+    : monk_melee_attack_t( "spinning_crane_kick", p, 
+        ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
+      chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -6203,6 +6235,10 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
+
+    // Bug: Fist of the White Tiger is incorrectly giving Emperor's Capacitor stacks
+    if ( p()->bugs && p()->legendary.last_emperors_capacitor->ok() )
+      p()->buff.the_emperors_capacitor->trigger();
 
     // Apply Mark of the Crane
     if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
@@ -8523,20 +8559,13 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->spec.expel_harm_2_ww->ok() )
+    if ( p()->azerite.conflict_and_strife.is_major() )
     {
-      if ( p()->azerite.conflict_and_strife.is_major() )
-      {
-        p()->resource_gain( RESOURCE_CHI,
-                            p()->spec.reverse_harm->effectN( 2 ).base_value(),
-                            p()->gain.expel_harm );
-      }
-      else
-      {
-        p()->resource_gain( RESOURCE_CHI, 
-                            1, // p()->spec.expel_harm->effectN( 3 ).base_value(), 
-                            p()->gain.expel_harm );
-      }
+      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 2 ).base_value(), p()->gain.expel_harm );
+    }
+    else if ( p()->spec.expel_harm_2_ww->ok() )
+    {
+      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
     }
   }
 
@@ -9767,6 +9796,7 @@ void monk_t::init_spells()
   spec.roll_2                    = find_rank_spell( "Roll", "Rank 2" );
   spec.spear_hand_strike         = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick       = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick_brm   = find_spell( 322729 );
   spec.spinning_crane_kick_2_brm = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_BREWMASTER );
   spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
   spec.tiger_palm                = find_class_spell( "Tiger Palm" );
@@ -11693,6 +11723,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
                    "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd"
+                   "&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
@@ -12060,8 +12092,8 @@ void monk_t::apl_combat_mistweaver()
 
   def->add_action( "potion" );
 
-  def->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<4" );
+  def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
