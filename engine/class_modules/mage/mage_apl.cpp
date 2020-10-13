@@ -38,6 +38,7 @@ void arcane( player_t* p )
   action_priority_list_t* final_burn = p->get_action_priority_list( "final_burn" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
 
   precombat->add_action( "variable,name=prepull_evo,op=set,value=0" );
   precombat->add_action( "variable,name=prepull_evo,op=set,value=1,if=runeforge.siphon_storm.equipped&active_enemies>2" );
@@ -69,7 +70,6 @@ void arcane( player_t* p )
   precombat->add_action( "conjure_mana_gem" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
-  precombat->add_action( "potion" );
   precombat->add_action( "frostbolt,if=variable.prepull_evo=0" );
   precombat->add_action( "evocation,if=variable.prepull_evo=1" );
 
@@ -99,7 +99,8 @@ void arcane( player_t* p )
   opener->add_action( "variable,name=have_opened,op=set,value=1,if=prev_gcd.1.evocation" );
   opener->add_action( "lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   opener->add_action( "bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
-  opener->add_action( "use_items,if=buff.arcane_power.up" );
+  opener->add_action( "call_action_list,name=items,if=buff.arcane_power.up" );
+  opener->add_action( "potion,if=buff.arcane_power.up" );
   opener->add_action( "berserking,if=buff.arcane_power.up" );
   opener->add_action( "blood_fury,if=buff.arcane_power.up" );
   opener->add_action( "fireblood,if=buff.arcane_power.up" );
@@ -130,7 +131,8 @@ void arcane( player_t* p )
 
   cooldowns->add_action( "lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   cooldowns->add_action( "bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
-  cooldowns->add_action( "use_items,if=buff.arcane_power.up" );
+  cooldowns->add_action( "call_action_list,name=items,if=buff.arcane_power.up" );
+  cooldowns->add_action( "potion,if=buff.arcane_power.up" );
   cooldowns->add_action( "berserking,if=buff.arcane_power.up" );
   cooldowns->add_action( "blood_fury,if=buff.arcane_power.up" );
   cooldowns->add_action( "fireblood,if=buff.arcane_power.up" );
@@ -188,7 +190,8 @@ void arcane( player_t* p )
   aoe->add_action( "use_mana_gem,if=(talent.enlightened.enabled&mana.pct<=80&mana.pct>=65)|(!talent.enlightened.enabled&mana.pct<=85)" );
   aoe->add_action( "lights_judgment,if=buff.arcane_power.down" );
   aoe->add_action( "bag_of_tricks,if=buff.arcane_power.down" );
-  aoe->add_action( "use_items,if=buff.arcane_power.up" );
+  aoe->add_action( "call_action_list,name=items,if=buff.arcane_power.up" );
+  aoe->add_action( "potion,if=buff.arcane_power.up" );
   aoe->add_action( "berserking,if=buff.arcane_power.up" );
   aoe->add_action( "blood_fury,if=buff.arcane_power.up" );
   aoe->add_action( "fireblood,if=buff.arcane_power.up" );
@@ -228,6 +231,8 @@ void arcane( player_t* p )
   movement->add_action( "arcane_missiles,if=movement.distance<10" );
   movement->add_action( "arcane_orb" );
   movement->add_action( "fire_blast" );
+
+  items->add_action( "use_items" );
 }
 
 void fire( player_t* p )

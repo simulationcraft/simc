@@ -1478,6 +1478,7 @@ class SpellDataGenerator(DataGenerator):
           ( 273466, 0 ),                                # Strength of Earth
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
+          ( 327164, 0 ),                                # Primordial Wave buff
         ),
 
         # Mage:

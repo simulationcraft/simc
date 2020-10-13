@@ -120,9 +120,6 @@ void dot_t::adjust_duration( timespan_t extra_seconds, timespan_t max_total_time
   current_duration += extra_seconds;
   extra_time += extra_seconds;
 
-  sim.print_log( "{} adjusts duration of {} on {} by {} second(s).",
-                 *source, *this, *target, extra_seconds );
-
   timespan_t new_remains = remains + extra_seconds;
   if ( new_remains > remains )
   {
@@ -136,6 +133,9 @@ void dot_t::adjust_duration( timespan_t extra_seconds, timespan_t max_total_time
 
   if ( count_as_refresh )
     current_action->stats->add_refresh( state->target );
+
+  sim.print_log( "{} adjusts duration of {} on {} by {} second(s), remains={}.",
+                 *source, *this, *target, extra_seconds, end_event->remains() );
 }
 
 // dot_t::refresh_duration ==================================================

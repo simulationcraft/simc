@@ -68,6 +68,7 @@ actions+=/chi_burst
 actions+=/chi_wave
 # Expel Harm has higher DPET than TP when you have at least 2 orbs.
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=2
+actions+=/spinning_crane_kick,if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
 actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
 actions+=/arcane_torrent,if=energy<31
 actions+=/rushing_jade_wind
