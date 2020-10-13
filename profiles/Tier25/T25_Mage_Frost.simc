@@ -5,13 +5,13 @@ level=50
 race=human
 role=spell
 position=back
-talents=1011023
-azerite_essences=27:3/4:3/5:3/37:3
+talents=2332021
+azerite_essences=22:3/12:3/27:3/32:3
 
 # Default consumables
-potion=focused_resolve
+potion=superior_battle_potion_of_intellect
 flask=greater_flask_of_endless_fathoms
-food=abyssalfried_rissole
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.

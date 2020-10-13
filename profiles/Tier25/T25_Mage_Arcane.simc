@@ -67,7 +67,7 @@ actions+=/call_action_list,name=movement
 actions.aoe=use_mana_gem,if=(talent.enlightened.enabled&mana.pct<=80&mana.pct>=65)|(!talent.enlightened.enabled&mana.pct<=85)
 actions.aoe+=/lights_judgment,if=buff.arcane_power.down
 actions.aoe+=/bag_of_tricks,if=buff.arcane_power.down
-actions.aoe+=/use_items,if=buff.arcane_power.up
+actions.aoe+=/call_action_list,name=items,if=buff.arcane_power.up
 actions.aoe+=/potion,if=buff.arcane_power.up
 actions.aoe+=/berserking,if=buff.arcane_power.up
 actions.aoe+=/blood_fury,if=buff.arcane_power.up
@@ -105,7 +105,7 @@ actions.aoe+=/evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1
 
 actions.cooldowns=lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
 actions.cooldowns+=/bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
-actions.cooldowns+=/use_items,if=buff.arcane_power.up
+actions.cooldowns+=/call_action_list,name=items,if=buff.arcane_power.up
 actions.cooldowns+=/potion,if=buff.arcane_power.up
 actions.cooldowns+=/berserking,if=buff.arcane_power.up
 actions.cooldowns+=/blood_fury,if=buff.arcane_power.up
@@ -161,6 +161,8 @@ actions.final_burn=arcane_missiles,if=buff.clearcasting.react,chain=1
 actions.final_burn+=/arcane_blast
 actions.final_burn+=/arcane_barrage
 
+actions.items=use_items
+
 actions.movement=blink_any,if=movement.distance>=10
 actions.movement+=/presence_of_mind
 actions.movement+=/arcane_missiles,if=movement.distance<10
@@ -170,7 +172,7 @@ actions.movement+=/fire_blast
 actions.opener=variable,name=have_opened,op=set,value=1,if=prev_gcd.1.evocation
 actions.opener+=/lights_judgment,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
 actions.opener+=/bag_of_tricks,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
-actions.opener+=/use_items,if=buff.arcane_power.up
+actions.opener+=/call_action_list,name=items,if=buff.arcane_power.up
 actions.opener+=/potion,if=buff.arcane_power.up
 actions.opener+=/berserking,if=buff.arcane_power.up
 actions.opener+=/blood_fury,if=buff.arcane_power.up
