@@ -2384,6 +2384,7 @@ struct colossus_smash_t : public warrior_attack_t
     {
       parse_options( options_str );
       weapon = &( player->main_hand_weapon );
+      impact_action    = p->active.deep_wounds_ARMS;
     }
   }
 
@@ -3575,6 +3576,7 @@ struct warbreaker_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     aoe    = -1;
+    impact_action    = p->active.deep_wounds_ARMS;
   }
 
   double bonus_da( const action_state_t* s ) const override
