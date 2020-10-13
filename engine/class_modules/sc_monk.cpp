@@ -9324,7 +9324,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
-  debuff.faeline_stomp = make_buff( *this, "faeline_stomp", p->find_spell( 327257 ) );
+  debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
 
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
@@ -10309,7 +10309,7 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
                                    ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
@@ -10376,7 +10376,7 @@ void monk_t::create_buffs()
                                     ->set_trigger_spell( find_spell( 286586 ) )
                                     ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
-  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
+  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite_hidden", find_spell( 286587 ) )
                                            ->set_quiet( true )
                                            ->set_trigger_spell( find_spell( 286586 ) )
                                            ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
