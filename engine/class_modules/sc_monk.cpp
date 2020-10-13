@@ -690,7 +690,7 @@ public:
     azerite_power_t niuzaos_blessing;
     // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
-    // Ironskin Brew increases your Armor by 0, and has a 8% chance to not consume a charge.
+    // Shuffle increases your Armor by 0.
     azerite_power_t straight_no_chaser;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
@@ -4071,11 +4071,18 @@ public:
         timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration();
         timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
       }
       else
       {
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
+
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
@@ -8968,13 +8975,6 @@ struct celestial_brew_t : public monk_absorb_t
       p()->active_actions.stagger_self_damage->delay_tick(
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
-    }
-
-    if ( p()->azerite.straight_no_chaser.ok() )
-    {
-      p()->buff.straight_no_chaser->trigger();
-      if ( rng().roll( p()->azerite.straight_no_chaser.spell_ref().effectN( 2 ).percent() ) )
-        p()->cooldown.celestial_brew->reset( true, 1 );
     }
 
     if ( p()->legendary.celestial_infusion->ok() )
