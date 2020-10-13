@@ -35,7 +35,6 @@
 //
 // Elemental
 // - Implement Static Discharge
-// - Implement Echoing Shock
 // - Spec Legendaries
 //   - Elemental Equilibrium
 //     - There are a number of spell-specific bugs here about which buffs get applied
@@ -4088,7 +4087,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   void execute() override
   {
     // Is the cast Primordial Wave empowered?
-    bool is_pw = cast_state( pre_execute_state )->primordial_wave;
+    bool is_pw = !parent->background && cast_state( pre_execute_state )->primordial_wave;
 
     // Setup Primordial Wave stats object so we collect damage there for reporting
     // purposes
@@ -4108,7 +4107,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   void impact( action_state_t* s ) override
   {
     // Is the cast Primordial Wave empowered?
-    bool is_pw = cast_state( s )->primordial_wave;
+    bool is_pw = !parent->background && cast_state( s )->primordial_wave;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
@@ -4369,7 +4368,16 @@ struct lava_burst_t : public shaman_spell_t
 
     // Note, the current target will always be Lava Bursted
     auto it = std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) {
-      return this->target != target && !this->td( target )->dot.flame_shock->is_ticking();
+      // Backgrounded Lava Burst is the Ascendance-triggered Lava Burst. It does not
+      // always hit main target unless it has Flame Shock up
+      if ( !background )
+      {
+        return this->target != target && !this->td( target )->dot.flame_shock->is_ticking();
+      }
+      else
+      {
+        return !this->td( target )->dot.flame_shock->is_ticking();
+      }
     } );
 
     tl.erase( it, tl.end() );
@@ -4405,8 +4413,10 @@ struct lava_burst_t : public shaman_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // Is the cast Primordial Wave empowered?
-    bool is_pw = cast_state( s )->primordial_wave;
+    // Is the cast Primordial Wave empowered? Note that Lava Burst from Ascendance has
+    // background set to true, and is intended to not consume PW buff (nor track stats to
+    // PW-Lava Burst)
+    bool is_pw = !background && cast_state( s )->primordial_wave;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
@@ -4507,9 +4517,13 @@ struct lava_burst_t : public shaman_spell_t
 
   void execute() override
   {
+    bool is_pw = !background &&
+      p()->specialization() == SHAMAN_ELEMENTAL &&
+      p()->buff.primordial_wave->check();
+
     // Setup action state for Primordial Wave-powered Lava Burst before executing the
     // action
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.primordial_wave->check() )
+    if ( is_pw )
     {
       stats = primordial_wave_stats;
     }
@@ -4533,7 +4547,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Expire Primordial Wave and restore stats. The "Primordial Wave" state will be
     // carried in the state objects to the impact method.
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.primordial_wave->up() )
+    if ( is_pw )
     {
       stats = normal_stats;
       p()->buff.primordial_wave->expire();
@@ -5337,12 +5351,28 @@ struct wind_shear_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
+  lava_burst_t* lvb;
+  flame_shock_t* fs;
+
   ascendance_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str )
+    : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str ),
+    lvb( player->specialization() == SHAMAN_ELEMENTAL ? new lava_burst_t( player, "" ) : nullptr ),
+    fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr )
   {
     harmful = false;
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
+
+    if ( lvb )
+    {
+      lvb->background = true;
+      lvb->base_execute_time = 0_s;
+      lvb->stats = player->get_stats( "lava_burst_ascendance", lvb );
+      lvb->overload->stats = player->get_stats( "lava_burst_overload_ascendance", lvb->overload );
+      lvb->stats->add_child( lvb->overload->stats );
+
+      add_child( lvb );
+    }
   }
 
   void execute() override
@@ -5351,6 +5381,31 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
     p()->buff.ascendance->trigger();
+
+    if ( lvb && lvb->target_list().size() > 0 )
+    {
+      lvb->set_target( player->target );
+      lvb->execute();
+    }
+
+    // Refresh Flame Shock to max duration
+    if ( fs )
+    {
+      auto max_duration = fs->composite_dot_duration( execute_state );
+
+      // Apparently the Flame Shock durations get set to current Flame Shock max duration,
+      // bypassing normal dot refrseh behavior.
+      range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
+        auto fs_dot = td( target ) -> dot.flame_shock;
+        if ( fs_dot->is_ticking() )
+        {
+          auto new_duration = max_duration < fs_dot->remains()
+            ? -( fs_dot->remains() - max_duration )
+            : max_duration - fs_dot->remains();
+          fs_dot->adjust_duration( new_duration, -1 );
+        }
+      } );
+    }
   }
 };
 
