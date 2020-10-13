@@ -459,7 +459,7 @@ public:
     cooldown_t* crash_lightning;
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
-    cooldown_t* enhance_shock;  // shared CD of flame shock/frost shock for enhance
+    cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
   } cooldown;
 
   // Covenant Class Abilities
@@ -716,7 +716,7 @@ public:
     cooldown.lava_burst      = get_cooldown( "lava_burst" );
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
-    cooldown.enhance_shock   = get_cooldown( "enhance_shock" );
+    cooldown.shock           = get_cooldown( "shock" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -3207,12 +3207,11 @@ struct stormstrike_base_t : public shaman_attack_t
 {
   stormstrike_attack_t *mh, *oh;
   bool stormflurry;
-  bool background_action;
 
   stormstrike_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell,
                       const std::string& options_str )
     : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ),
-      stormflurry( false ), background_action( false )
+      stormflurry( false )
   {
     parse_options( options_str );
 
@@ -3271,7 +3270,7 @@ struct stormstrike_base_t : public shaman_attack_t
     // Potential stormflurrying ends, reset things
     else
     {
-      background  = background_action;
+      background  = false;
       dual        = false;
       stormflurry = false;
     }
@@ -3283,7 +3282,7 @@ struct stormstrike_base_t : public shaman_attack_t
   void reset() override
   {
     shaman_attack_t::reset();
-    background = background_action;
+    background = false;
     dual       = false;
   }
 
@@ -5239,7 +5238,7 @@ struct flame_shock_t : public shaman_spell_t
     track_cd_waste     = false;
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.enhance_shock;
+      cooldown           = p()->cooldown.shock;
       cooldown->duration = data().cooldown();
       cooldown->action   = this;
     }
@@ -5386,7 +5385,7 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.enhance_shock;
+      cooldown           = p()->cooldown.shock;
       cooldown->duration = data().cooldown();
       cooldown->action   = this;
     }
@@ -5409,6 +5408,16 @@ struct frost_shock_t : public shaman_spell_t
     return m;
   }
 
+  int n_targets() const override
+  {
+    if ( p()->buff.hailstorm->up() )
+    {
+      return 1 + p()->buff.hailstorm->stack();  // The initial cast, plus an extra target for each stack
+    }
+
+    return shaman_spell_t::n_targets();
+  }
+
   void execute() override
   {
     if ( p()->buff.icefury->up() )
@@ -5416,11 +5425,6 @@ struct frost_shock_t : public shaman_spell_t
       // FIXME: This is currently a tooltip bug in-game and isn't attached as an effect to maelstrom or frost shock, so
       // hardcoding for now. Check spell_id=343725 at a later date.
       maelstrom_gain = 8.0;
-    }
-
-    if ( p()->buff.hailstorm->up() )
-    {
-      aoe = 1 + p()->buff.hailstorm->stack(); // The initial cast, plus an extra target for each stack
     }
 
     shaman_spell_t::execute();
@@ -5471,15 +5475,11 @@ struct wind_shear_t : public shaman_spell_t
 
 struct ascendance_damage_t : public shaman_spell_t
 {
-  ascendance_damage_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "ascendance_damage", player, player->find_spell( 344548 ), options_str )
+  ascendance_damage_t( shaman_t* player )
+    : shaman_spell_t( "ascendance_damage", player, player->find_spell( 344548 ) )
   {
     aoe = -1;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
+    background = true;
   }
 };
 
@@ -5495,7 +5495,7 @@ struct ascendance_t : public shaman_spell_t
     : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str ),
       lvb( player->specialization() == SHAMAN_ELEMENTAL ? new lava_burst_t( player, "" ) : nullptr ),
       fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
-      ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player, options_str )
+      ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player )
                                                                         : nullptr )
   {
     harmful = false;
@@ -5512,6 +5512,7 @@ struct ascendance_t : public shaman_spell_t
     shaman_spell_t::execute();
     if ( ascendance_damage )
     {
+      ascendance_damage->set_target( target ); 
       ascendance_damage->execute();
     }
 
@@ -7665,11 +7666,7 @@ void shaman_t::create_buffs()
   buff.lightning_shield = new lightning_shield_buff_t( this );
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                      double g = b->data().effectN( 1 ).base_value();
-                                      // Do we need to record this gain anywhere else? proc.maelstrom_weapon seems like
-                                      // when a melee procs it. Do we need to present maelstrom_weapon as a resource 
-                                      // and track it that way for the purposes of reporting?
-                                      buff.maelstrom_weapon->increment();
+                                      buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
                                     } );
 
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
