@@ -4629,10 +4629,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
+  stats_t* primordial_wave_stats, *normal_stats;
+  // Action-specific switch for Primordial Wave; Lightning Bolt can use a simpler method
+  // than Lava Burst for "Primordial Wave state", since it has no travel time (impacts
+  // instantly).
+  bool pw_cast;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_class_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 )
+      m_overcharge( 0 ), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
+      pw_cast( false )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -4645,6 +4651,37 @@ struct lightning_bolt_t : public shaman_spell_t
       overload = new lightning_bolt_overload_t( player );
       add_child( overload );
     }
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      // Cache normal Lava Burst stats into a pointer so we can restore behavior when
+      // Primordial Wave Lava Burst has finished impacting
+      normal_stats = stats;
+
+      // Collect Primordial Wave Lava burst stats separately
+      if ( p()->covenant.necrolord->ok() )
+      {
+        auto pw = p()->find_action( "primordial_wave" );
+        if ( pw )
+        {
+          primordial_wave_stats = p()->get_stats( "lightning_bolt_pw", this );
+          primordial_wave_stats->school = get_school();
+          pw->stats->add_child( primordial_wave_stats );
+        }
+      }
+    }
+  }
+
+  void reset() override
+  {
+    shaman_spell_t::reset();
+
+    pw_cast = false;
   }
 
   // TODO: once bug is fixed, uncomment this
@@ -4764,7 +4801,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
   int n_targets() const override
   {
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up() )
+    if ( !background && p()->specialization() == SHAMAN_ENHANCEMENT &&
+          p()->buff.primordial_wave->check() )
     {
       return -1;
     }
@@ -4774,17 +4812,20 @@ struct lightning_bolt_t : public shaman_spell_t
 
   void execute() override
   {
+    pw_cast = !background &&
+      p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up();
+
+    if ( pw_cast )
+    {
+      stats = primordial_wave_stats;
+    }
+
     shaman_spell_t::execute();
 
     // TODO: remove this when the high voltage bug is fixed and it properly generates double instead of 5
     if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
     {
       p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
-    }
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up() )
-    {
-      p()->buff.primordial_wave->expire();
     }
 
     p()->buff.stormkeeper->decrement();
@@ -4804,6 +4845,12 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->buff.wind_gust->trigger();
       }
+    }
+
+    if ( pw_cast )
+    {
+      p()->buff.primordial_wave->expire();
+      stats = normal_stats;
     }
   }
 
