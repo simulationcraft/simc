@@ -1290,6 +1290,7 @@ class SpellDataGenerator(DataGenerator):
             ( 339538, 0 ),          # TV echo
             ( 327510, 0 ),          # Shining Light free WoG
             ( 182104, 0 ),          # Shining Light stacks 1-4
+            ( 340147, 0 ),          # Royal Decree
         ),
 
         # Hunter:
