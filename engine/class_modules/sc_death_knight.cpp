@@ -8791,8 +8791,8 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
   
   // Maintain Virulent Plague
-  def -> add_action( this, "Outbreak", "dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
-  def -> add_action( this, "Outbreak", "dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
+  def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
+  def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
   
   // Action Lists
   // def -> add_action( "call_action_list,name=covenants" );
