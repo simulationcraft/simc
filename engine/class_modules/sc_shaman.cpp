@@ -5199,6 +5199,18 @@ struct flame_shock_t : public shaman_spell_t
     return m;
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto d = shaman_spell_t::composite_dot_duration( s );
+
+    if ( p()->buff.fire_elemental->check() && p()->spec.fire_elemental_2->ok() )
+    {
+      d *= 1.0 + p()->spec.fire_elemental_2->effectN( 1 ).percent();
+    }
+
+    return d;
+  }
+
   timespan_t tick_time( const action_state_t* state ) const override
   {
     auto tt = shaman_spell_t::tick_time( state );
