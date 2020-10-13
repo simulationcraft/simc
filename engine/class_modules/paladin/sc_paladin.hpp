@@ -434,6 +434,7 @@ public:
     conduit_data_t righteous_might;
     conduit_data_t hallowed_discernment;
     conduit_data_t punish_the_guilty;
+    conduit_data_t resolute_defender;
   } conduit;
 
   struct convenants_t {

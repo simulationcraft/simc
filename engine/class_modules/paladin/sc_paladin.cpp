@@ -1840,6 +1840,7 @@ void paladin_t::init_spells()
   conduit.righteous_might = find_conduit_spell( "Righteous Might" );
   conduit.hallowed_discernment = find_conduit_spell( "Hallowed Discernment" ); // TODO: implement
   conduit.punish_the_guilty = find_conduit_spell( "Punish the Guilty" );
+  conduit.resolute_defender = find_conduit_spell( "Resolute Defender");
 }
 
 // paladin_t::primary_role ==================================================

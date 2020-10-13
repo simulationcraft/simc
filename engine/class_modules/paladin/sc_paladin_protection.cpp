@@ -449,8 +449,10 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  timespan_t ad_duration;
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
+    holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous ),
+    ad_duration( p -> find_specialization_spell( "Ardent Defender" ) -> duration() )
   {
     parse_options( options_str );
 
@@ -487,6 +489,14 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
     }
+
+    if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
+    {
+      p() -> buffs.ardent_defender -> extend_duration( p(),
+        p() -> conduit.resolute_defender.percent() * ad_duration
+      );
+    }
+
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
