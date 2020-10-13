@@ -890,7 +890,15 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    // Currently not in beta, but in PTR data
+    if ( o().bugs )
+    {
+      return 5;
+    }
+    else
+    {
+      return o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    }
   }
 };
 
@@ -1345,7 +1353,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::consume_resource();
 
-    if (priest().azerite_essence.lucid_dreams )
+    if ( priest().azerite_essence.lucid_dreams )
       priest().trigger_lucid_dreams( last_resource_cost );
   }
 
@@ -1377,7 +1385,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         }
       }
 
-      if (priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
+      if ( priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
       {
         // TODO: Remove after pre-patch?
         // Just an approximation of the value added by Lucid Minor, not accurate
