@@ -5290,7 +5290,6 @@ struct flame_shock_t : public shaman_spell_t
     {
       cooldown           = p()->cooldown.shock;
       cooldown->duration = data().cooldown();
-      cooldown->action   = this;
     }
   }
 
@@ -5458,7 +5457,6 @@ struct frost_shock_t : public shaman_spell_t
     {
       cooldown           = p()->cooldown.shock;
       cooldown->duration = data().cooldown();
-      cooldown->action   = this;
     }
   }
 
