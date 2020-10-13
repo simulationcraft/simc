@@ -7799,6 +7799,42 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Fireball damage (retail)", 91, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.65 )
+      .verification_value( 0.59 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Flamestrike damage (retail)", 126904, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6613 )
+      .verification_value( 0.575 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Pyroblast damage (retail)", 4785, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.363 )
+      .verification_value( 1.239 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Fire Blast damage (retail)", 120062, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.792 )
+      .verification_value( 0.72 );
+
+    hotfix::register_spell( "Mage", "2020-10-14", "Arcane spec aura (retail)", 137021 )
+      .field( "max_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 49 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Arcane spec aura regen (retail)", 191118 )
+      .field( "points_per_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -3 )
+      .verification_value( -2 );
   }
 
   bool valid() const override { return true; }
