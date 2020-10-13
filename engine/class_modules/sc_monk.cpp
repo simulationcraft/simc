@@ -11723,6 +11723,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
                    "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd"
+                   "&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
@@ -12090,8 +12092,8 @@ void monk_t::apl_combat_mistweaver()
 
   def->add_action( "potion" );
 
-  def->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<4" );
+  def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
