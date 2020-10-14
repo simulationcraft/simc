@@ -40,6 +40,7 @@ namespace { // UNNAMED NAMESPACE
 // computing it using the in-game rules)
 static constexpr auto __ILEVEL_OVERRIDE_MAP = util::make_static_set<unsigned>( {
   167555U, // Pocket-Sized Computation Device
+  158075U, // Heart of Azeroth
 } );
 
 struct player_spec_t
