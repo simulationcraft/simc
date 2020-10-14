@@ -563,6 +563,7 @@ public:
     const spell_data_t* stormbringer;
 
     const spell_data_t* windfury;
+    const spell_data_t* stormbringer_2;
 
     // Restoration
     const spell_data_t* purification;
@@ -2722,7 +2723,7 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( p()->buff.stormbringer->up() )
     {
-      m *= 1.0 + p()->buff.stormbringer->data().effectN( 4 ).percent();
+      m *= 1.0 + p()->spec.stormbringer_2->effectN( 1 ).percent();
     }
 
     if ( p()->buff.gathering_storms->up() )
@@ -3227,7 +3228,7 @@ struct stormstrike_base_t : public shaman_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p()->buff.stormbringer->up() || background == true )
+    if ( background )
     {
       cd_duration = timespan_t::zero();
     }
@@ -7051,6 +7052,8 @@ void shaman_t::init_spells()
   spec.stormbringer       = find_specialization_spell( "Stormbringer" );
   spec.windfury           = find_specialization_spell( "Windfury Weapon" );
 
+  spec.stormbringer_2     = find_rank_spell( "Stormbringer", "Rank 2" );
+
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
   spec.resurgence         = find_specialization_spell( "Resurgence" );
@@ -7354,6 +7357,11 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
   //        "Stormbringer called on invalid action type" );
 
   if ( buff.ghost_wolf->check() )
+  {
+    return;
+  }
+
+  if ( !state->action->special )
   {
     return;
   }
