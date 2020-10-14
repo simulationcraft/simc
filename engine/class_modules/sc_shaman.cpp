@@ -3428,15 +3428,13 @@ struct flametongue_weapon_t : public shaman_spell_t
 
 struct crash_lightning_t : public shaman_attack_t
 {
-  size_t ecc_min_targets;
-
   crash_lightning_t( shaman_t* player, const std::string& options_str )
-    : shaman_attack_t( "crash_lightning", player, player->find_specialization_spell( "Crash Lightning" ) ),
-      ecc_min_targets( 0 )
+    : shaman_attack_t( "crash_lightning", player, player->find_specialization_spell( "Crash Lightning" ) )
   {
     parse_options( options_str );
 
     aoe     = -1;
+    reduced_aoe_damage = true;
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -3454,6 +3452,8 @@ struct crash_lightning_t : public shaman_attack_t
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.cl_crash_lightning->stack_value();
 
     return m;
   }
@@ -3483,16 +3483,16 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( execute_state->n_targets > ( 1 - 0 ) )  // currently bugged and proc'ing on 1 target less than it should.
+      if ( num_targets_hit > 1 )
       {
         p()->buff.crash_lightning->trigger();
       }
 
-      double v = 1.0 + p()->buff.gathering_storms->default_value *
-                           ( execute_state->n_targets +
-                             0 );  // currently bugged and acting as if there's an extra target present
+      double v = 1.0 + p()->buff.gathering_storms->default_value * num_targets_hit;
       p()->buff.gathering_storms->trigger( 1, v );
     }
+
+    p()->buff.cl_crash_lightning->expire();
   }
 };
 
@@ -3945,11 +3945,6 @@ struct chain_lightning_t : public chained_base_t
     return (size_t)0;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    chained_base_t::impact( state );
-  }
-
   void execute() override
   {
     chained_base_t::execute();
@@ -3975,14 +3970,23 @@ struct chain_lightning_t : public chained_base_t
       }
     }
 
-    if ( result_is_hit( execute_state->result ) && execute_state->n_targets > 1 )
+    if ( num_targets_hit && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      p()->buff.cl_crash_lightning->trigger( (int)execute_state->n_targets );
-      // I can't find any reference to reducing the cooldown in any of the tooltips.
-      // When I experimented in game, it seemed like the reduction was 1 second per target hit,
-      // but it could also have been 1 second beyond the first target.
-      // Either way hitting 3 targets was more reduction than hitting 2 targets with CL
-      p()->cooldown.crash_lightning->adjust( timespan_t::from_seconds( execute_state->n_targets ) );
+      p()->buff.cl_crash_lightning->trigger( num_targets_hit );
+    }
+
+    if ( p()->spec.chain_lightning_2->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->cooldown.crash_lightning->adjust(
+          -( p()->spec.chain_lightning_2->effectN( 1 ).time_value() * num_targets_hit ) );
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} reducing Crash Lightning cooldown by {}, remains={}",
+            p()->name(),
+            -( p()->spec.chain_lightning_2->effectN( 1 ).time_value() * num_targets_hit ),
+            p()->cooldown.crash_lightning->remains() );
+      }
     }
   }
 };
@@ -7747,7 +7751,8 @@ void shaman_t::create_buffs()
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
-  buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) );
+  buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
   buff.hot_hand =
       make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
