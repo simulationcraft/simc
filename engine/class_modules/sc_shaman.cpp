@@ -1336,7 +1336,7 @@ public:
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s )
     : base_t( token, p, s ),
       may_proc_windfury( p->spec.windfury->ok() ),
-      may_proc_flametongue( false ),
+      may_proc_flametongue( true ),
       may_proc_maelstrom_weapon( false ),  // Change to whitelisting
       may_proc_stormbringer( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
@@ -7584,14 +7584,10 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
     return;
 
   if ( buff.ghost_wolf->check() )
-  {
     return;
-  }
 
   if ( specialization() == SHAMAN_ENHANCEMENT && state->action->weapon->slot == SLOT_MAIN_HAND )
-  {
     return;
-  }
 
   flametongue->set_target( state->target );
   flametongue->execute();
