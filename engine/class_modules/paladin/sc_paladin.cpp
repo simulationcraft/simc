@@ -2031,6 +2031,15 @@ double paladin_t::composite_melee_crit_chance() const
   return h;
 }
 
+double paladin_t::composite_base_armor_multiplier() const
+{
+  double a = player_t::composite_base_armor_multiplier();
+  if ( specialization() != PALADIN_PROTECTION )
+    return a;
+  a *= 1.0 + spec.protection_paladin -> effectN( 4 ).percent();
+  return a;
+}
+
 double paladin_t::composite_player_target_multiplier ( player_t* target, school_e school ) const
 {
   paladin_td_t* td = get_target_data( target );

@@ -509,6 +509,7 @@ public:
   virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
   virtual double 	  composite_player_target_multiplier ( player_t *target, school_e school ) const override;
+  virtual double    composite_base_armor_multiplier() const override;
 
   virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
 
