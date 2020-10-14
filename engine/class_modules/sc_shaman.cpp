@@ -7933,9 +7933,61 @@ void shaman_t::init_action_list_elemental()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   if ( options.rotation == ROTATION_STANDARD ) {
-    def->add_action( this, "Bloodlust" );
-    def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
-    def->add_action( this, "Lightning Bolt" );
+    action_priority_list_t* single_target = get_action_priority_list( "single_target" );
+    action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
+    // "Default" APL controlling logic flow to specialized sub-APLs
+    def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+    def->add_action( "use_items" );
+    def->add_action( this, "Flame Shock", "if=!ticking" );
+    def->add_action( this, "Fire Elemental" );
+    def->add_talent( this, "Storm Elemental" );
+    // Racials
+    def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+    def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+    def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+    def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+    def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
+
+    // Covenants
+    def->add_action( "primordial_wave,if=covenant.necrolord" );
+    def->add_action( "vesper_totem,if=covenant.kyrian" );
+    def->add_action( "chain_harvest,if=covenant.venthyr" );
+    def->add_action( "fae_transfusion,if=covenant.night_fae" );
+
+    // Pick APL to run
+    def->add_action(
+        "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
+    def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
+
+    // Aoe APL
+    aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+    aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
+    aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
+    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
+    aoe->add_action( this, "Earthquake" );
+    aoe->add_action( this, "Chain Lightning" );
+    aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
+    aoe->add_action( this, "Frost Shock", "moving=1" );
+
+    // Single target APL
+    single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+    single_target->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+    single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+    single_target->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
+    single_target->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
+    single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
+    single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
+    single_target->add_action( this, "Earthquake", "if=(spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)" );
+    single_target->add_action( this, "Earth Shock" );
+    single_target->add_action( "lightning_lasso" );
+    single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
+    single_target->add_talent( this, "Icefury", "if=talent.icefury.enabled" );
+    single_target->add_action( this, "Lightning Bolt" );
+    single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
+    single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
+    single_target->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
   } else if (options.rotation == ROTATION_SIMPLE) {
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
