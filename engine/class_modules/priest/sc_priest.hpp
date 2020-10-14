@@ -855,7 +855,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id = 19668;
+    npc_id           = 19668;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -884,7 +884,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id = 62982;
+    npc_id           = 62982;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -1357,8 +1357,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
-    auto resource = current_resource();
-
     base_t::consume_resource();
 
     if ( priest().azerite_essence.lucid_dreams )
@@ -1552,6 +1550,9 @@ protected:
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
+  // TODO: hook up rank2 to movement speed
+  const spell_data_t* rank2;
+
   dispersion_t( priest_t& p );
 };
 

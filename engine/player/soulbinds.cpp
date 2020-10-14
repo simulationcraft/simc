@@ -309,7 +309,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) { buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
 
 void first_strike( special_effect_t& effect )
@@ -829,7 +829,7 @@ void volatile_solvent( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
         ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
 
-      effect.player->register_combat_begin( [ buff_crit ]( player_t* p ) { buff_crit->trigger(); } );
+      effect.player->register_combat_begin( [ buff_crit ]( player_t* ) { buff_crit->trigger(); } );
     }
 
 
@@ -843,7 +843,7 @@ void volatile_solvent( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
         ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
       
-      effect.player->register_combat_begin( [ buff_primary ]( player_t* p ) { buff_primary->trigger(); } );
+      effect.player->register_combat_begin( [ buff_primary ]( player_t* ) { buff_primary->trigger(); } );
     }
 
 
@@ -853,7 +853,7 @@ void volatile_solvent( special_effect_t& effect )
 
       auto buff_mastery = make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid );
 
-      effect.player->register_combat_begin( [ buff_mastery ]( player_t* p ) { buff_mastery->trigger(); } );
+      effect.player->register_combat_begin( [ buff_mastery ]( player_t* ) { buff_mastery->trigger(); } );
     }
 
     //Todo: Add the buffs for Magic Damage percent and Physical damage preseont

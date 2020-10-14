@@ -2336,14 +2336,15 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
 
-  // The duration is found in the 336216 spell
-  auto void_lasher_spell = p.find_spell( 344752 );
-  void_lasher.set_default_duration( p.find_spell( 336216 )->duration() + timespan_t::from_millis( 1 ) );
+  auto void_lasher_spell = p.find_spell( 336216 );
+  // Add 1ms to ensure pet is dismissed after last dot tick.
+  void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
 }
 
-buffs::dispersion_t::dispersion_t( priest_t& p ) : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
+buffs::dispersion_t::dispersion_t( priest_t& p )
+  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
+    rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
 {
-  auto rank2 = p.find_specialization_spell( 322108, PRIEST_SHADOW );
 }
 
 }  // namespace priestspace

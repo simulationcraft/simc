@@ -139,57 +139,6 @@ struct movement_buff_t : public buff_t
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
-struct counter_t
-{
-  const sim_t* sim;
-
-  double value, interval;
-  timespan_t last;
-
-  counter_t( demon_hunter_t* p );
-
-  void add( double val )
-  {
-    // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
-      return;
-
-    value += val;
-    if ( last > timespan_t::min() )
-      interval += ( sim->current_time() - last ).total_seconds();
-    last = sim->current_time();
-  }
-
-  void reset()
-  {
-    last = timespan_t::min();
-  }
-
-  double divisor() const
-  {
-    if ( !sim->debug && !sim->log && sim->iterations > sim->threads )
-      return sim->iterations - sim->threads;
-    else
-      return std::min( sim->iterations, sim->threads );
-  }
-
-  double mean() const
-  {
-    return value / divisor();
-  }
-
-  double interval_mean() const
-  {
-    return interval / divisor();
-  }
-
-  void merge( const counter_t& other )
-  {
-    value += other.value;
-    interval += other.interval;
-  }
-};
-
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -201,7 +150,6 @@ public:
   using base_t = player_t;
 
   // Data collection for cooldown waste
-  std::vector<counter_t*> counters;
   auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
@@ -757,21 +705,10 @@ public:
     return &( entries.back()->second );
   }
 
-  ~demon_hunter_t() override;
-
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
 };
 
-demon_hunter_t::~demon_hunter_t()
-{
-  range::dispose( counters );
-}
-
-counter_t::counter_t( demon_hunter_t* p ) : sim( p->sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
-{
-  p->counters.push_back( this );
-}
 
 // Delayed Execute Event ====================================================
 
@@ -6295,9 +6232,6 @@ void demon_hunter_t::merge( player_t& other )
   player_t::merge( other );
 
   const demon_hunter_t& s = static_cast<demon_hunter_t&>( other );
-
-  for ( size_t i = 0, end = counters.size(); i < end; i++ )
-    counters[ i ]->merge( *s.counters[ i ] );
 
   for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
   {
