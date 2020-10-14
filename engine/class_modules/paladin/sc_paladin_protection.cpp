@@ -422,6 +422,17 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     }
     return m;
   }
+
+  void impact( action_state_t *s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p() -> conduit.shielding_words -> ok() && s -> result_amount > 0 )
+    {
+      p() -> buffs.shielding_words -> trigger( 1,
+        s -> result_amount * p() -> conduit.shielding_words.percent()
+      );
+    }
+  }
 };
 
 // Shield of the Righteous ==================================================
@@ -762,6 +773,8 @@ void paladin_t::create_buffs_protection()
         -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
+  buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
+        -> set_absorb_source( get_stats( "shielding_words" ) );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )

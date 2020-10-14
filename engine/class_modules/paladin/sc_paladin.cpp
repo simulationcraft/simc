@@ -1841,6 +1841,7 @@ void paladin_t::init_spells()
   conduit.hallowed_discernment = find_conduit_spell( "Hallowed Discernment" ); // TODO: implement
   conduit.punish_the_guilty = find_conduit_spell( "Punish the Guilty" );
   conduit.resolute_defender = find_conduit_spell( "Resolute Defender");
+  conduit.shielding_words = find_conduit_spell( "Shielding Words" );
 }
 
 // paladin_t::primary_role ==================================================

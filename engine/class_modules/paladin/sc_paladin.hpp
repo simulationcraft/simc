@@ -170,6 +170,7 @@ public:
     buff_t* redoubt;
     buff_t* shield_of_the_righteous;
     buff_t* moment_of_glory;
+    buff_t* shielding_words;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -435,6 +436,7 @@ public:
     conduit_data_t hallowed_discernment;
     conduit_data_t punish_the_guilty;
     conduit_data_t resolute_defender;
+    conduit_data_t shielding_words;
   } conduit;
 
   struct convenants_t {
