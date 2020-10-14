@@ -537,6 +537,7 @@ public:
     proc_t* windfury;
     proc_t* hot_hand;
     proc_t* maelstrom_weapon;
+    proc_t* maelstrom_weapon_fs;
     proc_t* stormflurry;
   } proc;
 
@@ -924,11 +925,8 @@ struct crackling_surge_buff_t : public buff_t
 
 struct maelstrom_weapon_buff_t : public buff_t
 {
-  maelstrom_weapon_buff_t( shaman_t* p ) : buff_t( p, "maelstrom_weapon", p->find_spell( 187880 ) )
-  {
-    set_duration( s_data->duration() );
-    set_max_stack( 10 );
-  }
+  maelstrom_weapon_buff_t( shaman_t* p ) : buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) )
+  { }
 };
 
 struct gathering_storms_buff_t : public buff_t
@@ -1339,7 +1337,7 @@ public:
     : base_t( token, p, s ),
       may_proc_windfury( p->spec.windfury->ok() ),
       may_proc_flametongue( true ),
-      may_proc_maelstrom_weapon( false ),  // Change to whitelisting
+      may_proc_maelstrom_weapon( true ),
       may_proc_stormbringer( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand->ok() ),
@@ -1377,6 +1375,11 @@ public:
     if ( may_proc_hot_hand )
     {
       may_proc_hot_hand = ab::weapon != nullptr;
+    }
+
+    if ( may_proc_maelstrom_weapon )
+    {
+      may_proc_maelstrom_weapon = ab::weapon != nullptr;
     }
 
     may_proc_lightning_shield = ab::weapon != nullptr;
@@ -1524,6 +1527,27 @@ public:
     may_proc_stormbringer = false;
   }
 
+  // Some spells do not consume Maelstrom Weapon stacks always, so need to control this on
+  // a spell to spell level
+  virtual bool consume_maelstrom_weapon() const
+  {
+    return affected_by_maelstrom_weapon &&
+      p()->buff.maelstrom_weapon->up() &&
+      !background;
+  }
+
+  unsigned maelstrom_weapon_stacks() const
+  {
+    if ( !affected_by_maelstrom_weapon || p()->buff.maelstrom_weapon->check() )
+    {
+      return 0;
+    }
+
+    return std::min(
+          as<unsigned>( p()->buff.maelstrom_weapon->stack() ),
+          p()->spell.maelstrom_weapon->max_stacks() );
+  }
+
   void init() override
   {
     base_t::init();
@@ -1560,33 +1584,18 @@ public:
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
-    if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() )
-    {
-      // Can only consume up to 5 stacks
-      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
-      m *= ( 1.0 + ( p()->spell.maelstrom_weapon->effectN( 2 ).percent() * stacks ) );
-    }
+    m *= 1.0 + p()->spell.maelstrom_weapon->effectN( 2 ).percent() * maelstrom_weapon_stacks();
 
     return m;
   }
 
   timespan_t execute_time() const override
   {
-    timespan_t t = shaman_spell_base_t::execute_time();
+    auto t = shaman_spell_base_t::execute_time();
 
-    if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() )
-    {
-      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
-      t *= 1.0 + ( p()->spell.maelstrom_weapon->effectN( 1 ).percent() * stacks );
-    }
+    t *= 1.0 + p()->spell.maelstrom_weapon->effectN( 1 ).percent() * maelstrom_weapon_stacks();
+
     return t;
-  }
-
-  double composite_spell_power() const override
-  {
-    double sp = base_t::composite_spell_power();
-
-    return sp;
   }
 
   void execute() override
@@ -1605,9 +1614,9 @@ public:
       p()->buff.master_of_the_elements->decrement();
     }
 
-    if ( affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up() && !background )
+    auto stacks = maelstrom_weapon_stacks();
+    if ( stacks && consume_maelstrom_weapon() )
     {
-      int stacks = std::min( p()->buff.maelstrom_weapon->stack(), 5 );
       p()->buff.maelstrom_weapon->decrement( stacks );
       if ( p()->talent.hailstorm->ok() )
       {
@@ -1636,9 +1645,12 @@ public:
 
   virtual double overload_chance( const action_state_t* ) const
   {
-    if ( p()->mastery.elemental_overload->ok() ) {
+    if ( p()->mastery.elemental_overload->ok() )
+    {
       return p()->cache.mastery_value();
-    } else {
+    }
+    else
+    {
       return 0;
     }
   }
@@ -2562,7 +2574,6 @@ struct windfury_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury         = false;
-    may_proc_maelstrom_weapon = true;
 
     for ( size_t i = 0; i < stats_.at_fw.size(); i++ )
       stats_.at_fw[ i ] = player->get_proc( "Windfury-ForcefulWinds: " + std::to_string( i ) );
@@ -2779,8 +2790,6 @@ struct windlash_t : public shaman_attack_t
     weapon_multiplier                             = 1.0;
     base_execute_time                             = w->swing_time;
     trigger_gcd                                   = timespan_t::zero();
-
-    may_proc_maelstrom_weapon = true;  // Presumption, but should be safe
   }
 
   // Windlash is a special ability, but treated as an autoattack in terms of proccing
@@ -2941,7 +2950,6 @@ struct melee_t : public shaman_attack_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->dual_wield() )
       base_hit -= 0.19;
 
-    may_proc_maelstrom_weapon = true;
     may_proc_icy_edge         = true;
     may_proc_flametongue      = true;
   }
@@ -3874,6 +3882,18 @@ struct chain_lightning_t : public chained_base_t
     affected_by_master_of_the_elements = true;
   }
 
+  // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
+  // Chain Lightning, but the spell still benefits from the damage increase.
+  bool consume_maelstrom_weapon() const override
+  {
+    if ( p()->buff.stormkeeper->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::consume_maelstrom_weapon();
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
@@ -4752,6 +4772,18 @@ struct lightning_bolt_t : public shaman_spell_t
     pw_cast = false;
   }
 
+  // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
+  // Chain Lightning, but the spell still benefits from the damage increase.
+  bool consume_maelstrom_weapon() const override
+  {
+    if ( p()->buff.stormkeeper->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::consume_maelstrom_weapon();
+  }
+
   // TODO: once bug is fixed, uncomment this
   // double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
   // {
@@ -5486,11 +5518,6 @@ struct frost_shock_t : public shaman_spell_t
     {
       p()->buff.hailstorm->decrement( p()->buff.hailstorm->stack() );
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
   }
 };
 
@@ -6293,6 +6320,15 @@ struct primordial_wave_t : public shaman_spell_t
     // Ensure Primordial Wave flame shock will not trigger cooldown
     flame_shock->cooldown = player->get_cooldown( "flame_shock_primordial" );
     flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    // Spell data claims Maelstrom Weapon (still) affects Primordia Wave, however in-game
+    // this is not true
+    affected_by_maelstrom_weapon = false;
   }
 
   void execute() override
@@ -7723,6 +7759,7 @@ void shaman_t::create_buffs()
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
+                                      proc.maelstrom_weapon_fs->occur();
                                     } );
 
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
@@ -7784,6 +7821,7 @@ void shaman_t::init_procs()
   proc.windfury          = get_proc( "Windfury" );
   proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
+  proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
