@@ -6459,7 +6459,7 @@ void warrior_t::apl_arms()
   single_target->add_action( this, "Colossus Smash", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|"
                                    "target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|"
                                    "target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
-  single_target->add_action( this, "Warbreaker", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|"
+  single_target->add_talent( this, "Warbreaker", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|"
                                    "target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|"
                                    "target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
