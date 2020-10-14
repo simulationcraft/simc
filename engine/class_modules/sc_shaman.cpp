@@ -3345,12 +3345,25 @@ struct windstrike_t : public stormstrike_base_t
 
 // Ice Strike Spell ========================================================
 
-struct ice_strike_t : public shaman_spell_t
+struct ice_strike_t : public shaman_attack_t
 {
   ice_strike_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "ice_strike", player, player->talent.ice_strike, options_str )
+    : shaman_attack_t( "ice_strike", player, player->talent.ice_strike )
   {
-    // placeholder
+    parse_options( options_str );
+
+    weapon = &( player->main_hand_weapon );
+    weapon_multiplier = 0.0;
+  }
+
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      p()->cooldown.shock->reset( false );
+    }
   }
 };
 
