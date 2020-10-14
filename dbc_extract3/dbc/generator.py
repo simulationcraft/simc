@@ -1291,6 +1291,7 @@ class SpellDataGenerator(DataGenerator):
             ( 327510, 0 ),          # Shining Light free WoG
             ( 182104, 0 ),          # Shining Light stacks 1-4
             ( 340147, 0 ),          # Royal Decree
+            ( 339119, 0 ),          # Golen Path
         ),
 
         # Hunter:
