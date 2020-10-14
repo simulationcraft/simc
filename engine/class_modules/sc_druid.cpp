@@ -10191,6 +10191,32 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     } );
   }
 
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
+  {
+    std::string replacement;
+
+    if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
+    {
+      if ( talent.incarnation_cat->ok() || talent.incarnation_bear->ok() )
+        replacement = "incarnation";
+      else
+        replacement = "berserk";
+    }
+    else
+    {
+      if ( talent.incarnation_cat->ok() )
+        replacement = "incarnation_king_of_the_jungle";
+      else if ( talent.incarnation_bear->ok() )
+        replacement = "incarnation_guardian_of_ursoc";
+      else if ( specialization() == DRUID_GUARDIAN )
+        replacement = "berserk_bear";
+      else
+        replacement = "berserk_cat";
+    }
+
+    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+  }
+
   if ( util::str_compare_ci( name_str, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
 
