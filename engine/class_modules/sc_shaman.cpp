@@ -16,13 +16,6 @@
 // Shadowlands TODO
 //
 // Shared
-// - Covenants
-//   - Kyrian
-//     - healing? (do we actually care?)
-//     - totem replacement? (see above)
-//   - Necrolord
-//     - apply background flame shock to target
-//     - cast background lava burst to all flame shocked targets
 // - Class Legendaries
 //   - Ancestral Reminder
 //     - extending lust duration is easy, but increasing effect of lust seems trickier
@@ -338,6 +331,10 @@ public:
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
 
+  // A vector of action objects that need target cache invalidation whenever the number of
+  // Flame Shocks change
+  std::vector<action_t*> flame_shock_dependants;
+
   // Cached actions
   struct actions_t
   {
@@ -446,7 +443,7 @@ public:
   {
     rotation_type_e rotation = ROTATION_STANDARD;
   } options;
-  
+
   // Cooldowns
   struct
   {
@@ -760,6 +757,8 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
+
+  void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
   // Legendary
   // empty - for now
@@ -4456,6 +4455,8 @@ struct lava_burst_t : public shaman_spell_t
         primordial_wave_stats = p()->get_stats( "lava_burst_pw", this );
         primordial_wave_stats->school = get_school();
         pw->stats->add_child( primordial_wave_stats );
+
+        p()->flame_shock_dependants.push_back( this );
       }
     }
   }
@@ -4464,31 +4465,9 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::available_targets( tl );
 
-    // Note, the current target will always be Lava Bursted
-    auto it = std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) {
-      // Backgrounded Lava Burst is the Ascendance-triggered Lava Burst. It does not
-      // always hit main target unless it has Flame Shock up
-      if ( !background )
-      {
-        return this->target != target && !this->td( target )->dot.flame_shock->is_ticking();
-      }
-      else
-      {
-        return !this->td( target )->dot.flame_shock->is_ticking();
-      }
-    } );
+    // Foreground Lava Bursts will retain the primary target even if it has no Lava Burst
+    p()->regenerate_flame_shock_dependent_target_list( this, !background );
 
-    tl.erase( it, tl.end() );
-
-  if ( sim->debug )
-  {
-    sim->print_debug("{} main_target ({}) + targets with flame_shock on:", *player,
-        target->name() );
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
-    }
-  }
     return tl.size();
   }
 
@@ -5286,9 +5265,6 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
-  // Lava burst actions that need their target caches invalidated if Primordial Wave is
-  // used
-  std::vector<action_t*> lava_bursts;
   const spell_data_t* lashing_flames_spell;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
@@ -5308,27 +5284,11 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  void invalidate_lava_burst_targets()
+  void invalidate_dependant_targets()
   {
-    range::for_each( lava_bursts, []( action_t* a ) { a->target_cache.is_valid = false; } );
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    // Collect all Lava Bursts into a list if the actor is using Primordial Wave. Lava
-    // Burst target caches will be invalidated whenever the number of Flame Shock dots
-    // change.
-    if ( p()->covenant.necrolord->ok() && p()->find_action( "primordial_wave" ) )
-    {
-      range::for_each( player->action_list, [ this ]( action_t* a ) {
-        if ( util::str_compare_ci( a->name_str, "lava_burst" ) )
-        {
-          lava_bursts.push_back( a );
-        }
-      } );
-    }
+    range::for_each( p()->flame_shock_dependants, []( action_t* a ) {
+      a->target_cache.is_valid = false;
+    } );
   }
 
   double composite_crit_chance() const override
@@ -5432,14 +5392,14 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::last_tick( d );
 
-    invalidate_lava_burst_targets();
+    invalidate_dependant_targets();
   }
 
   void trigger_dot( action_state_t* s ) override
   {
     if ( !td( s->target )->dot.flame_shock->is_ticking() )
     {
-      invalidate_lava_burst_targets();
+      invalidate_dependant_targets();
     }
 
     shaman_spell_t::trigger_dot( s );
@@ -5644,6 +5604,8 @@ struct static_discharge_t : public shaman_spell_t
     : shaman_spell_t( "static_discharge", player, player->talent.static_discharge, options_str )
   {
     affected_by_master_of_the_elements = false;
+    base_tick_time = 0_s; // Ticking handled by the buff
+    dot_duration = 0_s;
   }
 
   void execute() override
@@ -5652,44 +5614,37 @@ struct static_discharge_t : public shaman_spell_t
 
     p()->buff.static_discharge->trigger();
   }
-
-  bool ready() override
-  {             //TODO: Implement Lightning Shield
-    if ( false) //!p()->buff.lightning_shield->up() )
-    {
-      return false;
-    }
-    else
-    {
-      return shaman_spell_t::ready();
-    }
-  }
 };
 
 struct static_discharge_tick_t : public shaman_spell_t
 {
-  static_discharge_tick_t( shaman_t* player)
+  static_discharge_tick_t( shaman_t* player )
     : shaman_spell_t( "static discharge tick", player, player->find_spell( 342244 ) )
   {
     background = true;
+
+    player->flame_shock_dependants.push_back( this );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    shaman_spell_t::available_targets( tl );
+
+    p()->regenerate_flame_shock_dependent_target_list( this, false );
+
+    return tl.size();
   }
 
   void execute() override
   {
-    target_cache.is_valid          = false;
-    std::vector<player_t*> targets = target_list();
-    auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
-      return !this->td( target )->dot.flame_shock->is_ticking();
-    } );
-
-    targets.erase( it, targets.end() );
-    if ( targets.size() == 0 )
+    if ( target_list().size() == 0 )
     {
       sim->print_debug( "Static Discharge Tick without an active FS" );
       return;
     }
-    player_t* target = targets[p()->rng().range(targets.size())];
-    this->set_target( target );
+
+    set_target( target_list()[ rng().range( target_list().size() ) ] );
+
     shaman_spell_t::execute();
   }
 };
@@ -6983,6 +6938,8 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
 void shaman_t::create_actions()
 {
+  player_t::create_actions();
+
   if ( talent.crashing_storm->ok() )
   {
     action.crashing_storm = new crashing_storm_damage_t( this );
@@ -6993,7 +6950,7 @@ void shaman_t::create_actions()
     action.earthen_rage = new earthen_rage_spell_t( this );
   }
 
-  if ( talent.static_discharge->ok())
+  if ( talent.static_discharge->ok() && find_action( "static_discharge" ) )
   {
     action.static_discharge_tick = new static_discharge_tick_t( this );
   }
@@ -7002,8 +6959,6 @@ void shaman_t::create_actions()
   {
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
   }
-
-  player_t::create_actions();
 }
 
 // shaman_t::create_options =================================================
@@ -7502,6 +7457,35 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
   event_t::cancel( current_event );
 }
 
+void shaman_t::regenerate_flame_shock_dependent_target_list(
+    const action_t* action, bool retain_main_target ) const
+{
+  auto& tl = action->target_cache.list;
+
+  auto it = std::remove_if( tl.begin(), tl.end(),
+    [ this, action, retain_main_target ]( player_t* target ) {
+      if ( retain_main_target )
+      {
+        return action->target != target && !get_target_data( target )->dot.flame_shock->is_ticking();
+      }
+      else
+      {
+        return !get_target_data( target )->dot.flame_shock->is_ticking();
+      }
+    }
+  );
+
+  tl.erase( it, tl.end() );
+
+  if ( sim->debug )
+  {
+    sim->print_debug("{} targets with flame_shock on:", *this );
+    for ( size_t i = 0; i < tl.size(); i++ )
+    {
+      sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
+    }
+  }
+}
 
 double shaman_t::composite_maelstrom_gain_coefficient( const action_state_t* /* state */ ) const
 {
