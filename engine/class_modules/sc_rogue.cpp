@@ -8317,7 +8317,7 @@ void rogue_t::create_buffs()
                                             ->add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() )
                                             ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
                                                 if ( new_ == 1 )
-                                                  resource_gain( RESOURCE_COMBO_POINT, as<int>( b->data().effectN( 2 ).resource() ), gains.the_first_dance );
+                                                  resource_gain( RESOURCE_COMBO_POINT, as<int>( b->data().effectN( 3 ).resource() ), gains.the_first_dance );
                                               } );
 
   // Covenants ==============================================================
