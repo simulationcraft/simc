@@ -2259,7 +2259,7 @@ void priest_t::generate_apl_shadow()
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action(
-      this, "void Bolt",
+      this, "Void Bolt",
       "if=insanity<=85&((talent.hungering_void.enabled&spell_targets.mind_sear<5)|spell_targets.mind_sear=1)",
       "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
   main->add_action( this, "Devouring Plague",
