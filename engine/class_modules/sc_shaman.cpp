@@ -1538,7 +1538,7 @@ public:
 
   unsigned maelstrom_weapon_stacks() const
   {
-    if ( !affected_by_maelstrom_weapon || p()->buff.maelstrom_weapon->check() )
+    if ( !affected_by_maelstrom_weapon || !p()->buff.maelstrom_weapon->check() )
     {
       return 0;
     }
