@@ -396,10 +396,18 @@ struct unstable_affliction_t : public affliction_spell_t
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
+    else if ( p()->ua_target && td( p()->ua_target )->dots_unstable_affliction->is_ticking() &&
+      p()->azerite.cascading_calamity.ok() )
+    {
+      p()->buffs.cascading_calamity->trigger();
+    }
 
     p()->ua_target = target;
 
     affliction_spell_t::execute();
+
+    if ( p()->azerite.dreadful_calling.ok() )
+      p()->cooldowns.darkglare->adjust( (-1 * p()->azerite.dreadful_calling.spell_ref().effectN( 1 ).time_value() ) );
   }
 
   void last_tick( dot_t* d) override
@@ -414,6 +422,13 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = affliction_spell_t::bonus_ta( s );
+    ta += p()->azerite.dreadful_calling.value( 2 );
+    return ta;
   }
 };
 
@@ -1031,6 +1046,7 @@ void warlock_t::create_apl_affliction()
   def->add_action("siphon_life,if=refreshable");
   def->add_action("agony,if=refreshable");
   def->add_action("unstable_affliction,if=refreshable");
+  def->add_action("unstable_affliction,if=azerite.cascading_calamity.enabled&buff.cascading_calamity.remains<3");
   def->add_action("corruption,if=refreshable");
   def->add_action("haunt");
 
@@ -1039,7 +1055,8 @@ void warlock_t::create_apl_affliction()
   def->add_action("call_action_list,name=cooldowns");
 
   def->add_action("malefic_rapture,if=dot.vile_taint.ticking");
-  def->add_action("malefic_rapture,if=!talent.vile_taint.enabled");
+  def->add_action("malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)");
+  def->add_action("malefic_rapture,if=talent.sow_the_seeds.enabled");
 
   def->add_action("drain_life,if=buff.inevitable_demise.stack>30");
   def->add_action("drain_soul");
