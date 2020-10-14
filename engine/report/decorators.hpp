@@ -15,6 +15,7 @@ struct buff_t;
 struct item_t;
 struct sim_t;
 struct spell_data_t;
+struct pet_t;
 namespace color {
   struct rgb;
 }
@@ -29,4 +30,5 @@ namespace report_decorators {
   std::string decorated_spell_data(const sim_t& sim, const spell_data_t* spell);
   std::string decorated_spell_data_item(const sim_t& sim, const spell_data_t* spell, const item_t& item);
   std::string decorated_item(const item_t& item);
+  std::string decorated_npc(const pet_t& pet);
 }  // report_decorators

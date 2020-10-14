@@ -21,10 +21,11 @@ struct pet_t : public player_t
   double intellect_per_owner;
   bool summoned;
   bool dynamic;
+  bool affects_wod_legendary_ring;
   pet_e pet_type;
   event_t* expiration;
   timespan_t duration;
-  bool affects_wod_legendary_ring;
+  int npc_id; // WoW NPC id, can be used to display icons/links for the pet
 
   struct owner_coefficients_t
   {

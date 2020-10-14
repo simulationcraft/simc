@@ -59,10 +59,11 @@ pet_t::pet_t( sim_t*             sim,
   intellect_per_owner( 0.30 ),
   summoned( false ),
   dynamic( dynamic ),
+  affects_wod_legendary_ring( true ),
   pet_type( type ),
   expiration( nullptr ),
   duration( timespan_t::zero() ),
-  affects_wod_legendary_ring( true ),
+  npc_id(),
   owner_coeff()
 {
   target = owner -> target;
