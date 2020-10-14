@@ -563,6 +563,7 @@ public:
 
     const spell_data_t* windfury;
     const spell_data_t* stormbringer_2;
+    const spell_data_t* lava_lash_2;
 
     // Restoration
     const spell_data_t* purification;
@@ -3091,10 +3092,10 @@ struct lava_lash_t : public shaman_attack_t
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
 
-    base_multiplier *= 1.0;
-
     parse_options( options_str );
     weapon = &( player->off_hand_weapon );
+
+    cooldown->duration += player->spec.lava_lash_2->effectN( 1 ).time_value();
 
     if ( weapon->type == WEAPON_NONE )
       background = true;  // Do not allow execution.
@@ -3113,13 +3114,6 @@ struct lava_lash_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_attack_t::bonus_da( s );
-
-    return b;
-  }
-
   double cost() const override
   {
     if ( p()->buff.hot_hand->check() )
@@ -3128,13 +3122,6 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     return shaman_attack_t::cost();
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    auto m = shaman_attack_t::composite_target_multiplier( target );
-
-    return m;
   }
 
   double action_multiplier() const override
@@ -3146,12 +3133,12 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + p()->buff.hot_hand->data().effectN( 1 ).percent();
     }
 
-    return m;
-  }
+    if ( weapon->buff_type == FLAMETONGUE_IMBUE )
+    {
+      m *= 1.0 + data().effectN( 2 ).percent();
+    }
 
-  void execute() override
-  {
-    shaman_attack_t::execute();
+    return m;
   }
 
   void impact( action_state_t* state ) override
@@ -7034,6 +7021,7 @@ void shaman_t::init_spells()
   spec.windfury           = find_specialization_spell( "Windfury Weapon" );
 
   spec.stormbringer_2     = find_rank_spell( "Stormbringer", "Rank 2" );
+  spec.lava_lash_2        = find_rank_spell( "Lava Lash", "Rank 2" );
 
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
