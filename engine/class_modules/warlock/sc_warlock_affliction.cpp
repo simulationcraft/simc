@@ -396,10 +396,18 @@ struct unstable_affliction_t : public affliction_spell_t
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
+    else if ( p()->ua_target && td( p()->ua_target )->dots_unstable_affliction->is_ticking() &&
+      p()->azerite.cascading_calamity.ok() )
+    {
+      p()->buffs.cascading_calamity->trigger();
+    }
 
     p()->ua_target = target;
 
     affliction_spell_t::execute();
+
+    if ( p()->azerite.dreadful_calling.ok() )
+      p()->cooldowns.darkglare->adjust( (-1 * p()->azerite.dreadful_calling.spell_ref().effectN( 1 ).time_value() ) );
   }
 
   void last_tick( dot_t* d) override
@@ -414,6 +422,13 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = affliction_spell_t::bonus_ta( s );
+    ta += p()->azerite.dreadful_calling.value( 2 );
+    return ta;
   }
 };
 
