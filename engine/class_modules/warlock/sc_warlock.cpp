@@ -836,10 +836,6 @@ void warlock_t::apl_precombat()
 
   precombat->add_action( "snapshot_stats" );
 
-  if ( sim->allow_potions )
-  {
-    precombat->add_action( "potion" );
-  }
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     precombat->add_action( "demonbolt" );
@@ -862,55 +858,22 @@ void warlock_t::apl_precombat()
 
 std::string warlock_t::default_potion() const
 {
-  std::string lvl120_potion =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "unbridled_fury"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "unbridled_fury"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "unbridled_fury" : "unbridled_fury";
-
-  std::string lvl110_potion = "prolonged_power";
-
-  return ( true_level > 110 )
-             ? lvl120_potion
-             : ( true_level >= 100 )
-                   ? lvl110_potion
-                   : ( true_level >= 90 )
-                         ? "draenic_intellect"
-                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  return ( true_level >= 50 ) ? "unbridled_fury" : "disabled";
 }
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level > 110 )
-             ? "greater_flask_of_endless_fathoms"
-             : ( true_level >= 100 )
-                   ? "whispered_pact"
-                   : ( true_level >= 90 )
-                         ? "greater_draenic_intellect_flask"
-                         : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+  return ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
 }
 
 std::string warlock_t::default_food() const
 {
-  std::string lvl100_food =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "frosty_stew"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "frosty_stew"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "felmouth_frenzy" : "felmouth_frenzy";
-
-  std::string lvl110_food =
-      ( specialization() == WARLOCK_AFFLICTION ) ? "nightborne_delicacy_platter" : "azshari_salad";
-
-  return ( true_level > 110 ) ? "baked_port_tato"
-                              : ( true_level > 100 ) ? lvl110_food : ( true_level > 90 ) ? lvl100_food : "disabled";
+  return ( true_level >= 50 ) ? "baked_port_tato" : "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred"
-                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  return ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 }
 
 void warlock_t::apl_global_filler()
