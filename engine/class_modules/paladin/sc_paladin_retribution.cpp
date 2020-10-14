@@ -521,11 +521,6 @@ struct zeal_t : public paladin_melee_attack_t
 
 void paladin_t::create_ret_actions()
 {
-  if ( azerite.lights_decree.enabled() )
-  {
-    active.lights_decree = new lights_decree_t( this );
-  }
-
   if ( talents.ret_sanctified_wrath )
   {
     active.sanctified_wrath = new sanctified_wrath_t( this );
