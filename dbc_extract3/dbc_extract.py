@@ -257,7 +257,8 @@ elif options.type == 'json':
             else:
                 str_ += '\t{},\n'.format(json.dumps(record.obj()))
 
-        for id, entry in entries.items():
+        for id, item in entries.items():
+            entry, hotfix = item
             if id in replaced_ids:
                 continue
 
