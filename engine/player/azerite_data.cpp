@@ -688,7 +688,7 @@ bool azerite_state_t::is_enabled( util::string_view name, bool tokenized ) const
 
 std::unique_ptr<expr_t> azerite_state_t::create_expression( util::span<const util::string_view> expr_str ) const
 {
-  if ( expr_str.size() == 1 )
+  if ( expr_str.size() < 3 )
   {
     return nullptr;
   }
