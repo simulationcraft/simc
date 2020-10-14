@@ -1620,7 +1620,7 @@ public:
       p()->buff.maelstrom_weapon->decrement( stacks );
       if ( p()->talent.hailstorm->ok() )
       {
-        p()->buff.hailstorm->increment( stacks );
+        p()->buff.hailstorm->trigger( stacks );
       }
     }
 
@@ -5479,19 +5479,16 @@ struct frost_shock_t : public shaman_spell_t
       m *= 1.0 + p()->buff.icefury->value();
     }
 
-    if ( p()->buff.hailstorm->up() )
-    {
-      m *= 1.0 + p()->buff.hailstorm->stack_value();
-    }
+    m *= 1.0 + p()->buff.hailstorm->stack_value();
 
     return m;
   }
 
   int n_targets() const override
   {
-    if ( p()->buff.hailstorm->up() )
+    if ( p()->buff.hailstorm->check() )
     {
-      return 1 + p()->buff.hailstorm->stack();  // The initial cast, plus an extra target for each stack
+      return 1 + p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
     }
 
     return shaman_spell_t::n_targets();
@@ -5514,10 +5511,7 @@ struct frost_shock_t : public shaman_spell_t
       p()->buff.icefury->decrement();
     }
 
-    if ( p()->buff.hailstorm->up() )
-    {
-      p()->buff.hailstorm->decrement( p()->buff.hailstorm->stack() );
-    }
+    p()->buff.hailstorm->expire();
   }
 };
 
@@ -7782,7 +7776,7 @@ void shaman_t::create_buffs()
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
-                            ->set_max_stack( find_spell( 334196 )->max_stacks() );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   //
   // Restoration
