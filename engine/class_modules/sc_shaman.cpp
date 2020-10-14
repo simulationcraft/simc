@@ -537,6 +537,7 @@ public:
     proc_t* windfury;
     proc_t* hot_hand;
     proc_t* maelstrom_weapon;
+    proc_t* stormflurry;
   } proc;
 
   // Class Specializations
@@ -2692,21 +2693,16 @@ struct icy_edge_attack_t : public shaman_attack_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
-  bool stormflurry;
+  bool stormflurry, stormbringer;
 
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : shaman_attack_t( n, player, s ), stormflurry( false )
+    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
-    weapon                           = w;
-    base_multiplier *= 1.0;
+    weapon = w;
+    weapon_multiplier = 1.0;
     school = SCHOOL_PHYSICAL;
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
   }
 
   double action_multiplier() const override
@@ -2721,7 +2717,7 @@ struct stormstrike_attack_t : public shaman_attack_t
       }
     }
 
-    if ( p()->buff.stormbringer->up() )
+    if ( stormbringer )
     {
       m *= 1.0 + p()->spec.stormbringer_2->effectN( 1 ).percent();
     }
@@ -2744,20 +2740,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     return m;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_attack_t::bonus_da( s );
-
-    return b;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = shaman_attack_t::composite_crit_chance();
-
-    return c;
-  }
-
   void execute() override
   {
     shaman_attack_t::execute();
@@ -2768,6 +2750,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     }
 
     stormflurry = false;
+    stormbringer = false;
   }
 };
 
@@ -2775,15 +2758,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
 {
   windstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : stormstrike_attack_t( n, player, s, w )
-  {
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_attack_t::bonus_da( s );
-
-    return b;
-  }
+  { }
 
   double target_armor( player_t* ) const override
   {
@@ -3240,13 +3215,22 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
+    auto stormbringer_state = p()->buff.stormbringer->up();
+
+    if ( !stormflurry )
+    {
+      p()->buff.stormbringer->decrement();
+    }
+
     if ( result_is_hit( execute_state->result ) )
     {
       mh->stormflurry = stormflurry;
+      mh->stormbringer = stormbringer_state;
       mh->execute();
       if ( oh )
       {
         oh->stormflurry = stormflurry;
+        oh->stormbringer = stormbringer_state;
         oh->execute();
       }
 
@@ -3262,6 +3246,7 @@ struct stormstrike_base_t : public shaman_attack_t
     {
       background = dual = stormflurry = true;
       schedule_execute();
+      p()->proc.stormflurry->occur();
     }
     // Potential stormflurrying ends, reset things
     else
@@ -3272,19 +3257,14 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->buff.gathering_storms->decrement();
-    p()->buff.stormbringer->decrement();
   }
 
   void reset() override
   {
     shaman_attack_t::reset();
-    background = false;
-    dual       = false;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_attack_t::impact( state );
+    background  = false;
+    dual        = false;
+    stormflurry = false;
   }
 };
 
@@ -3304,11 +3284,6 @@ struct stormstrike_t : public stormstrike_base_t
                                      &( player->off_hand_weapon ) );
       add_child( oh );
     }
-  }
-
-  void execute() override
-  {
-    stormstrike_base_t::execute();
   }
 
   bool ready() override
@@ -7752,7 +7727,6 @@ void shaman_t::create_buffs()
       make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
-                          ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
@@ -7795,6 +7769,7 @@ void shaman_t::init_procs()
   proc.windfury          = get_proc( "Windfury" );
   proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
+  proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
 // shaman_t::init_rng =======================================================
