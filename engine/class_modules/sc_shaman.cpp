@@ -1049,6 +1049,11 @@ public:
       ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 1 ).percent();
     }
 
+    if ( ab::data().affected_by( player->spec.enhancement_shaman->effectN( 5 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 5 ).percent();
+    }
+
     if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 3 ) ) )
     {
       ab::base_dd_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 3 ).percent();
