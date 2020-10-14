@@ -379,6 +379,7 @@ public:
     // shared between all three specs
     buff_t* ascendance;
     buff_t* ghost_wolf;
+    buff_t* windfury_totem;
 
     // Covenant Class Ability Buffs
     buff_t* primordial_wave;
@@ -455,6 +456,7 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
+    cooldown_t* windfury_totem_icd;
   } cooldown;
 
   // Covenant Class Abilities
@@ -564,6 +566,7 @@ public:
     const spell_data_t* windfury;
     const spell_data_t* stormbringer_2;
     const spell_data_t* lava_lash_2;
+    const spell_data_t* windfury_totem_2;
 
     // Restoration
     const spell_data_t* purification;
@@ -669,6 +672,7 @@ public:
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
+    const spell_data_t* windfury_totem;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -719,6 +723,7 @@ public:
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
     cooldown.shock           = get_cooldown( "shock" );
+    cooldown.windfury_totem_icd = get_cooldown( "windfury_totem_icd" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -758,6 +763,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
+  void trigger_windfury_totem( const action_state_t* state );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
@@ -1435,6 +1441,7 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
+    p()->trigger_windfury_totem( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -5811,6 +5818,22 @@ struct healing_rain_t : public shaman_heal_t
   }
 };
 
+struct windfury_totem_t : public shaman_spell_t
+{
+  windfury_totem_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "windfury_totem", player, player->spell.windfury_totem, options_str )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.windfury_totem->trigger();
+  }
+};
+
 // ==========================================================================
 // Shaman Totem System
 // ==========================================================================
@@ -6250,6 +6273,7 @@ struct fae_transfusion_t : public shaman_spell_t
 // ==========================================================================
 // Primordial Wave - Necrolord Covenant
 // ==========================================================================
+
 struct primordial_wave_t : public shaman_spell_t
 {
   flame_shock_t* flame_shock;
@@ -6296,6 +6320,7 @@ struct primordial_wave_t : public shaman_spell_t
 // ==========================================================================
 // Chain Harvest - Venthyr Covenant
 // ==========================================================================
+
 struct chain_harvest_t : public chained_base_t
 {
   int critical_hits = 0;
@@ -6606,6 +6631,8 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
     return new wind_shear_t( this, options_str );
+  if ( name == "windfury_totem" )
+    return new windfury_totem_t( this, options_str );
 
   // covenants
   if ( name == "primordial_wave" )
@@ -7026,6 +7053,7 @@ void shaman_t::init_spells()
 
   spec.stormbringer_2     = find_rank_spell( "Stormbringer", "Rank 2" );
   spec.lava_lash_2        = find_rank_spell( "Lava Lash", "Rank 2" );
+  spec.windfury_totem_2   = find_rank_spell( "Windfury Totem", "Rank 2" );
 
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
@@ -7144,6 +7172,7 @@ void shaman_t::init_spells()
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon    = find_spell( 319773 );
+  spell.windfury_totem     = find_class_spell( "Windfury Totem" );
 
   player_t::init_spells();
 }
@@ -7449,6 +7478,48 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
   event_t::cancel( current_event );
 }
 
+void shaman_t::trigger_windfury_totem( const action_state_t* state )
+{
+  if ( state->action->special )
+  {
+    return;
+  }
+
+  if ( state->action->weapon && state->action->weapon->slot != SLOT_MAIN_HAND )
+  {
+    return;
+  }
+
+  if ( !buff.windfury_totem->up() )
+  {
+    return;
+  }
+
+  if ( cooldown.windfury_totem_icd->down() )
+  {
+    return;
+  }
+
+  double proc_chance = spell.windfury_totem->proc_chance() +
+    spec.windfury_totem_2->effectN( 1 ).percent();
+
+  if ( !rng().roll( proc_chance ) )
+  {
+    return;
+  }
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} windfury_totem repeats {}", name(), main_hand_attack->name() );
+  }
+
+  main_hand_attack->repeating = false;
+  main_hand_attack->execute();
+  main_hand_attack->repeating = true;
+
+  cooldown.windfury_totem_icd->start( nullptr, spell.windfury_totem->internal_cooldown() );
+}
+
 void shaman_t::regenerate_flame_shock_dependent_target_list(
     const action_t* action, bool retain_main_target ) const
 {
@@ -7633,6 +7704,7 @@ void shaman_t::create_buffs()
   //
   buff.ascendance = new ascendance_buff_t( this );
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
+  buff.windfury_totem = make_buff( this, "windfury_totem", spell.windfury_totem );
 
   buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
   buff.elemental_blast_crit->set_max_stack( 1 );
