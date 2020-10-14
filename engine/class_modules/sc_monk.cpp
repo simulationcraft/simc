@@ -12027,16 +12027,6 @@ void monk_t::init_action_list()
     quiet = true;
     return;
   }
-  if ( specialization() == MONK_BREWMASTER && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error(
-          "{} is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
-          "to dual weld.",
-          *this );
-    quiet = true;
-    return;
-  }
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
