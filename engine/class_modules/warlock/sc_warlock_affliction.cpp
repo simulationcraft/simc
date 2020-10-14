@@ -1046,6 +1046,7 @@ void warlock_t::create_apl_affliction()
   def->add_action("siphon_life,if=refreshable");
   def->add_action("agony,if=refreshable");
   def->add_action("unstable_affliction,if=refreshable");
+  def->add_action("unstable_affliction,if=azerite.cascading_calamity.enabled&buff.cascading_calamity.remains<3");
   def->add_action("corruption,if=refreshable");
   def->add_action("haunt");
 
@@ -1054,7 +1055,8 @@ void warlock_t::create_apl_affliction()
   def->add_action("call_action_list,name=cooldowns");
 
   def->add_action("malefic_rapture,if=dot.vile_taint.ticking");
-  def->add_action("malefic_rapture,if=!talent.vile_taint.enabled");
+  def->add_action("malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)");
+  def->add_action("malefic_rapture,if=talent.sow_the_seeds.enabled");
 
   def->add_action("drain_life,if=buff.inevitable_demise.stack>30");
   def->add_action("drain_soul");
