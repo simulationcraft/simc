@@ -1114,12 +1114,12 @@ struct touch_of_the_magi_t : public buff_t
   }
 };
 
-struct combustion_buff_t : public buff_t
+struct combustion_t : public buff_t
 {
   double current_amount; // Amount of mastery rating granted by the buff
   double multiplier;
 
-  combustion_buff_t( mage_t* p ) :
+  combustion_t( mage_t* p ) :
     buff_t( p, "combustion", p->find_spell( 190319 ) ),
     current_amount(),
     multiplier( data().effectN( 3 ).percent() )
@@ -1177,9 +1177,9 @@ struct expanded_potential_buff_t : public buff_t
   }
 };
 
-struct ice_floes_buff_t : public buff_t
+struct ice_floes_t : public buff_t
 {
-  ice_floes_buff_t( mage_t* p ) :
+  ice_floes_t( mage_t* p ) :
     buff_t( p, "ice_floes", p->talents.ice_floes )
   { }
 
@@ -1195,9 +1195,9 @@ struct ice_floes_buff_t : public buff_t
   }
 };
 
-struct icy_veins_buff_t : public buff_t
+struct icy_veins_t : public buff_t
 {
-  icy_veins_buff_t( mage_t* p ) :
+  icy_veins_t( mage_t* p ) :
     buff_t( p, "icy_veins", p->find_spell( 12472 ) )
   {
     set_default_value_from_effect( 1 );
@@ -1251,6 +1251,22 @@ struct incanters_flow_t : public buff_t
       reverse = false;
     else
       buff_t::decrement( stacks, value );
+  }
+};
+
+struct rune_of_power_t : public buff_t
+{
+  rune_of_power_t( mage_t* p ) :
+    buff_t( p, "rune_of_power", p->find_spell( 116014 ) )
+  {
+    set_default_value_from_effect( 1 );
+    set_chance( p->talents.rune_of_power->ok() );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    debug_cast<mage_t*>( player )->distance_from_rune = 0.0;
+    buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -3016,9 +3032,7 @@ struct arcane_power_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->buffs.arcane_power->trigger();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -3171,9 +3185,7 @@ struct combustion_t : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -4392,7 +4404,6 @@ struct icy_veins_t : public frost_mage_spell_t
     p()->buffs.frigid_grasp->trigger();
 
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -5029,9 +5040,7 @@ struct rune_of_power_t : public mage_spell_t
   void execute() override
   {
     mage_spell_t::execute();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -6404,7 +6413,7 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion        = make_buff<buffs::combustion_buff_t>( this );
+  buffs.combustion        = make_buff<buffs::combustion_t>( this );
   buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
                               ->set_chance( spec.fireball_2->ok() )
                               ->set_default_value_from_effect( 1 )
@@ -6442,7 +6451,7 @@ void mage_t::create_buffs()
   buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins        = make_buff<buffs::icy_veins_buff_t>( this );
+  buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
 
   buffs.bone_chilling    = make_buff( this, "bone_chilling", find_spell( 205766 ) )
                              ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
@@ -6453,16 +6462,14 @@ void mage_t::create_buffs()
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                              ->set_default_value_from_effect( 2 )
                              ->set_chance( talents.freezing_rain->ok() );
-  buffs.ice_floes        = make_buff<buffs::ice_floes_buff_t>( this );
+  buffs.ice_floes        = make_buff<buffs::ice_floes_t>( this );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                              ->set_default_value_from_effect( 1 );
 
 
   // Shared
   buffs.incanters_flow   = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power    = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( talents.rune_of_power->ok() );
+  buffs.rune_of_power    = make_buff<buffs::rune_of_power_t>( this );
   buffs.focus_magic_crit = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
                              ->set_default_value_from_effect( 1 )
                              ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
