@@ -669,6 +669,7 @@ public:
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
     const spell_data_t* flametongue_weapon;
+    const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
   } spell;
 
@@ -3794,7 +3795,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 {
   chain_lightning_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               p->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -3809,7 +3810,7 @@ struct lava_beam_overload_t : public chained_overload_base_t
 {
   lava_beam_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               p->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -3872,7 +3873,7 @@ struct chain_lightning_t : public chained_base_t
 {
   chain_lightning_t( shaman_t* player, const std::string& options_str )
     : chained_base_t( player, "chain_lightning", player->find_class_spell( "Chain Lightning" ),
-                      player->find_spell( 343725 )->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
+                      player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -4001,7 +4002,7 @@ struct lava_beam_t : public chained_base_t
   // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
   lava_beam_t( shaman_t* player, const std::string& options_str )
     : chained_base_t( player, "lava_beam", player->find_spell( 114074 ),
-                      player->find_spell( 343725 )->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
+                      player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -4062,7 +4063,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       impact_flags(), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
       parent( parent_ )
   {
-    maelstrom_gain         = player->find_spell( 343725 )->effectN( 4 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
   }
 
@@ -4393,7 +4394,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       base_costs[ RESOURCE_MANA ] = 0;
-      maelstrom_gain = player->find_spell( 343725 )->effectN( 3 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain = player->spell.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -4689,7 +4690,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   lightning_bolt_overload_t( shaman_t* p )
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ) )
   {
-    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 2 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain                     = p->spell.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
   }
 
@@ -4731,7 +4732,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
-      maelstrom_gain                     = player->find_spell( 343725 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain                     = player->spell.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -4992,7 +4993,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ) )
   {
     affected_by_master_of_the_elements = true;
-    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 11 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain                     = p->spell.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
   }
 
   void execute() override
@@ -5012,7 +5013,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
-      maelstrom_gain                     = player->find_spell( 343725 )->effectN( 10 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain                     = player->spell.maelstrom->effectN( 10 ).resource( RESOURCE_MAELSTROM );
 
       overload = new elemental_blast_overload_t( player );
       add_child( overload );
@@ -5036,7 +5037,7 @@ struct icefury_overload_t : public elemental_overload_spell_t
   icefury_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ) )
   {
     affected_by_master_of_the_elements = true;
-    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 9 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain                     = p->spell.maelstrom->effectN( 9 ).resource( RESOURCE_MAELSTROM );
   }
 };
 
@@ -5046,7 +5047,7 @@ struct icefury_t : public shaman_spell_t
     : shaman_spell_t( "icefury", player, player->talent.icefury, options_str )
   {
     affected_by_master_of_the_elements = true;
-    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 8 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain                     = player->spell.maelstrom->effectN( 8 ).resource( RESOURCE_MAELSTROM );
 
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -5498,9 +5499,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     if ( p()->buff.icefury->up() )
     {
-      // FIXME: This is currently a tooltip bug in-game and isn't attached as an effect to maelstrom or frost shock, so
-      // hardcoding for now. Check spell_id=343725 at a later date.
-      maelstrom_gain = 8.0;
+      maelstrom_gain = p()->spell.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     }
 
     shaman_spell_t::execute();
@@ -5512,6 +5511,8 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     p()->buff.hailstorm->expire();
+
+    maelstrom_gain = 0.0;
   }
 };
 
@@ -7189,6 +7190,7 @@ void shaman_t::init_spells()
   spell.fire_elemental     = find_spell( 188592 );
   spell.storm_elemental    = find_spell( 157299 );
   spell.flametongue_weapon = find_spell( 318038 );
+  spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon    = find_spell( 319773 );
 
   player_t::init_spells();
