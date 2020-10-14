@@ -5253,6 +5253,7 @@ struct flame_shock_t : public shaman_spell_t
     {
       cooldown           = p()->cooldown.shock;
       cooldown->duration = data().cooldown();
+      cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
   }
 
@@ -5420,6 +5421,7 @@ struct frost_shock_t : public shaman_spell_t
     {
       cooldown           = p()->cooldown.shock;
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
+      cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
   }
 
