@@ -666,6 +666,7 @@ public:
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
     const spell_data_t* flametongue_weapon;
+    const spell_data_t* windfury_weapon;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -7165,6 +7166,7 @@ void shaman_t::init_spells()
   spell.fire_elemental     = find_spell( 188592 );
   spell.storm_elemental    = find_spell( 157299 );
   spell.flametongue_weapon = find_spell( 318038 );
+  spell.windfury_weapon    = find_spell( 319773 );
 
   player_t::init_spells();
 }
@@ -7499,7 +7501,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( !buff.windfury_weapon->up() )
     return;
 
-  double proc_chance = spec.windfury->proc_chance();
+  double proc_chance = spell.windfury_weapon->proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
 
   if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( proc_chance ) )
