@@ -8753,11 +8753,33 @@ struct chi_burst_heal_t : public monk_heal_t
 
 struct chi_burst_damage_t : public monk_spell_t
 {
-  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
+  int num_hit;
+  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ),
+      num_hit( 0 )
   {
     background = true;
     ww_mastery = true;
     aoe        = -1;
+  }
+
+  void execute() override
+  {
+    num_hit = 0;
+
+    monk_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    num_hit++;
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
+        p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
+    }
   }
 };
 
@@ -8765,10 +8787,8 @@ struct chi_burst_t : public monk_spell_t
 {
   chi_burst_heal_t* heal;
   chi_burst_damage_t* damage;
-  int num_hit;
   chi_burst_t( monk_t* player, const std::string& options_str )
-    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), 
-      num_hit( 0 ),
+    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ),
       heal( nullptr )
   {
     parse_options( options_str );
@@ -8795,25 +8815,10 @@ struct chi_burst_t : public monk_spell_t
 
   void execute() override
   {
-    num_hit = 0;
-
     monk_spell_t::execute();
 
     heal->execute();
     damage->execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
-
-    num_hit++;
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
-          p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
-    }
   }
 };
 
