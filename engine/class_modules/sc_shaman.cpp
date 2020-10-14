@@ -5444,7 +5444,7 @@ struct frost_shock_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       cooldown           = p()->cooldown.shock;
-      cooldown->duration = data().cooldown();
+      cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
     }
   }
 
