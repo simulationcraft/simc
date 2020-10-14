@@ -749,38 +749,6 @@ public:
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-
-
-    // The whitelists for spells affected by a hasted gcd/cd are spread over a lot of different effects and spells
-    // This browses the given spell data to find cd/gcd affecting effects and if they affect the current spell
-    auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
-      for (uint32_t i = 1; i <= passive -> effect_count(); i++) {
-        auto effect = passive -> effectN( i );
-        if ( effect.subtype() == A_HASTED_CATEGORY ) {
-          uint32_t affected_category = effect.misc_value1();
-          if ( affected_category == ab::data().category() ) {
-            hasted_cd = true;
-          }
-        } else if ( effect.subtype() == A_HASTED_COOLDOWN ) {
-          if ( ab::data().affected_by( effect ) ) {
-            hasted_cd = true;
-          }
-        } else if ( effect.subtype() == A_HASTED_GCD ) {
-          if ( ab::data().affected_by( effect ) ) {
-            hasted_gcd = true;
-          }
-        }
-      }
-    };
-    update_hasted_cooldowns_by_passive( p -> passives.paladin );
-    if ( p -> specialization() == PALADIN_RETRIBUTION ) {
-      update_hasted_cooldowns_by_passive( p -> spec.retribution_paladin );
-    } else if ( p -> specialization() == PALADIN_PROTECTION ) {
-      update_hasted_cooldowns_by_passive( p -> spec.protection_paladin );
-    } else {
-      update_hasted_cooldowns_by_passive( p -> spec.holy_paladin );
-    }
-    if ( hasted_cd && !hasted_gcd ) hasted_gcd = true;
   }
 
   paladin_t* p()
