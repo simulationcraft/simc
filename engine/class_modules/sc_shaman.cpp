@@ -5821,7 +5821,7 @@ struct healing_rain_t : public shaman_heal_t
 struct windfury_totem_t : public shaman_spell_t
 {
   windfury_totem_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "windfury_totem", player, player->spell.windfury_totem, options_str )
+    shaman_spell_t( "windfury_totem", player, player->find_class_spell( "Windfury Totem" ), options_str )
   {
     harmful = false;
   }
@@ -7172,7 +7172,7 @@ void shaman_t::init_spells()
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon    = find_spell( 319773 );
-  spell.windfury_totem     = find_class_spell( "Windfury Totem" );
+  spell.windfury_totem     = find_spell( 327942 );
 
   player_t::init_spells();
 }
@@ -7513,11 +7513,11 @@ void shaman_t::trigger_windfury_totem( const action_state_t* state )
     sim->print_debug( "{} windfury_totem repeats {}", name(), main_hand_attack->name() );
   }
 
+  cooldown.windfury_totem_icd->start( nullptr, spell.windfury_totem->internal_cooldown() );
+
   main_hand_attack->repeating = false;
   main_hand_attack->execute();
   main_hand_attack->repeating = true;
-
-  cooldown.windfury_totem_icd->start( nullptr, spell.windfury_totem->internal_cooldown() );
 }
 
 void shaman_t::regenerate_flame_shock_dependent_target_list(
@@ -7704,7 +7704,8 @@ void shaman_t::create_buffs()
   //
   buff.ascendance = new ascendance_buff_t( this );
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
-  buff.windfury_totem = make_buff( this, "windfury_totem", spell.windfury_totem );
+  buff.windfury_totem = make_buff( this, "windfury_totem", spell.windfury_totem )
+    ->set_chance( 1.0 );
 
   buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
   buff.elemental_blast_crit->set_max_stack( 1 );
