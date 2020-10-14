@@ -322,10 +322,11 @@ elif options.type == 'csv':
 
             first = False
 
-        for id, entry in entries.items():
+        for id, item in entries.items():
             if id in replaced_ids:
                 continue
 
+            entry, hotfix = item
             print('{}'.format(entry.csv(options.delim, first)))
 
     else:
