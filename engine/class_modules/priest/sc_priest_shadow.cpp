@@ -1778,6 +1778,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
         priest().procs.dark_thoughts_missed->occur();
       }
     }
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -expiration_stacks );
 
     base_t::expire_override( expiration_stacks, remaining_duration );
   }

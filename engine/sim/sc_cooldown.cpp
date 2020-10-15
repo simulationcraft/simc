@@ -414,8 +414,8 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   // state besides removing a charge and adjusting ready.
   if ( recharge_event )
   {
-    assert (current_charge > 0);
-    current_charge--;
+    if (current_charge > 0)
+      current_charge--;
 
     // No charges left, the cooldown won't be ready until a recharge event
     // occurs. Note, ready still needs to be properly set as it ultimately
