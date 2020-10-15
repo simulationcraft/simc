@@ -176,8 +176,8 @@ public:
 
     if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
-    else
-      priest_spell_t::update_ready( cd_duration );
+
+    priest_spell_t::update_ready( cd_duration );
   }
 };
 
