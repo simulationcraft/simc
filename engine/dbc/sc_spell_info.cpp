@@ -342,6 +342,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
   { 265, "Periodic effect can crit"          },
+  { 273, "Duration affected by haste"        },
   { 292, "Fixed travel time"                 },
   { 354, "Scales with item level"            }
 } );
