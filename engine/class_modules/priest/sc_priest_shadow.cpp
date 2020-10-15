@@ -73,6 +73,14 @@ public:
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
+  void reset() override
+  {
+    priest_spell_t::reset();
+
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving buffs up.
+    cooldown->charges = data().charges();
+  }
+
   bool ready() override
   {
     if ( only_cwc )
@@ -1241,7 +1249,7 @@ struct void_eruption_t final : public priest_spell_t
 
     priest().buffs.voidform->trigger();
 
-    priest().cooldowns.mind_blast->charges += 1;
+    adjust_cooldown_max_charges(priest().cooldowns.mind_blast, 1);
     priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
     priest().cooldowns.void_bolt->reset( true );
   }
@@ -1312,7 +1320,7 @@ struct surrender_to_madness_t final : public priest_spell_t
     {
       priest().buffs.voidform->trigger();
 
-      priest().cooldowns.mind_blast->charges += 1;
+    adjust_cooldown_max_charges(priest().cooldowns.mind_blast, 1);
       priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
       priest().cooldowns.void_bolt->reset( true );
     }
