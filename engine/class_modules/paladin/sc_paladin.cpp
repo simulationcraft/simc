@@ -2381,8 +2381,12 @@ void paladin_t::assess_damage( school_e school,
       // Roll for "block"
       if ( rng().roll( block ) )
       {
-        // 2019-03-19: Holy Shield might not be 40% damage reduction. TODO: Investigate
-        double block_amount = s -> result_amount * composite_block();
+        // Can't find a block method so lets just copy+paste from sc_player.cpp
+        double block_value = composite_block_reduction( s );
+        double block_amount = s -> result_amount * clamp(
+          block_value / ( block_value + s -> action -> player -> current.armor_coeff ),
+          0.0, 0.85
+        );
         sim -> print_debug( "{} Holy Shield absorbs {}", name(), block_amount );
 
         // update the relevant counters
