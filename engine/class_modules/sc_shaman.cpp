@@ -4299,20 +4299,10 @@ struct flame_shock_spreader_t : public shaman_spell_t
 
 struct fire_nova_explosion_t : public shaman_spell_t
 {
-  fire_nova_explosion_t( shaman_t* p ) : shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
+  fire_nova_explosion_t( shaman_t* p ) :
+    shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
   {
-    aoe        = 6;
     background = true;
-  }
-
-  void init()
-  {
-    shaman_spell_t::init();
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
   }
 };
 
@@ -4325,47 +4315,19 @@ struct fire_nova_t : public shaman_spell_t
     aoe                             = -1;
 
     impact_action = new fire_nova_explosion_t( p );
+
+    p->flame_shock_dependants.push_back( this );
+
+    add_child( impact_action );
   }
 
-  // Override assess_damage, as fire_nova_explosion is going to do all the
-  // damage for us.
-  void assess_damage( result_amount_type type, action_state_t* s )
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    if ( s->result_amount > 0 )
-      shaman_spell_t::assess_damage( type, s );
-  }
+    shaman_spell_t::available_targets( tl );
 
-  bool ready()
-  {
-    if ( !td( target )->dot.flame_shock->is_ticking() )
-      return false;
+    p()->regenerate_flame_shock_dependent_target_list( this, false );
 
-    return shaman_spell_t::ready();
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
-  }
-
-  // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector<player_t*>& target_list() const
-  {
-    target_cache.list.clear();
-
-    for ( size_t i = 0; i < sim->target_non_sleeping_list.size(); ++i )
-    {
-      player_t* e = sim->target_non_sleeping_list[ i ];
-      if ( !e->is_enemy() )
-        continue;
-
-      if ( td( e )->dot.flame_shock->is_ticking() )
-      {
-        target_cache.list.push_back( e );
-      }
-    }
-
-    return target_cache.list;
+    return tl.size();
   }
 };
 
