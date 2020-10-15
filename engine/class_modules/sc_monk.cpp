@@ -7212,12 +7212,10 @@ struct fortifying_brew_t : public monk_spell_t
     harmful = may_crit = false;
 
     if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration +=
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_mw->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
 
     if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += 
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -8049,11 +8047,10 @@ struct fallen_order_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    specialization_e spec      = p()->specialization();
-    // Tooltips are currently incorrect and hard coding the duration for each
-    timespan_t summon_duration = timespan_t::from_seconds( 8 /*p()->covenant.venthyr->effectN( 4 ).base_value() */ );
+    specialization_e spec       = p()->specialization();
+    timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( 4/*p()->covenant.venthyr->effectN( 3 ).base_value()*/ );
+        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
@@ -8114,7 +8111,7 @@ struct fallen_order_t : public monk_spell_t
     }
 
     make_event<fallen_order_event_t>(
-        *sim, p(), fallen_monks, timespan_t::from_seconds( p()->covenant.venthyr->effectN( 2 ).base_value() * 2 ) );
+        *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells
@@ -8566,13 +8563,17 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->azerite.conflict_and_strife.is_major() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 2 ).base_value(), p()->gain.expel_harm );
-    }
-    else if ( p()->spec.expel_harm_2_ww->ok() )
-    {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
+      double chi_gain = 0;
+      if ( p()->azerite.conflict_and_strife.is_major() )
+        chi_gain += p()->spec.reverse_harm->effectN( 2 ).base_value();
+
+      if ( p()->spec.expel_harm_2_ww->ok() )
+        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
+
+      if (chi_gain > 0 )
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
     }
   }
 
