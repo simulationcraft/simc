@@ -6243,10 +6243,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    // Bug: Fist of the White Tiger is incorrectly giving Emperor's Capacitor stacks
-    if ( p()->bugs && p()->legendary.last_emperors_capacitor->ok() )
-      p()->buff.the_emperors_capacitor->trigger();
-
     // Apply Mark of the Crane
     if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
