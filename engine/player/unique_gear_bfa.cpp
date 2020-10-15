@@ -6200,30 +6200,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 }
 
 void unique_gear::register_hotfixes_bfa()
-{
-  // Manually merge some live hotfixes
-  hotfix::register_effect( "Battle for Azeroth", "2020-10-14", "Strive for Perfection #1", 766259, hotfix::HOTFIX_FLAG_LIVE )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( -60 )
-    .verification_value( -8.359725 );
-  hotfix::register_effect( "Battle for Azeroth", "2020-10-14", "Strive for Perfection #2", 772052, hotfix::HOTFIX_FLAG_LIVE )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( -60 )
-    .verification_value( -8.359725 );
-  hotfix::register_effect( "Battle for Azeroth", "2020-10-14", "Strive for Perfection #3", 772062, hotfix::HOTFIX_FLAG_LIVE )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( -60 )
-    .verification_value( -8.359725 );
-
-  hotfix::register_effect( "Battle for Azeroth", "2020-10-14", "Draconic Empowerment", 803299, hotfix::HOTFIX_FLAG_LIVE )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 5.4545455 )
-    .verification_value( 10.88746 );
-}
+{ }
 
 namespace expansion
 {
