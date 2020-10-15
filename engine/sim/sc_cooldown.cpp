@@ -333,7 +333,6 @@ void cooldown_t::reset_init()
   reset_react = 0_ms;
 
   current_charge = charges;
-  assert(current_charge > 0);
   recharge_multiplier = 1.0;
   base_duration = duration;
 
@@ -417,7 +416,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   {
     if (current_charge > 0)
       current_charge--;
-      
+
     // No charges left, the cooldown won't be ready until a recharge event
     // occurs. Note, ready still needs to be properly set as it ultimately
     // controls whether a cooldown is "up".
