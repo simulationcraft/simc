@@ -194,6 +194,8 @@ public:
     // Legendaries
     buff_t* vanguards_momentum;
     buff_t* bulwark_of_righteous_fury;
+    buff_t* blessing_of_dusk;
+    buff_t* blessing_of_dawn;
   } buffs;
 
   // Gains
@@ -719,7 +721,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn; // Shared
     bool crusade, divine_purpose, hand_of_light, final_reckoning, reckoning; // Ret
   } affected_by;
 
@@ -749,6 +751,7 @@ public:
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
+    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -865,6 +868,11 @@ public:
     if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
     {
       am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+    }
+
+    if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
+    {
+      am *= 1.0 + p() -> legendary.from_dusk_till_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
     }
 
     return am;
@@ -1103,6 +1111,15 @@ struct holy_power_consumer_t : public Base
     paladin_t* p = this -> p();
 
     ab::execute();
+
+    if (
+        hp_used > 0 &&
+        p -> legendary.from_dusk_till_dawn -> ok() &&
+        p -> resources.current[ RESOURCE_HOLY_POWER ] == p -> legendary.from_dusk_till_dawn -> effectN( 2 ).base_value()
+      )
+    {
+      p -> buffs.blessing_of_dusk -> trigger();
+    }
 
     // if this is a vanq-hammer-based DS, don't do this stuff
     if ( ab::background )

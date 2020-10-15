@@ -554,24 +554,23 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.guardian_of_ancient_kings -> up() )
   {
     s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after GoAK is {}", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection
   if ( buffs.divine_protection -> up() )
   {
     s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after Divine Protection is {}", s -> target -> name(), s -> result_amount );
   }
 
   if ( buffs.ardent_defender -> up() )
   {
     s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent()
       + legendary.the_ardent_protectors_sanctum -> effectN( 1 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
+  }
+
+  if ( buffs.blessing_of_dusk -> up() )
+  {
+    s -> result_amount *= 1.0 + buffs.blessing_of_dusk -> value();
   }
 
   // Divine Bulwark and consecration reduction

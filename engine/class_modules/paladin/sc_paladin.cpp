@@ -1531,33 +1531,36 @@ void paladin_t::create_buffs()
   create_buffs_holy();
 
   buffs.divine_steed = make_buff( this, "divine_steed", find_spell( "Divine Steed" ) )
-                     -> set_duration( 3_s )
-                     -> set_chance( 1.0 )
-                     -> set_cooldown( 0_ms ) // handled by the ability
-                     -> set_default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
+       -> set_duration( 3_s )
+       -> set_chance( 1.0 )
+       -> set_cooldown( 0_ms ) // handled by the ability
+       -> set_default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
 
   // General
-  buffs.avenging_wrath          = new buffs::avenging_wrath_buff_t( this );
-  buffs.divine_purpose          = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
-  buffs.divine_shield           = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
-                                -> set_cooldown( 0_ms ); // Let the ability handle the CD
+  buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
+  buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
+  buffs.divine_shield = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
+        -> set_cooldown( 0_ms ); // Let the ability handle the CD
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
-                       -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
+       -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
 
   buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
-                 -> add_invalidate( CACHE_CRIT_CHANCE )
-                 -> add_invalidate( CACHE_HASTE )
-                 -> add_invalidate( CACHE_MASTERY )
-                 -> add_invalidate( CACHE_VERSATILITY )
-                 -> set_cooldown( 0_ms ); // let the ability handle the cooldown
+       -> add_invalidate( CACHE_CRIT_CHANCE )
+       -> add_invalidate( CACHE_HASTE )
+       -> add_invalidate( CACHE_MASTERY )
+       -> add_invalidate( CACHE_VERSATILITY )
+       -> set_cooldown( 0_ms ); // let the ability handle the cooldown
 
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
-                     -> set_cooldown( 0_ms ); // handled by the ability
+        -> set_cooldown( 0_ms ); // handled by the ability
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() );
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() )
+        -> set_default_value( legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
-                             -> set_cooldown( 0_ms );
+        -> set_cooldown( 0_ms );
 }
 
 // paladin_t::default_potion ================================================
@@ -1813,7 +1816,7 @@ void paladin_t::init_spells()
   legendary.vanguards_momentum = find_runeforge_legendary( "Vanguard's Momentum" );
   legendary.the_mad_paragon = find_runeforge_legendary( "The Mad Paragon" );
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
-  legendary.from_dusk_till_dawn = find_runeforge_legendary( "From Dusk till Dawn" );
+  legendary.from_dusk_till_dawn = find_runeforge_legendary( "Of Dusk and Dawn" );
   legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );
   legendary.bulwark_of_righteous_fury = find_runeforge_legendary( "Bulwark of Righteous Fury" );
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
@@ -2311,6 +2314,19 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
     if ( buffs.holy_avenger -> up() )
     {
       amount *= 1.0 + buffs.holy_avenger -> data().effectN( 1 ).percent();
+    }
+
+    if (
+        legendary.from_dusk_till_dawn -> ok() &&
+        amount > 0 &&
+        resources.current[ RESOURCE_HOLY_POWER ] < resources.base[ RESOURCE_HOLY_POWER ] &&
+        resources.current[ RESOURCE_HOLY_POWER ] + amount >= legendary.from_dusk_till_dawn -> effectN( 1 ).base_value()
+        // Technically if you go over 5 holy power then it probably shouldn't
+        // proc... but you can't get more than 5 holy power so I'll just assume
+        // it's untestable.
+      )
+    {
+      buffs.blessing_of_dawn -> trigger();
     }
   }
 
