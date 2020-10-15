@@ -4028,7 +4028,7 @@ struct black_powder_t: public rogue_attack_t
     rogue_attack_t( name, p, p -> find_specialization_spell( "Black Powder" ), options_str ),
     bonus_attack( nullptr )
   {
-    if ( p->find_rank_spell( "Shadow Vault", "Rank 2" )->ok() )
+    if ( p->find_rank_spell( "Black Powder", "Rank 2" )->ok() )
     {
       bonus_attack = p->get_background_action<black_powder_bonus_t>( "black_powder_bonus" );
       add_child( bonus_attack );
