@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA ()
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -163,7 +163,7 @@ Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
-Hotfixed         : Spell Level (21 -> 0)
+Hotfixed         : Learn Level (21 -> 0)
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -532,7 +532,7 @@ Hotfixed         : SP Coefficient (1.239 -> 1.363)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
-Hotfixed         : Spell Level (28 -> 0)
+Hotfixed         : Learn Level (28 -> 0)
 Class            : Frost Mage
 School           : Frost
 Spell Type       : Magic
@@ -2868,7 +2868,7 @@ Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden]
 Class            : Arcane Death Knight, Mage
 School           : Physical
 Spell Type       : None
-Spell Level      : 10 (max 49)
+Spell Level      : 10 (max 30)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2890,7 +2890,7 @@ Effects          :
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 60 | Scaled Value: -18 | Points Per Level: -2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: -57 | Points Per Level: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Family Flags: 36
@@ -5488,7 +5488,7 @@ Effects          :
 Description      : Ice Barrier increases your armor by $s1% while active, and Ice Block applies Ice Barrier to you when it fades.
 
 Name             : Blazing Barrier (id=235313) [Spell Family (3)] 
-Hotfixed         : Spell Level (28 -> 0)
+Hotfixed         : Learn Level (28 -> 0)
 Class            : Fire Mage
 School           : Fire
 Spell Type       : Magic
@@ -5570,7 +5570,7 @@ Effects          :
 Description      : Casting Blink ignites a Blazing Barrier around you.
 
 Name             : Prismatic Barrier (id=235450) [Spell Family (3)] 
-Hotfixed         : Spell Level (28 -> 0)
+Hotfixed         : Learn Level (28 -> 0)
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : Magic

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA ()
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -4030,7 +4030,7 @@ Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden]
 Class            : Arcane Death Knight, Mage
 School           : Physical
 Spell Type       : None
-Spell Level      : 10 (max 49)
+Spell Level      : 10 (max 30)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4052,7 +4052,7 @@ Effects          :
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 60 | Scaled Value: -18 | Points Per Level: -2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: -57 | Points Per Level: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Family Flags: 36

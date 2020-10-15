@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA ()
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin

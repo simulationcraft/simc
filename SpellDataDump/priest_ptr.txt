@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA ()
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
@@ -3406,7 +3406,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Voidform (id=185916) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Spell Level (14 -> 10)
+Hotfixed         : Learn Level (14 -> 10)
 Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
@@ -8938,7 +8938,7 @@ Effects          :
 Description      : Vampiric Embrace heals for an additional $s1% of your single-target Shadow spell damage.
 
 Name             : Holy Nova (desc=Rank 2) (id=322112) [Spell Family (6), Passive] 
-Hotfixed         : Spell Level (47 -> 56)
+Hotfixed         : Learn Level (47 -> 56)
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
@@ -9502,7 +9502,7 @@ Effects          :
 Description      : Fade now reduces the range at which enemies will attack you.
 
 Name             : Mass Dispel (desc=Rank 2) (id=327830) [Spell Family (6), Passive] 
-Hotfixed         : Spell Level (54 -> 50)
+Hotfixed         : Learn Level (54 -> 50)
 Class            : Priest
 School           : Holy
 Spell Type       : None
