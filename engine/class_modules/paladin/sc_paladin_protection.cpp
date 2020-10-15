@@ -433,6 +433,16 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       );
     }
   }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+    if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
+    {
+      p() -> buffs.vanquishers_hammer -> expire();
+      p() -> active.necrolord_shield_of_the_righteous -> execute();
+    }
+  }
 };
 
 // Shield of the Righteous ==================================================
@@ -478,6 +488,16 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     use_off_gcd = true;
 
     // no weapon multiplier
+    weapon_multiplier = 0.0;
+  }
+
+  shield_of_the_righteous_t( paladin_t* p ) :
+    holy_power_consumer_t( "shield_of_the_righteous_vanq", p, p -> spec.shield_of_the_righteous )
+  {
+    // This is the "free" SotR from vanq hammer. Identifiable by being background.
+    background = true;
+    aoe = -1;
+    trigger_gcd = 0_ms;
     weapon_multiplier = 0.0;
   }
 
@@ -724,6 +744,7 @@ bool paladin_t::standing_in_consecration() const
 void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
+  active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )

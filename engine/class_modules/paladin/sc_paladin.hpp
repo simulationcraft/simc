@@ -140,6 +140,7 @@ public:
 
     // Covenant stuff
     action_t* necrolord_divine_storm;
+    action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
   } active;
 
