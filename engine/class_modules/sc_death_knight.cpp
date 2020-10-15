@@ -3489,7 +3489,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
     {
       p() -> active_spells.blood_plague -> set_target( state -> target );
       p() -> active_spells.blood_plague -> execute();
@@ -4369,7 +4369,7 @@ struct deaths_caress_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
     {
       p() -> active_spells.blood_plague -> set_target( state -> target );
       p() -> active_spells.blood_plague -> execute();
@@ -7653,7 +7653,7 @@ void death_knight_t::create_actions()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    if ( spec.blood_boil -> ok() || spec.deaths_caress -> ok() )
+    if ( spell.blood_plague -> ok() && ( spec.blood_boil -> ok() || spec.deaths_caress -> ok() ) )
     {
       active_spells.blood_plague = new blood_plague_t( this );
     }
