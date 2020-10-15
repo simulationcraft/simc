@@ -1611,12 +1611,6 @@ public:
   {
     base_t::execute();
 
-    if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
-    {
-      p()->recent_target = execute_state->target;
-      p()->buff.earthen_rage->trigger();
-    }
-
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements && !background )
     {
@@ -1633,8 +1627,19 @@ public:
       }
     }
 
-    p()->trigger_vesper_totem( execute_state );
-    trigger_echoing_shock( execute_state->target );
+    // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
+    // specific target (from execute state)
+    if ( execute_state && hit_any_target )
+    {
+      if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
+      {
+        p()->recent_target = execute_state->target;
+        p()->buff.earthen_rage->trigger();
+      }
+
+      p()->trigger_vesper_totem( execute_state );
+      trigger_echoing_shock( execute_state->target );
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
