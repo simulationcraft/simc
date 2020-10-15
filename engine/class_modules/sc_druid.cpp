@@ -1546,7 +1546,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     base_t::extend_duration( player, d );
 
     // Pre patch effects that extend ca or inc do not extend eclipses. Whacky workaround, delete later
-    if ( !p().level() == 50 || !p().bugs )
+    if ( p().level() != 50 || !p().bugs )
       p().eclipse_handler.extend_both( d );
   }
 
