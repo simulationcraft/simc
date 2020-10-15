@@ -1693,7 +1693,7 @@ inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges 
      * It does it by repetitively calling cooldown->start which will remove a current charge and restart the event
      * timers.
      */
-    for ( int i = 0; i < cooldown->charges; i++ )
+    for ( int i = 0; i < cooldown->current_charge; i++ )
       cooldown->start( cooldown_action );
 
     /**

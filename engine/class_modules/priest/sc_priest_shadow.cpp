@@ -77,7 +77,8 @@ public:
   {
     priest_spell_t::reset();
 
-    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving buffs up.
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
     cooldown->charges = data().charges();
   }
 
@@ -1249,7 +1250,7 @@ struct void_eruption_t final : public priest_spell_t
 
     priest().buffs.voidform->trigger();
 
-    adjust_cooldown_max_charges(priest().cooldowns.mind_blast, 1);
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
     priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
     priest().cooldowns.void_bolt->reset( true );
   }
@@ -1320,7 +1321,7 @@ struct surrender_to_madness_t final : public priest_spell_t
     {
       priest().buffs.voidform->trigger();
 
-    adjust_cooldown_max_charges(priest().cooldowns.mind_blast, 1);
+      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
       priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
       priest().cooldowns.void_bolt->reset( true );
     }
@@ -1758,6 +1759,12 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
   void decrement( int stacks, double value ) override
   {
     base_t::decrement( stacks, value );
+
+    if ( overridden )
+      return;
+
+    if ( max_stack() == 0 || current_stack <= 0 )
+      return;
 
     adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
   }
