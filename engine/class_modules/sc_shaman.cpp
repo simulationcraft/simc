@@ -3437,15 +3437,20 @@ struct crash_lightning_t : public shaman_attack_t
     reduced_aoe_damage = true;
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
+  }
 
-    if ( player->action.crashing_storm )
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    if ( p()->action.crashing_storm )
     {
-      add_child( player->action.crashing_storm );
+      add_child( p()->action.crashing_storm );
     }
 
-    if ( player->action.crash_lightning_aoe )
+    if ( p()->action.crash_lightning_aoe )
     {
-      add_child( player->action.crash_lightning_aoe );
+      add_child( p()->action.crash_lightning_aoe );
     }
   }
 
