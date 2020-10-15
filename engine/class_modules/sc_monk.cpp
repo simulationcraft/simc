@@ -12369,7 +12369,7 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.mistweaver_monk );
 
   if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
-      main_hand_weapon.group() == weapon_e::WEAPON_2H )
+      main_hand_weapon.group() == weapon_e::WEAPON_1H )
         action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
