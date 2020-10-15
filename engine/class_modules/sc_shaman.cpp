@@ -521,7 +521,6 @@ public:
     gain_t* feral_spirit;
     gain_t* fire_elemental;
     gain_t* spirit_of_the_maelstrom;
-    gain_t* forceful_winds;
   } gain;
 
   // Tracked Procs
@@ -887,13 +886,6 @@ struct lightning_shield_buff_t : public buff_t
   lightning_shield_buff_t( shaman_t* p ) : buff_t( p, "lightning_shield", p->find_spell( 192106 ) )
   {
     set_duration( s_data->duration() );
-  }
-};
-
-struct forceful_winds_buff_t : public buff_t
-{
-  forceful_winds_buff_t( shaman_t* p ) : buff_t( p, "forceful_winds", p->find_spell( 262652 ) )
-  {
   }
 };
 
@@ -2578,6 +2570,7 @@ struct windfury_attack_t : public shaman_attack_t
   {
     std::array<proc_t*, 6> at_fw;
   } stats_;
+
   windfury_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : shaman_attack_t( n, player, s )
   {
@@ -2586,10 +2579,12 @@ struct windfury_attack_t : public shaman_attack_t
     background = true;
 
     // Windfury can not proc itself
-    may_proc_windfury         = false;
+    may_proc_windfury = false;
 
     for ( size_t i = 0; i < stats_.at_fw.size(); i++ )
+    {
       stats_.at_fw[ i ] = player->get_proc( "Windfury-ForcefulWinds: " + std::to_string( i ) );
+    }
   }
 
   void init_finished() override
@@ -2610,31 +2605,24 @@ struct windfury_attack_t : public shaman_attack_t
     }
   }
 
-  // Needs to do maelstrom weapon things
-  /*double maelstrom_weapon_energize_amount( const action_state_t* source ) const override
-  {
-    return shaman_attack_t::maelstrom_weapon_energize_amount( source );
-  }
-
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
+
     m *= 1.0 + p()->buff.forceful_winds->stack_value();
+
     return m;
   }
 
   void impact( action_state_t* state ) override
   {
+    shaman_attack_t::impact( state );
+
     if ( p()->talent.forceful_winds->ok() )
     {
       stats_.at_fw[ p()->buff.forceful_winds->check() ]->occur();
-      double bonus_resource =
-          p()->buff.forceful_winds->s_data->effectN( 2 ).base_value() * p()->buff.forceful_winds->check();
-      p()->trigger_maelstrom_gain( bonus_resource, p()->gain.forceful_winds );
     }
-
-    shaman_attack_t::impact( state );
-  }*/
+  }
 };
 
 struct crash_lightning_attack_t : public shaman_attack_t
@@ -7109,7 +7097,6 @@ void shaman_t::init_spells()
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
   // elemental blast
 
-  
   talent.stormflurry = find_talent_spell( "Stormflurry" );
   talent.hot_hand    = find_talent_spell( "Hot Hand" );
   talent.ice_strike  = find_talent_spell( "Ice Strike" );
@@ -7814,7 +7801,7 @@ void shaman_t::create_buffs()
 
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                            ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   buff.icy_edge         = new icy_edge_buff_t( this );
   buff.molten_weapon    = new molten_weapon_buff_t( this );
@@ -7858,7 +7845,6 @@ void shaman_t::init_gains()
   gain.feral_spirit            = get_gain( "Feral Spirit" );
   gain.fire_elemental          = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
-  gain.forceful_winds          = get_gain( "Forceful Winds" );
 }
 
 // shaman_t::init_procs =====================================================
