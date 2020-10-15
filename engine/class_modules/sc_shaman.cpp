@@ -452,6 +452,7 @@ public:
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
+    cooldown_t* lava_lash;
     cooldown_t* crash_lightning;
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
@@ -720,6 +721,7 @@ public:
     cooldown.storm_elemental = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits   = get_cooldown( "feral_spirit" );
     cooldown.lava_burst      = get_cooldown( "lava_burst" );
+    cooldown.lava_lash       = get_cooldown( "lava_lash" );
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
     cooldown.shock           = get_cooldown( "shock" );
@@ -1379,7 +1381,7 @@ public:
 
     if ( may_proc_hot_hand )
     {
-      may_proc_hot_hand = ab::weapon != nullptr;
+      may_proc_hot_hand = ab::weapon != nullptr && !special;
     }
 
     if ( may_proc_maelstrom_weapon )
@@ -3102,14 +3104,16 @@ struct lava_lash_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
-  double cost() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
+    double m = shaman_attack_t::recharge_multiplier( cd );
+
     if ( p()->buff.hot_hand->check() )
     {
-      return 0;
+      m /= 1.0 + p()->buff.hot_hand->stack_value();
     }
 
-    return shaman_attack_t::cost();
+    return m;
   }
 
   double action_multiplier() const override
@@ -7395,8 +7399,10 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
     return;
   }
 
-  buff.hot_hand->trigger();
-  attack->proc_hh->occur();
+  if ( buff.hot_hand->trigger() )
+  {
+    attack->proc_hh->occur();
+  }
 }
 
 void shaman_t::trigger_vesper_totem( const action_state_t* state )
@@ -7780,8 +7786,12 @@ void shaman_t::create_buffs()
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
-  buff.hot_hand =
-      make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
+  buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
+    ->set_trigger_spell( talent.hot_hand )
+    ->set_default_value_from_effect( 2 )
+    -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+      cooldown.lava_lash->adjust_recharge_multiplier();
+    } );
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
