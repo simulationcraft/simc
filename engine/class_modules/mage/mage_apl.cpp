@@ -116,7 +116,7 @@ void arcane( player_t* p )
   opener->add_action( "arcane_power" );
   opener->add_action( "rune_of_power,if=buff.rune_of_power.down" );
   opener->add_action( "use_mana_gem,if=(talent.enlightened.enabled&mana.pct<=80&mana.pct>=65)|(!talent.enlightened.enabled&mana.pct<=85)" );
-  opener->add_action( "time_warp,if=runeforge.temporal_warp.equipped" );
+  opener->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up" );
   opener->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   opener->add_action( "arcane_blast,if=dot.radiant_spark.remains>5|debuff.radiant_spark_vulnerability.stack>0" );
   opener->add_action( "arcane_blast,if=buff.presence_of_mind.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=action.arcane_blast.execute_time" );
@@ -195,7 +195,7 @@ void arcane( player_t* p )
   aoe->add_action( "blood_fury,if=buff.arcane_power.up" );
   aoe->add_action( "fireblood,if=buff.arcane_power.up" );
   aoe->add_action( "ancestral_call,if=buff.arcane_power.up" );
-  aoe->add_action( "time_warp,if=runeforge.temporal_warp.equipped" );
+  aoe->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up" );
   aoe->add_action( "frostbolt,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&(buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down)&cooldown.touch_of_the_magi.remains=0&(buff.arcane_charge.stack<=variable.aoe_totm_charges&((talent.rune_of_power.enabled&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay)|(!talent.rune_of_power.enabled&cooldown.arcane_power.remains>variable.totm_max_delay)|cooldown.arcane_power.remains<=gcd))" );
   aoe->add_action( "fire_blast,if=(runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down&prev_gcd.1.frostbolt)|(runeforge.disciplinary_command.equipped&time=0)" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&cooldown.arcane_power.remains>30&cooldown.touch_of_the_magi.remains=0&(buff.arcane_charge.stack<=variable.aoe_totm_charges&((talent.rune_of_power.enabled&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay)|(!talent.rune_of_power.enabled&cooldown.arcane_power.remains>variable.totm_max_delay)|cooldown.arcane_power.remains<=gcd))" );
@@ -251,6 +251,8 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=hot_streak_flamestrike,op=set,if=variable.hot_streak_flamestrike=0,value=2*talent.flame_patch.enabled+3*!talent.flame_patch.enabled", "This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used." );
   precombat->add_action( "variable,name=hard_cast_flamestrike,op=set,if=variable.hard_cast_flamestrike=0,value=2*talent.flame_patch.enabled+3*!talent.flame_patch.enabled", "This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler." );
   precombat->add_action( "variable,name=combustion_flamestrike,op=set,if=variable.combustion_flamestrike=0,value=3*talent.flame_patch.enabled+6*!talent.flame_patch.enabled", "This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion." );
+  precombat->add_action( "variable,name=arcane_explosion,op=set,if=variable.arcane_explosion=0,value=99*talent.flame_patch.enabled+2*!talent.flame_patch.enabled", "This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used." );
+  precombat->add_action( "variable,name=arcane_explosion_mana,default=40,op=reset", "This variable specifies the percentage of mana below which Arcane Explosion will not be used." );
   precombat->add_action( "variable,name=delay_flamestrike,default=0,op=reset", "This variable is used to specify the amount of time in seconds that must pass after Combustion expires before Flamestrikes will be used normally." );
   precombat->add_action( "variable,name=kindling_reduction,default=0.2,op=reset", "With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling." );
   precombat->add_action( "variable,name=shifting_power_reduction,op=set,value=action.shifting_power.cast_time%action.shifting_power.tick_time*3,if=covenant.night_fae.enabled" );
@@ -295,7 +297,7 @@ void fire( player_t* p )
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "variable,name=extended_combustion_remains,op=set,value=buff.combustion.remains+buff.combustion.duration*(cooldown.combustion.remains<buff.combustion.remains)", "Estimate how long Combustion will last thanks to Sun King's Blessing to determine how Fire Blasts should be used." );
-  combustion_phase->add_action( "variable,name=extended_combustion_remains,op=add,value=6,if=buff.sun_kings_blessing_ready.up|variable.extended_combustion_remains>1.5*gcd.max*(buff.sun_kings_blessing.max_stack-buff.sun_kings_blessing.stack)" );
+  combustion_phase->add_action( "variable,name=extended_combustion_remains,op=add,value=5,if=buff.sun_kings_blessing_ready.up|variable.extended_combustion_remains>1.5*gcd.max*(buff.sun_kings_blessing.max_stack-buff.sun_kings_blessing.stack)" );
   combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
   combustion_phase->add_action( "living_bomb,if=active_enemies>1&buff.combustion.down" );
   combustion_phase->add_action( "mirrors_of_torment,if=buff.combustion.down&buff.rune_of_power.down" );
@@ -317,20 +319,21 @@ void fire( player_t* p )
   combustion_phase->add_action( "fireblood,if=buff.combustion.last_expire<=action.combustion.last_used" );
   combustion_phase->add_action( "ancestral_call,if=buff.combustion.last_expire<=action.combustion.last_used" );
   combustion_phase->add_action( "use_items,if=buff.combustion.last_expire<=action.combustion.last_used" );
-  combustion_phase->add_action( "flamestrike,if=buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike" );
+  combustion_phase->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.combustion.last_expire<=action.combustion.last_used&buff.exhaustion.up" );
+  combustion_phase->add_action( "flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike" );
   combustion_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
   combustion_phase->add_action( "pyroblast,if=buff.firestorm.react" );
   combustion_phase->add_action( "pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)" );
   combustion_phase->add_action( "pyroblast,if=buff.hot_streak.react&buff.combustion.up" );
   combustion_phase->add_action( "pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react" );
-  combustion_phase->add_action( "phoenix_flames,if=buff.combustion.up" );
+  combustion_phase->add_action( "phoenix_flames,if=buff.combustion.up&((action.fire_blast.charges<1&talent.pyroclasm.enabled&active_enemies=1)|!talent.pyroclasm.enabled|active_enemies>1)" );
   combustion_phase->add_action( "fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&!conduit.flame_accretion.enabled" );
   combustion_phase->add_action( "scorch,if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down&cooldown.combustion.remains<cast_time" );
   combustion_phase->add_action( "living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1" );
   combustion_phase->add_action( "dragons_breath,if=buff.combustion.remains<gcd.max&buff.combustion.up" );
   combustion_phase->add_action( "scorch,if=target.health.pct<=30&talent.searing_touch.enabled" );
 
-  rop_phase->add_action( "flamestrike,if=(active_enemies>=variable.hot_streak_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&buff.hot_streak.react" );
+  rop_phase->add_action( "flamestrike,if=(active_enemies>=variable.hot_streak_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&(buff.hot_streak.react|buff.firestorm.react)" );
   rop_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
   rop_phase->add_action( "pyroblast,if=buff.firestorm.react" );
   rop_phase->add_action( "pyroblast,if=buff.hot_streak.react" );
@@ -342,10 +345,11 @@ void fire( player_t* p )
   rop_phase->add_action( "phoenix_flames,if=!variable.phoenix_pooling&buff.heating_up.react&!buff.hot_streak.react&(active_dot.ignite<2|active_enemies>=variable.hard_cast_flamestrike|active_enemies>=variable.hot_streak_flamestrike)" );
   rop_phase->add_action( "scorch,if=target.health.pct<=30&talent.searing_touch.enabled" );
   rop_phase->add_action( "dragons_breath,if=active_enemies>2" );
+  rop_phase->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana" );
   rop_phase->add_action( "flamestrike,if=(active_enemies>=variable.hard_cast_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))" );
   rop_phase->add_action( "fireball" );
 
-  standard_rotation->add_action( "flamestrike,if=(active_enemies>=variable.hot_streak_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&buff.hot_streak.react" );
+  standard_rotation->add_action( "flamestrike,if=(active_enemies>=variable.hot_streak_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&(buff.hot_streak.react|buff.firestorm.react)" );
   standard_rotation->add_action( "pyroblast,if=buff.firestorm.react" );
   standard_rotation->add_action( "pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time" );
   standard_rotation->add_action( "pyroblast,if=buff.hot_streak.react&(prev_gcd.1.fireball|firestarter.active|action.pyroblast.in_flight)" );
@@ -358,7 +362,8 @@ void fire( player_t* p )
   standard_rotation->add_action( "call_action_list,name=active_talents" );
   standard_rotation->add_action( "dragons_breath,if=active_enemies>1" );
   standard_rotation->add_action( "scorch,if=target.health.pct<=30&talent.searing_touch.enabled" );
-  standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hard_cast_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion)", "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
+  standard_rotation->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana", "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
+  standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hard_cast_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion)" );
   standard_rotation->add_action( "fireball" );
   standard_rotation->add_action( "scorch" );
 }
@@ -393,7 +398,7 @@ void frost( player_t* p )
   cds->add_action( "deathborne" );
   cds->add_action( "rune_of_power,if=cooldown.icy_veins.remains>15&buff.rune_of_power.down" );
   cds->add_action( "icy_veins,if=buff.rune_of_power.down" );
-  cds->add_action( "time_warp,if=runeforge.temporal_warp.equipped&time>10&(prev_off_gcd.icy_veins|target.time_to_die<30)" );
+  cds->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up&(prev_off_gcd.icy_veins|target.time_to_die<30)" );
   cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
