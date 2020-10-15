@@ -4539,7 +4539,7 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p() -> legendary.deadliest_coil.ok() )
     {
-      cost += (p() -> legendary.deadliest_coil->effectN( 1 ).base_value() / 10);
+      cost += (p() -> legendary.deadliest_coil->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
     }
 
     return cost;
