@@ -394,9 +394,9 @@ public:
     buff_t* lava_surge;
 
     // Elemental, Enhancement
-    stat_buff_t* elemental_blast_crit;
-    stat_buff_t* elemental_blast_haste;
-    stat_buff_t* elemental_blast_mastery;
+    buff_t* elemental_blast_crit;
+    buff_t* elemental_blast_haste;
+    buff_t* elemental_blast_mastery;
     buff_t* stormkeeper;
 
     // Elemental
@@ -4984,7 +4984,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
-      maelstrom_gain                     = player->spell.maelstrom->effectN( 10 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain = player->spell.maelstrom->effectN( 10 ).resource( RESOURCE_MAELSTROM );
 
       overload = new elemental_blast_overload_t( player );
       add_child( overload );
@@ -4993,11 +4993,9 @@ struct elemental_blast_t : public shaman_spell_t
 
   void execute() override
   {
-    // Trigger buff before executing the spell, because apparently the buffs affect the cast result
-    // itself.
-    trigger_elemental_blast_proc( p() );
-
     shaman_spell_t::execute();
+
+    trigger_elemental_blast_proc( p() );
   }
 };
 
@@ -7695,12 +7693,18 @@ void shaman_t::create_buffs()
   buff.windfury_totem = make_buff( this, "windfury_totem", spell.windfury_totem )
     ->set_chance( 1.0 );
 
-  buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
-  buff.elemental_blast_crit->set_max_stack( 1 );
-  buff.elemental_blast_haste = make_buff<stat_buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) );
-  buff.elemental_blast_haste->set_max_stack( 1 );
-  buff.elemental_blast_mastery = make_buff<stat_buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) );
-  buff.elemental_blast_mastery->set_max_stack( 1 );
+  buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
+    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+
+  buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
+    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
