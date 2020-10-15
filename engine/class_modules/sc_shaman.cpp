@@ -2630,7 +2630,7 @@ struct windfury_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_aoe", p, p->find_spell( 195592 ) )
+  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_proc", p, p->find_spell( 195592 ) )
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
