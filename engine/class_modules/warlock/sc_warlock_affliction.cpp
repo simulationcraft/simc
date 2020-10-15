@@ -642,7 +642,12 @@ struct malefic_rapture_t : public affliction_spell_t
 
         return m;
       }
-
+      
+      result_amount_type amount_type(const action_state_t*, bool) const override
+      {
+        return result_amount_type::DMG_OVER_TIME;
+      }
+      
       void execute() override
       {
         if ( p()->legendary.malefic_wrath->ok() )
