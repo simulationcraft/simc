@@ -62,7 +62,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   {  6, "Race" },
   {  7, "Scaling Spell" },
   {  8, "Max Scaling Level" },
-  {  9, "Spell Level" },
+  {  9, "Learn Level" },
   { 10, "Max Spell Level" },
   { 11, "Min Range" },
   { 12, "Max Range" },
@@ -90,6 +90,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
   { 48, "Max Targets" },
+  { 49, "Required Level" }
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {

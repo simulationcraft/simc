@@ -2653,8 +2653,15 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(scaling_entry, ('id_class', 7), ('max_scaling_level', 8))
 
             level_entry = spell.get_link('level')
-            fields += level_entry.field('base_level', 'max_level', 'req_max_level')
-            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46))
+
+            # Simulationcraft does not really support the concept of "Learn"
+            # and "Required" level, so grab the highest of the two for level
+            # check purposes.
+            req_level = max(level_entry.base_level, level_entry.spell_level)
+            fields += [level_entry.field_format('base_level')[0] % req_level]
+
+            fields += level_entry.field('max_level', 'req_max_level')
+            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46), ('spell_level', 49))
 
             range_entry = misc.ref('id_range')
             fields += range_entry.field('min_range_1', 'max_range_1')
