@@ -665,6 +665,7 @@ public:
   // Misc Spells
   struct
   {
+    const spell_data_t* crashing_storm;
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* feral_spirit;
@@ -2650,41 +2651,11 @@ struct crash_lightning_attack_t : public shaman_attack_t
 
 struct crashing_storm_damage_t : public shaman_spell_t
 {
-  crashing_storm_damage_t( shaman_t* player ) : shaman_spell_t( "crashing_storm", player, player->find_spell( 210801 ) )
+  crashing_storm_damage_t( shaman_t* player ) :
+    shaman_spell_t( "crashing_storm", player, player->find_spell( 210801 ) )
   {
     aoe        = -1;
     ground_aoe = background = true;
-    school                  = SCHOOL_NATURE;
-    // attack_power_mod.direct = 0.125;  // still cool to hardcode the SP% into tooltip
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-  }
-};
-
-struct crashing_storm_t : public shaman_spell_t
-{
-  crashing_storm_damage_t* zap;
-
-  crashing_storm_t( shaman_t* player )
-    : shaman_spell_t( "crashing_storm", player, player->find_spell( 192246 ) ),
-      zap( new crashing_storm_damage_t( player ) )
-  {
-    background   = true;
-    dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-    add_child( zap );
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        ground_aoe_params_t().target( execute_state->target ).duration( timespan_t::from_seconds( 6 ) ).action( zap ),
-        true );  // No duration in spell data rn, cool.
   }
 };
 
@@ -3469,21 +3440,12 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->talent.crashing_storm->ok() )
     {
-      // p()->action.crashing_storm->schedule_execute();
-
-      /*make_event<ground_aoe_event_t>( *sim, p(),
-                                      ground_aoe_params_t()
-                                          .target( execute_state->target )
-                                          .duration( p()->find_spell( 205532 )->duration() )
-                                          .action( p()->action.crashing_storm ),
-                                      true );*/
-
       make_event<ground_aoe_event_t>( *sim, p(),
-                                      ground_aoe_params_t()
-                                          .target( execute_state->target )
-                                          .duration( timespan_t::from_seconds( 6 ) )
-                                          .action( p()->action.crashing_storm ),
-                                      true );
+          ground_aoe_params_t()
+            .target( execute_state->target )
+            .duration( p()->spell.crashing_storm->duration() )
+            .action( p()->action.crashing_storm ),
+          true );
     }
 
     if ( result_is_hit( execute_state->result ) )
@@ -7121,6 +7083,7 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
+  spell.crashing_storm     = find_spell( 210797 );
   spell.resurgence         = find_spell( 101033 );
   spell.maelstrom_weapon   = find_spell( 187881 );
   spell.feral_spirit       = find_spell( 228562 );
