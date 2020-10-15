@@ -977,8 +977,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              ->set_cooldown( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
                              ->set_default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
-  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames )
-                              ->set_cooldown( timespan_t::zero() );  // Handled by the action
+  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames->effectN( 1 ).trigger() )
+                              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
 }
 
 // ==========================================================================
@@ -5193,14 +5193,12 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
-  const spell_data_t* lashing_flames_spell;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ), options_str ),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
       elemental_resource( player->find_spell( 263819 ) ),
-      skybreakers_effect( player->find_spell( 336734 ) ),
-      lashing_flames_spell( player->find_spell( 334168 ) )
+      skybreakers_effect( player->find_spell( 336734 ) )
   {
     tick_may_crit      = true;
     track_cd_waste     = false;
@@ -5235,10 +5233,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( td( target )->debuff.lashing_flames->up() )
-    {
-      m *= 1 + lashing_flames_spell->effectN( 1 ).percent();
-    }
+    m *= 1.0 + td( target )->debuff.lashing_flames->stack_value();
+
     return m;
   }
 
