@@ -9113,12 +9113,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.6988 )
       .verification_value( 0.8735 );
-
-    hotfix::register_spell( "Rogue", "2020-10-10", "Simc Spell Data misses Shiv Rank 2 Level for some reason", 319032 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 58.0 )
-      .verification_value( 0.0 );
   }
 
   void init( player_t* ) const override {}
