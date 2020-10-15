@@ -536,6 +536,7 @@ public:
     proc_t* hot_hand;
     proc_t* maelstrom_weapon;
     proc_t* maelstrom_weapon_fs;
+    proc_t* maelstrom_weapon_ea;
     proc_t* stormflurry;
   } proc;
 
@@ -2715,6 +2716,8 @@ struct stormstrike_attack_t : public shaman_attack_t
     weapon = w;
     weapon_multiplier = 1.0;
     school = SCHOOL_PHYSICAL;
+
+    base_multiplier *= 1.0 + p()->talent.elemental_assault->effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -2739,11 +2742,6 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->buff.gathering_storms->check_value();
     }
 
-    if ( p()->talent.elemental_assault->ok() )
-    {
-      m *= 1.0 + p()->talent.elemental_assault->effectN( 1 ).percent();
-    }
-
     if ( stormflurry )
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
@@ -2755,11 +2753,6 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
-
-    if ( p()->talent.elemental_assault->ok() )
-    {
-      p()->buff.maelstrom_weapon->increment( p()->talent.elemental_assault->effectN( 2 ).base_value() );
-    }
 
     stormflurry = false;
     stormbringer = false;
@@ -3252,6 +3245,14 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->buff.gathering_storms->decrement();
+
+    if ( p()->talent.elemental_assault->ok() )
+    {
+      p()->buff.maelstrom_weapon->trigger(
+        p()->talent.elemental_assault->effectN( 2 ).base_value() );
+      p()->proc.maelstrom_weapon_ea->occur();
+    }
+
   }
 
   void reset() override
@@ -7859,6 +7860,7 @@ void shaman_t::init_procs()
   proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
+  proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
   proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
