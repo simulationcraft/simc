@@ -595,6 +595,7 @@ struct malefic_rapture_t : public affliction_spell_t
         background = true;
         spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
         base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+        callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
 
         p->spells.malefic_rapture_aoe = this;
       }
@@ -643,11 +644,6 @@ struct malefic_rapture_t : public affliction_spell_t
         return m;
       }
       
-      result_amount_type amount_type(const action_state_t*, bool) const override
-      {
-        return result_amount_type::DMG_OVER_TIME;
-      }
-      
       void execute() override
       {
         if ( p()->legendary.malefic_wrath->ok() )
@@ -658,7 +654,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
           affliction_spell_t::execute();
       }
-
     };
 
     malefic_rapture_damage_instance_t* damage_instance;
