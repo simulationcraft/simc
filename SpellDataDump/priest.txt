@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA ()
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (hotfix 2020-10-15/36206)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9732,6 +9732,7 @@ Description      : Mind Blast and Shadow Word: Death cause your $?s123040[Mindbe
 
 
 Name             : Painbreaker Psalm (id=336165) [Spell Family (6), Passive] 
+Class            : Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9747,6 +9748,27 @@ Effects          :
 #1 (id=833243)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Shadow Word: Death consumes $s1 sec of Shadow Word: Pain and Vampiric Touch, instantly dealing that damage to the target and generating up to ${2*$336167s2/10} Insanity.
+
+Name             : Painbreaker Psalm (id=336167) 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
+                 : .......x x......x ....x... ........   ........ ........ .......x ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93), Always hits (114), Disable player multipliers (221)
+Effects          :
+#1 (id=833246)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=833247)   : Energize Power (30)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+Description      : $@spelldesc336165
 
 Name             : Eternal Call to the Void (id=336214) [Spell Family (6), Passive] 
 Class            : Priest

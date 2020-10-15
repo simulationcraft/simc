@@ -1383,7 +1383,7 @@ class SpellDataGenerator(DataGenerator):
             ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
-            ( 194249, 3, False ),   # Void Form extra data
+            ( 194249, 3, False ),   # Voidform extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
@@ -1397,6 +1397,7 @@ class SpellDataGenerator(DataGenerator):
             ( 345219, 0 ),          # Hungering Void target Debuff
             ( 346111, 0 ),          # Shadow Weaving Mastery spell
             ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
+            ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
         ),
 
         # Death Knight:
