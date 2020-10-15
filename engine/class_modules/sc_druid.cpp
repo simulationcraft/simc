@@ -2345,17 +2345,13 @@ public:
     using C = const conduit_data_t&;
 
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
-                          p()->covenant.adaptive_swarm_damage,
-                          p()->conduit.evolved_swarm );
+                          p()->covenant.adaptive_swarm_damage, p()->conduit.evolved_swarm, p()->spec.balance );
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
-                          p()->spec.thrash_bear_dot,
-                          p()->talent.rend_and_tear );
+                          p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
-                          p()->spec.moonfire_dmg,
-                          p()->conduit.fury_of_the_skies );
+                          p()->spec.moonfire_dmg, p()->conduit.fury_of_the_skies );
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
-                          p()->spec.sunfire_dmg,
-                          p()->conduit.fury_of_the_skies );
+                          p()->spec.sunfire_dmg, p()->conduit.fury_of_the_skies );
   }
 
   double cost() const override
@@ -3552,7 +3548,7 @@ public:
       {
         p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.eye_of_fearful_symmetry->check_value(),
                             p()->gain.eye_of_fearful_symmetry );
-        p()->buff.eye_of_fearful_symmetry->expire();
+        p()->buff.eye_of_fearful_symmetry->decrement();
       }
 
       if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
@@ -4392,18 +4388,24 @@ struct rip_t : public cat_attack_t
 struct primal_wrath_t : public cat_attack_t
 {
   int combo_points;
+  timespan_t base_dur;
   rip_t* rip;
 
   primal_wrath_t( druid_t* p, util::string_view opt ) : primal_wrath_t( p, p->talent.primal_wrath, opt ) {}
 
   primal_wrath_t( druid_t* p, const spell_data_t* s, util::string_view opt )
-    : cat_attack_t( "primal_wrath", p, s, opt ), combo_points( 0 )
+    : cat_attack_t( "primal_wrath", p, s, opt ),
+      combo_points( 0 ),
+      base_dur( timespan_t::from_seconds( s->effectN( 2 ).base_value() ) )
   {
     special = true;
     aoe     = -1;
 
     rip = p->get_secondary_action<rip_t>( "Rip", p->find_spell( 1079 ), "" );
     rip->stats = stats;
+
+    if ( p->legendary.circle_of_life_and_death->ok() )
+      base_dur *= 1.0 + p->query_aura_effect( p->legendary.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, s )->percent();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -4462,7 +4464,7 @@ struct primal_wrath_t : public cat_attack_t
       }
     }
 
-    target_rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
+    target_rip->trigger( base_dur * ( combo_points + 1 ) );  // this seems to be hardcoded
 
     action_state_t::release( b_state );
   }
@@ -8538,7 +8540,7 @@ void druid_t::create_buffs()
       } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
-    ->set_chance( legendary.oneths_clear_vision->effectN( 1 ).percent() );
+    ->set_chance( legendary.oneths_clear_vision->effectN( 2 ).percent() );
 
   buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell( 339800 ) )
     ->set_chance( legendary.oneths_clear_vision->effectN( 1 ).percent() );
