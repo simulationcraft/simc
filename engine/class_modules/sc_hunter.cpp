@@ -1556,8 +1556,11 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     hunter_main_pet_base_t::summon( duration );
 
     o() -> pets.main = this;
-    if ( o() -> pets.animal_companion )
-      o() -> pets.animal_companion -> summon();
+    if ( o()->pets.animal_companion )
+    {
+      o()->pets.animal_companion->summon();
+      o()->pets.animal_companion->schedule_ready(0_s, false);
+    }
 
     spec_passive() -> trigger();
   }
@@ -6888,6 +6891,7 @@ void hunter_t::apl_mm()
     cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
     cds -> add_action( this, "Trueshot", "if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15" );
 
+    st -> add_action( this, "Steady Shot", "if=talent.steady_focus.enabled&prev_gcd.1.steady_shot&buff.steady_focus.remains<5" );
     st -> add_action( this, "Kill Shot" );
     st -> add_talent( this, "Explosive Shot" );
     st -> add_talent( this, "Barrage", "if=active_enemies>1" );
@@ -6917,7 +6921,7 @@ void hunter_t::apl_mm()
     trickshots -> add_action( "focused_azerite_beam" );
     trickshots -> add_action( "purifying_blast" );
     trickshots -> add_action( "concentrated_flame" );
-    trickshots -> add_action( "blood_of_the_enemy" );
+    trickshots -> add_action( "blood_of_the_enemy,if=prev_gcd.1.volley|!talent.volley.enabled|target.time_to_die<11" );
     trickshots -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
     trickshots -> add_talent( this, "A Murder of Crows" );
     trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
