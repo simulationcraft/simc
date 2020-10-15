@@ -905,7 +905,7 @@ public:
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
-  void      trigger_arcane_charge( int stacks = 1, bool rule_of_threes = true );
+  void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
 };
@@ -2571,7 +2571,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
       p()->buffs.chrono_shift->trigger();
       // Multiply by 0.1 because for this data a value of 100 means 10%.
       if ( rng().roll( 0.1 * p()->conduits.artifice_of_the_archmage.percent() ) )
-        p()->trigger_arcane_charge( artifice_of_the_archmage_charges, false );
+        p()->trigger_arcane_charge( artifice_of_the_archmage_charges );
     }
   }
 
@@ -3455,7 +3455,7 @@ struct evocation_t : public arcane_mage_spell_t
     if ( brain_storm_charges > 0 )
       p()->trigger_arcane_charge( brain_storm_charges );
     if ( siphon_storm_charges > 0 )
-      p()->trigger_arcane_charge( siphon_storm_charges, false );
+      p()->trigger_arcane_charge( siphon_storm_charges );
   }
 
   void tick( dot_t* d ) override
@@ -7482,7 +7482,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
   buffs.evocation->trigger( 1, mana_regen_multiplier, -1.0, duration );
 }
 
-void mage_t::trigger_arcane_charge( int stacks, bool rule_of_threes )
+void mage_t::trigger_arcane_charge( int stacks )
 {
   if ( !spec.arcane_charge->ok() )
     return;
@@ -7490,7 +7490,7 @@ void mage_t::trigger_arcane_charge( int stacks, bool rule_of_threes )
   int before = buffs.arcane_charge->check();
   buffs.arcane_charge->trigger( stacks );
 
-  if ( ( !bugs || rule_of_threes ) && before < 3 && buffs.arcane_charge->check() >= 3 )
+  if ( before < 3 && buffs.arcane_charge->check() >= 3 )
     buffs.rule_of_threes->trigger();
 }
 
