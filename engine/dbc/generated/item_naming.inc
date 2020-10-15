@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.2.36165
-static const std::array<item_name_description_t, 563> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.2.36206
+static const std::array<item_name_description_t, 565> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -403,7 +403,7 @@ static const std::array<item_name_description_t, 563> __item_name_description_da
   { 13644, "Swiftsure Wraps"                             },
   { 13645, "Invoker's Delight"                           },
   { 13646, "Keefer's Skyreach"                           },
-  { 13647, "Last Emperor's Capicator"                    },
+  { 13647, "Last Emperor's Capacitor"                    },
   { 13648, "Xuen's Treasure"                             },
   { 13649, "Jade Ignition"                               },
   { 13650, "Celestial Infusion"                          },
@@ -517,7 +517,7 @@ static const std::array<item_name_description_t, 563> __item_name_description_da
   { 13758, "Butcher's Bone Fragments"                    },
   { 13759, "Wilfred's Sigil of Superior Summoning"       },
   { 13760, "Sash of Endereth"                            },
-  { 13761, "Mask of Borrowed Power"                      },
+  { 13761, "Relic of Demonic Synergy"                    },
   { 13762, "Emblazoned Robes of the Dark Portal"         },
   { 13763, "Azj'Aqir's Ring of Perpetual Agony"          },
   { 13764, "Sacrolash's Dark Slippers"                   },
@@ -563,5 +563,7 @@ static const std::array<item_name_description_t, 563> __item_name_description_da
   { 13805, "Cosmetic"                                    },
   { 13806, "Runes cascade across the surface of this armor." },
   { 13808, 0                                             },
+  { 13809, "Darker Nature"                               },
+  { 13810, "Burning Wound"                               },
 } };
 

@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.2.36165
-static const std::array<active_class_spell_t, 611> __active_spells_data { {
+// Active class spells, wow build 9.0.2.36206
+static const std::array<active_class_spell_t, 610> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1161,      0, "Challenging Shout"                  },
@@ -119,6 +119,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  3,    0,   6991,      0, "Feed Pet"                           },
   {  3,    0,  19801,      0, "Tranquilizing Shot"                 },
   {  3,    0,  34477,      0, "Misdirection"                       },
+  {  3,    0,  53351,      0, "Kill Shot"                          },
   {  3,    0,  56641,      0, "Steady Shot"                        },
   {  3,    0, 109304,      0, "Exhilaration"                       },
   {  3,    0, 175686,      0, "Stopping Power"                     },
@@ -136,14 +137,12 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  3,  253,  19574,      0, "Bestial Wrath"                      },
   {  3,  253,  19577,      0, "Intimidation"                       },
   {  3,  253,  34026,      0, "Kill Command"                       },
-  {  3,  253,  53351,      0, "Kill Shot"                          },
   {  3,  253, 147362,      0, "Counter Shot"                       },
   {  3,  253, 193455,  56641, "Cobra Shot"                         },
   {  3,  253, 193530,      0, "Aspect of the Wild"                 },
   {  3,  253, 217200,      0, "Barbed Shot"                        },
   {  3,  254,   5116, 195645, "Concussive Shot"                    },
   {  3,  254,  19434,      0, "Aimed Shot"                         },
-  {  3,  254,  53351,      0, "Kill Shot"                          },
   {  3,  254, 109248,      0, "Binding Shot"                       },
   {  3,  254, 147362,      0, "Counter Shot"                       },
   {  3,  254, 186387,      0, "Bursting Shot"                      },
@@ -160,7 +159,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  3,  255, 259491,      0, "Serpent Sting"                      },
   {  3,  255, 259495,      0, "Wildfire Bomb"                      },
   {  3,  255, 266779,      0, "Coordinated Assault"                },
-  {  3,  255, 320976,      0, "Kill Shot"                          },
+  {  3,  255, 320976,  53351, "Kill Shot"                          },
   {  4,    0,    408,      0, "Kidney Shot"                        },
   {  4,    0,    921,      0, "Pick Pocket"                        },
   {  4,    0,   1725,      0, "Distract"                           },
@@ -613,7 +612,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   { 12,  581, 228477, 344862, "Soul Cleave"                        },
 } };
 
-// Pet active spells, wow build 9.0.2.36165
+// Pet active spells, wow build 9.0.2.36206
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

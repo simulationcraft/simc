@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -17,9 +17,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=805487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for $342761d that increase your Haste by $342774s1% while you stand with them.$?a137018|a137022|a137005|a137026[
-
-Flowers may only bloom once every $342781d.][]
+Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for ${$342761d*$<mod>} sec that increase your Haste by $342774s1% while you stand with them.
+Variables        : $mod=$?a137005[${0.5}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Social Butterfly (id=319210) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -391,7 +390,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=844396)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342937 | Target: Self (1)
-Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, up to $342802u. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] grants you $342814s1% maximum health and $342814s2 Mastery per stack for $342814d.
+Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, up to $342802u. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] consumes Redirected Anima and grants you $342814s1% maximum health and $342814s2 Mastery per stack for $342814d.
 Tooltip          : $spelldesc322721
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
@@ -538,7 +537,9 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=811790)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While channeling Fleshcraft, you are immune to crowd control. Finishing the full channel grants you another $324631d of crowd control immunity.
+Description      : While channeling Fleshcraft, you are immune to crowd control and you regenerate $323524s17% health every $323524t17 sec. 
+
+If you finish the full channel, you gain $324631d of crowd control immunity, during which you regenerate $323524s17% health every $323524t17 sec.
 
 Name             : Sulfuric Emission (id=323916) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -1136,9 +1137,9 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=820394)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>} and occasionally expels Sorrowful Memories. 
+Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>} sec and occasionally expels Sorrowful Memories. 
 
-Walking through Sorrowful Memories extends this effect by $328913m2 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
+Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>} sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
 Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${1}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
@@ -1429,7 +1430,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=825883)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The first enemy you damage in combat is marked as your Adversary. You deal $331934s1% more damage to them, and they deal $331934s2% less damage to you. You may only have one Adversary at a time.
+Description      : The first enemy you damage in combat is marked as your Adversary. You deal $331934s1% more damage to them, and they deal $<reduc>% less damage to you. You may only have one Adversary at a time.
+Variables        : $reduc=${1.5}.1
 
 Name             : Thrill Seeker (id=331586) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -1689,7 +1691,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=829590)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After using ${$332514u+1} damaging or healing spells and abilities, your next spell or ability summons Bron, knocking back enemies on arrival and who attacking and healing your targets for $333961d.
+Description      : After using ${$332514u+1} damaging or healing spells and abilities, your next spell or ability summons Bron, who knocks enemies back on arrival and then attacks and heals your targets for $333961d.
 
 Name             : Mentorship (id=334066) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1779,7 +1781,7 @@ School           : Shadow
 Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 1
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1811,9 +1813,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=833361)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834395)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The effects of combat potions last $s1% to $s2% longer.
 
 Name             : Token of Appreciation (id=336245) [Passive] 
@@ -1837,7 +1839,7 @@ Effects          :
 #1 (id=833363)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Grant a shield that absorbs $<points> damage to allies who aid you with healing or beneficial magic effects. You will only shield each ally once every $337471d.
-Variables        : $points=${$cond($gt($SP,$AP),$SP*0.5,$AP*0.5)*(1+$@versadmg)}
+Variables        : $points=${$cond($gt($SP,$AP),$SP*1.0,$AP*1.0)*(1+$@versadmg)}
 
 Name             : Life of the Party (id=336247) [Passive] 
 Covenant         : Venthyr
