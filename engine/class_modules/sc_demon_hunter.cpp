@@ -6658,6 +6658,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Demon Hunter", "2020-10-14", "Simc Spell Data misses Eye Beam Rank 3 Level for some reason", 343311, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 58.0 )
+      .verification_value( 0.0 );
   }
 
   void combat_begin( sim_t* ) const override
