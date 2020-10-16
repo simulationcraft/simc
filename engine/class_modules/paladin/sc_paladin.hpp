@@ -515,6 +515,7 @@ public:
   virtual double    composite_base_armor_multiplier() const override;
 
   virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  virtual double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
 
   // combat outcome functions
   virtual void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
@@ -1112,15 +1113,6 @@ struct holy_power_consumer_t : public Base
     paladin_t* p = this -> p();
 
     ab::execute();
-
-    if (
-        hp_used > 0 &&
-        p -> legendary.from_dusk_till_dawn -> ok() &&
-        p -> resources.current[ RESOURCE_HOLY_POWER ] == p -> legendary.from_dusk_till_dawn -> effectN( 2 ).base_value()
-      )
-    {
-      p -> buffs.blessing_of_dusk -> trigger();
-    }
 
     // if this is a vanq-hammer-based DS, don't do this stuff
     if ( ab::background )

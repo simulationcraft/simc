@@ -1403,7 +1403,7 @@ void paladin_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
+  resources.base[ RESOURCE_HOLY_POWER ] = resources.max[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
@@ -2315,22 +2315,37 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
     {
       amount *= 1.0 + buffs.holy_avenger -> data().effectN( 1 ).percent();
     }
-
-    if (
-        legendary.from_dusk_till_dawn -> ok() &&
-        amount > 0 &&
-        resources.current[ RESOURCE_HOLY_POWER ] < resources.base[ RESOURCE_HOLY_POWER ] &&
-        resources.current[ RESOURCE_HOLY_POWER ] + amount >= legendary.from_dusk_till_dawn -> effectN( 1 ).base_value()
-        // Technically if you go over 5 holy power then it probably shouldn't
-        // proc... but you can't get more than 5 holy power so I'll just assume
-        // it's untestable.
-      )
-    {
-      buffs.blessing_of_dawn -> trigger();
-    }
   }
 
-  return player_t::resource_gain( resource_type, amount, source, action );
+  double result = player_t::resource_gain( resource_type, amount, source, action );
+
+  if (
+      resource_type == RESOURCE_HOLY_POWER &&
+      result > 0 &&
+      legendary.from_dusk_till_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 1 ).base_value()
+    )
+  {
+    buffs.blessing_of_dawn -> trigger();
+  }
+  return result;
+}
+
+// paladin_t::resouce_loss ==================================================
+
+double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double result = player_t::resource_loss( resource_type, amount, source, action );
+  if (
+      resource_type == RESOURCE_HOLY_POWER &&
+      result > 0 &&
+      legendary.from_dusk_till_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 2 ).base_value()
+    )
+  {
+    buffs.blessing_of_dusk -> trigger();
+  }
+  return result;
 }
 
 // paladin_t::assess_damage =================================================
