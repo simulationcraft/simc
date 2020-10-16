@@ -4933,12 +4933,6 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( time_to_execute > 0_ms )
       p()->buffs.pyroclasm->decrement();
-
-    if ( pyroblast_dot )
-    {
-      pyroblast_dot->set_target( target );
-      pyroblast_dot->execute();
-    }
   }
 
   timespan_t travel_time() const override
@@ -4965,6 +4959,11 @@ struct pyroblast_t : public hot_streak_spell_t
     {
       consume_molten_skyfall( s->target );
       trigger_molten_skyfall();
+      if ( pyroblast_dot )
+      {
+        pyroblast_dot->set_target( s->target );
+        pyroblast_dot->execute();
+      }
     }
   }
 
