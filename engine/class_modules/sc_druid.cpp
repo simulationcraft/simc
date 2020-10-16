@@ -1518,9 +1518,10 @@ struct ursine_vigor_buff_t : public druid_buff_t<buff_t>
 struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
 {
   bool inc;
+  bool bug;
 
   celestial_alignment_buff_t( druid_t& p, util::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b )
+    : base_t( p, n, s ), inc( b ), bug( false )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect_type( A_HASTE_ALL );
@@ -1551,7 +1552,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     base_t::extend_duration( player, d );
 
     // Pre patch effects that extend ca or inc do not extend eclipses. Whacky workaround, delete later
-    if ( p().level() != 50 || !p().bugs )
+    if ( !bug || !p().bugs )
       p().eclipse_handler.extend_both( d );
   }
 
@@ -6949,7 +6950,9 @@ struct starsurge_t : public druid_spell_t
         buff_t* proc_buff =
             p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
+        debug_cast<buffs::celestial_alignment_buff_t*>( proc_buff )->bug = true;
         proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+        debug_cast<buffs::celestial_alignment_buff_t*>( proc_buff )->bug = false;
 
         // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
