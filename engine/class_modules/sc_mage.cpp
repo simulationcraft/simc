@@ -5797,6 +5797,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   last_bomb_target(),
   last_frostbolt_target(),
   ground_aoe_expiration(),
+  remaining_winters_chill(),
   distance_from_rune(),
   lucid_dreams_refund(),
   strive_for_perfection_multiplier(),
@@ -6916,6 +6917,8 @@ void mage_t::reset()
   last_frostbolt_target = nullptr;
   burn_phase.reset();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
+  remaining_winters_chill = 0;
+  distance_from_rune = 0.0;
   state = state_t();
 }
 
