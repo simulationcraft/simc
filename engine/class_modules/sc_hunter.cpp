@@ -890,7 +890,7 @@ public:
   {
     ab::impact( s );
 
-    if ( triggers_wild_spirits && s -> chain_target == 0 )
+    if ( triggers_wild_spirits )
       p() -> trigger_wild_spirits( s );
   }
 
@@ -2180,8 +2180,7 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
   {
     hunter_pet_action_t::impact( s );
 
-    if ( o() -> covenants.wild_spirits.ok() && s -> chain_target == 0 )
-      o() -> trigger_wild_spirits( s );
+    o() -> trigger_wild_spirits( s );
   }
 };
 
@@ -2199,8 +2198,7 @@ struct bloodshed_t : hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::impact( s );
 
-    if ( o() -> covenants.wild_spirits.ok() )
-      o() -> trigger_wild_spirits( s );
+    o() -> trigger_wild_spirits( s );
   }
 };
 
@@ -2218,8 +2216,7 @@ struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attac
   {
     hunter_pet_action_t::impact( s );
 
-    if ( o() -> covenants.wild_spirits.ok() )
-      o() -> trigger_wild_spirits( s );
+    o() -> trigger_wild_spirits( s );
   }
 };
 
@@ -2371,6 +2368,12 @@ struct trick_shots_t : public buff_t
 
 void hunter_t::trigger_wild_spirits( const action_state_t* s )
 {
+  if ( !covenants.wild_spirits.ok() )
+    return;
+
+  if ( s -> chain_target != 0 )
+    return;
+
   if ( !buffs.wild_spirits -> check() )
     return;
 
@@ -2380,7 +2383,7 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
   if ( sim -> debug )
   {
     sim -> print_debug( "{} procs wild_spirits from {} on {}",
-      name(), s -> action -> name(), s -> target -> name() );
+                        name(), s -> action -> name(), s -> target -> name() );
   }
 
   actions.wild_spirits -> set_target( s -> target );
@@ -2881,6 +2884,15 @@ struct barrage_t: public hunter_spell_t
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      // XXX: Wild Spirits kludge
+      if ( s -> chain_target == 0 )
+        triggers_wild_spirits = false;
+    }
   };
 
   barrage_t( hunter_t* p, util::string_view options_str ):
@@ -2898,6 +2910,9 @@ struct barrage_t: public hunter_spell_t
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
+    // XXX: Wild Spirits kludge
+    static_cast<damage_t*>( tick_action ) -> triggers_wild_spirits = true;
+
     hunter_spell_t::schedule_execute( state );
 
     // Delay auto shot, add 500ms to simulate "wind up"
@@ -3468,6 +3483,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
+      triggers_wild_spirits = false;
     }
 
     timespan_t execute_time() const override
@@ -3758,6 +3774,10 @@ struct rapid_fire_t: public hunter_spell_t
     {
       hunter_ranged_attack_t::impact( s );
 
+      // XXX: Wild Spirits kludge
+      if ( s -> chain_target == 0 )
+        triggers_wild_spirits = false;
+
       if ( p() -> buffs.brutal_projectiles -> check() )
       {
         p() -> buffs.brutal_projectiles_hidden -> trigger();
@@ -3828,6 +3848,9 @@ struct rapid_fire_t: public hunter_spell_t
 
   void execute() override
   {
+    // XXX: Wild Spirits kludge
+    damage -> triggers_wild_spirits = true;
+
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
@@ -4635,6 +4658,15 @@ struct a_murder_of_crows_t : public hunter_spell_t
     {
       return timespan_t::from_seconds( data().missile_speed() );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      // XXX: Wild Spirits kludge
+      if ( p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
+    }
   };
 
   a_murder_of_crows_t( hunter_t* p, util::string_view options_str ) :
@@ -4646,6 +4678,14 @@ struct a_murder_of_crows_t : public hunter_spell_t
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
+  }
+
+  void execute() override
+  {
+    // XXX: Wild Spirits kludge
+    static_cast<peck_t*>( tick_action ) -> triggers_wild_spirits = true;
+
+    hunter_spell_t::execute();
   }
 };
 
@@ -4771,6 +4811,7 @@ struct flare_t : hunter_spell_t
     {
       aoe = as<int>( p -> legendary.soulforge_embers -> effectN( 1 ).base_value() );
       radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+      triggers_wild_spirits = false;
     }
   };
 
@@ -5074,6 +5115,15 @@ struct stampede_t: public hunter_spell_t
       aoe = -1;
       background = true;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_spell_t::impact( s );
+
+      // XXX: Wild Spirits kludge
+      if ( s -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
+    }
   };
 
   stampede_t( hunter_t* p, util::string_view options_str ):
@@ -5089,6 +5139,14 @@ struct stampede_t: public hunter_spell_t
     triggers_wild_spirits = false;
 
     tick_action = new damage_t( p );
+  }
+
+  void execute() override
+  {
+    // XXX: Wild Spirits kludge
+    static_cast<damage_t*>( tick_action ) -> triggers_wild_spirits = true;
+
+    hunter_spell_t::execute();
   }
 };
 
@@ -5213,6 +5271,15 @@ struct volley_t : hunter_spell_t
       aoe = -1;
       background = dual = ground_aoe = true;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      // XXX: Wild Spirits kludge
+      if ( s -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
+    }
   };
 
   damage_t* damage;
@@ -5236,6 +5303,9 @@ struct volley_t : hunter_spell_t
 
     p() -> buffs.volley -> trigger();
     p() -> buffs.trick_shots -> trigger( data().duration() );
+
+    // XXX: Wild Spirits kludge
+    damage -> triggers_wild_spirits = true;
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
@@ -5310,6 +5380,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       hunter_spell_t( n, p, p -> find_spell( 336899 ) )
     {
       aoe = -1;
+      triggers_wild_spirits = false;
     }
   };
 
@@ -5418,6 +5489,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         aoe = -1;
+        triggers_wild_spirits = false;
       }
     };
     violent_reaction_t* violent_reaction;
