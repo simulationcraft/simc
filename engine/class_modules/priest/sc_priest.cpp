@@ -990,18 +990,6 @@ void base_fiend_pet_t::init_background_actions()
   shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 }
 
-double base_fiend_pet_t::composite_melee_haste() const
-{
-  double h = pet_t::composite_melee_haste();
-
-  if ( o().conduits.rabid_shadows->ok() )
-  {
-    h *= 1.0 + o().conduits.rabid_shadows.percent();
-  }
-
-  return h;
-}
-
 action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   return priest_pet_t::create_action( name, options_str );

@@ -841,8 +841,6 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  double composite_melee_haste() const override;
-
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
@@ -947,7 +945,15 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( base_execute_time == timespan_t::zero() )
       return timespan_t::zero();
 
-    return base_execute_time * player->cache.spell_speed();
+    // Mindbender inherits haste from the player
+    timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
+
+    if ( p().o().conduits.rabid_shadows->ok() )
+    {
+      hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
+    }
+
+    return hasted_time;
   }
 
   void impact( action_state_t* s ) override
