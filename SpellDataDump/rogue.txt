@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (hotfix 2020-10-16/36206, git build shadowlands 544043755c)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -3607,7 +3607,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.69880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.87350 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.
