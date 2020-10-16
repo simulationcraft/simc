@@ -8103,13 +8103,12 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
 
-  // Lightning shield can be turned on pre-combat
-  precombat->add_action( this, "Lightning Shield" );
-
-  // Imbues
+  // Self-buffs
   precombat->add_action( this, "Windfury Weapon" );
   precombat->add_action( this, "Flametongue Weapon" );
+  precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+  precombat->add_action( this, "Windfury Totem" );
 
   // Precombat potion
   precombat->add_action( "potion" );
@@ -8129,40 +8128,50 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "auto_attack" );
   def->add_action( "windstrike" );
 
-
+  // Heart of Azeroth major essence
+  def->add_action( "heart_essence" );
 
   def->add_action( this, "Feral Spirit" );  
   def->add_action( this, "Earth Elemental" );
-  def->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&&buff.maelstrom_weapon.stack>=5" );
+  def->add_talent( this, "Earthen Spike" );
   def->add_talent( this, "Sundering" );
   def->add_talent( this, "Ascendance" );
-  
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
-
-  single->add_action( this, "Earthen Spike" );
+  single->add_action( this, "Flame Shock", "if=!ticking" );
+  single->add_action( this, "Frost Shock", "if=buff.hailstorm.up" );
+  single->add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5" );
+  single->add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5" );
+  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10" );
+  single->add_action( this, "Lava Lash", "if=buff.hot_hand.up" );
   single->add_action( this, "Stormstrike" );
-  single->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5" );
-  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5" );
-  single->add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up" );
+  single->add_talent( this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5" );
   single->add_action( this, "Lava Lash" );
-  single->add_action( this, "Flame Shock", "target_if=refreshable,if=!ticking" );
   single->add_action( this, "Crash Lightning" );
+  single->add_action( this, "Flame Shock", "target_if=refreshable" );
   single->add_action( this, "Frost Shock" );
+  single->add_talent( this, "Ice Strike" );
+  single->add_talent( this, "Fire Nova", "if=active_dot.flame_shock" );
+  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5" );
+  single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30" );
 
   aoe->add_action( this, "Crash Lightning" );
-  aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5" );
-  aoe->add_action( this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5" );
-  aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.up" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5" );
+  aoe->add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_talent( this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10" );
+  aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled" );
+  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
   aoe->add_action( this, "Stormstrike" );
   aoe->add_action( this, "Lava Lash" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=!buff.hailstorm.up" );
   aoe->add_action( this, "Frost Shock", "if=buff.hailstorm.up");
   aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=!ticking&&!talent.hailstorm.enabled" );
-  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
-  aoe->add_action( this, "Earthen Spike" );
   aoe->add_action( this, "Frost Shock" );
+  aoe->add_talent( this, "Ice Strike" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30" );
 
   // def->add_action( "call_action_list,name=opener" );
 }
