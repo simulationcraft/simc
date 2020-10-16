@@ -1675,6 +1675,7 @@ class SpellDataGenerator(DataGenerator):
           ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
           ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
+          ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
 
           # Conduits

@@ -645,6 +645,7 @@ public:
     const spell_data_t* fallen_monk_soothing_mist;
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
+    const spell_data_t* fallen_monk_tiger_palm;
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
@@ -3091,7 +3092,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
+      : melee_attack_t( "fo_fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
@@ -3143,7 +3144,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
+      : spell_t( "fo_fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3166,7 +3167,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
+      : melee_attack_t( "fo_spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
         owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
@@ -3219,24 +3220,15 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+      : melee_attack_t( "fo_spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
     {
       parse_options( options_str );
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
-      // We only want the monk to cast spinning crane kick 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( p->o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 4 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 6 );
+      // Logs show they cast this every 2.5 seconds, instead of back-to-back
+      cooldown->duration = timespan_t::from_seconds( 2.5 );
       owner                                            = p->o();
-
-      attack_power_mod.direct = attack_power_mod.tick =  0.0;
-      dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
-
-      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
     }
 
     // N full ticks, but never additional ones.
@@ -3251,13 +3243,59 @@ public:
     }
   };
 
+  struct fallen_monk_tiger_palm_t : public melee_attack_t
+  {
+    monk_t* owner;
+    fallen_monk_tiger_palm_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
+      : melee_attack_t( "fo_tiger_palm", p, p->o()->passives.fallen_monk_tiger_palm )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      // We only want the monk to cast spinning crane kick 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( p->o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 4 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 6 );
+      owner = p->o();
+
+      attack_power_mod.direct = attack_power_mod.tick = 0.0;
+      dot_behavior                                    = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+
+      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
     // Only cast Fists of Fury for Windwalker specialization
-    if ( o()->specialization() == MONK_WINDWALKER )
-        action_list_str += "/fists_of_fury";
-    action_list_str += "/spinning_crane_kick";
+//    if ( o()->specialization() == MONK_WINDWALKER )
+//        action_list_str += "/fists_of_fury";
+//    action_list_str += "/spinning_crane_kick";
+    action_list_str += "/tiger_palm";
 
     pet_t::init_action_list();
   }
@@ -3272,6 +3310,9 @@ public:
 
     if ( name == "spinning_crane_kick" )
       return new fallen_monk_spinning_crane_kick_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new fallen_monk_tiger_palm_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -3425,7 +3466,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
+      : melee_attack_t( "fo_keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -3499,7 +3540,7 @@ public:
     {
       monk_t* owner;
       fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
+        : spell_t( "fo_breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
       {
         background    = true;
         tick_may_crit = may_crit = true;
@@ -3537,7 +3578,7 @@ public:
     fallen_monk_breath_of_fire_tick_t* dot_action;
     monk_t* owner;
     fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+      : spell_t( "fo_breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
         dot_action( new fallen_monk_breath_of_fire_tick_t( p ) ),
         owner( p->o() )
     {
@@ -3580,7 +3621,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
+      : spell_t( "fo_clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
     {
       parse_options( options_str );
       gcd_type           = gcd_haste_type::NONE;
@@ -3773,7 +3814,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
+      : heal_t( "fo_enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3809,7 +3850,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
+      : heal_t( "fo_soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -8080,7 +8121,7 @@ struct fallen_order_t : public monk_spell_t
         break;
     }
 
-    for ( int i = 0; i < 10; i++ )
+    for ( int i = 0; i < 7; i++ )
     {
       switch ( spec )
       {
@@ -10072,6 +10113,7 @@ void monk_t::init_spells()
   passives.fallen_monk_soothing_mist            = find_spell( 328283 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
+  passives.fallen_monk_tiger_palm               = find_spell( 346602 );
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );
