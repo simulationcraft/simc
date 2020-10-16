@@ -12220,7 +12220,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
     auto current_tick_dmg                = current_stagger_tick_dmg();
     auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
     sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
-    if ( current_tick_dmg_per_max_health > 0.06 )
+    if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
       niuzao   = 3;
