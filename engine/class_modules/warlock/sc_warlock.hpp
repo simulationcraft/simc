@@ -428,12 +428,13 @@ public:
     propagate_const<buff_t*> active_uas; //TODO: SL Beta - Unstable Affliction behavior has changed in Shadowlands, this is probably outdated and can be removed.
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
+    propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
 
     //TODO: SL Beta - Azerite powers that became talents - do we need to consider edge cases during prepatch involving both?
     // BFA - Affliction Azerite
     propagate_const<buff_t*> cascading_calamity;
-    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> id_azerite;
     propagate_const<buff_t*> wracking_brilliance;
 
     // Demonology Buffs
