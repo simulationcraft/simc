@@ -417,11 +417,13 @@ struct shadow_word_death_t final : public priest_spell_t
 {
   double execute_percent;
   double execute_modifier;
+  double insanity_per_dot;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
       execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() )
+      execute_modifier( data().effectN( 3 ).percent() ),
+      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -440,14 +442,6 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     cooldown->hasted = true;
-
-    if ( priest().legendary.painbreaker_psalm->ok() )
-    {
-      // TODO: Check if this ever gets un-hardcoded for (336165)
-      energize_type     = action_energize::ON_HIT;
-      energize_resource = RESOURCE_INSANITY;
-      energize_amount   = 10;
-    }
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -478,6 +472,28 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      if ( priest().legendary.painbreaker_psalm->ok() )
+      {
+        int dots = 0;
+
+        if ( const priest_td_t* td = priest().find_target_data( target ) )
+        {
+          bool swp_ticking = td->dots.shadow_word_pain->is_ticking();
+          bool vt_ticking  = td->dots.vampiric_touch->is_ticking();
+
+          dots = swp_ticking + vt_ticking;
+        }
+
+        // Right now in-game this is not using the spell data value
+        if ( priest().bugs )
+        { 
+          insanity_per_dot = 5;
+        }
+        double insanity_gain = dots * insanity_per_dot;
+
+        priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
+      }
+
       double save_health_percentage = s->target->health_percentage();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
@@ -1548,23 +1564,6 @@ struct shadow_crash_t final : public priest_spell_t
   {
     // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
     return timespan_t::from_seconds( data().missile_speed() );
-  }
-
-  // Ensuring that we can't cast on a target that is too close
-  bool target_ready( player_t* candidate_target ) override
-  {
-    auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
-    if ( sim->debug )
-    {
-      sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
-                        effective_min_range );
-    }
-    if ( player->get_player_distance( *candidate_target ) < effective_min_range )
-    {
-      return false;
-    }
-
-    return priest_spell_t::target_ready( candidate_target );
   }
 };
 

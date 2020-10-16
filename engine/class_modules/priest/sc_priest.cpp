@@ -995,22 +995,15 @@ void base_fiend_pet_t::init_background_actions()
   shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 }
 
-double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
-{
-  double m = pet_t::composite_player_multiplier( school );
-
-  if ( o().conduits.rabid_shadows->ok() )
-    m *= 1 + o().conduits.rabid_shadows.percent();
-
-  return m;
-}
-
 double base_fiend_pet_t::composite_melee_haste() const
 {
   double h = pet_t::composite_melee_haste();
 
   if ( o().conduits.rabid_shadows->ok() )
-    h *= 1 + o().conduits.rabid_shadows->effectN( 2 ).percent();
+  {
+    h /= 1.0 + o().conduits.rabid_shadows.percent();
+  }
+
   return h;
 }
 
@@ -1279,6 +1272,7 @@ void priest_t::create_gains()
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
   gains.insanity_mind_sear = get_gain( "Insanity Gained from Mind Sear" );
+  gains.painbreaker_psalm  = get_gain( "Insanity Gained from Painbreaker Psalm" );
 }
 
 /** Construct priest procs */

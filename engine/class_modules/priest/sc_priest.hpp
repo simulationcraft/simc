@@ -344,6 +344,7 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> painbreaker_psalm;
   } gains;
 
   // Benefits
@@ -840,7 +841,6 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  double composite_player_multiplier( school_e school ) const override;
   double composite_melee_haste() const override;
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
@@ -898,15 +898,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    // Currently not in beta, but in PTR data
-    if ( o().bugs )
-    {
-      return 5;
-    }
-    else
-    {
-      return power_leech_insanity;
-    }
+    return power_leech_insanity;
   }
 };
 
