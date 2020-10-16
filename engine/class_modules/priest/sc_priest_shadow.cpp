@@ -486,7 +486,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
         // Right now in-game this is not using the spell data value
         if ( priest().bugs )
-        { 
+        {
           insanity_per_dot = 5;
         }
         double insanity_gain = dots * insanity_per_dot;
@@ -829,14 +829,9 @@ struct shadow_word_pain_t final : public priest_spell_t
 // ==========================================================================
 struct unfurling_darkness_t final : public priest_spell_t
 {
-  double vampiric_touch_sp;
-
-  unfurling_darkness_t( priest_t& p )
-    : priest_spell_t( "unfurling_darkness", p, p.find_talent_spell( "Unfurling Darkness" ) ),
-      vampiric_touch_sp( p.find_spell( 34914 )->effectN( 4 ).sp_coeff() )
+  unfurling_darkness_t( priest_t& p ) : priest_spell_t( "unfurling_darkness", p, p.find_spell( 34914 ) )
   {
     background                 = true;
-    spell_power_mod.direct     = vampiric_touch_sp;
     affected_by_shadow_weaving = true;
   }
 };
@@ -860,6 +855,9 @@ struct vampiric_touch_t final : public priest_spell_t
     casted                     = _casted;
     may_crit                   = false;
     affected_by_shadow_weaving = true;
+
+    // Disable initial hit damage
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0;
 
     if ( priest().talents.misery->ok() && casted )
     {
@@ -909,6 +907,7 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       child_ud->target = s->target;
       child_ud->execute();
+      add_child( child_ud );
       priest().buffs.unfurling_darkness->expire();
     }
     else
