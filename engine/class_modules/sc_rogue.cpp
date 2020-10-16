@@ -9129,6 +9129,13 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.6988 )
       .verification_value( 0.8735 );
+
+    // Manual hotfix for Bloodfang AP typo.
+    hotfix::register_effect( "Rogue", "2020-10-15", "Bloodfang AP Fix", 840280 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.095 )
+      .verification_value( 0.95 );
   }
 
   void init( player_t* ) const override {}
