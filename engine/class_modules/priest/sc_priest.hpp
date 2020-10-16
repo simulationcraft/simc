@@ -1320,11 +1320,13 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  bool ignores_automatic_mastery;
   unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
       mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
@@ -1406,7 +1408,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       // Guarding against Unfurling Darkness, it does not get the mastery benefit
       unsigned int spell_id = id;
-      if ( energize_type == action_energize::NONE && background == true )
+      if ( ignores_automatic_mastery )
       {
         sim->print_debug( "{} {} cast does not benefit from Mastery automatically.", *player, name_str );
         spell_id = 1;

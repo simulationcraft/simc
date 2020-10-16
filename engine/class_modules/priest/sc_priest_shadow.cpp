@@ -837,6 +837,8 @@ struct unfurling_darkness_t final : public priest_spell_t
     energize_amount            = 0;
     energize_resource          = RESOURCE_NONE;
 
+    ignores_automatic_mastery = 1;
+
     // Since we are re-using the Vampiric Touch spell disable the DoT
     dot_duration       = timespan_t::from_seconds( 0 );
     base_td_multiplier = spell_power_mod.tick = 0;
@@ -901,12 +903,6 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     trigger_heal( s );
 
-    if ( child_swp )
-    {
-      child_swp->target = s->target;
-      child_swp->execute();
-    }
-
     if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
@@ -921,6 +917,13 @@ struct vampiric_touch_t final : public priest_spell_t
         // The CD Starts as soon as the buff is applied
         priest().buffs.unfurling_darkness_cd->trigger();
       }
+    }
+
+    // Trigger SW:P after UD since it does not benefit from the automatic Mastery benefit
+    if ( child_swp )
+    {
+      child_swp->target = s->target;
+      child_swp->execute();
     }
 
     priest_spell_t::impact( s );
