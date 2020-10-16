@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "player/covenant.hpp"
 #include "util/util.hpp"
-#include "class_modules/mage/mage_apl.hpp"
+#include "class_modules/apl/mage.hpp"
 
 namespace {
 

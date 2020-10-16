@@ -14,8 +14,8 @@ action/spell.hpp
 action/spell_base.hpp
 action/variable.hpp
 buff/sc_buff.hpp
+class_modules/apl/mage.hpp
 class_modules/class_module.hpp
-class_modules/mage/mage_apl.hpp
 class_modules/paladin/sc_paladin.hpp
 class_modules/priest/sc_priest.hpp
 class_modules/warlock/sc_warlock.hpp
@@ -185,7 +185,7 @@ action/sequence.cpp
 action/snapshot_stats.cpp
 action/variable.cpp
 buff/sc_buff.cpp
-class_modules/mage/mage_apl.cpp
+class_modules/apl/mage.cpp
 class_modules/paladin/sc_paladin.cpp
 class_modules/paladin/sc_paladin_holy.cpp
 class_modules/paladin/sc_paladin_protection.cpp

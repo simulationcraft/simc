@@ -1,5 +1,5 @@
 #include "simulationcraft.hpp"
-#include "class_modules/mage/mage_apl.hpp"
+#include "class_modules/apl/mage.hpp"
 
 namespace mage_apl {
 

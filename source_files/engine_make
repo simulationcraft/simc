@@ -17,7 +17,7 @@ SRC += \
     action$(PATHSEP)snapshot_stats.cpp \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)sc_buff.cpp \
-    class_modules$(PATHSEP)mage$(PATHSEP)mage_apl.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_holy.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_protection.cpp \
