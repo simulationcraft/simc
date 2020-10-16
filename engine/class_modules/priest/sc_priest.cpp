@@ -715,11 +715,6 @@ struct summon_shadowfiend_t final : public summon_pet_t
     harmful            = false;
     summoning_duration = data().duration();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
-
-    if ( priest().bugs )
-    {
-      summoning_duration = timespan_t::from_seconds( 15 );
-    }
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
