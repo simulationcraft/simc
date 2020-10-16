@@ -836,8 +836,7 @@ struct unfurling_darkness_t final : public priest_spell_t
     energize_type              = action_energize::NONE;  // no insanity gain
     energize_amount            = 0;
     energize_resource          = RESOURCE_NONE;
-
-    ignores_automatic_mastery = 1;
+    ignores_automatic_mastery  = 1;
 
     // Since we are re-using the Vampiric Touch spell disable the DoT
     dot_duration       = timespan_t::from_seconds( 0 );
