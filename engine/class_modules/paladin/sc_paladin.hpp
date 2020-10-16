@@ -172,6 +172,8 @@ public:
     buff_t* shield_of_the_righteous;
     buff_t* moment_of_glory;
     buff_t* shielding_words;
+    buff_t* shining_light_stacks;
+    buff_t* shining_light_free;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -1076,9 +1078,11 @@ struct holy_power_consumer_t : public Base
   public:
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
+  bool is_vanq_hammer;
   holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
-    is_divine_storm ( false )
+    is_divine_storm ( false ),
+    is_vanq_hammer ( false )
   { }
 
   double cost() const override
@@ -1091,7 +1095,7 @@ struct holy_power_consumer_t : public Base
     }
 
     if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
-         ab::p() -> buffs.divine_purpose -> check() )
+         ( ab::p() -> buffs.divine_purpose -> check() && !is_vanq_hammer ) )
     {
       return 0.0;
     }
@@ -1119,24 +1123,28 @@ struct holy_power_consumer_t : public Base
       return;
 
     // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
-    if ( p -> buffs.crusade -> check() )
-    {
-      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-      if ( p -> bugs && is_divine_storm && ( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
-      {
-        num_stacks = 0;
-      }
-      else
-      {
-        p -> buffs.crusade -> trigger( num_stacks );
-      }
-    }
+    int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
 
     if ( p -> azerite.relentless_inquisitor.ok() )
-    {
-      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-
       p -> buffs.relentless_inquisitor -> trigger( num_stacks );
+
+    if ( p -> buffs.crusade -> check() )
+    {
+      if ( p -> bugs && is_divine_storm && ( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
+        ;
+      else
+        p -> buffs.crusade -> trigger( num_stacks );
+    }
+
+    if ( p -> talents.righteous_protector -> ok() )
+    {
+      timespan_t reduction = timespan_t::from_seconds(
+        // Why do I need to divide this by 10? Just give me sec or milli, what is this??
+         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value()
+         * num_stacks / 10
+       );
+      p -> cooldowns.avenging_wrath -> adjust( reduction );
+      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
@@ -1173,7 +1181,7 @@ struct holy_power_consumer_t : public Base
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( should_continue && p -> buffs.divine_purpose -> up() )
+      if ( p -> buffs.divine_purpose -> up() && !is_vanq_hammer )
       {
         p -> buffs.divine_purpose -> expire();
       }
@@ -1186,7 +1194,12 @@ struct holy_power_consumer_t : public Base
 
     // Roll for Divine Purpose
     if ( p -> talents.divine_purpose -> ok() &&
-         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() ) )
+         this -> rng().roll(
+           // Vanq hammer has a 5% proc chance in testing 2020-10-16
+           p -> talents.divine_purpose -> effectN( 1 ).percent() *
+           ( is_vanq_hammer ? 1/3 : 1.0 )
+         )
+      )
     {
       p -> buffs.divine_purpose -> trigger();
       p -> procs.divine_purpose -> occur();
@@ -1207,16 +1220,6 @@ struct holy_power_consumer_t : public Base
         st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
         st -> execute();
       }
-    }
-    //Righteous Protector
-    if ( p -> talents.righteous_protector -> ok() ){
-      timespan_t reduction = timespan_t::from_seconds(
-        // Why do I need to divide this by 10? Just give me sec or milli, what is this??
-         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value()
-         * ab::base_costs[ RESOURCE_HOLY_POWER ] / 10
-       );
-      p -> cooldowns.avenging_wrath -> adjust( reduction );
-      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
   }
 

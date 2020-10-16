@@ -436,12 +436,27 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
   void execute() override
   {
+    // Divine purpose is expired in parent execute, so catch it before then:
+    bool dp_up = p() -> buffs.divine_purpose -> up();
     holy_power_consumer_t::execute();
+
+    // Divine purpose is consumed before shining light.
+    if ( p() -> buffs.shining_light_free -> up() && ! dp_up )
+      p() -> buffs.shining_light_free -> expire();
+
     if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
     {
       p() -> buffs.vanquishers_hammer -> expire();
       p() -> active.necrolord_shield_of_the_righteous -> execute();
     }
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+    if ( p() -> buffs.shining_light_free -> up() )
+      c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
+    return c;
   }
 };
 
@@ -520,6 +535,20 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> buffs.ardent_defender -> extend_duration( p(),
         p() -> conduit.resolute_defender.percent() * p() -> buffs.ardent_defender -> buff_duration()
       );
+    }
+
+    if ( !background )
+    {
+      if ( p() -> buffs.shining_light_free -> up() )
+        p() -> buffs.shining_light_free -> trigger();
+      else if ( !p() -> buffs.shining_light_stacks -> up() )
+        p() -> buffs.shining_light_stacks -> trigger();
+      else if ( p() -> buffs.shining_light_stacks -> at_max_stacks() ) {
+        p() -> buffs.shining_light_stacks -> expire();
+        p() -> buffs.shining_light_free -> trigger();
+      }
+      else
+        p() -> buffs.shining_light_stacks -> trigger();
     }
 
   }
@@ -791,6 +820,8 @@ void paladin_t::create_buffs_protection()
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
   buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
         -> set_absorb_source( get_stats( "shielding_words" ) );
+  buffs.shining_light_stacks = make_buff( this, "shining_light", find_spell( 182104 ) );
+  buffs.shining_light_free = make_buff( this, "shining_light", find_spell( 327510 ) );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )

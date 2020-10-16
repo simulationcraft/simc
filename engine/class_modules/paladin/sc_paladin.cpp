@@ -917,7 +917,7 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
     parse_options( options_str );
 
     hasted_gcd = true; // also not in spelldata for some reason?
-
+    is_vanq_hammer = true;
     base_multiplier *= 1.0 + p -> conduit.righteous_might.percent(); // todo: implement heal
   }
 
