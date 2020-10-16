@@ -1145,11 +1145,12 @@ struct holy_power_consumer_t : public Base
     // Free sotr from vanq does not proc RP 2020-09-10
     if ( p -> talents.righteous_protector -> ok() && !ab::background )
     {
-      timespan_t reduction = timespan_t::from_seconds(
-        // Why do I need to divide this by 10? Just give me sec or milli, what is this??
-         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value()
-         * num_stacks / 10
-       );
+      // Why is this in deciseconds?
+      timespan_t reduction = -100_ms * p -> talents.righteous_protector -> effectN( 1 ).base_value();
+      if ( p -> buffs.divine_purpose -> up() )
+        reduction *= ab::base_costs[ RESOURCE_HOLY_POWER ];
+      else
+        reduction *= num_stacks;
       p -> cooldowns.avenging_wrath -> adjust( reduction );
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
