@@ -3338,6 +3338,22 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   };
 
   struct {
+    /* This is required *only* for Double Tap
+     * In-game the second Aimed Shot is performed with a slight delay, which means it can get
+     * affected by stuff happening after the main AiS cast.
+     * This is typically not a problem, but it has a tricky interaction with Trick Shots:
+     *  - if you do DT -> AiS -> MS the second AiS from DT will be affected by Trick Shots
+     *    from MS and will cleave
+     *  - if you do MS -> DT -> AiS the second AiS from DT will *also* cleave even though Trick
+     *    Shots is consumed by the main AiS
+     * This flag is the way to handle that for Double Tap Aimed Shots: we save Tricks Shots
+     * state to it during the main AiS cast and then check it along with Trick Shots on execute.
+     * It should be always false for the "main" Aimed Shot.
+     */
+    bool up = false;
+    int target_count = 0;
+  } trick_shots;
+  struct {
     double multiplier = 0;
     double high, low;
   } careful_aim;
@@ -3345,15 +3361,15 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t* action = nullptr;
     int target_count = 0;
   } serpentstalkers_trickery;
-  const int trick_shots_targets;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
-    hunter_ranged_attack_t( name, p, p -> specs.aimed_shot ),
-    trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
+    hunter_ranged_attack_t( name, p, p -> specs.aimed_shot )
   {
     radius = 8;
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent() +
                           p -> conduits.deadly_chain.percent();
+
+    trick_shots.target_count = 1 + static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() );
 
     if ( p -> talents.careful_aim.ok() )
     {
@@ -3373,11 +3389,16 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     }
   }
 
+  bool trick_shots_up() const
+  {
+    return trick_shots.up || p() -> buffs.trick_shots -> check();
+  }
+
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> buffs.trick_shots -> check() && serpentstalkers_trickery.action )
+    if ( trick_shots_up() && serpentstalkers_trickery.action )
     {
       const auto& targets = target_list();
       const int target_count = std::min( serpentstalkers_trickery.target_count, as<int>( targets.size() ) );
@@ -3398,8 +3419,8 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
   int n_targets() const override
   {
-    if ( p() -> buffs.trick_shots -> check() )
-      return trick_shots_targets + 1;
+    if ( trick_shots_up() )
+      return trick_shots.target_count;
     return hunter_ranged_attack_t::n_targets();
   }
 
@@ -3447,6 +3468,18 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+
+    timespan_t execute_time() const override
+    {
+      return rng().gauss( 125_ms, 25_ms );
+    }
+
+    void schedule_execute( action_state_t* s = nullptr ) override
+    {
+      trick_shots.up = p() -> buffs.trick_shots -> check();
+
+      aimed_shot_base_t::schedule_execute( s );
     }
   };
 
@@ -3516,7 +3549,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( double_tap.action && p() -> buffs.double_tap -> check() )
     {
       double_tap.action -> set_target( target );
-      double_tap.action -> execute();
+      double_tap.action -> schedule_execute();
       p() -> buffs.double_tap -> decrement();
       double_tap.proc -> occur();
     }
