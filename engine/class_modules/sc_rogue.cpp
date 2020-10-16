@@ -322,7 +322,7 @@ public:
     buff_t* guile_charm_insight_3;
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
-    buff_t* the_rotten;
+    damage_buff_t* the_rotten;
 
     // Covenant
     buff_t* echoing_reprimand_2;
@@ -385,6 +385,7 @@ public:
     gain_t* venomous_wounds_death;
     gain_t* relentless_strikes;
     gain_t* symbols_of_death;
+    gain_t* slice_and_dice;
 
     // CP Gains
     gain_t* seal_fate;
@@ -633,7 +634,7 @@ public:
     // Generic
     item_runeforge_t essence_of_bloodfang;
     item_runeforge_t master_assassins_mark;
-    item_runeforge_t tiny_toxic_blades;       // NYI
+    item_runeforge_t tiny_toxic_blade;
     item_runeforge_t invigorating_shadowdust;
 
     // Assassination
@@ -1058,6 +1059,7 @@ public:
     ab::apply_affecting_aura( p->talent.deeper_stratagem );
     ab::apply_affecting_aura( p->talent.master_poisoner );
     ab::apply_affecting_aura( p->talent.dancing_steel );
+    ab::apply_affecting_aura( p->legendary.tiny_toxic_blade );
 
     // Affecting Passive Conduits
     ab::apply_affecting_conduit( p->conduit.lethal_poisons );
@@ -1129,6 +1131,7 @@ public:
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
+    register_damage_buff( p()->buffs.the_rotten );
 
     if ( p()->talent.nightstalker->ok() )
     {
@@ -2358,7 +2361,8 @@ struct backstab_t : public rogue_attack_t
 
     if ( p()->buffs.the_rotten->up() )
     {
-      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
+      p()->buffs.the_rotten->expire();
     }
 
     p()->buffs.perforated_veins->expire();
@@ -3092,7 +3096,8 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( p()->buffs.the_rotten->up() )
     {
-      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
+      p()->buffs.the_rotten->expire();
     }
 
     p()->buffs.perforated_veins->expire();
@@ -3940,7 +3945,8 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->buffs.the_rotten->up() )
     {
-      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 1 ).base_value() ), p()->gains.the_rotten );
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
+      p()->buffs.the_rotten->expire();
     }
   }
 
@@ -7038,6 +7044,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade.equipped" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
     build->add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
@@ -7138,6 +7145,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
+    stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped" );
     stealthed->add_action( this, "Shadowstrike", "if=level<52&debuff.find_weakness.remains<1&target.time_to_die-remains>6", "For pre-patch, keep Find Weakness up on the primary target due to no Shadow Vault" );
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
@@ -7162,6 +7170,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped" );
     build->add_action( this, "Shuriken Storm", "if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)" );
     build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.charges_fractional>=2.75" );
     build->add_talent( this, "Gloomblade" );
@@ -7876,7 +7885,7 @@ void rogue_t::init_spells()
   // Generic
   legendary.essence_of_bloodfang      = find_runeforge_legendary( "Essence of Bloodfang" );
   legendary.master_assassins_mark     = find_runeforge_legendary( "Mark of the Master Assassin" );
-  legendary.tiny_toxic_blades         = find_runeforge_legendary( "Tiny Toxic Blades" );
+  legendary.tiny_toxic_blade          = find_runeforge_legendary( "Tiny Toxic Blade" );
   legendary.invigorating_shadowdust   = find_runeforge_legendary( "Invigorating Shadowdust" );
 
   // Assassination
@@ -7967,36 +7976,37 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush          = get_gain( "Adrenaline Rush"          );
-  gains.adrenaline_rush_expiry   = get_gain( "Adrenaline Rush (Expiry)" );
-  gains.blade_rush               = get_gain( "Blade Rush"               );
-  gains.buried_treasure          = get_gain( "Buried Treasure"          );
-  gains.combat_potency           = get_gain( "Combat Potency"           );
-  gains.energy_refund            = get_gain( "Energy Refund"            );
-  gains.seal_fate                = get_gain( "Seal Fate"                );
-  gains.vendetta                 = get_gain( "Vendetta"                 );
-  gains.venom_rush               = get_gain( "Venom Rush"               );
-  gains.venomous_wounds          = get_gain( "Venomous Vim"             );
-  gains.venomous_wounds_death    = get_gain( "Venomous Vim (Death)"     );
-  gains.quick_draw               = get_gain( "Quick Draw"               );
-  gains.broadside                = get_gain( "Broadside"                );
-  gains.ruthlessness             = get_gain( "Ruthlessness"             );
-  gains.shadow_techniques        = get_gain( "Shadow Techniques"        );
-  gains.master_of_shadows        = get_gain( "Master of Shadows"        );
-  gains.shadow_blades            = get_gain( "Shadow Blades"            );
-  gains.relentless_strikes       = get_gain( "Relentless Strikes"       );
-  gains.symbols_of_death         = get_gain( "Symbols of Death"         );
-  gains.ace_up_your_sleeve       = get_gain( "Ace Up Your Sleeve"       );
-  gains.shrouded_suffocation     = get_gain( "Shrouded Suffocation"     );
-  gains.the_first_dance          = get_gain( "The First Dance"          );
-  gains.nothing_personal         = get_gain( "Nothing Personal"         );
-  gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
-  gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
-  gains.the_rotten               = get_gain( "The Rotten"               );
-  gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
-  gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike (DoT)");
-  gains.dreadblades              = get_gain( "Dreadblades"              );
-  gains.premeditation            = get_gain( "Premeditation"            );
+  gains.ace_up_your_sleeve        = get_gain( "Ace Up Your Sleeve" );
+  gains.adrenaline_rush           = get_gain( "Adrenaline Rush" );
+  gains.adrenaline_rush_expiry    = get_gain( "Adrenaline Rush (Expiry)" );
+  gains.blade_rush                = get_gain( "Blade Rush" );
+  gains.broadside                 = get_gain( "Broadside" );
+  gains.buried_treasure           = get_gain( "Buried Treasure" );
+  gains.combat_potency            = get_gain( "Combat Potency" );
+  gains.dashing_scoundrel         = get_gain( "Dashing Scoundrel" );
+  gains.deathly_shadows           = get_gain( "Deathly Shadows" );
+  gains.dreadblades               = get_gain( "Dreadblades" );
+  gains.energy_refund             = get_gain( "Energy Refund" );
+  gains.master_of_shadows         = get_gain( "Master of Shadows" );
+  gains.memory_of_lucid_dreams    = get_gain( "Memory of Lucid Dreams" );
+  gains.nothing_personal          = get_gain( "Nothing Personal" );
+  gains.premeditation             = get_gain( "Premeditation" );
+  gains.quick_draw                = get_gain( "Quick Draw" );
+  gains.relentless_strikes        = get_gain( "Relentless Strikes" );
+  gains.ruthlessness              = get_gain( "Ruthlessness" );
+  gains.seal_fate                 = get_gain( "Seal Fate" );
+  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike (DoT)" );
+  gains.shadow_blades             = get_gain( "Shadow Blades" );
+  gains.shadow_techniques         = get_gain( "Shadow Techniques" );
+  gains.shrouded_suffocation      = get_gain( "Shrouded Suffocation" );
+  gains.slice_and_dice            = get_gain( "Slice and Dice" );
+  gains.symbols_of_death          = get_gain( "Symbols of Death" );
+  gains.the_first_dance           = get_gain( "The First Dance" );
+  gains.the_rotten                = get_gain( "The Rotten" );
+  gains.vendetta                  = get_gain( "Vendetta" );
+  gains.venom_rush                = get_gain( "Venom Rush" );
+  gains.venomous_wounds           = get_gain( "Venomous Vim" );
+  gains.venomous_wounds_death     = get_gain( "Venomous Vim (Death)" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8112,7 +8122,6 @@ void rogue_t::create_buffs()
   // TODO: Possibly refactor into buffs::slice_and_dice_t
   buffs.slice_and_dice = make_buff( this, "slice_and_dice", spell.slice_and_dice )
     ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-    ->apply_affecting_aura( spec.slice_and_dice_2 )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->add_invalidate( CACHE_ATTACK_SPEED );
   
@@ -8324,7 +8333,7 @@ void rogue_t::create_buffs()
   // Covenants ==============================================================
 
   buffs.flagellation = make_buff( this, "flagellation_buff", covenant.flagellation_buff )
-    ->set_default_value_from_effect( 2, 0.001 )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->add_invalidate( CACHE_HASTE );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
@@ -8373,7 +8382,8 @@ void rogue_t::create_buffs()
         buffs.master_assassins_mark->expire();
     } );
 
-  buffs.the_rotten = make_buff( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
+  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
+  buffs.the_rotten->set_default_value_from_effect( 1 ); // Combo Point Gain
 
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
@@ -8950,18 +8960,24 @@ void rogue_t::regen( timespan_t periodicity )
   // IMPORTANT NOTE: If anything is updated/added here, rogue_t::create_resource_expression() needs to be updated as well to reflect this
   if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
   {
-    if ( buffs.adrenaline_rush -> up() )
+    if ( buffs.adrenaline_rush->up() )
     {
-      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush->data().effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
 
+    if ( buffs.slice_and_dice->up() && spec.slice_and_dice_2->ok() )
+    {
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * spec.slice_and_dice_2->effectN(1).percent();
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.slice_and_dice );
+    }
+
     // Additional energy gains
-    if ( buffs.nothing_personal -> up() )
+    if ( buffs.nothing_personal->up() )
       resource_gain( RESOURCE_ENERGY, buffs.nothing_personal -> check_value() * periodicity.total_seconds(), gains.nothing_personal );
-    if ( buffs.buried_treasure -> up() )
+    if ( buffs.buried_treasure->up() )
       resource_gain( RESOURCE_ENERGY, buffs.buried_treasure -> check_value() * periodicity.total_seconds(), gains.buried_treasure );
-    if ( buffs.vendetta -> up() )
+    if ( buffs.vendetta->up() )
       resource_gain( RESOURCE_ENERGY, buffs.vendetta -> check_value() * periodicity.total_seconds(), gains.vendetta );
   }
 }
