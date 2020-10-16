@@ -996,7 +996,7 @@ double base_fiend_pet_t::composite_melee_haste() const
 
   if ( o().conduits.rabid_shadows->ok() )
   {
-    h /= 1.0 + o().conduits.rabid_shadows.percent();
+    h *= 1.0 + o().conduits.rabid_shadows.percent();
   }
 
   return h;
