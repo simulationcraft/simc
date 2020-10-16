@@ -1131,6 +1131,11 @@ void warlock_t::vision_of_perfection_proc_destro()
     buffs.crashing_chaos->expire();
     buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
   }
+
+  if ( talents.rain_of_chaos->ok() )
+  {
+      buffs.rain_of_chaos->extend_duration_or_trigger( summon_duration );
+  }
 }
 
 void warlock_t::init_spells_destruction()

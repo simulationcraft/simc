@@ -2106,6 +2106,11 @@ public:
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
+    if ( name == "fire_spirit" )
+      npc_id = 69791;
+    else if ( name == "earth_spirit" )
+      npc_id = 69792;
+
     owner_coeff.ap_from_ap = 1.0;
   }
 
@@ -2349,6 +2354,7 @@ private:
 public:
   xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2496,6 +2502,7 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2659,6 +2666,7 @@ public:
 
   niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
+    npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2785,6 +2793,7 @@ private:
 public:
   chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
+    npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2836,6 +2845,7 @@ private:
 public:
   yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
+    npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3008,6 +3018,7 @@ public:
   fallen_monk_ww_pet_t( monk_t* owner ) : 
       pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
+    npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3369,6 +3380,7 @@ public:
   fallen_monk_brm_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3710,6 +3722,7 @@ public:
   fallen_monk_mw_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -6243,10 +6256,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    // Bug: Fist of the White Tiger is incorrectly giving Emperor's Capacitor stacks
-    if ( p()->bugs && p()->legendary.last_emperors_capacitor->ok() )
-      p()->buff.the_emperors_capacitor->trigger();
-
     // Apply Mark of the Crane
     if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
@@ -7212,12 +7221,10 @@ struct fortifying_brew_t : public monk_spell_t
     harmful = may_crit = false;
 
     if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration +=
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_mw->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
 
     if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += 
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -8049,11 +8056,10 @@ struct fallen_order_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    specialization_e spec      = p()->specialization();
-    // Tooltips are currently incorrect and hard coding the duration for each
-    timespan_t summon_duration = timespan_t::from_seconds( 8 /*p()->covenant.venthyr->effectN( 4 ).base_value() */ );
+    specialization_e spec       = p()->specialization();
+    timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( 4/*p()->covenant.venthyr->effectN( 3 ).base_value()*/ );
+        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
@@ -8114,7 +8120,7 @@ struct fallen_order_t : public monk_spell_t
     }
 
     make_event<fallen_order_event_t>(
-        *sim, p(), fallen_monks, timespan_t::from_seconds( p()->covenant.venthyr->effectN( 2 ).base_value() * 2 ) );
+        *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells
@@ -8566,13 +8572,17 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->azerite.conflict_and_strife.is_major() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 2 ).base_value(), p()->gain.expel_harm );
-    }
-    else if ( p()->spec.expel_harm_2_ww->ok() )
-    {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
+      double chi_gain = 0;
+      if ( p()->azerite.conflict_and_strife.is_major() )
+        chi_gain += p()->spec.reverse_harm->effectN( 2 ).base_value();
+
+      if ( p()->spec.expel_harm_2_ww->ok() )
+        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
+
+      if (chi_gain > 0 )
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
     }
   }
 
@@ -12372,7 +12382,7 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.mistweaver_monk );
 
   if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
-      main_hand_weapon.group() == weapon_e::WEAPON_2H )
+      main_hand_weapon.group() == weapon_e::WEAPON_1H )
         action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )

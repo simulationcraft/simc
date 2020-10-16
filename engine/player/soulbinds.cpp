@@ -269,13 +269,11 @@ void field_of_blossoms( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "field_of_blossoms" );
   if ( !buff )
   {
-    // The ICD of 60 seconds is enabled for some classes in the description of Field of Blossoms (id=319191)
-    bool icd_enabled = extra_desc_text_for_class( effect );
-
-    effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: icd_enabled={}", icd_enabled );
+    double duration_mod = class_value_from_desc_vars( effect, "mod" );
+    effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: duration_mod={}", duration_mod );
 
     buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
-      ->set_cooldown( icd_enabled ? effect.player->find_spell( 342781 )->duration() : 0_ms )
+      ->set_duration_multiplier( duration_mod )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -562,7 +560,7 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur =
+      ext_dur = duration_mod *
           timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories

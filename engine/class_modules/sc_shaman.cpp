@@ -452,6 +452,7 @@ public:
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
+    cooldown_t* lava_lash;
     cooldown_t* crash_lightning;
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
@@ -664,6 +665,7 @@ public:
   // Misc Spells
   struct
   {
+    const spell_data_t* crashing_storm;
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* feral_spirit;
@@ -720,6 +722,7 @@ public:
     cooldown.storm_elemental = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits   = get_cooldown( "feral_spirit" );
     cooldown.lava_burst      = get_cooldown( "lava_burst" );
+    cooldown.lava_lash       = get_cooldown( "lava_lash" );
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
     cooldown.shock           = get_cooldown( "shock" );
@@ -974,8 +977,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              ->set_cooldown( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
                              ->set_default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
-  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames )
-                              ->set_cooldown( timespan_t::zero() );  // Handled by the action
+  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames->effectN( 1 ).trigger() )
+                              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
 }
 
 // ==========================================================================
@@ -1379,7 +1382,7 @@ public:
 
     if ( may_proc_hot_hand )
     {
-      may_proc_hot_hand = ab::weapon != nullptr;
+      may_proc_hot_hand = ab::weapon != nullptr && !special;
     }
 
     if ( may_proc_maelstrom_weapon )
@@ -1608,12 +1611,6 @@ public:
   {
     base_t::execute();
 
-    if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
-    {
-      p()->recent_target = execute_state->target;
-      p()->buff.earthen_rage->trigger();
-    }
-
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements && !background )
     {
@@ -1630,8 +1627,19 @@ public:
       }
     }
 
-    p()->trigger_vesper_totem( execute_state );
-    trigger_echoing_shock( execute_state->target );
+    // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
+    // specific target (from execute state)
+    if ( execute_state && hit_any_target )
+    {
+      if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
+      {
+        p()->recent_target = execute_state->target;
+        p()->buff.earthen_rage->trigger();
+      }
+
+      p()->trigger_vesper_totem( execute_state );
+      trigger_echoing_shock( execute_state->target );
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -2628,7 +2636,7 @@ struct windfury_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_aoe", p, p->find_spell( 195592 ) )
+  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_proc", p, p->find_spell( 195592 ) )
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
@@ -2648,41 +2656,11 @@ struct crash_lightning_attack_t : public shaman_attack_t
 
 struct crashing_storm_damage_t : public shaman_spell_t
 {
-  crashing_storm_damage_t( shaman_t* player ) : shaman_spell_t( "crashing_storm", player, player->find_spell( 210801 ) )
+  crashing_storm_damage_t( shaman_t* player ) :
+    shaman_spell_t( "crashing_storm", player, player->find_spell( 210801 ) )
   {
     aoe        = -1;
     ground_aoe = background = true;
-    school                  = SCHOOL_NATURE;
-    // attack_power_mod.direct = 0.125;  // still cool to hardcode the SP% into tooltip
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-  }
-};
-
-struct crashing_storm_t : public shaman_spell_t
-{
-  crashing_storm_damage_t* zap;
-
-  crashing_storm_t( shaman_t* player )
-    : shaman_spell_t( "crashing_storm", player, player->find_spell( 192246 ) ),
-      zap( new crashing_storm_damage_t( player ) )
-  {
-    background   = true;
-    dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-    add_child( zap );
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        ground_aoe_params_t().target( execute_state->target ).duration( timespan_t::from_seconds( 6 ) ).action( zap ),
-        true );  // No duration in spell data rn, cool.
   }
 };
 
@@ -3102,14 +3080,16 @@ struct lava_lash_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
-  double cost() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
+    double m = shaman_attack_t::recharge_multiplier( cd );
+
     if ( p()->buff.hot_hand->check() )
     {
-      return 0;
+      m /= 1.0 + p()->buff.hot_hand->stack_value();
     }
 
-    return shaman_attack_t::cost();
+    return m;
   }
 
   double action_multiplier() const override
@@ -3433,16 +3413,31 @@ struct crash_lightning_t : public shaman_attack_t
     reduced_aoe_damage = true;
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
+  }
 
-    if ( player->action.crashing_storm )
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    if ( p()->action.crashing_storm )
     {
-      add_child( player->action.crashing_storm );
+      add_child( p()->action.crashing_storm );
     }
 
-    if ( player->action.crash_lightning_aoe )
+    if ( p()->action.crash_lightning_aoe )
     {
-      add_child( player->action.crash_lightning_aoe );
+      add_child( p()->action.crash_lightning_aoe );
     }
+  }
+
+  // Crash Lightning does sqrt( num targets ) damage to each target
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_attack_t::composite_aoe_multiplier( state );
+
+    m *= std::sqrt( state->n_targets ) / as<double>( state->n_targets );
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -3460,21 +3455,12 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->talent.crashing_storm->ok() )
     {
-      // p()->action.crashing_storm->schedule_execute();
-
-      /*make_event<ground_aoe_event_t>( *sim, p(),
-                                      ground_aoe_params_t()
-                                          .target( execute_state->target )
-                                          .duration( p()->find_spell( 205532 )->duration() )
-                                          .action( p()->action.crashing_storm ),
-                                      true );*/
-
       make_event<ground_aoe_event_t>( *sim, p(),
-                                      ground_aoe_params_t()
-                                          .target( execute_state->target )
-                                          .duration( timespan_t::from_seconds( 6 ) )
-                                          .action( p()->action.crashing_storm ),
-                                      true );
+          ground_aoe_params_t()
+            .target( execute_state->target )
+            .duration( p()->spell.crashing_storm->duration() )
+            .action( p()->action.crashing_storm ),
+          true );
     }
 
     if ( result_is_hit( execute_state->result ) )
@@ -4299,20 +4285,10 @@ struct flame_shock_spreader_t : public shaman_spell_t
 
 struct fire_nova_explosion_t : public shaman_spell_t
 {
-  fire_nova_explosion_t( shaman_t* p ) : shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
+  fire_nova_explosion_t( shaman_t* p ) :
+    shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
   {
-    aoe        = 6;
     background = true;
-  }
-
-  void init()
-  {
-    shaman_spell_t::init();
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
   }
 };
 
@@ -4325,47 +4301,19 @@ struct fire_nova_t : public shaman_spell_t
     aoe                             = -1;
 
     impact_action = new fire_nova_explosion_t( p );
+
+    p->flame_shock_dependants.push_back( this );
+
+    add_child( impact_action );
   }
 
-  // Override assess_damage, as fire_nova_explosion is going to do all the
-  // damage for us.
-  void assess_damage( result_amount_type type, action_state_t* s )
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    if ( s->result_amount > 0 )
-      shaman_spell_t::assess_damage( type, s );
-  }
+    shaman_spell_t::available_targets( tl );
 
-  bool ready()
-  {
-    if ( !td( target )->dot.flame_shock->is_ticking() )
-      return false;
+    p()->regenerate_flame_shock_dependent_target_list( this, false );
 
-    return shaman_spell_t::ready();
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
-  }
-
-  // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector<player_t*>& target_list() const
-  {
-    target_cache.list.clear();
-
-    for ( size_t i = 0; i < sim->target_non_sleeping_list.size(); ++i )
-    {
-      player_t* e = sim->target_non_sleeping_list[ i ];
-      if ( !e->is_enemy() )
-        continue;
-
-      if ( td( e )->dot.flame_shock->is_ticking() )
-      {
-        target_cache.list.push_back( e );
-      }
-    }
-
-    return target_cache.list;
+    return tl.size();
   }
 };
 
@@ -5250,14 +5198,12 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
-  const spell_data_t* lashing_flames_spell;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ), options_str ),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
       elemental_resource( player->find_spell( 263819 ) ),
-      skybreakers_effect( player->find_spell( 336734 ) ),
-      lashing_flames_spell( player->find_spell( 334168 ) )
+      skybreakers_effect( player->find_spell( 336734 ) )
   {
     tick_may_crit      = true;
     track_cd_waste     = false;
@@ -5292,10 +5238,8 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( td( target )->debuff.lashing_flames->up() )
-    {
-      m *= 1 + lashing_flames_spell->effectN( 1 ).percent();
-    }
+    m *= 1.0 + td( target )->debuff.lashing_flames->stack_value();
+
     return m;
   }
 
@@ -7150,6 +7094,7 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
+  spell.crashing_storm     = find_spell( 210797 );
   spell.resurgence         = find_spell( 101033 );
   spell.maelstrom_weapon   = find_spell( 187881 );
   spell.feral_spirit       = find_spell( 228562 );
@@ -7433,8 +7378,10 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
     return;
   }
 
-  buff.hot_hand->trigger();
-  attack->proc_hh->occur();
+  if ( buff.hot_hand->trigger() )
+  {
+    attack->proc_hh->occur();
+  }
 }
 
 void shaman_t::trigger_vesper_totem( const action_state_t* state )
@@ -7818,8 +7765,12 @@ void shaman_t::create_buffs()
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
-  buff.hot_hand =
-      make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
+  buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
+    ->set_trigger_spell( talent.hot_hand )
+    ->set_default_value_from_effect( 2 )
+    -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+      cooldown.lava_lash->adjust_recharge_multiplier();
+    } );
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
