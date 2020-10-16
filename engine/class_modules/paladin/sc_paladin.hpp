@@ -200,6 +200,7 @@ public:
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
     buff_t* relentless_inquisitor;
+    buff_t* the_magistrates_judgment;
   } buffs;
 
   // Gains
@@ -728,7 +729,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment; // Shared
     bool crusade, divine_purpose, hand_of_light, final_reckoning, reckoning; // Ret
   } affected_by;
 
@@ -759,6 +760,7 @@ public:
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1110,6 +1112,9 @@ struct holy_power_consumer_t : public Base
       c += ab::p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
     }
 
+    if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
+      c += ab::p() -> buffs.the_magistrates_judgment -> value();
+
     return c;
   }
 
@@ -1186,6 +1191,11 @@ struct holy_power_consumer_t : public Base
       }
     }
 
+    // WARNING: This is correct for prot (as of 2020-09-10), ret may work
+    // differently so be wary. Shining light and magistrate get consumed at the same time.
+    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() )
+      p -> buffs.the_magistrates_judgment -> expire();
+
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
@@ -1251,6 +1261,7 @@ struct judgment_t : public paladin_melee_attack_t
   virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
+  void execute() override;
 private:
   void do_ctor_common( paladin_t* p );
 };

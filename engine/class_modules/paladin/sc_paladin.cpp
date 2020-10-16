@@ -863,6 +863,29 @@ void judgment_t::impact( action_state_t* s )
   paladin_melee_attack_t::impact( s );
 }
 
+void judgment_t::execute()
+{
+  paladin_melee_attack_t::execute();
+  if ( p() -> legendary.the_magistrates_judgment -> ok() )
+  {
+    double magistrate_chance;
+    switch ( p() -> specialization() )
+    {
+      case PALADIN_HOLY:
+        magistrate_chance = p() -> legendary.the_magistrates_judgment -> effectN( 1 ).percent();
+        break;
+      case PALADIN_PROTECTION:
+        magistrate_chance = p() -> legendary.the_magistrates_judgment -> effectN( 2 ).percent();
+        break;
+      case PALADIN_RETRIBUTION:
+      default:
+        magistrate_chance = p() -> legendary.the_magistrates_judgment -> effectN( 3 ).percent();
+    }
+    if ( rng().roll( magistrate_chance ))
+      p() -> buffs.the_magistrates_judgment -> trigger();
+  }
+}
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
@@ -1567,6 +1590,8 @@ void paladin_t::create_buffs()
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
         -> set_default_value( find_spell( 337315 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_HASTE );
+  buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
+        -> set_default_value( find_spell( 337682 ) -> effectN( 1 ).base_value() );
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
         -> set_cooldown( 0_ms );
