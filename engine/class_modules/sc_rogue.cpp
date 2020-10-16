@@ -3971,7 +3971,8 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p()->stealthed( STEALTH_BASIC ) )
+    // TOCHECK/TODO: Re-enable this when effect and base AP mod are fixed.
+    if ( !p()->bugs && p()->stealthed( STEALTH_BASIC ) )
     {
       m *= 1.0 + p()->spec.shadowstrike_2->effectN( 2 ).percent();
     }
@@ -9123,11 +9124,12 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2020-10-01", "Shadowstrike Rank 2 Issue", 269259 )
+    // Since this went live and affects prepatch, we reproduce the bug. Keeping commented for now.
+    /*hotfix::register_effect( "Rogue", "2020-10-01", "Shadowstrike Rank 2 Issue", 269259 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.6988 )
-      .verification_value( 0.8735 );
+      .verification_value( 0.8735 );*/
 
     // Manual hotfix for Bloodfang AP typo.
     hotfix::register_effect( "Rogue", "2020-10-15", "Bloodfang AP Fix", 840280, hotfix::HOTFIX_FLAG_LIVE )
