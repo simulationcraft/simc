@@ -3518,10 +3518,6 @@ struct roll_the_bones_t : public rogue_spell_t
 
     p()->buffs.roll_the_bones->trigger( d );
 
-    // Roll the Bones still triggers Snake Eyes on Shadowlands Beta but the damage increase is zero since it does not consume CP anymore.
-    // - Mystler 2020-07-31
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), 0 );
-
     if ( p()->conduit.sleight_of_hand.ok() && p()->rng().roll( p()->conduit.sleight_of_hand.percent() ) )
     {
       cooldown->reset( true );
@@ -8968,7 +8964,7 @@ void rogue_t::regen( timespan_t periodicity )
 
     if ( buffs.slice_and_dice->up() && spec.slice_and_dice_2->ok() )
     {
-      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * spec.slice_and_dice_2->effectN(1).percent();
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * spec.slice_and_dice_2->effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.slice_and_dice );
     }
 
