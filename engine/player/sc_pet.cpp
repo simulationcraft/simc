@@ -118,7 +118,16 @@ double pet_t::composite_player_target_multiplier( player_t* target, school_e sch
   double m = player_t::composite_player_target_multiplier( target, school );
 
   if ( auto td = owner->get_target_data( target ) )
+  {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+
+    // These seem to apply only to "main" pets
+    if ( type == PLAYER_PET )
+    {
+      m *= 1 + td->debuff.adversary->check_value();
+      m *= 1 + td->debuff.plagueys_preemptive_strike->check_value();
+    }
+  }
 
   return m;
 }
