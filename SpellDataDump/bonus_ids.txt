@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (hotfix 2020-10-04/36086, git build shadowlands 2698a17b84)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (hotfix 2020-10-16/36206, git build shadowlands 544043755c)
 
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -2376,7 +2376,6 @@ bonus_id={ 4209 }, ilevel={ 6 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 4210 }, ilevel={ 6 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 4211 }, ilevel={ 6 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 4212 }, ilevel={ 46 @plvl 0 - 46 @plvl 70 }
-bonus_id={ 4213 }, ilevel_adjust={ 88 }
 bonus_id={ 4214 }, ilevel={ 56 @plvl 1 - 56 @plvl 120 }
 bonus_id={ 4215 }, ilevel={ 60 @plvl 1 - 60 @plvl 120 }
 bonus_id={ 4216 }, ilevel={ 57 @plvl 1 - 57 @plvl 120 }
@@ -4058,7 +4057,7 @@ bonus_id={ 6999 }, quality={ legendary }, effects={ Primal Tide Core (id=335889,
 bonus_id={ 7000 }, quality={ legendary }, effects={ Earthen Harmony (id=335886, index=0, type=equip) }
 bonus_id={ 7002 }, quality={ legendary }, effects={ Twins of the Sun Priestess (id=336897, index=0, type=equip) }
 bonus_id={ 7003 }, quality={ legendary }, effects={ Call of the Wild (id=336742, index=0, type=equip) }
-bonus_id={ 7004 }, quality={ legendary }, effects={ Nessingwary's Trapping Apparatus (id=336743, index=0, type=equip) }
+bonus_id={ 7004 }, quality={ legendary }, effects={ Nesingwary's Trapping Apparatus (id=336743, index=0, type=equip) }
 bonus_id={ 7005 }, quality={ legendary }, effects={ Soulforge Embers (id=336745, index=0, type=equip) }
 bonus_id={ 7006 }, quality={ legendary }, effects={ Craven Strategem (id=336747, index=0, type=equip) }
 bonus_id={ 7007 }, quality={ legendary }, effects={ Dire Command (id=336819, index=0, type=equip) }
@@ -4076,19 +4075,19 @@ bonus_id={ 7018 }, quality={ legendary }, effects={ Butcher's Bone Fragments (id
 bonus_id={ 7019 }, ilevel={ 160 @plvl 1 - 160 @plvl 160 }
 bonus_id={ 7025 }, quality={ legendary }, effects={ Wilfred's Sigil of Superior Summoning (id=337020, index=0, type=equip) }
 bonus_id={ 7026 }, quality={ legendary }, effects={ Claw of Endereth (id=337038, index=0, type=equip) }
-bonus_id={ 7027 }, quality={ legendary }, effects={ Mark of Borrowed Power (id=337057, index=0, type=equip) }
+bonus_id={ 7027 }, quality={ legendary }, effects={ Relic of Demonic Synergy (id=337057, index=0, type=equip) }
 bonus_id={ 7028 }, quality={ legendary }, effects={ Pillars of the Dark Portal (id=337065, index=0, type=equip) }
 bonus_id={ 7029 }, quality={ legendary }, effects={ Perpetual Agony of Azj'Aqir (id=337106, index=0, type=equip) }
 bonus_id={ 7030 }, quality={ legendary }, effects={ Sacrolash's Dark Strike (id=337111, index=0, type=equip) }
 bonus_id={ 7031 }, quality={ legendary }, effects={ Malefic Wrath (id=337122, index=0, type=equip) }
 bonus_id={ 7032 }, quality={ legendary }, effects={ Wrath of Consumption (id=337128, index=0, type=equip) }
-bonus_id={ 7033 }, quality={ legendary }, effects={ Implosive Pontential (id=337135, index=0, type=equip) }
+bonus_id={ 7033 }, quality={ legendary }, effects={ Implosive Potential (id=337135, index=0, type=equip) }
 bonus_id={ 7034 }, quality={ legendary }, effects={ Grim Inquisitor's Dread Calling (id=337141, index=0, type=equip) }
 bonus_id={ 7035 }, quality={ legendary }, effects={ Forces of the Horned Nightmare (id=337146, index=0, type=equip) }
 bonus_id={ 7036 }, quality={ legendary }, effects={ Balespider's Burning Core (id=337159, index=0, type=equip) }
 bonus_id={ 7037 }, quality={ legendary }, effects={ Odr, Shawl of the Ymirjar (id=337163, index=0, type=equip) }
 bonus_id={ 7038 }, quality={ legendary }, effects={ Cinders of the Azj'Aqir (id=337166, index=0, type=equip) }
-bonus_id={ 7039 }, quality={ legendary }, effects={ Madness  of the Azj'Aqir (id=337169, index=0, type=equip) }
+bonus_id={ 7039 }, quality={ legendary }, effects={ Madness of the Azj'Aqir (id=337169, index=0, type=equip) }
 bonus_id={ 7040 }, quality={ legendary }, effects={ Embers of the Diabolic Raiment (id=337272, index=0, type=equip) }
 bonus_id={ 7041 }, quality={ legendary }, effects={ Collective Anguish (id=337504, index=0, type=equip) }
 bonus_id={ 7042 }, quality={ legendary }, effects={ Half-Giant Empowerment (id=337532, index=0, type=equip) }
@@ -4161,7 +4160,7 @@ bonus_id={ 7108 }, quality={ legendary }, effects={ Timeworn Dreambinder (id=339
 bonus_id={ 7109 }, suffix={ Frenzyband }, quality={ legendary }, effects={ Frenzyband (id=340053, index=0, type=equip) }
 bonus_id={ 7110 }, quality={ legendary }, effects={ Lycara's Fleeting Glimpse (id=340059, index=0, type=equip) }
 bonus_id={ 7111 }, quality={ legendary }, effects={ Mark of the Master Assassin (id=340076, index=0, type=equip) }
-bonus_id={ 7112 }, quality={ legendary }, effects={ Tiny Toxic Blades (id=340078, index=0, type=equip) }
+bonus_id={ 7112 }, quality={ legendary }, effects={ Tiny Toxic Blade (id=340078, index=0, type=equip) }
 bonus_id={ 7113 }, quality={ legendary }, effects={ Essence of Bloodfang (id=340079, index=0, type=equip) }
 bonus_id={ 7114 }, quality={ legendary }, effects={ Invigorating Shadowdust (id=340080, index=0, type=equip) }
 bonus_id={ 7115 }, quality={ legendary }, effects={ Dashing Scoundrel (id=340081, index=0, type=equip) }
@@ -4210,3 +4209,7 @@ bonus_id={ 7191 }, quality={ rare }, ilevel={ 3 @plvl 1 - 158 @plvl 60 }
 bonus_id={ 7192 }, quality={ rare }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
 bonus_id={ 7202 }, desc={ Heroic }, quality={ epic }, ilevel={ 27 @plvl 1 - 27 @plvl 200 }
 bonus_id={ 7215 }, quality={ epic }, ilevel={ 226 @plvl 50 - 226 @plvl 60 }
+bonus_id={ 7217 }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
+bonus_id={ 7218 }, quality={ legendary }, effects={ Darker Nature (id=346264, index=0, type=equip) }
+bonus_id={ 7219 }, quality={ legendary }, effects={ Burning Wound (id=346279, index=0, type=equip) }
+bonus_id={ 7220 }, ilevel={ 1 @plvl 1 - 58 @plvl 70 }

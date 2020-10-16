@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36206
-static const std::array<spelltext_data_t, 15670> __spelltext_data { {
+static const std::array<spelltext_data_t, 15671> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13376,6 +13376,7 @@ static const std::array<spelltext_data_t, 15670> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (hotfix 2020-10-15/36206)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36206 shadowlands-BETA (hotfix 2020-10-16/36206, git build shadowlands 544043755c)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -10031,7 +10031,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=840280)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | AP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | AP Coefficient: 0.09500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc340079
 Tooltip          : Bleeding for $w1, and healing the Rogue for $w1 every $t1 sec.
 
