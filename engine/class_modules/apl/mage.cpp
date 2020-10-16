@@ -372,11 +372,11 @@ void frost( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* essences = p->get_action_priority_list( "essences" );
-  action_priority_list_t* st = p->get_action_priority_list( "st" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -392,6 +392,22 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<5" );
   default_->add_action( "call_action_list,name=movement" );
+
+  aoe->add_action( "frozen_orb" );
+  aoe->add_action( "blizzard" );
+  aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&buff.fingers_of_frost.react=0)" );
+  aoe->add_action( "ice_nova" );
+  aoe->add_action( "comet_storm" );
+  aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill&debuff.winters_chill.remains>travel_time" );
+  aoe->add_action( "radiant_spark" );
+  aoe->add_action( "shifting_power" );
+  aoe->add_action( "mirrors_of_torment" );
+  aoe->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&target.level<=level&debuff.frozen.down" );
+  aoe->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
+  aoe->add_action( "arcane_explosion,if=mana.pct>30&!runeforge.cold_front.equipped&(!runeforge.freezing_winds.equipped|buff.freezing_winds.up)" );
+  aoe->add_action( "ebonbolt" );
+  aoe->add_action( "ice_lance,if=runeforge.glacial_fragments.equipped&talent.splitting_ice.enabled" );
+  aoe->add_action( "frostbolt" );
 
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|target.time_to_die<30" );
   cds->add_action( "mirrors_of_torment,if=soulbind.wasteland_propriety.enabled" );
@@ -418,6 +434,12 @@ void frost( player_t* p )
   essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   essences->add_action( "worldvein_resonance" );
 
+  movement->add_action( "blink_any,if=movement.distance>10" );
+  movement->add_action( "ice_floes,if=buff.ice_floes.down" );
+  movement->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=2" );
+  movement->add_action( "fire_blast" );
+  movement->add_action( "ice_lance" );
+
   st->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.radiant_spark|prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt|(debuff.mirrors_of_torment.up|buff.expanded_potential.react|buff.freezing_winds.up)&buff.fingers_of_frost.react=0))" );
   st->add_action( "frozen_orb" );
   st->add_action( "blizzard,if=buff.freezing_rain.up|active_enemies>=3|active_enemies>=2&!runeforge.cold_front.equipped" );
@@ -438,27 +460,6 @@ void frost( player_t* p )
   st->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );
   st->add_action( "frostbolt" );
-
-  aoe->add_action( "frozen_orb" );
-  aoe->add_action( "blizzard" );
-  aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&buff.fingers_of_frost.react=0)" );
-  aoe->add_action( "ice_nova" );
-  aoe->add_action( "comet_storm" );
-  aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill&debuff.winters_chill.remains>travel_time" );
-  aoe->add_action( "radiant_spark" );
-  aoe->add_action( "shifting_power" );
-  aoe->add_action( "mirrors_of_torment" );
-  aoe->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&target.level<=level&debuff.frozen.down" );
-  aoe->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
-  aoe->add_action( "arcane_explosion,if=mana.pct>30&!runeforge.cold_front.equipped&(!runeforge.freezing_winds.equipped|buff.freezing_winds.up)" );
-  aoe->add_action( "ebonbolt" );
-  aoe->add_action( "frostbolt" );
-
-  movement->add_action( "blink_any,if=movement.distance>10" );
-  movement->add_action( "ice_floes,if=buff.ice_floes.down" );
-  movement->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=2" );
-  movement->add_action( "fire_blast" );
-  movement->add_action( "ice_lance" );
 }
 
 }  // namespace mage_apl
