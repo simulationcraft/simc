@@ -2823,9 +2823,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 {
   struct state_t : public action_state_t
   {
-    state_t( action_t* action, player_t* target ) :
-      action_state_t( action, target )
-    { }
+    using action_state_t::action_state_t;
 
     proc_types2 cast_proc_type2() const override
     {
@@ -3638,7 +3636,8 @@ struct rapid_fire_t: public hunter_spell_t
   struct state_t : public action_state_t
   {
     bool double_tapped = false;
-    state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
+
+    using action_state_t::action_state_t;
 
     void initialize() override
     {
@@ -3856,7 +3855,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     int num_ticks_ = base_num_ticks;
     if ( debug_cast<const state_t*>( s ) -> double_tapped )
-      num_ticks_ = as<int>(num_ticks_ * (1 + p() -> talents.double_tap -> effectN( 3 ).percent()));
+      num_ticks_ = as<int>( num_ticks_ * ( 1 + p() -> talents.double_tap -> effectN( 3 ).percent() ) );
     return num_ticks_;
   }
 
