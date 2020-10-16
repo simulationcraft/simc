@@ -1063,19 +1063,20 @@ void warlock_t::create_apl_affliction()
   def->add_action("call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)");
   def->add_action("dark_soul,if=cooldown.summon_darkglare.remains>time_to_die");
   def->add_action("call_action_list,name=cooldowns");
+  def->add_action("use_items");
 
   def->add_action("malefic_rapture,if=dot.vile_taint.ticking");
   def->add_action("malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)");
   def->add_action("malefic_rapture,if=talent.sow_the_seeds.enabled");
 
   def->add_action("drain_life,if=buff.inevitable_demise.stack>30");
+  def->add_action("drain_life,if=buff.inevitable_demise_az.stack>30");
   def->add_action("drain_soul");
   def->add_action("shadow_bolt");
 
   prep->add_action("vile_taint");
   prep->add_action("dark_soul");
   prep->add_action("potion");
-  prep->add_action("use_items");
   prep->add_action("fireblood");
   prep->add_action("blood_fury");
   prep->add_action("berserking");
