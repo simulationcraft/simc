@@ -1564,7 +1564,9 @@ void paladin_t::create_buffs()
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() );
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() )
         -> set_default_value( legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
-
+  buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
+        -> set_default_value( find_spell( 337315 ) -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_HASTE );
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
         -> set_cooldown( 0_ms );
@@ -1828,6 +1830,7 @@ void paladin_t::init_spells()
   legendary.bulwark_of_righteous_fury = find_runeforge_legendary( "Bulwark of Righteous Fury" );
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
   legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
+  legendary.relentless_inquisitor = find_runeforge_legendary( "Relentless Inquisitor" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
@@ -2073,6 +2076,8 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.seraphim -> up() )
     h /= 1.0 + buffs.seraphim -> data().effectN( 3 ).percent();
 
+  if ( buffs.relentless_inquisitor -> up() )
+    h /= 1.0 + buffs.relentless_inquisitor -> stack_value();
   return h;
 }
 
@@ -2098,6 +2103,8 @@ double paladin_t::composite_spell_haste() const
   if ( buffs.seraphim -> up() )
     h /= 1.0 + buffs.seraphim -> data().effectN( 3 ).percent();
 
+  if ( buffs.relentless_inquisitor -> up() )
+    h /= 1.0 + buffs.relentless_inquisitor -> stack_value();
   return h;
 }
 

@@ -189,7 +189,7 @@ public:
 
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
-    buff_t* relentless_inquisitor;
+    buff_t* relentless_inquisitor_azerite;
 
     // Covenants
     buff_t* vanquishers_hammer;
@@ -199,6 +199,7 @@ public:
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
+    buff_t* relentless_inquisitor;
   } buffs;
 
   // Gains
@@ -461,6 +462,7 @@ public:
     item_runeforge_t bulwark_of_righteous_fury;
     item_runeforge_t holy_avengers_engraved_sigil;
     item_runeforge_t the_ardent_protectors_sanctum;
+    item_runeforge_t relentless_inquisitor;
   } legendary;
 
   // Paladin options
@@ -1120,14 +1122,17 @@ struct holy_power_consumer_t : public Base
     ab::execute();
 
     // if this is a vanq-hammer-based DS, don't do this stuff
-    if ( ab::background )
+    if ( ab::background && is_divine_storm )
       return;
 
     // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
     int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
 
     if ( p -> azerite.relentless_inquisitor.ok() )
-      p -> buffs.relentless_inquisitor -> trigger( num_stacks );
+      p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
+
+    if ( p -> legendary.relentless_inquisitor -> ok() && !is_vanq_hammer )
+      p -> buffs.relentless_inquisitor -> trigger();
 
     if ( p -> buffs.crusade -> check() )
     {
@@ -1137,7 +1142,8 @@ struct holy_power_consumer_t : public Base
         p -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( p -> talents.righteous_protector -> ok() )
+    // Free sotr from vanq does not proc RP 2020-09-10
+    if ( p -> talents.righteous_protector -> ok() && !ab::background )
     {
       timespan_t reduction = timespan_t::from_seconds(
         // Why do I need to divide this by 10? Just give me sec or milli, what is this??

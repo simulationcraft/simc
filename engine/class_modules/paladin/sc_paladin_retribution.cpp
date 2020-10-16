@@ -582,7 +582,7 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
-  buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ) )
+  buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
