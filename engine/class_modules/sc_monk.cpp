@@ -3226,8 +3226,13 @@ public:
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
-      // Logs show they cast this every 2.5 seconds, instead of back-to-back
-      cooldown->duration = timespan_t::from_seconds( 2.5 );
+      // We only want the monk to cast spinning crane kick 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( p->o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 4 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 6 );
+     
       owner                                            = p->o();
     }
 
@@ -3252,12 +3257,8 @@ public:
       parse_options( options_str );
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      // We only want the monk to cast spinning crane kick 2 times during the duration.
-      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( p->o()->specialization() == MONK_WINDWALKER )
-        cooldown->duration = timespan_t::from_seconds( 4 );
-      else
-        cooldown->duration = timespan_t::from_seconds( 6 );
+      // Logs show they cast this every 2.5 seconds, instead of back-to-back
+      cooldown->duration = timespan_t::from_seconds( 2.5 );
       owner = p->o();
 
       attack_power_mod.direct = attack_power_mod.tick = 0.0;
