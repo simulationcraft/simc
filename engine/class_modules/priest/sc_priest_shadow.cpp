@@ -877,6 +877,7 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( priest().talents.unfurling_darkness->ok() )
     {
       child_ud = new unfurling_darkness_t( priest() );
+      add_child( child_ud );
     }
   }
 
@@ -910,7 +911,6 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       child_ud->target = s->target;
       child_ud->execute();
-      add_child( child_ud );
       priest().buffs.unfurling_darkness->expire();
     }
     else
