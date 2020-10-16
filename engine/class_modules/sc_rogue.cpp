@@ -3212,14 +3212,13 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  // Probably a bug on Shadowlands beta but Pistol Shot now procs CP. -Mystler 2020-08-02
   bool procs_combat_potency() const override
   {
     // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
     if ( secondary_trigger == TRIGGER_CONCEALED_BLUNDERBUSS )
       return false;
 
-    return p()->bugs; 
+    return true; 
   }
 
   double cost() const override
