@@ -3234,6 +3234,11 @@ public:
         cooldown->duration = timespan_t::from_seconds( 6 );
      
       owner                                            = p->o();
+
+      attack_power_mod.direct = attack_power_mod.tick = 0.0;
+      dot_behavior                                    = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+
+      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
     }
 
     // N full ticks, but never additional ones.
@@ -3260,11 +3265,6 @@ public:
       // Logs show they cast this every 2.5 seconds, instead of back-to-back
       cooldown->duration = timespan_t::from_seconds( 2.5 );
       owner = p->o();
-
-      attack_power_mod.direct = attack_power_mod.tick = 0.0;
-      dot_behavior                                    = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
-
-      tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
     }
 
     void init() override
