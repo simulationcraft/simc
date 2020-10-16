@@ -796,8 +796,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Only applied if you hard cast SW:P, Misery and Damnation do not trigger this
-    if ( casted && result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) )
     {
       if ( priest().buffs.fae_guardians->check() )
       {
@@ -829,10 +828,16 @@ struct shadow_word_pain_t final : public priest_spell_t
 // ==========================================================================
 struct unfurling_darkness_t final : public priest_spell_t
 {
-  unfurling_darkness_t( priest_t& p ) : priest_spell_t( "unfurling_darkness", p, p.find_spell( 34914 ) )
+  unfurling_darkness_t( priest_t& p )
+    : priest_spell_t( "unfurling_darkness", p, p.find_class_spell( "Vampiric Touch" ) )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
+    energize_type              = action_energize::NONE;  // no insanity gain
+
+    // Since we are re-using the Vampiric Touch spell disable the DoT
+    dot_duration       = timespan_t::from_seconds( 0 );
+    base_td_multiplier = spell_power_mod.tick = 0;
   }
 };
 
@@ -1630,7 +1635,7 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.find_talent_spell( "Damnation" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      child_swp( new shadow_word_pain_t( priest(), true ) ), // Damnation still triggers SW:P as if it was hard casted
       child_vt( new vampiric_touch_t( priest(), false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
