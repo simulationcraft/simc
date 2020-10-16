@@ -834,6 +834,8 @@ struct unfurling_darkness_t final : public priest_spell_t
     background                 = true;
     affected_by_shadow_weaving = true;
     energize_type              = action_energize::NONE;  // no insanity gain
+    energize_amount            = 0;
+    energize_resource          = RESOURCE_NONE;
 
     // Since we are re-using the Vampiric Touch spell disable the DoT
     dot_duration       = timespan_t::from_seconds( 0 );
@@ -861,7 +863,7 @@ struct vampiric_touch_t final : public priest_spell_t
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
-    // Disable initial hit damage
+    // Disable initial hit damage, only Unfurling Darkness uses it
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
 
     if ( priest().talents.misery->ok() && casted )
@@ -896,8 +898,6 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
-
     trigger_heal( s );
 
     if ( child_swp )
@@ -906,9 +906,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->execute();
     }
 
-    // TODO: check if talbadars_stratagem can proc this
-    // Damnation does not proc Unfurling Darkness, but can generate it
-    if ( priest().buffs.unfurling_darkness->check() && casted )
+    if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -924,6 +922,8 @@ struct vampiric_touch_t final : public priest_spell_t
         priest().buffs.unfurling_darkness_cd->trigger();
       }
     }
+
+    priest_spell_t::impact( s );
   }
 
   timespan_t execute_time() const override
@@ -1635,7 +1635,7 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.find_talent_spell( "Damnation" ) ),
-      child_swp( new shadow_word_pain_t( priest(), true ) ), // Damnation still triggers SW:P as if it was hard casted
+      child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
       child_vt( new vampiric_touch_t( priest(), false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {

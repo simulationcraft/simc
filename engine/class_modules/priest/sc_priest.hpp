@@ -1404,7 +1404,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      tdm *= priest().shadow_weaving_multiplier( t, id );
+      // Guarding against Unfurling Darkness, it does not get the mastery benefit
+      unsigned int spell_id = id;
+      if ( energize_type == action_energize::NONE && background == true )
+      {
+        sim->print_debug( "{} {} cast does not benefit from Mastery automatically.", *player, name_str );
+        spell_id = 1;
+      }
+
+      tdm *= priest().shadow_weaving_multiplier( t, spell_id );
     }
 
     return tdm;
