@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36165
-static const std::array<spelltext_data_t, 15657> __spelltext_data { {
+static const std::array<spelltext_data_t, 15661> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5825,6 +5825,7 @@ static const std::array<spelltext_data_t, 15657> __spelltext_data { {
   { 182062, "Increases Strength by $s1 for $d.", "Increases Strength by $s1.", 0 },
   { 182063, "When you deal damage you have a chance to gain $182062s1 Strength for $182062d.", 0, 0 },
   { 182073, "Increases Versatility by $s1 for $d.", "Increases Versatility by $s1.", 0 },
+  { 182104, "@$spelldesc321136", "After ${$321136s1~-$w1} Shield of the Righteous, your next Word of Glory is free.", 0 },
   { 182226, "Applies a razor sharp barb to your fishing pole for $d, automatically filleting any Draenor fish you catch.", "Draenor fish are automatically filleted when they are caught.", 0 },
   { 182284, "Gaze deep in to the reflection in the pearl. Only usable underwater in Draenor.", "Transformed into a deep murloc! Swim speed greatly increased.", 0 },
   { 182303, "When you use Vanish, you gain $s1 Combo Points and the critical strike chance of your next Saber Slash, Run Through, Between the Eyes, or Ambush is increased by $182304s1%.", 0, 0 },
@@ -13375,6 +13376,7 @@ static const std::array<spelltext_data_t, 15657> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -14208,6 +14210,7 @@ static const std::array<spelltext_data_t, 15657> __spelltext_data { {
   { 327161, "$@spelldesc326059", 0, "Necrolord" },
   { 327162, "$@spelldesc326059", 0, "Necrolord" },
   { 327163, "$@spelldesc326059", 0, "Necrolord" },
+  { 327164, "$@spelldesc326059", "Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide].", "Necrolord" },
   { 327193, "Reset the cooldown of Avenger's Shield. Your next $n Avenger's Shields have no cooldown and deal $s2% additional damage.", "Your next $n Avenger's Shields have no cooldown and deal $w2% additional damage.", 0 },
   { 327225, "$@spelldesc203776", "Absorbing $w1 damage.", 0 },
   { 327257, "$@spelldesc327104", 0, "Night Fae" },
@@ -14234,6 +14237,7 @@ static const std::array<spelltext_data_t, 15657> __spelltext_data { {
   { 327498, "$@spelldesc327492", 0, 0 },
   { 327508, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1%, stacking up to $327509u times.", 0, 0 },
   { 327509, "$@spelldesc327508", "Cast time of Frostbolt reduced by $s1%.", 0 },
+  { 327510, "@$spelldesc321136", "Your next Word of Glory is free.", 0 },
   { 327511, "$@spelldesc327508", 0, 0 },
   { 327541, "Casting Starfall extends the duration of active Moonfires and Sunfires by $s1 sec.", 0, "Rank 2" },
   { 327574, "Sacrifice your ghoul to deal $327611s1 Shadow damage to $327611s2 nearby enemies and heal for $s1% of your maximum health.", 0, 0 },

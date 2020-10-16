@@ -1258,6 +1258,12 @@ void paladin_t::create_actions()
     cooldowns.judgment_of_light_icd -> duration = timespan_t::from_seconds( talents.judgment_of_light -> effectN( 1 ).base_value() );
   }
 
+  if ( azerite.lights_decree.enabled() )
+  {
+    active.lights_decree = new lights_decree_t( this );
+  }
+
+
   player_t::create_actions();
 }
 

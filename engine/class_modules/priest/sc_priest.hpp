@@ -848,10 +848,14 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
+  double power_leech_insanity;
+
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
-    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
+    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    npc_id           = 19668;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -865,18 +869,22 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    return power_leech_insanity;
   }
 };
 
 struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
+  double power_leech_insanity;
 
   mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell( 123051 ) )
+    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
+      mindbender_spell( owner.find_spell( 123051 ) ),
+      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    npc_id           = 62982;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -890,7 +898,15 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    // Currently not in beta, but in PTR data
+    if ( o().bugs )
+    {
+      return 5;
+    }
+    else
+    {
+      return power_leech_insanity;
+    }
   }
 };
 
@@ -1341,11 +1357,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
-    auto resource = current_resource();
-
     base_t::consume_resource();
 
-    if (priest().azerite_essence.lucid_dreams )
+    if ( priest().azerite_essence.lucid_dreams )
       priest().trigger_lucid_dreams( last_resource_cost );
   }
 
@@ -1377,7 +1391,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         }
       }
 
-      if (priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
+      if ( priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
       {
         // TODO: Remove after pre-patch?
         // Just an approximation of the value added by Lucid Minor, not accurate
@@ -1536,6 +1550,9 @@ protected:
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
+  // TODO: hook up rank2 to movement speed
+  const spell_data_t* rank2;
+
   dispersion_t( priest_t& p );
 };
 

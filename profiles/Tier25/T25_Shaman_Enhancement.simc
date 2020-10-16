@@ -21,13 +21,27 @@ augmentation=disabled
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/lightning_shield
+actions.precombat+=/windfury_weapon
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat=snapshot_stats
+actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-actions=wind_shear
+actions=bloodlust
+# In-combat potion is before combat ends.
+actions+=/potion,if=expected_combat_length-time<60
+# Interrupt of casts.
+actions+=/wind_shear
 actions+=/auto_attack
 actions+=/windstrike
+actions+=/crash_lightning,if=spell_targets.chain_lightning>1
+actions+=/chain_lightning,if=spell_targets.chain_lightning>1&&buff.maelstrom_weapon.stack>=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions+=/feral_spirit
 actions+=/earth_elemental
 actions+=/lava_lash
@@ -35,8 +49,6 @@ actions+=/stormstrike
 actions+=/crash_lightning
 actions+=/flame_shock
 actions+=/frost_shock
-actions+=/lightning_bolt
-actions+=/chain_lightning
 
 head=helm_of_actualized_visions,id=174151,bonus_id=4824/1517/4819/4775,azerite_powers=416/530/30/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -58,7 +70,7 @@ off_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517/6573,enchant=
 # Gear Summary
 # gear_ilvl=138.69
 # gear_agility=411
-# gear_stamina=853
+# gear_stamina=750
 # gear_crit_rating=271
 # gear_haste_rating=352
 # gear_mastery_rating=175

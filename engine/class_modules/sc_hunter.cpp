@@ -1172,6 +1172,14 @@ struct hunter_pet_t: public pet_t
     main_hand_weapon.swing_time = 2_s;
   }
 
+  void schedule_ready( timespan_t delta_time, bool waiting ) override
+  {
+    if ( main_hand_attack && !main_hand_attack->execute_event )
+      main_hand_attack->schedule_execute();
+
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
@@ -1398,8 +1406,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
   void init_spells() override;
 
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
-
   void moving() override
   { return; }
 };
@@ -1414,22 +1420,6 @@ struct animal_companion_t final : public hunter_main_pet_base_t
     hunter_main_pet_base_t( owner, "animal_companion", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
-  }
-
-  void init_action_list() override
-  {
-    if ( action_list_str.empty() )
-    {
-      action_list_str += "/auto_attack";
-      use_default_action_list = true;
-    }
-
-    hunter_main_pet_base_t::init_action_list();
-  }
-
-  timespan_t available() const override
-  {
-    return sim -> expected_iteration_time * 2;
   }
 };
 
@@ -1521,7 +1511,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
   {
     if ( action_list_str.empty() )
     {
-      action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
       action_list_str += "/claw";
       use_default_action_list = true;
@@ -1567,8 +1556,11 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     hunter_main_pet_base_t::summon( duration );
 
     o() -> pets.main = this;
-    if ( o() -> pets.animal_companion )
-      o() -> pets.animal_companion -> summon();
+    if ( o()->pets.animal_companion )
+    {
+      o()->pets.animal_companion->summon();
+      o()->pets.animal_companion->schedule_ready(0_s, false);
+    }
 
     spec_passive() -> trigger();
   }
@@ -2067,32 +2059,6 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
   }
 };
 
-// Pet Auto Attack ==========================================================
-
-struct pet_auto_attack_t: public action_t
-{
-  pet_auto_attack_t( hunter_main_pet_base_t* player, util::string_view options_str ):
-    action_t( ACTION_OTHER, "auto_attack", player )
-  {
-    parse_options( options_str );
-
-    player -> main_hand_attack = new pet_melee_t( "melee", player );
-
-    school = SCHOOL_PHYSICAL;
-    ignore_false_positive = true;
-    range = 5;
-    trigger_gcd = 0_ms;
-  }
-
-  void execute() override
-  {
-    player -> main_hand_attack -> schedule_execute();
-  }
-
-  bool ready() override
-  { return player -> main_hand_attack -> execute_event == nullptr; } // not swinging
-};
-
 // Pet Claw/Bite/Smack ======================================================
 
 struct basic_attack_t : public hunter_main_pet_attack_t
@@ -2239,22 +2205,12 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 
 // hunter_pet_t::create_action ==============================================
 
-action_t* hunter_main_pet_base_t::create_action( util::string_view name, const std::string& options_str )
-{
-  if ( name == "auto_attack" )
-    return new actions::pet_auto_attack_t( this, options_str );
-
-  return hunter_pet_t::create_action( name, options_str );
-}
-
 action_t* hunter_main_pet_t::create_action( util::string_view name,
                                             const std::string& options_str )
 {
-  using namespace actions;
-
-  if ( name == "claw" ) return new                 basic_attack_t( this, "Claw", options_str );
-  if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
-  if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
+  if ( name == "claw" ) return new        actions::basic_attack_t( this, "Claw", options_str );
+  if ( name == "bite" ) return new        actions::basic_attack_t( this, "Bite", options_str );
+  if ( name == "smack" ) return new       actions::basic_attack_t( this, "Smack", options_str );
 
   return hunter_main_pet_base_t::create_action( name, options_str );
 }
@@ -2266,6 +2222,8 @@ void hunter_main_pet_base_t::init_spells()
   hunter_pet_t::init_spells();
 
   spells.thrill_of_the_hunt = find_spell( 312365 );
+
+  main_hand_attack = new actions::pet_melee_t( "melee", this );
 
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.bestial_wrath = new actions::bestial_wrath_t( this );
@@ -5611,7 +5569,6 @@ void hunter_td_t::target_demise()
   if ( p -> talents.a_murder_of_crows.ok() && dots.a_murder_of_crows -> is_ticking() )
   {
     p -> sim -> print_debug( "{} a_murder_of_crows cooldown reset on target death.", p -> name() );
-
     p -> cooldowns.a_murder_of_crows -> reset( true );
   }
 
@@ -6934,6 +6891,7 @@ void hunter_t::apl_mm()
     cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
     cds -> add_action( this, "Trueshot", "if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15" );
 
+    st -> add_action( this, "Steady Shot", "if=talent.steady_focus.enabled&prev_gcd.1.steady_shot&buff.steady_focus.remains<5" );
     st -> add_action( this, "Kill Shot" );
     st -> add_talent( this, "Explosive Shot" );
     st -> add_talent( this, "Barrage", "if=active_enemies>1" );
@@ -6963,7 +6921,7 @@ void hunter_t::apl_mm()
     trickshots -> add_action( "focused_azerite_beam" );
     trickshots -> add_action( "purifying_blast" );
     trickshots -> add_action( "concentrated_flame" );
-    trickshots -> add_action( "blood_of_the_enemy" );
+    trickshots -> add_action( "blood_of_the_enemy,if=prev_gcd.1.volley|!talent.volley.enabled|target.time_to_die<11" );
     trickshots -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
     trickshots -> add_talent( this, "A Murder of Crows" );
     trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );

@@ -384,6 +384,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     last_resource_cost(),
     num_targets_hit(),
     marker(),
+    last_used(),
     option(),
     interrupt_global( false ),
     if_expr(),
@@ -407,8 +408,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_cache(),
     options(),
     state_cache(),
-    travel_events(),
-    last_used()
+    travel_events()
 {
   assert( option.cycle_targets == 0 );
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
@@ -4758,10 +4758,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_COOLDOWN:
-        cooldown->duration += effect.time_value();
-        if ( cooldown->duration < timespan_t::zero() )
-          cooldown->duration = timespan_t::zero();
-        sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+        if ( cooldown->action == this )
+        {
+          cooldown->duration += effect.time_value();
+          if ( cooldown->duration < timespan_t::zero() )
+            cooldown->duration = timespan_t::zero();
+          sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+        }
         break;
 
       case P_RESOURCE_COST:
@@ -4922,15 +4925,21 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     switch ( effect.subtype() )
     {
       case A_MODIFY_CATEGORY_COOLDOWN:
-        cooldown->duration += effect.time_value();
-        if ( cooldown->duration < timespan_t::zero() )
-          cooldown->duration = timespan_t::zero();
-        sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        if ( cooldown->action == this )
+        {
+          cooldown->duration += effect.time_value();
+          if ( cooldown->duration < timespan_t::zero() )
+            cooldown->duration = timespan_t::zero();
+          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        }
         break;
 
       case A_MOD_MAX_CHARGES:
-        cooldown->charges += as<int>( effect.base_value() );
-        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+        if ( cooldown->action == this )
+        {
+          cooldown->charges += as<int>( effect.base_value() );
+          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+        }
         break;
 
       case A_HASTED_CATEGORY:
@@ -4939,10 +4948,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_RECHARGE_TIME:
-        cooldown->duration += effect.time_value();
-        if ( cooldown->duration < timespan_t::zero() )
-          cooldown->duration = timespan_t::zero();
-        sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+        if ( cooldown->action == this )
+        {
+          cooldown->duration += effect.time_value();
+          if ( cooldown->duration < timespan_t::zero() )
+            cooldown->duration = timespan_t::zero();
+          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+        }
         break;
 
       case A_MOD_RECHARGE_MULTIPLIER:

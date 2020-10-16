@@ -1719,7 +1719,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().azerite.chorus_of_insanity.enabled() )
     {
       priest().buffs.chorus_of_insanity->expire();
-      priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
+      // This is fixed in-game right now
+      priest().buffs.chorus_of_insanity->trigger( 20 );
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -1840,6 +1841,7 @@ struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
     add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
     set_reverse( true );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_max_stack( 20 );
   }
 };
 
@@ -2165,7 +2167,7 @@ void priest_t::generate_apl_shadow()
       "variable,name=pi_or_vf_sync_condition,op=set,value=(priest.self_power_infusion|runeforge.twins_of_the_sun_"
       "priestess.equipped)&level>=58&cooldown.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_"
       "of_the_sun_priestess.equipped)&cooldown.void_eruption.up",
-      "Variable to switch between syncing cooldown usage to Power Infusion or Void Eruption depenending whether "
+      "Variable to switch between syncing cooldown usage to Power Infusion or Void Eruption depending whether "
       "priest_self_power_infusion is in use or we don't have power infusion learned." );
 
   // Racials
@@ -2256,6 +2258,10 @@ void priest_t::generate_apl_shadow()
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
+  main->add_action(
+      this, "Void Bolt",
+      "if=insanity<=85&((talent.hungering_void.enabled&spell_targets.mind_sear<5)|spell_targets.mind_sear=1)",
+      "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
   main->add_action( this, "Devouring Plague",
                     "target_if=(refreshable|insanity>75)&!variable.pi_or_vf_sync_condition&(!talent.searing_nightmare."
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
@@ -2271,7 +2277,9 @@ void priest_t::generate_apl_shadow()
                     "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
-  main->add_talent( this, "Mindbender", "if=variable.dots_up" );
+  main->add_talent( this, "Mindbender",
+                    "if=dot.vampiric_touch.ticking&((talent.searing_nightmare.enabled&spell_targets.mind_sear>("
+                    "variable.mind_sear_cutoff+1))|dot.shadow_word_pain.ticking)" );
   main->add_talent( this, "Void Torrent",
                     "target_if=variable.dots_up&target.time_to_die>4&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
                     "talent.twist_of_fate.enabled))",

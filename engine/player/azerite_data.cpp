@@ -688,7 +688,7 @@ bool azerite_state_t::is_enabled( util::string_view name, bool tokenized ) const
 
 std::unique_ptr<expr_t> azerite_state_t::create_expression( util::span<const util::string_view> expr_str ) const
 {
-  if ( expr_str.size() == 1 )
+  if ( expr_str.size() < 3 )
   {
     return nullptr;
   }
@@ -3747,10 +3747,8 @@ void heart_of_darkness( special_effect_t& effect )
             ->add_stat( STAT_MASTERY_RATING, value )
             ->add_stat( STAT_VERSATILITY_RATING, value );
     effect.player->register_combat_begin( [heart_of_darkness]( player_t* ) {
-      if ( heart_of_darkness->player->composite_total_corruption() >= 25 )  // This number is not found in spell data
-      {
-        heart_of_darkness->trigger();
-      }
+      // This was turned into passive for pre-patch without a Corruption requirement
+      heart_of_darkness->trigger();
     } );
   }
 }
@@ -5736,14 +5734,14 @@ void spark_of_inspiration( special_effect_t& effect )
     {
       buff->trigger();
 
-      if ( !major || !major->essence.enabled() )
+      if ( !major || !major->essence.enabled() || !major->essence.is_major() )
       {
         major = nullptr;
 
         for ( action_t* a : listener->action_list )
         {
           azerite_essence_major_t* candidate = dynamic_cast<azerite_essence_major_t*>( a );
-          if ( candidate && candidate->essence.enabled() )
+          if ( candidate && candidate->essence.enabled() && candidate->essence.is_major() )
           {
             major = candidate;
             break;
@@ -6012,7 +6010,7 @@ double vision_of_perfection_cdr( const azerite_essence_t& essence )
   if ( essence.enabled() )
   {
     // Formula from tooltip
-    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 2896 ) / -100.0;
+    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 3320 ) / -100.0;
     // Clamped to 10 .. 25
     cdr = fmax( 10.0, fmin( 25.0, cdr ) );
     // return the negative percent

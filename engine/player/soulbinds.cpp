@@ -309,7 +309,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) { buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
 
 void first_strike( special_effect_t& effect )
@@ -821,7 +821,42 @@ void brons_call_to_action( special_effect_t& effect )
 
 void volatile_solvent( special_effect_t& effect )
 {
+    if ( effect.player->sim->shadowlands_opts.volatile_solvent_crit )
+    {
+      const spell_data_t* volatile_solvent_dragonkin = effect.player->find_spell( 323502 );
 
+      buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent_dragonkin )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+
+      effect.player->register_combat_begin( [ buff_crit ]( player_t* ) { buff_crit->trigger(); } );
+    }
+
+
+    if ( effect.player->sim->shadowlands_opts.volatile_solvent_primary )
+    {
+      const spell_data_t* volatile_solvent_beast = effect.player->find_spell( 323498 );
+
+      buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beast", volatile_solvent_beast )
+        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+        ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+      
+      effect.player->register_combat_begin( [ buff_primary ]( player_t* ) { buff_primary->trigger(); } );
+    }
+
+
+    if ( effect.player->sim->shadowlands_opts.volatile_solvent_mastery )
+    {
+      const spell_data_t* volatile_solvent_humanoid = effect.player->find_spell( 323491 );
+
+      auto buff_mastery = make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid );
+
+      effect.player->register_combat_begin( [ buff_mastery ]( player_t* ) { buff_mastery->trigger(); } );
+    }
+
+    //Todo: Add the buffs for Magic Damage percent and Physical damage preseont
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
