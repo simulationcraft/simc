@@ -887,7 +887,7 @@ std::string warlock_t::default_flask() const
 
 std::string warlock_t::default_food() const
 {
-  return ( true_level >= 50 ) ? "baked_port_tato" : "disabled";
+  return ( true_level >= 50 ) ? "famine_evaluator_and_snack_table" : "disabled";
 }
 
 std::string warlock_t::default_rune() const
