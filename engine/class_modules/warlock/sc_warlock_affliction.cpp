@@ -266,6 +266,11 @@ struct agony_t : public affliction_spell_t
       p()->buffs.inevitable_demise->trigger();
     }
 
+    if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
+    {
+      p()->buffs.id_azerite->trigger();
+    }
+
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
@@ -933,6 +938,11 @@ void warlock_t::create_buffs_affliction()
                                 ->set_max_stack( find_spell( 334320 )->max_stacks() )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
   // BFA - Azerite
+  buffs.id_azerite = make_buff(this, "inevitable_demise_az", azerite.inevitable_demise)
+                         ->set_max_stack(find_spell(273525)->max_stacks())
+                         // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
+                         ->set_default_value(azerite.inevitable_demise.value() * ((1.0 + 0.75 * (azerite.inevitable_demise.n_items() - 1)) / azerite.inevitable_demise.n_items()));
+
   buffs.cascading_calamity = make_buff<stat_buff_t>( this, "cascading_calamity", azerite.cascading_calamity )
                                  ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
                                  ->set_duration( find_spell( 275378 )->duration() )
