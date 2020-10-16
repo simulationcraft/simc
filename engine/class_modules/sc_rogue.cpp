@@ -3971,8 +3971,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // TOCHECK/TODO: Re-enable this when effect and base AP mod are fixed.
-    if ( !p()->bugs && p()->stealthed( STEALTH_BASIC ) )
+    if ( p()->stealthed( STEALTH_BASIC ) )
     {
       m *= 1.0 + p()->spec.shadowstrike_2->effectN( 2 ).percent();
     }
