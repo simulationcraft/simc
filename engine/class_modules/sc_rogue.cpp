@@ -7609,6 +7609,11 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
           energy_regen_per_second *= 1.0 + buffs.adrenaline_rush->data().effectN( 1 ).percent();
         }
 
+        if ( buffs.slice_and_dice->check() && spec.slice_and_dice_2->ok() )
+        {
+          energy_regen_per_second *= 1.0 + spec.slice_and_dice_2->effectN( 1 ).percent();
+        }
+
         energy_regen_per_second += buffs.nothing_personal->check_value();
         energy_regen_per_second += buffs.buried_treasure->check_value();
         energy_regen_per_second += buffs.vendetta->check_value();
@@ -8902,14 +8907,8 @@ double rogue_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = player_t::resource_regen_per_second( r );
 
-  // Slice and Dice does not have any energy effect in Shadowlands but keeping this commented out for now in case they change their minds.
-  /*if ( r == RESOURCE_ENERGY )
-  {
-    if ( buffs.slice_and_dice->up() )
-    {
-      reg *= 1.0 + talent.slice_and_dice->effectN( 3 ).percent() * buffs.slice_and_dice->check_value();
-    }
-  }*/
+  // We handle some energy gain increases in rogue_t::regen() instead of the resource_regen_per_second method in order to better track their benefits.
+  // For simple implementation without separate tracking, can put stuff here.
 
   return reg;
 }
@@ -8956,19 +8955,24 @@ void rogue_t::regen( timespan_t periodicity )
   // IMPORTANT NOTE: If anything is updated/added here, rogue_t::create_resource_expression() needs to be updated as well to reflect this
   if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
   {
+    // Multiplicative energy gains
+    double mult_regen_base = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY );
+
     if ( buffs.adrenaline_rush->up() )
     {
-      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush->data().effectN( 1 ).percent();
+      double energy_regen = mult_regen_base * buffs.adrenaline_rush->data().effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+      mult_regen_base += energy_regen;
     }
 
     if ( buffs.slice_and_dice->up() && spec.slice_and_dice_2->ok() )
     {
-      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * spec.slice_and_dice_2->effectN( 1 ).percent();
+      double energy_regen = mult_regen_base * spec.slice_and_dice_2->effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.slice_and_dice );
+      mult_regen_base += energy_regen;
     }
 
-    // Additional energy gains
+    // Additive energy gains
     if ( buffs.nothing_personal->up() )
       resource_gain( RESOURCE_ENERGY, buffs.nothing_personal -> check_value() * periodicity.total_seconds(), gains.nothing_personal );
     if ( buffs.buried_treasure->up() )
