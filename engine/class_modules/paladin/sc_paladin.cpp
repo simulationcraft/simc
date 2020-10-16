@@ -45,6 +45,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.judgment                = get_cooldown( "judgment" );
   cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
   cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
+  cooldowns.ardent_defender         = get_cooldown( "ardent_defender" );
 
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );

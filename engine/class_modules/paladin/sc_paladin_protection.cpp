@@ -533,8 +533,9 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
     {
       p() -> buffs.ardent_defender -> extend_duration( p(),
-        p() -> conduit.resolute_defender.percent() * p() -> buffs.ardent_defender -> buff_duration()
+        p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
       );
+      p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
     }
 
     if ( !background )

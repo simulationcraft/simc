@@ -253,6 +253,7 @@ public:
     cooldown_t* judgment; // Crusader's Judgment
     cooldown_t* shield_of_the_righteous; // Judgment
     cooldown_t* guardian_of_ancient_kings; // Righteous Protector
+    cooldown_t* ardent_defender; // Resolute Defender
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
