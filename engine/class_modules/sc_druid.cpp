@@ -132,9 +132,14 @@ struct druid_action_state_t : public action_state_t
 {
   free_cast_e free_cast;
 
-  druid_action_state_t( action_t* a, player_t* t, free_cast_e f = free_cast_e::NONE )
-    : action_state_t( a, t ), free_cast( f )
-  {}
+  druid_action_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), free_cast( free_cast_e::NONE ) {}
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    free_cast = free_cast_e::NONE;
+  }
 
   void copy_state( const action_state_t* s ) override
   {
@@ -1944,7 +1949,7 @@ public:
 
   druid_td_t* td( player_t* t ) const { return p()->get_target_data( t ); }
 
-  action_state_t* new_state() override { return new druid_action_state_t( this, ab::target, free_cast ); }
+  action_state_t* new_state() override { return new druid_action_state_t( this, ab::target ); }
 
   free_cast_e get_state_free_cast( action_state_t* s ) { return debug_cast<druid_action_state_t*>( s )->free_cast; }
 
@@ -4108,7 +4113,6 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
     // druid_action_t::schedule_travel() as it calls set_state_free_cast() which is only valid on druid_action_state_t
     melee_attack_t::schedule_travel( s );
   }
-
 };
 
 // Lunar Inspiration ========================================================
@@ -7503,6 +7507,7 @@ struct adaptive_swarm_t : public druid_spell_t
       action_state_t::initialize();
 
       stacks = default_stacks;
+      jump   = false;
     }
 
     void copy_state( const action_state_t* s ) override
