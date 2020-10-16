@@ -14,7 +14,6 @@
 #include "sc_SimulateTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SpellQueryTab.hpp"
-#include "sc_UpdateCheck.hpp"
 #include "sc_WelcomeTab.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
