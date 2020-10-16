@@ -94,7 +94,7 @@ struct avengers_shield_base_t : public paladin_spell_t
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
   avengers_shield_dt_t( paladin_t* p ) :
-    avengers_shield_base_t( "avengers_shield_dt", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
+    avengers_shield_base_t( "avengers_shield_divine_toll", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
   {
     background=true;
   }
@@ -503,7 +503,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   }
 
   shield_of_the_righteous_t( paladin_t* p ) :
-    holy_power_consumer_t( "shield_of_the_righteous_vanq", p, p -> spec.shield_of_the_righteous )
+    holy_power_consumer_t( "shield_of_the_righteous_vanquishers_hammer", p, p -> spec.shield_of_the_righteous )
   {
     // This is the "free" SotR from vanq hammer. Identifiable by being background.
     background = true;
