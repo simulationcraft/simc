@@ -8333,7 +8333,7 @@ void rogue_t::create_buffs()
   // Covenants ==============================================================
 
   buffs.flagellation = make_buff( this, "flagellation_buff", covenant.flagellation_buff )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.001 ) // Thar be server magic here to divide by 10.
     ->add_invalidate( CACHE_HASTE );
 
   buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
@@ -9130,7 +9130,7 @@ public:
       .verification_value( 0.8735 );
 
     // Manual hotfix for Bloodfang AP typo.
-    hotfix::register_effect( "Rogue", "2020-10-15", "Bloodfang AP Fix", 840280 )
+    hotfix::register_effect( "Rogue", "2020-10-15", "Bloodfang AP Fix", 840280, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.095 )
