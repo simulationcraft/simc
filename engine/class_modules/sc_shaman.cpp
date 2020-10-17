@@ -449,6 +449,9 @@ public:
     buff_t* strength_of_earth;
     buff_t* thunderaans_fury;
     stat_buff_t* ancestral_resonance;
+    stat_buff_t* natural_harmony_fire;    // crit
+    stat_buff_t* natural_harmony_frost;   // mastery
+    stat_buff_t* natural_harmony_nature;  // haste
 
   } buff;
 
@@ -484,6 +487,7 @@ public:
 
     // Shared
     azerite_power_t ancestral_resonance;
+    azerite_power_t natural_harmony;
   } azerite;
 
   // Covenant Class Abilities
@@ -798,6 +802,7 @@ public:
   void trigger_primal_primer( const action_state_t* state );
   void trigger_strength_of_earth( const action_state_t* state );
   void trigger_ancestral_resonance( const action_state_t* state );
+  void trigger_natural_harmony( const action_state_t* );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
@@ -1560,6 +1565,7 @@ public:
     // Azerite
     p()->trigger_primal_primer( state );
     p()->trigger_strength_of_earth( state );
+    p()->trigger_natural_harmony( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -1872,7 +1878,8 @@ public:
   {
     base_t::impact( state );
 
-    // p()->trigger_stormbringer( state );
+    p()->trigger_strength_of_earth( state );
+    p()->trigger_natural_harmony( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -5509,6 +5516,7 @@ struct flame_shock_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+      p()->trigger_natural_harmony( d->state );
     }
 
     // Fire Elemental passive effect (MS generation on FS tick)
@@ -7295,6 +7303,7 @@ void shaman_t::init_spells()
   azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
   azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
   azerite.thunderaans_fury  = find_azerite_spell( "Thunderaan's Fury" );
+  azerite.natural_harmony   = find_azerite_spell( "Natural Harmony" );
   azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
 
   // Covenants
@@ -7793,6 +7802,35 @@ void shaman_t::trigger_ancestral_resonance( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_natural_harmony( const action_state_t* state )
+{
+  if ( !azerite.natural_harmony.ok() )
+    return;
+
+  if ( !state->action->harmful )
+    return;
+
+  if ( state->result_amount <= 0 )
+    return;
+
+  auto school = state->action->get_school();
+
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    buff.natural_harmony_fire->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    buff.natural_harmony_nature->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    buff.natural_harmony_frost->trigger();
+  }
+}
+
 void shaman_t::regenerate_flame_shock_dependent_target_list(
     const action_t* action, bool retain_main_target ) const
 {
@@ -8143,6 +8181,15 @@ void shaman_t::create_buffs()
     buffs.bloodlust->set_duration(
         timespan_t::from_seconds( azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() ) );
   }
+  buff.natural_harmony_fire = make_buff<stat_buff_t>( this, "natural_harmony_fire", find_spell( 279028 ) )
+    ->add_stat( STAT_CRIT_RATING, azerite.natural_harmony.value() );
+
+  buff.natural_harmony_frost = make_buff<stat_buff_t>( this, "natural_harmony_frost", find_spell( 279029 ) )
+    ->add_stat( STAT_MASTERY_RATING, azerite.natural_harmony.value() );
+
+  buff.natural_harmony_nature = make_buff<stat_buff_t>( this, "natural_harmony_nature", find_spell( 279033 ) )
+    ->add_stat( STAT_HASTE_RATING, azerite.natural_harmony.value() );
+
 }
 
 // shaman_t::init_gains =====================================================
