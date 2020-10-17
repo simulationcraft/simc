@@ -540,11 +540,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     if ( !background )
     {
-      if ( p() -> buffs.shining_light_free -> up() )
-        p() -> buffs.shining_light_free -> trigger();
-      else if ( !p() -> buffs.shining_light_stacks -> up() )
-        p() -> buffs.shining_light_stacks -> trigger();
-      else if ( p() -> buffs.shining_light_stacks -> at_max_stacks() ) {
+      if ( p() -> buffs.shining_light_free -> up() || p() -> buffs.shining_light_stacks -> at_max_stacks() )
+      {
         p() -> buffs.shining_light_stacks -> expire();
         p() -> buffs.shining_light_free -> trigger();
       }
