@@ -4242,15 +4242,17 @@ struct lava_beam_t : public chained_base_t
 struct lava_burst_state_t : public action_state_t
 {
   bool primordial_wave = false;
+  execute_type exec_type = execute_type::NORMAL;
 
   lava_burst_state_t( action_t* action_, player_t* target_ ) :
-    action_state_t( action_, target_ ), primordial_wave( false )
+    action_state_t( action_, target_ )
   { }
 
   void initialize() override
   {
     action_state_t::initialize();
     primordial_wave = false;
+    exec_type = execute_type::NORMAL;
   }
 
   void copy_state( const action_state_t* s ) override
@@ -4259,6 +4261,7 @@ struct lava_burst_state_t : public action_state_t
 
     auto lbs = debug_cast<const lava_burst_state_t*>( s );
     primordial_wave = lbs->primordial_wave;
+    exec_type = lbs->exec_type;
   }
 };
 
@@ -4292,6 +4295,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->primordial_wave = p()->buff.primordial_wave->check();
+    cast_state( s )->exec_type = exec_type;
   }
 
   // Init defined below lava_burst_t to parent stats objects properly
@@ -4596,6 +4600,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->primordial_wave = p()->buff.primordial_wave->check();
+    cast_state( s )->exec_type = exec_type;
   }
 
   void init() override
@@ -4663,6 +4668,7 @@ struct lava_burst_t : public shaman_spell_t
     // background set to true, and is intended to not consume PW buff (nor track stats to
     // PW-Lava Burst)
     bool is_pw = !background && cast_state( s )->primordial_wave;
+    bool is_es = cast_state( s )->exec_type == execute_type::ECHOING_SHOCK;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
@@ -4676,6 +4682,10 @@ struct lava_burst_t : public shaman_spell_t
     {
       stats = primordial_wave_stats;
     }
+    else if ( is_es )
+    {
+      stats = echoing_shock_stats;
+    }
 
     shaman_spell_t::impact( s );
 
@@ -4686,7 +4696,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.surge_of_power->decrement();
     }
 
-    if ( is_pw )
+    if ( is_pw || is_es )
     {
       stats = normal_stats;
     }
@@ -9154,10 +9164,12 @@ inline void echoing_shock_event_t::execute()
   auto orig_stats = spell->stats;
   auto orig_target = spell->target;
   auto orig_tte = spell->time_to_execute;
+  auto orig_cd = spell->cooldown->duration;
 
   spell->background = true;
   spell->stats = spell->echoing_shock_stats;
   spell->time_to_execute = 0_s;
+  spell->cooldown->duration = 0_s;
   spell->exec_type = execute_type::ECHOING_SHOCK;
   spell->set_target( target );
   spell->execute();
@@ -9166,6 +9178,7 @@ inline void echoing_shock_event_t::execute()
   spell->stats = orig_stats;
   spell->exec_type = execute_type::NORMAL;
   spell->time_to_execute = orig_tte;
+  spell->cooldown->duration = orig_cd;
   spell->set_target( orig_target );
 }
 
