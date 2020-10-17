@@ -1550,6 +1550,7 @@ struct shadow_crash_t final : public priest_spell_t
     radius           = data().effectN( 1 ).radius();
     range            = data().max_range();
     cooldown->hasted = true;
+    travel_speed     = data().missile_speed();
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
@@ -1564,12 +1565,6 @@ struct shadow_crash_t final : public priest_spell_t
       priest_td_t& td = get_td( state->target );
       td.buffs.shadow_crash_debuff->trigger();
     }
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
