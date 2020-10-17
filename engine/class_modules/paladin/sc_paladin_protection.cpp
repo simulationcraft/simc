@@ -552,6 +552,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
         p() -> buffs.shining_light_stacks -> trigger();
     }
 
+    p() -> buffs.bulwark_of_righteous_fury -> expire();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
