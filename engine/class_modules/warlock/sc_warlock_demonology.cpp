@@ -300,12 +300,19 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    p()->buffs.balespiders_burning_core->expire();
+    p()->buffs.balespiders_burning_core->expire();    
+  }
 
-    if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
-      p()->procs.prolonged_decimation->occur();
-    else
-      p()->buffs.decimating_bolt->decrement();
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
+    if ( result_is_hit( s->result ) )
+    {
+      if ( rng().roll( p()->conduit.prolonged_decimation.percent() ) )
+        p()->procs.prolonged_decimation->occur();
+      else
+        p()->buffs.decimating_bolt->decrement();
+    }
   }
 
   double action_multiplier() const override
