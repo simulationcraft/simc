@@ -443,6 +443,9 @@ public:
     // PvP
     buff_t* thundercharge;
 
+    // Azerite
+    buff_t* roiling_storm_buff_driver;
+
   } buff;
 
   // Options
@@ -470,6 +473,7 @@ public:
   {
     azerite_power_t lightning_conduit;
     azerite_power_t primal_primer;
+    azerite_power_t roiling_storm;
   } azerite;
 
   // Covenant Class Abilities
@@ -1007,6 +1011,26 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              // Primal Primer has a hardcoded /2 in its tooltip
                              ->set_default_value( 0.5 * p->azerite.primal_primer.value() );
 }
+
+// Azerite
+
+struct roiling_storm_buff_driver_t : public buff_t
+{
+  roiling_storm_buff_driver_t( shaman_t* p ) :
+    buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
+  {
+    set_period( s_data->internal_cooldown() );
+    set_quiet( true );
+
+    if ( p->azerite.roiling_storm.ok() )
+    {
+      set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
+        p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
+        p->cooldown.strike->reset( true );
+      } );
+    }
+  }
+};
 
 // ==========================================================================
 // Shaman Action Base Template
@@ -2780,6 +2804,25 @@ struct stormstrike_attack_t : public shaman_attack_t
     }
 
     return m;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double v = shaman_attack_t::bonus_da( s );
+
+    if ( stormbringer )
+    {
+      double rs_bonus = ( 2.0 / 3.0 ) * p()->azerite.roiling_storm.value( 1 );
+      // New Roiling Storm has 66% penalty from the tooltip applied to MH and 33% to OH.
+      if ( weapon && weapon->slot == SLOT_OFF_HAND )
+      {
+        rs_bonus *= 0.5;
+      }
+
+      v += rs_bonus;
+    }
+
+    return v;
   }
 
   void execute() override
@@ -7151,6 +7194,7 @@ void shaman_t::init_spells()
   // Azerite
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
   azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
+  azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -7910,6 +7954,10 @@ void shaman_t::create_buffs()
           ->set_cooldown( timespan_t::zero() );
   buff.tidal_waves =
       make_buff( this, "tidal_waves", spec.tidal_waves->ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
+
+
+  // Azerite
+  buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
 }
 
 // shaman_t::init_gains =====================================================
@@ -8708,6 +8756,12 @@ void shaman_t::arise()
 void shaman_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( azerite.roiling_storm.ok() )
+  {
+    buff.roiling_storm_buff_driver->trigger();
+    buff.stormbringer->trigger( buff.stormbringer->max_stack() );
+  }
 }
 
 // shaman_t::reset ==========================================================
