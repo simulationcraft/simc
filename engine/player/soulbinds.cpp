@@ -472,7 +472,7 @@ void built_for_war( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
-      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
