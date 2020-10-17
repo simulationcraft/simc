@@ -980,7 +980,6 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
   }
 };
 
-// TODO: implement divine toll conduit
 struct divine_toll_t : public paladin_spell_t
 {
   divine_toll_t( paladin_t* p, const std::string& options_str ) :
@@ -1003,6 +1002,15 @@ struct divine_toll_t : public paladin_spell_t
       p() -> active.divine_toll -> schedule_execute();
     }
   }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() -> conduit.ringing_clarity -> ok() && rng().roll( p() -> conduit.ringing_clarity.percent() ) )
+      for ( int hits = 0; hits < p() -> conduit.ringing_clarity -> effectN( 2 ).base_value(); hits ++ )
+        p() -> active.divine_toll -> schedule_execute();
+  }
+
 };
 
 // TODO: fix AoE scaling once the formula is found, implement healing as well
