@@ -973,8 +973,7 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
 
     if ( p() -> conduit.righteous_might -> ok() )
     {
-      r_m_heal -> base_dd_min = r_m_heal -> base_dd_max =
-        s -> result_amount * p() -> conduit.righteous_might.percent();
+      r_m_heal -> base_dd_min = r_m_heal -> base_dd_max = s -> result_amount;
       r_m_heal -> execute();
     }
   }
