@@ -599,6 +599,39 @@ const spell_data_t* find_spell( const T* obj, unsigned spell_id )
   return obj -> dbc->spell( spell_id );
 }
 
+template <typename T>
+const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
+{
+  if ( const spelleffect_data_t* override_effect = obj->dbc_override->find_effect( effect_id, obj -> dbc->ptr ) )
+  {
+    return override_effect;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_effect( obj -> dbc->effect( effect_id ), obj -> dbc->ptr );
+  }
+
+  return obj -> dbc->effect( effect_id );
+}
+
+template <typename T>
+const spellpower_data_t* find_power( const T* obj, unsigned power_id )
+{
+  if ( const spellpower_data_t* override_power = obj->dbc_override->find_power( power_id, obj -> dbc->ptr ) )
+  {
+    return override_power;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_power( & obj -> dbc->power( power_id ), obj -> dbc->ptr );
+  }
+
+  return & obj -> dbc->power( power_id );
+}
+
+
 } // dbc namespace ends
 
 #endif // SC_DBC_HPP
