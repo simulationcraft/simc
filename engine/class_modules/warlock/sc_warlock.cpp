@@ -295,6 +295,11 @@ void warlock_td_t::target_demise()
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 5, warlock.gains.scouring_tithe );
+
+    if ( warlock.conduit.soul_tithe.value() > 0 )
+    {
+      warlock.buffs.soul_tithe->trigger();
+    }
   }
 
   if ( debuffs_haunt->check() )
