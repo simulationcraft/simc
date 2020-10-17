@@ -5,7 +5,10 @@
 
 #pragma once
 
+#include <QString>
 #include <QtWidgets/QtWidgets>
+#include <memory>
+#include <string>
 
 class BattleNetImportWindow;
 class SC_MainTab;
