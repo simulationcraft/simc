@@ -1462,12 +1462,12 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
+    child_dp->set_target( target );
+    child_dp->execute();
+    
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-
-    child_dp->set_target( target );
-    child_dp->execute();
   }
 
   void impact( action_state_t* s ) override
