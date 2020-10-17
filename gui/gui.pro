@@ -56,7 +56,7 @@ macx {
 
   Resources.files = ../Welcome.html ../Welcome.png ../Error.html
   Resources.path = Contents/Resources
-  Profiles.files =  ../profiles/PreRaids ../profiles/Tier25 ../profiles/DungeonSlice
+  Profiles.files =  ../profiles/PreRaids ../profiles/Tier25
   Profiles.path = Contents/Resources/profiles
   Localization.files = ../locale/sc_de.qm ../locale/sc_it.qm ../locale/sc_cn.qm
   Localization.path = Contents/Resources/locale

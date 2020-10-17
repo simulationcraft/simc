@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "player/covenant.hpp"
 #include "util/util.hpp"
-#include "class_modules/mage/mage_apl.hpp"
+#include "class_modules/apl/mage.hpp"
 
 namespace {
 
@@ -905,7 +905,7 @@ public:
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
-  void      trigger_arcane_charge( int stacks = 1, bool rule_of_threes = true );
+  void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
 };
@@ -1114,12 +1114,12 @@ struct touch_of_the_magi_t : public buff_t
   }
 };
 
-struct combustion_buff_t : public buff_t
+struct combustion_t : public buff_t
 {
   double current_amount; // Amount of mastery rating granted by the buff
   double multiplier;
 
-  combustion_buff_t( mage_t* p ) :
+  combustion_t( mage_t* p ) :
     buff_t( p, "combustion", p->find_spell( 190319 ) ),
     current_amount(),
     multiplier( data().effectN( 3 ).percent() )
@@ -1177,9 +1177,9 @@ struct expanded_potential_buff_t : public buff_t
   }
 };
 
-struct ice_floes_buff_t : public buff_t
+struct ice_floes_t : public buff_t
 {
-  ice_floes_buff_t( mage_t* p ) :
+  ice_floes_t( mage_t* p ) :
     buff_t( p, "ice_floes", p->talents.ice_floes )
   { }
 
@@ -1195,9 +1195,9 @@ struct ice_floes_buff_t : public buff_t
   }
 };
 
-struct icy_veins_buff_t : public buff_t
+struct icy_veins_t : public buff_t
 {
-  icy_veins_buff_t( mage_t* p ) :
+  icy_veins_t( mage_t* p ) :
     buff_t( p, "icy_veins", p->find_spell( 12472 ) )
   {
     set_default_value_from_effect( 1 );
@@ -1251,6 +1251,22 @@ struct incanters_flow_t : public buff_t
       reverse = false;
     else
       buff_t::decrement( stacks, value );
+  }
+};
+
+struct rune_of_power_t : public buff_t
+{
+  rune_of_power_t( mage_t* p ) :
+    buff_t( p, "rune_of_power", p->find_spell( 116014 ) )
+  {
+    set_default_value_from_effect( 1 );
+    set_chance( p->talents.rune_of_power->ok() );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    debug_cast<mage_t*>( player )->distance_from_rune = 0.0;
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -2196,7 +2212,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.pyroclasm->trigger();
       p()->buffs.firemind->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, 0 );
+      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready, p()->bugs ? 0 : 1 );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2555,7 +2571,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
       p()->buffs.chrono_shift->trigger();
       // Multiply by 0.1 because for this data a value of 100 means 10%.
       if ( rng().roll( 0.1 * p()->conduits.artifice_of_the_archmage.percent() ) )
-        p()->trigger_arcane_charge( artifice_of_the_archmage_charges, false );
+        p()->trigger_arcane_charge( artifice_of_the_archmage_charges );
     }
   }
 
@@ -3016,9 +3032,7 @@ struct arcane_power_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->buffs.arcane_power->trigger();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -3171,9 +3185,7 @@ struct combustion_t : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -3443,7 +3455,7 @@ struct evocation_t : public arcane_mage_spell_t
     if ( brain_storm_charges > 0 )
       p()->trigger_arcane_charge( brain_storm_charges );
     if ( siphon_storm_charges > 0 )
-      p()->trigger_arcane_charge( siphon_storm_charges, false );
+      p()->trigger_arcane_charge( siphon_storm_charges );
   }
 
   void tick( dot_t* d ) override
@@ -4392,7 +4404,6 @@ struct icy_veins_t : public frost_mage_spell_t
     p()->buffs.frigid_grasp->trigger();
 
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -4922,12 +4933,6 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( time_to_execute > 0_ms )
       p()->buffs.pyroclasm->decrement();
-
-    if ( pyroblast_dot )
-    {
-      pyroblast_dot->set_target( target );
-      pyroblast_dot->execute();
-    }
   }
 
   timespan_t travel_time() const override
@@ -4954,6 +4959,11 @@ struct pyroblast_t : public hot_streak_spell_t
     {
       consume_molten_skyfall( s->target );
       trigger_molten_skyfall();
+      if ( pyroblast_dot )
+      {
+        pyroblast_dot->set_target( s->target );
+        pyroblast_dot->execute();
+      }
     }
   }
 
@@ -5029,9 +5039,7 @@ struct rune_of_power_t : public mage_spell_t
   void execute() override
   {
     mage_spell_t::execute();
-
     p()->buffs.rune_of_power->trigger();
-    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -5789,6 +5797,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   last_bomb_target(),
   last_frostbolt_target(),
   ground_aoe_expiration(),
+  remaining_winters_chill(),
   distance_from_rune(),
   lucid_dreams_refund(),
   strive_for_perfection_multiplier(),
@@ -6404,7 +6413,7 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion        = make_buff<buffs::combustion_buff_t>( this );
+  buffs.combustion        = make_buff<buffs::combustion_t>( this );
   buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
                               ->set_chance( spec.fireball_2->ok() )
                               ->set_default_value_from_effect( 1 )
@@ -6442,7 +6451,7 @@ void mage_t::create_buffs()
   buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins        = make_buff<buffs::icy_veins_buff_t>( this );
+  buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
 
   buffs.bone_chilling    = make_buff( this, "bone_chilling", find_spell( 205766 ) )
                              ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
@@ -6453,16 +6462,14 @@ void mage_t::create_buffs()
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                              ->set_default_value_from_effect( 2 )
                              ->set_chance( talents.freezing_rain->ok() );
-  buffs.ice_floes        = make_buff<buffs::ice_floes_buff_t>( this );
+  buffs.ice_floes        = make_buff<buffs::ice_floes_t>( this );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                              ->set_default_value_from_effect( 1 );
 
 
   // Shared
   buffs.incanters_flow   = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power    = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( talents.rune_of_power->ok() );
+  buffs.rune_of_power    = make_buff<buffs::rune_of_power_t>( this );
   buffs.focus_magic_crit = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
                              ->set_default_value_from_effect( 1 )
                              ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
@@ -6910,6 +6917,8 @@ void mage_t::reset()
   last_frostbolt_target = nullptr;
   burn_phase.reset();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
+  remaining_winters_chill = 0;
+  distance_from_rune = 0.0;
   state = state_t();
 }
 
@@ -7475,7 +7484,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
   buffs.evocation->trigger( 1, mana_regen_multiplier, -1.0, duration );
 }
 
-void mage_t::trigger_arcane_charge( int stacks, bool rule_of_threes )
+void mage_t::trigger_arcane_charge( int stacks )
 {
   if ( !spec.arcane_charge->ok() )
     return;
@@ -7483,7 +7492,7 @@ void mage_t::trigger_arcane_charge( int stacks, bool rule_of_threes )
   int before = buffs.arcane_charge->check();
   buffs.arcane_charge->trigger( stacks );
 
-  if ( ( !bugs || rule_of_threes ) && before < 3 && buffs.arcane_charge->check() >= 3 )
+  if ( before < 3 && buffs.arcane_charge->check() >= 3 )
     buffs.rule_of_threes->trigger();
 }
 
@@ -7799,6 +7808,18 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2020-10-14", "Arcane spec aura (retail)", 137021 )
+      .field( "max_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 49 );
+
+    hotfix::register_effect( "Mage", "2020-10-14", "Arcane spec aura regen (retail)", 191118 )
+      .field( "points_per_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -3 )
+      .verification_value( -2 );
   }
 
   bool valid() const override { return true; }

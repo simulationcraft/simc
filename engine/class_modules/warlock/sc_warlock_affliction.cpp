@@ -266,6 +266,11 @@ struct agony_t : public affliction_spell_t
       p()->buffs.inevitable_demise->trigger();
     }
 
+    if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
+    {
+      p()->buffs.id_azerite->trigger();
+    }
+
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
@@ -396,10 +401,18 @@ struct unstable_affliction_t : public affliction_spell_t
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
     }
+    else if ( p()->ua_target && td( p()->ua_target )->dots_unstable_affliction->is_ticking() &&
+      p()->azerite.cascading_calamity.ok() )
+    {
+      p()->buffs.cascading_calamity->trigger();
+    }
 
     p()->ua_target = target;
 
     affliction_spell_t::execute();
+
+    if ( p()->azerite.dreadful_calling.ok() )
+      p()->cooldowns.darkglare->adjust( (-1 * p()->azerite.dreadful_calling.spell_ref().effectN( 1 ).time_value() ) );
   }
 
   void last_tick( dot_t* d) override
@@ -414,6 +427,13 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = affliction_spell_t::bonus_ta( s );
+    ta += p()->azerite.dreadful_calling.value( 2 );
+    return ta;
   }
 };
 
@@ -580,6 +600,7 @@ struct malefic_rapture_t : public affliction_spell_t
         background = true;
         spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
         base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+        callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
 
         p->spells.malefic_rapture_aoe = this;
       }
@@ -603,6 +624,9 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_soul_rot->is_ticking() )
+          mult += 1.0;
+
         if ( td->dots_siphon_life->is_ticking() )
           mult += 1.0;
 
@@ -611,7 +635,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
         // TODO:
         // Impending catastrophe
-        // Soul Rot
         return mult;
       }
 
@@ -627,7 +650,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
         return m;
       }
-
+      
       void execute() override
       {
         if ( p()->legendary.malefic_wrath->ok() )
@@ -638,7 +661,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
           affliction_spell_t::execute();
       }
-
     };
 
     malefic_rapture_damage_instance_t* damage_instance;
@@ -918,6 +940,11 @@ void warlock_t::create_buffs_affliction()
                                 ->set_max_stack( find_spell( 334320 )->max_stacks() )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
   // BFA - Azerite
+  buffs.id_azerite = make_buff(this, "inevitable_demise_az", azerite.inevitable_demise)
+                         ->set_max_stack(find_spell(273525)->max_stacks())
+                         // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
+                         ->set_default_value(azerite.inevitable_demise.value() * ((1.0 + 0.75 * (azerite.inevitable_demise.n_items() - 1)) / azerite.inevitable_demise.n_items()));
+
   buffs.cascading_calamity = make_buff<stat_buff_t>( this, "cascading_calamity", azerite.cascading_calamity )
                                  ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
                                  ->set_duration( find_spell( 275378 )->duration() )
@@ -1031,24 +1058,27 @@ void warlock_t::create_apl_affliction()
   def->add_action("siphon_life,if=refreshable");
   def->add_action("agony,if=refreshable");
   def->add_action("unstable_affliction,if=refreshable");
+  def->add_action("unstable_affliction,if=azerite.cascading_calamity.enabled&buff.cascading_calamity.remains<3");
   def->add_action("corruption,if=refreshable");
   def->add_action("haunt");
 
   def->add_action("call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)");
   def->add_action("dark_soul,if=cooldown.summon_darkglare.remains>time_to_die");
   def->add_action("call_action_list,name=cooldowns");
+  def->add_action("use_items");
 
   def->add_action("malefic_rapture,if=dot.vile_taint.ticking");
-  def->add_action("malefic_rapture,if=!talent.vile_taint.enabled");
+  def->add_action("malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)");
+  def->add_action("malefic_rapture,if=talent.sow_the_seeds.enabled");
 
   def->add_action("drain_life,if=buff.inevitable_demise.stack>30");
+  def->add_action("drain_life,if=buff.inevitable_demise_az.stack>30");
   def->add_action("drain_soul");
   def->add_action("shadow_bolt");
 
   prep->add_action("vile_taint");
   prep->add_action("dark_soul");
   prep->add_action("potion");
-  prep->add_action("use_items");
   prep->add_action("fireblood");
   prep->add_action("blood_fury");
   prep->add_action("berserking");

@@ -645,6 +645,7 @@ public:
     const spell_data_t* fallen_monk_soothing_mist;
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
+    const spell_data_t* fallen_monk_tiger_palm;
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
@@ -690,7 +691,7 @@ public:
     azerite_power_t niuzaos_blessing;
     // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
-    // Ironskin Brew increases your Armor by 0, and has a 8% chance to not consume a charge.
+    // Shuffle increases your Armor by 0.
     azerite_power_t straight_no_chaser;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
@@ -2106,6 +2107,11 @@ public:
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
+    if ( name == "fire_spirit" )
+      npc_id = 69791;
+    else if ( name == "earth_spirit" )
+      npc_id = 69792;
+
     owner_coeff.ap_from_ap = 1.0;
   }
 
@@ -2349,6 +2355,7 @@ private:
 public:
   xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2496,6 +2503,7 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2659,6 +2667,7 @@ public:
 
   niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
+    npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2785,6 +2794,7 @@ private:
 public:
   chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
+    npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2836,6 +2846,7 @@ private:
 public:
   yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
+    npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3008,6 +3019,7 @@ public:
   fallen_monk_ww_pet_t( monk_t* owner ) : 
       pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
+    npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3080,7 +3092,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
+      : melee_attack_t( "fo_fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
@@ -3132,7 +3144,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
+      : spell_t( "fo_fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3155,7 +3167,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
+      : melee_attack_t( "fo_spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
         owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
@@ -3208,7 +3220,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+      : melee_attack_t( "fo_spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
     {
       parse_options( options_str );
 
@@ -3220,10 +3232,11 @@ public:
         cooldown->duration = timespan_t::from_seconds( 4 );
       else
         cooldown->duration = timespan_t::from_seconds( 6 );
+     
       owner                                            = p->o();
 
-      attack_power_mod.direct = attack_power_mod.tick =  0.0;
-      dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+      attack_power_mod.direct = attack_power_mod.tick = 0.0;
+      dot_behavior                                    = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
       tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
     }
@@ -3240,13 +3253,50 @@ public:
     }
   };
 
+  struct fallen_monk_tiger_palm_t : public melee_attack_t
+  {
+    monk_t* owner;
+    fallen_monk_tiger_palm_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
+      : melee_attack_t( "fo_tiger_palm", p, p->o()->passives.fallen_monk_tiger_palm )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      // Logs show they cast this every 2.5 seconds, instead of back-to-back
+      cooldown->duration = timespan_t::from_seconds( 2.5 );
+      owner = p->o();
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
     // Only cast Fists of Fury for Windwalker specialization
-    if ( o()->specialization() == MONK_WINDWALKER )
-        action_list_str += "/fists_of_fury";
-    action_list_str += "/spinning_crane_kick";
+//    if ( o()->specialization() == MONK_WINDWALKER )
+//        action_list_str += "/fists_of_fury";
+//    action_list_str += "/spinning_crane_kick";
+    action_list_str += "/tiger_palm";
 
     pet_t::init_action_list();
   }
@@ -3261,6 +3311,9 @@ public:
 
     if ( name == "spinning_crane_kick" )
       return new fallen_monk_spinning_crane_kick_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new fallen_monk_tiger_palm_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -3369,6 +3422,7 @@ public:
   fallen_monk_brm_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3413,7 +3467,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
+      : melee_attack_t( "fo_keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -3487,7 +3541,7 @@ public:
     {
       monk_t* owner;
       fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
+        : spell_t( "fo_breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
       {
         background    = true;
         tick_may_crit = may_crit = true;
@@ -3525,7 +3579,7 @@ public:
     fallen_monk_breath_of_fire_tick_t* dot_action;
     monk_t* owner;
     fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+      : spell_t( "fo_breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
         dot_action( new fallen_monk_breath_of_fire_tick_t( p ) ),
         owner( p->o() )
     {
@@ -3568,7 +3622,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
+      : spell_t( "fo_clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
     {
       parse_options( options_str );
       gcd_type           = gcd_haste_type::NONE;
@@ -3710,6 +3764,7 @@ public:
   fallen_monk_mw_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3760,7 +3815,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
+      : heal_t( "fo_enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3796,7 +3851,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
+      : heal_t( "fo_soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -4071,11 +4126,18 @@ public:
         timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration();
         timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
       }
       else
       {
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
+
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
@@ -6236,10 +6298,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    // Bug: Fist of the White Tiger is incorrectly giving Emperor's Capacitor stacks
-    if ( p()->bugs && p()->legendary.last_emperors_capacitor->ok() )
-      p()->buff.the_emperors_capacitor->trigger();
-
     // Apply Mark of the Crane
     if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
@@ -6483,7 +6541,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     cooldown->duration = data().cooldown();
 
     if ( p.legendary.fatal_touch.ok() )
-      cooldown->duration -= timespan_t::from_seconds( p.legendary.fatal_touch->effectN( 1 ).base_value() );
+      cooldown->duration -= p.legendary.fatal_touch->effectN( 1 ).time_value();
   }
 
   void init() override
@@ -7205,12 +7263,10 @@ struct fortifying_brew_t : public monk_spell_t
     harmful = may_crit = false;
 
     if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration +=
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_mw->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
 
     if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += 
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -8042,11 +8098,10 @@ struct fallen_order_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    specialization_e spec      = p()->specialization();
-    // Tooltips are currently incorrect and hard coding the duration for each
-    timespan_t summon_duration = timespan_t::from_seconds( 8 /*p()->covenant.venthyr->effectN( 4 ).base_value() */ );
+    specialization_e spec       = p()->specialization();
+    timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( 4/*p()->covenant.venthyr->effectN( 3 ).base_value()*/ );
+        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
@@ -8067,7 +8122,7 @@ struct fallen_order_t : public monk_spell_t
         break;
     }
 
-    for ( int i = 0; i < 10; i++ )
+    for ( int i = 0; i < 7; i++ )
     {
       switch ( spec )
       {
@@ -8107,7 +8162,7 @@ struct fallen_order_t : public monk_spell_t
     }
 
     make_event<fallen_order_event_t>(
-        *sim, p(), fallen_monks, timespan_t::from_seconds( p()->covenant.venthyr->effectN( 2 ).base_value() * 2 ) );
+        *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells
@@ -8559,13 +8614,17 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->azerite.conflict_and_strife.is_major() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 2 ).base_value(), p()->gain.expel_harm );
-    }
-    else if ( p()->spec.expel_harm_2_ww->ok() )
-    {
-      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
+      double chi_gain = 0;
+      if ( p()->azerite.conflict_and_strife.is_major() )
+        chi_gain += p()->spec.reverse_harm->effectN( 2 ).base_value();
+
+      if ( p()->spec.expel_harm_2_ww->ok() )
+        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
+
+      if (chi_gain > 0 )
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
     }
   }
 
@@ -8746,11 +8805,33 @@ struct chi_burst_heal_t : public monk_heal_t
 
 struct chi_burst_damage_t : public monk_spell_t
 {
-  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
+  int num_hit;
+  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ),
+      num_hit( 0 )
   {
     background = true;
     ww_mastery = true;
     aoe        = -1;
+  }
+
+  void execute() override
+  {
+    num_hit = 0;
+
+    monk_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    num_hit++;
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
+        p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
+    }
   }
 };
 
@@ -8759,7 +8840,8 @@ struct chi_burst_t : public monk_spell_t
   chi_burst_heal_t* heal;
   chi_burst_damage_t* damage;
   chi_burst_t( monk_t* player, const std::string& options_str )
-    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
+    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ),
+      heal( nullptr )
   {
     parse_options( options_str );
     may_combo_strike = true;
@@ -8789,16 +8871,6 @@ struct chi_burst_t : public monk_spell_t
 
     heal->execute();
     damage->execute();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( num_targets_hit > p()->talent.chi_burst->effectN( 3 ).base_value() )
-        for ( int i = 0; i < p()->talent.chi_burst->effectN( 3 ).base_value(); i++ )
-          p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
-      else
-        for ( int i = 0; i < num_targets_hit; i++ )
-          p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
-    }
   }
 };
 
@@ -8968,13 +9040,6 @@ struct celestial_brew_t : public monk_absorb_t
       p()->active_actions.stagger_self_damage->delay_tick(
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
-    }
-
-    if ( p()->azerite.straight_no_chaser.ok() )
-    {
-      p()->buff.straight_no_chaser->trigger();
-      if ( rng().roll( p()->azerite.straight_no_chaser.spell_ref().effectN( 2 ).percent() ) )
-        p()->cooldown.celestial_brew->reset( true, 1 );
     }
 
     if ( p()->legendary.celestial_infusion->ok() )
@@ -9324,7 +9389,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
-  debuff.faeline_stomp = make_buff( *this, "faeline_stomp", p->find_spell( 327257 ) );
+  debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
 
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
@@ -10049,6 +10114,7 @@ void monk_t::init_spells()
   passives.fallen_monk_soothing_mist            = find_spell( 328283 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
+  passives.fallen_monk_tiger_palm               = find_spell( 346602 );
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );
@@ -10309,7 +10375,7 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
                                    ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
@@ -10376,7 +10442,7 @@ void monk_t::create_buffs()
                                     ->set_trigger_spell( find_spell( 286586 ) )
                                     ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
-  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
+  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite_hidden", find_spell( 286587 ) )
                                            ->set_quiet( true )
                                            ->set_trigger_spell( find_spell( 286586 ) )
                                            ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
@@ -12027,16 +12093,6 @@ void monk_t::init_action_list()
     quiet = true;
     return;
   }
-  if ( specialization() == MONK_BREWMASTER && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error(
-          "{} is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
-          "to dual weld.",
-          *this );
-    quiet = true;
-    return;
-  }
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -12164,7 +12220,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
     auto current_tick_dmg                = current_stagger_tick_dmg();
     auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
     sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
-    if ( current_tick_dmg_per_max_health > 0.06 )
+    if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
       niuzao   = 3;
@@ -12369,7 +12425,7 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.mistweaver_monk );
 
   if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
-      main_hand_weapon.group() == weapon_e::WEAPON_2H )
+      main_hand_weapon.group() == weapon_e::WEAPON_1H )
         action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )

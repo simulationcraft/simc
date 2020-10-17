@@ -71,6 +71,9 @@ public:
 
     // Covenant
     dot_t* sinful_brand;
+
+    // Legendary
+    dot_t* burning_wound;
   } dots;
 
   struct debuffs_t
@@ -84,6 +87,9 @@ public:
 
     // Covenant
     buff_t* serrated_glaive;
+
+    // Legendary
+    buff_t* burning_wound;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -139,57 +145,6 @@ struct movement_buff_t : public buff_t
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
-struct counter_t
-{
-  const sim_t* sim;
-
-  double value, interval;
-  timespan_t last;
-
-  counter_t( demon_hunter_t* p );
-
-  void add( double val )
-  {
-    // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
-      return;
-
-    value += val;
-    if ( last > timespan_t::min() )
-      interval += ( sim->current_time() - last ).total_seconds();
-    last = sim->current_time();
-  }
-
-  void reset()
-  {
-    last = timespan_t::min();
-  }
-
-  double divisor() const
-  {
-    if ( !sim->debug && !sim->log && sim->iterations > sim->threads )
-      return sim->iterations - sim->threads;
-    else
-      return std::min( sim->iterations, sim->threads );
-  }
-
-  double mean() const
-  {
-    return value / divisor();
-  }
-
-  double interval_mean() const
-  {
-    return interval / divisor();
-  }
-
-  void merge( const counter_t& other )
-  {
-    value += other.value;
-    interval += other.interval;
-  }
-};
-
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -201,7 +156,6 @@ public:
   using base_t = player_t;
 
   // Data collection for cooldown waste
-  std::vector<counter_t*> counters;
   auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
@@ -462,16 +416,16 @@ public:
   struct legendary_t
   {
     // General
-    item_runeforge_t half_giant_empowerment;        // NYI
     item_runeforge_t darkglare_boon;
     item_runeforge_t collective_anguish;
     item_runeforge_t fel_bombardment;
+    item_runeforge_t darkest_hour;                  // NYI
 
     // Havoc
     item_runeforge_t chaos_theory;
     item_runeforge_t erratic_fel_core;
-    item_runeforge_t darkest_hour;                  // NYI
-    item_runeforge_t inner_demons;
+    item_runeforge_t darker_nature;                 // NYI
+    item_runeforge_t burning_wound;
 
     // Vengeance
     item_runeforge_t fiery_soul;                    // NYI
@@ -588,9 +542,6 @@ public:
 
     // Havoc
     real_ppm_t* demonic_appetite;
-
-    // Legendary
-    real_ppm_t* inner_demons;
   } rppm;
 
   // Shuffled proc objects
@@ -757,21 +708,10 @@ public:
     return &( entries.back()->second );
   }
 
-  ~demon_hunter_t() override;
-
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
 };
 
-demon_hunter_t::~demon_hunter_t()
-{
-  range::dispose( counters );
-}
-
-counter_t::counter_t( demon_hunter_t* p ) : sim( p->sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
-{
-  p->counters.push_back( this );
-}
 
 // Delayed Execute Event ====================================================
 
@@ -1205,6 +1145,7 @@ public:
     affect_flags demonic_presence;
     affect_flags momentum;
     bool essence_break = false;
+    bool burning_wound = false;
   } affected_by;
 
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
@@ -1282,6 +1223,10 @@ public:
       {
         affected_by.essence_break = ab::data().affected_by( p->find_spell( 320338 )->effectN( 1 ) );
       }
+      if ( p->legendary.burning_wound->ok() )
+      {
+        affected_by.burning_wound = ab::data().affected_by( p->legendary.burning_wound->effectN( 1 ).trigger()->effectN( 2 ) );
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1350,6 +1295,11 @@ public:
     if ( affected_by.essence_break )
     {
       m *= 1.0 + td( target )->debuffs.essence_break->check_value();
+    }
+
+    if ( affected_by.burning_wound )
+    {
+      m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
     }
 
     return m;
@@ -3579,17 +3529,6 @@ struct death_sweep_t : public blade_dance_base_t
 
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
-  struct inner_demons_t : public demon_hunter_spell_t
-  {
-    inner_demons_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 337550 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-      base_execute_time = p->find_spell( 337549 )->duration();
-    }
-  };
-
   struct chaos_strike_damage_t: public demon_hunter_attack_t {
     timespan_t delay;
     chaos_strike_base_t* parent;
@@ -3676,16 +3615,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   };
 
   std::vector<chaos_strike_damage_t*> attacks;
-  inner_demons_t* inner_demons;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
                        const spell_data_t* s, const std::string& options_str = std::string())
     : demon_hunter_attack_t( n, p, s, options_str )
   {
-    if ( p->legendary.inner_demons->ok() )
-    {
-      inner_demons = p->get_background_action<inner_demons_t>( "inner_demons" );
-    }
   }
 
   double cost() const override
@@ -3747,13 +3681,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       p()->spawn_soul_fragment( soul_fragment::LESSER );
     }
 
-    // Inner Demons Legendary
-    if ( p()->legendary.inner_demons->ok() && p()->rppm.inner_demons->trigger() )
-    {
-      inner_demons->set_target( target );
-      inner_demons->schedule_execute();
-    }
-
     // Seething Power
     p()->buff.seething_power->trigger();
   }
@@ -3811,10 +3738,34 @@ struct annihilation_t : public chaos_strike_base_t
 
 struct demons_bite_t : public demon_hunter_attack_t
 {
+  struct burning_wound_t : public demon_hunter_spell_t
+  {
+    burning_wound_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->legendary.burning_wound->effectN( 1 ).trigger() )
+    {
+      dual = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+      if ( result_is_hit( s->result ) )
+      {
+        td( s->target )->debuffs.burning_wound->trigger();
+      }
+    }
+  };
+
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
+    
+    if ( p->legendary.burning_wound->ok() )
+    {
+      impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
+      add_child( impact_action );
+    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4256,15 +4207,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "throw_glaive", p, p->spec.throw_glaive, options_str )
   {
-    // Currently on beta, Havoc uses a trigger spell, Vengeance currently does not
-    if ( p->spec.throw_glaive->effectN( 1 ).trigger()->ok() )
-    {
-      execute_action = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
-      execute_action->stats = stats;
-    }
+    execute_action = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
+    execute_action->stats = stats;
 
-    // Likely due to the above issue, this legendary does not function for Vengeance either
-    if ( p->legendary.fel_bombardment->ok() && execute_action )
+    if ( p->legendary.fel_bombardment->ok() )
     {
       fel_bombardment = p->get_background_action<throw_glaive_damage_t>( "fel_bombardment" );
       add_child( fel_bombardment );
@@ -4594,6 +4540,10 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_cooldown( timespan_t::zero() );
+
+    debuffs.burning_wound = make_buff( *this, "burning_wound", p.legendary.burning_wound->effectN( 1 ).trigger() )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
+    dots.burning_wound = target->get_dot( "burning_wound", &p );
   }
   else // DEMON_HUNTER_VENGEANCE
   {
@@ -4825,7 +4775,7 @@ void demon_hunter_t::create_buffs()
   
   // Furious Gaze doesn't have a trigger reference in the Azerite trait for some reason...
   const spell_data_t* furious_gaze_buff = azerite.furious_gaze.spell()->ok() ? find_spell( 273232 ) : spell_data_t::not_found();
-  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze", furious_gaze_buff )
+  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze_azerite", furious_gaze_buff )
     ->add_stat( STAT_HASTE_RATING, azerite.furious_gaze.value( 1 ) )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_trigger_spell( azerite.furious_gaze );
@@ -4878,6 +4828,7 @@ void demon_hunter_t::create_buffs()
     ->set_chance( legendary.chaos_theory->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
+  // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
   buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", legendary.fel_bombardment->effectN( 1 ).trigger() )
     ->set_trigger_spell( legendary.fel_bombardment )
     ->set_default_value_from_effect( 1 );
@@ -5187,7 +5138,6 @@ void demon_hunter_t::init_rng()
   {
     rppm.felblade = get_rppm( "felblade", find_spell( 236167 ) );
     rppm.demonic_appetite = get_rppm( "demonic_appetite", talent.demonic_appetite );
-    rppm.inner_demons = get_rppm( "inner_demons", legendary.inner_demons );
   }
   else // DEMON_HUNTER_VENGEANCE
   {
@@ -5421,15 +5371,15 @@ void demon_hunter_t::init_spells()
 
   // Legendary Items ========================================================
 
-  legendary.half_giant_empowerment        = find_runeforge_legendary( "Half-Giant Empowerment" );
   legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Medallion" ); // Note: Blizzard typo in item runeforge data
+  legendary.darkest_hour                  = find_runeforge_legendary( "Darkest Hour" );
   legendary.collective_anguish            = find_runeforge_legendary( "Collective Anguish" );
   legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
 
+  legendary.burning_wound                 = find_runeforge_legendary( "Burning Wound" );
   legendary.chaos_theory                  = find_runeforge_legendary( "Chaos Theory" );
+  legendary.darker_nature                 = find_runeforge_legendary( "Darker Nature" );
   legendary.erratic_fel_core              = find_runeforge_legendary( "Erratic Fel Core" );
-  legendary.darkest_hour                  = find_runeforge_legendary( "Darkest Hour" );
-  legendary.inner_demons                  = find_runeforge_legendary( "Inner Demons" );
 
   legendary.fiery_soul                    = find_runeforge_legendary( "Fiery Soul" );
   legendary.razelikhs_defilement          = find_runeforge_legendary( "Razelikh's Defilement" );
@@ -5670,6 +5620,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)"
                                                 "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break" );
   apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled&raid_event.adds.in>cooldown" );
+  apl_normal->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound.equipped&debuff.burning_wound.remains<4" );
   apl_normal->add_action( this, "Demon's Bite" );
   apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled" );
   apl_normal->add_talent( this, "Felblade", "if=movement.distance>15|buff.out_of_range.up" );
@@ -5690,6 +5641,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_talent( this, "Felblade", "if=fury.deficit>=40" );
   apl_demonic->add_action( this, "Chaos Strike", "if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound.equipped&debuff.burning_wound.remains<4" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
@@ -6295,9 +6247,6 @@ void demon_hunter_t::merge( player_t& other )
   player_t::merge( other );
 
   const demon_hunter_t& s = static_cast<demon_hunter_t&>( other );
-
-  for ( size_t i = 0, end = counters.size(); i < end; i++ )
-    counters[ i ]->merge( *s.counters[ i ] );
 
   for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
   {

@@ -344,6 +344,7 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> painbreaker_psalm;
   } gains;
 
   // Benefits
@@ -438,6 +439,7 @@ public:
     azerite_power_t sacred_flame;
     // Disc
     azerite_power_t depth_of_the_shadows;
+    azerite_power_t contemptuous_homily;
     // Shadow
     azerite_power_t chorus_of_insanity;
     azerite_power_t death_throes;
@@ -840,18 +842,19 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  double composite_player_multiplier( school_e school ) const override;
-  double composite_melee_haste() const override;
-
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
+  double power_leech_insanity;
+
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
-    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
+    : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    npc_id           = 19668;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -865,18 +868,22 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY );
+    return power_leech_insanity;
   }
 };
 
 struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
+  double power_leech_insanity;
 
   mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell( 123051 ) )
+    : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
+      mindbender_spell( owner.find_spell( 123051 ) ),
+      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    npc_id           = 62982;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -890,15 +897,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    // Currently not in beta, but in PTR data
-    if ( o().bugs )
-    {
-      return 5;
-    }
-    else
-    {
-      return o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY );
-    }
+    return power_leech_insanity;
   }
 };
 
@@ -947,7 +946,15 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( base_execute_time == timespan_t::zero() )
       return timespan_t::zero();
 
-    return base_execute_time * player->cache.spell_speed();
+    // Mindbender inherits haste from the player
+    timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
+
+    if ( p().o().conduits.rabid_shadows->ok() )
+    {
+      hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
+    }
+
+    return hasted_time;
   }
 
   void impact( action_state_t* s ) override
@@ -1314,11 +1321,13 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  bool ignores_automatic_mastery;
   unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
       mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
@@ -1349,8 +1358,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
-    auto resource = current_resource();
-
     base_t::consume_resource();
 
     if ( priest().azerite_essence.lucid_dreams )
@@ -1400,7 +1407,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      tdm *= priest().shadow_weaving_multiplier( t, id );
+      // Guarding against Unfurling Darkness, it does not get the mastery benefit
+      unsigned int spell_id = id;
+      if ( ignores_automatic_mastery )
+      {
+        sim->print_debug( "{} {} cast does not benefit from Mastery automatically.", *player, name_str );
+        spell_id = 1;
+      }
+
+      tdm *= priest().shadow_weaving_multiplier( t, spell_id );
     }
 
     return tdm;
@@ -1544,6 +1559,9 @@ protected:
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
+  // TODO: hook up rank2 to movement speed
+  const spell_data_t* rank2;
+
   dispersion_t( priest_t& p );
 };
 

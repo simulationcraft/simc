@@ -1289,9 +1289,10 @@ void warlock_t::create_apl_demonology()
   def->add_action( "hand_of_guldan,if=soul_shard=5|buff.nether_portal.up" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4" );
-  def->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.dummon_demonic_tyrant.remains+15" );
+  def->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.summon_demonic_tyrant.remains+15" );
   def->add_action( "use_items" );
   def->add_action( "power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
+  def->add_action( "implosion,if=azerite.explosive_potential.rank>1&buff.explosive_potential.remains<3&buff.wild_imps.stack>=3" );
   def->add_action( "soul_strike" );
   def->add_action( "shadow_bolt" );
 

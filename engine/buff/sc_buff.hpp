@@ -493,7 +493,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
-  { return current_stack * value_direct(); }
+  { return 1.0 + current_stack * ( value_direct() - 1.0 ); }
 
   // Get current direct damage buff value + NO benefit tracking.
   double check_value_direct() const
@@ -501,7 +501,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
-  { return current_stack * check_value_direct(); }
+  { return 1.0 + current_stack * ( check_value_direct() - 1.0 ); }
 
   // Get current periodic damage buff value + benefit tracking.
   double value_periodic()
@@ -512,7 +512,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_periodic()
-  { return current_stack * value_periodic(); }
+  { return 1.0 + current_stack * ( value_periodic() - 1.0 ); }
 
   // Get current periodic damage buff value + NO benefit tracking.
   double check_value_periodic() const
@@ -520,7 +520,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
-  { return current_stack * check_value_periodic(); }
+  { return 1.0 + current_stack * ( check_value_periodic() - 1.0 ); }
 
   // Get current AA damage buff value + benefit tracking.
   double value_auto_attack()
@@ -531,7 +531,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_auto_attack()
-  { return current_stack * value_auto_attack(); }
+  { return 1.0 + current_stack * ( value_auto_attack() - 1.0 ); }
 
   // Get current AA damage buff value + NO benefit tracking.
   double check_value_auto_attack() const
@@ -539,7 +539,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
-  { return current_stack * check_value_auto_attack(); }
+  { return 1.0 + current_stack * ( check_value_auto_attack() - 1.0 ); }
 
 protected:
   damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );

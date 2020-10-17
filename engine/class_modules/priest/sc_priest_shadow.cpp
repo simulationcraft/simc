@@ -417,11 +417,13 @@ struct shadow_word_death_t final : public priest_spell_t
 {
   double execute_percent;
   double execute_modifier;
+  double insanity_per_dot;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
       execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() )
+      execute_modifier( data().effectN( 3 ).percent() ),
+      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -440,14 +442,6 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     cooldown->hasted = true;
-
-    if ( priest().legendary.painbreaker_psalm->ok() )
-    {
-      // TODO: Check if this ever gets un-hardcoded for (336165)
-      energize_type     = action_energize::ON_HIT;
-      energize_resource = RESOURCE_INSANITY;
-      energize_amount   = 10;
-    }
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -478,6 +472,28 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      if ( priest().legendary.painbreaker_psalm->ok() )
+      {
+        int dots = 0;
+
+        if ( const priest_td_t* td = priest().find_target_data( target ) )
+        {
+          bool swp_ticking = td->dots.shadow_word_pain->is_ticking();
+          bool vt_ticking  = td->dots.vampiric_touch->is_ticking();
+
+          dots = swp_ticking + vt_ticking;
+        }
+
+        // Right now in-game this is not using the spell data value
+        if ( priest().bugs )
+        {
+          insanity_per_dot = 5;
+        }
+        double insanity_gain = dots * insanity_per_dot;
+
+        priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
+      }
+
       double save_health_percentage = s->target->health_percentage();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
@@ -780,8 +796,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Only applied if you hard cast SW:P, Misery and Damnation do not trigger this
-    if ( casted && result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) )
     {
       if ( priest().buffs.fae_guardians->check() )
       {
@@ -813,15 +828,19 @@ struct shadow_word_pain_t final : public priest_spell_t
 // ==========================================================================
 struct unfurling_darkness_t final : public priest_spell_t
 {
-  double vampiric_touch_sp;
-
   unfurling_darkness_t( priest_t& p )
-    : priest_spell_t( "unfurling_darkness", p, p.find_talent_spell( "Unfurling Darkness" ) ),
-      vampiric_touch_sp( p.find_spell( 34914 )->effectN( 4 ).sp_coeff() )
+    : priest_spell_t( "unfurling_darkness", p, p.find_class_spell( "Vampiric Touch" ) )
   {
     background                 = true;
-    spell_power_mod.direct     = vampiric_touch_sp;
     affected_by_shadow_weaving = true;
+    energize_type              = action_energize::NONE;  // no insanity gain
+    energize_amount            = 0;
+    energize_resource          = RESOURCE_NONE;
+    ignores_automatic_mastery  = 1;
+
+    // Since we are re-using the Vampiric Touch spell disable the DoT
+    dot_duration       = timespan_t::from_seconds( 0 );
+    base_td_multiplier = spell_power_mod.tick = 0;
   }
 };
 
@@ -845,6 +864,9 @@ struct vampiric_touch_t final : public priest_spell_t
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
+    // Disable initial hit damage, only Unfurling Darkness uses it
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+
     if ( priest().talents.misery->ok() && casted )
     {
       child_swp             = new shadow_word_pain_t( priest(), false );
@@ -856,6 +878,7 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( priest().talents.unfurling_darkness->ok() )
     {
       child_ud = new unfurling_darkness_t( priest() );
+      add_child( child_ud );
     }
   }
 
@@ -877,19 +900,9 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
-
     trigger_heal( s );
 
-    if ( child_swp )
-    {
-      child_swp->target = s->target;
-      child_swp->execute();
-    }
-
-    // TODO: check if talbadars_stratagem can proc this
-    // Damnation does not proc Unfurling Darkness, but can generate it
-    if ( priest().buffs.unfurling_darkness->check() && casted )
+    if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -904,6 +917,15 @@ struct vampiric_touch_t final : public priest_spell_t
         priest().buffs.unfurling_darkness_cd->trigger();
       }
     }
+
+    // Trigger SW:P after UD since it does not benefit from the automatic Mastery benefit
+    if ( child_swp )
+    {
+      child_swp->target = s->target;
+      child_swp->execute();
+    }
+
+    priest_spell_t::impact( s );
   }
 
   timespan_t execute_time() const override
@@ -1440,12 +1462,12 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
+    child_dp->set_target( target );
+    child_dp->execute();
+
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-
-    child_dp->set_target( target );
-    child_dp->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1549,23 +1571,6 @@ struct shadow_crash_t final : public priest_spell_t
     // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
     return timespan_t::from_seconds( data().missile_speed() );
   }
-
-  // Ensuring that we can't cast on a target that is too close
-  bool target_ready( player_t* candidate_target ) override
-  {
-    auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
-    if ( sim->debug )
-    {
-      sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
-                        effective_min_range );
-    }
-    if ( player->get_player_distance( *candidate_target ) < effective_min_range )
-    {
-      return false;
-    }
-
-    return priest_spell_t::target_ready( candidate_target );
-  }
 };
 
 // ==========================================================================
@@ -1600,7 +1605,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
     const priest_td_t* td = find_td( t );
 
@@ -1632,7 +1637,7 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.find_talent_spell( "Damnation" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
       child_vt( new vampiric_touch_t( priest(), false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
@@ -1719,7 +1724,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().azerite.chorus_of_insanity.enabled() )
     {
       priest().buffs.chorus_of_insanity->expire();
-      priest().buffs.chorus_of_insanity->trigger();
+      // This is fixed in-game right now
+      priest().buffs.chorus_of_insanity->trigger( 20 );
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -1840,7 +1846,7 @@ struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
     add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
     set_reverse( true );
     set_tick_behavior( buff_tick_behavior::REFRESH );
-    set_max_stack( 1 );
+    set_max_stack( 20 );
   }
 };
 
@@ -2257,6 +2263,10 @@ void priest_t::generate_apl_shadow()
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
+  main->add_action(
+      this, "Void Bolt",
+      "if=insanity<=85&((talent.hungering_void.enabled&spell_targets.mind_sear<5)|spell_targets.mind_sear=1)",
+      "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
   main->add_action( this, "Devouring Plague",
                     "target_if=(refreshable|insanity>75)&!variable.pi_or_vf_sync_condition&(!talent.searing_nightmare."
                     "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",

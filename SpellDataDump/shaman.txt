@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36165 shadowlands-BETA (hotfix 2020-10-07/36165)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -46,6 +46,7 @@ Name             : Earth Shield (id=379) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
+Spell Level      : 1
 Range            : 300 yards
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#6), Enhancement Shaman (137041 effect#6), Elemental Fury (343190 effect#1)
 Family Flags     : 41, 70
@@ -90,12 +91,12 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
                    Family Flags: 41
 #2 (id=756953)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Protects the target with an earthen shield, increasing your healing on them by $s1% and healing them for ${$379s1*(1+$s1/100)} when they take damage. $n charges. This heal can only occur once every few seconds. 
+Description      : Protects the target with an earthen shield, increasing your healing on them by $s1% and healing them for ${$379s1*(1+$s1/100)} when they take damage. This heal can only occur once every few seconds. Maximum $n charges.
 
 Earth Shield can only be placed on one target at a time. Only one Elemental Shield can be active on the Shaman at a time.
 Tooltip          : Heals for ${$w2*(1+$w1/100)} upon taking damage.
@@ -158,6 +159,7 @@ Name             : Ghost Wolf (id=2645) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
+Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Spiritwalker's Grace (79206 effect#1)
@@ -446,6 +448,7 @@ Name             : Flametongue Attack (id=10444) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
+Spell Level      : 1
 Range            : 50000 yards
 Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Proc Chance      : 101%
@@ -468,6 +471,7 @@ Name             : Master of the Elements (id=16166) [Spell Family (11), Passive
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
+Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -724,6 +728,7 @@ Name             : Nature's Guardian (id=31616)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
+Spell Level      : 1
 Triggered by     : Nature's Guardian (30884)
 Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -977,6 +982,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Resource         : 2.5% Base Mana (0) (id=5228)
+Spell Level      : 1
 Range            : 35 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
@@ -1597,7 +1603,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Echoes of Great Sundering (336217 effects: #2, #3)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1988,7 +1994,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 22
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#2), Echoes of Great Sundering (336217 effects: #2, #3)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Lightning Crash (242284 effect#1), Fulmination (260111 effect#2)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -2846,7 +2852,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Periodic effect affected by haste (173), Fixed travel time (292)
+                 : Periodic effect affected by haste (173), Duration affected by haste (273), Fixed travel time (292)
 Effects          :
 #1 (id=133506)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -3488,7 +3494,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Channeled (34), Periodic effect affected by haste (173)
+                 : Channeled (34), Periodic effect affected by haste (173), Duration affected by haste (273)
 Effects          :
 #1 (id=219451)   : Apply Aura (6) | Periodic Trigger Spell (23): Eye of the Storm every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Trigger Spell: 269005 | Target: Enemy (6)
@@ -5538,7 +5544,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -6794,6 +6800,7 @@ Name             : Master of the Elements (id=260734) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
+Spell Level      : 1
 Duration         : 15 seconds
 Triggered by     : Master of the Elements (16166)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -7677,9 +7684,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Unknown(277)
-                   Base Value: 0 | Scaled Value: 5.29283 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 35.8719 (coefficient=0.377599) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1.58783 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10.7616 (coefficient=0.11328) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -9726,7 +9733,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=747360)   : Apply Aura (6) | Root (26)
+#1 (id=747360)   : Apply Aura (6) | Root (455)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
 Description      : $@spelldesc262303
 Tooltip          : Rooted in place.
@@ -10507,7 +10514,7 @@ Effects          :
 #1 (id=808008)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=808009)   : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consume up to $s1 charges of Earth Shield to heal up to $s2 allies near your Earth Shield target for ${$320747m1/$m1*(1+$@versadmg)} per charge consumed.
 
 Name             : Surge of Earth (id=320747) [Spell Family (11)] 
@@ -10527,7 +10534,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=808011)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : $@spelldesc320746
 
 Name             : Chain Harvest (desc=Venthyr) (id=320751) [Spell Family (11)] 
@@ -10793,6 +10800,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
+Name             : Primordial Wave (desc=Necrolord) (id=327164) [Spell Family (11)] 
+Class            : Shaman
+School           : Shadow
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=818539)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc326059
+Tooltip          : Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide].
+
 Name             : Windfury Totem (id=327942) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
@@ -10839,10 +10867,10 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Channeled (34), Channeled (38), Tick on application (169), Periodic effect affected by haste (173)
+                 : Channeled (34), Channeled (38), Tick on application (169), Periodic effect affected by haste (173), Duration affected by haste (273)
 Effects          :
 #1 (id=821748)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=821762)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=821773)   : Trigger Spell (64): Fae Transfusion
@@ -11004,6 +11032,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Melee
 Resource         : 5.5% Base Mana (0) (id=215305)
+Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
@@ -11027,6 +11056,7 @@ Name             : Fire Nova (id=333977) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
+Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 6
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Lightning Crash (242284 effect#1)
@@ -11071,6 +11101,7 @@ Name             : Lashing Flames (id=334046) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
+Spell Level      : 1
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
 Proc Chance      : 101%
@@ -11096,6 +11127,7 @@ Name             : Lashing Flames (id=334168) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
 Triggered by     : Lashing Flames (334046)
@@ -11119,6 +11151,7 @@ Name             : Hailstorm (id=334195) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
+Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56
@@ -11140,6 +11173,7 @@ Name             : Hailstorm (id=334196) [Spell Family (11)]
 Class            : Shaman
 School           : Frost
 Spell Type       : None
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 5 maximum
@@ -11331,7 +11365,7 @@ Proc Flags       : ........ ........ ..x..... ........
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11534,14 +11568,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=833324)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-#2 (id=833325)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=833325)   : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earthquake (61882), Earthquake (77478)
-                   Family Flags: 83
-#3 (id=833326)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#3 (id=833326)   : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earthquake (61882), Earthquake (77478)
-                   Family Flags: 83
 Description      : $@spelldesc336215
 Tooltip          : Your next Earthquake will deal $s2% additional damage.
 
@@ -12485,6 +12515,7 @@ Name             : Stormflurry (id=344357) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
+Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56

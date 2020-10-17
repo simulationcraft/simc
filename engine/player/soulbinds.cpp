@@ -269,13 +269,11 @@ void field_of_blossoms( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "field_of_blossoms" );
   if ( !buff )
   {
-    // The ICD of 60 seconds is enabled for some classes in the description of Field of Blossoms (id=319191)
-    bool icd_enabled = extra_desc_text_for_class( effect );
-
-    effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: icd_enabled={}", icd_enabled );
+    double duration_mod = class_value_from_desc_vars( effect, "mod" );
+    effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: duration_mod={}", duration_mod );
 
     buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
-      ->set_cooldown( icd_enabled ? effect.player->find_spell( 342781 )->duration() : 0_ms )
+      ->set_duration_multiplier( duration_mod )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
@@ -309,7 +307,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) { buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
 
 void first_strike( special_effect_t& effect )
@@ -474,7 +472,7 @@ void built_for_war( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
-      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
@@ -562,7 +560,7 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur =
+      ext_dur = duration_mod *
           timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
@@ -829,7 +827,7 @@ void volatile_solvent( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
         ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
 
-      effect.player->register_combat_begin( [ buff_crit ]( player_t* p ) { buff_crit->trigger(); } );
+      effect.player->register_combat_begin( [ buff_crit ]( player_t* ) { buff_crit->trigger(); } );
     }
 
 
@@ -843,7 +841,7 @@ void volatile_solvent( special_effect_t& effect )
         ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
         ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
       
-      effect.player->register_combat_begin( [ buff_primary ]( player_t* p ) { buff_primary->trigger(); } );
+      effect.player->register_combat_begin( [ buff_primary ]( player_t* ) { buff_primary->trigger(); } );
     }
 
 
@@ -853,7 +851,7 @@ void volatile_solvent( special_effect_t& effect )
 
       auto buff_mastery = make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid );
 
-      effect.player->register_combat_begin( [ buff_mastery ]( player_t* p ) { buff_mastery->trigger(); } );
+      effect.player->register_combat_begin( [ buff_mastery ]( player_t* ) { buff_mastery->trigger(); } );
     }
 
     //Todo: Add the buffs for Magic Damage percent and Physical damage preseont

@@ -1280,6 +1280,7 @@ enum spell_attribute : unsigned
   SX_REQ_LINE_OF_SIGHT    = 186u,
   SX_DISABLE_PLAYER_MULT  = 221u,
   SX_TICK_MAY_CRIT        = 265u,
+  SX_DURATION_HASTED      = 273u,
   SX_FIXED_TRAVEL_TIME    = 292u,
   SX_SCALE_ILEVEL         = 354u,
 };

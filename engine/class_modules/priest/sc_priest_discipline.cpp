@@ -3,11 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -57,6 +57,8 @@ struct penance_t final : public priest_spell_t
       direct_tick = true;
 
       this->stats = stats;
+
+      base_dd_adder += p.azerite.contemptuous_homily.value(2);
     }
 
     double action_da_multiplier() const override
@@ -69,6 +71,18 @@ struct penance_t final : public priest_spell_t
       }
 
       return m;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_spell_t::impact( state );
+
+      auto& td = get_td( state->target );
+      if ( td.dots.shadow_word_pain->is_ticking() )
+      {
+        td.dots.shadow_word_pain->adjust_duration(
+            priest().azerite.contemptuous_homily.spell()->effectN( 1 ).time_value() );
+      }
     }
 
     void execute() override
@@ -327,7 +341,8 @@ void priest_t::init_spells_discipline()
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 
   // Azerite
-  azerite.death_throes = find_azerite_spell( "Death Throes" );
+  azerite.death_throes        = find_azerite_spell( "Death Throes" );
+  azerite.contemptuous_homily = find_azerite_spell( "Contemptuous Homily" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

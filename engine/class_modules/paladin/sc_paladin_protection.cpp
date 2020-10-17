@@ -452,10 +452,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     aoe = -1;
 
-    // not on GCD, usable off-GCD
-    trigger_gcd = 0_ms;
-    use_off_gcd = true;
-
     // no weapon multiplier
     weapon_multiplier = 0.0;
   }

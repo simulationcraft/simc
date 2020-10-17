@@ -953,7 +953,7 @@ public:
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
     // Unholy
-    // item_runeforge_t deadliest_coil; // 6952
+    item_runeforge_t deadliest_coil; // 6952
     item_runeforge_t deaths_certainty; // 6951
     item_runeforge_t frenzied_monstrosity;        // 6950
     // item_runeforge_t reanimated_shambler; // 6949
@@ -971,6 +971,7 @@ public:
     double lucid_dreams_minor_proc_chance = 0.15;
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
+    bool split_obliterate_schools = true;
   } options;
 
   // Runes
@@ -1078,6 +1079,7 @@ public:
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
+  void      consume_killing_machine( proc_t* proc );
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
@@ -1165,7 +1167,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.biting_cold.percent() );
 
-  debuff.unholy_blight     = make_buff( *this, "unholy_blight", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
+  debuff.unholy_blight     = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
 
 }
@@ -2382,7 +2384,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
-      cooldown -> charges = 0;
     }
 
     void impact( action_state_t* s ) override
@@ -2677,7 +2678,6 @@ struct death_knight_action_t : public Base
   gain_t* gain;
 
   bool hasted_gcd;
-  weapon_e weapon_req;
 
   struct affected_by_t
   {
@@ -2690,7 +2690,6 @@ struct death_knight_action_t : public Base
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
-    weapon_req( WEAPON_NONE ),
     affected_by()
   {
     this -> may_crit   = true;
@@ -2874,9 +2873,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void execute() override;
   void schedule_travel( action_state_t* state ) override;
-  bool ready() override;
 
-  void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
 };
@@ -2890,16 +2887,8 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   death_knight_spell_t( util::string_view n, death_knight_t* p,
                         const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
-  {
-    _init_dk_spell();
-  }
+  { }
 
-  void _init_dk_spell()
-  {
-    may_crit = true;
-  }
-
-  bool ready() override;
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -2939,45 +2928,6 @@ void death_knight_melee_attack_t::schedule_travel( action_state_t* state )
   // time). Schedule_travel is guaranteed to be called per-target on execute, so we can hook into it
   // to deliver that behavior for Razorice as a special case.
   trigger_razorice( state );
-}
-
-// death_knight_melee_attack_t::ready() =====================================
-
-bool death_knight_melee_attack_t::ready()
-{
-  if ( ! base_t::ready() )
-    return false;
-
-  if ( weapon_req == WEAPON_NONE )
-    return true;
-  if ( weapon && weapon -> group() == weapon_req )
-    return true;
-
-  return false;
-}
-
-// death_knight_melee_attack_t::consume_killing_machine() ===================
-
-void death_knight_melee_attack_t::consume_killing_machine( const action_state_t* state, proc_t* proc ) const
-{
-  if ( ! result_is_hit( state -> result ) )
-  {
-    return;
-  }
-
-  if ( ! p() -> buffs.killing_machine -> up() )
-  {
-    return;
-  }
-
-  proc -> occur();
-
-  p() -> buffs.killing_machine -> decrement();
-
-  if ( rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
-  {
-    p() -> replenish_rune( as<int>( p() -> spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), p() -> gains.murderous_efficiency );
-  }
 }
 
 // death_knight_melee_attack_t::trigger_icecap() ============================
@@ -3048,26 +2998,6 @@ void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state 
   razorice_attack -> execute();
 
   td( state -> target ) -> debuff.razorice -> trigger();
-}
-
-
-// ==========================================================================
-// Death Knight Spell Methods
-// ==========================================================================
-
-// death_knight_spell_t::ready() ============================================
-
-bool death_knight_spell_t::ready()
-{
-  if ( ! base_t::ready() )
-    return false;
-
-  if ( weapon_req == WEAPON_NONE )
-    return true;
-  if ( weapon && weapon -> group() == weapon_req )
-    return true;
-
-  return false;
 }
 
 // ==========================================================================
@@ -3403,7 +3333,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( is_precombat )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
       double MAX_TIME = 10; // Using 10s as highest value because it's the time to recover the rune cost of AOTD at 0 haste
@@ -3560,7 +3490,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
     {
       p() -> active_spells.blood_plague -> set_target( state -> target );
       p() -> active_spells.blood_plague -> execute();
@@ -4440,7 +4370,7 @@ struct deaths_caress_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
     {
       p() -> active_spells.blood_plague -> set_target( state -> target );
       p() -> active_spells.blood_plague -> execute();
@@ -4539,7 +4469,14 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
 
-    return death_knight_spell_t::cost();
+    double cost = death_knight_spell_t::cost();
+
+    if ( p() -> legendary.deadliest_coil.ok() )
+    {
+      cost += (p() -> legendary.deadliest_coil->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+    }
+
+    return cost;
   }
 
   void execute() override
@@ -4563,6 +4500,11 @@ struct death_coil_t : public death_knight_spell_t
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
     // p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
     //   p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+
+    if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
+    {
+      p() -> buffs.dark_transformation->extend_duration( p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
+    }
 
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -5109,7 +5051,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    consume_killing_machine( execute_state, p() -> procs.killing_machine_fsc );
+    p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
     trigger_icecap( execute_state );
 
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
@@ -5261,24 +5203,17 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     may_crit = false;
+    const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ?
+      data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      weapon_req = WEAPON_2H;
-      mh = new frost_strike_strike_t( p, "frost_strike_2h", &(p -> main_hand_weapon ), data().effectN( 4 ).trigger() );
-      add_child( mh );
-    }
-    else
-    {
-      weapon_req = WEAPON_1H;
-      mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-      add_child( mh );
+    dual = true;
+    mh = new frost_strike_strike_t( p, "frost_strike", &( p -> main_hand_weapon ), mh_data );
+    add_child( mh );
 
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-        add_child( oh );
-      }
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+      add_child( oh );
     }
   }
 
@@ -5738,10 +5673,8 @@ struct mind_freeze_t : public death_knight_spell_t
 
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
-  obliterate_strike_t( death_knight_t*     p,
-                            const std::string&  name,
-                            weapon_t*           w,
-                            const spell_data_t* s ) :
+  obliterate_strike_t( death_knight_t* p, const std::string& name,
+                       weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s )
   {
     background = special = true;
@@ -5797,7 +5730,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    if ( p() -> spec.killing_machine_2 -> ok() && p() -> buffs.killing_machine -> up() )
+    if ( ! p() -> options.split_obliterate_schools &&
+         p() -> spec.killing_machine_2 -> ok() && p() -> buffs.killing_machine -> up() )
     {
       school = SCHOOL_FROST;
     }
@@ -5826,36 +5760,41 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
 
     // KM Rank 2 - revert school after the hit
-    school = SCHOOL_PHYSICAL;
+    if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
   }
 };
 
 struct obliterate_t : public death_knight_melee_attack_t
 {
-  obliterate_strike_t* mh, *oh;
+  obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
 
   obliterate_t( death_knight_t* p, const std::string& options_str = std::string() ) :
     death_knight_melee_attack_t( "obliterate", p, p -> spec.obliterate ),
-    mh( nullptr ), oh( nullptr )
+    mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr )
   {
     parse_options( options_str );
+    dual = true;
 
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
+
+    mh = new obliterate_strike_t( p, "obliterate", &( p -> main_hand_weapon ), mh_data );
+    add_child( mh );
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      weapon_req = WEAPON_2H;
-      mh = new obliterate_strike_t( p, "obliterate_2h", &( p -> main_hand_weapon ), data().effectN( 4 ).trigger() );
-      add_child( mh );
+      oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+      add_child( oh );
     }
-    else
+    if ( p -> options.split_obliterate_schools && p -> spec.killing_machine_2 -> ok() )
     {
-      weapon_req = WEAPON_1H;
-      mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-      add_child( mh );
-
+      km_mh = new obliterate_strike_t( p, "obliterate_km", &( p -> main_hand_weapon ), mh_data );
+      km_mh -> school = SCHOOL_FROST;
+      add_child( km_mh );
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
       {
-        oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-        add_child( oh );
+        km_oh = new obliterate_strike_t( p, "obliterate_offhand_km", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+        km_oh -> school = SCHOOL_FROST;
+        add_child( km_oh );
       }
     }
   }
@@ -5866,13 +5805,29 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh -> set_target( execute_state -> target );
-      mh -> execute();
+      if ( km_mh && p() -> buffs.killing_machine -> up() )
+      {
+        km_mh -> set_target( execute_state -> target );
+        km_mh -> execute();
+      }
+      else
+      {
+        mh -> set_target( execute_state -> target );
+        mh -> execute();
+      }
 
       if ( oh )
       {
-        oh -> set_target( execute_state -> target );
-        oh -> execute();
+        if ( km_oh && p() -> buffs.killing_machine -> up() )
+        {
+          km_oh -> set_target( execute_state -> target );
+          km_oh -> execute();
+        }
+        else
+        {
+          oh -> set_target( execute_state -> target );
+          oh -> execute();
+        }
       }
 
       if ( p() -> buffs.inexorable_assault -> up() )
@@ -5885,7 +5840,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       p() -> buffs.rime -> trigger();
     }
 
-    consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
+    p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
   }
 
   double cost() const override
@@ -6086,7 +6041,7 @@ struct raise_dead_t : public death_knight_spell_t
 
     // If the action is done in precombat and the pet is permanent
     // Assume that the player used it long enough before pull that the cooldown is ready again
-    if ( action_list -> name_str == "precombat" && data().duration() == 0_ms )
+    if ( is_precombat && data().duration() == 0_ms )
     {
       cooldown -> reset( false );
     }
@@ -7229,6 +7184,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
+  add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -7439,6 +7395,23 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   else
   {
     wasted_proc -> occur();
+  }
+}
+
+void death_knight_t::consume_killing_machine( proc_t* proc )
+{
+  if ( ! buffs.killing_machine -> up() )
+  {
+    return;
+  }
+
+  proc -> occur();
+
+  buffs.killing_machine -> decrement();
+
+  if ( rng().roll( talent.murderous_efficiency -> effectN( 1 ).percent() ) )
+  {
+    replenish_rune( as<int>( spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), gains.murderous_efficiency );
   }
 }
 
@@ -7711,7 +7684,7 @@ void death_knight_t::create_actions()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    if ( spec.blood_boil -> ok() || spec.deaths_caress -> ok() )
+    if ( spell.blood_plague -> ok() && ( spec.blood_boil -> ok() || spec.deaths_caress -> ok() ) )
     {
       active_spells.blood_plague = new blood_plague_t( this );
     }
@@ -8454,7 +8427,7 @@ void death_knight_t::init_spells()
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
 
   // Unholy
-  // legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
+  legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
   // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
@@ -9142,13 +9115,9 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( conduits.eradicating_blow )
         -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
 
-  if ( ! bugs )
-    buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
-        -> add_invalidate( CACHE_STRENGTH )
-        -> set_default_value( conduits.unleashed_frenzy.percent() );
-  else
-     buffs.unleashed_frenzy = make_buff<stat_buff_t>( this, "unleashed_frenzy", conduits.unleashed_frenzy -> effectN( 1 ).trigger() )
-    -> add_stat( STAT_STRENGTH, conduits.unleashed_frenzy.percent() * base.stats.attribute[ STAT_STRENGTH ] );
+  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
+      -> add_invalidate( CACHE_STRENGTH )
+      -> set_default_value( conduits.unleashed_frenzy.percent() );
 
   // Legendaries
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
@@ -9397,7 +9366,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( runeforge.rune_of_apocalypse )
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> stack_value();
 
-  if ( school == SCHOOL_MAGIC && runeforge.rune_of_spellwarding )
+  if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
 
   player_t::target_mitigation( school, type, state );
@@ -9457,8 +9426,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
-    if ( ! bugs )
-      m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
+    m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
 
     m *= 1.0 + buffs.unholy_pact -> value();
   }
@@ -9550,7 +9518,7 @@ double death_knight_t::composite_parry() const
   return parry;
 }
 
-double death_knight_t::composite_player_multiplier( school_e school ) const 
+double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 

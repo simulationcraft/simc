@@ -384,6 +384,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     last_resource_cost(),
     num_targets_hit(),
     marker(),
+    last_used(),
     option(),
     interrupt_global( false ),
     if_expr(),
@@ -407,8 +408,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_cache(),
     options(),
     state_cache(),
-    travel_events(),
-    last_used()
+    travel_events()
 {
   assert( option.cycle_targets == 0 );
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
