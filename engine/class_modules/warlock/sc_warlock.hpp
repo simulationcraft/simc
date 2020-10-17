@@ -871,6 +871,9 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
+    if ( p()->buffs.soul_tithe->check() && data().affected_by( p()->buffs.soul_tithe->data().effectN( 1 ) ) )
+      pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
+
     return pm;
   }
 

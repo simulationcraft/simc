@@ -144,6 +144,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
     if ( o()->buffs.tyrants_soul->check() )
       m *= 1.0 + o()->buffs.tyrants_soul->current_value;
+
+    if ( o()->buffs.soul_tithe->check() )
+      m *= 1.0 + o()->buffs.soul_tithe->check_stack_value();
   }
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
