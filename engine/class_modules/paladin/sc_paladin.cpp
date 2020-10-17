@@ -1052,52 +1052,37 @@ struct ashen_hallow_t : public paladin_spell_t
     parse_options( options_str );
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
-    may_miss = harmful = false;
+    may_miss = false;
 
     add_child( damage_tick );
   }
 
-  void init_finished() override
-  {
-    paladin_spell_t::init_finished();
-
-    timespan_t hallow_duration = data().duration();
-
-    hallow_params = ground_aoe_params_t()
-      .duration( hallow_duration )
-      .hasted( ground_aoe_params_t::SPELL_HASTE )
-      .action( damage_tick )
-      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-      switch ( type )
-      {
-      case ground_aoe_params_t::EVENT_CREATED:
-        p() -> active_hallow = event;
-        break;
-      case ground_aoe_params_t::EVENT_DESTRUCTED:
-        p() -> active_hallow = nullptr;
-        break;
-      default:
-        break;
-      } } );
-  }
-
   void execute() override
   {
-    // Cancel the current hallow if it exists (this ... should be impossible)
-    if ( p() -> active_hallow != nullptr )
-      event_t::cancel( p() -> active_hallow );
-
     paladin_spell_t::execute();
+    timespan_t tick_time = data().effectN( 2 ).period();
 
-    // Some parameters must be updated on each cast
-    hallow_params.target( execute_state -> target )
-               .start_time( sim -> current_time() );
-
-    if ( sim -> distance_targeting_enabled )
-      hallow_params.x( p() -> x_position )
-                 .y( p() -> y_position );
-
-    make_event<ground_aoe_event_t>( *sim, p(), hallow_params, false /* No immediate pulse */ );
+    make_event<ground_aoe_event_t>( *sim, p(),
+      ground_aoe_params_t()
+        .target( execute_state -> target )
+        .duration( data().duration() - tick_time - 100_ms )
+        .pulse_time( tick_time )
+        .hasted( ground_aoe_params_t::SPELL_HASTE )
+        .action( damage_tick )
+        .start_time( sim -> current_time() + tick_time )
+        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+        switch ( type )
+        {
+        case ground_aoe_params_t::EVENT_CREATED:
+          p() -> active_hallow = event;
+          break;
+        case ground_aoe_params_t::EVENT_DESTRUCTED:
+          p() -> active_hallow = nullptr;
+          break;
+        default:
+          break;
+        } } ),
+      true );
   }
 };
 
@@ -1881,7 +1866,7 @@ void paladin_t::init_spells()
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
-  covenant.venthyr = find_covenant_spell( "Ashen Hollow" );
+  covenant.venthyr = find_covenant_spell( "Ashen Hallow" );
   covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
   covenant.night_fae = find_covenant_spell( "Blessing of the Seasons" ); // TODO: fix
 
