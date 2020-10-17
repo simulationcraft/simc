@@ -6321,10 +6321,11 @@ void warrior_t::apl_fury()
   single_target->add_talent( this, "Onslaught" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
-  single_target->add_action( this, "Crushing Blow", "if=charges=2" );
+  single_target->add_action( this, spec.crushing_blow, "Crushing Blow", "if=charges=2" );
   single_target->add_action( this, "Bloodthirst" );
   single_target->add_action( this, spec.bloodbath, "Bloodbath" );
   single_target->add_action( this, "Raging Blow" );
+  single_target->add_action( this, spec.crushing_blow, "Crushing Blow" );
   single_target->add_action( this, "Whirlwind" );
 }
 
