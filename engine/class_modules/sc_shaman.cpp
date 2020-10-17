@@ -1696,6 +1696,14 @@ public:
 
     may_proc_echoing_shock = !background && p()->talent.echoing_shock->ok() &&
       id != p()->talent.echoing_shock->id() && ( base_dd_min || spell_power_mod.direct );
+  }
+
+  void init_finished() override
+  {
+    if ( may_proc_stormbringer )
+    {
+      proc_sb = player->get_proc( std::string( "Stormbringer: " ) + full_name() );
+    }
 
     if ( may_proc_echoing_shock )
     {
@@ -1704,14 +1712,6 @@ public:
         echoing_shock_stats = p()->get_stats( this->name_str + "_echo", this );
         echoing_shock->stats->add_child( echoing_shock_stats );
       }
-    }
-  }
-
-  void init_finished() override
-  {
-    if ( may_proc_stormbringer )
-    {
-      proc_sb = player->get_proc( std::string( "Stormbringer: " ) + full_name() );
     }
 
     base_t::init_finished();
@@ -4270,9 +4270,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
   stats_t* primordial_wave_stats, *normal_stats;
-  action_t* parent;
+  shaman_spell_t* parent;
 
-  lava_burst_overload_t( shaman_t* player, action_t* parent_ )
+  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) ),
       impact_flags(), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
       parent( parent_ )
@@ -4295,7 +4295,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->primordial_wave = p()->buff.primordial_wave->check();
-    cast_state( s )->exec_type = exec_type;
+    cast_state( s )->exec_type = parent->exec_type;
   }
 
   // Init defined below lava_burst_t to parent stats objects properly
@@ -6488,6 +6488,9 @@ struct primordial_wave_t : public shaman_spell_t
     // Spell data claims Maelstrom Weapon (still) affects Primordia Wave, however in-game
     // this is not true
     affected_by_maelstrom_weapon = false;
+
+    // Primordial Wave cannot be echoed
+    may_proc_echoing_shock = false;
   }
 
   void execute() override
