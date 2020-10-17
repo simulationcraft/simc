@@ -36,6 +36,7 @@ enum moon_stage_e
   NEW_MOON,
   HALF_MOON,
   FULL_MOON,
+  MAX_MOON,
 };
 
 // Azerite Trait
@@ -5814,121 +5815,112 @@ struct tiger_dash_t : public druid_spell_t
   }
 };
 
-// New Moon Spell ===========================================================
-
-struct new_moon_t : public druid_spell_t
+struct moon_base_t : public druid_spell_t
 {
-  new_moon_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "new_moon", player, player->talent.new_moon, options_str )
+  moon_stage_e stage;
+  streaking_stars_e streaking;
+
+  moon_base_t( util::string_view n, druid_t* p, const spell_data_t* s, util::string_view opt )
+    : druid_spell_t( n, p, s, opt ), stage( moon_stage_e::NEW_MOON ), streaking( streaking_stars_e::SS_NEW_MOON )
   {
-    cooldown           = player->cooldown.moon_cd;
-    cooldown->duration = data().charge_cooldown();
-    cooldown->charges  = data().charges();
+    cooldown = p->cooldown.moon_cd;
+
+    if ( s->ok() )
+    {
+      if ( cooldown->duration != 0_ms && cooldown->duration != s->charge_cooldown() )
+      {
+        sim->error( "Moon CD: {} ({}) cooldown of {} doesn't match existing cooldown of {}",
+                    n, s->id(), s->charge_cooldown(), cooldown->duration );
+      }
+      cooldown->duration = s->charge_cooldown();
+
+      if ( cooldown->charges != 1 && cooldown->charges != s->charges() )
+      {
+        sim->error( "Moon CD: {} ({}) charges of {} doesn't match existing charges of {}",
+                    n, s->id(), s->charges(), cooldown->charges );
+      }
+      cooldown->charges = s->charges();
+    }
   }
 
-  void impact( action_state_t* s ) override
+  bool ready() override
   {
-    druid_spell_t::impact( s );
+    if ( p()->moon_stage != stage )
+      return false;
 
-    streaking_stars_trigger( SS_NEW_MOON, s );  // proc munching shenanigans, munch tracking NYI
+    return druid_spell_t::ready();
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
+    if ( free_cast )
+      return;
+
     p()->moon_stage++;
+
+    if ( p()->moon_stage == moon_stage_e::MAX_MOON )
+      p()->moon_stage = moon_stage_e::NEW_MOON;
   }
 
-  bool ready() override
+  void impact( action_state_t* s ) override
   {
-    if ( !p()->talent.new_moon || p()->moon_stage != NEW_MOON || !p()->cooldown.moon_cd->up() )
-      return false;
+    druid_spell_t::impact( s );
 
-    return druid_spell_t::ready();
+    streaking_stars_trigger( streaking, s );  // proc munching shenanigans, munch tracking NYI
+  }
+};
+
+// New Moon Spell ===========================================================
+
+struct new_moon_t : public moon_base_t
+{
+  new_moon_t( druid_t* p, util::string_view opt ) : moon_base_t( "new_moon", p, p->talent.new_moon, opt )
+  {
+    stage     = moon_stage_e::NEW_MOON;
+    streaking = streaking_stars_e::SS_NEW_MOON;
   }
 };
 
 // Half Moon Spell ==========================================================
 
-struct half_moon_t : public druid_spell_t
+struct half_moon_t : public moon_base_t
 {
-  half_moon_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "half_moon", player, player->spec.half_moon, options_str )
+  half_moon_t( druid_t* p, util::string_view opt ) : moon_base_t( "half_moon", p, p->spec.half_moon, opt )
   {
-    cooldown = player->cooldown.moon_cd;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    streaking_stars_trigger( SS_HALF_MOON, s );  // proc munching shenanigans, munch tracking NYI
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->moon_stage++;
-  }
-
-  bool ready() override
-  {
-    if ( !p()->talent.new_moon || p()->moon_stage != HALF_MOON || !p()->cooldown.moon_cd->up() )
-      return false;
-
-    return druid_spell_t::ready();
+    stage     = moon_stage_e::HALF_MOON;
+    streaking = streaking_stars_e::SS_HALF_MOON;
   }
 };
 
 // Full Moon Spell ==========================================================
 
-struct full_moon_t : public druid_spell_t
+struct full_moon_t : public moon_base_t
 {
   full_moon_t( druid_t* p, util::string_view opt ) : full_moon_t( p, p->spec.full_moon, opt ) {}
 
-  full_moon_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : druid_spell_t( "full_moon", p, s, opt )
+  full_moon_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : moon_base_t( "full_moon", p, s, opt )
   {
     aoe                = -1;
     reduced_aoe_damage = true;
-    cooldown           = p->cooldown.moon_cd;
+    stage              = moon_stage_e::FULL_MOON;
+    streaking          = streaking_stars_e::SS_FULL_MOON;
 
+    // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( SS_FULL_MOON, s );  // proc munching shenanigans, munch tracking NYI
-  }
-
   timespan_t cooldown_duration() const override
   {
-    return free_cast ? 0_ms : druid_spell_t::cooldown_duration();
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( !free_cast)
-      p()->moon_stage = moon_stage_e::NEW_MOON;
+    return free_cast ? 0_ms : moon_base_t::cooldown_duration();
   }
 
   timespan_t travel_time() const override
   {
     // has a set travel time since it spawns on the target
     return timespan_t::from_seconds( data().missile_speed() );
-  }
-
-  bool ready() override
-  {
-    if ( p()->moon_stage != FULL_MOON || !p()->cooldown.moon_cd->up() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
