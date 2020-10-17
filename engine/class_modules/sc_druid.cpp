@@ -6331,6 +6331,15 @@ struct starfire_t : public druid_spell_t
       base_aoe_multiplier = data().effectN( 2 ).percent();
   }
 
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+      energize_type = action_energize::NONE;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = druid_spell_t::composite_energize_amount( s );
@@ -6350,6 +6359,15 @@ struct starfire_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+    {
+      make_event( *sim, 100_ms, [ this ]() {
+        p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
+                            energize_gain( execute_state ) );
+      } );
+    }
 
     if ( p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->decrement();
@@ -8529,7 +8547,6 @@ void druid_t::create_buffs()
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
-    ->set_tick_zero( true )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
         auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
 
