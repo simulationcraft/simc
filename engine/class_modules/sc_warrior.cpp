@@ -1946,7 +1946,7 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->azerite.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-      add_child( gushing_wound );
+      //add_child( gushing_wound );
     }
   }
 
@@ -2074,7 +2074,7 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->azerite.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-      add_child( gushing_wound );
+      //add_child( gushing_wound );
     }
   }
 
