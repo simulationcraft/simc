@@ -1,79 +1,79 @@
-hunter="PR_Hunter_Beast_Mastery"
-level=120
-race=orc
-spec=beast_mastery
-role=attack
-position=ranged_back
-talents=1303011
+# hunter="PR_Hunter_Beast_Mastery"
+# level=120
+# race=orc
+# spec=beast_mastery
+# role=attack
+# position=ranged_back
+# talents=1303011
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
-back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
-wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
-hands=linked_pummeler_grips,id=159357,bonus_id=4779/1512/4786
-waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786
-legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
-feet=shellkickers,id=158356,bonus_id=4779/1512/4786
-finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-finger2=band_of_the_roving_scalawag,id=162541,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
-main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
+# head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
+# back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
+# chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
+# wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
+# hands=linked_pummeler_grips,id=159357,bonus_id=4779/1512/4786
+# waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786
+# legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
+# feet=shellkickers,id=158356,bonus_id=4779/1512/4786
+# finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# finger2=band_of_the_roving_scalawag,id=162541,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
+# main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
 
-save=PR_Hunter_Beast_Mastery.simc
-
-
-hunter="PR_Hunter_Marksmanship"
-level=120
-race=lightforged_draenei
-spec=marksmanship
-role=attack
-position=ranged_back
-talents=2103012
-
-head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=192/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
-back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
-wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
-hands=sepulchral_constructs_gloves,id=160213,bonus_id=4779/1512/4786
-waist=shalebiter_interlinked_chain,id=159361,bonus_id=4779/1512/4786
-legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
-feet=surefoot_sabatons,id=159379,bonus_id=4779/1512/4786
-finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=harlans_loaded_dice,id=155881,bonus_id=4779/1512
-trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
-
-save=PR_Hunter_Marksmanship.simc
+# save=PR_Hunter_Beast_Mastery.simc
 
 
-hunter="PR_Hunter_Survival"
-level=120
-race=lightforged_draenei
-spec=survival
-role=attack
-position=back
-talents=3101022
+# hunter="PR_Hunter_Marksmanship"
+# level=120
+# race=lightforged_draenei
+# spec=marksmanship
+# role=attack
+# position=ranged_back
+# talents=2103012
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=371/30/14/13
-wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
-hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
-legs=corpuscular_greaves,id=159384,bonus_id=4779/1512/4786
-feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+# head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=192/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
+# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
+# chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
+# wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
+# hands=sepulchral_constructs_gloves,id=160213,bonus_id=4779/1512/4786
+# waist=shalebiter_interlinked_chain,id=159361,bonus_id=4779/1512/4786
+# legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
+# feet=surefoot_sabatons,id=159379,bonus_id=4779/1512/4786
+# finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=harlans_loaded_dice,id=155881,bonus_id=4779/1512
+# trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
 
-save=PR_Hunter_Survival.simc
+# save=PR_Hunter_Marksmanship.simc
+
+
+# hunter="PR_Hunter_Survival"
+# level=120
+# race=lightforged_draenei
+# spec=survival
+# role=attack
+# position=back
+# talents=3101022
+
+# head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/14/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=371/30/14/13
+# wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
+# hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+# waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
+# legs=corpuscular_greaves,id=159384,bonus_id=4779/1512/4786
+# feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
+# main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+
+# save=PR_Hunter_Survival.simc

@@ -286,8 +286,8 @@ struct player_t : public actor_t
   // Callbacks
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
-  std::vector<std::function<void(player_t*)> > callbacks_on_demise;
-  std::vector<std::function<void(void)>> callbacks_on_arise;
+  std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
+  std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -402,6 +402,7 @@ struct player_t : public actor_t
 
   struct buffs_t
   {
+    std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
     buff_t* angelic_feather;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
@@ -516,29 +517,11 @@ struct player_t : public actor_t
     buff_t* power_infusion; // Priest spell
 
     // 9.0 Soulbinds
-    buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
-    buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
-    buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
     buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
-    buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
-    buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
-    buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
-    buff_t* superior_tactics;         // venthyr/draven - crit buff on interrupt
-    buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
-    buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
-    buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
-    buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
     buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
-    buff_t* gnashing_chompers;        // necrolord/emeni - haste on enemy death
-    buff_t* embody_the_construct;     // necrolord/emeni - cast counter
     buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
-    buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
-
-    // 9.0 Enchants and Consumables
-    buff_t* celestial_guidance;
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
@@ -722,6 +705,8 @@ public:
   bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
+  /// Is the actor active currently
+  bool is_active() const;
   bool in_gcd() const;
   bool recent_cast() const;
   bool dual_wield() const
@@ -1200,6 +1185,9 @@ public:
   void register_combat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
+
+  void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
+  void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

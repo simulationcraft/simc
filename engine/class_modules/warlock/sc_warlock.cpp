@@ -30,9 +30,27 @@ struct drain_life_t : public warlock_spell_t
         p()->buffs.inevitable_demise->expire();
     }
 
+    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.id_azerite->check() )
+    {
+      if ( p()->buffs.drain_life->check() )
+        p()->buffs.id_azerite->expire();
+    }
+
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = warlock_spell_t::bonus_ta( s );
+
+    ta += p()->buffs.id_azerite->check_stack_value();
+
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+
+    return ta;
   }
 
   double action_multiplier() const override
@@ -50,6 +68,7 @@ struct drain_life_t : public warlock_spell_t
   {
     p()->buffs.drain_life->expire();
     p()->buffs.inevitable_demise->expire();
+    p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
   }
@@ -138,7 +157,7 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    double value = p()->buffs.decimating_bolt->default_value - 0.02 * s->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -184,16 +203,6 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       p()->warlock_pet_list.active = nullptr;
       p()->buffs.grimoire_of_sacrifice->trigger();
     }
-  }
-};
-
-struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
-{
-  grimoire_of_sacrifice_damage_t( warlock_t* p )
-    : warlock_spell_t( "grimoire_of_sacrifice", p, p->find_spell( 196100 ) )
-  {
-    background = true;
-    proc       = true;
   }
 };
 }  // namespace actions
@@ -252,7 +261,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) );
 
-  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
 void warlock_td_t::target_demise()
@@ -302,6 +311,13 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
                            warlock.gains.shadowburn_refund );
+  }
+
+  if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption.", target->name(), warlock.name() );
+
+    warlock.buffs.wrath_of_consumption->trigger();
   }
 }
 
@@ -667,8 +683,11 @@ void warlock_t::create_buffs()
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
-                              ->set_default_value(4)
+                              ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
+
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
+                               ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells()
@@ -700,7 +719,6 @@ void warlock_t::init_spells()
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -709,6 +727,8 @@ void warlock_t::init_spells()
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
+  //Wrath is implemented here to catch any potential cross-spec periodic effects
+  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
@@ -764,6 +784,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
@@ -788,6 +809,9 @@ void warlock_t::init_procs()
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+  procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
 
@@ -858,12 +882,11 @@ void warlock_t::apl_precombat()
 
   precombat->add_action( "snapshot_stats" );
 
-  if ( sim->allow_potions )
-  {
-    precombat->add_action( "potion" );
-  }
   if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
     precombat->add_action( "demonbolt" );
+    precombat->add_action( "variable,name=tyrant_ready,value=0" );
+  }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     precombat->add_talent( this, "Soul Fire" );
@@ -881,55 +904,22 @@ void warlock_t::apl_precombat()
 
 std::string warlock_t::default_potion() const
 {
-  std::string lvl120_potion =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "unbridled_fury"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "unbridled_fury"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "unbridled_fury" : "unbridled_fury";
-
-  std::string lvl110_potion = "prolonged_power";
-
-  return ( true_level > 110 )
-             ? lvl120_potion
-             : ( true_level >= 100 )
-                   ? lvl110_potion
-                   : ( true_level >= 90 )
-                         ? "draenic_intellect"
-                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  return ( true_level >= 50 ) ? "unbridled_fury" : "disabled";
 }
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level > 110 )
-             ? "greater_flask_of_endless_fathoms"
-             : ( true_level >= 100 )
-                   ? "whispered_pact"
-                   : ( true_level >= 90 )
-                         ? "greater_draenic_intellect_flask"
-                         : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+  return ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
 }
 
 std::string warlock_t::default_food() const
 {
-  std::string lvl100_food =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "frosty_stew"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "frosty_stew"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "felmouth_frenzy" : "felmouth_frenzy";
-
-  std::string lvl110_food =
-      ( specialization() == WARLOCK_AFFLICTION ) ? "nightborne_delicacy_platter" : "azshari_salad";
-
-  return ( true_level > 110 ) ? "baked_port_tato"
-                              : ( true_level > 100 ) ? lvl110_food : ( true_level > 90 ) ? lvl100_food : "disabled";
+  return ( true_level >= 50 ) ? "famine_evaluator_and_snack_table" : "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred"
-                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  return ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 }
 
 void warlock_t::apl_global_filler()
@@ -967,6 +957,27 @@ void warlock_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+}
+
+void warlock_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  auto const effect = new special_effect_t( this );
+  effect->name_str = "grimoire_of_sacrifice_effect";
+  effect->spell_id = 196099;
+  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+  special_effects.push_back( effect );
+
+  auto cb = new dbc_proc_callback_t( this, *effect );
+
+  cb->initialize();
+  cb->deactivate();
+
+  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+      if ( new_ == 1 ) cb->activate();
+      else cb->deactivate();
+    } );
 }
 
 void warlock_t::combat_begin()
@@ -1513,6 +1524,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     vop_infernals( "vop_infernal", w ),
+    roc_infernals( "roc_infernal", w ),
     vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),

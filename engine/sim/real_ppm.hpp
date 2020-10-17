@@ -32,7 +32,7 @@ private:
   double       modifier;
   double       rppm;
   timespan_t   last_trigger_attempt;
-  timespan_t   last_successful_trigger;
+  timespan_t   accumulated_blp;
   unsigned     scales_with;
   blp          blp_state;
 
@@ -40,8 +40,8 @@ private:
     blp_state( BLP_ENABLED )
   { }
 
-  static double max_interval() { return 3.5; }
-  static double max_bad_luck_prot() { return 1000.0; }
+  static timespan_t max_interval() { return 3.5_s; }
+  static timespan_t max_bad_luck_prot() { return 1000_s; }
 public:
   static double proc_chance( player_t*  player,
                              double     PPM,
@@ -56,8 +56,8 @@ public:
     freq( frequency ),
     modifier( mod ),
     rppm( freq * mod ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
+    last_trigger_attempt( 0_ms ),
+    accumulated_blp( 0_ms ),
     scales_with( s ),
     blp_state( b )
   { }
@@ -99,13 +99,13 @@ public:
   void set_last_trigger_attempt( timespan_t ts )
   { last_trigger_attempt = ts; }
 
-  void set_last_trigger_success( timespan_t ts )
-  { last_successful_trigger = ts; }
+  void set_accumulated_blp( timespan_t ts )
+  { accumulated_blp = ts; }
 
   void reset()
   {
-    last_trigger_attempt = timespan_t::zero();
-    last_successful_trigger = timespan_t::zero();
+    last_trigger_attempt = 0_ms;
+    accumulated_blp = 0_ms;
   }
 
   bool trigger();

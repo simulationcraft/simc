@@ -6,13 +6,13 @@ race=human
 role=attack
 position=back
 talents=2210021
-azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
+azerite_essences=14:3:1/12:3:0/27:3:0/35:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>15
 actions.precombat+=/stealth
 actions.precombat+=/slice_and_dice,precombat_seconds=1
@@ -42,7 +41,7 @@ actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
 actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)
 actions+=/call_action_list,name=dot
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
+actions+=/slice_and_dice,if=spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel.equipped)&buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
 actions+=/arcane_pulse
@@ -50,7 +49,9 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Cooldowns
-actions.cds=use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up
+actions.cds=flagellation
+actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=40
+actions.cds+=/use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up
 actions.cds+=/call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
@@ -75,7 +76,7 @@ actions.cds+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_ma
 actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
 actions.cds+=/exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4
-actions.cds+=/shiv,if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)
+actions.cds+=/shiv,if=level>=58&dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)
 actions.cds+=/potion,if=buff.bloodlust.react|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
@@ -97,7 +98,7 @@ actions.cds+=/use_items
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
 actions.direct=envenom,if=(combo_points>=4+talent.deeper_stratagem.enabled|combo_points=animacharged_cp)&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target
-actions.direct+=/serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|variable.use_filler&(active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5)
+actions.direct+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
 # With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up
 actions.direct+=/fan_of_knives,if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))
 # Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets.
@@ -105,7 +106,6 @@ actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>
 # Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets.
 actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/echoing_reprimand,if=variable.use_filler
-actions.direct+=/slaughter,if=variable.use_filler
 actions.direct+=/ambush,if=variable.use_filler
 # Tab-Mutilate to apply Deadly Poison at 2 targets
 actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
@@ -153,8 +153,10 @@ actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_
 actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
 
 # Stealthed Actions
+# Nighstalker on 3T: Crimson Tempest
+actions.stealthed=crimson_tempest,if=talent.nightstalker.enabled&spell_targets>=3&combo_points>=4&target.time_to_die-remains>6
 # Nighstalker on 1T: Snapshot Rupture
-actions.stealthed=rupture,if=talent.nightstalker.enabled&combo_points>=4&target.time_to_die-remains>6
+actions.stealthed+=/rupture,if=talent.nightstalker.enabled&combo_points>=4&target.time_to_die-remains>6
 # Subterfuge + Shrouded Suffocation: Ensure we use one global to apply Garrote to the main target if it is not snapshot yet, so all other main target abilities profit.
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=azerite.shrouded_suffocation.enabled&buff.subterfuge.up&buff.subterfuge.remains<1.3&!ss_buffed
@@ -171,8 +173,8 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=136/582/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4819/4775,azerite_powers=136/193/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,ilevel=145,azerite_level=80
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4819/4775,ilevel=130,azerite_powers=136/193/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=181/582/21/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6573
@@ -188,13 +190,13 @@ main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=quick_n
 off_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=145.81
-# gear_agility=487
-# gear_stamina=1019
-# gear_crit_rating=252
-# gear_haste_rating=334
-# gear_mastery_rating=272
+# gear_ilvl=134.56
+# gear_agility=403
+# gear_stamina=710
+# gear_crit_rating=194
+# gear_haste_rating=276
+# gear_mastery_rating=214
 # gear_versatility_rating=18
 # gear_corruption=90
 # gear_corruption_resistance=50
-# gear_armor=322
+# gear_armor=275

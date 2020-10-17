@@ -21,22 +21,57 @@ augmentation=disabled
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/lightning_shield
+actions.precombat+=/windfury_weapon
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
+actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat=snapshot_stats
+actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-actions=wind_shear
+actions=bloodlust
+# In-combat potion is before combat ends.
+actions+=/potion,if=expected_combat_length-time<60
+# Interrupt of casts.
+actions+=/wind_shear
 actions+=/auto_attack
 actions+=/windstrike
 actions+=/feral_spirit
 actions+=/earth_elemental
-actions+=/lava_lash
-actions+=/stormstrike
-actions+=/crash_lightning
-actions+=/flame_shock
-actions+=/frost_shock
-actions+=/lightning_bolt
-actions+=/chain_lightning
+actions+=/elemental_blast,if=talent.elemental_blast.enabled&&buff.maelstrom_weapon.stack>=5
+actions+=/sundering
+actions+=/ascendance
+# If only one enemy, priority follows the 'single' action list.
+actions+=/call_action_list,name=single,if=active_enemies=1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+# Multi target action priority list
+actions.aoe=crash_lightning
+actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
+actions.aoe+=/stormstrike
+actions.aoe+=/lava_lash
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!buff.hailstorm.up
+actions.aoe+=/frost_shock,if=buff.hailstorm.up
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!ticking&&!talent.hailstorm.enabled
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
+actions.aoe+=/frost_shock
+
+# Single target action priority list
+actions.single=stormstrike
+actions.single+=/stormkeeper,if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=buff.stormkeeper.up
+actions.single+=/lava_lash
+actions.single+=/flame_shock,target_if=refreshable,if=!ticking
+actions.single+=/crash_lightning
+actions.single+=/frost_shock
 
 head=honorbound_vanguards_helm,id=163447,bonus_id=6938
 neck=shaleshell_pendant,id=177165,bonus_id=6938

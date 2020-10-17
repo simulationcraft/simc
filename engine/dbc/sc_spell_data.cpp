@@ -988,6 +988,21 @@ struct spell_attribute_expr_t : public spell_list_expr_t
         return spell.attribute( attridx ) & ( 1 << flagidx );
       } );
   }
+
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  {
+    // Numbered attributes only
+    if ( other.result_tok != expression::TOK_NUM )
+      return {};
+
+    uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
+    uint32_t flagidx = ( unsigned ) other.result_num % ( sizeof( unsigned ) * 8 );
+
+    assert( attridx < NUM_SPELL_FLAGS && flagidx < 32 );
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return ( spell.attribute( attridx ) & ( 1 << flagidx ) ) == 0;
+      } );
+  }
 };
 
 struct spell_school_expr_t : public spell_list_expr_t
@@ -1090,7 +1105,7 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
     {
       valid_types.push_back(std::string(entry.name));
     }
-    
+
     throw std::invalid_argument(fmt::format("Unable to decode spell expression type '{}'. Valid types are {{{}}}", splits[ 0 ], util::string_join(valid_types, ", ")));
   }
 
@@ -1130,7 +1145,7 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
   {
     valid_fields.push_back( std::string( field.name ) );
   }
-  
+
   throw std::invalid_argument( fmt::format( "Unknown spell expression field '{}'. Valid fields for type '{}' are {{{}}}", splits[ 1 ],
                                             data_type, util::string_join( valid_fields, ", " ) ) );
 }

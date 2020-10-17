@@ -1,80 +1,80 @@
-druid="PR_Druid_Balance"
-level=120
-race=troll
-spec=balance
-role=spell
-position=ranged_back
-talents=2000231
+# druid="PR_Druid_Balance"
+# level=120
+# race=troll
+# spec=balance
+# role=spell
+# position=ranged_back
+# talents=2000231
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=173/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=173/461/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=122/20/13
-wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
-hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
-waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
-legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
-feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
-trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=quick_navigation
+# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=173/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=173/461/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=122/20/13
+# wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
+# hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
+# waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
+# legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
+# feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
+# trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
+# main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=quick_navigation
 
-save=PR_Druid_Balance.simc
-
-
-druid="PR_Druid_Feral"
-level=120
-race=night_elf
-spec=feral
-role=attack
-position=back
-talents=3000212
-
-timeofday=day
-
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=358/461/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/20/13
-wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
-hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
-waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
-legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
-feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
-
-save=PR_Druid_Feral.simc
+# save=PR_Druid_Balance.simc
 
 
-druid="PR_Druid_Guardian"
-level=120
-race=worgen
-spec=guardian
-role=tank
-position=front
-talents=1111123
+# druid="PR_Druid_Feral"
+# level=120
+# race=night_elf
+# spec=feral
+# role=attack
+# position=back
+# talents=3000212
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=241/461/83/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=361/462/15/13
-wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
-hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
-waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
-legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
-feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
-save=PR_Druid_Guardian.simc
+# timeofday=day
+
+# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=358/461/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/20/13
+# wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
+# hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
+# waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
+# legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
+# feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
+# main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+
+# save=PR_Druid_Feral.simc
+
+
+# druid="PR_Druid_Guardian"
+# level=120
+# race=worgen
+# spec=guardian
+# role=tank
+# position=front
+# talents=1111123
+
+# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=241/461/83/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=361/462/15/13
+# wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
+# hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
+# waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
+# legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
+# feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
+# main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+# save=PR_Druid_Guardian.simc

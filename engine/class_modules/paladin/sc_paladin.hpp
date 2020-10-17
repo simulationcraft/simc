@@ -35,6 +35,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* blessed_hammer;
     buff_t* final_reckoning;
     buff_t* reckoning;
+    buff_t* vengeful_shock;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -160,13 +161,15 @@ public:
 
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
+    absorb_buff_t* blessed_hammer_absorb; // ^
+    buff_t* first_avenger_absorb;
     buff_t* seraphim;
     buff_t* ardent_defender;
-    buff_t* avengers_valor;
     buff_t* grand_crusader;
     buff_t* guardian_of_ancient_kings;
     buff_t* redoubt;
     buff_t* shield_of_the_righteous;
+    buff_t* moment_of_glory;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -196,6 +199,8 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
+    gain_t* first_avenger;
+    gain_t* blessed_hammer;
 
     // Mana
     gain_t* mana_beacon_of_light;
@@ -212,10 +217,14 @@ public:
   {
     const spell_data_t* judgment_3;
     const spell_data_t* judgment_4;
+    const spell_data_t* consecration_2;
+    const spell_data_t* consecration_3;
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
+    const spell_data_t* hammer_of_the_righteous_2;
+    const spell_data_t* word_of_glory_2;
   } spec;
 
   // Cooldowns
@@ -231,11 +240,10 @@ public:
 
     cooldown_t* avengers_shield; // Grand Crusader
     cooldown_t* consecration; // Precombat shenanigans
-    cooldown_t* hand_of_the_protector; // Righteous Protector
     cooldown_t* inner_light_icd;
     cooldown_t* judgment; // Crusader's Judgment
-    cooldown_t* light_of_the_protector;  // Righteous Protector
     cooldown_t* shield_of_the_righteous; // Judgment
+    cooldown_t* guardian_of_ancient_kings; // Righteous Protector
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
@@ -249,7 +257,6 @@ public:
 
     const spell_data_t* infusion_of_light;
 
-    const spell_data_t* avengers_valor;
     const spell_data_t* grand_crusader;
     const spell_data_t* riposte;
     const spell_data_t* sanctuary;
@@ -263,6 +270,7 @@ public:
   struct mastery_t
   {
     const spell_data_t* divine_bulwark; // Prot
+    const spell_data_t* divine_bulwark_2; // Rank 2 - consecration DR
     const spell_data_t* hand_of_light; // Ret
     const spell_data_t* lightbringer; // Holy
   } mastery;
@@ -351,7 +359,7 @@ public:
     const spell_data_t* blessing_of_spellwarding;
     // skip T40, see Holy
     // T45
-    const spell_data_t* hand_of_the_protector;
+    // const spell_data_t* hand_of_the_protector;
     const spell_data_t* consecrated_ground;
     // const spell_data_t* judgment_of_light;
     // T50
@@ -447,7 +455,6 @@ public:
     bool fake_sov = true;
     int indomitable_justice_pct = 0;
   } options;
-
   player_t* beacon_target;
 
   double lucid_dreams_accumulator;
@@ -491,6 +498,7 @@ public:
   virtual double    composite_block() const override;
   virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
+  virtual double 	  composite_player_target_multiplier ( player_t *target, school_e school ) const override;
 
   virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
 
@@ -717,24 +725,20 @@ public:
     hasted_cd( false ), hasted_gcd( false )
   {
     // Spec aura damage increase
-    if ( p -> specialization() == PALADIN_HOLY )
-    {
-      this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
-    }
-    else // Default to Ret
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       // Mastery
       this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
 
       // Temporary damage modifiers
       this -> affected_by.crusade = this -> data().affected_by( p -> talents.crusade -> effectN( 1 ) );
-      this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
       this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
       this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
-      this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     }
-
+    this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
+    this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
+
 
     // The whitelists for spells affected by a hasted gcd/cd are spread over a lot of different effects and spells
     // This browses the given spell data to find cd/gcd affecting effects and if they affect the current spell
@@ -870,18 +874,18 @@ public:
       {
         am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
       }
-
-      // Divine purpose damage increase handled here,
-      // Cost handled in holy_power_consumer_t
-      if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
-      {
-        am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
-      }
     }
 
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
     {
       am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
+    }
+
+    // Divine purpose damage increase handled here,
+    // Cost handled in holy_power_consumer_t
+    if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
+    {
+      am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
     }
 
     return am;
@@ -977,6 +981,8 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     may_crit          = true;
     tick_may_crit     = true;
     harmful = false;
+    // WARNING: When harmful = false, if you try to cast at time=0
+    // then the ability has no cost and no gcd, so it just spams it indefinitely
 
     weapon_multiplier = 0.0;
   }
@@ -1073,18 +1079,167 @@ struct sanctified_wrath_t : public paladin_spell_t
   }
 };
 
-
-struct holy_power_consumer_t : public paladin_melee_attack_t
+template <class Base >
+struct holy_power_consumer_t : public Base
 {
+  private:
+    typedef Base ab; // action base, eg. spell_t
+  public:
+    typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
-  holy_power_consumer_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
-    paladin_melee_attack_t( n, p, s ),
+  holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
+    ab( n, player, s ),
     is_divine_storm ( false )
   { }
 
-  double cost() const override;
-  void execute() override;
-  void consume_resource() override;
+  double cost() const override
+  {
+    // paladin_t* p = paladin_action_t<Base>::template p();
+
+    if ( ab::background )
+    {
+      return 0.0;
+    }
+
+    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
+         ab::p() -> buffs.divine_purpose -> check() )
+    {
+      return 0.0;
+    }
+
+    double c = ab::cost();
+
+    if ( ab::p() -> buffs.fires_of_justice -> check() )
+    {
+      c += ab::p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
+    }
+
+    return c;
+  }
+
+  void execute() override
+  {
+    double hp_used = cost();
+    //p variable just to make this look neater
+    paladin_t* p = this -> p();
+
+    ab::execute();
+
+    // if this is a vanq-hammer-based DS, don't do this stuff
+    if ( ab::background )
+      return;
+
+    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
+    if ( p -> buffs.crusade -> check() )
+    {
+      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+      if ( p -> bugs && is_divine_storm && ( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
+      {
+        num_stacks = 0;
+      }
+      else
+      {
+        p -> buffs.crusade -> trigger( num_stacks );
+      }
+    }
+
+    if ( p -> azerite.relentless_inquisitor.ok() )
+    {
+      int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+
+      p -> buffs.relentless_inquisitor -> trigger( num_stacks );
+    }
+
+    // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
+    // Cost reduction is still in divine_storm_t
+    bool should_continue = true;
+    if ( is_divine_storm && p -> bugs )
+    {
+      if ( p -> buffs.empyrean_power_azerite -> up() )
+      {
+        p -> buffs.empyrean_power_azerite -> expire();
+        should_continue = false;
+      }
+
+      if ( p -> buffs.empyrean_power -> up() )
+      {
+        p -> buffs.empyrean_power -> expire();
+        should_continue = false;
+      }
+    }
+    else if ( is_divine_storm )
+    {
+      if ( p -> buffs.empyrean_power_azerite -> up() )
+      {
+        p -> buffs.empyrean_power_azerite -> expire();
+        should_continue = false;
+      }
+      else if ( p -> buffs.empyrean_power -> up() )
+      {
+        p -> buffs.empyrean_power -> expire();
+        should_continue = false;
+      }
+    }
+
+    // Divine Purpose isn't consumed on DS if EP was consumed
+    if ( should_continue )
+    {
+      if ( should_continue && p -> buffs.divine_purpose -> up() )
+      {
+        p -> buffs.divine_purpose -> expire();
+      }
+      // FoJ isn't consumed if EP or DP were consumed
+      else if ( p -> buffs.fires_of_justice -> up() )
+      {
+        p -> buffs.fires_of_justice -> expire();
+      }
+    }
+
+    // Roll for Divine Purpose
+    if ( p -> talents.divine_purpose -> ok() &&
+         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() ) )
+    {
+      p -> buffs.divine_purpose -> trigger();
+      p -> procs.divine_purpose -> occur();
+    }
+
+    if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
+    {
+      if ( p -> azerite.lights_decree.ok() )
+      {
+        lights_decree_t* ld = debug_cast<lights_decree_t*>( p -> active.lights_decree );
+        ld -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+        ld -> execute();
+      }
+
+      if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.ret_sanctified_wrath -> ok() )
+      {
+        sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
+        st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+        st -> execute();
+      }
+    }
+    //Righteous Protector
+    if ( p -> talents.righteous_protector -> ok() ){
+      timespan_t reduction = timespan_t::from_seconds(
+        // Why do I need to divide this by 10? Just give me sec or milli, what is this??
+         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value()
+         * ab::base_costs[ RESOURCE_HOLY_POWER ] / 10
+       );
+      p -> cooldowns.avenging_wrath -> adjust( reduction );
+      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+    }
+  }
+
+  void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( ab::current_resource() == RESOURCE_HOLY_POWER)
+    {
+      ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
+    }
+  }
 };
 
 struct judgment_t : public paladin_melee_attack_t
@@ -1104,10 +1259,6 @@ struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  bool trigger( int stacks, double chance, double value, timespan_t duration ) override;
-
-  double default_av_increase;
-  double avengers_valor_increase;
 };
 
 void empyrean_power( special_effect_t& effect );

@@ -10,7 +10,6 @@ sc_SampleProfilesTab.hpp
 sc_SimulateTab.hpp
 sc_SimulationThread.hpp
 sc_SpellQueryTab.hpp
-sc_UpdateCheck.hpp
 sc_WelcomeTab.hpp
 sc_Workaround.hpp
 simulationcraftqt.hpp
@@ -38,7 +37,6 @@ sc_SampleProfilesTab.cpp
 sc_SimulateTab.cpp
 sc_SimulationThread.cpp
 sc_SpellQueryTab.cpp
-sc_UpdateCheck.cpp
 sc_WelcomeTab.cpp
 sc_window.cpp
 sc_Workaround.cpp

@@ -6,13 +6,13 @@ race=human
 role=attack
 position=back
 talents=2020022
-azerite_essences=14:3:1/27:3:0/32:3:0/35:3:0
+azerite_essences=14:3:1/12:3:0/27:3:0/35:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,12 +27,10 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
 actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
-actions.precombat+=/roll_the_bones,precombat_seconds=2
+actions.precombat+=/roll_the_bones,precombat_seconds=1
 actions.precombat+=/slice_and_dice,precombat_seconds=2
-actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 
@@ -56,7 +54,7 @@ actions+=/bag_of_tricks
 
 # Builders
 actions.build=echoing_reprimand
-actions.build+=/serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5
+actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
 # Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up.
 actions.build+=/pistol_shot,if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)
 actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
@@ -64,6 +62,8 @@ actions.build+=/sinister_strike
 
 # Cooldowns
 actions.cds=call_action_list,name=essences,if=!stealthed.all
+actions.cds+=/flagellation
+actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=40
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)
 actions.cds+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
@@ -75,7 +75,7 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_even
 # Blade Flurry on 1T if your next charge will be ready in time for the next wave.
 actions.cds+=/blade_flurry,if=spell_targets=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25
 actions.cds+=/ghostly_strike,if=combo_points.deficit>=1+buff.broadside.up
-actions.cds+=/killing_spree,if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2
+actions.cds+=/killing_spree,if=variable.blade_flurry_sync&energy.time_to_max>2
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>2
 # Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
 actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
@@ -116,14 +116,13 @@ actions.finish+=/dispatch
 
 # Stealth
 actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
-actions.stealth+=/slaughter
 actions.stealth+=/ambush
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=411/582/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,ilevel=145,azerite_level=80
 shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=411/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=446/582/31/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=180/582/31/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6573
 waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6573
@@ -132,17 +131,17 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
 finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517/6573,enchant=accord_of_critical_strike
 finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637,ilevel=120
 main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
-off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,ilevel=120,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=151.31
-# gear_agility=507
-# gear_stamina=892
-# gear_crit_rating=258
-# gear_haste_rating=240
-# gear_mastery_rating=190
+# gear_ilvl=133.88
+# gear_agility=435
+# gear_stamina=710
+# gear_crit_rating=200
+# gear_haste_rating=182
+# gear_mastery_rating=132
 # gear_versatility_rating=122
 # gear_corruption=90
 # gear_corruption_resistance=50

@@ -1,58 +1,58 @@
-demonhunter="PR_Demon_Hunter_Havoc"
-level=120
-race=night_elf
-spec=havoc
-role=attack
-position=back
-talents=3210222
+# demonhunter="PR_Demon_Hunter_Havoc"
+# level=120
+# race=night_elf
+# spec=havoc
+# role=attack
+# position=back
+# talents=3210222
 
-timeofday=night
+# timeofday=night
 
-head=high_altitude_turban,id=158364,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=tentaclelaced_spaulders,id=159307,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
-wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
-hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
-waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
-legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
-feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
-finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=deadly_navigation
-off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
+# head=high_altitude_turban,id=158364,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=tentaclelaced_spaulders,id=159307,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=126/21/13
+# wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
+# hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
+# waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
+# legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
+# feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
+# finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+# main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=deadly_navigation
+# off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
 
-save=PR_Demon_Hunter_Havoc.simc
+# save=PR_Demon_Hunter_Havoc.simc
 
 
-demonhunter="PR_Demon_Hunter_Vengeance"
-level=120
-race=night_elf
-spec=vengeance
-role=tank
-position=front
-talents=1213121
+# demonhunter="PR_Demon_Hunter_Vengeance"
+# level=120
+# race=night_elf
+# spec=vengeance
+# role=tank
+# position=front
+# talents=1213121
 
-timeofday=night
+# timeofday=night
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=157/461/83/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/462/202/13
-wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
-hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
-waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
-legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
-feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
-finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=versatile_navigation
-off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
+# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=157/461/83/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/462/202/13
+# wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
+# hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
+# waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
+# legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
+# feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
+# finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+# main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=versatile_navigation
+# off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
 
-save=PR_Demon_Hunter_Vengeance.simc
+# save=PR_Demon_Hunter_Vengeance.simc

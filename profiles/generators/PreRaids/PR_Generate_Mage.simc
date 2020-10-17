@@ -1,81 +1,81 @@
-mage="PR_Mage_Arcane"
-level=120
-race=troll
-spec=arcane
-role=spell
-position=back
-talents=2032021
+# mage="PR_Mage_Arcane"
+# level=120
+# race=troll
+# spec=arcane
+# role=spell
+# position=back
+# talents=2032021
 
-head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
-back=raals_bib,id=159294,bonus_id=4779/1512/4786
-chest=blooddrenched_robes,id=159241,bonus_id=4779/1512/4786/4775,azerite_powers=374/31/13
-wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-hands=greasy_bacongrabbers,id=155891,bonus_id=4779/1512/4786
-waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-legs=wild_pyromancers_trousers,id=159277,bonus_id=4779/1512/4786
-feet=sandals_of_wise_voodoo,id=159243,bonus_id=4779/1512/4786
-finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-trinket1=balefire_branch,id=159630,bonus_id=4779/1512/4786
-trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-main_hand=aqmar_the_tidecaller,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
-off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
+# head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
+# back=raals_bib,id=159294,bonus_id=4779/1512/4786
+# chest=blooddrenched_robes,id=159241,bonus_id=4779/1512/4786/4775,azerite_powers=374/31/13
+# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
+# hands=greasy_bacongrabbers,id=155891,bonus_id=4779/1512/4786
+# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
+# legs=wild_pyromancers_trousers,id=159277,bonus_id=4779/1512/4786
+# feet=sandals_of_wise_voodoo,id=159243,bonus_id=4779/1512/4786
+# finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# trinket1=balefire_branch,id=159630,bonus_id=4779/1512/4786
+# trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
+# main_hand=aqmar_the_tidecaller,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+# off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
 
-save=PR_Mage_Arcane.simc
-
-
-mage="PR_Mage_Fire"
-level=120
-race=dark_iron_dwarf
-spec=fire
-role=spell
-position=ranged_back
-talents=1031023
-
-head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=377/30/86/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/13
-back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/468/13
-wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-hands=twisted_sisters_handwraps,id=159272,bonus_id=4779/1512/4786
-waist=cord_of_the_pious_warder,id=159245,bonus_id=4779/1512/4786
-legs=powder_monkeys_leggings,id=159250,bonus_id=4779/1512/4786
-feet=blood_warders_moccasins,id=159270,bonus_id=4779/1512/4786
-finger1=overseer's_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
-trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
-main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
-
-save=PR_Mage_Fire.simc
+# save=PR_Mage_Arcane.simc
 
 
-mage="PR_Mage_Frost"
-level=120
-race=pandaren
-spec=frost
-role=spell
-position=ranged_back
-talents=1013033
+# mage="PR_Mage_Fire"
+# level=120
+# race=dark_iron_dwarf
+# spec=fire
+# role=spell
+# position=ranged_back
+# talents=1031023
 
-head=,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
-neck=,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/22/13
-back=,id=159294,bonus_id=4779/1512/4786
-chest=,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/13
-wrists=,id=158348,bonus_id=4779/1512/4786
-hands=,id=155891,bonus_id=4779/1512/4786
-waist=,id=158346,bonus_id=4779/1512/4786
-legs=,id=159277,bonus_id=4779/1512/4786
-feet=,id=159243,bonus_id=4779/1512/4786
-finger1=,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-finger2=,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-trinket1=,id=159624,bonus_id=4779/1512/4786
-trinket2=,id=159631,bonus_id=4779/1512/4786
-main_hand=,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
-off_hand=,id=158322,bonus_id=4779/1512/4786
+# head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=377/30/86/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/13
+# back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
+# chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/468/13
+# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+# hands=twisted_sisters_handwraps,id=159272,bonus_id=4779/1512/4786
+# waist=cord_of_the_pious_warder,id=159245,bonus_id=4779/1512/4786
+# legs=powder_monkeys_leggings,id=159250,bonus_id=4779/1512/4786
+# feet=blood_warders_moccasins,id=159270,bonus_id=4779/1512/4786
+# finger1=overseer's_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
+# trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
+# main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 
-save=PR_Mage_Frost.simc
+# save=PR_Mage_Fire.simc
+
+
+# mage="PR_Mage_Frost"
+# level=120
+# race=pandaren
+# spec=frost
+# role=spell
+# position=ranged_back
+# talents=1013033
+
+# head=,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
+# neck=,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/22/13
+# back=,id=159294,bonus_id=4779/1512/4786
+# chest=,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/13
+# wrists=,id=158348,bonus_id=4779/1512/4786
+# hands=,id=155891,bonus_id=4779/1512/4786
+# waist=,id=158346,bonus_id=4779/1512/4786
+# legs=,id=159277,bonus_id=4779/1512/4786
+# feet=,id=159243,bonus_id=4779/1512/4786
+# finger1=,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# finger2=,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+# trinket1=,id=159624,bonus_id=4779/1512/4786
+# trinket2=,id=159631,bonus_id=4779/1512/4786
+# main_hand=,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+# off_hand=,id=158322,bonus_id=4779/1512/4786
+
+# save=PR_Mage_Frost.simc

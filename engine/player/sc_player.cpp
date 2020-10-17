@@ -3334,25 +3334,10 @@ void player_t::create_buffs()
 
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
-      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
-        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-          if ( b->at_max_stacks() )
-          {
-            buffs.euphoria->trigger();
-            b->expire();
-          }
-        } );
+      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) );
       buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
-      buffs.embody_the_construct = make_buff( this, "embody_the_construct", find_spell( 342174 ) );
       buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
-        ->modify_max_stack( 1 )
-        ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-          if ( b->at_max_stacks() )
-          {
-            buffs.marrowed_gemstone_enhancement->trigger();
-            b->expire();
-          }
-        } );
+        ->modify_max_stack( 1 );
 
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
@@ -3483,6 +3468,9 @@ double player_t::composite_melee_haste() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
+      h /= 1.0 + b->check_stack_value();
+
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
 
@@ -3497,21 +3485,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
-
-    if ( buffs.invigorating_herbs )
-      h *= 1.0 / ( 1.0 + buffs.invigorating_herbs->check_value() );
-
-    if ( buffs.field_of_blossoms )
-      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
-
-    if ( buffs.euphoria )
-      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
-
-    if ( buffs.hammer_of_genesis )
-      h *= 1.0 / ( 1.0 + buffs.hammer_of_genesis->check_stack_value() );
-
-    if ( buffs.gnashing_chompers )
-      h *= 1.0 / ( 1.0 + buffs.gnashing_chompers->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -3627,21 +3600,12 @@ double player_t::composite_melee_crit_chance() const
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
+    ac += b->check_stack_value();
+
   // The Unbound Force crit bonus from 20 stack proc
   if (buffs.reckless_force)
     ac += buffs.reckless_force->check_value();
-
-  if ( buffs.first_strike )
-    ac += buffs.first_strike->check_value();
-
-  if ( buffs.superior_tactics )
-    ac += buffs.superior_tactics->check_value();
-
-  if ( buffs.pointed_courage )
-    ac += buffs.pointed_courage->check_stack_value();
-
-  if ( buffs.marrowed_gemstone_enhancement )
-    ac += buffs.marrowed_gemstone_enhancement->check_stack_value();
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3853,6 +3817,9 @@ double player_t::composite_spell_haste() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
+      h /= 1.0 + b->check_stack_value();
+
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
 
@@ -3861,21 +3828,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
-
-    if ( buffs.invigorating_herbs )
-      h *= 1.0 / ( 1.0 + buffs.invigorating_herbs->check_value() );
-
-    if ( buffs.field_of_blossoms )
-      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
-
-    if ( buffs.euphoria )
-      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
-
-    if ( buffs.hammer_of_genesis )
-      h *= 1.0 / ( 1.0 + buffs.hammer_of_genesis->check_stack_value() );
-
-    if ( buffs.gnashing_chompers )
-      h *= 1.0 / ( 1.0 + buffs.gnashing_chompers->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -3945,21 +3897,12 @@ double player_t::composite_spell_crit_chance() const
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
+    sc += b->check_stack_value();
+
   // reckless force (The Unbound Force) crit bonus from 20 stack proc
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
-
-  if ( buffs.first_strike )
-    sc += buffs.first_strike->check_value();
-
-  if ( buffs.superior_tactics )
-    sc += buffs.superior_tactics->check_value();
-
-  if ( buffs.pointed_courage )
-    sc += buffs.pointed_courage->check_stack_value();
-
-  if ( buffs.marrowed_gemstone_enhancement )
-    sc += buffs.marrowed_gemstone_enhancement->check_stack_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3993,8 +3936,8 @@ double player_t::composite_mastery() const
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
-  if ( buffs.combat_meditation )
-    cm += buffs.combat_meditation->check_value();
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
+    cm += b->check_stack_value();
 
   return cm;
 }
@@ -4009,6 +3952,9 @@ double player_t::composite_damage_versatility() const
   double cdv = apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
       composite_damage_versatility_rating() / current.rating.damage_versatility );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    cdv += b->check_stack_value();
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
@@ -4017,15 +3963,6 @@ double player_t::composite_damage_versatility() const
 
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
-
-  if ( buffs.social_butterfly )
-    cdv += buffs.social_butterfly->check_value();
-
-  if ( buffs.wasteland_propriety )
-    cdv += buffs.wasteland_propriety->check_value();
-
-  if ( buffs.let_go_of_the_past )
-    cdv += buffs.let_go_of_the_past->check_stack_value();
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
@@ -4038,6 +3975,9 @@ double player_t::composite_heal_versatility() const
   double chv = apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
       composite_heal_versatility_rating() / current.rating.heal_versatility );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    chv += b->check_stack_value();
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
@@ -4046,15 +3986,6 @@ double player_t::composite_heal_versatility() const
 
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
-
-  if ( buffs.social_butterfly )
-    chv += buffs.social_butterfly->check_value();
-
-  if ( buffs.wasteland_propriety )
-    chv += buffs.wasteland_propriety->check_value();
-
-  if ( buffs.let_go_of_the_past )
-    chv += buffs.let_go_of_the_past->check_stack_value();
 
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
@@ -4067,6 +3998,9 @@ double player_t::composite_mitigation_versatility() const
   double cmv = apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
       composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
 
+  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
+    cmv += b->check_stack_value() / 2;
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
@@ -4075,15 +4009,6 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
-
-  if ( buffs.social_butterfly )
-    cmv += buffs.social_butterfly->check_value() / 2;
-
-  if ( buffs.wasteland_propriety )
-    cmv += buffs.wasteland_propriety->check_value() / 2;
-
-  if ( buffs.let_go_of_the_past )
-    cmv += buffs.let_go_of_the_past->check_stack_value() / 2;
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
@@ -4378,27 +4303,25 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( ( true_level >= 27 ) && matching_gear )
     m *= 1.0 + matching_gear_multiplier( attr );
 
-  if ( buffs.built_for_war )
-    m *= 1.0 + buffs.built_for_war->check_stack_value();
-
-  if ( buffs.celestial_guidance )
-    m *= 1.0 + buffs.celestial_guidance->check_value();
-
+  stat_pct_buff_type pct_type = STAT_PCT_BUFF_MAX;
   switch ( attr )
   {
     case ATTR_STRENGTH:
+      pct_type = STAT_PCT_BUFF_STRENGTH;
       if ( buffs.archmages_greater_incandescence_str->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_str->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_str->check() )
         m *= 1.0 + buffs.archmages_incandescence_str->data().effectN( 1 ).percent();
       break;
     case ATTR_AGILITY:
+      pct_type = STAT_PCT_BUFF_AGILITY;
       if ( buffs.archmages_greater_incandescence_agi->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_agi->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_agi->check() )
         m *= 1.0 + buffs.archmages_incandescence_agi->data().effectN( 1 ).percent();
       break;
     case ATTR_INTELLECT:
+      pct_type = STAT_PCT_BUFF_INTELLECT;
       if ( buffs.archmages_greater_incandescence_int->check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_int->data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_int->check() )
@@ -4407,12 +4330,14 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + sim->auras.arcane_intellect->value();
       break;
     case ATTR_SPIRIT:
+      pct_type = STAT_PCT_BUFF_SPIRIT;
       if ( buffs.amplification )
         m *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
+      pct_type = STAT_PCT_BUFF_STAMINA;
       if ( sim->auras.power_word_fortitude->check() )
       {
         m *= 1.0 + sim->auras.power_word_fortitude->value();
@@ -4420,6 +4345,12 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     default:
       break;
+  }
+
+  if ( pct_type != STAT_PCT_BUFF_MAX )
+  {
+    for ( auto b : buffs.stat_pct_buffs[ pct_type ] )
+      m *= 1.0 + b->check_stack_value();
   }
 
   return m;
@@ -5685,7 +5616,13 @@ void player_t::arise()
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
   for ( size_t i = 0; i < callbacks_on_arise.size(); ++i )
-    callbacks_on_arise[ i ]();
+  {
+    auto& cb = callbacks_on_arise[ i ];
+    // If the callback comes from a different actor, execute it only
+    // if that actor is active.
+    if ( this == cb.first || cb.first->is_active() )
+      cb.second();
+  }
 }
 
 /**
@@ -5721,7 +5658,13 @@ void player_t::demise()
   // Requires index-based lookup since on-demise callbacks may
   // insert new on-demise callbacks to the vector.
   for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-    callbacks_on_demise[ i ]( this );
+  {
+    auto& cb = callbacks_on_demise[ i ];
+    // If the callback comes from a different actor, execute it only
+    // if that actor is active.
+    if ( this == cb.first || cb.first->is_active() )
+      cb.second( this );
+  }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -7676,11 +7619,9 @@ struct lights_judgment_t : public racial_spell_t
   };
 
   action_t* damage;
-  bool precombat;
 
   lights_judgment_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ) ),
-    precombat()
+    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ) )
   {
     parse_options( options_str );
     // The cast doesn't trigger combat
@@ -7693,18 +7634,11 @@ struct lights_judgment_t : public racial_spell_t
     add_child( damage );
   }
 
-  void init_finished() override
-  {
-    racial_spell_t::init_finished();
-
-    precombat =  action_list -> name_str == "precombat";
-  }
-
   void execute() override
   {
     racial_spell_t::execute();
     // Reduce the cooldown by the player's gcd when used during precombat
-    if ( ! player -> in_combat && precombat )
+    if ( ! player -> in_combat && is_precombat )
     {
       cooldown -> adjust( - player -> base_gcd );
 
@@ -7717,7 +7651,7 @@ struct lights_judgment_t : public racial_spell_t
   timespan_t travel_time() const override
   {
     // Reduce the delay before the hit by the player's gcd when used during precombat
-    if ( ! player -> in_combat && precombat )
+    if ( ! player -> in_combat && is_precombat )
       return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
 
     return timespan_t::from_seconds( travel_speed );
@@ -12888,6 +12822,16 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
   });
 }
 
+void player_t::register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn )
+{
+  callbacks_on_demise.emplace_back( source, std::move( fn ) );
+}
+
+void player_t::register_on_arise_callback( player_t* source, std::function<void( void )> fn )
+{
+  callbacks_on_arise.emplace_back( source, std::move( fn ) );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -12914,6 +12858,24 @@ bool player_t::is_my_pet(const player_t* t) const
   return t->is_pet() && t->cast_pet()->owner == this;
 }
 
+bool player_t::is_active() const
+{
+  if ( sim->single_actor_batch )
+  {
+    if ( is_enemy() || is_pet() )
+    {
+      return !is_sleeping();
+    }
+    else
+    {
+      return sim->current_index == actor_index;
+    }
+  }
+  else
+  {
+    return !is_sleeping();
+  }
+}
 
 /**
  * Perform dynamic resource regeneration

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36086 shadowlands-BETA (git build shadowlands f80323a0d2)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -17,9 +17,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=805487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for $342761d that increase your Haste by $342774s1% while you stand with them.$?a137018|a137022|a137005|a137026[
-
-Flowers may only bloom once every $342781d.][]
+Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for ${$342761d*$<mod>} sec that increase your Haste by $342774s1% while you stand with them.
+Variables        : $mod=$?a137005[${0.5}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Social Butterfly (id=319210) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -130,6 +129,7 @@ Description      : After spending $s1 sec in a rested area, you gain $320235s1% 
 
 Name             : Podtender (id=319217) [Passive, Hidden] 
 Covenant         : Night Fae
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -210,6 +210,7 @@ Effects          :
 Description      : When a nearby ally gains temporary increased movement speed, you also gain the benefit, up to $s1% for $333104d.
 
 Name             : Wasteland Propriety (id=319983) [Passive] 
+Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -368,6 +369,7 @@ Description      : Movement speed increased by $321527s1% for $321527d after def
 
 Name             : Grove Invigoration (id=322721) [Passive] 
 Covenant         : Night Fae
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Proc Chance      : 100%
@@ -388,7 +390,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=844396)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342937 | Target: Self (1)
-Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, up to $342802u. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] grants you $342814s1% maximum health and $342814s2 Mastery per stack for $342814d.
+Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, up to $342802u. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] consumes Redirected Anima and grants you $342814s1% maximum health and $342814s2 Mastery per stack for $342814d.
 Tooltip          : $spelldesc322721
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
@@ -520,6 +522,7 @@ Description      : When reduced below $m1% health, Ooz courses over you, grantin
 
 Name             : Ultimate Form (id=323095) [Passive, Hidden] 
 Covenant         : Necrolord
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -534,24 +537,29 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=811790)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While channeling Fleshcraft, you are immune to crowd control. Finishing the full channel grants you another $324631d of crowd control immunity.
+Description      : While channeling Fleshcraft, you are immune to crowd control and you regenerate $323524s17% health every $323524t17 sec. 
+
+If you finish the full channel, you gain $324631d of crowd control immunity, during which you regenerate $323524s17% health every $323524t17 sec.
 
 Name             : Sulfuric Emission (id=323916) [Passive, Hidden] 
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ...x...x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   x....... ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=813157)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 324263 | Target: Self (1)
+#1 (id=813157)   : Apply Aura (6) | Proc Trigger Spell (42): Sulfuric Emission
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 324263 | Target: Self (1)
 Description      : When reduced below $m1% health, you fear nearby enemies for $324263d. May only occur once per $324263s3 sec.
 
 Name             : Gristled Toes (id=323918) [Passive, Hidden] 
@@ -681,6 +689,7 @@ Effects          :
 Description      : While out of combat, your Soulshape's teleport becomes a charge, stunning your target for $325321d and ending your Soulshape.
 
 Name             : Wild Hunt Tactics (id=325066) [Passive, Hidden] 
+Covenant         : Night Fae
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -964,6 +973,7 @@ Description      : You have a chance to obtain a satchel of a bonesmith's prefer
 
 Name             : Forgeborne Reveries (id=326514) [Passive] 
 Covenant         : Necrolord
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Attributes       : ......x. ........ .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -1111,6 +1121,7 @@ Description      : Defeating an enemy reduces the cooldown on your steward's non
 
 Name             : Combat Meditation (id=328266) [Passive, Hidden] 
 Covenant         : Kyrian
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Proc Chance      : 101%
@@ -1126,9 +1137,10 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=820394)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1% for $328908d and occasionally expels Sorrowful Memories. 
+Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>} sec and occasionally expels Sorrowful Memories. 
 
-Walking through Sorrowful Memories extends this effect by $328913m2 sec. Combat Meditation may only occur once every $345861d.
+Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>} sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
+Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${1}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1267,6 +1279,7 @@ Effects          :
 Description      : Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.
 
 Name             : Valiant Strikes (id=329791) [Passive, Hidden] 
+Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1417,9 +1430,11 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=825883)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The first enemy you damage in combat is marked as your Adversary. You deal $331934s1% more damage to them, and they deal $331934s2% less damage to you. You may only have one Adversary at a time.
+Description      : The first enemy you damage in combat is marked as your Adversary. You deal $331934s1% more damage to them, and they deal $<reduc>% less damage to you. You may only have one Adversary at a time.
+Variables        : $reduc=${1.5}.1
 
 Name             : Thrill Seeker (id=331586) [Passive, Hidden] 
+Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1659,6 +1674,7 @@ Description      : Damaging a new enemy grants you $333943m% Haste for $333943d,
 
 Name             : Bron's Call to Action (id=333950) [Passive, Hidden] 
 Covenant         : Kyrian
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
@@ -1675,7 +1691,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=829590)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After using ${$332514u+1} damaging or healing spells and abilities, your next spell or ability summons Bron, knocking back enemies on arrival and who attacking and healing your targets for $333961d.
+Description      : After using ${$332514u+1} damaging or healing spells and abilities, your next spell or ability summons Bron, who knocks enemies back on arrival and then attacks and heals your targets for $333961d.
 
 Name             : Mentorship (id=334066) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1765,7 +1781,7 @@ School           : Shadow
 Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 1
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1797,9 +1813,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=833361)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834395)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The effects of combat potions last $s1% to $s2% longer.
 
 Name             : Token of Appreciation (id=336245) [Passive] 
@@ -1823,7 +1839,7 @@ Effects          :
 #1 (id=833363)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Grant a shield that absorbs $<points> damage to allies who aid you with healing or beneficial magic effects. You will only shield each ally once every $337471d.
-Variables        : $points=${$cond($gt($SP,$AP),$SP*0.5,$AP*0.5)*(1+$@versadmg)}
+Variables        : $points=${$cond($gt($SP,$AP),$SP*1.0,$AP*1.0)*(1+$@versadmg)}
 
 Name             : Life of the Party (id=336247) [Passive] 
 Covenant         : Venthyr
@@ -1854,6 +1870,7 @@ Effects          :
 Description      : During the Ember Court, your Guests gain additional Happiness for each event completed. When the Court concludes, the effects of any Decrees bestowed upon you are increased.
 
 Name             : Service In Stone (id=340159) [Passive, Hidden] 
+Covenant         : Venthyr
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
@@ -1897,6 +1914,7 @@ Description      : You may channel Fleshcraft while moving.
 
 Name             : Lead by Example (id=342156) [Passive, Hidden] 
 Covenant         : Necrolord
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
@@ -1919,8 +1937,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=872117)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>} sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.
-Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${.5}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${3}][${1.0}]
+Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.
+Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${3}][${1.0}]
 
 Name             : Run Without Tiring (id=342270) [Passive, Hidden] 
 Covenant         : Night Fae

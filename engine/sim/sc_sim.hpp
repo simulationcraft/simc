@@ -347,12 +347,18 @@ struct sim_t : private sc_thread_t
     double combat_meditation_extend_chance = 0.5;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
+    /// Number of nearby allies when you proc lead by example
+    unsigned lead_by_example_nearby = 3;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
     unsigned crimson_choir_in_party = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
+    /// Whether Volatile Solvent has Mastery buff
+    bool volatile_solvent_crit = false;
+    bool volatile_solvent_primary = false;
+    bool volatile_solvent_mastery = false;
   } shadowlands_opts;
 
   // Auras and De-Buffs

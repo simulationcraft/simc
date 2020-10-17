@@ -36,24 +36,12 @@ struct ardent_defender_t : public paladin_spell_t
 
 // Avengers Shield ==========================================================
 
-struct avengers_shield_t : public paladin_spell_t
+struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
+  avengers_shield_base_t( const std::string& n, paladin_t* p, const spell_data_t* s, const std::string& options_str ) :
+    paladin_spell_t( n, p, s )
   {
     parse_options( options_str );
-    do_ctor_common( p );
-  }
-
-  avengers_shield_t( paladin_t* p ) :
-    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
-  {
-    do_ctor_common( p );
-    background = true;
-  }
-
-  void do_ctor_common( paladin_t* p )
-  {
     if ( ! p -> has_shield_equipped() )
     {
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
@@ -67,26 +55,8 @@ struct avengers_shield_t : public paladin_spell_t
       aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
     }
 
-    // Redoubt offensive benefit
-    aoe += as<int>( p -> talents.redoubt -> effectN( 2 ).base_value() );
-
-    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-    // First Avenger only increases primary target damage
-    base_aoe_multiplier *= 1.0 / ( 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent() );
-
-    // link needed for trigger_grand_crusader
-    cooldown = p -> cooldowns.avengers_shield;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.avengers_valor -> trigger();
-    if ( p() -> talents.redoubt -> ok() )
-    {
-      p() -> buffs.redoubt -> trigger();
-    }
+    // First Avenger hits +2 targets
+    aoe += as<int>( p -> talents.first_avenger -> effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -97,6 +67,83 @@ struct avengers_shield_t : public paladin_spell_t
     {
       p() -> buffs.soaring_shield -> trigger();
     }
+
+    // First Avenger absorb shield. Amount is additive per hit.
+    if ( p() -> talents.first_avenger -> ok() )
+    {
+      //First Avenger is capped at 30% of max hp. Hardcoded here.
+      double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
+
+      double new_absorb = s -> result_amount * p() -> talents.first_avenger -> effectN( 2 ).percent();
+      if( p() -> buffs.first_avenger_absorb -> value() + new_absorb < max_absorb )
+        p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
+      else
+        p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
+    }
+
+    if ( p() -> conduit.vengeful_shock -> ok() )
+    {
+      td( s -> target ) -> debuff.vengeful_shock -> trigger();
+    }
+  }
+};
+
+struct avengers_shield_dt_t : public avengers_shield_base_t
+{
+  avengers_shield_dt_t( paladin_t* p ) :
+    avengers_shield_base_t( "avengers_shield_dt", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
+  {
+    background=true;
+  }
+};
+
+struct avengers_shield_t : public avengers_shield_base_t
+{
+  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
+    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
+  {
+    cooldown = p -> cooldowns.avengers_shield;
+  }
+
+  void execute() override
+  {
+    avengers_shield_base_t::execute();
+    if( p() -> buffs.moment_of_glory -> up() )
+    {
+      p() -> cooldowns.avengers_shield -> reset( false );
+      p() -> buffs.moment_of_glory -> decrement( 1 );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double m = avengers_shield_base_t::action_multiplier();
+    if( p() -> buffs.moment_of_glory -> up() )
+      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
+
+    return m;
+  }
+};
+
+// Moment of Glory ============================================================
+
+struct moment_of_glory_t : public paladin_spell_t
+{
+  moment_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
+    // then when you use the last stack you get another (4th) AS without a cooldown
+    // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
+    p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
+    p() -> cooldowns.avengers_shield -> reset( false );
   }
 };
 
@@ -117,40 +164,39 @@ struct blessed_hammer_tick_t : public paladin_spell_t
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
-
     // apply BH debuff to target_data structure
-    td( s -> target ) -> debuff.blessed_hammer -> trigger();
+    // Does not interact with vers.
+    // To Do: Investigate refresh behaviour
+    td( s -> target ) -> debuff.blessed_hammer -> trigger(
+      1,
+      s -> attack_power * p() -> talents.blessed_hammer -> effectN( 1 ).percent()
+    );
   }
 };
 
 struct blessed_hammer_t : public paladin_spell_t
 {
   blessed_hammer_tick_t* hammer;
-  int num_strikes;
+  double num_strikes;
 
   blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "blessed_hammer", p, p -> talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
-    add_option( opt_int( "strikes", num_strikes ) );
+    add_option( opt_float( "strikes", num_strikes) );
     parse_options( options_str );
 
-    // Sane bounds for num_strikes - only makes three revolutions, impossible to hit one target more than 3 times.
-    // Likewise calling the spell with 0 or negative strikes is sort of pointless.
-    if ( num_strikes < 1 )
+    // Sanity check for num_strikes
+    if ( num_strikes <= 0 || num_strikes > 10)
     {
-      num_strikes = 1;
-      sim -> error( "{} trying to hit less than one time with blessed_hammer, value changed to 1", p -> name() );
-    }
-    if ( num_strikes > 3 )
-    {
-      num_strikes = 3;
-      sim -> error( "{} trying to hit more than three times with blessed_hammer, value changed to 3", p -> name() );
+      num_strikes = 2;
+      sim -> error( "{} invalid blessed_hammer strikes, value changed to 2", p -> name() );
     }
 
     dot_duration = 0_ms; // The periodic event is handled by ground_aoe_event_t
+    base_tick_time = 0_ms;
+
     may_miss = false;
-    base_tick_time = 1667_ms; // Rough estimation based on stopwatch testing
     cooldown -> hasted = true;
 
     tick_may_crit = true;
@@ -161,18 +207,22 @@ struct blessed_hammer_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-
-    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : 0_ms;
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        .pulse_time( base_tick_time )
-        .duration( base_tick_time * ( num_strikes - 0.5 ) )
-        .start_time( sim -> current_time() + initial_delay )
-        .action( hammer ), true );
+    timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
+    // Let strikes be a decimal rather than int, and roll a random number to decide
+    // hits each time.
+    int roll_strikes = static_cast<int>(floor(num_strikes));
+    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
+      roll_strikes += 1;
+    if (roll_strikes > 0)
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          // spawn at feet of player
+          .x( execute_state -> action -> player -> x_position )
+          .y( execute_state -> action -> player -> y_position )
+          .pulse_time( data().duration()/roll_strikes )
+          .n_pulses( roll_strikes )
+          .start_time( sim -> current_time() + initial_delay )
+          .action( hammer ), true );
 
     // Grand Crusader can proc on cast, but not on impact
     p() -> trigger_grand_crusader();
@@ -216,6 +266,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     trigger_gcd = 0_ms;
+    cooldown = p -> cooldowns.guardian_of_ancient_kings;
   }
 
   void execute() override
@@ -271,6 +322,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
+    if ( p -> spec.hammer_of_the_righteous_2 -> ok() && ! p -> talents.blessed_hammer -> ok() )
+      cooldown -> charges += as<int>( p -> spec.hammer_of_the_righteous_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -300,119 +353,72 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
-  timespan_t sotr_cdr; // needed for sotr interaction for protection
-
+  int judge_holy_power, sw_holy_power;
   judgment_prot_t( paladin_t* p, const std::string& options_str ) :
-    judgment_t( p, options_str )
+    judgment_t( p, options_str ),
+    judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
+    sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
-    cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
-
-    base_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 12 ).percent();
-  }
-
-  void execute() override
-  {
-    judgment_t::execute();
-
-    if ( p() -> talents.fist_of_justice -> ok() )
-    {
-      double cdr = -1.0 * p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> adjust( timespan_t::from_seconds( cdr ) );
-    }
   }
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
+    judgment_t::impact( s );
+
     if ( result_is_hit( s -> result ) )
     {
-      // Judgment hits/crits reduce SotR recharge time
-      if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
-           rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
-      {
-        p() -> cooldowns.avengers_shield -> reset( true );
-      }
-    }
+      if ( p() -> spec.judgment_4 -> ok() )
+        td( s -> target ) -> debuff.judgment -> trigger();
 
-    judgment_t::impact( s );
+      int hopo = 0;
+      if ( p() -> spec.judgment_3 -> ok() )
+        hopo += judge_holy_power;
+      if ( p() -> talents.prot_sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> up() )
+        hopo += sw_holy_power;
+      if( hopo > 0 )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
+    }
   }
 };
 
-// Light of the Protector ===================================================
+// Word of Glory ===================================================
 
-struct light_of_the_protector_base_t : public paladin_heal_t
+struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
-  light_of_the_protector_base_t( paladin_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str ) :
-    paladin_heal_t( name, p, spell )
+  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    holy_power_consumer_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
   {
     parse_options( options_str );
-    may_crit = true;
+    target = p;
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double m = paladin_heal_t::composite_target_multiplier( t );
+    double m = holy_power_consumer_t::composite_target_multiplier( t );
 
-    // Heals for a base amount, increased by up to +200% based on the target's missing health
-    // Linear increase, each missing health % increases the healing by 2%
-    double missing_health_percent = 1.0 -  t -> resources.pct( RESOURCE_HEALTH );
+    if ( p() -> spec.word_of_glory_2 -> ok() )
+    {
+      // Heals for a base amount, increased by up to +300% based on the target's missing health
+      // Linear increase, each missing health % increases the healing by 3%
+      double missing_health_percent = std::min( 1.0 - t -> resources.pct( RESOURCE_HEALTH ), 1.0 );
 
-    m *= 1.0 + missing_health_percent * data().effectN( 2 ).percent();
+      m *= 1.0 + missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent();
 
-    sim -> print_log( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
-                      t -> name(), missing_health_percent * 100,
-                      missing_health_percent * data().effectN( 2 ).percent() * 100 );
+      sim -> print_debug( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
+                        t -> name(), missing_health_percent * 100,
+                        missing_health_percent * p() -> spec.word_of_glory_2 -> effectN( 1 ).percent() * 100 );
+    }
     return m;
-  }
-};
-
-struct light_of_the_protector_t : public light_of_the_protector_base_t
-{
-  light_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
-    light_of_the_protector_base_t( p, "light_of_the_protector", p -> find_specialization_spell( "Light of the Protector" ), options_str )
-  {
-    target = p;
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p -> cooldowns.light_of_the_protector;
-  }
-
-  bool ready() override
-  {
-    if ( p() -> talents.hand_of_the_protector -> ok() )
-      return false;
-
-    return paladin_heal_t::ready();
-  }
-};
-
-// Hand of the Protector (Protection) =======================================
-
-struct hand_of_the_protector_t : public light_of_the_protector_base_t
-{
-  hand_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
-    light_of_the_protector_base_t( p, "hand_of_the_protector", p -> talents.hand_of_the_protector, options_str )
-  {
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p -> cooldowns.hand_of_the_protector;
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> talents.hand_of_the_protector -> ok() )
-      return false;
-
-    return paladin_heal_t::ready();
   }
 };
 
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-  buff_t( p, "shield_of_the_righteous", p -> spells.sotr_buff ),
-  default_av_increase( p -> passives.avengers_valor -> effectN( 2 ).percent() )
+  buff_t( p, "shield_of_the_righteous", p -> spells.sotr_buff )
 {
-  avengers_valor_increase = 0;
   add_invalidate( CACHE_BONUS_ARMOR );
   set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
@@ -431,34 +437,10 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
   }
 }
 
-// Custom trigger function to (re-)calculate the increase from avenger's valor
-bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
-{
-  // Shield of the righteous' armor bonus is dynamic with strength, but uses a multiplier that is only updated on sotr cast
-  // avengers_valor_increase varies between 0 and 0.2 based on avenger's valor being up or not, and on the previous buff's remaining duration
-  paladin_t* p = debug_cast< paladin_t* >( player );
-
-  double new_avengers_valor = p -> buffs.avengers_valor -> up() ? default_av_increase : 0;
-
-  if ( this -> up() && new_avengers_valor != avengers_valor_increase )
-  {
-    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() )
-      + new_avengers_valor * buff_duration().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() );
-  }
-  else
-  {
-    avengers_valor_increase = new_avengers_valor;
-  }
-
-  sim -> print_debug( "Shield of the Righteous buff triggered with a {} increase from Avenger's Valor", avengers_valor_increase );
-
-  return buff_t::trigger( stacks, value, chance, duration );
-}
-
-struct shield_of_the_righteous_t : public paladin_melee_attack_t
+struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
+    holy_power_consumer_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
   {
     parse_options( options_str );
 
@@ -470,51 +452,22 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     aoe = -1;
 
-    // not on GCD, usable off-GCD
-    trigger_gcd = 0_ms;
-    use_off_gcd = true;
-
     // no weapon multiplier
     weapon_multiplier = 0.0;
-
-    // links needed for Judgment cooldown reduction and seraphim respectively
-    cooldown = p -> cooldowns.shield_of_the_righteous;
-    if ( ! p -> active.sotr )
-    {
-      p -> active.sotr = this;
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = paladin_melee_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.avengers_valor -> value();
-
-    return m;
   }
 
   void execute() override
   {
-    paladin_melee_attack_t::execute();
+    holy_power_consumer_t::execute();
 
     // Buff granted regardless of combat roll result
     // Duration and armor bonus recalculation handled in the buff
     p() -> buffs.shield_of_the_righteous -> trigger();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( p() -> talents.redoubt -> ok() )
     {
-      // SotR hits reduce Light of the Protector and Avenging Wrath cooldown times if Righteous Protector is talented
-      if ( p() -> talents.righteous_protector -> ok() )
-      {
-        timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> talents.righteous_protector -> effectN( 1 ).base_value() );
-        p() -> cooldowns.avenging_wrath -> adjust( reduction );
-        p() -> cooldowns.light_of_the_protector -> adjust( reduction );
-        p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
-      }
+      p() -> buffs.redoubt -> trigger();
     }
-
-    p() -> buffs.avengers_valor -> expire();
 
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
@@ -524,7 +477,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
   double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = paladin_melee_attack_t::recharge_multiplier( cd );
+    double rm = holy_power_consumer_t::recharge_multiplier( cd );
 
     if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
     {
@@ -534,6 +487,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     return rm;
   }
 };
+
 
 // paladin_t::target_mitigation ===============================================
 
@@ -576,33 +530,48 @@ void paladin_t::target_mitigation( school_e school,
       sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
   }
 
-  // Other stuff
+  // Divine Bulwark and consecration reduction
+  if ( standing_in_consecration() )
+  {
+    s -> result_amount *= 1.0 + spec.consecration_2 -> effectN( 1 ).percent()
+      + cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value();
+  }
 
   // Blessed Hammer
   if ( talents.blessed_hammer -> ok() && s -> action )
   {
     buff_t* b = get_target_data( s -> action -> player ) -> debuff.blessed_hammer;
 
-    // BH only reduces auto-attack damage
-    if ( b -> up() && !s -> action -> special )
+    // BH now reduces all damage; not just melees.
+    if ( b -> up() )
     {
-      // apply mitigation and expire the BH buff
-      s -> result_amount *= 1.0 - b -> data().effectN( 2 ).percent();
+      // Absorb value collected from (de)buff value
+      // Calculate actual amount absorbed.
+      double amount_absorbed = std::min( s->result_amount, b -> value() );
       b -> expire();
 
-      // TODO: Show the absorb on the results like Holy Shield
+      sim -> print_debug( "{} Blessed Hammer absorbs {} out of {} damage",
+        name(),
+        amount_absorbed,
+        s -> result_amount
+      );
+
+      // update the relevant counters
+      iteration_absorb_taken += amount_absorbed;
+      s -> self_absorb_amount += amount_absorbed;
+      s -> result_amount -= amount_absorbed;
+      s -> result_absorbed = s -> result_amount;
+
+      // hack to register this on the abilities table
+      buffs.blessed_hammer_absorb -> trigger( 1, amount_absorbed );
+      buffs.blessed_hammer_absorb -> consume( amount_absorbed );
     }
   }
 
+  // Other stuff
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> print_debug( "Damage to {} after mitigation effects is {}", s -> target -> name(), s -> result_amount );
 
-  // Divine Bulwark
-
-  if ( standing_in_consecration() )
-  {
-    s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value() );
-  }
 
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
@@ -651,7 +620,7 @@ void paladin_t::trigger_grand_crusader()
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
-  bool success = rng().roll( gc_proc_chance + talents.first_avenger -> effectN( 2 ).percent() );
+  bool success = rng().roll( gc_proc_chance );
   if ( ! success )
     return;
 
@@ -711,10 +680,7 @@ bool paladin_t::standing_in_consecration() const
 // Initialization
 void paladin_t::create_prot_actions()
 {
-  if ( specialization() == PALADIN_PROTECTION )
-  {
-    active.divine_toll = new avengers_shield_t( this );
-  }
+  active.divine_toll = new avengers_shield_dt_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
@@ -725,9 +691,9 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
-  if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
+  if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
+  if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -740,28 +706,35 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
 void paladin_t::create_buffs_protection()
 {
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
-                        -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor )
-                       -> set_default_value( passives.avengers_valor -> effectN( 1 ).percent() );
-
+        -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                  -> set_cooldown( 0_ms );
+        -> set_cooldown( 0_ms );
 
+//HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
-                           -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
-                           -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
-  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
-
+        -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
+        -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
+  buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
+        -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
+  buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
+        -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
+  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
+        -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_STRENGTH )
+        -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
+  buffs.moment_of_glory = make_buff(this, "moment_of_glory", talents.moment_of_glory )
+        -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
-                    -> set_default_value( azerite.inner_light.value( 1 ) );
+        -> set_default_value( azerite.inner_light.value( 1 ) );
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                           -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
+        -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                       -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
+        -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
 
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
@@ -781,7 +754,6 @@ void paladin_t::init_spells_protection()
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
-  talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 
   talents.prot_sanctified_wrath      = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
@@ -791,20 +763,22 @@ void paladin_t::init_spells_protection()
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
+  mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
+  spec.hammer_of_the_righteous_2 = find_rank_spell( "Hammer of the Righteous", "Rank 2" );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    spec.judgment_4 = find_specialization_spell( 231663 );
+    spec.consecration_3 = find_rank_spell( "Consecration", "Rank 3" );
+    spec.consecration_2 = find_rank_spell( "Consecration", "Rank 2" );
+    spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
+    spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
-    // Prot doesn't have a version of Judgment debuff or Divine Purpose
-    spells.divine_purpose_buff = spell_data_t::nil();
-    spells.judgment_debuff = spell_data_t::nil();
+    spells.judgment_debuff = find_spell( 197277 );
   }
 
-  spec.shield_of_the_righteous = find_specialization_spell( "Shield of the Righteous" );
+  spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
   spells.sotr_buff = find_spell( 132403 );
 
-  passives.avengers_valor      = find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger();
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
@@ -847,25 +821,13 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( "call_action_list,name=cooldowns" );
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
-  cds -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled" );
-  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up)|debuff.razor_coral_debuff.stack=0" );
   cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
   cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
-  cds -> add_action( "memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up" );
-  cds -> add_talent( this, "Bastion of Light", "if=cooldown.shield_of_the_righteous.charges_fractional<=0.5" );
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
 
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
-  cds -> add_action( "use_item,name=grongs_primal_rage,if=cooldown.judgment.full_recharge_time>4&cooldown.avengers_shield.remains>4&(buff.seraphim.up|cooldown.seraphim.remains+4+gcd>expected_combat_length-time)&consecration.up" );
-  cds -> add_action( "use_item,name=pocketsized_computation_device,if=cooldown.judgment.full_recharge_time>4*spell_haste&cooldown.avengers_shield.remains>4*spell_haste&(!equipped.grongs_primal_rage|!trinket.grongs_primal_rage.cooldown.up)&consecration.up" );
-  cds -> add_action( "use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)" );
-  cds -> add_action( "use_item,name=razdunks_big_red_button" );
 
-  def -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
-  def -> add_action( this, "Shield of the Righteous", "if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
-  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up" );
-  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)" );
-  def -> add_talent( this, "Bastion of light", "if=(cooldown.shield_of_the_righteous.charges_fractional<=0.2)&(!talent.seraphim.enabled|buff.seraphim.up)" );
+  def -> add_action( this, "Shield of the Righteous" );
   def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );
   def -> add_action( this, "Consecration", "if=!consecration.up" );
 
@@ -874,12 +836,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Judgment","if=cooldown_react|!talent.crusaders_judgment.enabled" );
   def -> add_action( "concentrated_flame,if=(!talent.seraphim.enabled|buff.seraphim.up)&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3" );
   def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
-  def -> add_action( "anima_of_death" );
+  def -> add_action( "Hammer of Wrath" );
   def -> add_talent( this, "Blessed Hammer", "strikes=3" );
   def -> add_action( this, "Hammer of the Righteous" );
   def -> add_action( this, "Consecration" );
-  def -> add_action( "heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)" );
-
 
 }
 }

@@ -245,17 +245,15 @@ namespace enchants
 {
 void celestial_guidance( special_effect_t& effect )
 {
-  if ( !effect.player->buffs.celestial_guidance )
+  effect.custom_buff = buff_t::find( effect.player, "celestial_guidance" );
+  if ( !effect.custom_buff )
   {
-    effect.player->buffs.celestial_guidance =
-        make_buff<SL_buff_t>( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
-            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-            ->add_invalidate( CACHE_AGILITY )
-            ->add_invalidate( CACHE_INTELLECT )
-            ->add_invalidate( CACHE_STRENGTH );
+    effect.custom_buff = make_buff<SL_buff_t>( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
   }
-
-  effect.custom_buff = effect.player->buffs.celestial_guidance;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -267,7 +265,7 @@ void lightless_force( special_effect_t& effect )
   // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd range,
   // the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
   // TODO: confirm maximum effective range & radius
-  effect.execute_action->aoe    = -1;
+  effect.execute_action->aoe    = 5;
   effect.execute_action->radius = 5.0;
   effect.execute_action->range  = 30.0;
 
@@ -460,20 +458,12 @@ void dreadfire_vessel( special_effect_t& effect )
 {
   struct dreadfire_vessel_proc_t : public proc_spell_t
   {
-    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e )
-    {
-      // TODO: determine if the damage in the spell_data is for each flame or all 3 combined
-      base_multiplier = 1.0 / 3.0;
-      // TODO: determine actual travel speed of the flames (data has 1.5yd/s)
-      travel_speed = 0.0;
-    }
+    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e ) {}
 
-    void execute() override
+    timespan_t travel_time() const override
     {
-      // TODO: determine the how the three flames are fired
-      proc_spell_t::execute();
-      proc_spell_t::execute();
-      proc_spell_t::execute();
+      // seems to have a set 1.5s travel time
+      return timespan_t::from_seconds( data().missile_speed() );
     }
   };
 
@@ -506,7 +496,7 @@ void glyph_of_assimilation( special_effect_t& effect )
     if ( !t->is_enemy() )
       return;
 
-    t->callbacks_on_demise.emplace_back( [ p, buff ]( player_t* t ) {
+    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
       if ( p->sim->event_mgr.canceled )
         return;
 
@@ -540,6 +530,38 @@ void gluttonous_spike( special_effect_t& effect )
 void hateful_chain( special_effect_t& effect )
 {
 
+}
+
+void bottled_chimera_toxin( special_effect_t& effect )
+{
+  // Assume the player keeps the buff up on its own as the item is off-gcd and
+  // the buff has a 60 minute duration which is enough for any encounter.
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  struct chimeric_poison_t : public proc_spell_t
+  {
+    chimeric_poison_t( const special_effect_t& e )
+      : proc_spell_t( "chimeric_poison", e.player, e.trigger(), e.item )
+    {
+      // Tick damage value lives in a different spell for some reason
+      base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t duration ) const override
+    {
+      return dot->time_to_next_tick() + duration;
+    }
+  };
+
+  auto secondary      = new special_effect_t( effect.item );
+  secondary->type     = SPECIAL_EFFECT_EQUIP;
+  secondary->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary->spell_id = effect.spell_id;
+  secondary->execute_action = create_proc_action<chimeric_poison_t>( "chimeric_poison", *secondary );
+  effect.player->special_effects.push_back( secondary );
+
+  auto callback = new dbc_proc_callback_t( effect.item, *secondary );
+  callback->initialize();
 }
 
 // Runecarves
@@ -820,6 +842,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345357, items::hateful_chain );
     unique_gear::register_special_effect( 343385, items::overflowing_anima_prison );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
+    unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
