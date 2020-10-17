@@ -9780,6 +9780,34 @@ const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) 
   return spell_data_t::not_found();
 }
 
+const spelleffect_data_t* player_t::find_effect( unsigned int id ) const
+{
+  if ( id )
+  {
+    auto effect = dbc::find_effect( this, id );
+    if ( effect->id() )
+    {
+      return effect;
+    }
+  }
+
+  return &spelleffect_data_t::nil();
+}
+
+const spellpower_data_t* player_t::find_power( unsigned int id ) const
+{
+  if ( id )
+  {
+    auto power = dbc::find_power( this, id );
+    if ( power->id() )
+    {
+      return power;
+    }
+  }
+
+  return &spellpower_data_t::nil();
+}
+
 namespace
 {
 std::unique_ptr<expr_t> deprecate_expression( player_t& p, util::string_view old_name, util::string_view new_name, action_t* a = nullptr  )
@@ -10381,6 +10409,42 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     {
       throw std::invalid_argument(fmt::format("Cannot use expression '{}' because player is not a pet.",
           expression_str));
+    }
+  }
+
+  // dbc
+  if ( splits.size() == 4 && util::str_compare_ci( splits[ 0 ], "dbc" ) )
+  {
+    double value = -std::numeric_limits<double>::max();
+
+    if ( util::str_compare_ci( splits[ 1 ], "spell" ) )
+    {
+      unsigned spell_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spell_data_t* s = find_spell( spell_id );
+      if ( s->ok() )
+        value = s->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
+    {
+      unsigned effect_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spelleffect_data_t* e = find_effect( effect_id );
+      if ( e->ok() )
+        value = e->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "power" ) )
+    {
+      unsigned power_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spellpower_data_t* p = find_power( power_id );
+      if ( p->id() != 0 )
+        value = p->get_field( field );
+      return expr_t::create_constant( name_str, value );
     }
   }
 

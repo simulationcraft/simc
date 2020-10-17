@@ -3376,41 +3376,6 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return std::make_unique<raid_event_expr_t>( this, type_or_name, filter );
   }
 
-  if ( splits.size() == 4 && util::str_compare_ci( splits[ 0 ], "dbc" ) )
-  {
-    double value = -std::numeric_limits<double>::max();
-
-    if ( util::str_compare_ci( splits[ 1 ], "spell" ) )
-    {
-      unsigned spell_id = util::to_int( splits[ 2 ] );
-      auto field = splits[ 3 ];
-      const spell_data_t* s = spell_data_t::find( spell_id, dbc->ptr );
-      if ( s->ok() )
-        value = s->get_field( field );
-      return expr_t::create_constant( name_str, value );
-    }
-
-    if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
-    {
-      unsigned effect_id = util::to_int( splits[ 2 ] );
-      auto field = splits[ 3 ];
-      const spelleffect_data_t* e = spelleffect_data_t::find( effect_id, dbc->ptr );
-      if ( e->ok() )
-        value = e->get_field( field );
-      return expr_t::create_constant( name_str, value );
-    }
-
-    if ( util::str_compare_ci( splits[ 1 ], "power" ) )
-    {
-      unsigned power_id = util::to_int( splits[ 2 ] );
-      auto field = splits[ 3 ];
-      const spellpower_data_t& p = spellpower_data_t::find( power_id, dbc->ptr );
-      if ( p.id() != 0 )
-        value = p.get_field( field );
-      return expr_t::create_constant( name_str, value );
-    }
-  }
-
   // If nothing else works, check to see if the string matches an actor in the sim.
   // If so, return their actor index
   if ( splits.size() == 1 )

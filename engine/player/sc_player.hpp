@@ -59,6 +59,7 @@ struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
 struct spelleffect_data_t;
+struct spellpower_data_t;
 struct stat_buff_t;
 struct stats_t;
 struct uptime_t;
@@ -772,6 +773,8 @@ public:
   const spell_data_t* find_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( unsigned int id, specialization_e s ) const;
   const spell_data_t* find_spell( unsigned int id ) const;
+  const spelleffect_data_t* find_effect( unsigned int id ) const;
+  const spellpower_data_t* find_power( unsigned int id ) const;
 
   pet_t*      find_pet( util::string_view name ) const;
   item_t*     find_item_by_name( util::string_view name );
