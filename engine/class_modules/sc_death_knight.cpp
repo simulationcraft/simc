@@ -521,6 +521,7 @@ public:
     // Frost
     cooldown_t* empower_rune_weapon;
     cooldown_t* icecap_icd;
+    cooldown_t* koltiras_favor_icd;
     cooldown_t* pillar_of_frost;
     // Unholy
     cooldown_t* apocalypse;
@@ -1011,6 +1012,7 @@ public:
     cooldown.death_and_decay     = get_cooldown( "death_and_decay" );
     cooldown.defile              = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
+    cooldown.koltiras_favor_icd  = get_cooldown( "koltiras_favor_icd" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
@@ -5750,12 +5752,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.icy_citadel_builder -> trigger();
     }
 
-    if ( p() -> legendary.koltiras_favor.ok() )
+    if ( p() -> legendary.koltiras_favor.ok() && p() -> cooldown.koltiras_favor_icd->is_ready() )
     {
       if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
       {
         // # of runes to restore was stored in a secondary affect
         p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
+        p() -> cooldown.koltiras_favor_icd -> start( p() -> legendary.koltiras_favor -> internal_cooldown() );
       }
     }
 
