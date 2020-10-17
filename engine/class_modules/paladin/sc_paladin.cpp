@@ -1007,7 +1007,10 @@ struct divine_toll_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( p() -> conduit.ringing_clarity -> ok() && rng().roll( p() -> conduit.ringing_clarity.percent() ) )
       for ( int hits = 0; hits < p() -> conduit.ringing_clarity -> effectN( 2 ).base_value(); hits ++ )
+      {
+        p() -> active.divine_toll -> set_target( this -> target );
         p() -> active.divine_toll -> schedule_execute();
+      }
   }
 
 };
