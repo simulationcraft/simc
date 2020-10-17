@@ -511,11 +511,12 @@ public:
   // Cooldowns
   struct cooldowns_t {
     // Shared
+    cooldown_t* death_and_decay;
+    cooldown_t* defile;
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
     cooldown_t* dancing_rune_weapon;
-    cooldown_t* death_and_decay;
     cooldown_t* vampiric_blood;
     // Frost
     cooldown_t* empower_rune_weapon;
@@ -953,7 +954,7 @@ public:
 
     // Unholy
     item_runeforge_t deadliest_coil; // 6952
-    // item_runeforge_t deaths_certainty; // 6951
+    item_runeforge_t deaths_certainty; // 6951
     item_runeforge_t frenzied_monstrosity;        // 6950
     // item_runeforge_t reanimated_shambler; // 6949
 
@@ -1008,6 +1009,7 @@ public:
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay     = get_cooldown( "death_and_decay" );
+    cooldown.defile              = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
@@ -4433,6 +4435,8 @@ struct death_coil_damage_t : public death_knight_spell_t
       m *= 1.0 + p() -> conduits.embrace_death.percent();
     }
 
+    m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
+
     return m;
   }
 };
@@ -4490,9 +4494,16 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
+    p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    // p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
+    //   p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+
     if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
     {
-      p() -> buffs.dark_transformation->extend_duration(p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value()) );
+      p() -> buffs.dark_transformation->extend_duration( p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
     }
 
     p() -> buffs.sudden_doom -> decrement();
@@ -4687,6 +4698,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
 
+    m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
+
     return m;
   }
 
@@ -4737,6 +4750,13 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       heal -> execute();
     }
+
+    p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    // p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
+    //   p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> buffs.hemostasis -> expire();
   }
@@ -8408,7 +8428,7 @@ void death_knight_t::init_spells()
 
   // Unholy
   legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
-  // legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
+  legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
   // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
 
