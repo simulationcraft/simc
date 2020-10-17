@@ -4105,7 +4105,7 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
   frenzied_assault_t( druid_t* p )
     : residual_action::residual_periodic_action_t<cat_attack_t>( "frenzied_assault", p, p->find_spell( 340056 ) )
   {
-    background = dual = proc = true;
+    background = proc = true;
     may_miss = may_dodge = may_parry = false;
   }
 
