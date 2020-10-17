@@ -1421,7 +1421,7 @@ public:
 
     // Registered Damage Buffs
     for ( auto damage_buff : direct_damage_buffs )
-      m *= damage_buff->value_direct();
+      m *= damage_buff->stack_value_direct();
 
     // Mastery
     if ( affected_by.mastery_executioner.direct || affected_by.mastery_potent_assassin.direct )
@@ -1445,7 +1445,7 @@ public:
 
     // Registered Damage Buffs
     for ( auto damage_buff : periodic_damage_buffs )
-      m *= damage_buff->value_periodic();
+      m *= damage_buff->stack_value_periodic();
 
     // Mastery
     if ( affected_by.mastery_executioner.periodic )
@@ -2161,7 +2161,7 @@ struct melee_t : public rogue_attack_t
 
     // Registered Damage Buffs
     for ( auto damage_buff : auto_attack_damage_buffs )
-      m *= damage_buff->value_auto_attack();
+      m *= damage_buff->stack_value_auto_attack();
 
     return m;
   }
