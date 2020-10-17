@@ -1464,7 +1464,7 @@ struct void_torrent_t final : public priest_spell_t
   {
     child_dp->set_target( target );
     child_dp->execute();
-    
+
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
@@ -1605,7 +1605,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
     const priest_td_t* td = find_td( t );
 
