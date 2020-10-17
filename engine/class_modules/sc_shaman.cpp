@@ -245,6 +245,9 @@ struct shaman_td_t : public actor_target_data_t
     // Enhancement
     buff_t* earthen_spike;
     buff_t* lashing_flames;
+
+    // Azerite
+    buff_t* lightning_conduit;
   } debuff;
 
   struct heals
@@ -346,6 +349,8 @@ public:
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
 
+    // Azerite
+    spell_t* lightning_conduit;
   } action;
 
   // Pets
@@ -459,6 +464,11 @@ public:
     cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
     cooldown_t* windfury_totem_icd;
   } cooldown;
+
+  struct
+  {
+    azerite_power_t lightning_conduit;
+  } azerite;
 
   // Covenant Class Abilities
   struct
@@ -979,6 +989,12 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              ->set_default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->talent.lashing_flames->effectN( 1 ).trigger() )
                               ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
+
+  // Azerite
+  debuff.lightning_conduit = make_buff( *this, "lightning_conduit", p->azerite.lightning_conduit )
+                                 ->set_trigger_spell( p->find_spell( 275391 ) )
+                                 ->set_duration( p->find_spell( 275391 )->duration() )
+                                 ->set_default_value( p->azerite.lightning_conduit.value() );
 }
 
 // ==========================================================================
@@ -2682,6 +2698,17 @@ struct icy_edge_attack_t : public shaman_attack_t
   }
 };
 
+struct lightning_conduit_zap_t : public shaman_spell_t
+{
+  lightning_conduit_zap_t( shaman_t* player )
+    : shaman_spell_t( "lightning_conduit", player, player->find_spell( 275394 ) )
+  {
+    base_dd_min = base_dd_max = p()->azerite.lightning_conduit.value();
+    background = true;
+    may_crit   = true;
+  }
+};
+
 struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry, stormbringer;
@@ -3207,6 +3234,22 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->action.crash_lightning_aoe->set_target( execute_state->target );
         p()->action.crash_lightning_aoe->execute();
       }
+    }
+
+    if ( !stormflurry && p()->azerite.lightning_conduit.ok() )
+    {
+      for ( size_t i = 0, actors = target_list().size(); i < actors; i++ )
+      {
+        auto t = target_list()[ i ];
+        if ( td( t )->debuff.lightning_conduit->up() )
+        {
+          p()->action.lightning_conduit->set_target( t );
+          p()->action.lightning_conduit->execute();
+        }
+      }
+
+      // lightning conduit applies to your primary target after it deals damage to others.
+      td( execute_state->target )->debuff.lightning_conduit->trigger();
     }
 
     // Don't try this at home, or anywhere else ..
@@ -6908,6 +6951,11 @@ void shaman_t::create_actions()
   {
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
   }
+
+  if ( azerite.lightning_conduit.ok() )
+  {
+    action.lightning_conduit = new lightning_conduit_zap_t( this );
+  }
 }
 
 // shaman_t::create_options =================================================
@@ -7056,6 +7104,9 @@ void shaman_t::init_spells()
 
   // Restoration
   talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
+
+  // Azerite
+  azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
