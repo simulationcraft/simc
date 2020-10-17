@@ -1232,6 +1232,7 @@ class SpellDataGenerator(DataGenerator):
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
+         323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
         ),
 
         # Warrior:
@@ -1287,6 +1288,8 @@ class SpellDataGenerator(DataGenerator):
             ( 339669, 0 ),          # Seal of Command
             ( 339376, 0 ),          # Truth's Wake
             ( 339538, 0 ),          # TV echo
+            ( 327510, 0 ),          # Shining Light free WoG
+            ( 182104, 0 ),          # Shining Light stacks 1-4
         ),
 
         # Hunter:
@@ -1380,7 +1383,7 @@ class SpellDataGenerator(DataGenerator):
             ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
-            ( 194249, 3, False ),   # Void Form extra data
+            ( 194249, 3, False ),   # Voidform extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
@@ -1391,6 +1394,10 @@ class SpellDataGenerator(DataGenerator):
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
             ( 344752, 5 ),          # Void Lasher "Mind Sear"
             ( 345452, 0 ),          # Fae Fermata target Debuff
+            ( 345219, 0 ),          # Hungering Void target Debuff
+            ( 346111, 0 ),          # Shadow Weaving Mastery spell
+            ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
+            ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
         ),
 
         # Death Knight:
@@ -1472,6 +1479,7 @@ class SpellDataGenerator(DataGenerator):
           ( 273466, 0 ),                                # Strength of Earth
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
+          ( 327164, 0 ),                                # Primordial Wave buff
         ),
 
         # Mage:
@@ -1586,7 +1594,8 @@ class SpellDataGenerator(DataGenerator):
           ( 265391, 3 ),    # Roaring Blaze Debuff
           ( 266087, 3 ),    # Rain of Chaos Buff
           ( 339784, 2 ),    # Tyrant's Soul Buff
-          ( 337142, 2 )     # Grim Inquisitor's Dread Calling Buff
+          ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
+          ( 342997, 2 )     # Grim Inquisitor's Dread Calling Buff 2
         ),
 
         # Monk:
@@ -1666,6 +1675,7 @@ class SpellDataGenerator(DataGenerator):
           ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
           ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
+          ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
 
           # Conduits
@@ -2645,8 +2655,15 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(scaling_entry, ('id_class', 7), ('max_scaling_level', 8))
 
             level_entry = spell.get_link('level')
-            fields += level_entry.field('base_level', 'max_level', 'req_max_level')
-            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46))
+
+            # Simulationcraft does not really support the concept of "Learn"
+            # and "Required" level, so grab the highest of the two for level
+            # check purposes.
+            req_level = max(level_entry.base_level, level_entry.spell_level)
+            fields += [level_entry.field_format('base_level')[0] % req_level]
+
+            fields += level_entry.field('max_level', 'req_max_level')
+            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46), ('spell_level', 49))
 
             range_entry = misc.ref('id_range')
             fields += range_entry.field('min_range_1', 'max_range_1')

@@ -29,7 +29,7 @@ jobs:
           - cc: gcc-9
             cxx: g++-9
             packages: gcc-9 g++-9
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -72,7 +72,7 @@ jobs:
 
   ubuntu-clang-10-build:
     name: ubuntu-clang-10-build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -86,8 +86,8 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache clang-10 lld-10
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
 
       - name: Configure
         env:
@@ -95,7 +95,7 @@ jobs:
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10
-              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/=/
+              -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
@@ -116,13 +116,14 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
 
 
   ubuntu-clang-10-run:
     name: ubuntu-clang-10-${{ matrix.type }}
-    runs-on: ubuntu-18.04
-    needs: [ubuntu-clang-10-build]
+    runs-on: ubuntu-20.04
+    needs: [ ubuntu-clang-10-build ]
 
     strategy:
       fail-fast: false
@@ -143,61 +144,58 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
-
-      - name: Install deps
-        run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libclang-common-10-dev llvm-10
 
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
-  ubuntu-clang-10-simc-tests:
-    name: ${{ matrix.test }}-${{ matrix.tier }}-${{ matrix.class }}-${{ matrix.fight_style }}
-    runs-on: ubuntu-18.04
-    needs: [ubuntu-clang-10-build]
+  simc-tests:
+    name: test-${{ matrix.tier }}-${{ matrix.spec }}
+    runs-on: ubuntu-20.04
+    needs: [ ubuntu-clang-10-build ]
 
     strategy:
       fail-fast: false
       matrix:
-        test: [ talents ]
         tier: [ Tier25 ]
-        class: [ Death_Knight, Demon_Hunter, Druid, Hunter, Mage, Monk, Paladin, Priest, Rogue, Shaman, Warlock, Warrior ]
-        fight_style: [ Patchwerk, DungeonSlice, HeavyMovement ]
+        spec: [
+            Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
+            Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
+            Druid_Balance, Druid_Feral, Druid_Guardian,
+            Hunter_Beast_Mastery, Hunter_Marksmanship, Hunter_Survival,
+            Mage_Arcane, Mage_Fire, Mage_Frost,
+            Monk_Brewmaster, Monk_Windwalker,
+            Paladin_Retribution,
+            Priest_Discipline, Priest_Shadow,
+            Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety,
+            Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,
+            Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
+            Warrior_Arms, Warrior_Fury,
+          ]
 
     steps:
-      - uses: actions/checkout@v2
-
       - uses: actions/cache@v2
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
+            tests
           key: ubuntu-clang-10-for_run-${{ github.sha }}
-      
-      - name: Install deps
-        run: |
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libclang-common-10-dev llvm-10
 
-      - name: Setup BATS
-        uses: mig4/setup-bats@v1.0.1
+      - name: Install Python dependencies
+        run: pip3 install -r tests/requirements.txt
 
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_FIGHT_STYLE: ${{ matrix.fight_style }}
-          SIMC_CLASS: ${{ matrix.class }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: |
-          cd tests
-          bats --tap ${{ matrix.test }}.bats
+        run: tests/run.py ${{ matrix.spec }} -tests talent trinket covenant legendary soulbind --max-profiles-to-use 1
 
   build-docker:
     name: docker
@@ -223,7 +221,7 @@ jobs:
 
       - name: Smoke Test
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
-        
+
   windows-VS:
     name: windows-VS-${{ matrix.vs }}
     runs-on: windows-latest
@@ -247,7 +245,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: microsoft/setup-msbuild@v1.0.1
+      - uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Build
         run: MSBuild.exe /maxcpucount /p:Configuration="${{ matrix.configuration }}" /p:Platform=${{ matrix.platform }} ${{ matrix.projectFile }}

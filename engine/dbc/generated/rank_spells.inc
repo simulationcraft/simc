@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.2.36086
-static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
+// Rank class spells, wow build 9.0.2.36267
+static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -25,6 +25,7 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 11, 104, 343240,      0, "Berserk"                           , "Rank 2" },
   {  3, 253, 231548,      0, "Bestial Wrath"                     , "Rank 2" },
   {  4, 260, 235484,      0, "Between the Eyes"                  , "Rank 2" },
+  {  4, 261, 319178,      0, "Black Powder"                      , "Rank 2" },
   { 10, 269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10, 269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
   { 12, 577, 320402,      0, "Blade Dance"                       , "Rank 2" },
@@ -125,7 +126,6 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 12, 581, 320962,      0, "Fiery Brand"                       , "Rank 2" },
   { 12, 581, 343010,      0, "Fiery Brand"                       , "Rank 3" },
   {  8,  63, 231568,      0, "Fire Blast"                        , "Rank 2" },
-  {  8,  63, 108853, 319836, "Fire Blast"                        , "Rank 3" },
   {  8,  63, 231567,      0, "Fire Blast"                        , "Rank 4" },
   {  7, 262, 343226,      0, "Fire Elemental Totem"              , "Rank 2" },
   {  8,  63, 157642,      0, "Fireball"                          , "Rank 2" },
@@ -215,7 +215,6 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   {  8,  63, 343222,      0, "Phoenix Flames"                    , "Rank 2" },
   {  6, 251, 316849,      0, "Pillar of Frost"                   , "Rank 2" },
   {  5, 256, 322115,      0, "Power Word: Radiance"              , "Rank 2" },
-  {  5, 256, 319912,      0, "Prayer of Mending"                 , "Rank 2" },
   {  5, 257, 319912,      0, "Prayer of Mending"                 , "Rank 2" },
   {  8,  62, 321742,      0, "Presence of Mind"                  , "Rank 2" },
   {  8,  62, 321745,      0, "Prismatic Barrier"                 , "Rank 2" },
@@ -244,7 +243,7 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 10,   0, 328669,      0, "Roll"                              , "Rank 2" },
   {  6, 250, 316616,      0, "Rune Tap"                          , "Rank 2" },
   {  6, 252, 317234,      0, "Scourge Strike"                    , "Rank 2" },
-  {  4, 261, 319178,      0, "Shadow Vault"                      , "Rank 2" },
+  {  5, 258, 342991,      0, "Shadow Mend"                       , "Rank 2" },
   {  5,   0, 322107,      0, "Shadow Word: Death"                , "Rank 2" },
   {  5,   0, 327820,      0, "Shadow Word: Pain"                 , "Rank 2" },
   {  5, 256, 343726,      0, "Shadowfiend"                       , "Rank 2" },

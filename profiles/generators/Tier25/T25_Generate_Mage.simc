@@ -4,12 +4,8 @@ level=50
 race=human
 role=spell
 position=back
-talents=1011023
-azerite_essences=27:3/4:3/5:3/37:3
-rotation=no_ice_lance
-
-food=abyssalfried_rissole
-potion=focused_resolve
+talents=2332021
+azerite_essences=22:3/12:3/27:3/32:3
 
 head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=170/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80

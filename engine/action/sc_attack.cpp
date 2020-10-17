@@ -46,9 +46,6 @@ timespan_t attack_t::execute_time() const
   if ( base_execute_time == timespan_t::zero() )
     return timespan_t::zero();
 
-  if ( !harmful && !player->in_combat )
-    return timespan_t::zero();
-
   return base_execute_time * player->cache.attack_speed();
 }
 

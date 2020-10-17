@@ -6,11 +6,11 @@ role=attack
 position=back
 talents=2210021
 
-azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
+azerite_essences=14:3:1/12:3:0/27:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=136/582/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=136/193/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80,ilevel=145
+shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=136/193/30/13,ilevel=130
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=181/582/21/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6573
@@ -36,13 +36,13 @@ role=attack
 position=back
 talents=2020022
 
-azerite_essences=14:3:1/27:3:0/32:3:0/35:3:0
+azerite_essences=14:3:1/12:3:0/27:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=411/582/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80,ilevel=145
 shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=411/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=446/582/31/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=180/582/31/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6573
 waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6573
@@ -51,9 +51,9 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
 finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517/6573,enchant=accord_of_critical_strike
 finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637,ilevel=120
 main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
-off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation,ilevel=120
 
 save=T25_Rogue_Outlaw.simc
 
@@ -64,13 +64,13 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=2120031
+talents=1120031
 
-azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
+azerite_essences=14:3:1/12:3:0/27:3:0/35:3:0
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=175/413/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=175/582/21/13
+head=stygian_guise,id=174132,bonus_id=4824/1517,azerite_powers=413/582/18/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80,ilevel=145
+shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=414/413/18/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=414/582/21/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
@@ -81,7 +81,7 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
 finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522/6573,enchant=accord_of_versatility
 finger2=overclocking_bit_band,id=169159,bonus_id=3536/4786/1522,enchant=accord_of_versatility
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637,ilevel=130
 main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=deadly_navigation
 off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_navigation
 

@@ -282,58 +282,57 @@ struct adds_event_t final : public raid_event_t
     double x_offset      = 0;
     double y_offset      = 0;
     bool offset_computed = false;
-    timespan_t add_dur = 0_ms;
-
-    if ( same_duration )
-      add_dur = saved_duration;
 
     // Keep track of each add duration so after summons (and dismissals) are done, we can adjust the saved_duration of
     // the add event to match the add with the longest lifetime.
+    timespan_t add_duration = saved_duration;
     std::vector<timespan_t> add_lifetimes;
 
     for ( size_t i = 0; i < adds.size(); i++ )
     {
-      if ( !same_duration )
-        add_dur = duration_time();
-
-      if ( i < adds.size() )
-      {
-        if ( std::fabs( spawn_radius_max ) > 0 )
-        {
-          if ( spawn_stacked == 0 || !offset_computed )
-          {
-            double angle_start = spawn_angle_start * ( m_pi / 180 );
-            double angle_end   = spawn_angle_end * ( m_pi / 180 );
-            double angle       = sim->rng().range( angle_start, angle_end );
-            double radius      = sim->rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
-            x_offset           = radius * cos( angle );
-            y_offset           = radius * sin( angle );
-            offset_computed    = true;
-          }
-        }
-
-        adds[ i ]->summon( add_dur );
-        adds[ i ]->x_position = x_offset + spawn_x_coord;
-        adds[ i ]->y_position = y_offset + spawn_y_coord;
-
-        if ( sim->log )
-        {
-          if ( x_offset != 0 || y_offset != 0 )
-          {
-            sim->out_log.printf( "New add spawned at %f, %f.", x_offset, y_offset );
-          }
-        }
-      }
       if ( i >= adds_to_remove )
       {
         adds[ i ]->dismiss();
+        continue;
       }
-      else if ( !same_duration )
-        add_lifetimes.push_back( add_dur );
+
+      if ( std::fabs( spawn_radius_max ) > 0 )
+      {
+        if ( spawn_stacked == 0 || !offset_computed )
+        {
+          double angle_start = spawn_angle_start * ( m_pi / 180 );
+          double angle_end   = spawn_angle_end * ( m_pi / 180 );
+          double angle       = sim->rng().range( angle_start, angle_end );
+          double radius      = sim->rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
+          x_offset           = radius * cos( angle );
+          y_offset           = radius * sin( angle );
+          offset_computed    = true;
+        }
+      }
+
+      if ( !same_duration )
+      {
+        add_duration = duration_time();
+        add_lifetimes.push_back( add_duration );
+      }
+
+      adds[ i ]->summon( add_duration );
+      adds[ i ]->x_position = x_offset + spawn_x_coord;
+      adds[ i ]->y_position = y_offset + spawn_y_coord;
+
+      if ( sim->log )
+      {
+        if ( x_offset != 0 || y_offset != 0 )
+        {
+          sim->out_log.printf( "New add spawned at %f, %f.", x_offset, y_offset );
+        }
+      }
     }
 
     if ( !add_lifetimes.empty() )
+    {
       saved_duration = *range::max_element( add_lifetimes );
+    }
 
     regenerate_cache();
   }

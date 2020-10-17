@@ -62,7 +62,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   {  6, "Race" },
   {  7, "Scaling Spell" },
   {  8, "Max Scaling Level" },
-  {  9, "Spell Level" },
+  {  9, "Learn Level" },
   { 10, "Max Spell Level" },
   { 11, "Min Range" },
   { 12, "Max Range" },
@@ -90,6 +90,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
   { 48, "Max Targets" },
+  { 49, "Required Level" }
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -341,6 +342,8 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
   { 265, "Periodic effect can crit"          },
+  { 273, "Duration affected by haste"        },
+  { 292, "Fixed travel time"                 },
   { 354, "Scales with item level"            }
 } );
 
@@ -1382,7 +1385,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "GCD              : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
-    s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  {
+    if ( spell -> flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+      s << "Travel Time      : " << spell -> missile_speed() << " seconds"  << std::endl;
+    else
+      s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  }
 
   if ( spell -> duration() != timespan_t::zero() )
   {

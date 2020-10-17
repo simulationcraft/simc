@@ -459,6 +459,7 @@ public:
     const spell_data_t* roll_2;
     const spell_data_t* spear_hand_strike;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
     const spell_data_t* spinning_crane_kick_2_ww;
     const spell_data_t* tiger_palm;
@@ -467,6 +468,7 @@ public:
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* touch_of_death_3_mw;
     const spell_data_t* touch_of_death_3_ww;
+    const spell_data_t* two_hand_adjustment;
     const spell_data_t* vivify;
     const spell_data_t* vivify_2_brm;
     const spell_data_t* vivify_2_mw;
@@ -643,6 +645,7 @@ public:
     const spell_data_t* fallen_monk_soothing_mist;
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
+    const spell_data_t* fallen_monk_tiger_palm;
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
@@ -688,7 +691,7 @@ public:
     azerite_power_t niuzaos_blessing;
     // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
-    // Ironskin Brew increases your Armor by 0, and has a 8% chance to not consume a charge.
+    // Shuffle increases your Armor by 0.
     azerite_power_t straight_no_chaser;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
@@ -2104,6 +2107,11 @@ public:
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
+    if ( name == "fire_spirit" )
+      npc_id = 69791;
+    else if ( name == "earth_spirit" )
+      npc_id = 69792;
+
     owner_coeff.ap_from_ap = 1.0;
   }
 
@@ -2347,6 +2355,7 @@ private:
 public:
   xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2494,6 +2503,7 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
+    npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2657,6 +2667,7 @@ public:
 
   niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
+    npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2783,6 +2794,7 @@ private:
 public:
   chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
+    npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2834,6 +2846,7 @@ private:
 public:
   yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
+    npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3006,6 +3019,7 @@ public:
   fallen_monk_ww_pet_t( monk_t* owner ) : 
       pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
+    npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3078,7 +3092,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
+      : melee_attack_t( "fo_fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
@@ -3130,7 +3144,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
+      : spell_t( "fo_fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3153,7 +3167,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
+      : melee_attack_t( "fo_spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
         owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
@@ -3206,7 +3220,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+      : melee_attack_t( "fo_spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
     {
       parse_options( options_str );
 
@@ -3218,10 +3232,11 @@ public:
         cooldown->duration = timespan_t::from_seconds( 4 );
       else
         cooldown->duration = timespan_t::from_seconds( 6 );
+     
       owner                                            = p->o();
 
-      attack_power_mod.direct = attack_power_mod.tick =  0.0;
-      dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+      attack_power_mod.direct = attack_power_mod.tick = 0.0;
+      dot_behavior                                    = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
       tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
     }
@@ -3238,13 +3253,50 @@ public:
     }
   };
 
+  struct fallen_monk_tiger_palm_t : public melee_attack_t
+  {
+    monk_t* owner;
+    fallen_monk_tiger_palm_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
+      : melee_attack_t( "fo_tiger_palm", p, p->o()->passives.fallen_monk_tiger_palm )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      // Logs show they cast this every 2.5 seconds, instead of back-to-back
+      cooldown->duration = timespan_t::from_seconds( 2.5 );
+      owner = p->o();
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
+
+    double cost() const override
+    {
+      return 0;
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
     // Only cast Fists of Fury for Windwalker specialization
-    if ( o()->specialization() == MONK_WINDWALKER )
-        action_list_str += "/fists_of_fury";
-    action_list_str += "/spinning_crane_kick";
+//    if ( o()->specialization() == MONK_WINDWALKER )
+//        action_list_str += "/fists_of_fury";
+//    action_list_str += "/spinning_crane_kick";
+    action_list_str += "/tiger_palm";
 
     pet_t::init_action_list();
   }
@@ -3259,6 +3311,9 @@ public:
 
     if ( name == "spinning_crane_kick" )
       return new fallen_monk_spinning_crane_kick_t( this, options_str );
+
+    if ( name == "tiger_palm" )
+      return new fallen_monk_tiger_palm_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -3367,6 +3422,7 @@ public:
   fallen_monk_brm_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3411,7 +3467,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
+      : melee_attack_t( "fo_keg_smash", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -3439,12 +3495,20 @@ public:
       }
     }
 
-    // Initial damage does Square Root damage
+    // For more than 5 targets damage is based on a logarithmic function.
+    // This is the closest we can figure out what that function is
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      return cam / std::sqrt( state->n_targets );
+      if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
+        // this is the closest we can come up without Blizzard flat out giving us the function
+        // Primary takes 100% damage
+        // Secondary targets get reduced damage
+        if ( state->target != target )
+          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+      return cam;
     }
 
     double action_multiplier() const override
@@ -3477,7 +3541,7 @@ public:
     {
       monk_t* owner;
       fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
+        : spell_t( "fo_breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
       {
         background    = true;
         tick_may_crit = may_crit = true;
@@ -3505,14 +3569,17 @@ public:
       {
         double cam = spell_t::composite_aoe_multiplier( state );
 
-        return cam / std::sqrt( state->n_targets );
+        if ( state->target != target )
+          return cam / std::sqrt( state->n_targets );
+
+        return cam;
       }
     };
 
     fallen_monk_breath_of_fire_tick_t* dot_action;
     monk_t* owner;
     fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+      : spell_t( "fo_breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
         dot_action( new fallen_monk_breath_of_fire_tick_t( p ) ),
         owner( p->o() )
     {
@@ -3555,7 +3622,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
+      : spell_t( "fo_clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
     {
       parse_options( options_str );
       gcd_type           = gcd_haste_type::NONE;
@@ -3697,6 +3764,7 @@ public:
   fallen_monk_mw_pet_t( monk_t* owner )
     : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
+    npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3747,7 +3815,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
+      : heal_t( "fo_enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3783,7 +3851,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
+      : heal_t( "fo_soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -4058,11 +4126,18 @@ public:
         timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration();
         timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
       }
       else
       {
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
+
+        if ( p()->azerite.straight_no_chaser.ok() )
+          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
+
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
@@ -4217,13 +4292,27 @@ public:
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Dance of Chi-Ji talent triggers from spending chi
-      if ( p()->talent.dance_of_chiji->ok() )
-        p()->buff.dance_of_chiji->trigger();
+      // Bug: Dance of Chi-Ji cannot proc during Serenity
+      if ( !p()->bugs )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
 
-      // Dance of Chi-Ji azerite trait triggers from spending chi
-      if ( p()->azerite.dance_of_chiji.ok() )
-        p()->buff.dance_of_chiji_azerite->trigger();
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
+      else if ( !p()->buff.serenity->up() )
+      {
+        // Dance of Chi-Ji talent triggers from spending chi
+        if ( p()->talent.dance_of_chiji->ok() )
+          p()->buff.dance_of_chiji->trigger();
+
+        // Dance of Chi-Ji azerite trait triggers from spending chi
+        if ( p()->azerite.dance_of_chiji.ok() )
+          p()->buff.dance_of_chiji_azerite->trigger();
+      }
     }
 
     trigger_bonedust_brew( s );
@@ -4855,7 +4944,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery                    = true;
     may_combo_strike              = true;
     trigger_chiji                 = true;
-    sef_ability                   = SEF_TIGER_PALM;
+    if ( !p->bugs )
+      sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
@@ -5571,7 +5661,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     ww_mastery = true;
 
     dual = background = true;
-    aoe               = -1;
+    aoe               = p->talent.rushing_jade_wind->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -5708,7 +5798,21 @@ struct sck_tick_action_t : public monk_melee_attack_t
     double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
     if ( p()->conduit.calculated_strikes->ok() )
-      motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    {
+      if ( p()->bugs )
+      {
+        // Bug: Mastery does not get applied if Calculated Strikes is applied
+        if ( p()->buff.combo_strikes->up() )
+          am /= 1 + p()->cache.mastery_value();
+        if ( p()->buff.hit_combo->up() )
+          am /= 1 + p()->buff.hit_combo->stack_value();
+
+        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
+        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
+      }
+      else
+        motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+    }
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
@@ -5763,7 +5867,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
+    : monk_melee_attack_t( "spinning_crane_kick", p, 
+        ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
+      chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -6354,12 +6460,20 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // Initial damage does Square Root damage
+  // For more than 5 targets damage is based on a logarithmic function.
+  // This is the closest we can figure out what that function is
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->n_targets > p()->spec.keg_smash->effectN( 7 ).base_value() )
+      // this is the closest we can come up without Blizzard flat out giving us the function
+      // Primary takes the 100% damage
+      // Secondary targets get reduced damage
+      if ( state->target != target )
+        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+
+    return cam;
   }
 
   double action_multiplier() const override
@@ -6427,7 +6541,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     cooldown->duration = data().cooldown();
 
     if ( p.legendary.fatal_touch.ok() )
-      cooldown->duration -= timespan_t::from_seconds( p.legendary.fatal_touch->effectN( 1 ).base_value() );
+      cooldown->duration -= p.legendary.fatal_touch->effectN( 1 ).time_value();
   }
 
   void init() override
@@ -7063,7 +7177,10 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
-    return cam / std::sqrt( state->n_targets );
+    if ( state->target != target )
+        return cam / std::sqrt( state->n_targets );
+
+    return cam;
   }
 
   void execute() override
@@ -7146,12 +7263,10 @@ struct fortifying_brew_t : public monk_spell_t
     harmful = may_crit = false;
 
     if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration +=
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_mw->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
 
     if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += 
-          timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
+      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -7983,11 +8098,10 @@ struct fallen_order_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    specialization_e spec      = p()->specialization();
-    // Tooltips are currently incorrect and hard coding the duration for each
-    timespan_t summon_duration = timespan_t::from_seconds( 8 /*p()->covenant.venthyr->effectN( 4 ).base_value() */ );
+    specialization_e spec       = p()->specialization();
+    timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( 4/*p()->covenant.venthyr->effectN( 3 ).base_value()*/ );
+        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
@@ -8008,7 +8122,7 @@ struct fallen_order_t : public monk_spell_t
         break;
     }
 
-    for ( int i = 0; i < 10; i++ )
+    for ( int i = 0; i < 7; i++ )
     {
       switch ( spec )
       {
@@ -8048,7 +8162,7 @@ struct fallen_order_t : public monk_spell_t
     }
 
     make_event<fallen_order_event_t>(
-        *sim, p(), fallen_monks, timespan_t::from_seconds( p()->covenant.venthyr->effectN( 2 ).base_value() * 2 ) );
+        *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells
@@ -8472,6 +8586,9 @@ struct expel_harm_t : public monk_heal_t
     target           = player;
     may_combo_strike = true;
 
+    if ( p.spec.expel_harm_2_brm->ok() )
+      cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
+
     add_child( dmg );
   }
 
@@ -8497,20 +8614,17 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->spec.expel_harm_2_ww->ok() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
+      double chi_gain = 0;
       if ( p()->azerite.conflict_and_strife.is_major() )
-      {
-        p()->resource_gain( RESOURCE_CHI,
-                            p()->spec.reverse_harm->effectN( 2 ).base_value(),
-                            p()->gain.expel_harm );
-      }
-      else
-      {
-        p()->resource_gain( RESOURCE_CHI, 
-                            1, // p()->spec.expel_harm->effectN( 3 ).base_value(), 
-                            p()->gain.expel_harm );
-      }
+        chi_gain += p()->spec.reverse_harm->effectN( 2 ).base_value();
+
+      if ( p()->spec.expel_harm_2_ww->ok() )
+        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
+
+      if (chi_gain > 0 )
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
     }
   }
 
@@ -8691,11 +8805,33 @@ struct chi_burst_heal_t : public monk_heal_t
 
 struct chi_burst_damage_t : public monk_spell_t
 {
-  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
+  int num_hit;
+  chi_burst_damage_t( monk_t& player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ),
+      num_hit( 0 )
   {
     background = true;
     ww_mastery = true;
     aoe        = -1;
+  }
+
+  void execute() override
+  {
+    num_hit = 0;
+
+    monk_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    num_hit++;
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
+        p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
+    }
   }
 };
 
@@ -8704,7 +8840,8 @@ struct chi_burst_t : public monk_spell_t
   chi_burst_heal_t* heal;
   chi_burst_damage_t* damage;
   chi_burst_t( monk_t* player, const std::string& options_str )
-    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
+    : monk_spell_t( "chi_burst", player, player->talent.chi_burst ),
+      heal( nullptr )
   {
     parse_options( options_str );
     may_combo_strike = true;
@@ -8734,16 +8871,6 @@ struct chi_burst_t : public monk_spell_t
 
     heal->execute();
     damage->execute();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( num_targets_hit > p()->talent.chi_burst->effectN( 3 ).base_value() )
-        for ( int i = 0; i < p()->talent.chi_burst->effectN( 3 ).base_value(); i++ )
-          p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
-      else
-        for ( int i = 0; i < num_targets_hit; i++ )
-          p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
-    }
   }
 };
 
@@ -8913,13 +9040,6 @@ struct celestial_brew_t : public monk_absorb_t
       p()->active_actions.stagger_self_damage->delay_tick(
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
-    }
-
-    if ( p()->azerite.straight_no_chaser.ok() )
-    {
-      p()->buff.straight_no_chaser->trigger();
-      if ( rng().roll( p()->azerite.straight_no_chaser.spell_ref().effectN( 2 ).percent() ) )
-        p()->cooldown.celestial_brew->reset( true, 1 );
     }
 
     if ( p()->legendary.celestial_infusion->ok() )
@@ -9269,7 +9389,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
-  debuff.faeline_stomp = make_buff( *this, "faeline_stomp", p->find_spell( 327257 ) );
+  debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
 
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
@@ -9741,6 +9861,7 @@ void monk_t::init_spells()
   spec.roll_2                    = find_rank_spell( "Roll", "Rank 2" );
   spec.spear_hand_strike         = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick       = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick_brm   = find_spell( 322729 );
   spec.spinning_crane_kick_2_brm = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_BREWMASTER );
   spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
   spec.tiger_palm                = find_class_spell( "Tiger Palm" );
@@ -9749,6 +9870,7 @@ void monk_t::init_spells()
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
   spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
+  spec.two_hand_adjustment       = find_spell( 346104 );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );
@@ -9992,6 +10114,7 @@ void monk_t::init_spells()
   passives.fallen_monk_soothing_mist            = find_spell( 328283 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
+  passives.fallen_monk_tiger_palm               = find_spell( 346602 );
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );
@@ -10252,7 +10375,7 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( talent.dance_of_chiji )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji" )
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true )
                                    ->set_default_value( talent.dance_of_chiji->effectN( 1 ).percent() );
@@ -10264,7 +10387,8 @@ void monk_t::create_buffs()
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
-                           ->set_default_value_from_effect( 1 );
+                           ->set_default_value_from_effect( 1 )
+                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
@@ -10318,7 +10442,7 @@ void monk_t::create_buffs()
                                     ->set_trigger_spell( find_spell( 286586 ) )
                                     ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
-  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
+  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite_hidden", find_spell( 286587 ) )
                                            ->set_quiet( true )
                                            ->set_trigger_spell( find_spell( 286586 ) )
                                            ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
@@ -11567,7 +11691,8 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-  pre->add_action( "use_item,name=azsharas_font_of_power" );
+  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=0" );
+  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled" );
   pre->add_talent( this, "Chi Wave", "if=!talent.energizing_elixer.enabled" );
 }
 
@@ -11665,6 +11790,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
                    "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd"
+                   "&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
@@ -11692,8 +11819,7 @@ void monk_t::apl_combat_windwalker()
   def->add_action( "auto_attack", "Executed every time the actor is available." );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
   def->add_action(
-      "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|"
-      "fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10",
+      "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10",
       "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
   if ( sim->allow_potions )
   {
@@ -11705,17 +11831,14 @@ void monk_t::apl_combat_windwalker()
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up",
       "Call the Serenity action list if Serenity is currently up" );
   def->add_action(
-      "/call_action_list,name=opener,if=time<5&chi<5&!pet.xuen_the_white_tiger.active",
-      "Use FotWT if  you are missing at least 3 chi, And you either are about to cap energy, or serenity is about"
-      "to come up, or FoF is coming up and you will cap energy soon" );
+      "call_action_list,name=opener,if=time<5&chi<5&!pet.xuen_the_white_tiger.active",
+      " Use FotWT if  you are missing at least 3 chi, And you either are about to cap energy, or serenity is about to come up, or FoF is coming up and you will cap energy soon" );
   def->add_talent( this, "Fist of the White Tiger",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|"
-      "energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
   def->add_action( this, "Expel Harm",
-      "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
+      "if=chi.max-chi>=1+essence.conflict_and_strife.major&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
   def->add_action( this, "Tiger Palm",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|"
-      "cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity.enabled" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity.enabled" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3",
@@ -11724,8 +11847,7 @@ void monk_t::apl_combat_windwalker()
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Opener
-  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains",
-      "Opener" );
+  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains", "Opener" );
   opener->add_action( this, "Expel Harm", "if=talent.chi_burst.enabled" );
   opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   opener->add_action( this, "Chi Wave", "if=chi.max-chi=2&talent.hit_combo.enabled" );
@@ -11736,150 +11858,76 @@ void monk_t::apl_combat_windwalker()
   // AoE
   aoe->add_talent( this, "Whirling Dragon Punch", "",
       "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
-  aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>2|chi.max-chi>=4" );
-  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>execute_time" );
+  aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
+  aoe->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
+  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>execute_time-1|buff.storm_earth_and_fire.remains" );
   aoe->add_action( this, "Rising Sun Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>"
-      "cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+3)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
-      "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|"
-      "energy.time_to_max<=3|buff.dance_of_chiji.up)" );
-  aoe->add_action( this, "Expel Harm", "if=chi.max-chi>=1" );
-  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
+      "if=combo_strike&((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2)|energy.time_to_max<=3)" );
+  aoe->add_action( this, "Expel Harm", "if=chi.max-chi>=1+essence.conflict_and_strife.major" );
+  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=1" );
   aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|combo_strike)" );
   aoe->add_talent( this, "Chi Wave", "if=combo_strike" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&"
-      "prev_gcd.1.tiger_palm&chi<4))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=14&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
 
   // Serenity Cooldowns
-  cd_serenity->add_action(
-      "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown."
-      "serenity.remains>30|fight_remains<20",
-      "Serenity Cooldowns" );
+  cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|fight_remains<20", "Serenity Cooldowns" );
   cd_serenity->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25" );
 
-  // Serenity On-use w/ Azshara's Font of Power
   // TODO: Remove come 9.0.2
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[ i ].name_str == "azsharas_font_of_power" )
-        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.serenity.down&(cooldown.serenity.remains<20|target.time_to_die<40)",
-            "This line will be remove in 9.0.2" );
-    }
-  }
-  // TODO: Remove come 9.0.2
-  cd_serenity->add_action( "guardian_of_azeroth,if=variable.serenity_burst", "This line will be remove in 9.0.2" );
+  cd_serenity->add_action( "guardian_of_azeroth,if=fight_remains>185|variable.serenity_burst|fight_remains<35" );
+  cd_serenity->add_action( "worldvein_resonance,if=variable.serenity_burst" );
+  cd_serenity->add_action( "blood_of_the_enemy,if=variable.serenity_burst" );
+  cd_serenity->add_action( "concentrated_flame,if=(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|fight_remains<8)" );
+  cd_serenity->add_action( "the_unbound_force" );
+  cd_serenity->add_action( "purifying_blast" );
+  cd_serenity->add_action( "reaping_flames,if=target.time_to_pct_20>30|target.health.pct<=20|target.time_to_die<2" );
+  cd_serenity->add_action( "focused_azerite_beam" );
+  cd_serenity->add_action( "memory_of_lucid_dreams,if=energy<40" );
+  cd_serenity->add_action( "ripple_in_space" );
 
   // Serenity Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[ i ] == "arcane_torrent" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1", "Use Arcane Torrent if you are missing at least 1 Chi" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1" );
     else if ( racial_actions[ i ] == "ancestral_call" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=fight_remains>125|variable.serenity_burst" );
     else if ( racial_actions[ i ] == "blood_fury" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=fight_remains>125|variable.serenity_burst" );
     else if ( racial_actions[ i ] == "fireblood" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=fight_remains>125|variable.serenity_burst" );
     else if ( racial_actions[ i ] == "berserking" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=fight_remains>185|variable.serenity_burst" );
+    else if ( racial_actions[ i ] == "bag_of_tricks" )
       cd_serenity->add_action( racial_actions[ i ] + ",if=variable.serenity_burst" );
     else
       cd_serenity->add_action( racial_actions[ i ] );
   }
 
-  // Serenity On-use w/ Lustrous Golden Plumage & Gladiator's Medallion
-  // TODO: Remove in 9.0.2
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[ i ].name_str == "lustrous_golden_plumage" )
-        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=variable.serenity_burst" );
-      else if ( items[ i ].name_str == "gladiators_medallion" )
-        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=variable.serenity_burst" );
-    }
-  }
-
-  // Serenity On-use w/ Pocketsized Computation Device
-  // TODO: Remove in 9.0.2
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[ i ].name_str == "pocketsized_computation_device" )
-        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=variable.serenity_burst" );
-    }
-  }
-
-  cd_serenity->add_action(
-      "blood_of_the_enemy,if=variable.serenity_burst" );
-
-   // Serenity On-use items
-  // TODO: Remove in 9.0.2
+  // Serenity On-use items
   for ( size_t i = 0; i < items.size(); i++ )
   {
     std::string name_str = "";
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      name_str = items[ i ].name_str;
-      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" ||
-           name_str != "gladiators_medallion" || name_str != "pocketsized_computation_device" )
-      {
-        if ( name_str == "remote_guidance_device" )
-          cd_serenity->add_action( "use_item,name=" + name_str +
-                                   ",if=variable.serenity_burst" );
-        else if ( name_str == "gladiators_badge" )
-          cd_serenity->add_action( "use_item,name=" + name_str +
-                                   ",if=variable.serenity_burst" );
-        else if ( name_str == "galecallers_boon" )
-          cd_serenity->add_action( "use_item,name=" + name_str +
-                                   ",if=variable.serenity_burst" );
-        else if ( name_str == "writhing_segment_of_drestagath" )
-          cd_serenity->add_action( "use_item,name=" + name_str +
-                                   ",if=variable.serenity_burst" );
-        else if ( name_str == "ashvanes_razor_coral" )
-          cd_serenity->add_action( "use_item,name=" + name_str +
-                                   ",if=variable.serenity_burst" );
-        else
-          cd_serenity->add_action( "use_item,name=" + name_str );
-      }
+      cd_serenity->add_action( "use_item,name=" + items[ i ].name_str );
     }
   }
 
-  // Serenity Essences
-  // TODO: Remove in 9.0.2
-  cd_serenity->add_action( "worldvein_resonance,if=buff.serenity.down&(cooldown.serenity.remains>15|cooldown.serenity.remains<2)|target.time_to_die<20" );
-  cd_serenity->add_action(
-      "concentrated_flame,if=buff.serenity.down&(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|target.time_to_die<8)" );
-
-  cd_serenity->add_action( this, "Touch of Death", "if=fight_remains>180|pet.xuen_the_white_tiger.active|fight_remains<10" );
-  cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
-  cd_serenity->add_talent( this, "Serenity" );
-  
-  // TODO: Remove in 9.0.2
-  cd_serenity->add_action( "the_unbound_force,if=buff.serenity.down" );
-  cd_serenity->add_action( "purifying_blast,if=buff.serenity.down" );
-  cd_serenity->add_action( "reaping_flames,if=buff.serenity.down" );
-  cd_serenity->add_action( "focused_azerite_beam,if=buff.serenity.down" );
-  cd_serenity->add_action( "memory_of_lucid_dreams,if=buff.serenity.down&energy<40" );
-  cd_serenity->add_action( "ripple_in_space,if=buff.serenity.down" );
+  cd_serenity->add_action( this, "Touch of Death" );
+  cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
+  cd_serenity->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
-
+  
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25", "Storm, Earth, and Fire Cooldowns" );
-
-  // TODO: Remove in 9.0.2
-  cd_sef->add_action(
-      "guardian_of_azeroth,if=fight_remains>180|pet.xuen_the_white_tiger.active" );
-  cd_sef->add_action(
-      "worldvein_resonance,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
 
   // Storm, Earth, and Fire w/ Arcane Torrent
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -11888,31 +11936,30 @@ void monk_t::apl_combat_windwalker()
       cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1", "Use Arcane Torrent if you are missing at least 1 Chi" );
   }
 
-  // Storm, Earth, and Fire w/ Lustrous Golden Plumage & Gladiator's Medallion
-  // Remove in 9.0.2
+  cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down" );
+
+  // TODO: Remove in 9.0.2
+  cd_sef->add_action( "blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12" );
+  cd_sef->add_action( "guardian_of_azeroth" );
+  cd_sef->add_action( "worldvein_resonance" );
+  cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down)|fight_remains<8" );
+  cd_sef->add_action( "the_unbound_force" );
+  cd_sef->add_action( "purifying_blast" );
+  cd_sef->add_action( "reaping_flames,if=target.time_to_pct_20>30|target.health.pct<=20" );
+  cd_sef->add_action( "focused_azerite_beam" );
+  cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
+  cd_sef->add_action( "ripple_in_space" );
+  cd_sef->add_action( this, "Storm, Earth, and Fire", "if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|buff.seething_rage.up|(cooldown.blood_of_the_enemy.remains+1>cooldown.storm_earth_and_fire.full_recharge_time|!essence.blood_of_the_enemy.major)&cooldown.fists_of_fury.remains<10&chi>=2&cooldown.whirling_dragon_punch.remains<12" );
+  
+  // Storm, Earth, and Fire on-use trinkets
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[ i ].name_str == "lustrous_golden_plumage" )
-        cd_sef->add_action( "use_item,name=" + items[ i ].name_str +
-                                 ",fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<25" );
-      else if ( items[ i ].name_str == "gladiators_medallion" )
-        cd_sef->add_action( "use_item,name=" + items[ i ].name_str +
-                                 ",fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<20" );
+      cd_sef->add_action( "use_item,name=" + items[ i ].name_str );
     }
   }
-
-  cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10|fight_remains>180" );
-  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|"
-      "(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen)&"
-      "cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=12" );
-  cd_sef->add_action( this, "Touch of Karma", "if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen" );
-  // TODO: Remove in 9.0.2
-  cd_sef->add_action( "blood_of_the_enemy,if=cooldown.invoke_xuen_the_white_tiger.remains>45|variable.hold_xuen&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
-  cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.invoke_xuen_the_white_tiger.remains+1|variable.hold_xuen)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
   cd_sef->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
-
 
   // Storm, Earth and Fire Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -11920,79 +11967,44 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[ i ] != "arcane_torrent" )
     {
       if ( racial_actions[ i ] == "ancestral_call" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>185|buff.storm_earth_and_fire.up|fight_remains<20" );
       else if ( racial_actions[ i ] == "blood_fury" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20", 
+        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>125|buff.storm_earth_and_fire.up|fight_remains<20", 
             "Use Blood Fury if Touch of Death's cooldown is greater than 30 (this includes while ToD is currently active), or off cooldown when you are holding onto ToD, or when the target is about to die" );
       else if ( racial_actions[ i ] == "fireblood" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>125|buff.storm_earth_and_fire.up|fight_remains<20" );
       else if ( racial_actions[ i ] == "berserking" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>185|buff.storm_earth_and_fire.up|fight_remains<20" );
+      else if ( racial_actions[ i ] == "bag_of_tricks" )
+        cd_sef->add_action( racial_actions[ i ] + ",if=buff.storm_earth_and_fire.down" );
       else
 	    cd_sef->add_action( racial_actions[ i ] );
     }
   }
 
-  // Storm, Earth and Fire On-use items
-  // TODO: Remove in 9.0.2
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    std::string name_str = "";
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      name_str = items[ i ].name_str;
-      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" || name_str != "gladiators_medallion" )
-      {
-        if ( name_str == "pocketsized_computation_device" )
-          cd_sef->add_action( "use_item,name=" + name_str + ",,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen" );
-        else if ( name_str == "remote_guidance_device" )
-          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen" );
-        else if ( name_str == "gladiators_badge" )
-          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|target.time_to_die<20" );
-        else if ( name_str == "galecallers_boon" )
-          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|target.time_to_die<12" );
-        else if ( name_str == "writhing_segment_of_drestagath" )
-          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen" );
-        else
-          cd_sef->add_action( "use_item,name=" + name_str );
-      }
-    }
-  }
-
-  // Storm, Earth and Fire Essences
-  // TODO: Remove in 9.0.2
-  cd_sef->add_action( "the_unbound_force" );
-  cd_sef->add_action( "purifying_blast" );
-  cd_sef->add_action( "reaping_flames" );
-  cd_sef->add_action( "focused_azerite_beam" );
-  cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
-  cd_sef->add_action( "ripple_in_space" );
-  cd_sef->add_action( "bag_of_tricks,if=buff.storm_earth_and_fire.down" );
-
   // Serenity
-  serenity->add_action( this, "Fists of Fury", "if=buff.serenity.remains<1|active_enemies>1" );
+  serenity->add_action( this, "Fists of Fury", "if=buff.serenity.remains<1|active_enemies>1", "Priority While Serenity Is Up" );
   serenity->add_action( this, "Spinning Crane Kick", "if=combo_strike&(active_enemies>2|active_enemies>1&!cooldown.rising_sun_kick.up)" );
   serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
-  serenity->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.up" );
+  serenity->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
   serenity->add_action( this, "Fists of Fury", "interrupt_if=gcd.remains=0", "This will cast FoF and interrupt the channel if the GCD is ready and something higher on the priority list (RSK) is avaible" );
   serenity->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
-  serenity->add_action( this, "Expel Harm", "if=chi.max-chi>1&energy.time_to_max<1" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo.enabled", "Use BoK, it will only break mastery if Hit Combo is NOT talented" );
   serenity->add_action( this, "Spinning Crane Kick" );
 
   // Single Target
-  st->add_talent( this, "Whirling Dragon Punch", "", "Single target priority" );
+  st->add_talent( this, "Whirling Dragon Punch", "", "Single Target Priority" );
   st->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
-  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.up" );
+  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
+  st->add_action( this, "Fists of Fury" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity.enabled", "Use RSK on targets without Mark of the Crane debuff, if possible, and if Serenity is at least 2 seconds away" );
-  st->add_action( this, "Fists of Fury", "if=(energy.time_to_max>execute_time-1|chi.max-chi<=1)|fight_remains<execute_time+1|buff.storm_earth_and_fire.remains-1<execute_time" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
-  st->add_action( this, "Expel Harm", "if=chi.max-chi>=1" );
+  st->add_action( this, "Expel Harm", "if=chi.max-chi>=1+essence.conflict_and_strife.major" );
   st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1", "Use CB if you are more than 0 Chi away from max and have 1 enemy, or are more than 1 Chi away from max" );
   st->add_talent( this, "Chi Wave" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&buff.storm_earth_and_fire.down", "Use TP if you are 4 or more chi away from max and ToD and SEF are both not up" );
-  st->add_action( this, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies&combo_strike&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_energy.stack>10&fight_remains<7" );
+  st->add_action( this, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies&combo_strike&buff.storm_earth_and_fire.down&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_energy.stack>10&fight_remains<7" );
   st->add_action( this, "Blackout Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(talent.serenity.enabled&cooldown.serenity.remains<3|cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>3|chi>5|buff.bok_proc.up)", 
                   "Use BoK if both FoF and RSK are not close, or RSK is close and FoF is not close and you have more than 2 chi, or FoF is close RSK is not close and you have more than 3 chi, or you have more than 5 chi, or if you get a proc" );
@@ -12032,8 +12044,8 @@ void monk_t::apl_combat_mistweaver()
 
   def->add_action( "potion" );
 
-  def->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<4" );
+  def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
@@ -12077,16 +12089,6 @@ void monk_t::init_action_list()
     if ( !quiet )
       sim->error(
           "{} has a 1-Hand weapon equipped in the Off-Hand while a 2-Hand weapon is equipped in the Main-Hand.",
-          *this );
-    quiet = true;
-    return;
-  }
-  if ( specialization() == MONK_BREWMASTER && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error(
-          "{} is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
-          "to dual weld.",
           *this );
     quiet = true;
     return;
@@ -12218,7 +12220,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
     auto current_tick_dmg                = current_stagger_tick_dmg();
     auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
     sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
-    if ( current_tick_dmg_per_max_health > 0.06 )
+    if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
       niuzao   = 3;
@@ -12421,6 +12423,10 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.brewmaster_monk );
   action.apply_affecting_aura( spec.windwalker_monk );
   action.apply_affecting_aura( spec.mistweaver_monk );
+
+  if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
+      main_hand_weapon.group() == weapon_e::WEAPON_1H )
+        action.apply_affecting_aura( spec.two_hand_adjustment );
 
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
   //   action.gcd_type = gcd_haste_type::HASTE;

@@ -9,10 +9,10 @@ talents=2202012
 azerite_essences=22:3/5:3/35:3/4:3
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=unbridled_fury
+flask=greater_flask_of_the_currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -122,7 +122,7 @@ main_hand=whispering_eldritch_bow,id=172193,bonus_id=4824/1517/6568,enchant=gale
 # Gear Summary
 # gear_ilvl=146.07
 # gear_agility=439
-# gear_stamina=902
+# gear_stamina=798
 # gear_crit_rating=359
 # gear_haste_rating=309
 # gear_mastery_rating=195

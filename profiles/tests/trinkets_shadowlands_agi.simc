@@ -1,0 +1,162 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for HUNTERs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Spiritual Alchemy Stone"
+trinket1=,id=171323,ilevel=165
+
+copy="Darkmoon Deck: Voracity"
+trinket1=,id=173087,ilevel=200
+
+copy="Darkmoon Deck: Indomitable"
+trinket1=,id=173096,ilevel=200
+
+copy="Rotbriar Sprout"
+trinket1=,id=175729,ilevel=155
+
+copy="Sinful Aspirant's Badge of Ferocity"
+trinket1=,id=175884,ilevel=158
+
+copy="Sinful Gladiator's Badge of Ferocity"
+trinket1=,id=175921,ilevel=200
+
+copy="Spiritual Alchemy Stone"
+trinket1=,id=175941,ilevel=165
+
+copy="Spiritual Alchemy Stone"
+trinket1=,id=175942,ilevel=165
+
+copy="Spiritual Alchemy Stone"
+trinket1=,id=175943,ilevel=165
+
+copy="Sinful Aspirant's Insignia of Alacrity"
+trinket1=,id=178298,ilevel=158
+
+copy="Sinful Aspirant's Emblem"
+trinket1=,id=178334,ilevel=158
+
+copy="Sinful Gladiator's Insignia of Alacrity"
+trinket1=,id=178386,ilevel=200
+
+copy="Sinful Gladiator's Emblem"
+trinket1=,id=178447,ilevel=200
+
+copy="Mistcaller Ocarina"
+trinket1=,id=178715,ilevel=158
+
+copy="Bottled Chimera Toxin"
+trinket1=,id=178742,ilevel=158
+
+copy="Infinitely Divisible Ooze"
+trinket1=,id=178769,ilevel=158
+
+copy="Slimy Consumptive Organ"
+trinket1=,id=178770,ilevel=158
+
+copy="Phial of Putrefaction"
+trinket1=,id=178771,ilevel=158
+
+copy="Grim Codex"
+trinket1=,id=178811,ilevel=158
+
+copy="Pulsating Stoneheart"
+trinket1=,id=178825,ilevel=158
+
+copy="Sunblood Amethyst"
+trinket1=,id=178826,ilevel=158
+
+copy="Decanter of Anima-Charged Winds"
+trinket1=,id=178861,ilevel=158
+
+copy="Bladedancer's Armor Kit"
+trinket1=,id=178862,ilevel=158
+
+copy="Blood-Spattered Scale"
+trinket1=,id=179331,ilevel=158
+
+copy="Inscrutable Quantum Device"
+trinket1=,id=179350,ilevel=158
+
+copy="Shadowgrasp Totem"
+trinket1=,id=179356,ilevel=158
+
+copy="Overcharged Anima Battery"
+trinket1=,id=180116,ilevel=158
+
+copy="Empyreal Ordnance"
+trinket1=,id=180117,ilevel=158
+
+copy="Sinful Gladiator's Medallion"
+trinket1=,id=181333,ilevel=200
+
+copy="Sinful Gladiator's Relentless Brooch"
+trinket1=,id=181335,ilevel=200
+
+copy="Sinful Gladiator's Sigil of Adaptation"
+trinket1=,id=181816,ilevel=200
+
+copy="Everchill Brambles"
+trinket1=,id=182452,ilevel=155
+
+copy="Murmurs in the Dark"
+trinket1=,id=182454,ilevel=155
+
+copy="Dreamer's Mending"
+trinket1=,id=182455,ilevel=155
+
+copy="Skulker's Wing"
+trinket1=,id=184016,ilevel=200
+
+copy="Bargast's Leash"
+trinket1=,id=184017,ilevel=200
+
+copy="Splintered Heart of Al'ar"
+trinket1=,id=184018,ilevel=200
+
+copy="Macabre Sheet Music"
+trinket1=,id=184024,ilevel=200
+
+copy="Memory of Past Sins"
+trinket1=,id=184025,ilevel=200
+
+copy="Hateful Chain"
+trinket1=,id=184026,ilevel=200
+
+copy="Stone Legion Heraldry"
+trinket1=,id=184027,ilevel=207
+
+copy="Dreadfire Vessel"
+trinket1=,id=184030,ilevel=207
+
+copy="Sanguine Vintage"
+trinket1=,id=184031,ilevel=207
+
+copy="Sinful Aspirant's Medallion"
+trinket1=,id=184052,ilevel=158
+
+copy="Sinful Aspirant's Relentless Brooch"
+trinket1=,id=184053,ilevel=158
+
+copy="Sinful Aspirant's Sigil of Adaptation"
+trinket1=,id=184054,ilevel=158
+
+copy="Corrupted Gladiator's Medallion"
+trinket1=,id=184055,ilevel=195
+
+copy="Corrupted Gladiator's Relentless Brooch"
+trinket1=,id=184056,ilevel=195
+
+copy="Corrupted Gladiator's Sigil of Adaptation"
+trinket1=,id=184057,ilevel=195
+
+copy="Corrupted Aspirant's Medallion"
+trinket1=,id=184058,ilevel=175
+
+copy="Corrupted Aspirant's Relentless Brooch"
+trinket1=,id=184059,ilevel=175
+
+copy="Corrupted Aspirant's Sigil of Adaptation"
+trinket1=,id=184060,ilevel=175
+

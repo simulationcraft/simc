@@ -30,9 +30,27 @@ struct drain_life_t : public warlock_spell_t
         p()->buffs.inevitable_demise->expire();
     }
 
+    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.id_azerite->check() )
+    {
+      if ( p()->buffs.drain_life->check() )
+        p()->buffs.id_azerite->expire();
+    }
+
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = warlock_spell_t::bonus_ta( s );
+
+    ta += p()->buffs.id_azerite->check_stack_value();
+
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+
+    return ta;
   }
 
   double action_multiplier() const override
@@ -50,6 +68,7 @@ struct drain_life_t : public warlock_spell_t
   {
     p()->buffs.drain_life->expire();
     p()->buffs.inevitable_demise->expire();
+    p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
   }
@@ -145,6 +164,30 @@ struct scouring_tithe_t : public warlock_spell_t
 
 };
 
+struct soul_rot_t : public warlock_spell_t
+{
+  soul_rot_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "soul_rot", p, p->covenant.soul_rot )
+
+  {
+    parse_options( options_str );
+    aoe = 4;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_ta_multiplier( s );
+    if ( s->chain_target == 0 )
+    {
+      pm *= pm * 2;
+    }
+
+    pm *= 1.0 + p()->conduit.soul_eater.percent();
+
+    return pm;
+  }
+};
+
 struct decimating_bolt_dmg_t : public warlock_spell_t
 {
   decimating_bolt_dmg_t( warlock_t* p ) : warlock_spell_t( "decimating_bolt_tick_t", p, p->find_spell( 327059 ) )
@@ -230,16 +273,6 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     }
   }
 };
-
-struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
-{
-  grimoire_of_sacrifice_damage_t( warlock_t* p )
-    : warlock_spell_t( "grimoire_of_sacrifice", p, p->find_spell( 196100 ) )
-  {
-    background = true;
-    proc       = true;
-  }
-};
 }  // namespace actions
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
@@ -248,6 +281,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
   dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
+  dots_soul_rot       = target->get_dot( "soul_rot", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
@@ -296,7 +330,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) );
 
-  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
 void warlock_td_t::target_demise()
@@ -654,6 +688,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new scouring_tithe_t( this, options_str );
   if ( action_name == "impending_catastrophe" )
     return new impending_catastrophe_t( this, options_str );
+  if ( action_name == "soul_rot" )
+    return new soul_rot_t( this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -754,7 +790,6 @@ void warlock_t::init_spells()
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -768,7 +803,7 @@ void warlock_t::init_spells()
 
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
-  conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
+  conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
   conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
@@ -820,6 +855,7 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
+  gains.borrowed_power = get_gain( "borrowed_power" );
   gains.scouring_tithe = get_gain( "souring_tithe" );
 
   gains.chaos_shards           = get_gain( "chaos_shards" );
@@ -844,6 +880,9 @@ void warlock_t::init_procs()
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
   procs.corrupting_leer = get_proc( "corrupting_leer" );
+  procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+  procs.horned_nightmare = get_proc( "horned_nightmare" );
+  procs.mark_of_borrowed_power = get_proc( "mark_of_borrowed_power" );
 
 }
 
@@ -914,12 +953,11 @@ void warlock_t::apl_precombat()
 
   precombat->add_action( "snapshot_stats" );
 
-  if ( sim->allow_potions )
-  {
-    precombat->add_action( "potion" );
-  }
   if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
     precombat->add_action( "demonbolt" );
+    precombat->add_action( "variable,name=tyrant_ready,value=0" );
+  }
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     precombat->add_talent( this, "Soul Fire" );
@@ -937,55 +975,22 @@ void warlock_t::apl_precombat()
 
 std::string warlock_t::default_potion() const
 {
-  std::string lvl120_potion =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "unbridled_fury"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "unbridled_fury"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "unbridled_fury" : "unbridled_fury";
-
-  std::string lvl110_potion = "prolonged_power";
-
-  return ( true_level > 110 )
-             ? lvl120_potion
-             : ( true_level >= 100 )
-                   ? lvl110_potion
-                   : ( true_level >= 90 )
-                         ? "draenic_intellect"
-                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  return ( true_level >= 50 ) ? "unbridled_fury" : "disabled";
 }
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level > 110 )
-             ? "greater_flask_of_endless_fathoms"
-             : ( true_level >= 100 )
-                   ? "whispered_pact"
-                   : ( true_level >= 90 )
-                         ? "greater_draenic_intellect_flask"
-                         : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+  return ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
 }
 
 std::string warlock_t::default_food() const
 {
-  std::string lvl100_food =
-      ( specialization() == WARLOCK_DESTRUCTION )
-          ? "frosty_stew"
-          : ( specialization() == WARLOCK_DEMONOLOGY )
-                ? "frosty_stew"
-                : ( specialization() == WARLOCK_AFFLICTION ) ? "felmouth_frenzy" : "felmouth_frenzy";
-
-  std::string lvl110_food =
-      ( specialization() == WARLOCK_AFFLICTION ) ? "nightborne_delicacy_platter" : "azshari_salad";
-
-  return ( true_level > 110 ) ? "baked_port_tato"
-                              : ( true_level > 100 ) ? lvl110_food : ( true_level > 90 ) ? lvl100_food : "disabled";
+  return ( true_level >= 50 ) ? "famine_evaluator_and_snack_table" : "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred"
-                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  return ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 }
 
 void warlock_t::apl_global_filler()
@@ -1023,6 +1028,27 @@ void warlock_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+}
+
+void warlock_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  auto const effect = new special_effect_t( this );
+  effect->name_str = "grimoire_of_sacrifice_effect";
+  effect->spell_id = 196099;
+  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+  special_effects.push_back( effect );
+
+  auto cb = new dbc_proc_callback_t( this, *effect );
+
+  cb->initialize();
+  cb->deactivate();
+
+  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+      if ( new_ == 1 ) cb->activate();
+      else cb->deactivate();
+    } );
 }
 
 void warlock_t::combat_begin()
@@ -1133,6 +1159,8 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
     td->dots_impending_catastrophe->adjust_duration( darkglare_extension );
+    td->dots_scouring_tithe->adjust_duration( darkglare_extension );
+    td->dots_soul_rot->adjust_duration( darkglare_extension );
   }
 }
 
@@ -1567,6 +1595,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     vop_infernals( "vop_infernal", w ),
+    roc_infernals( "roc_infernal", w ),
     vop_darkglares( "vop_darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),

@@ -388,22 +388,21 @@ std::string spell_data_t::to_str() const
 }
 
 // check if spell affected by effect through either class flag, label or category
-bool spell_data_t::affected_by_all( const dbc_t& dbc, const spelleffect_data_t& effect ) const
+bool spell_data_t::affected_by_all( const spelleffect_data_t& effect ) const
 {
   return affected_by( effect ) ||
          affected_by_label( effect ) ||
-         affected_by_category( dbc, effect );
+         affected_by_category( effect );
 }
 
-bool spell_data_t::affected_by_category( const dbc_t& dbc, const spelleffect_data_t& effect ) const
+bool spell_data_t::affected_by_category( const spelleffect_data_t& effect ) const
 {
-  return affected_by_category(dbc, effect.misc_value1());
+  return affected_by_category( effect.misc_value1() );
 }
 
-bool spell_data_t::affected_by_category( const dbc_t& dbc, int category ) const
+bool spell_data_t::affected_by_category( int category_ ) const
 {
-  const auto affected_spells = dbc.spells_by_category(category);
-  return range::find(affected_spells, id(), &spell_data_t::id) != affected_spells.end();
+  return category_ > 0 && category() == as<unsigned>( category_ );
 }
 
 bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
