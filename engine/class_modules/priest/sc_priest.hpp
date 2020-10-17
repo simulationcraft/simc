@@ -439,6 +439,7 @@ public:
     azerite_power_t sacred_flame;
     // Disc
     azerite_power_t depth_of_the_shadows;
+    azerite_power_t contemptuous_homily;
     // Shadow
     azerite_power_t chorus_of_insanity;
     azerite_power_t death_throes;
