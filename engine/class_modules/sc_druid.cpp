@@ -9416,8 +9416,10 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ]         = 0;
   resources.current[ RESOURCE_COMBO_POINT ]  = 0;
-  resources.current[ RESOURCE_ASTRAL_POWER ] =
-      std::max( talent.natures_balance->ok() ? 50.0 : 0.0, initial_astral_power );
+  if ( initial_astral_power == 0.0 && talent.natures_balance->ok() )
+    resources.current[RESOURCE_ASTRAL_POWER] = 50.0;
+  else
+    resources.current[RESOURCE_ASTRAL_POWER] = initial_astral_power;
   expected_max_health = calculate_expected_max_health();
 }
 
