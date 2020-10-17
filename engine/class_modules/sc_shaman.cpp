@@ -448,6 +448,7 @@ public:
     buff_t* roiling_storm_buff_driver;
     buff_t* strength_of_earth;
     buff_t* thunderaans_fury;
+    stat_buff_t* ancestral_resonance;
 
   } buff;
 
@@ -480,6 +481,9 @@ public:
     azerite_power_t roiling_storm;
     azerite_power_t strength_of_earth;
     azerite_power_t thunderaans_fury;
+
+    // Shared
+    azerite_power_t ancestral_resonance;
   } azerite;
 
   // Covenant Class Abilities
@@ -793,6 +797,7 @@ public:
   // Azerite
   void trigger_primal_primer( const action_state_t* state );
   void trigger_strength_of_earth( const action_state_t* state );
+  void trigger_ancestral_resonance( const action_state_t* state );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
@@ -1016,6 +1021,36 @@ struct strength_of_earth_buff_t : public buff_t
     : buff_t( p, "strength_of_earth", p->find_spell( 273465 ) )
   {
     set_default_value( p->azerite.strength_of_earth.value() );
+  }
+};
+
+struct ancestral_resonance_buff_t : public stat_buff_t
+{
+  double standard_rppm;
+  double bloodlust_rppm;
+
+  ancestral_resonance_buff_t( shaman_t* p )
+    : stat_buff_t( p, "ancestral_resonance", p->find_spell( 277943 ) ),
+      standard_rppm( 1u ),  // standard value is not in spell data
+      bloodlust_rppm( p->find_spell( 277926 )->real_ppm() )
+  {
+    add_invalidate( CACHE_MASTERY );
+    add_stat( STAT_MASTERY_RATING, p->azerite.ancestral_resonance.value( 1 ) );
+    set_rppm( rppm_scale_e::RPPM_HASTE, standard_rppm );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( player->buffs.bloodlust->check() )
+    {
+      rppm->set_frequency( bloodlust_rppm );
+    }
+    else
+    {
+      rppm->set_frequency( standard_rppm );
+    }
+
+    return stat_buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -1275,6 +1310,7 @@ public:
     ab::impact( state );
 
     p()->trigger_stormbringer( state );
+    p()->trigger_ancestral_resonance( state );
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
@@ -7259,6 +7295,7 @@ void shaman_t::init_spells()
   azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
   azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
   azerite.thunderaans_fury  = find_azerite_spell( "Thunderaan's Fury" );
+  azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -7722,6 +7759,40 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_ancestral_resonance( const action_state_t* state )
+{
+  if ( !azerite.ancestral_resonance.ok() )
+    return;
+
+  shaman_attack_t* attack = nullptr;
+  shaman_spell_t* spell   = nullptr;
+
+  if ( state->action->type == ACTION_ATTACK )
+  {
+    attack = debug_cast<shaman_attack_t*>( state->action );
+  }
+  else if ( state->action->type == ACTION_SPELL )
+  {
+    spell = debug_cast<shaman_spell_t*>( state->action );
+  }
+
+  if ( attack )
+  {
+    if ( attack->may_proc_ability_procs )
+    {
+      buff.ancestral_resonance->trigger();
+    }
+  }
+
+  if ( spell )
+  {
+    if ( !spell->background )
+    {
+      buff.ancestral_resonance->trigger();
+    }
+  }
+}
+
 void shaman_t::regenerate_flame_shock_dependent_target_list(
     const action_t* action, bool retain_main_target ) const
 {
@@ -8065,6 +8136,13 @@ void shaman_t::create_buffs()
   buff.thunderaans_fury = make_buff<buff_t>( this, "thunderaans_fury", find_spell( 287802 ) )
     ->set_default_value_from_effect( 2 )
     ->set_chance( azerite.thunderaans_fury.ok() ? find_spell( 287801 )->proc_chance() : 0.0 );
+
+  buff.ancestral_resonance = new ancestral_resonance_buff_t( this );
+  if ( azerite.ancestral_resonance.ok() )
+  {
+    buffs.bloodlust->set_duration(
+        timespan_t::from_seconds( azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() ) );
+  }
 }
 
 // shaman_t::init_gains =====================================================
