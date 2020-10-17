@@ -2621,6 +2621,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
 
     double evaluate() override
     {
+      assert( paladin.specialization() == PALADIN_RETRIBUTION );
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, 0_ms );
 
