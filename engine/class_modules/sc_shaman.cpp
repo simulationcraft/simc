@@ -447,6 +447,7 @@ public:
     // Azerite
     buff_t* roiling_storm_buff_driver;
     buff_t* strength_of_earth;
+    buff_t* thunderaans_fury;
 
   } buff;
 
@@ -473,10 +474,12 @@ public:
 
   struct
   {
+    // Enhancement
     azerite_power_t lightning_conduit;
     azerite_power_t primal_primer;
     azerite_power_t roiling_storm;
     azerite_power_t strength_of_earth;
+    azerite_power_t thunderaans_fury;
   } azerite;
 
   // Covenant Class Abilities
@@ -2830,6 +2833,13 @@ struct stormstrike_attack_t : public shaman_attack_t
       v += rs_bonus;
     }
 
+    if ( p()->azerite.thunderaans_fury.ok() )
+    {
+      // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
+      // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
+      v += ( 2.0 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
+    }
+
     return v;
   }
 
@@ -3350,6 +3360,8 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->action.crash_lightning_aoe->set_target( execute_state->target );
         p()->action.crash_lightning_aoe->execute();
       }
+
+      p()->buff.thunderaans_fury->trigger();
     }
 
     if ( !stormflurry && p()->azerite.lightning_conduit.ok() )
@@ -7246,6 +7258,7 @@ void shaman_t::init_spells()
   azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
   azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
   azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
+  azerite.thunderaans_fury  = find_azerite_spell( "Thunderaan's Fury" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -7775,6 +7788,8 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   double proc_chance = spell.windfury_weapon->proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
 
+  proc_chance *= 1.0 + buff.thunderaans_fury->stack_value();
+
   if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( proc_chance ) )
   {
     action_t* a = windfury_mh;
@@ -8047,6 +8062,9 @@ void shaman_t::create_buffs()
   // Azerite
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
   buff.strength_of_earth         = new strength_of_earth_buff_t( this );
+  buff.thunderaans_fury = make_buff<buff_t>( this, "thunderaans_fury", find_spell( 287802 ) )
+    ->set_default_value_from_effect( 2 )
+    ->set_chance( azerite.thunderaans_fury.ok() ? find_spell( 287801 )->proc_chance() : 0.0 );
 }
 
 // shaman_t::init_gains =====================================================
