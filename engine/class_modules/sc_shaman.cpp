@@ -248,6 +248,7 @@ struct shaman_td_t : public actor_target_data_t
 
     // Azerite
     buff_t* lightning_conduit;
+    buff_t* primal_primer;
   } debuff;
 
   struct heals
@@ -468,6 +469,7 @@ public:
   struct
   {
     azerite_power_t lightning_conduit;
+    azerite_power_t primal_primer;
   } azerite;
 
   // Covenant Class Abilities
@@ -778,6 +780,9 @@ public:
   void trigger_vesper_totem( const action_state_t* state );
   void trigger_windfury_totem( const action_state_t* state );
 
+  // Azerite
+  void trigger_primal_primer( const action_state_t* state );
+
   void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
   // Legendary
@@ -995,6 +1000,12 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                                  ->set_trigger_spell( p->find_spell( 275391 ) )
                                  ->set_duration( p->find_spell( 275391 )->duration() )
                                  ->set_default_value( p->azerite.lightning_conduit.value() );
+  debuff.primal_primer = make_buff( *this, "primal_primer", p->azerite.primal_primer )
+                             ->set_trigger_spell( p->find_spell( 273006 ) )
+                             ->set_duration( p->find_spell( 273006 )->duration() )
+                             ->set_max_stack( p->find_spell( 273006 )->max_stacks() )
+                             // Primal Primer has a hardcoded /2 in its tooltip
+                             ->set_default_value( 0.5 * p->azerite.primal_primer.value() );
 }
 
 // ==========================================================================
@@ -1355,7 +1366,13 @@ public:
   bool may_proc_icy_edge;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
 
+  // Azerite
+  bool may_proc_primal_primer;
+
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
+
+  // Azerite
+  proc_t *proc_pp;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s )
     : base_t( token, p, s ),
@@ -1367,6 +1384,7 @@ public:
       may_proc_hot_hand( p->talent.hot_hand->ok() ),
       may_proc_icy_edge( false ),
       may_proc_ability_procs( true ),
+      may_proc_primal_primer( true ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_mw( nullptr ),
@@ -1436,6 +1454,12 @@ public:
       proc_wf = player->get_proc( std::string( "Windfury: " ) + full_name() );
     }
 
+    // Azerite
+    if ( may_proc_primal_primer )
+    {
+      proc_pp = player->get_proc( "Primal Primer: " + full_name() );
+    }
+
     base_t::init_finished();
   }
 
@@ -1454,6 +1478,9 @@ public:
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
     p()->trigger_windfury_totem( state );
+
+    // Azerite
+    p()->trigger_primal_primer( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3119,6 +3146,15 @@ struct lava_lash_t : public shaman_attack_t
     return m;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double v = shaman_attack_t::bonus_da( s );
+
+    v += td( s->target )->debuff.primal_primer->stack_value();
+
+    return v;
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
@@ -3155,6 +3191,8 @@ struct lava_lash_t : public shaman_attack_t
     {
       td( target )->debuff.lashing_flames->trigger();
     }
+
+    td( state->target )->debuff.primal_primer->expire();
   }
 
   virtual void trigger_molten_weapon_dot( player_t* t, double dmg )
@@ -3194,6 +3232,9 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
+
+    // Azerite
+    may_proc_primal_primer = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -3705,6 +3746,8 @@ struct earthen_spike_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
+
+    may_proc_primal_primer = false;
   }
 
   void impact( action_state_t* s ) override
@@ -7107,6 +7150,7 @@ void shaman_t::init_spells()
 
   // Azerite
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
+  azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -7433,6 +7477,35 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   {
     attack->proc_hh->occur();
   }
+}
+
+void shaman_t::trigger_primal_primer( const action_state_t* state )
+{
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
+
+  if ( !azerite.primal_primer.enabled() )
+  {
+    return;
+  }
+
+  if ( !attack->may_proc_primal_primer )
+  {
+    return;
+  }
+
+  if ( !state->result_amount )
+  {
+    return;
+  }
+
+  if ( !buff.flametongue_weapon->up() )
+  {
+    return;
+  }
+
+  get_target_data( state->target )->debuff.primal_primer->trigger();
+  attack->proc_pp->occur();
 }
 
 void shaman_t::trigger_vesper_totem( const action_state_t* state )
