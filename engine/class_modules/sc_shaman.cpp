@@ -2775,7 +2775,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormbringer = may_proc_maelstrom_weapon = false;
+    may_proc_stormbringer = false;
   }
 };
 
