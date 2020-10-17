@@ -452,6 +452,7 @@ public:
     stat_buff_t* natural_harmony_fire;    // crit
     stat_buff_t* natural_harmony_frost;   // mastery
     stat_buff_t* natural_harmony_nature;  // haste
+    buff_t* synapse_shock;
 
   } buff;
 
@@ -488,6 +489,7 @@ public:
     // Shared
     azerite_power_t ancestral_resonance;
     azerite_power_t natural_harmony;
+    azerite_power_t synapse_shock;
   } azerite;
 
   // Covenant Class Abilities
@@ -3999,6 +4001,8 @@ struct chain_lightning_overload_t : public chained_overload_base_t
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
+
+    p()->buff.synapse_shock->trigger();
   }
 };
 
@@ -4047,6 +4051,13 @@ struct chained_base_t : public shaman_spell_t
     double base_chance = shaman_spell_t::overload_chance( s );
 
     return base_chance / 3.0;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    p()->buff.synapse_shock->trigger();
   }
 
   void execute() override
@@ -4855,6 +4866,8 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
+
+    p()->buff.synapse_shock->trigger();
   }
 };
 
@@ -5077,6 +5090,13 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.primordial_wave->expire();
       stats = normal_stats;
     }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    p()->buff.synapse_shock->trigger();
   }
 
   //void reset_swing_timers()
@@ -7304,6 +7324,7 @@ void shaman_t::init_spells()
   azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
   azerite.thunderaans_fury  = find_azerite_spell( "Thunderaan's Fury" );
   azerite.natural_harmony   = find_azerite_spell( "Natural Harmony" );
+  azerite.synapse_shock     = find_azerite_spell( "Synapse Shock" );
   azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
 
   // Covenants
@@ -8189,6 +8210,11 @@ void shaman_t::create_buffs()
 
   buff.natural_harmony_nature = make_buff<stat_buff_t>( this, "natural_harmony_nature", find_spell( 279033 ) )
     ->add_stat( STAT_HASTE_RATING, azerite.natural_harmony.value() );
+
+  buff.synapse_shock = make_buff<stat_buff_t>( this, "synapse_shock", find_spell( 277960 ) )
+    ->add_stat( STAT_INTELLECT, azerite.synapse_shock.value() )
+    ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
+    ->set_trigger_spell( azerite.synapse_shock );
 
 }
 
