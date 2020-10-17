@@ -5499,12 +5499,6 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     apply_affecting_aura( p->talent.subterfuge );
     apply_affecting_aura( p->talent.dark_shadow );
   }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-    rogue->buffs.the_first_dance->expire();
-  }
 };
 
 struct shuriken_tornado_t : public buff_t
@@ -8325,6 +8319,7 @@ void rogue_t::create_buffs()
                                              -> set_default_value( azerite.snake_eyes.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                             ->add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() )
+                                            ->set_duration( talent.subterfuge->ok() ? 6_s : 5_s ) // Hard-coded via script magic
                                             ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
                                                 if ( new_ == 1 )
                                                   resource_gain( RESOURCE_COMBO_POINT, as<int>( b->data().effectN( 3 ).resource() ), gains.the_first_dance );
