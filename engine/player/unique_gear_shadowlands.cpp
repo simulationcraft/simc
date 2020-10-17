@@ -265,7 +265,7 @@ void lightless_force( special_effect_t& effect )
   // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd range,
   // the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
   // TODO: confirm maximum effective range & radius
-  effect.execute_action->aoe    = -1;
+  effect.execute_action->aoe    = 5;
   effect.execute_action->radius = 5.0;
   effect.execute_action->range  = 30.0;
 
