@@ -2382,7 +2382,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
-      cooldown -> charges = 0;
     }
 
     void impact( action_state_t* s ) override
