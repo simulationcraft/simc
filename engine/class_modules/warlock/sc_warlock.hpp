@@ -26,6 +26,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_scouring_tithe;
+  propagate_const<dot_t*> dots_soul_rot;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -317,7 +318,7 @@ public:
     // Conduits
     // Covenant Abilities
     conduit_data_t catastrophic_origin;   // Venthyr
-    conduit_data_t exhumed_soul;          // Night Fae
+    conduit_data_t soul_eater;          // Night Fae
     conduit_data_t prolonged_decimation;  // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction

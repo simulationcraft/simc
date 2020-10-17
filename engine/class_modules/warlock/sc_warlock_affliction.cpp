@@ -624,6 +624,9 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_soul_rot->is_ticking() )
+          mult += 1.0;
+
         if ( td->dots_siphon_life->is_ticking() )
           mult += 1.0;
 
@@ -632,7 +635,6 @@ struct malefic_rapture_t : public affliction_spell_t
 
         // TODO:
         // Impending catastrophe
-        // Soul Rot
         return mult;
       }
 
