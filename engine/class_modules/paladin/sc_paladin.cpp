@@ -2620,7 +2620,11 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
 
     double evaluate() override
     {
-      assert( paladin.specialization() == PALADIN_RETRIBUTION );
+      if ( paladin.specialization() != PALADIN_RETRIBUTION )
+      {
+        paladin.sim -> errorf( "\"time_to_hpg\" only supported for Retribution" );
+        return 0;
+      }
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, 0_ms );
 
