@@ -427,7 +427,7 @@ struct unholy_transfusion_t final : public priest_spell_t
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
-      dot_duration += timespan_t::from_seconds( priest().conduits.festering_transfusion->effectN( 2 ).base_value() );
+      dot_duration += priest().conduits.festering_transfusion->effectN( 2 ).time_value();
       base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
