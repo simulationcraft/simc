@@ -352,6 +352,7 @@ public:
 
     // Azerite
     spell_t* lightning_conduit;
+    spell_t* strength_of_earth;
   } action;
 
   // Pets
@@ -445,6 +446,7 @@ public:
 
     // Azerite
     buff_t* roiling_storm_buff_driver;
+    buff_t* strength_of_earth;
 
   } buff;
 
@@ -474,6 +476,7 @@ public:
     azerite_power_t lightning_conduit;
     azerite_power_t primal_primer;
     azerite_power_t roiling_storm;
+    azerite_power_t strength_of_earth;
   } azerite;
 
   // Covenant Class Abilities
@@ -786,6 +789,7 @@ public:
 
   // Azerite
   void trigger_primal_primer( const action_state_t* state );
+  void trigger_strength_of_earth( const action_state_t* state );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
 
@@ -983,6 +987,35 @@ struct ascendance_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
+// Azerite
+
+struct roiling_storm_buff_driver_t : public buff_t
+{
+  roiling_storm_buff_driver_t( shaman_t* p ) :
+    buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
+  {
+    set_period( s_data->internal_cooldown() );
+    set_quiet( true );
+
+    if ( p->azerite.roiling_storm.ok() )
+    {
+      set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
+        p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
+        p->cooldown.strike->reset( true );
+      } );
+    }
+  }
+};
+
+struct strength_of_earth_buff_t : public buff_t
+{
+  strength_of_earth_buff_t( shaman_t* p )
+    : buff_t( p, "strength_of_earth", p->find_spell( 273465 ) )
+  {
+    set_default_value( p->azerite.strength_of_earth.value() );
+  }
+};
+
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
   // Shared
@@ -1011,26 +1044,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              // Primal Primer has a hardcoded /2 in its tooltip
                              ->set_default_value( 0.5 * p->azerite.primal_primer.value() );
 }
-
-// Azerite
-
-struct roiling_storm_buff_driver_t : public buff_t
-{
-  roiling_storm_buff_driver_t( shaman_t* p ) :
-    buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
-  {
-    set_period( s_data->internal_cooldown() );
-    set_quiet( true );
-
-    if ( p->azerite.roiling_storm.ok() )
-    {
-      set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
-        p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
-        p->cooldown.strike->reset( true );
-      } );
-    }
-  }
-};
 
 // ==========================================================================
 // Shaman Action Base Template
@@ -1392,6 +1405,7 @@ public:
 
   // Azerite
   bool may_proc_primal_primer;
+  bool may_proc_strength_of_earth;
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
 
@@ -1409,6 +1423,7 @@ public:
       may_proc_icy_edge( false ),
       may_proc_ability_procs( true ),
       may_proc_primal_primer( true ),
+      may_proc_strength_of_earth( true ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_mw( nullptr ),
@@ -1505,6 +1520,7 @@ public:
 
     // Azerite
     p()->trigger_primal_primer( state );
+    p()->trigger_strength_of_earth( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -1570,6 +1586,9 @@ public:
 
   // General things
   execute_type exec_type;
+
+  // Azerite
+  bool may_proc_strength_of_earth = false;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
@@ -2749,17 +2768,6 @@ struct icy_edge_attack_t : public shaman_attack_t
   }
 };
 
-struct lightning_conduit_zap_t : public shaman_spell_t
-{
-  lightning_conduit_zap_t( shaman_t* player )
-    : shaman_spell_t( "lightning_conduit", player, player->find_spell( 275394 ) )
-  {
-    base_dd_min = base_dd_max = p()->azerite.lightning_conduit.value();
-    background = true;
-    may_crit   = true;
-  }
-};
-
 struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry, stormbringer;
@@ -2952,6 +2960,30 @@ struct elemental_overload_spell_t : public shaman_spell_t
     {
       p()->buff.unlimited_power->trigger();
     }
+  }
+};
+
+// Azerite
+
+struct lightning_conduit_zap_t : public shaman_spell_t
+{
+  lightning_conduit_zap_t( shaman_t* player )
+    : shaman_spell_t( "lightning_conduit", player, player->find_spell( 275394 ) )
+  {
+    base_dd_min = base_dd_max = p()->azerite.lightning_conduit.value();
+    background = true;
+    may_crit   = true;
+  }
+};
+
+struct strength_of_earth_t : public shaman_spell_t
+{
+  strength_of_earth_t( shaman_t* player )
+    : shaman_spell_t( "strength_of_earth", player, player->find_spell( 273466 ) )
+  {
+    base_dd_min = base_dd_max = p()->azerite.strength_of_earth.value();
+    background                = true;
+    may_crit                  = true;
   }
 };
 
@@ -3518,6 +3550,13 @@ struct flametongue_weapon_t : public shaman_spell_t
     parse_options( options_str );
     harmful = false;
     add_child( player->flametongue );
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_strength_of_earth = true;
   }
 
   void execute() override
@@ -5473,6 +5512,8 @@ struct flame_shock_t : public shaman_spell_t
       spreader->execute();
     }
     p()->buff.surge_of_power->expire();
+
+    p()->buff.strength_of_earth->trigger();
   }
 };
 
@@ -5536,6 +5577,8 @@ struct frost_shock_t : public shaman_spell_t
     p()->buff.hailstorm->expire();
 
     maelstrom_gain = 0.0;
+
+    p()->buff.strength_of_earth->trigger();
   }
 };
 
@@ -7038,9 +7081,16 @@ void shaman_t::create_actions()
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
   }
 
+  // Azerite
+
   if ( azerite.lightning_conduit.ok() )
   {
     action.lightning_conduit = new lightning_conduit_zap_t( this );
+  }
+
+  if ( azerite.strength_of_earth.ok() )
+  {
+    action.strength_of_earth = new strength_of_earth_t( this );
   }
 }
 
@@ -7195,6 +7245,7 @@ void shaman_t::init_spells()
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
   azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
   azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
+  azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -7523,35 +7574,6 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_primal_primer( const action_state_t* state )
-{
-  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-
-  if ( !azerite.primal_primer.enabled() )
-  {
-    return;
-  }
-
-  if ( !attack->may_proc_primal_primer )
-  {
-    return;
-  }
-
-  if ( !state->result_amount )
-  {
-    return;
-  }
-
-  if ( !buff.flametongue_weapon->up() )
-  {
-    return;
-  }
-
-  get_target_data( state->target )->debuff.primal_primer->trigger();
-  attack->proc_pp->occur();
-}
-
 void shaman_t::trigger_vesper_totem( const action_state_t* state )
 {
   if ( !vesper_totem )
@@ -7619,6 +7641,72 @@ void shaman_t::trigger_windfury_totem( const action_state_t* state )
   main_hand_attack->repeating = false;
   main_hand_attack->execute();
   main_hand_attack->repeating = true;
+}
+
+void shaman_t::trigger_primal_primer( const action_state_t* state )
+{
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
+
+  if ( !azerite.primal_primer.enabled() )
+  {
+    return;
+  }
+
+  if ( !attack->may_proc_primal_primer )
+  {
+    return;
+  }
+
+  if ( !state->result_amount )
+  {
+    return;
+  }
+
+  if ( !buff.flametongue_weapon->up() )
+  {
+    return;
+  }
+
+  get_target_data( state->target )->debuff.primal_primer->trigger();
+  attack->proc_pp->occur();
+}
+
+void shaman_t::trigger_strength_of_earth( const action_state_t* state )
+{
+  if ( !azerite.strength_of_earth.ok() )
+    return;
+
+  if ( state->action->background )
+    return;
+
+  if ( !buff.strength_of_earth->up() )
+    return;
+
+  shaman_attack_t* attack = nullptr;
+  shaman_spell_t* spell   = nullptr;
+
+  if ( state->action->type == ACTION_ATTACK )
+  {
+    attack = debug_cast<shaman_attack_t*>( state->action );
+  }
+  else if ( state->action->type == ACTION_SPELL )
+  {
+    spell = debug_cast<shaman_spell_t*>( state->action );
+  }
+
+  if ( attack && attack->may_proc_strength_of_earth )
+  {
+    action.strength_of_earth->set_target( state->target );
+    action.strength_of_earth->execute();
+    buff.strength_of_earth->decrement();
+  }
+  else if ( spell && spell->may_proc_strength_of_earth )
+  {
+    action.strength_of_earth->set_target( state->target );
+    action.strength_of_earth->execute();
+    buff.strength_of_earth->decrement();
+  }
 }
 
 void shaman_t::regenerate_flame_shock_dependent_target_list(
@@ -7958,6 +8046,7 @@ void shaman_t::create_buffs()
 
   // Azerite
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
+  buff.strength_of_earth         = new strength_of_earth_buff_t( this );
 }
 
 // shaman_t::init_gains =====================================================
