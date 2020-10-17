@@ -1292,6 +1292,7 @@ class SpellDataGenerator(DataGenerator):
             ( 182104, 0 ),          # Shining Light stacks 1-4
             ( 340147, 0 ),          # Royal Decree
             ( 339119, 0 ),          # Golen Path
+            ( 340193, 0 ),          # Righteous Might heal
         ),
 
         # Hunter:

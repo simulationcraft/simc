@@ -933,10 +933,25 @@ struct hand_of_reckoning_t: public paladin_melee_attack_t
 
 // Covenants =======
 
+struct righteous_might_t : public heal_t
+{
+  righteous_might_t( paladin_t* p ) :
+    // Should be 340193 but I don't have spell data for that.
+    // p -> conduit.righteous_might may just work when that's added.
+    heal_t( "righteous_might", p, p -> find_spell( 340192 ) )
+    {
+      background = true;
+      callbacks = may_crit = may_miss = false;
+      // target = p;
+    }
+};
+
 struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  righteous_might_t* r_m_heal;
   vanquishers_hammer_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "vanquishers_hammer", p, p -> covenant.necrolord )
+    holy_power_consumer_t( "vanquishers_hammer", p, p -> covenant.necrolord ),
+    r_m_heal( new righteous_might_t( p ) )
   {
     parse_options( options_str );
 
@@ -950,6 +965,13 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
     holy_power_consumer_t::impact( s );
 
     p() -> buffs.vanquishers_hammer -> trigger();
+
+    if ( p() -> conduit.righteous_might -> ok() )
+    {
+      r_m_heal -> base_dd_min = r_m_heal -> base_dd_max =
+        s -> result_amount * p() -> conduit.righteous_might.percent();
+      r_m_heal -> execute();
+    }
   }
 };
 
