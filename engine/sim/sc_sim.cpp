@@ -122,11 +122,11 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
 
 /**
  * Parse json= option.
- * 
+ *
  * General structure is: json=destination[,<option>=<value>]
- * 
+ *
  * destination: path to which the report is written.
- * 
+ *
  * Valid options:
  * - version [string]: Requested report version, which follow semver. This option can be a specific report version, or a semver interval like ">=2.0.0".
  * - full_states [bool]: Collects and reports full action and other states, greatly increasing the report size.
@@ -141,7 +141,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::
   {
     throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
   }
-  
+
   auto destination = splits[0];
   std::string report_version;
   bool fullStates = false;
@@ -356,7 +356,7 @@ bool parse_player( sim_t*             sim,
   else
   {
     sim -> active_player = nullptr;
-    
+
     auto player_type = util::parse_player_type( name );
     if (player_type == PLAYER_NONE)
     {
@@ -2247,7 +2247,7 @@ void sim_t::init_fight_style()
     auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
     auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
     auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
-    
+
     raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
                                      first_and_duration, cooldown, first_and_duration, last );
   }
@@ -3376,6 +3376,41 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return std::make_unique<raid_event_expr_t>( this, type_or_name, filter );
   }
 
+  if ( splits.size() == 4 && util::str_compare_ci( splits[ 0 ], "dbc" ) )
+  {
+    double value = -std::numeric_limits<double>::max();
+
+    if ( util::str_compare_ci( splits[ 1 ], "spell" ) )
+    {
+      unsigned spell_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spell_data_t* s = spell_data_t::find( spell_id, dbc->ptr );
+      if ( s->ok() )
+        value = s->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
+    {
+      unsigned effect_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spelleffect_data_t* e = spelleffect_data_t::find( effect_id, dbc->ptr );
+      if ( e->ok() )
+        value = e->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "power" ) )
+    {
+      unsigned power_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spellpower_data_t& p = spellpower_data_t::find( power_id, dbc->ptr );
+      if ( p.id() != 0 )
+        value = p.get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+  }
+
   // If nothing else works, check to see if the string matches an actor in the sim.
   // If so, return their actor index
   if ( splits.size() == 1 )
@@ -3443,7 +3478,7 @@ void sim_t::create_options()
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
-  
+
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
@@ -3706,9 +3741,9 @@ void sim_t::create_options()
         bfa_opts.covenant_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.incandescent_sliver_chance",
         bfa_opts.incandescent_sliver_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.fight_or_flight_period", 
+  add_option( opt_timespan( "bfa.fight_or_flight_period",
         bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.fight_or_flight_chance", 
+  add_option( opt_float( "bfa.fight_or_flight_chance",
         bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.harbingers_inscrutable_will_silence_chance",
         bfa_opts.harbingers_inscrutable_will_silence_chance, 0.0, 1.0 ) );
@@ -3726,9 +3761,9 @@ void sim_t::create_options()
         bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
   add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration",
         bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration", 
+  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration",
         bfa_opts.trident_of_deep_ocean_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance", 
+  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance",
         bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.loyal_to_the_end_allies",
         bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
