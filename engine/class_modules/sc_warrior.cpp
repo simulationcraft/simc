@@ -323,6 +323,7 @@ public:
     const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam_2;
+    const spell_data_t* shield_slam_3;
     const spell_data_t* shield_wall;
     const spell_data_t* single_minded_fury;
     const spell_data_t* slam;
@@ -1255,7 +1256,7 @@ struct devastate_t : public warrior_attack_t
   double shield_slam_reset;
   devastate_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "devastate", p, p->spec.devastate ),
-      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() )
   {
     weapon        = &( p->main_hand_weapon );
     impact_action = p->active.deep_wounds_PROT;
@@ -3943,7 +3944,7 @@ struct revenge_t : public warrior_attack_t
   double shield_slam_reset;
   revenge_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "revenge", p, p->spec.revenge ),
-      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     aoe           = -1;
@@ -4056,7 +4057,7 @@ struct shield_slam_t : public warrior_attack_t
   double rage_gain;
   shield_slam_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
-      rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+      rage_gain( p->spec.shield_slam_2->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
@@ -4282,7 +4283,7 @@ struct thunder_clap_t : public warrior_attack_t
   thunder_clap_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "thunder_clap", p, p->spec.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
-      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -5832,7 +5833,8 @@ void warrior_t::init_spells()
   spec.seasoned_soldier = find_specialization_spell( "Seasoned Soldier" );
   spec.single_minded_fury = find_specialization_spell( "Single-Minded Fury" );
   spec.shield_block_2   = find_specialization_spell( 231847 );
-  spec.shield_slam_2    = find_specialization_spell( 231834 );
+  spec.shield_slam_2    = find_specialization_spell( "Shield Slam", "Rank 2" );
+  spec.shield_slam_3    = find_specialization_spell( "Shield Slam", "Rank 3" );
   spec.shield_wall      = find_specialization_spell( "Shield Wall" );
   spec.shockwave        = find_specialization_spell( "Shockwave" );
   spec.slam             = find_spell( 1464 );
