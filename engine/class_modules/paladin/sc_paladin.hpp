@@ -1150,12 +1150,14 @@ struct holy_power_consumer_t : public Base
     // Free sotr from vanq does not proc RP 2020-09-10
     if ( p -> talents.righteous_protector -> ok() && !ab::background )
     {
-      // Why is this in deciseconds?
-      timespan_t reduction = -100_ms * p -> talents.righteous_protector -> effectN( 1 ).base_value();
-      if ( p -> buffs.divine_purpose -> up() )
+      timespan_t reduction = timespan_t::from_seconds(
+        // Why is this in deciseconds?
+         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
+       );
+      if ( p -> buffs.divine_purpose -> up() ) // DP grants full value to RP
         reduction *= ab::base_costs[ RESOURCE_HOLY_POWER ];
       else
-        reduction *= num_stacks;
+        reduction *= hp_used; // All other hopo reductions reduce their contribution to RP
       p -> cooldowns.avenging_wrath -> adjust( reduction );
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
