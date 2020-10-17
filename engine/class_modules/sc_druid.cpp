@@ -4702,7 +4702,7 @@ struct tigers_fury_t : public cat_attack_t
     p()->buff.tigers_fury->trigger( duration );
 
     if ( p()->legendary.eye_of_fearful_symmetry->ok() )
-      p()->buff.eye_of_fearful_symmetry->trigger();
+      p()->buff.eye_of_fearful_symmetry->trigger( p()->legendary.eye_of_fearful_symmetry->initial_stacks() );
 
     // p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
