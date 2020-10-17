@@ -1565,12 +1565,6 @@ struct shadow_crash_t final : public priest_spell_t
       td.buffs.shadow_crash_debuff->trigger();
     }
   }
-
-  timespan_t travel_time() const override
-  {
-    // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
 };
 
 // ==========================================================================
