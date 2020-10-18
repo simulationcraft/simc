@@ -1028,6 +1028,7 @@ struct strength_of_earth_buff_t : public buff_t
     : buff_t( p, "strength_of_earth", p->find_spell( 273465 ) )
   {
     set_default_value( p->azerite.strength_of_earth.value() );
+    set_trigger_spell( p->azerite.strength_of_earth );
   }
 };
 
