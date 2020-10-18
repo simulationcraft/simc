@@ -2711,6 +2711,7 @@ void paladin_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.retribution_paladin );
   action.apply_affecting_aura( spec.holy_paladin );
   action.apply_affecting_aura( spec.protection_paladin );
+  action.apply_affecting_aura( passives.paladin );
 }
 
 /* Report Extension Class
