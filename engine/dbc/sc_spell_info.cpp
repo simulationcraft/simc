@@ -327,6 +327,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  34, "Channeled"                         },
   {  37, "Does not break stealth"            },
   {  38, "Channeled"                         },
+  {  60, "Don't display in aura bar"         },
   {  93, "Cannot crit"                       },
   {  95, "Food buff"                         },
   { 105, "Not a proc"                        },
