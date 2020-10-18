@@ -9240,7 +9240,7 @@ void druid_t::apl_restoration()
 {
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* owl = get_action_priority_list( "balance" );
+  action_priority_list_t* owl = get_action_priority_list( "owl" );
 
   pre->add_action( this, "Cat Form", "if=talent.feral_affinity.enabled" );
   pre->add_action( this, "Moonkin Form", "if=talent.balance_affinity.enabled" );
