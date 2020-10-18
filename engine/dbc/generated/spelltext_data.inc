@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36267
-static const std::array<spelltext_data_t, 15671> __spelltext_data { {
+static const std::array<spelltext_data_t, 15673> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5961,6 +5961,7 @@ static const std::array<spelltext_data_t, 15671> __spelltext_data { {
   { 185397, "You can Lifebloom two targets at once.", 0, 0 },
   { 185398, "Increases the chance to for your Gift of the Ox to summon a Healing Sphere by $s1%.", 0, 0 },
   { 185399, "Every time you gather a Healing Sphere, the remaining cooldowns of your Ironskin Brew and Purifying Brew are reduced by $s1 sec.", 0, 0 },
+  { 185422, "$@spelldesc185313", "Access to Stealth abilities.$?$w3!=0[\r\nMovement speed increased by $w3%.][]$?$w4!=0[\r\nDamage increased by $w4%.][]", 0 },
   { 185438, "Strike the target, dealing $s1 Physical damage.\r\n\r\nWhile Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   { 185542, "Your Rising Sun Kick grants 2 charges of Masterful Strikes. Masterful Strikes increases mastery by ${$216172s1*1.25}% on your next damaging abilitiy.", 0, 0 },
   { 185543, "Your Fists of Fury grants 3 charges of Masterful Strikes, and increases your maximum Energy by $m2.", 0, 0 },
@@ -15670,6 +15671,7 @@ static const std::array<spelltext_data_t, 15671> __spelltext_data { {
   { 346279, "Demon's Bite leaves an open wound on your enemy dealing $346278s1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.", "Demon's Bite leaves an open wound on your enemy dealing $346278o1 Chaos damage over $346278d and increasing damage taken from your Immolation Aura by $346278s2%.", 0 },
   { 346369, "$@spelldesc335274", "Your next Mortal Strike costs $w1 less Rage.", 0 },
   { 346370, "$@spelldesc335274", 0, 0 },
+  { 346602, "Strike with the palm of your hand, dealing $s1 Physical damage.", 0, 0 },
   { 346665, "Throw a demonic glaive at the target, dealing $s2 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. Generates high threat.", 0, 0 },
 } };
 

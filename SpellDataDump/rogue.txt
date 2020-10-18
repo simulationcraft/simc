@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, git build shadowlands 493ac7b6b6)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -1012,7 +1012,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x20000000
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Blindside (121153 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Sleight of Hand (145211 effect#2), Cold Blood (182304 effect#1), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Deathly Shadows (341202 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Vendetta (79140 effect#1), Blindside (121153 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Sleight of Hand (145211 effect#2), Cold Blood (182304 effect#1), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Deathly Shadows (341202 effects: #1, #2)
 Family Flags     : 9, 54
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -1227,11 +1227,11 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6350)     : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Stealth (1784), Vanish (11327), Stealth (115191)
+                   Affected Spells: Stealth (1784), Vanish (11327), Stealth (115191), Shadow Dance (185422)
                    Family Flags: 22, 57, 96
 #2 (id=165808)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Stealth (1784), Vanish (11327), Stealth (115191)
+                   Affected Spells: Stealth (1784), Vanish (11327), Stealth (115191), Shadow Dance (185422)
                    Family Flags: 22, 57, 96
 Description      : While Stealth$?c3[ or Shadow Dance][] is active, you move $s1% faster and your abilities deal $s2% more damage.
 
@@ -2534,7 +2534,7 @@ Effects          :
                    Family Flags: 22
 #2 (id=322830)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Shadow Dance (185313)
+                   Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
                    Family Flags: 57, 103
 #3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
@@ -3582,6 +3582,40 @@ Effects          :
 #1 (id=269038)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your finishing moves reduce the remaining cooldown on Shadow Dance by $?s238104[${$sw1/10}.1][${$sw1/10}] sec per combo point spent.
+
+Name             : Shadow Dance (id=185422) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 5
+Duration         : 8 seconds
+Affecting spells : Nightstalker (14062 effects: #1, #2), Subterfuge (108208 effect#2)
+Family Flags     : 57
+Attributes       : ....x... ........ x.x..... ...x....   ....x... ..x..... ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
+                 : x....... ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=269222)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+#2 (id=269223)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 315 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=269224)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=269225)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+#5 (id=269226)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Ambush (8676)
+                   Family Flags: 9
+Description      : $@spelldesc185313
+Tooltip          : Access to Stealth abilities.$?$w3!=0[
+Movement speed increased by $w3%.][]$?$w4!=0[
+Damage increased by $w4%.][]
 
 Name             : Shadowstrike (id=185438) [Spell Family (8)] 
 Replaces         : Ambush (id=8676)
