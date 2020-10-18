@@ -1141,10 +1141,8 @@ struct holy_power_consumer_t : public Base
 
     if ( p -> buffs.crusade -> check() )
     {
-      if ( p -> bugs && is_divine_storm && ( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
-        ;
-      else
-        p -> buffs.crusade -> trigger( num_stacks );
+      if ( ! p -> bugs || ! is_divine_storm || !( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
+        p -> buffs.crusade -> trigger( num_stacks );  
     }
 
     // Free sotr from vanq does not proc RP 2020-09-10
