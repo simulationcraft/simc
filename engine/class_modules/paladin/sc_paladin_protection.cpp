@@ -819,8 +819,8 @@ void paladin_t::create_buffs_protection()
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
   buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
         -> set_absorb_source( get_stats( "shielding_words" ) );
-  buffs.shining_light_stacks = make_buff( this, "shining_light", find_spell( 182104 ) );
-  buffs.shining_light_free = make_buff( this, "shining_light", find_spell( 327510 ) );
+  buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) );
+  buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
