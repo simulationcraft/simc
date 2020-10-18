@@ -3567,6 +3567,8 @@ struct sundering_t : public shaman_attack_t
   sundering_t( shaman_t* player, const std::string& options_str )
     : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
+    weapon = &( player->main_hand_weapon );
+
     parse_options( options_str );
     school = SCHOOL_FLAMESTRIKE;
     aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
@@ -3575,8 +3577,9 @@ struct sundering_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
+
     may_proc_stormbringer = may_proc_windfury = may_proc_flametongue = false;
-    may_proc_hot_hand                                                = p()->talent.hot_hand->ok();
+    may_proc_hot_hand = p()->talent.hot_hand->ok();
   }
 };
 
