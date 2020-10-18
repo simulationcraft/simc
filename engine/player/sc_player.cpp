@@ -9780,34 +9780,6 @@ const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) 
   return spell_data_t::not_found();
 }
 
-const spelleffect_data_t* player_t::find_effect( unsigned int id ) const
-{
-  if ( id )
-  {
-    auto effect = dbc::find_effect( this, id );
-    if ( effect->id() )
-    {
-      return effect;
-    }
-  }
-
-  return &spelleffect_data_t::nil();
-}
-
-const spellpower_data_t* player_t::find_power( unsigned int id ) const
-{
-  if ( id )
-  {
-    auto power = dbc::find_power( this, id );
-    if ( power->id() )
-    {
-      return power;
-    }
-  }
-
-  return &spellpower_data_t::nil();
-}
-
 namespace
 {
 std::unique_ptr<expr_t> deprecate_expression( player_t& p, util::string_view old_name, util::string_view new_name, action_t* a = nullptr  )
@@ -10431,7 +10403,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     {
       unsigned effect_id = util::to_int( splits[ 2 ] );
       auto field = splits[ 3 ];
-      const spelleffect_data_t* e = find_effect( effect_id );
+      const spelleffect_data_t* e = dbc::find_effect( this, effect_id );
       if ( e->ok() )
         value = e->get_field( field );
       return expr_t::create_constant( name_str, value );
@@ -10441,7 +10413,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     {
       unsigned power_id = util::to_int( splits[ 2 ] );
       auto field = splits[ 3 ];
-      const spellpower_data_t* p = find_power( power_id );
+      const spellpower_data_t* p = dbc::find_power( this, power_id );
       if ( p->id() != 0 )
         value = p->get_field( field );
       return expr_t::create_constant( name_str, value );
