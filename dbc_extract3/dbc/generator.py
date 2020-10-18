@@ -3807,6 +3807,11 @@ class ClientDataVersionGenerator(DataGenerator):
             self.format_str('CLIENT_DATA_WOW_VERSION').upper(),
             self._options.build))
 
+        self._out.write('#define {} "{}"\n'.format(
+            self.format_str('SIMC_WOW_VERSION').upper(),
+            '{}{}{}'.format(self._options.build.expansion(), self._options.build.patch(),
+                self._options.build.minor())))
+
         if self._options.hotfix_file:
             self._out.write('\n// Hotfix data versioning information\n\n')
             self._out.write('#define {} "{}"\n'.format(
