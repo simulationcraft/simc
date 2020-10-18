@@ -9308,8 +9308,19 @@ void druid_t::init()
 {
   player_t::init();
 
-  // if ( specialization() == DRUID_RESTORATION )
-  // sim -> errorf( "%s is using an unsupported spec.", name() );
+  switch ( specialization() )
+  {
+    case DRUID_BALANCE:
+      action_list_information +=
+        "\n# Annotated Balance APL can be found at "
+        "https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
+      break;
+    case DRUID_FERAL:
+      action_list_information +=
+        "\n# Feral APL can also be found at https://gist.github.com/Xanzara/6896c8996f5afce5ce115daa3a08daff\n";
+      break;
+    default: break;
+  }
 }
 
 // druid_t::init_gains ======================================================
