@@ -24,10 +24,11 @@ augmentation=disabled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/lightning_shield
 actions.precombat+=/windfury_weapon
 actions.precombat+=/flametongue_weapon
+actions.precombat+=/lightning_shield
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
+actions.precombat+=/windfury_totem
 actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -40,9 +41,15 @@ actions+=/potion,if=expected_combat_length-time<60
 actions+=/wind_shear
 actions+=/auto_attack
 actions+=/windstrike
+actions+=/heart_essence
+actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
 actions+=/feral_spirit
 actions+=/earth_elemental
-actions+=/elemental_blast,if=talent.elemental_blast.enabled&&buff.maelstrom_weapon.stack>=5
+actions+=/earthen_spike
 actions+=/sundering
 actions+=/ascendance
 # If only one enemy, priority follows the 'single' action list.
@@ -52,26 +59,39 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
 actions.aoe=crash_lightning
-actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5
-actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
-actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5
+actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!buff.hailstorm.up
 actions.aoe+=/frost_shock,if=buff.hailstorm.up
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!ticking&&!talent.hailstorm.enabled
-actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/frost_shock
+actions.aoe+=/ice_strike
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 # Single target action priority list
-actions.single=stormstrike
-actions.single+=/stormkeeper,if=talent.stormkeeper.enabled&&buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=buff.stormkeeper.up
+actions.single=flame_shock,if=!ticking
+actions.single+=/frost_shock,if=buff.hailstorm.up
+actions.single+=/lightning_bolt,if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
+actions.single+=/lava_lash,if=buff.hot_hand.up
+actions.single+=/stormstrike
+actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lava_lash
-actions.single+=/flame_shock,target_if=refreshable,if=!ticking
 actions.single+=/crash_lightning
+actions.single+=/flame_shock,target_if=refreshable
 actions.single+=/frost_shock
+actions.single+=/ice_strike
+actions.single+=/fire_nova,if=active_dot.flame_shock
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=honorbound_vanguards_helm,id=163447,bonus_id=6938
 neck=shaleshell_pendant,id=177165,bonus_id=6938
