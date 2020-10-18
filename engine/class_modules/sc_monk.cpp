@@ -5811,7 +5811,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
         am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
       }
       else
-        motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+        motc_multiplier += p()->conduit.calculated_strikes.percent();
     }
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
