@@ -37,7 +37,8 @@ namespace pets {
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
-}
+  struct reanimated_shambler_pet_t;
+  }
 
 namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
@@ -808,6 +809,7 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
+    real_ppm_t* reanimated_shambler;
   } rppm;
 
   // Pets and Guardians
@@ -822,12 +824,14 @@ public:
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
+    spawner::pet_spawner_t<pets::reanimated_shambler_pet_t, death_knight_t> reanimated_shambler;
 
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
       apoc_ghouls( "apoc_ghoul", p ),
       bloodworms( "bloodworm", p ),
-      magus_of_the_dead( "magus_of_the_dead", p )
+      magus_of_the_dead( "magus_of_the_dead", p ),
+      reanimated_shambler( "reanimated_shambler", p )
     {}
   } pets;
 
@@ -861,8 +865,12 @@ public:
     proc_t* fw_infected_claws;
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
+    proc_t* fw_necroblast;
 
     proc_t* vision_of_perfection;
+
+    proc_t* reanimated_shambler;
+
   } procs;
 
   // Azerite Traits
@@ -956,8 +964,8 @@ public:
     // Unholy
     item_runeforge_t deadliest_coil; // 6952
     item_runeforge_t deaths_certainty; // 6951
-    item_runeforge_t frenzied_monstrosity;        // 6950
-    // item_runeforge_t reanimated_shambler; // 6949
+    item_runeforge_t frenzied_monstrosity; // 6950
+    item_runeforge_t reanimated_shambler; // 6949
 
     // Defensive/Utility
     // item_runeforge_t deaths_embrace; // 6947
@@ -2666,6 +2674,106 @@ struct magus_pet_t : public death_knight_pet_t
   }
 };
 
+struct reanimated_shambler_pet_t : public death_knight_pet_t
+{
+  struct necroblast_t : public pet_action_t<reanimated_shambler_pet_t, melee_attack_t>
+  {
+    necroblast_t( reanimated_shambler_pet_t* player, util::string_view options_str ) :
+      pet_action_t( player, "necroblast", player -> find_spell( 334851 ) )
+    {
+      parse_options( options_str );
+    }
+
+    void execute() override
+    {
+      pet_action_t::execute();
+
+      p()->dismiss();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      pet_action_t::impact( state );
+      p() -> o() -> trigger_festering_wound( state, 1, p() -> o() -> procs.fw_necroblast );
+    }
+  };
+
+  struct travel_t : public action_t
+  {
+    bool executed;
+
+    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ), executed( false )
+    {
+      may_miss = false;
+      dual     = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    {
+      return RESULT_HIT;
+    }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    {
+      return BLOCK_RESULT_UNBLOCKED;
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    timespan_t execute_time() const override
+    {
+      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 2.9, 0.2 ) );
+    }
+
+    bool ready() override
+    {
+      return !executed;
+    }
+  };
+
+  reanimated_shambler_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "reanimated_shambler", true, false )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "travel" );
+    def->add_action( "necroblast" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "necroblast" )
+      return new necroblast_t( this, options_str );
+    if ( name == "travel" )
+      return new travel_t( this );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+};
+
 } // namespace pets
 
 namespace { // UNNAMED NAMESPACE
@@ -3149,6 +3257,11 @@ struct melee_t : public death_knight_melee_attack_t
       {
         trigger_bloodworm();
       }
+
+      if ( p() -> legendary.reanimated_shambler -> ok() )
+      {
+        trigger_reanimated_shambler();
+      }
     }
   }
 
@@ -3165,6 +3278,17 @@ struct melee_t : public death_knight_melee_attack_t
     p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() -> duration(), 1 );
     // Pet spawn spelldata: 16s
     // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
+  }
+
+  void trigger_reanimated_shambler()
+  {
+    if  ( ! p() -> rppm.reanimated_shambler -> trigger() )
+    {
+      return;
+    }
+    p() -> procs.reanimated_shambler -> occur();
+
+    p() -> pets.reanimated_shambler.spawn( 1 );
   }
 };
 
@@ -8019,6 +8143,12 @@ void death_knight_t::create_pets()
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
     }
+
+    if (legendary.reanimated_shambler.ok())
+    {
+      pets.reanimated_shambler.set_creation_callback(
+          [] ( death_knight_t* p ) { return new pets::reanimated_shambler_pet_t( p ); } );
+    }
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -8080,6 +8210,7 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
+  rppm.reanimated_shambler = get_rppm( "reanimated_shambler", legendary.reanimated_shambler );
 }
 
 // death_knight_t::init_base ================================================
@@ -8433,7 +8564,7 @@ void death_knight_t::init_spells()
   legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
-  // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
+  legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
 
   // Defensive/Utility
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
@@ -9202,9 +9333,12 @@ void death_knight_t::init_procs()
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
-  procs.fw_unholy_assault    = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
 
   procs.vision_of_perfection = get_proc( "Vision of Perfection" );
+
+  procs.reanimated_shambler = get_proc( "Reanimated Shambler" );
 }
 
 // death_knight_t::init_finished ============================================
