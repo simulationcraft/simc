@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, git build shadowlands 493ac7b6b6)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, git build shadowlands 3fcdcc13a9)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1591,7 +1591,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ .x...... 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Cannot cancel aura (31)
+                 : Passive (6), Hidden (7), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
 #1 (id=827548)   : Apply Player/Pet Aura (202) | Proc Trigger Spell (42): Superior Tactics
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 332922 | Radius: 100 yards | Target: Self (1)
