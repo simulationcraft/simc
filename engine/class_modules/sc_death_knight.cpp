@@ -9124,7 +9124,8 @@ void death_knight_t::create_buffs()
 
   // Legendaries
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
-    -> add_invalidate( CACHE_ATTACK_SPEED );
+    -> add_invalidate( CACHE_ATTACK_SPEED )
+    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // death_knight_t::init_gains ===============================================
