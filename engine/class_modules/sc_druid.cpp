@@ -1678,7 +1678,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
     p().buff.bt_moonfire->expire();
     p().buff.bt_brutal_slash->expire();
 
-    p().buff.bloodtalons->trigger( p().buff.bloodtalons->max_stack() );
+    p().buff.bloodtalons->trigger();
 
     return true;
   }
@@ -4702,7 +4702,7 @@ struct tigers_fury_t : public cat_attack_t
     p()->buff.tigers_fury->trigger( duration );
 
     if ( p()->legendary.eye_of_fearful_symmetry->ok() )
-      p()->buff.eye_of_fearful_symmetry->trigger( p()->legendary.eye_of_fearful_symmetry->initial_stacks() );
+      p()->buff.eye_of_fearful_symmetry->trigger();
 
     // p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
@@ -7133,7 +7133,7 @@ struct warrior_of_elune_t : public druid_spell_t
 
     p()->cooldown.warrior_of_elune->reset( false );
 
-    p()->buff.warrior_of_elune->trigger( p()->talent.warrior_of_elune->initial_stacks() );
+    p()->buff.warrior_of_elune->trigger();
   }
 
   bool ready() override
