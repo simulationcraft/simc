@@ -1121,6 +1121,9 @@ void warlock_t::create_buffs_demonology()
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
           ->set_max_stack( 40 ); //Using the other wild imp simc max for now
 
+  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
+                            ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
+
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 

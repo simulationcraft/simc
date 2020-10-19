@@ -486,6 +486,7 @@ public:
     propagate_const<buff_t*> malefic_wrath;
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> implosive_potential;
+    propagate_const<buff_t*> dread_calling;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
