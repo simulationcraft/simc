@@ -249,12 +249,16 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
-    impact_spell->shards_used = as<int>(cost());
+    int shards_used = as<int>( cost() );
+    impact_spell->shards_used = shards_used;
 
     demonology_spell_t::execute();
 
     if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
       p()->buffs.demonic_core->trigger();
+
+    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+      p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
   }
 
   void consume_resource() override
