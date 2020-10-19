@@ -1633,6 +1633,38 @@ public:
 // Shaman Offensive Spell
 // ==========================================================================
 
+struct shaman_spell_state_t : public action_state_t
+{
+  execute_type exec_type = execute_type::NORMAL;
+
+  shaman_spell_state_t( action_t* action_, player_t* target_ ) :
+    action_state_t( action_, target_ )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    exec_type = execute_type::NORMAL;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const shaman_spell_state_t*>( s );
+    exec_type = lbs->exec_type;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " exec_type=" << static_cast<unsigned>( exec_type );
+
+    return s;
+  }
+};
+
 struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
   action_t* overload;
@@ -1646,7 +1678,7 @@ public:
 
   // Echoing Shock stuff
   bool may_proc_echoing_shock;
-  stats_t* echoing_shock_stats;
+  stats_t* echoing_shock_stats, *normal_stats;
 
   // General things
   execute_type exec_type;
@@ -1658,7 +1690,7 @@ public:
                   const std::string& options = std::string() )
     : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ),
       may_proc_echoing_shock( false ),
-      echoing_shock_stats( nullptr ),
+      echoing_shock_stats( nullptr ), normal_stats( nullptr ),
       exec_type( execute_type::NORMAL )
   {
     parse_options( options );
@@ -1686,6 +1718,22 @@ public:
     may_proc_stormbringer = false;
   }
 
+  static shaman_spell_state_t* cast_state( action_state_t* s )
+  { return debug_cast<shaman_spell_state_t*>( s ); }
+
+  static const shaman_spell_state_t* cast_state( const action_state_t* s )
+  { return debug_cast<const shaman_spell_state_t*>( s ); }
+
+  action_state_t* new_state() override
+  { return new shaman_spell_state_t( this, target ); }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    base_t::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->exec_type = exec_type;
+  }
+
   // Some spells do not consume Maelstrom Weapon stacks always, so need to control this on
   // a spell to spell level
   virtual bool consume_maelstrom_weapon() const
@@ -1711,6 +1759,8 @@ public:
   {
     base_t::init();
 
+    normal_stats = stats;
+
     may_proc_echoing_shock = !background && p()->talent.echoing_shock->ok() &&
       id != p()->talent.echoing_shock->id() && ( base_dd_min || spell_power_mod.direct );
   }
@@ -1727,6 +1777,7 @@ public:
       if ( auto echoing_shock = p()->find_action( "echoing_shock" ) )
       {
         echoing_shock_stats = p()->get_stats( this->name_str + "_echo", this );
+        echoing_shock_stats->school = get_school();
         echoing_shock->stats->add_child( echoing_shock_stats );
       }
     }
@@ -3014,8 +3065,10 @@ struct earthen_rage_spell_t : public shaman_spell_t
 
 struct elemental_overload_spell_t : public shaman_spell_t
 {
-  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s )
-    : shaman_spell_t( name, p, s )
+  shaman_spell_t* parent;
+
+  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s, shaman_spell_t* parent_ )
+    : shaman_spell_t( name, p, s ), parent( parent_ )
   {
     base_execute_time = timespan_t::zero();
     background        = true;
@@ -3024,14 +3077,42 @@ struct elemental_overload_spell_t : public shaman_spell_t
     base_multiplier *= p->mastery.elemental_overload->effectN( 2 ).percent();
   }
 
+  void init_finished() override
+  {
+    shaman_spell_t::init_finished();
+
+    if ( parent->echoing_shock_stats )
+    {
+      echoing_shock_stats = p()->get_stats( this->name_str + "_echo", this );
+      parent->echoing_shock_stats->add_child( echoing_shock_stats );
+    }
+
+    parent->stats->add_child( stats );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    base_t::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->exec_type = parent->exec_type;
+  }
+
   void execute() override
   {
+    auto s = cast_state( pre_execute_state );
+    if ( s->exec_type == execute_type::ECHOING_SHOCK )
+    {
+      stats = echoing_shock_stats;
+    }
+
     shaman_spell_t::execute();
 
     if ( p()->talent.unlimited_power->ok() )
     {
       p()->buff.unlimited_power->trigger();
     }
+
+    stats = normal_stats;
   }
 };
 
@@ -3982,8 +4063,8 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chained_overload_base_t : public elemental_overload_spell_t
 {
-  chained_overload_base_t( shaman_t* p, const std::string& name, const spell_data_t* spell, double mg )
-    : elemental_overload_spell_t( p, name, spell )
+  chained_overload_base_t( shaman_t* p, const std::string& name, const spell_data_t* spell, double mg, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, name, spell, parent_ )
   {
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
@@ -4011,9 +4092,9 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
 struct chain_lightning_overload_t : public chained_overload_base_t
 {
-  chain_lightning_overload_t( shaman_t* p )
+  chain_lightning_overload_t( shaman_t* p, shaman_spell_t* parent_ )
     : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -4028,11 +4109,10 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 
 struct lava_beam_overload_t : public chained_overload_base_t
 {
-  lava_beam_overload_t( shaman_t* p )
+  lava_beam_overload_t( shaman_t* p, shaman_spell_t* parent_ )
     : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
-  {
-  }
+                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
+  { }
 };
 
 struct chained_base_t : public shaman_spell_t
@@ -4104,8 +4184,8 @@ struct chain_lightning_t : public chained_base_t
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new chain_lightning_overload_t( player );
-      add_child( overload );
+      overload = new chain_lightning_overload_t( player, this );
+      //add_child( overload );
     }
     affected_by_master_of_the_elements = true;
   }
@@ -4237,8 +4317,8 @@ struct lava_beam_t : public chained_base_t
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_beam_overload_t( player );
-      add_child( overload );
+      overload = new lava_beam_overload_t( player, this );
+      //add_child( overload );
     }
   }
 
@@ -4274,8 +4354,8 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     }
   }
 
-  lava_burst_overload_t( shaman_t* player, lava_burst_type pt )
-    : elemental_overload_spell_t( player, action_name( pt ), player->find_spell( 77451 ) ),
+  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_, lava_burst_type pt )
+    : elemental_overload_spell_t( player, action_name( pt ), player->find_spell( 77451 ), parent_ ),
       impact_flags()
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
@@ -4284,7 +4364,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
+    auto et = cast_state( s )->exec_type;
+
     snapshot_internal( s, impact_flags, rt );
+
+    cast_state( s )->exec_type = et;
   }
 
   double calculate_direct_amount( action_state_t* /* s */ ) const override
@@ -4301,6 +4385,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( cast_state( s )->exec_type == execute_type::ECHOING_SHOCK )
+    {
+      stats = echoing_shock_stats;
+    }
+
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
 
@@ -4308,6 +4397,8 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
     elemental_overload_spell_t::impact( s );
+
+    stats = normal_stats;
   }
 
   double action_multiplier() const override
@@ -4531,8 +4622,8 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_burst_overload_t( player, type );
-      add_child( overload );
+      overload = new lava_burst_overload_t( player, this, type );
+      //add_child( overload );
     }
 
     if ( p()->specialization() == SHAMAN_RESTORATION )
@@ -4608,6 +4699,11 @@ struct lava_burst_t : public shaman_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( cast_state( s )->exec_type == execute_type::ECHOING_SHOCK )
+    {
+      stats = echoing_shock_stats;
+    }
+
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
 
@@ -4622,6 +4718,8 @@ struct lava_burst_t : public shaman_spell_t
       p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
       p()->buff.surge_of_power->decrement();
     }
+
+    stats = normal_stats;
   }
 
   double action_multiplier() const override
@@ -4728,8 +4826,8 @@ struct lava_burst_t : public shaman_spell_t
 
 struct lightning_bolt_overload_t : public elemental_overload_spell_t
 {
-  lightning_bolt_overload_t( shaman_t* p )
-    : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ) )
+  lightning_bolt_overload_t( shaman_t* p, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain                     = p->spell.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
@@ -4785,8 +4883,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lightning_bolt_overload_t( player );
-      add_child( overload );
+      overload = new lightning_bolt_overload_t( player, this );
+      //add_child( overload );
     }
 
     if ( type == lightning_bolt_type::PRIMORDIAL_WAVE )
@@ -5013,8 +5111,8 @@ void trigger_elemental_blast_proc( shaman_t* p )
 
 struct elemental_blast_overload_t : public elemental_overload_spell_t
 {
-  elemental_blast_overload_t( shaman_t* p )
-    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ) )
+  elemental_blast_overload_t( shaman_t* p, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ), parent_ )
   {
     affected_by_master_of_the_elements = true;
     maelstrom_gain                     = p->spell.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
@@ -5039,8 +5137,8 @@ struct elemental_blast_t : public shaman_spell_t
       affected_by_master_of_the_elements = true;
       maelstrom_gain = player->spell.maelstrom->effectN( 10 ).resource( RESOURCE_MAELSTROM );
 
-      overload = new elemental_blast_overload_t( player );
-      add_child( overload );
+      overload = new elemental_blast_overload_t( player, this );
+      //add_child( overload );
     }
   }
 
@@ -5056,7 +5154,8 @@ struct elemental_blast_t : public shaman_spell_t
 
 struct icefury_overload_t : public elemental_overload_spell_t
 {
-  icefury_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ) )
+  icefury_overload_t( shaman_t* p, shaman_spell_t* parent_ ) :
+    elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ), parent_ )
   {
     affected_by_master_of_the_elements = true;
     maelstrom_gain                     = p->spell.maelstrom->effectN( 9 ).resource( RESOURCE_MAELSTROM );
@@ -5073,8 +5172,8 @@ struct icefury_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new icefury_overload_t( player );
-      add_child( overload );
+      overload = new icefury_overload_t( player, this );
+      //add_child( overload );
     }
   }
 
