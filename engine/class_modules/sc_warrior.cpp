@@ -2294,9 +2294,6 @@ struct intercept_t : public warrior_attack_t
     movement_directionality = movement_direction_type::OMNI;
     energize_type           = action_energize::ON_CAST;
     energize_resource       = RESOURCE_RAGE;
-
-    cooldown-> charges += as<int>( p-> spec.prot_warrior -> effectN( 3 ).base_value() );
-    cooldown-> duration += timespan_t::from_millis( p -> spec.prot_warrior -> effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -2788,8 +2785,6 @@ struct heroic_throw_t : public warrior_attack_t
 
     weapon    = &( player->main_hand_weapon );
     may_dodge = may_parry = may_block = false;
-
-    cooldown -> duration *= 1.0 + p -> spec.prot_warrior -> effectN( 5 ).percent();
   }
 
   bool ready() override
@@ -3845,8 +3840,6 @@ struct ravager_tick_t : public warrior_attack_t
     aoe           = -1;
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
-    // Protection's Ravager deals less damage
-    attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -4238,8 +4231,6 @@ struct shockwave_t : public warrior_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     aoe                               = -1;
-
-    base_multiplier *= 1.0 + p -> spec.prot_warrior -> effectN( 9 ).percent();
   }
 
   void impact( action_state_t* state ) override
@@ -4378,8 +4369,6 @@ struct victory_rush_t : public warrior_attack_t
       execute_action = victory_rush_heal;
     }
     cooldown->duration = timespan_t::from_seconds( 1000.0 );
-    // Prot's victory rush deals less damage
-    base_multiplier *= 1.0 + p -> spec.prot_warrior -> effectN( 9 ).percent();
   }
 };
 
@@ -6139,6 +6128,9 @@ void warrior_t::init_base_stats()
 
   // Warriors gets +7% block from their class aura
   base.block += spell.warrior_aura -> effectN( 7 ).percent();
+
+  // Protection Warriors have a +8% block chance in their spec aura
+  base.block += spec.prot_warrior -> effectN( 10 ).percent();
 }
 
 // warrior_t::merge ==========================================================
@@ -7521,7 +7513,7 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
-  e += spec.prot_warrior->effectN( 11 ).percent();
+  e += spec.prot_warrior->effectN( 8 ).percent();
 
   return e;
 }
@@ -7590,9 +7582,6 @@ double warrior_t::composite_block() const
   // this handles base block and and all block subject to diminishing returns
   double block_subject_to_dr = cache.mastery() * mastery.critical_block->effectN( 2 ).mastery_value();
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
-
-  // Protection Warriors have a +8% block chance in their spec aura
-  b += spec.prot_warrior -> effectN( 13 ).percent();
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> up() )
@@ -7694,7 +7683,7 @@ double warrior_t::composite_crit_block() const
 double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-  c += spec.prot_warrior->effectN( 10 ).percent();
+  c += spec.prot_warrior->effectN( 7 ).percent();
   return c;
 }
 
