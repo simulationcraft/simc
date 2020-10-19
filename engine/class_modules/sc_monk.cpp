@@ -11366,10 +11366,9 @@ void monk_t::combat_begin()
     }
 
     if ( user_options.initial_chi > 0 )
-      resources.current[ RESOURCE_CHI ] = 
-        clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
-    else
-      resources.current[ RESOURCE_CHI ] = 0;
+      resources.current[ RESOURCE_CHI ] =
+          clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
+    sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
   }
 
   if ( spec.bladed_armor->ok() )
