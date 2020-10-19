@@ -968,6 +968,17 @@ struct spell_flag_expr_t : public spell_list_expr_t
         return spell.class_flag( as<unsigned>( other.result_num ) );
       } );
   }
+
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  {
+    // Numbered attributes only
+    if ( other.result_tok != expression::TOK_NUM )
+      return {};
+
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return !spell.class_flag( as<unsigned>( other.result_num ) );
+      } );
+  }
 };
 
 struct spell_attribute_expr_t : public spell_list_expr_t
