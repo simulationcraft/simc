@@ -8810,14 +8810,15 @@ void death_knight_t::default_apl_unholy()
 
   // Cooldowns
   cooldowns -> add_action( this, "Army of the Dead", "if=cooldown.unholy_blight.remains<5&talent.unholy_blight.enabled|!talent.unholy_blight.enabled", "Cooldowns" );
-  cooldowns -> add_talent( this, "Unholy Blight", "if=(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3)|cooldown.apocalypse.remains)&!raid_event.adds.exists" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=!raid_event.adds.exists&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3)|cooldown.apocalypse.remains)&!raid_event.adds.exists" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=raid_event.adds.exists&(active_enemies>=2|raid_event.adds.in>15)" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&cooldown.unholy_blight.remains&(runeforge.deadliest_coil.equipped&(!buff.dark_transformation.up&!talent.unholy_pact.enabled|talent.unholy_pact.enabled)|!runeforge.deadliest_coil.equipped)|!talent.unholy_blight.enabled&!raid_event.adds.exists" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&cooldown.unholy_blight.remains&(!runeforge.deadliest_coil.equipped|runeforge.deadliest_coil.equipped&(!buff.dark_transformation.up&!talent.unholy_pact.enabled|talent.unholy_pact.enabled))" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&!talent.unholy_blight.enabled" );
   cooldowns -> add_action( this, "Dark Transformation", "if=raid_event.adds.exists&(active_enemies>=2|raid_event.adds.in>15)" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&((!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled)|talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&dot.unholy_blight.remains)&active_enemies=1" );
-  cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&active_enemies>=2&!death_and_decay.ticking" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&((!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled)|talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&dot.unholy_blight.remains)" );
+  cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies=1&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead.enabled)" );
+  cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies=1&debuff.festering_wound.stack<2(pet.apoc_ghoul.active|conduit.convocation_of_the_dead.enabled)" );
   cooldowns -> add_talent( this, "Unholy Assault", "target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
@@ -8846,6 +8847,7 @@ void death_knight_t::default_apl_unholy()
   aoe_setup -> add_talent( this, "Defile", "if=death_knight.fwounded_targets>=5" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
+  aoe_setup -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile.enabled|cooldown.defile.remains&talent.defile.enabled)" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   
   // AoE Burst Actions
@@ -8859,12 +8861,10 @@ void death_knight_t::default_apl_unholy()
   // Generic AoE Actions
   generic_aoe -> add_action( this, "Epidemic", "if=buff.sudden_doom.react", "Generic AoE Priority" );
   generic_aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
-  generic_aoe -> add_action( this, "Scourge Strike", "target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack>=1" );
-  generic_aoe -> add_talent( this, "Clawing Shadows", "target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack>=1" );
-  generic_aoe -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1" );
-  generic_aoe -> add_action( this, "Scourge Strike", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains)" );
-  generic_aoe -> add_talent( this, "Clawing Shadows", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains)" );
+  generic_aoe -> add_action( this, "Scourge Strike", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
+  generic_aoe -> add_talent( this, "Clawing Shadows", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
   generic_aoe -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
+  generic_aoe -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1" );
 }
 
 // death_knight_t::init_action_list =========================================
