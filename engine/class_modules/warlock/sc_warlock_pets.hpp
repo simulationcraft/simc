@@ -29,6 +29,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_strength; //Talent that buffs Felguard(s)
     propagate_const<buff_t*> demonic_consumption; //Talent that buffs Demonic Tyrant
     propagate_const<buff_t*> grimoire_of_service; //Buff used by Grimoire: Felguard talent
+    propagate_const<buff_t*> grim_inquisitors_dread_calling; //Buff used by SL Legendary
   } buffs;
 
   //TODO: SL Beta - this struct and spell_t are unused

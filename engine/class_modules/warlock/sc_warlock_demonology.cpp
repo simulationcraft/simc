@@ -395,7 +395,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
 
     p()->buffs.demonic_calling->up();  // benefit tracking
     p()->buffs.demonic_calling->decrement();
@@ -404,6 +404,21 @@ struct call_dreadstalkers_t : public demonology_spell_t
     if ( p()->talents.from_the_shadows->ok() )
     {
       td( target )->debuffs_from_the_shadows->trigger();
+    }
+
+    //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
+    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    {
+      for ( auto d : dogs )
+      {
+        //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
+        if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
+        {
+          d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+        }
+      }
+
+      p()->buffs.dread_calling->expire();
     }
   }
 
