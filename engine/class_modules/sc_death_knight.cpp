@@ -8805,8 +8805,8 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "call_action_list,name=generic,if=active_enemies=1" );
   
   // Potions and Other on use
-  def -> add_action( "use_items", "Potions and other on use" );
-  def -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
+  cooldowns -> add_action( "use_items", "Potions and other on use" );
+  cooldowns -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
 
   // Cooldowns
   cooldowns -> add_action( this, "Army of the Dead", "if=cooldown.unholy_blight.remains<5&talent.unholy_blight.enabled|!talent.unholy_blight.enabled", "Cooldowns" );
@@ -8826,18 +8826,18 @@ void death_knight_t::default_apl_unholy()
 
   // General Single Target Priority
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
-  generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&!variable.pooling_for_gargoyle" );
+  generic -> add_action( this, "Death Coil", "if=runic_power.deficit<13&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)&cooldown.apocalypse.remains>5" );
   generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.stack>4" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&cooldown.unholy_blight.remains>5&!cooldown.apocalypse.ready&!raid_event.adds.exists" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)&cooldown.apocalypse.remains>5" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!cooldown.apocalypse.ready&!raid_event.adds.exists" );
   generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.stack>4" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&cooldown.unholy_blight.remains>5&!cooldown.apocalypse.ready&!raid_event.adds.exists" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!cooldown.apocalypse.ready&!raid_event.adds.exists" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
   generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<1" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&(cooldown.unholy_blight.remains<3|(cooldown.apocalypse.ready&dot.unholy_blight.remains)&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled)&!raid_event.adds.exists" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!raid_event.adds.exists&(cooldown.unholy_blight.remains<3|(cooldown.apocalypse.ready&dot.unholy_blight.remains))" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // AoE Setup Actions
@@ -8845,7 +8845,7 @@ void death_knight_t::default_apl_unholy()
   aoe_setup -> add_action( this, "Death and Decay", "if=death_knight.fwounded_targets>=5" );
   aoe_setup -> add_talent( this, "Defile", "if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11" );
   aoe_setup -> add_talent( this, "Defile", "if=death_knight.fwounded_targets>=5" );
-  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20" );
+  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile.enabled|cooldown.defile.remains&talent.defile.enabled)" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
@@ -8863,7 +8863,7 @@ void death_knight_t::default_apl_unholy()
   generic_aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   generic_aoe -> add_action( this, "Scourge Strike", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
   generic_aoe -> add_talent( this, "Clawing Shadows", "target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
-  generic_aoe -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
+  generic_aoe -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
   generic_aoe -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1" );
 }
 
