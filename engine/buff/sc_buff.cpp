@@ -2233,6 +2233,13 @@ void buff_t::expire( timespan_t delay )
     player->trigger_ready();
 }
 
+void buff_t::cancel()
+{
+  expire();
+  event_t::cancel( expiration_delay );
+  event_t::cancel( delay );
+}
+
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
