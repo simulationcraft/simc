@@ -5667,13 +5667,8 @@ void player_t::demise()
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
-  {
-    buff_t* b = buff_list[ i ];
-    b->expire();
-    // Dead actors speak no lies .. or proc aura delayed buffs
-    event_t::cancel( b->delay );
-    event_t::cancel( b->expiration_delay );
-  }
+    buff_list[ i ]->cancel();
+
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ]->cancel();
 
