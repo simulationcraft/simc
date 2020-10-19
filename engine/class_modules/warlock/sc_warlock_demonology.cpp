@@ -249,12 +249,16 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
-    impact_spell->shards_used = as<int>(cost());
+    int shards_used = as<int>( cost() );
+    impact_spell->shards_used = shards_used;
 
     demonology_spell_t::execute();
 
     if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
       p()->buffs.demonic_core->trigger();
+
+    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+      p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
   }
 
   void consume_resource() override
@@ -391,7 +395,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
 
     p()->buffs.demonic_calling->up();  // benefit tracking
     p()->buffs.demonic_calling->decrement();
@@ -400,6 +404,21 @@ struct call_dreadstalkers_t : public demonology_spell_t
     if ( p()->talents.from_the_shadows->ok() )
     {
       td( target )->debuffs_from_the_shadows->trigger();
+    }
+
+    //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
+    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    {
+      for ( auto d : dogs )
+      {
+        //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
+        if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
+        {
+          d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+        }
+      }
+
+      p()->buffs.dread_calling->expire();
     }
   }
 
@@ -1120,6 +1139,9 @@ void warlock_t::create_buffs_demonology()
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
           ->set_max_stack( 40 ); //Using the other wild imp simc max for now
+
+  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
+                            ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
