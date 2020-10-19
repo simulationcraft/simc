@@ -202,10 +202,23 @@ enum class elemental
   STORM,
 };
 
-enum class execute_type
+enum class execute_type : unsigned
 {
-  NORMAL,
+  NORMAL = 0,
   ECHOING_SHOCK
+};
+
+enum class lava_burst_type : unsigned
+{
+  NORMAL = 0,
+  ASCENDANCE,
+  PRIMORDIAL_WAVE
+};
+
+enum class lightning_bolt_type : unsigned
+{
+  NORMAL = 0,
+  PRIMORDIAL_WAVE
 };
 
 enum imbue_e
@@ -349,6 +362,9 @@ public:
     attack_t* crash_lightning_aoe;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
+    action_t* lightning_bolt_pw;
+    action_t* lava_burst_pw;
+    action_t* lava_burst_ascendance;
 
     // Azerite
     spell_t* lightning_conduit;
@@ -806,7 +822,7 @@ public:
   void trigger_ancestral_resonance( const action_state_t* state );
   void trigger_natural_harmony( const action_state_t* );
 
-  void regenerate_flame_shock_dependent_target_list( const action_t* action, bool retain_main_target ) const;
+  void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   // Legendary
   // empty - for now
@@ -4243,67 +4259,28 @@ struct lava_beam_t : public chained_base_t
 
 // Lava Burst Spell =========================================================
 
-struct lava_burst_state_t : public action_state_t
-{
-  bool primordial_wave = false;
-  execute_type exec_type = execute_type::NORMAL;
-
-  lava_burst_state_t( action_t* action_, player_t* target_ ) :
-    action_state_t( action_, target_ )
-  { }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    primordial_wave = false;
-    exec_type = execute_type::NORMAL;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    action_state_t::copy_state( s );
-
-    auto lbs = debug_cast<const lava_burst_state_t*>( s );
-    primordial_wave = lbs->primordial_wave;
-    exec_type = lbs->exec_type;
-  }
-};
-
 // As of 8.1 Lava Burst checks its state on impact. Lava Burst -> Flame Shock now forces the critical strike
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
-  stats_t* primordial_wave_stats, *normal_stats;
-  shaman_spell_t* parent;
 
-  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) ),
-      impact_flags(), primordial_wave_stats( nullptr ), normal_stats( nullptr ),
-      parent( parent_ )
+  static const char* action_name( lava_burst_type t )
+  {
+    switch ( t )
+    {
+      case lava_burst_type::NORMAL: return "lava_burst_overload";
+      case lava_burst_type::ASCENDANCE: return "lava_burst_overload_ascendance";
+      case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_overload_pw";
+    }
+  }
+
+  lava_burst_overload_t( shaman_t* player, lava_burst_type pt )
+    : elemental_overload_spell_t( player, action_name( pt ), player->find_spell( 77451 ) ),
+      impact_flags()
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
   }
-
-  static lava_burst_state_t* cast_state( action_state_t* s )
-  { return debug_cast<lava_burst_state_t*>( s ); }
-
-  static const lava_burst_state_t* cast_state( const action_state_t* s )
-  { return debug_cast<const lava_burst_state_t*>( s ); }
-
-  action_state_t* new_state() override
-  { return new lava_burst_state_t( this, target ); }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    shaman_spell_t::snapshot_internal( s, flags, rt );
-
-    cast_state( s )->primordial_wave = p()->buff.primordial_wave->check();
-    cast_state( s )->exec_type = parent->exec_type;
-  }
-
-  // Init defined below lava_burst_t to parent stats objects properly
-  void init() override;
 
   void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
@@ -4322,52 +4299,15 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     return RESULT_NONE;
   }
 
-  void execute() override
-  {
-    // Is the cast Primordial Wave empowered?
-    bool is_pw = !parent->background && cast_state( pre_execute_state )->primordial_wave;
-
-    // Setup Primordial Wave stats object so we collect damage there for reporting
-    // purposes
-    if ( is_pw )
-    {
-      stats = primordial_wave_stats;
-    }
-
-    elemental_overload_spell_t::execute();
-
-    if ( is_pw )
-    {
-      stats = normal_stats;
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
-    // Is the cast Primordial Wave empowered?
-    bool is_pw = !parent->background && cast_state( s )->primordial_wave;
-
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
 
     s->result        = elemental_overload_spell_t::calculate_result( s );
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
-    // Setup Primordial Wave stats object so we collect damage there for reporting
-    // purposes
-    if ( is_pw )
-    {
-      stats = primordial_wave_stats;
-    }
-
     elemental_overload_spell_t::impact( s );
-
-    // Setup Primordial Wave stats object so we collect damage there for reporting
-    // purposes
-    if ( is_pw )
-    {
-      stats = normal_stats;
-    }
   }
 
   double action_multiplier() const override
@@ -4553,7 +4493,7 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_spell_t::available_targets( tl );
 
-    p()->regenerate_flame_shock_dependent_target_list( this, false );
+    p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
   }
@@ -4564,12 +4504,23 @@ struct fire_nova_t : public shaman_spell_t
  */
 struct lava_burst_t : public shaman_spell_t
 {
+  lava_burst_type type;
   unsigned impact_flags;
-  stats_t* primordial_wave_stats, *normal_stats;
 
-  lava_burst_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str ),
-      impact_flags(), primordial_wave_stats( nullptr ), normal_stats( nullptr )
+  static util::string_view action_name( lava_burst_type t )
+  {
+    switch ( t )
+    {
+      case lava_burst_type::NORMAL: return "lava_burst";
+      case lava_burst_type::ASCENDANCE: return "lava_burst_ascendance";
+      case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_pw";
+    }
+  }
+
+  lava_burst_t( shaman_t* player, lava_burst_type type_, const std::string& options_str = std::string() )
+    : shaman_spell_t( action_name( type_ ), player,
+                      player->find_specialization_spell( "Lava Burst" ), options_str ),
+      type( type_ ), impact_flags()
   {
     // Manacost is only for resto
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
@@ -4580,31 +4531,38 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_burst_overload_t( player, this );
-      //add_child( overload );
+      overload = new lava_burst_overload_t( player, type );
+      add_child( overload );
     }
 
     if ( p()->specialization() == SHAMAN_RESTORATION )
       resource_current = RESOURCE_MANA;
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
-  }
 
-  static lava_burst_state_t* cast_state( action_state_t* s )
-  { return debug_cast<lava_burst_state_t*>( s ); }
-
-  static const lava_burst_state_t* cast_state( const action_state_t* s )
-  { return debug_cast<const lava_burst_state_t*>( s ); }
-
-  action_state_t* new_state() override
-  { return new lava_burst_state_t( this, target ); }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    shaman_spell_t::snapshot_internal( s, flags, rt );
-
-    cast_state( s )->primordial_wave = p()->buff.primordial_wave->check();
-    cast_state( s )->exec_type = exec_type;
+    if ( type != lava_burst_type::NORMAL )
+    {
+      aoe = -1;
+      background = true;
+      base_execute_time = 0_s;
+      switch ( type )
+      {
+        case lava_burst_type::PRIMORDIAL_WAVE:
+          if ( auto pw_action = p()->find_action( "primordial_wave" ) )
+          {
+            pw_action->add_child( this );
+          }
+          break;
+        case lava_burst_type::ASCENDANCE:
+          if ( auto asc_action = p()->find_action( "ascendance" ) )
+          {
+            asc_action->add_child( this );
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   void init() override
@@ -4613,29 +4571,11 @@ struct lava_burst_t : public shaman_spell_t
 
     std::swap( snapshot_flags, impact_flags );
 
-    // Cache normal Lava Burst stats into a pointer so we can restore behavior when
-    // Primordial Wave Lava Burst has finished impacting
-    normal_stats = stats;
-
     // Elemental and Restoration gain a second Lava Burst charge via Echo of the Elements
     if ( p()->talent.echo_of_the_elements->ok() )
     {
       cooldown->charges = as<int>( data().charges() ) +
         as<int>( p()->talent.echo_of_the_elements->effectN( 1 ).base_value() );
-    }
-
-    // Collect Primordial Wave Lava burst stats separately
-    if ( p()->covenant.necrolord->ok() )
-    {
-      auto pw = p()->find_action( "primordial_wave" );
-      if ( pw )
-      {
-        primordial_wave_stats = p()->get_stats( "lava_burst_pw", this );
-        primordial_wave_stats->school = get_school();
-        pw->stats->add_child( primordial_wave_stats );
-
-        p()->flame_shock_dependants.push_back( this );
-      }
     }
   }
 
@@ -4644,7 +4584,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::available_targets( tl );
 
     // Foreground Lava Bursts will retain the primary target even if it has no Lava Burst
-    p()->regenerate_flame_shock_dependent_target_list( this, !background );
+    p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
   }
@@ -4668,28 +4608,11 @@ struct lava_burst_t : public shaman_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // Is the cast Primordial Wave empowered? Note that Lava Burst from Ascendance has
-    // background set to true, and is intended to not consume PW buff (nor track stats to
-    // PW-Lava Burst)
-    bool is_pw = !background && cast_state( s )->primordial_wave;
-    bool is_es = cast_state( s )->exec_type == execute_type::ECHOING_SHOCK;
-
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_impact_state( s, amount_type( s ) );
 
     s->result        = shaman_spell_t::calculate_result( s );
     s->result_amount = shaman_spell_t::calculate_direct_amount( s );
-
-    // Setup Primordial Wave stats object so we collect damage there for reporting
-    // purposes
-    if ( is_pw )
-    {
-      stats = primordial_wave_stats;
-    }
-    else if ( is_es )
-    {
-      stats = echoing_shock_stats;
-    }
 
     shaman_spell_t::impact( s );
 
@@ -4698,11 +4621,6 @@ struct lava_burst_t : public shaman_spell_t
       p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
       p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
       p()->buff.surge_of_power->decrement();
-    }
-
-    if ( is_pw || is_es )
-    {
-      stats = normal_stats;
     }
   }
 
@@ -4724,7 +4642,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Note, only Elemental Shaman gets the primordial_wave state set, so don't need
     // separate specialization checks here
-    if ( !p()->bugs && cast_state( state )->primordial_wave )
+    if ( !p()->bugs && type == lava_burst_type::PRIMORDIAL_WAVE )
     {
       m *= p()->covenant.necrolord->effectN( 3 ).percent();
     }
@@ -4743,16 +4661,6 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.primordial_wave->check() )
-    {
-      return -1;
-    }
-
-    return shaman_spell_t::n_targets();
   }
 
   void update_ready( timespan_t /* cd_duration */ ) override
@@ -4777,17 +4685,6 @@ struct lava_burst_t : public shaman_spell_t
 
   void execute() override
   {
-    bool is_pw = !background &&
-      p()->specialization() == SHAMAN_ELEMENTAL &&
-      p()->buff.primordial_wave->check();
-
-    // Setup action state for Primordial Wave-powered Lava Burst before executing the
-    // action
-    if ( is_pw )
-    {
-      stats = primordial_wave_stats;
-    }
-
     shaman_spell_t::execute();
 
     // Echoed Lava Burst does not generate Master of the Elements
@@ -4805,12 +4702,14 @@ struct lava_burst_t : public shaman_spell_t
 
     p()->lava_surge_during_lvb = false;
 
-    // Expire Primordial Wave and restore stats. The "Primordial Wave" state will be
-    // carried in the state objects to the impact method.
-    if ( is_pw )
+    // Trigger primordial wave if there's targets to trigger it on
+    if ( p()->specialization() == SHAMAN_ELEMENTAL && type == lava_burst_type::NORMAL &&
+         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw &&
+         p()->action.lava_burst_pw->target_list().size() )
     {
-      stats = normal_stats;
       p()->buff.primordial_wave->expire();
+      p()->action.lava_burst_pw->set_target( execute_state->target );
+      p()->action.lava_burst_pw->schedule_execute();
     }
   }
 
@@ -4824,31 +4723,6 @@ struct lava_burst_t : public shaman_spell_t
     return shaman_spell_t::execute_time();
   }
 };
-
-inline void lava_burst_overload_t::init()
-{
-  elemental_overload_spell_t::init();
-
-  std::swap( snapshot_flags, impact_flags );
-
-  // Cache normal Lava Burst Overload stats into a pointer so we can restore behavior
-  // when Primordial Wave Lava Burst Overload has finished impacting
-  normal_stats = stats;
-  parent->stats->add_child( normal_stats );
-
-  // Collect Primordial Wave Lava Burst Overload stats separately
-  if ( p()->covenant.necrolord->ok() )
-  {
-    auto pw = p()->find_action( "primordial_wave" );
-    if ( pw )
-    {
-      auto parent_ = debug_cast<lava_burst_t*>( parent );
-      primordial_wave_stats = p()->get_stats( "lava_burst_overload_pw", this );
-      primordial_wave_stats->school = get_school();
-      parent_->primordial_wave_stats->add_child( primordial_wave_stats );
-    }
-  }
-}
 
 // Lightning Bolt Spell =====================================================
 
@@ -4887,16 +4761,21 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  stats_t* primordial_wave_stats, *normal_stats;
-  // Action-specific switch for Primordial Wave; Lightning Bolt can use a simpler method
-  // than Lava Burst for "Primordial Wave state", since it has no travel time (impacts
-  // instantly).
-  bool pw_cast;
+  lightning_bolt_type type;
 
-  lightning_bolt_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lightning_bolt", player, player->find_class_spell( "Lightning Bolt" ), options_str ),
-      primordial_wave_stats( nullptr ), normal_stats( nullptr ),
-      pw_cast( false )
+  static const char* action_name( lightning_bolt_type t )
+  {
+    switch ( t )
+    {
+      case lightning_bolt_type::NORMAL: return "lightning_bolt";
+      case lightning_bolt_type::PRIMORDIAL_WAVE: return "lightning_bolt_pw";
+    }
+  }
+
+  lightning_bolt_t( shaman_t* player, lightning_bolt_type type_, const std::string& options_str = std::string() )
+    : shaman_spell_t( action_name( type_ ), player,
+                      player->find_class_spell( "Lightning Bolt" ), options_str ),
+      type( type_ )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -4909,37 +4788,17 @@ struct lightning_bolt_t : public shaman_spell_t
       overload = new lightning_bolt_overload_t( player );
       add_child( overload );
     }
-  }
 
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    if ( type == lightning_bolt_type::PRIMORDIAL_WAVE )
     {
-      // Cache normal Lava Burst stats into a pointer so we can restore behavior when
-      // Primordial Wave Lava Burst has finished impacting
-      normal_stats = stats;
-
-      // Collect Primordial Wave Lava burst stats separately
-      if ( p()->covenant.necrolord->ok() )
+      aoe = -1;
+      background = true;
+      base_execute_time = 0_s;
+      if ( auto pw_action = p()->find_action( "primordial_wave" ) )
       {
-        auto pw = p()->find_action( "primordial_wave" );
-        if ( pw )
-        {
-          primordial_wave_stats = p()->get_stats( "lightning_bolt_pw", this );
-          primordial_wave_stats->school = get_school();
-          pw->stats->add_child( primordial_wave_stats );
-        }
+        pw_action->add_child( this );
       }
     }
-  }
-
-  void reset() override
-  {
-    shaman_spell_t::reset();
-
-    pw_cast = false;
   }
 
   // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
@@ -5011,10 +4870,13 @@ struct lightning_bolt_t : public shaman_spell_t
     return shaman_spell_t::n_overload_chances( t );
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    auto m = shaman_spell_t::composite_target_multiplier( target );
-    return m;
+    shaman_spell_t::available_targets( tl );
+
+    p()->regenerate_flame_shock_dependent_target_list( this );
+
+    return tl.size();
   }
 
   double action_multiplier() const override
@@ -5051,27 +4913,8 @@ struct lightning_bolt_t : public shaman_spell_t
     return t;
   }
 
-  int n_targets() const override
-  {
-    if ( !background && p()->specialization() == SHAMAN_ENHANCEMENT &&
-          p()->buff.primordial_wave->check() )
-    {
-      return -1;
-    }
-
-    return shaman_spell_t::n_targets();
-  }
-
   void execute() override
   {
-    pw_cast = !background &&
-      p()->specialization() == SHAMAN_ENHANCEMENT && p()->buff.primordial_wave->up();
-
-    if ( pw_cast )
-    {
-      stats = primordial_wave_stats;
-    }
-
     shaman_spell_t::execute();
 
     // TODO: remove this when the high voltage bug is fixed and it properly generates double instead of 5
@@ -5079,8 +4922,6 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
     }
-
-    p()->buff.stormkeeper->decrement();
 
     p()->buff.surge_of_power->decrement();
 
@@ -5099,10 +4940,17 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( pw_cast )
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
+         type == lightning_bolt_type::NORMAL && p()->buff.primordial_wave->up() )
     {
       p()->buff.primordial_wave->expire();
-      stats = normal_stats;
+      p()->action.lightning_bolt_pw->set_target( execute_state->target );
+      p()->action.lightning_bolt_pw->schedule_execute();
+    }
+
+    if ( type == lightning_bolt_type::NORMAL )
+    {
+      p()->buff.stormkeeper->decrement();
     }
   }
 
@@ -5712,13 +5560,11 @@ struct ascendance_damage_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
-  lava_burst_t* lvb;
   flame_shock_t* fs;
   ascendance_damage_t* ascendance_damage;
 
   ascendance_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str ),
-      lvb( player->specialization() == SHAMAN_ELEMENTAL ? new lava_burst_t( player, "" ) : nullptr ),
       fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
       ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player )
                                                                         : nullptr )
@@ -5737,17 +5583,18 @@ struct ascendance_t : public shaman_spell_t
     shaman_spell_t::execute();
     if ( ascendance_damage )
     {
-      ascendance_damage->set_target( target ); 
+      ascendance_damage->set_target( target );
       ascendance_damage->execute();
     }
 
     p()->cooldown.strike->reset( false );
     p()->buff.ascendance->trigger();
 
-    if ( lvb && lvb->target_list().size() > 0 )
+    if ( p()->action.lava_burst_ascendance &&
+         p()->action.lava_burst_ascendance->target_list().size() > 0 )
     {
-      lvb->set_target( player->target );
-      lvb->execute();
+      p()->action.lava_burst_ascendance->set_target( player->target );
+      p()->action.lava_burst_ascendance->execute();
     }
 
     // Refresh Flame Shock to max duration
@@ -5821,7 +5668,7 @@ struct static_discharge_tick_t : public shaman_spell_t
   {
     shaman_spell_t::available_targets( tl );
 
-    p()->regenerate_flame_shock_dependent_target_list( this, false );
+    p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
   }
@@ -6820,7 +6667,7 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
   if ( name == "ghost_wolf" )
     return new ghost_wolf_t( this, options_str );
   if ( name == "lightning_bolt" )
-    return new lightning_bolt_t( this, options_str );
+    return new lightning_bolt_t( this, lightning_bolt_type::NORMAL, options_str );
   if ( name == "chain_lightning" )
     return new chain_lightning_t( this, options_str );
   if ( name == "stormkeeper" )
@@ -6859,7 +6706,7 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
   if ( name == "lava_beam" )
     return new lava_beam_t( this, options_str );
   if ( name == "lava_burst" )
-    return new lava_burst_t( this, options_str );
+    return new lava_burst_t( this, lava_burst_type::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
@@ -7184,6 +7031,25 @@ void shaman_t::create_actions()
   if ( azerite.strength_of_earth.ok() )
   {
     action.strength_of_earth = new strength_of_earth_t( this );
+  }
+
+  // Collect Primordial Wave Lava burst stats separately
+  if ( specialization() == SHAMAN_ENHANCEMENT && covenant.necrolord->ok() )
+  {
+    action.lightning_bolt_pw = new lightning_bolt_t( this, lightning_bolt_type::PRIMORDIAL_WAVE );
+  }
+
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    if ( covenant.necrolord->ok() )
+    {
+      action.lava_burst_pw = new lava_burst_t( this, lava_burst_type::PRIMORDIAL_WAVE );
+    }
+
+    if ( talent.ascendance->ok() )
+    {
+      action.lava_burst_ascendance = new lava_burst_t( this, lava_burst_type::ASCENDANCE );
+    }
   }
 }
 
@@ -7869,21 +7735,13 @@ void shaman_t::trigger_natural_harmony( const action_state_t* state )
   }
 }
 
-void shaman_t::regenerate_flame_shock_dependent_target_list(
-    const action_t* action, bool retain_main_target ) const
+void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
 {
   auto& tl = action->target_cache.list;
 
   auto it = std::remove_if( tl.begin(), tl.end(),
-    [ this, action, retain_main_target ]( player_t* target ) {
-      if ( retain_main_target )
-      {
-        return action->target != target && !get_target_data( target )->dot.flame_shock->is_ticking();
-      }
-      else
-      {
-        return !get_target_data( target )->dot.flame_shock->is_ticking();
-      }
+    [ this ]( player_t* target ) {
+      return !get_target_data( target )->dot.flame_shock->is_ticking();
     }
   );
 
@@ -8082,7 +7940,8 @@ void shaman_t::create_buffs()
   }
 
   // Covenants
-  buff.primordial_wave = make_buff( this, "primordial_wave", covenant.necrolord );
+  buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
+    ->set_trigger_spell( covenant.necrolord );
   buff.vesper_totem = make_buff( this, "vesper_totem", covenant.kyrian )
                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                             if ( new_ == 0 )
