@@ -1261,6 +1261,7 @@ struct rune_of_power_t : public buff_t
   {
     set_default_value_from_effect( 1 );
     set_chance( p->talents.rune_of_power->ok() );
+    set_activated( false );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -5781,6 +5782,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
+                                          ->set_activated( false )
                                           ->set_default_value_from_effect( 1 )
                                           ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -6415,6 +6417,7 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion        = make_buff<buffs::combustion_t>( this );
   buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
+                              ->set_activated( false )
                               ->set_chance( spec.fireball_2->ok() )
                               ->set_default_value_from_effect( 1 )
                               ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
@@ -7309,9 +7312,10 @@ void mage_t::update_rune_distance( double distance )
 {
   distance_from_rune += distance;
 
-  if ( buffs.rune_of_power->check() && distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
+  if ( buffs.rune_of_power->total_stack() && distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
   {
-    buffs.rune_of_power->expire();
+    // Rune of Power is not applied if the player moves out during the buff application delay.
+    buffs.rune_of_power->cancel();
     sim->print_debug( "{} moved out of Rune of Power.", name() );
   }
 }
