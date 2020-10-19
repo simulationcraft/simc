@@ -478,6 +478,7 @@ public:
     // SL
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
+    propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
@@ -786,6 +787,8 @@ public:
   gain_t* gain;
   bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
   bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
+  bool affected_by_soul_tithe; // SL - Covenant (Kyrian) checker
+  //TODO: SL Beta - Refactor affected_by stuff to be more streamlined
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -807,6 +810,8 @@ public:
 
     //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
     affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
+
+    affected_by_soul_tithe = data().affected_by( p->find_spell( 340238 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -869,6 +874,9 @@ public:
   double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
+
+    if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
+      pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
 
     return pm;
   }
