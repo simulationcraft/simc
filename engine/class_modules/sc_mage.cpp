@@ -3554,15 +3554,24 @@ struct fireball_t : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
+    // Flame Accretion conduit (which is tied to the Fireball buff), has some weird
+    // interactions with Ignite from Fireball. When Fireball hits, Ignite is triggered
+    // with the current mastery value and then the buff is incremented. However,
+    // when Fireball crits, the buff expires first and Ignite is triggered with the
+    // new mastery value.
+    //
+    // Here we model that by triggering the buff after impact, but expiring it before
+    // impact (the crit bonus was already factored in during execute).
+    if ( s->result == RESULT_CRIT )
+      p()->buffs.fireball->expire();
+
     fire_mage_spell_t::impact( s );
+
+    if ( s->result == RESULT_HIT )
+      p()->buffs.fireball->trigger();
 
     if ( result_is_hit( s->result ) )
     {
-      if ( s->result == RESULT_CRIT )
-        p()->buffs.fireball->expire();
-      else
-        p()->buffs.fireball->trigger();
-
       consume_molten_skyfall( s->target );
       trigger_molten_skyfall();
     }
@@ -6417,7 +6426,6 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion        = make_buff<buffs::combustion_t>( this );
   buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
-                              ->set_activated( false )
                               ->set_chance( spec.fireball_2->ok() )
                               ->set_default_value_from_effect( 1 )
                               ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
