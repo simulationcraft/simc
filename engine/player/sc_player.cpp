@@ -1562,7 +1562,7 @@ void player_t::init_base_stats()
     base.dodge_per_agility =
         dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
-  // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
+  // only certain classes get Str->Parry conversions, parry_per_strength defaults to 0.00
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
     base.parry_per_strength =
         dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
@@ -1581,18 +1581,18 @@ void player_t::init_base_stats()
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
   {
-    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
-    base.block_reduction = 0;
+    // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
+    // Further increased by mastery for both Protection specs
+    base.block = 0.03;
 
-    // Base block chance is 10% for players, warriors have a bonus 8% in their spec aura
+    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     switch ( type )
     {
     case WARRIOR:
     case PALADIN:
-      base.block = 0.10;
+      base.block_reduction = 0;
       break;
     default:
-      base.block = 0.03;
       base.block_reduction = 0.30;
       break;
     }

@@ -1430,6 +1430,9 @@ void paladin_t::init_base_stats()
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
+
+  // Paladins gets +7% block from their class aura
+  base.block += passives.paladin -> effectN( 7 ).percent();
 }
 
 // paladin_t::reset =========================================================

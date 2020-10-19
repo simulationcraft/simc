@@ -250,7 +250,7 @@ public:
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* deep_wounds_debuff;
     const spell_data_t* hamstring;
-    const spell_data_t* headlong_rush;
+    const spell_data_t* warrior_aura;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
     const spell_data_t* shattering_throw;
@@ -805,9 +805,9 @@ public:
     //if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 2 ) ) )
       //ab::base_td_multiplier *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
 
-    if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) ) )
+    if ( ab::data().affected_by( p()->spell.warrior_aura->effectN( 1 ) ) )
       ab::cooldown->hasted = true;
-    if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
+    if ( ab::data().affected_by( p()->spell.warrior_aura->effectN( 2 ) ) )
       ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
 
 
@@ -1767,7 +1767,7 @@ struct bladestorm_t : public warrior_attack_t
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
     travel_speed                      = 0;
-    
+
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
     add_child( bladestorm_mh );
     if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
@@ -1776,20 +1776,20 @@ struct bladestorm_t : public warrior_attack_t
       bladestorm_oh->weapon = &( player->off_hand_weapon );
       add_child( bladestorm_oh );
     }
-    
+
     if ( p->specialization() == WARRIOR_FURY )
     {
       energize_type     = action_energize::PER_TICK;
       energize_resource = RESOURCE_RAGE;
       energize_amount   = data().effectN( 4 ).resource( energize_resource );
     }
-    
+
     if ( p->legendary.unhinged->ok() )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
       add_child( mortal_strike );
     }
-    
+
     // Vision of Perfection only reduces the cooldown for Arms
     if ( p->azerite.vision_of_perfection.enabled() && p->specialization() == WARRIOR_ARMS )
     {
@@ -1984,12 +1984,12 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     if ( p()->talents.seethe->ok() && target == s->target && execute_state->result == RESULT_HIT )
-    { 
+    {
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_hit, p()->gain.seethe_hit );
     }
 
     if ( p()->talents.seethe->ok() && target == s->target && execute_state->result == RESULT_CRIT )
-    { 
+    {
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_crit, p()->gain.seethe_crit );
     }
 
@@ -2112,12 +2112,12 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     if ( p()->talents.seethe->ok() && execute_state->result == RESULT_HIT )
-    { 
+    {
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_hit, p()->gain.seethe_hit );
     }
 
     if ( p()->talents.seethe->ok() && execute_state->result == RESULT_CRIT )
-    { 
+    {
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_crit, p()->gain.seethe_crit );
     }
 
@@ -2480,7 +2480,7 @@ struct dragon_roar_t : public warrior_attack_t
   dragon_roar_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "dragon_roar", p, p->talents.dragon_roar )
   {
-    crit_bonus_multiplier *= 1.0 + p->spell.headlong_rush->effectN( 6 ).percent();
+    crit_bonus_multiplier *= 1.0 + p->spell.warrior_aura->effectN( 6 ).percent();
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
@@ -2675,7 +2675,7 @@ struct fury_execute_parent_t : public warrior_attack_t
   double max_rage;
   double rage_from_execute_rank_3;
   fury_execute_parent_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "execute", p, p->spec.execute ), 
+    : warrior_attack_t( "execute", p, p->spec.execute ),
       execute_rank_3( false ),
       execute_pct( 20 ),
       rage_from_execute_rank_3(
@@ -2726,7 +2726,7 @@ struct fury_execute_parent_t : public warrior_attack_t
     }
 
     if ( p()->talents.massacre->ok() )
-     { 
+     {
        p()->cooldown.execute->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
      }
   }
@@ -3239,8 +3239,8 @@ struct raging_blow_t : public warrior_attack_t
     }
     if ( p()->buff.will_of_the_berserker->check() )
     {
-      ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger 
-    } 
+      ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
+    }
   }
 
   bool ready() override
@@ -3353,8 +3353,8 @@ struct crushing_blow_t : public warrior_attack_t
     }
     if ( p()->buff.will_of_the_berserker->check() )
     {
-      ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger 
-    } 
+      ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
+    }
   }
 
   bool ready() override
@@ -4940,7 +4940,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     }
 
     if ( p()->talents.massacre->ok() )
-     { 
+     {
        p()->cooldown.condemn->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
      }
   }
@@ -5083,7 +5083,7 @@ struct avatar_t : public warrior_spell_t
     // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection) does not fail.
     if ( p()->talents.avatar->ok() && p()->specialization() == WARRIOR_ARMS )
       return true;
-    
+
     return warrior_spell_t::verify_actor_spec();
   }
 };
@@ -5976,7 +5976,7 @@ void warrior_t::init_spells()
   spell.deep_wounds_debuff    = find_spell( 262115 );
   spell.intervene             = find_spell( 147833 );
   spell.hamstring             = find_class_spell( "Hamstring" );
-  spell.headlong_rush         = find_spell( 137047 );  // Also may be used for other crap in the future.
+  spell.warrior_aura          = find_spell( 137047 );  // Warrior class aura
   spell.heroic_leap           = find_class_spell( "Heroic Leap" );
   spell.shattering_throw      = find_class_spell( "Shattering Throw" );
   spell.shield_block          = find_class_spell( "Shield Block" );
@@ -6136,6 +6136,9 @@ void warrior_t::init_base_stats()
   base_gcd = timespan_t::from_seconds( 1.5 );
 
   resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.indomitable -> effectN( 1 ).percent();
+
+  // Warriors gets +7% block from their class aura
+  base.block += spell.warrior_aura -> effectN( 7 ).percent();
 }
 
 // warrior_t::merge ==========================================================
@@ -6591,7 +6594,7 @@ struct deadly_calm_t : public warrior_buff_t<buff_t>
 {
   deadly_calm_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
     base_t( p, n, s )
-  { 
+  {
    //set_initial_stacks( 4 ); trigger initial stacks in spell execution
    set_max_stack( 4 );
    set_cooldown( timespan_t::zero() );
@@ -7051,7 +7054,7 @@ void warrior_t::create_buffs()
 
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
-                               ->add_invalidate( CACHE_CRIT_CHANCE );   
+                               ->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Covenant Abilities====================================================================================================
 
@@ -7062,7 +7065,7 @@ void warrior_t::create_buffs()
   buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", find_spell( 335597 ) )
                                ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
-                                  
+
 }
 
 // warrior_t::init_scaling ==================================================
