@@ -780,16 +780,17 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
     sim->error( "{} initialized with initial_stack < 1 ({}). Setting initial_stack to 1.\n", *this, _initial_stack );
     _initial_stack = 1;
   }
-  else if ( _initial_stack > _max_stack )
-  {
-    sim->error( "{} initalized with initial_stack ({}) > max_stack ({}). Setting initial_stack to {}.\n", *this,
-                _initial_stack, _max_stack, _max_stack );
-    _initial_stack = _max_stack;
-  }
   else if ( _initial_stack > 999 )
   {
     _initial_stack = 999;
     sim->error( "{} initialized with initial_stack > 999. Setting initial_stack to 999.\n", *this );
+  }
+
+  if ( _initial_stack > _max_stack )
+  {
+    sim->print_debug( "{} initalized with initial_stack ({}) > max_stack ({}). Setting max_stack to {}.\n", *this,
+                      _initial_stack, _max_stack, _initial_stack );
+    _max_stack = _initial_stack;
   }
 
   return this;
@@ -798,6 +799,14 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
 buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
   set_initial_stack( _initial_stack + initial_stack );
+
+  if ( _initial_stack > _max_stack )
+  {
+    sim->print_debug( "{} modified to initial_stack ({}) > max_stack ({}). Setting max_stack to {}.\n", *this,
+                      _initial_stack, _max_stack, _initial_stack );
+    _max_stack = _initial_stack;
+  }
+
   return this;
 }
 
