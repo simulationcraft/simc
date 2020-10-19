@@ -143,9 +143,9 @@ public:
 
   virtual ~buff_t() {}
 
-  buff_t(actor_pair_t q, util::string_view name);
+  buff_t( actor_pair_t q, util::string_view name );
   buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
-  buff_t(sim_t* sim, util::string_view name);
+  buff_t( sim_t* sim, util::string_view name );
   buff_t( sim_t* sim, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 protected:
   buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t*, const item_t* item );
@@ -287,7 +287,7 @@ public:
 
   static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
   static buff_t* find( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
-  static buff_t* find(    sim_t*, util::string_view name );
+  static buff_t* find( sim_t*, util::string_view name );
   static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
 
@@ -295,8 +295,7 @@ public:
   util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
   int initial_stack() const { return _initial_stack; }
-  const spell_data_t* get_trigger_data() const
-  { return trigger_data; }
+  const spell_data_t* get_trigger_data() const { return trigger_data; }
 
   rng::rng_t& rng();
 
@@ -335,14 +334,10 @@ public:
   buff_t* set_affects_regen( bool state );
   buff_t* set_refresh_behavior( buff_refresh_behavior );
   buff_t* set_refresh_duration_callback( buff_refresh_duration_callback_t );
-  buff_t* set_tick_zero( bool v )
-  { tick_zero = v; return this; }
-  buff_t* set_tick_on_application( bool v )
-  { tick_on_application = v; return this; }
-  buff_t* set_partial_tick( bool v )
-  { partial_tick = v; return this; }
-  buff_t* set_tick_time_behavior( buff_tick_time_behavior b )
-  { tick_time_behavior = b; return this; }
+  buff_t* set_tick_zero( bool v ) { tick_zero = v; return this; }
+  buff_t* set_tick_on_application( bool v ) { tick_on_application = v; return this; }
+  buff_t* set_partial_tick( bool v ) { partial_tick = v; return this; }
+  buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );

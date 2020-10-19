@@ -763,7 +763,7 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
   {
     if ( data().ok() && data().initial_stacks() )
     {
-      _initial_stack = data().initial_stacks();
+      _initial_stack = std::abs( data().initial_stacks() );
     }
     else
     {
@@ -1694,13 +1694,13 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   // ticking buffs, we treat executes as another "normal trigger", which
   // refreshes the buff
   if ( tick_event )
-    increment( stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks, value, duration );
+    increment( stacks < 0 ? ( reverse ? _max_stack : _initial_stack * std::abs( stacks ) ) : stacks, value, duration );
   else
   {
     if ( reverse && current_stack > 0 )
-      decrement( stacks == -1 ? 1 : stacks, value );
+      decrement( std::abs( stacks ), value );
     else
-      increment( stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks, value, duration );
+      increment( stacks < 0 ? ( reverse ? _max_stack : _initial_stack * std::abs( stacks ) ) : stacks, value, duration );
   }
 
   // new buff cooldown impl
