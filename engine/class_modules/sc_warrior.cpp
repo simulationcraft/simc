@@ -4054,6 +4054,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
+    rage_gain += p->talents.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
   double action_multiplier() const override
