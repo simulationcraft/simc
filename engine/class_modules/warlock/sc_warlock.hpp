@@ -811,7 +811,7 @@ public:
     //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
     affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
 
-    affected_by_soul_tithe = data().affected_by( p->buffs.soul_tithe->data().effectN( 1 ) );
+    affected_by_soul_tithe = data().affected_by( p->find_spell( 340238 )->effectN( 1 ) );
   }
 
   warlock_t* p()
