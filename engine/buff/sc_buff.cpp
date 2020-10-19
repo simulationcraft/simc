@@ -493,6 +493,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     rppm( nullptr ),
     _max_stack( -1 ),
     trigger_data( s_data ),
+    _initial_stack( -1 ),
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
@@ -595,6 +596,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     requires_invalidation = false;
 
   set_max_stack( _max_stack );
+  set_initial_stack( _initial_stack );
 
   update_trigger_calculations();
 }
@@ -752,6 +754,50 @@ buff_t* buff_t::set_max_stack( int max_stack )
 buff_t* buff_t::modify_max_stack( int max_stack )
 {
   set_max_stack( _max_stack + max_stack );
+  return this;
+}
+
+buff_t* buff_t::set_initial_stack( int initial_stack )
+{
+  if ( initial_stack == -1 )
+  {
+    if ( data().ok() && data().initial_stacks() )
+    {
+      _initial_stack = data().initial_stacks();
+    }
+    else
+    {
+        _initial_stack = 1;
+    }
+  }
+  else
+  {
+    _initial_stack = initial_stack;
+  }
+
+  if ( _initial_stack < 1 )
+  {
+    sim->error( "{} initialized with initial_stack < 1 ({}). Setting initial_stack to 1.\n", *this, _initial_stack );
+    _initial_stack = 1;
+  }
+  else if ( _initial_stack > _max_stack )
+  {
+    sim->error( "{} initalized with initial_stack ({}) > max_stack ({}). Setting initial_stack to {}.\n", *this,
+                _initial_stack, _max_stack, _max_stack );
+    _initial_stack = _max_stack;
+  }
+  else if ( _initial_stack > 999 )
+  {
+    _initial_stack = 999;
+    sim->error( "{} initialized with initial_stack > 999. Setting initial_stack to 999.\n", *this );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::modify_initial_stack( int initial_stack )
+{
+  set_initial_stack( _initial_stack + initial_stack );
   return this;
 }
 
@@ -1546,7 +1592,7 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
 
 bool buff_t::trigger( timespan_t duration )
 {
-  return trigger( 1, duration );
+  return trigger( -1, duration );
 }
 
 bool buff_t::trigger( int stacks, timespan_t duration )
@@ -1639,13 +1685,13 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   // ticking buffs, we treat executes as another "normal trigger", which
   // refreshes the buff
   if ( tick_event )
-    increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
+    increment( stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks, value, duration );
   else
   {
     if ( reverse && current_stack > 0 )
-      decrement( stacks, value );
+      decrement( stacks == -1 ? 1 : stacks, value );
     else
-      increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
+      increment( stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks, value, duration );
   }
 
   // new buff cooldown impl

@@ -74,6 +74,7 @@ private: // private because changing max_stacks requires resizing some stack-dep
   const spell_data_t* trigger_data;
 
 public:
+  int _initial_stack;
   double default_value;
   size_t default_value_effect_idx;
   double default_value_effect_multiplier;
@@ -231,22 +232,22 @@ public:
   timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
   timespan_t last_expire_time() const { return last_expire; }
-  bool   remains_gt( timespan_t time ) const;
-  bool   remains_lt( timespan_t time ) const;
-  bool   at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
-  bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  bool   trigger  ( timespan_t duration );
-  bool   trigger  ( int stacks, timespan_t duration );
-  virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void   increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void   decrement( int stacks = 1, double value = DEFAULT_VALUE() );
-  virtual void   extend_duration( player_t* p, timespan_t seconds );
-  virtual void   extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
+  bool remains_gt( timespan_t time ) const;
+  bool remains_lt( timespan_t time ) const;
+  bool at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
+  bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  bool trigger( timespan_t duration );
+  bool trigger( int stacks, timespan_t duration );
+  virtual bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
+  virtual void execute( int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void extend_duration( player_t* p, timespan_t seconds );
+  virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
 
-  virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void refresh  ( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void bump     ( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void bump( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void override_buff ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks = 1 );
   virtual int stack_react();
@@ -293,6 +294,7 @@ public:
   const char* name() const { return name_str.c_str(); }
   util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
+  int initial_stack() const { return _initial_stack; }
   const spell_data_t* get_trigger_data() const
   { return trigger_data; }
 
@@ -306,6 +308,8 @@ public:
   buff_t* set_duration_multiplier( double );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
+  buff_t* set_initial_stack( int initial_stack );
+  buff_t* modify_initial_stack( int initial_stack );
   buff_t* set_cooldown( timespan_t duration );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
