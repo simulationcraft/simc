@@ -85,13 +85,16 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       td( s -> target ) -> debuff.vengeful_shock -> trigger();
     }
+
+    if ( p() -> legendary.bulwark_of_righteous_fury -> ok() )
+      p() -> buffs.bulwark_of_righteous_fury -> trigger();
   }
 };
 
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
   avengers_shield_dt_t( paladin_t* p ) :
-    avengers_shield_base_t( "avengers_shield_dt", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
+    avengers_shield_base_t( "avengers_shield_divine_toll", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
   {
     background=true;
   }
@@ -112,6 +115,12 @@ struct avengers_shield_t : public avengers_shield_base_t
     {
       p() -> cooldowns.avengers_shield -> reset( false );
       p() -> buffs.moment_of_glory -> decrement( 1 );
+    }
+    if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
+      rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
+    {
+      p() -> cooldowns.avengers_shield -> reset( false );
+      p() -> procs.holy_avengers_engraved_sigil -> occur();
     }
   }
 
@@ -412,6 +421,42 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     }
     return m;
   }
+
+  void impact( action_state_t *s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p() -> conduit.shielding_words -> ok() && s -> result_amount > 0 )
+    {
+      p() -> buffs.shielding_words -> trigger( 1,
+        s -> result_amount * p() -> conduit.shielding_words.percent()
+      );
+    }
+  }
+
+  void execute() override
+  {
+    // Divine purpose is expired in parent execute, so catch it before then:
+    bool dp_up = p() -> buffs.divine_purpose -> up();
+    holy_power_consumer_t::execute();
+
+    // Divine purpose is consumed before shining light.
+    if ( p() -> buffs.shining_light_free -> up() && ! dp_up )
+      p() -> buffs.shining_light_free -> expire();
+
+    if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
+    {
+      p() -> buffs.vanquishers_hammer -> expire();
+      p() -> active.necrolord_shield_of_the_righteous -> execute();
+    }
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+    if ( p() -> buffs.shining_light_free -> up() )
+      c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
+    return c;
+  }
 };
 
 // Shield of the Righteous ==================================================
@@ -456,6 +501,16 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     weapon_multiplier = 0.0;
   }
 
+  shield_of_the_righteous_t( paladin_t* p ) :
+    holy_power_consumer_t( "shield_of_the_righteous_vanquishers_hammer", p, p -> spec.shield_of_the_righteous )
+  {
+    // This is the "free" SotR from vanq hammer. Identifiable by being background.
+    background = true;
+    aoe = -1;
+    trigger_gcd = 0_ms;
+    weapon_multiplier = 0.0;
+  }
+
   void execute() override
   {
     holy_power_consumer_t::execute();
@@ -473,6 +528,30 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
     }
+
+    // Current functionality in-game (and here) as of 2020-10-16 is that
+    // Resolute Defender only provides its cdr while AD is active. However the
+    // tooltip says otherwise.
+    if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
+    {
+      p() -> buffs.ardent_defender -> extend_duration( p(),
+        p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
+      );
+      p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
+    }
+
+    if ( !background )
+    {
+      if ( p() -> buffs.shining_light_free -> up() || p() -> buffs.shining_light_stacks -> at_max_stacks() )
+      {
+        p() -> buffs.shining_light_stacks -> expire();
+        p() -> buffs.shining_light_free -> trigger();
+      }
+      else
+        p() -> buffs.shining_light_stacks -> trigger();
+    }
+
+    p() -> buffs.bulwark_of_righteous_fury -> expire();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -485,6 +564,22 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     return rm;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = holy_power_consumer_t::composite_target_multiplier( t );
+    if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
+      ctm *= 1.0 + p() -> conduit.punish_the_guilty.percent();
+    return ctm;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    // Range increase on bulwark of righteous fury not implemented.
+    am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+    return am;
   }
 };
 
@@ -511,23 +606,23 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.guardian_of_ancient_kings -> up() )
   {
     s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after GoAK is {}", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection
   if ( buffs.divine_protection -> up() )
   {
     s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after Divine Protection is {}", s -> target -> name(), s -> result_amount );
   }
 
   if ( buffs.ardent_defender -> up() )
   {
-    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after Ardent Defender is {}", s -> target -> name(), s -> result_amount );
+    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent()
+      + legendary.the_ardent_protectors_sanctum -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.blessing_of_dusk -> up() )
+  {
+    s -> result_amount *= 1.0 + buffs.blessing_of_dusk -> value();
   }
 
   // Divine Bulwark and consecration reduction
@@ -681,6 +776,7 @@ bool paladin_t::standing_in_consecration() const
 void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
+  active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
@@ -725,8 +821,14 @@ void paladin_t::create_buffs_protection()
         -> add_invalidate( CACHE_STRENGTH )
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.moment_of_glory = make_buff(this, "moment_of_glory", talents.moment_of_glory )
+  buffs.moment_of_glory = make_buff( this, "moment_of_glory", talents.moment_of_glory )
         -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
+  buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
+        -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
+  buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
+        -> set_absorb_source( get_stats( "shielding_words" ) );
+  buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) );
+  buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
