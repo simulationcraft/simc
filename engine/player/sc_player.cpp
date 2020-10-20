@@ -4093,6 +4093,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   // 8.0 Legendary Insignia of the Grand Army Effect
   m *= insignia_of_the_grand_army_multiplier;
 
+  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
+    m *= 1 + buffs.echo_of_eonar->check_value();
+
   return m;
 }
 
@@ -4126,7 +4129,6 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
-    m *= 1.0 + td->debuff.echo_of_eonar->check_value();
   }
 
   return m;
