@@ -3315,7 +3315,7 @@ struct auto_attack_t : public shaman_attack_t
 
 // Molten Weapon Dot ============================================================
 
-struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<shaman_spell_t>
+struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<spell_t>
 {
   molten_weapon_dot_t( shaman_t* p ) : base_t( "molten_weapon", p, p->find_spell( 271924 ) )
   {
