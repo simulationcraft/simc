@@ -2213,11 +2213,11 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
-  cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
-  cds->add_action( this, covenant.mindgames, "Mindgames",
+  cds->add_action( this, covenant.fae_guardians, "fae_guardians" );
+  cds->add_action( this, covenant.mindgames, "mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
-  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>20" );
-  cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
+  cds->add_action( this, covenant.unholy_nova, "unholy_nova", "if=raid_event.adds.in>20" );
+  cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
                    "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
                    "buff.voidform.up&talent.searing_nightmare.enabled)" );
