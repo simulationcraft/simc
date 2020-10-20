@@ -236,6 +236,8 @@ struct immolate_t : public destruction_spell_t
 
     can_havoc = true;
 
+    //TODO: Check immolate interactions with destro mastery
+
     // All of the DoT data for Immolate is in spell 157736
     base_tick_time       = dmg_spell->effectN( 1 ).period();
     dot_duration         = dmg_spell->duration();
