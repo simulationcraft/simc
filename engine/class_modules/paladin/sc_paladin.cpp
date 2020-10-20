@@ -582,7 +582,8 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time     = p -> main_hand_weapon.swing_time;
     weapon_multiplier     = 1.0;
 
-    affected_by.avenging_wrath = affected_by.crusade = true;
+    affected_by.avenging_wrath = affected_by.crusade =
+      affected_by.blessing_of_dawn = true;
   }
 
   timespan_t execute_time() const override
