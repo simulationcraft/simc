@@ -56,7 +56,8 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
-actions.aoe=flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|covenant.necrolord
+actions.aoe=fire_nova,if=active_dot.flame_shock>=3
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|covenant.necrolord
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!talent.stormkeeper.enabled|buff.stormkeeper.up)
 actions.aoe+=/vesper_totem
 actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5
@@ -67,7 +68,6 @@ actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&active_enemies!=
 actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled
-actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/sundering
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
@@ -79,6 +79,7 @@ actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock
 actions.aoe+=/ice_strike
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>1
 actions.aoe+=/earthen_spike
 actions.aoe+=/earth_elemental
 actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
