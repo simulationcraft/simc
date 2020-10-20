@@ -102,10 +102,8 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
 
 struct avengers_shield_t : public avengers_shield_base_t
 {
-  double holy_avenger_proc_chance;
   avengers_shield_t( paladin_t* p, const std::string& options_str ) :
-    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str ),
-    holy_avenger_proc_chance( p -> legendary.holy_avengers_engraved_sigil -> proc_chance() )
+    avengers_shield_base_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ), options_str )
   {
     cooldown = p -> cooldowns.avengers_shield;
   }
@@ -118,7 +116,8 @@ struct avengers_shield_t : public avengers_shield_base_t
       p() -> cooldowns.avengers_shield -> reset( false );
       p() -> buffs.moment_of_glory -> decrement( 1 );
     }
-    if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() && rng().roll( holy_avenger_proc_chance ) )
+    if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
+      rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
     {
       p() -> cooldowns.avengers_shield -> reset( false );
       p() -> procs.holy_avengers_engraved_sigil -> occur();
@@ -530,6 +529,9 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
     }
 
+    // Current functionality in-game (and here) as of 2020-10-16 is that
+    // Resolute Defender only provides its cdr while AD is active. However the
+    // tooltip says otherwise.
     if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
     {
       p() -> buffs.ardent_defender -> extend_duration( p(),
@@ -569,9 +571,15 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     double ctm = holy_power_consumer_t::composite_target_multiplier( t );
     if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
       ctm *= 1.0 + p() -> conduit.punish_the_guilty.percent();
-    ctm *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
-    // Range increase on bulwark of righteous fury not implemented.
     return ctm;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    // Range increase on bulwark of righteous fury not implemented.
+    am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+    return am;
   }
 };
 
