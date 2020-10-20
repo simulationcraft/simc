@@ -1261,6 +1261,9 @@ struct rune_of_power_t : public buff_t
   {
     set_default_value_from_effect( 1 );
     set_chance( p->talents.rune_of_power->ok() );
+    // Rune of Power has a tiny application delay in game. However, the delay
+    // would add quite a lot of complexity to the APLs. It also rarely matters
+    // in terms of modeling, so we treat Rune of Power as a normal activated buff.
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -7319,10 +7322,9 @@ void mage_t::update_rune_distance( double distance )
 {
   distance_from_rune += distance;
 
-  if ( buffs.rune_of_power->total_stack() && distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
+  if ( buffs.rune_of_power->check() && distance_from_rune > talents.rune_of_power->effectN( 2 ).radius() )
   {
-    // Rune of Power is not applied if the player moves out during the buff application delay.
-    buffs.rune_of_power->cancel();
+    buffs.rune_of_power->expire();
     sim->print_debug( "{} moved out of Rune of Power.", name() );
   }
 }
