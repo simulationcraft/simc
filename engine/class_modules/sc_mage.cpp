@@ -7313,8 +7313,6 @@ void mage_t::vision_of_perfection_proc()
         secondary->trigger( secondary_duration );
       }
     }
-    // TODO: This probably isn't intended
-    buffs.rune_of_power->trigger();
   }
 }
 
