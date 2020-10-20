@@ -1652,13 +1652,20 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
       return false;
   }
 
+  // In-game, procs that happen "close to eachother" are usually delayed into the same time slot. We roughly model this
+  // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the
+  // first delayed proc will happen.
   if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
        sim->default_aura_delay > timespan_t::zero() )
   {
-    // In-game, procs that happen "close to eachother" are usually delayed into the
-    // same time slot. We roughly model this by allowing procs that happen during the
-    // buff's already existing delay period to trigger at the same time as the first
-    // delayed proc will happen.
+    // Since we're storing stacks as value in buff_delay_t, resolve default values first
+    // Expected behavior of a default value call on an existing reversible buff is decrement(1)
+    // Since default value is -1, we can use abs() here
+    if ( reverse && current_stack > 0 )
+      stacks = std::abs( stacks );
+    else
+      stacks = _resolve_stacks( stacks );
+
     if ( delay )
     {
       buff_delay_t& d = *static_cast<buff_delay_t*>( delay );
@@ -1669,7 +1676,10 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
       delay = make_event<buff_delay_t>( *sim, this, stacks, value, duration );
   }
   else
+  {
+    // We can pass stacks value as-is to execute() to have it _resolve'd there
     execute( stacks, value, duration );
+  }
 
   return true;
 }
@@ -1694,13 +1704,15 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   // ticking buffs, we treat executes as another "normal trigger", which
   // refreshes the buff
   if ( tick_event )
-    increment( stacks < 0 ? ( reverse ? _max_stack : _initial_stack * std::abs( stacks ) ) : stacks, value, duration );
+    increment( _resolve_stacks( stacks ), value, duration );
   else
   {
+    // Expected behavior of a default value call on an existing reversible buff is decrement(1)
+    // Since default value is -1, we can use abs() here
     if ( reverse && current_stack > 0 )
       decrement( std::abs( stacks ), value );
     else
-      increment( stacks < 0 ? ( reverse ? _max_stack : _initial_stack * std::abs( stacks ) ) : stacks, value, duration );
+      increment( _resolve_stacks( stacks ), value, duration );
   }
 
   // new buff cooldown impl

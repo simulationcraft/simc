@@ -235,6 +235,7 @@ public:
   bool remains_gt( timespan_t time ) const;
   bool remains_lt( timespan_t time ) const;
   bool at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
+  int _resolve_stacks( int stacks ) { return stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks; }
   bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   bool trigger( timespan_t duration );
   bool trigger( int stacks, timespan_t duration );
