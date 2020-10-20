@@ -1456,7 +1456,7 @@ void paladin_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = resources.max[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
+  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
