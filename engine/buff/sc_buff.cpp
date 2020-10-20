@@ -801,14 +801,6 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
 buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
   set_initial_stack( _initial_stack + initial_stack );
-
-  if ( _initial_stack > _max_stack )
-  {
-    sim->print_debug( "{} modified to initial_stack ({}) > max_stack ({}). Setting max_stack to {}.\n", *this,
-                      _initial_stack, _max_stack, _initial_stack );
-    _max_stack = _initial_stack;
-  }
-
   return this;
 }
 
@@ -1660,7 +1652,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
        sim->default_aura_delay > timespan_t::zero() )
   {
-    // Since we're storing stacks as value in buff_delay_t, resolve default values first
+    // Since we're storing stacks as value in buff_delay_t, _resolve default values first
     if ( reverse && current_stack > 0 )
     {
       // Expected behavior of a default value (-1) call on an existing reversible buff is `decrement( 1 )`
@@ -1704,7 +1696,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   }
 
   // For cases where the buff trigger hasn't been processed through buff_delay_t, or where buff_t::execute() is called
-  // directly, default value remains -1, so it needs to get _resolve()'d
+  // directly, default value remains -1, so it needs to get _resolve'd
 
   // If the buff has a tick event ongoing, the rules change a bit for ongoing ticking buffs, we treat executes as
   // another "normal trigger", which refreshes the buff
