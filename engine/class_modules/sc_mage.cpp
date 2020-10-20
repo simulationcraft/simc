@@ -1261,7 +1261,6 @@ struct rune_of_power_t : public buff_t
   {
     set_default_value_from_effect( 1 );
     set_chance( p->talents.rune_of_power->ok() );
-    set_activated( false );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
