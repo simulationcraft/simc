@@ -6367,7 +6367,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
     affected_by_master_of_the_elements = false;
 
     aoe        = 4;
-    background = true;
+    background = split_aoe_damage = true;
     callbacks  = false;
   }
 
