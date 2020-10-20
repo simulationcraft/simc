@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, git build shadowlands 3fcdcc13a9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -1714,7 +1714,7 @@ Resource         : 3 Holy Power (9) (id=4098)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Royal Decree (340147 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9756,6 +9756,7 @@ Effects          :
 Description      : Casting Word of Glory grants you a shield that prevents damage equal to |cFFFFFFFF${$s1}.1%|r of the healing done by Word of Glory. Lasts $338788d.
 
 Name             : Golden Path (id=339114) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Conduit Id       : 141 (values=200.0, 220.0, 240.0, 260.0, 280.0, 300.0, 320.0, 340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0)
@@ -9772,6 +9773,24 @@ Effects          :
 #1 (id=838188)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every $26573t1 sec while standing within it.
+
+Name             : Golden Path (id=339119) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=838193)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc339114
+Tooltip          : Absorbs $w damage.
 
 Name             : Pure Concentration (id=339124) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -10239,6 +10258,7 @@ Effects          :
 Description      : Shield of the Righteous extends Ardent Defender's duration by $s2% and reduces its cooldown by |cFFFFFFFF${$s1}.1 sec|r.
 
 Name             : Royal Decree (id=340030) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Conduit Id       : 209 (values=-15000.0, -17000.0, -18000.0, -19000.0, -20000.0, -21000.0, -22000.0, -23000.0, -24000.0, -25000.0, -26000.0, -27000.0, -28000.0, -29000.0, -30000.0)
@@ -10257,6 +10277,29 @@ Effects          :
                    Affected Spells: Guardian of Ancient Kings (86659), Guardian of Ancient Kings (337851), Reign of Ancient Kings (337852)
                    Family Flags: 81
 Description      : Guardian of Ancient Kings's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r, and casting it causes your next Word of Glory to cost no Holy Power.
+
+Name             : Royal Decree (id=340147) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=839845)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Word of Glory (85673)
+                   Family Flags: 78
+Description      : $@spelldesc340030
+Tooltip          : Word of Glory costs 0 Holy Power.
 
 Name             : The Long Summer (id=340185) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10278,6 +10321,7 @@ Effects          :
 Description      : Blessing of Summer lasts |cFFFFFFFF${$s1}.1%|r longer.
 
 Name             : Righteous Might (id=340192) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -10301,6 +10345,24 @@ Effects          :
 #2 (id=839927)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for the damage done.
+
+Name             : Righteous Might (id=340193) [Spell Family (10)] 
+Class            : Paladin
+School           : Shadow
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=839925)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc340192
 
 Name             : Hallowed Discernment (id=340212) [Spell Family (10), Passive, Hidden] 
 School           : Physical

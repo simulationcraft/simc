@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36267
-static const std::array<spelltext_data_t, 15673> __spelltext_data { {
+static const std::array<spelltext_data_t, 15676> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15080,6 +15080,7 @@ static const std::array<spelltext_data_t, 15673> __spelltext_data { {
   { 339064, "Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional allies within $189877s1 yards of the target.", 0, 0 },
   { 339109, "Wild Spirits lasts ${$s2/1000} sec longer, and deals |cFFFFFFFF${$s1}.1%|r increased damage.", 0, "Kyrian" },
   { 339114, "Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every $26573t1 sec while standing within it.", 0, 0 },
+  { 339119, "$@spelldesc339114", "Absorbs $w damage.", 0 },
   { 339124, "Concentration Aura reduces the duration of incoming Fear effects on your allies by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 339129, "Death Chakram generates an additional $s2 Focus and the damage is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 339130, "The cooldown of Fel Domination is reduced by |cFFFFFFFF${$s1/-1000} sec|r.", 0, 0 },
@@ -15242,12 +15243,14 @@ static const std::array<spelltext_data_t, 15673> __spelltext_data { {
   { 340094, "$@spelldesc340076", "Critical Strike chance increased by $s1%.", 0 },
   { 340109, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d.  Must remain seated while eating.", "Restores ${$w1/5} health and ${$w2/5} mana per second.", 0 },
   { 340111, "$@spelldesc308433 If you spend at least 10 seconds eating you will become Well Fed and while out of combat heal for $327851s1 every $327851t1 sec for $327851d. Can be used in combat.", 0, 0 },
+  { 340147, "$@spelldesc340030", "Word of Glory costs 0 Holy Power.", 0 },
   { 340153, "Launches you a short distance into the air and deploys magical wings. Can only be used outside in the Shadowlands. ", 0, 0 },
   { 340156, "Launches you high into the air and deploys magical wings. ", "Gliding.", 0 },
   { 340159, "Damage taken below $<health>% health is reduced by $<reduction>%. Upon death you leave a stone husk behind which shatters after $340454d, inflicting $s2% of your maximum health in damage split among nearby enemies, and healing for $s3% of your maximum health split among nearby allies.", 0, 0 },
   { 340185, "Blessing of Summer lasts |cFFFFFFFF${$s1}.1%|r longer.", 0, 0 },
   { 340188, "Stroke the spine of the dragon and it will lay you a golden egg. ", 0, 0 },
   { 340192, "Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for the damage done.", 0, 0 },
+  { 340193, "$@spelldesc340192", 0, 0 },
   { 340197, "Killing an enemy has a high chance to summon an Explosive Mawrat at the corpses location. After $340201d the mawrat will explode, dealing $341617s1 Nature damage to all nearby enemies, poisoning them and decreasing their damage done by $341617s2% for $341617d.", 0, 0 },
   { 340201, "$@spelldesc340197", 0, 0 },
   { 340202, "When Obtained: The Curse of Renagal's Pact leaves the chalice and you begin to attract the attention of foes from further away than before. ", "Attracting enemies to you from further away than normal. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispell the curse.", 0 },
