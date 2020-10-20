@@ -236,6 +236,8 @@ struct immolate_t : public destruction_spell_t
 
     can_havoc = true;
 
+    //TODO: Check immolate interactions with destro mastery
+
     // All of the DoT data for Immolate is in spell 157736
     base_tick_time       = dmg_spell->effectN( 1 ).period();
     dot_duration         = dmg_spell->duration();
@@ -261,6 +263,30 @@ struct immolate_t : public destruction_spell_t
     // BFA - Trinket
     // For some reason this triggers on every tick
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    destruction_spell_t::last_tick( d );
+
+    td( d->target )->debuffs_combusting_engine->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    td( s->target )->debuffs_combusting_engine->expire();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override 
+  {
+    double m = destruction_spell_t::composite_ta_multiplier( s );
+
+    if ( td( s->target )->debuffs_combusting_engine->check() )
+      m *= 1.0 + td( s->target )->debuffs_combusting_engine->check_stack_value();
+
+    return m;
   }
 };
 
@@ -301,6 +327,10 @@ struct conflagrate_t : public destruction_spell_t
 
     if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
       td( s->target )->debuffs_roaring_blaze->trigger();
+
+    //TODO: Check if combusting engine stacks up when there is no immolate on the target (currently implemented as NO)
+    if ( p()->conduit.combusting_engine.value() > 0 && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+      td( s->target )->debuffs_combusting_engine->increment( 1, td( s->target)->debuffs_combusting_engine->default_value );
   }
 
   void execute() override
