@@ -33,8 +33,8 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=3202023
-azerite_essences=4:3/35:3/27:3/23:3
+talents=1101023
+azerite_essences=14:3/23:3/12:3/35:3
 
 head=helm_of_actualized_visions,id=174151,bonus_id=4824/1517/4819/4775,azerite_powers=416/530/30/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80

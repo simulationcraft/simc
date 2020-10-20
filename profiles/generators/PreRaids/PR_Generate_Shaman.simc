@@ -34,8 +34,8 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=1111111
-covenant=night_fae
+talents=1111123
+covenant=venthyr
 
 # ilvl 138 template blue gear from beta
 head=,id=163447,bonus_id=6938

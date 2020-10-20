@@ -5,8 +5,8 @@ level=60
 race=troll
 role=attack
 position=back
-talents=1111111
-covenant=night_fae
+talents=1111123
+covenant=venthyr
 
 # Default consumables
 potion=disabled
@@ -56,7 +56,8 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
-actions.aoe=fire_nova,if=active_dot.flame_shock>=3
+actions.aoe=frost_shock,if=buff.hailstorm.up
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|covenant.necrolord
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!talent.stormkeeper.enabled|buff.stormkeeper.up)
 actions.aoe+=/vesper_totem
@@ -71,9 +72,7 @@ actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_n
 actions.aoe+=/sundering
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
-actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!buff.hailstorm.up
-actions.aoe+=/frost_shock,if=buff.hailstorm.up
-actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=!ticking&&!talent.hailstorm.enabled
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&active_enemies=3
 actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock

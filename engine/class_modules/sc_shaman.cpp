@@ -8575,6 +8575,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action( this, "Earth Elemental" );
   single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30" );
 
+  aoe->add_action( this, "Frost Shock", "if=buff.hailstorm.up" );
   aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|covenant.necrolord" );
   aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!talent.stormkeeper.enabled|buff.stormkeeper.up)" );
@@ -8590,9 +8591,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_talent( this, "Sundering" );
   aoe->add_action( this, "Stormstrike" );
   aoe->add_action( this, "Lava Lash" );
-  aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=!buff.hailstorm.up" );
-  aoe->add_action( this, "Frost Shock", "if=buff.hailstorm.up");
-  aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=!ticking&&!talent.hailstorm.enabled" );
+  aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1" );
   aoe->add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5&active_enemies=3" );
   aoe->add_action( "fae_transfusion" );
   aoe->add_action( this, "Frost Shock" );
