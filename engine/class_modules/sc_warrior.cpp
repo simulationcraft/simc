@@ -6315,15 +6315,15 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Execute" );
   single_target->add_talent( this, "Bladestorm",  "if=prev_gcd.1.rampage" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
-  single_target->add_action( this, spec.bloodbath, "Bloodbath", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
   single_target->add_talent( this, "Onslaught" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
-  single_target->add_action( this, spec.crushing_blow, "Crushing Blow", "if=charges=2" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=charges=2" );
   single_target->add_action( this, "Bloodthirst" );
-  single_target->add_action( this, spec.bloodbath, "Bloodbath" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( this, "Raging Blow" );
-  single_target->add_action( this, spec.crushing_blow, "Crushing Blow" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
   single_target->add_action( this, "Whirlwind" );
 }
 
