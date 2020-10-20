@@ -1188,9 +1188,14 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
+      case P_STACK:
+        modify_initial_stack( as<int>( effect.base_value() ) );
+        sim->print_debug( "{} initial stacks modified by {} to {}", *this, effect.base_value(), initial_stack() );
+        break;
+
       case P_MAX_STACKS:
         modify_max_stack( as<int>( effect.base_value() ) );
-        sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
+        sim->print_debug( "{} maximum stacks modified by {} to {}", *this, effect.base_value(), max_stack() );
         break;
 
       case P_EFFECT_1:
