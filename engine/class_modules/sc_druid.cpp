@@ -3643,8 +3643,10 @@ public:
       if ( s->result == RESULT_CRIT )
         attack_critical = true;
 
-      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
+      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) 
+	  && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 )
         trigger_frenzyband( s->target, s->result_amount );
+
     }
   }
 
@@ -3670,13 +3672,21 @@ public:
 
     base_t::execute();
 
-    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target && attack_critical )
+    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      if ( p()->specialization() == DRUID_FERAL ||
-           ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->check() ) )
+
+      if (p()->legendary.frenzyband->ok())
+      {
+	p()->cooldown.berserk->adjust(-p()->legendary.frenzyband->effectN(1).time_value(), false);
+	p()->cooldown.incarnation->adjust(-p()->legendary.frenzyband->effectN(1).time_value(), false);
+      }
+
+      if ( ( p()->specialization() == DRUID_FERAL ||
+           ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->check() ) ) && attack_critical)
       {
         trigger_primal_fury();
       }
+
     }
 
     if ( hit_any_target )
@@ -3696,11 +3706,8 @@ public:
         p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
       }
 
-      if ( p()->legendary.frenzyband->ok() )
-      {
-        p()->cooldown.berserk->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
-        p()->cooldown.incarnation->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
-      }
+
+
     }
 
     if ( !hit_any_target )
