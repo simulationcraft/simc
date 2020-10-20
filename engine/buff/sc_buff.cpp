@@ -492,8 +492,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     cooldown(),
     rppm( nullptr ),
     _max_stack( -1 ),
-    trigger_data( s_data ),
     _initial_stack( -1 ),
+    trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
@@ -595,6 +595,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   if ( player && !player->cache.active )
     requires_invalidation = false;
 
+  // These are initialized at -1 then set to their spell data values here (along with error checking)
   set_max_stack( _max_stack );
   set_initial_stack( _initial_stack );
 
@@ -701,7 +702,7 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
 
 buff_t* buff_t::set_max_stack( int max_stack )
 {
-  // Set Max stacks
+  // _max_stack is initialized at -1, then set_max_stack is called in the buff_t base constructor
   if ( max_stack == -1 )
   {
     if ( data().ok() )
@@ -759,6 +760,7 @@ buff_t* buff_t::modify_max_stack( int max_stack )
 
 buff_t* buff_t::set_initial_stack( int initial_stack )
 {
+  // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
   if ( initial_stack == -1 )
   {
     if ( data().ok() && data().initial_stacks() )
@@ -1659,10 +1661,11 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
        sim->default_aura_delay > timespan_t::zero() )
   {
     // Since we're storing stacks as value in buff_delay_t, resolve default values first
-    // Expected behavior of a default value call on an existing reversible buff is decrement(1)
-    // Since default value is -1, we can use abs() here
     if ( reverse && current_stack > 0 )
-      stacks = std::abs( stacks );
+    {
+      // Expected behavior of a default value (-1) call on an existing reversible buff is `decrement( 1 )`
+      stacks = stacks == -1 ? 1 : stacks;
+    }
     else
       stacks = _resolve_stacks( stacks );
 
@@ -1700,17 +1703,20 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
     expansion::bfa::trigger_leyshocks_grand_compilation( data().id(), source );
   }
 
-  // If the buff has a tick event ongoing, the rules change a bit for ongoing
-  // ticking buffs, we treat executes as another "normal trigger", which
-  // refreshes the buff
+  // For cases where the buff trigger hasn't been processed through buff_delay_t, or where buff_t::execute() is called
+  // directly, default value remains -1, so it needs to get _resolve()'d
+
+  // If the buff has a tick event ongoing, the rules change a bit for ongoing ticking buffs, we treat executes as
+  // another "normal trigger", which refreshes the buff
   if ( tick_event )
     increment( _resolve_stacks( stacks ), value, duration );
   else
   {
-    // Expected behavior of a default value call on an existing reversible buff is decrement(1)
-    // Since default value is -1, we can use abs() here
     if ( reverse && current_stack > 0 )
-      decrement( std::abs( stacks ), value );
+    {
+      // Expected behavior of a default value (-1) call on an existing reversible buff is `decrement( 1 )`
+      decrement( stacks == -1 ? 1 : stacks, value );
+    }
     else
       increment( _resolve_stacks( stacks ), value, duration );
   }

@@ -71,10 +71,10 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
+  int _initial_stack;
   const spell_data_t* trigger_data;
 
 public:
-  int _initial_stack;
   double default_value;
   size_t default_value_effect_idx;
   double default_value_effect_multiplier;
@@ -235,12 +235,16 @@ public:
   bool remains_gt( timespan_t time ) const;
   bool remains_lt( timespan_t time ) const;
   bool at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
+  // For trigger()/execute(), default value of stacks is -1, since we want to allow for explicitly calls of stacks=1 to
+  // override using buff_t::_initial_stack
   int _resolve_stacks( int stacks ) { return stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks; }
   bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   bool trigger( timespan_t duration );
   bool trigger( int stacks, timespan_t duration );
   virtual bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
   virtual void execute( int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  // For increment()/decrement(), default value of stack is 1, since expectation when calling these with default value
+  // is that the stack count will be adjusted by a single stack, regardless of buff_t::_initial_stack
   virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void extend_duration( player_t* p, timespan_t seconds );
