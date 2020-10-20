@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, git build shadowlands 3fcdcc13a9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage

@@ -1599,7 +1599,8 @@ class SpellDataGenerator(DataGenerator):
           ( 266087, 3 ),    # Rain of Chaos Buff
           ( 339784, 2 ),    # Tyrant's Soul Buff
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
-          ( 342997, 2 )     # Grim Inquisitor's Dread Calling Buff 2
+          ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
+          ( 339986, 3 )     # Hidden Combusting Engine Debuff
         ),
 
         # Monk:

@@ -255,6 +255,14 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // SL - Legendary
   debuffs_odr = make_buff( *this, "odr_shawl_of_the_ymirjar", source->find_spell(337164) );
 
+  // SL - Conduit
+  //Spell data appears to be missing for a "debuff" type effect, creating a fake one to model the behavior
+  //TOCHECK regularly to see if this can be less kludged
+  debuffs_combusting_engine = make_buff( *this, "combusting_engine" )
+                                  ->set_duration( 30_s )
+                                  ->set_max_stack( 40 )
+                                  ->set_default_value( source->find_conduit_spell("Combusting Engine").percent() );
+
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
   dots_umbral_blaze = target->get_dot( "umbral_blaze", &p );

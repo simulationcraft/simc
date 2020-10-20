@@ -54,6 +54,9 @@ struct warlock_td_t : public actor_target_data_t
   // SL - Legendary
   propagate_const<buff_t*> debuffs_odr;
 
+  // SL - Conduit
+  propagate_const<buff_t*> debuffs_combusting_engine;
+
   // Demo
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
