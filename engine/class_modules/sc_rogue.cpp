@@ -39,6 +39,7 @@ enum stealth_type_e
   STEALTH_SHADOWMELD = 0x04,
   STEALTH_SUBTERFUGE = 0x08,
   STEALTH_SHADOWDANCE = 0x10,
+  STEALTH_SEPSIS = 0x20,
 
   STEALTH_ROGUE = ( STEALTH_SUBTERFUGE | STEALTH_SHADOWDANCE ),   // Subterfuge + Shadowdance
   STEALTH_BASIC = ( STEALTH_NORMAL | STEALTH_VANISH ),            // Normal + Vanish
@@ -329,6 +330,7 @@ public:
     buff_t* echoing_reprimand_3;
     buff_t* echoing_reprimand_4;
     buff_t* flagellation;
+    buff_t* sepsis;
 
     // Conduits
     buff_t* deeper_daggers;
@@ -602,6 +604,7 @@ public:
     const spell_data_t* flagellation;
     const spell_data_t* flagellation_buff;
     const spell_data_t* sepsis;
+    const spell_data_t* sepsis_buff;
     const spell_data_t* serrated_bone_spike;
   } covenant;
 
@@ -1029,6 +1032,7 @@ public:
     bool zoldyck_insignia = false;
     bool between_the_eyes = false;
     bool nightstalker = false;
+    bool sepsis = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1098,6 +1102,10 @@ public:
       //          Currently on beta, it doesn't work on much of anything, so this is quite unclear
       affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
                                      ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
+    }
+    if ( p->covenant.sepsis_buff->ok() )
+    {
+      affected_by.sepsis = ab::data().affected_by( p->covenant.sepsis_buff->effectN( 1 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -1318,6 +1326,9 @@ public:
   virtual bool requires_stealth() const
   { 
     if ( affected_by.blindside && p()->buffs.blindside->check() )
+      return false;
+
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() )
       return false;
 
     return _requires_stealth; 
@@ -1667,6 +1678,9 @@ public:
 
     if ( affected_by.blindside )
       p()->buffs.blindside->expire();
+
+    if ( affected_by.sepsis )
+      p()->buffs.sepsis->expire();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -4777,10 +4791,7 @@ struct sepsis_t : public rogue_attack_t
     rogue_attack_t::last_tick( d );
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
-    // TOCHECK: 09/23/2020 - Vanish triggers before final burst damage in the combat log, 
-    //          but effects such as Master Assassin don't seem to actually register for the final hit
-    p()->buffs.vanish->trigger();
-    trigger_master_of_shadows();
+    p()->buffs.sepsis->trigger();
   }
 
   // TOCHECK: Nightstalker currently does not affect the Sepsis DoT on beta
@@ -7868,6 +7879,7 @@ void rogue_t::init_spells()
   covenant.flagellation           = find_covenant_spell( "Flagellation" );
   covenant.flagellation_buff      = covenant.flagellation->ok() ? find_spell( 345569 ) : spell_data_t::not_found();
   covenant.sepsis                 = find_covenant_spell( "Sepsis" );
+  covenant.sepsis_buff            = covenant.sepsis->ok() ? find_spell( 347037 ) : spell_data_t::not_found();
   covenant.serrated_bone_spike    = find_covenant_spell( "Serrated Bone Spike" );
 
   // Conduits ===============================================================
@@ -8360,6 +8372,8 @@ void rogue_t::create_buffs()
                                          find_spell( 323560 ) : spell_data_t::not_found() )
                                           ->set_max_stack( 1 )
                                           ->set_default_value( 4 );
+
+  buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
 
   // Conduits ===============================================================
 
@@ -8869,6 +8883,9 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
     return true;
 
   if ( ( stealth_mask & STEALTH_SHADOWMELD ) && player_t::buffs.shadowmeld->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_SEPSIS ) && buffs.sepsis->check() )
     return true;
 
   return false;
