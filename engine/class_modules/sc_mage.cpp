@@ -5420,7 +5420,7 @@ struct shifting_power_t : public mage_spell_t
   shifting_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_covenant_spell( "Shifting Power" ) ),
     shifting_power_cooldowns(),
-    reduction( data().effectN( 2 ).time_value() )
+    reduction( data().effectN( 2 ).time_value() + p->conduits.discipline_of_the_grove.time_value() )
   {
     parse_options( options_str );
     channeled = affected_by.ice_floes = true;
@@ -5455,15 +5455,6 @@ struct shifting_power_t : public mage_spell_t
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t t = mage_spell_t::tick_time( s );
-
-    t *= 1.0 + p()->conduits.discipline_of_the_grove.percent();
-
-    return t;
   }
 };
 
