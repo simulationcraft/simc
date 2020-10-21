@@ -268,6 +268,13 @@ public:
 
   double expected_max_health;  // For Bristling Fur calculations.
 
+  // spec-based spell/attack power overrides
+  struct spec_override_t
+  {
+    double attack_power;
+    double spell_power;
+  } spec_override;
+
   // Azerite
   streaking_stars_e previous_streaking_stars;
   double lucid_dreams_proc_chance_balance;
@@ -858,6 +865,7 @@ public:
     : player_t( sim, DRUID, name, r ),
       form( NO_FORM ),
       eclipse_handler( this ),
+      spec_override( spec_override_t() ),
       previous_streaking_stars( SS_NONE ),
       lucid_dreams_proc_chance_balance( 0.15 ),
       lucid_dreams_proc_chance_feral( 0.15 ),
@@ -936,6 +944,7 @@ public:
   void init_spells() override;
   void init_scaling() override;
   void init_assessors() override;
+  void init_finished() override;
   void create_buffs() override;
   void create_actions() override;
   std::string default_flask() const override;
@@ -8506,6 +8515,20 @@ void druid_t::init_assessors()
   }
 }
 
+void druid_t::init_finished()
+{
+  player_t::init_finished();
+
+  if ( specialization() == DRUID_BALANCE )
+    spec_override.attack_power = query_aura_effect( spec.balance, A_404 )->percent();
+  else if ( specialization() == DRUID_FERAL )
+    spec_override.spell_power = query_aura_effect( spec.feral, A_366 )->percent();
+  else if ( specialization() == DRUID_GUARDIAN )
+    spec_override.spell_power = query_aura_effect( spec.guardian, A_366 )->percent();
+  else if ( specialization() == DRUID_RESTORATION )
+    spec_override.attack_power = query_aura_effect( spec.restoration, A_404 )->percent();
+}
+
 // druid_t::init_buffs ======================================================
 
 void druid_t::create_buffs()
@@ -9744,32 +9767,16 @@ void druid_t::invalidate_cache( cache_e c )
 
 double druid_t::composite_melee_attack_power() const
 {
-  const spell_data_t* spec_spell = nullptr;
-
-  if ( specialization() == DRUID_BALANCE )
-    spec_spell = spec.balance;
-  else if ( specialization() == DRUID_RESTORATION )
-    spec_spell = spec.restoration;
-
-  if ( spec_spell )
-    return query_aura_effect( spec_spell, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
-           composite_spell_power_multiplier();
+  if ( spec_override.attack_power )
+    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
 
   return player_t::composite_melee_attack_power();
 }
 
 double druid_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
-  const spell_data_t* spec_spell = nullptr;
-
-  if ( specialization() == DRUID_BALANCE )
-    spec_spell = spec.balance;
-  else if ( specialization() == DRUID_RESTORATION )
-    spec_spell = spec.restoration;
-
-  if ( spec_spell )
-    return query_aura_effect( spec_spell, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
-           composite_spell_power_multiplier();
+  if ( spec_override.attack_power )
+    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
 
   return player_t::composite_melee_attack_power_by_type( type );
 }
@@ -9924,31 +9931,22 @@ double druid_t::composite_melee_haste() const
 
 double druid_t::composite_spell_power( school_e school ) const
 {
-  double sp       = 0.0;
-  double ap_coeff = 0.0;
-
-  if ( specialization() == DRUID_GUARDIAN )
-    ap_coeff = query_aura_effect( spec.guardian, A_366 )->percent();
-  else if ( specialization() == DRUID_FERAL )
-    ap_coeff = query_aura_effect( spec.feral, A_366 )->percent();
-
-  if ( ap_coeff > 0 )
+  if ( spec_override.spell_power )
   {
-    double weapon_sp = 0.0;
+    weapon_t weapon;
 
     if ( buff.cat_form->check() )
-      weapon_sp = cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      weapon = cat_weapon;
     else if ( buff.bear_form->check() )
-      weapon_sp = bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      weapon = bear_weapon;
     else
-      weapon_sp = main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      weapon = main_hand_weapon;
 
-    sp += composite_attack_power_multiplier() * ( cache.attack_power() + weapon_sp ) * ap_coeff;
+    return spec_override.spell_power * composite_attack_power_multiplier() *
+           ( cache.attack_power() + weapon.dps * WEAPON_POWER_COEFFICIENT );
   }
 
-  sp += player_t::composite_spell_power( school );
-
-  return sp;
+  return player_t::composite_spell_power( school );
 }
 
 // druid_t::composite_spell_power_multiplier ================================
