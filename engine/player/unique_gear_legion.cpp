@@ -593,7 +593,7 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
     {
       may_block = true;
     }
-    double target_armor( player_t* ) const override
+    double composite_target_armor( player_t* ) const override
     { return 0.0; }
   };
 
@@ -5004,7 +5004,7 @@ struct spontaneous_appendages_t: public proc_spell_t
       effect.item )
   {}
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -5568,7 +5568,7 @@ struct legion_potion_damage_t : public T
     this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 

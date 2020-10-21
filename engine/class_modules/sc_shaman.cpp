@@ -2971,7 +2971,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
     : stormstrike_attack_t( n, player, s, w )
   { }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   {
     return 0.0;
   }
@@ -2998,7 +2998,7 @@ struct windlash_t : public shaman_attack_t
     return PROC1_MELEE;
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   {
     return 0.0;
   }
@@ -3817,7 +3817,7 @@ struct earthquake_damage_t : public shaman_spell_t
     spell_power_mod.direct  = 0.2875;  // still cool to hardcode the SP% into tooltip
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   {
     return 0;
   }

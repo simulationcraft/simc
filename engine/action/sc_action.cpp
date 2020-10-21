@@ -1334,11 +1334,6 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
   return state->result_total;
 }
 
-double action_t::target_armor(player_t* t) const
-{
-  return t->cache.armor();
-}
-
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
 
@@ -1359,6 +1354,11 @@ double action_t::composite_spell_power() const
   }
 
   return spell_power;
+}
+
+double action_t::composite_target_armor( player_t* target ) const
+{
+  return player->composite_player_target_armor( target );
 }
 
 double action_t::composite_target_crit_chance( player_t* target ) const
@@ -3748,7 +3748,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_mitigation_ta_multiplier = composite_target_mitigation( state->target, get_school() );
 
   if ( flags & STATE_TGT_ARMOR )
-    state->target_armor = target_armor( state->target );
+    state->target_armor = composite_target_armor( state->target );
 }
 
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const

@@ -4484,6 +4484,11 @@ double player_t::composite_player_vulnerability( school_e school ) const
   return m;
 }
 
+double player_t::composite_player_target_armor( player_t* target ) const
+{
+  return target->cache.armor();
+}
+
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
 {
   return 1.0;

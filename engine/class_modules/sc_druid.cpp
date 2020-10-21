@@ -2826,12 +2826,12 @@ public:
       return g;
   }
 
-  double target_armor( player_t* t ) const override
+  double composite_target_armor( player_t* t ) const override
   {
     if ( direct_bleed )
       return 0.0;
     else
-      return ab::target_armor( t );
+      return ab::composite_target_armor( t );
   }
 
   double composite_target_multiplier( player_t* t ) const override
