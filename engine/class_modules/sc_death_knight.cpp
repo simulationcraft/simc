@@ -2678,10 +2678,9 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
 {
   struct necroblast_t : public pet_action_t<reanimated_shambler_pet_t, melee_attack_t>
   {
-    necroblast_t( reanimated_shambler_pet_t* player, util::string_view options_str ) :
+    necroblast_t( reanimated_shambler_pet_t* player ) :
       pet_action_t( player, "necroblast", player -> find_spell( 334851 ) )
     {
-      parse_options( options_str );
     }
 
     void execute() override
@@ -2695,6 +2694,23 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
     {
       pet_action_t::impact( state );
       p() -> o() -> trigger_festering_wound( state, 1, p() -> o() -> procs.fw_necroblast );
+    }
+
+    double calculate_direct_amount( action_state_t* state ) const override
+    {
+      if ( p() -> o() -> bugs )
+      {
+        // See https://github.com/SimCMinMax/WoW-BugTracker/issues/725
+        // we think the total ap for necroblast is (total_ap + base_amount) * ap_coefficient
+        // action_t::calculate_direct_amount gets the total ap with base_amount + ap_coefficient * total_ap
+        // because of this, I need to directly modify the ap for the action instead of setting the base damage in
+        // the necroblast constructor as the latter method throws off the calcuations and doesn't reflect in game values
+        state->attack_power += 150;
+      }
+
+      double da = pet_action_t::calculate_direct_amount( state );
+
+      return da;
     }
   };
 
@@ -2732,7 +2748,7 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
 
     timespan_t execute_time() const override
     {
-      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 2.9, 0.2 ) );
+      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 4.597, 0.3399 ) );
     }
 
     bool ready() override
@@ -2766,7 +2782,7 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "necroblast" )
-      return new necroblast_t( this, options_str );
+      return new necroblast_t( this );
     if ( name == "travel" )
       return new travel_t( this );
 
