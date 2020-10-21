@@ -3513,11 +3513,13 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
 
+    // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
+    if ( ! p() -> buffs.lock_and_load -> check() )
+      p() -> buffs.streamline -> decrement();
+
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
-
-    p() -> buffs.streamline -> decrement();
 
     if ( rng().roll( surging_shots.chance ) )
     {
