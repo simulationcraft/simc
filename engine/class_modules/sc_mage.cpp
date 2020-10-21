@@ -7817,18 +7817,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
-
-    hotfix::register_spell( "Mage", "2020-10-14", "Arcane spec aura (retail)", 137021 )
-      .field( "max_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 49 );
-
-    hotfix::register_effect( "Mage", "2020-10-14", "Arcane spec aura regen (retail)", 191118 )
-      .field( "points_per_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -3 )
-      .verification_value( -2 );
   }
 
   bool valid() const override { return true; }
