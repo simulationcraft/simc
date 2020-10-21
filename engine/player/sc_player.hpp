@@ -1065,7 +1065,7 @@ public:
                                   cache::behavior_e /* behavior */ = cache::players() )
   {}
 
-  virtual void do_dynamic_regen();
+  virtual void do_dynamic_regen( bool forced = false );
 
   /**
    * Returns owner if available, otherwise the player itself.

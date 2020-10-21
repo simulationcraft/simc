@@ -1817,7 +1817,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   start_count++;
 
   if ( player && change_regen_rate )
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
   else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
@@ -1830,7 +1830,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
       {
         if ( actor->regen_caches[ elem ] )
         {
-          actor->do_dynamic_regen();
+          actor->do_dynamic_regen( true );
           break;
         }
       }
@@ -2162,7 +2162,7 @@ void buff_t::expire( timespan_t delay )
   stack_uptime[ current_stack ].update( false, sim->current_time() );
 
   if ( player && change_regen_rate )
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
   else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
@@ -2175,7 +2175,7 @@ void buff_t::expire( timespan_t delay )
       {
         if ( actor->regen_caches[ elem ] )
         {
-          actor->do_dynamic_regen();
+          actor->do_dynamic_regen( true );
           break;
         }
       }

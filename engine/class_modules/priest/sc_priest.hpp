@@ -549,7 +549,7 @@ public:
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
   void vision_of_perfection_proc() override;
-  void do_dynamic_regen() override;
+  void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
   void invalidate_cache( cache_e ) override;
 

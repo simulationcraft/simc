@@ -1920,9 +1920,9 @@ pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
   return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
-void priest_t::do_dynamic_regen()
+void priest_t::do_dynamic_regen( bool forced )
 {
-  player_t::do_dynamic_regen();
+  player_t::do_dynamic_regen( forced );
 }
 
 void priest_t::apply_affecting_auras( action_t& action )

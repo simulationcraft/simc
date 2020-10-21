@@ -1620,7 +1620,7 @@ void action_t::execute()
 
   if ( player->resource_regeneration == regen_type::DYNAMIC)
   {
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
   }
 
   update_ready();  // Based on testing with warrior mechanics, Blizz updates cooldowns before consuming resources.
@@ -1968,6 +1968,11 @@ void action_t::schedule_execute( action_state_t* execute_state )
         player->off_hand_attack->execute_event->reschedule( time_to_next_hit );
       }
     }
+  }
+
+  if ( player->resource_regeneration == regen_type::DYNAMIC )
+  {
+    player->do_dynamic_regen( true );
   }
 }
 
@@ -4055,7 +4060,7 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
   }
 
   if ( player->resource_regeneration == regen_type::DYNAMIC )
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
 
   // Consume resources
   /*

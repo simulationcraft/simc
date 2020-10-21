@@ -6158,7 +6158,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   cache_e cache_type = cache_from_stat( stat );
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
-    do_dynamic_regen();
+    do_dynamic_regen( true );
 
   sim->print_log( "{} gains {:.2f} {}{}", name(), amount, stat,
                   temporary_stat ? " (temporary)" : "" );
@@ -6296,7 +6296,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   cache_e cache_type = cache_from_stat( stat );
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
-    do_dynamic_regen();
+    do_dynamic_regen( true );
 
   sim->print_log( "{} loses {:.2f} {}{}", name(), amount, stat,
                   temporary_buff ? " (temporary)" : "" );
@@ -12922,8 +12922,11 @@ bool player_t::is_active() const
 
 /**
  * Perform dynamic resource regeneration
+ *
+ * The forced parameter indicates whether the resource regen would
+ * also occur in game at the same time.
  */
-void player_t::do_dynamic_regen()
+void player_t::do_dynamic_regen( bool forced )
 {
   if (sim->current_time() == last_regen)
     return;
@@ -12936,7 +12939,7 @@ void player_t::do_dynamic_regen()
     for (auto& elem : active_pets)
     {
       if (elem->resource_regeneration == regen_type::DYNAMIC)
-        elem->do_dynamic_regen();
+        elem->do_dynamic_regen( forced );
     }
   }
 }
