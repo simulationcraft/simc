@@ -634,10 +634,11 @@ public:
   // State
   struct state_t
   {
-    bool brain_freeze_active;
-    bool fingers_of_frost_active;
-    int mana_gem_charges;
-    double from_the_ashes_mastery;
+    bool brain_freeze_active = false;
+    bool fingers_of_frost_active = false;
+    int mana_gem_charges = 0;
+    double from_the_ashes_mastery = 0.0;
+    timespan_t last_enlightened_update = timespan_t::min();
   } state;
 
   // Talents
@@ -822,7 +823,7 @@ public:
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-  double resource_loss( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  void do_dynamic_regen( bool = false ) override;
   void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void reset() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
@@ -896,7 +897,7 @@ public:
   }
 
   void      update_rune_distance( double distance );
-  void      update_enlightened();
+  void      update_enlightened( bool double_regen = false );
   void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
@@ -5602,7 +5603,7 @@ struct enlightened_event_t : public event_t
   void execute() override
   {
     mage->events.enlightened = nullptr;
-    mage->update_enlightened();
+    mage->update_enlightened( true );
     mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, 2.0_s );
   }
 };
@@ -6791,20 +6792,23 @@ double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* s
 {
   double g = player_t::resource_gain( resource_type, amount, source, a );
 
-  if ( resource_type == RESOURCE_MANA && talents.enlightened->ok() && a )
-    update_enlightened();
+  if ( resource_type == RESOURCE_MANA
+    && source != player_t::gains.resource_regen[ RESOURCE_MANA ]
+    && source != gains.evocation )
+  {
+    update_enlightened( true );
+  }
 
   return g;
 }
 
-double mage_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* a )
+void mage_t::do_dynamic_regen( bool forced )
 {
-  double l = player_t::resource_loss( resource_type, amount, source, a );
+  player_t::do_dynamic_regen( forced );
 
-  if ( resource_type == RESOURCE_MANA && talents.enlightened->ok() && a )
+  // Only update Enlightened buffs on resource updates that actually occur in game.
+  if ( forced )
     update_enlightened();
-
-  return l;
 }
 
 void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
@@ -7327,17 +7331,31 @@ void mage_t::update_rune_distance( double distance )
   }
 }
 
-void mage_t::update_enlightened()
+void mage_t::update_enlightened( bool double_regen )
 {
   if ( !talents.enlightened->ok() )
     return;
 
-  if ( resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent() )
+  if ( sim->current_time() == state.last_enlightened_update )
+    return;
+
+  timespan_t last_update = state.last_enlightened_update;
+  state.last_enlightened_update = sim->current_time();
+
+  // Do a non-forced regen first to figure out if we have enough mana to swap the buffs.
+  do_dynamic_regen();
+
+  bool damage_buff = resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent();
+  if ( damage_buff && buffs.enlightened_damage->check() == 0 )
   {
+    // Periodic mana regen happens twice whenever the mana regen buff from Enlightened expires.
+    if ( bugs && double_regen )
+      regen( sim->current_time() - last_update );
+
     buffs.enlightened_damage->trigger();
     buffs.enlightened_mana->expire();
   }
-  else
+  else if ( !damage_buff && buffs.enlightened_mana->check() == 0 )
   {
     buffs.enlightened_damage->expire();
     buffs.enlightened_mana->trigger();
