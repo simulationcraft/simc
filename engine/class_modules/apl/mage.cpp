@@ -219,15 +219,17 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
 
-  am_spam->add_action( "touch_of_the_magi,if=(cooldown.arcane_power.remains=0|cooldown.rune_of_power.remains<=gcd)&buff.rune_of_power.down" );
-  am_spam->add_action( "arcane_power,if=buff.rune_of_power.down" );
-  am_spam->add_action( "rune_of_power,if=buff.rune_of_power.down" );
+  am_spam->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.arcane_power.remains>0" );
+  am_spam->add_action( "touch_of_the_magi,if=(cooldown.arcane_power.remains=0&buff.rune_of_power.down)|prev_gcd.1.rune_of_power" );
+  am_spam->add_action( "touch_of_the_magi,if=cooldown.arcane_power.remains<50&buff.rune_of_power.down&essence.vision_of_perfection.enabled" );
+  am_spam->add_action( "arcane_power,if=buff.rune_of_power.down&cooldown.touch_of_the_magi.remains>variable.ap_max_delay" );
   am_spam->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<=action.arcane_missiles.execute_time&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   am_spam->add_action( "arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down" );
   am_spam->add_action( "arcane_barrage,if=buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   am_spam->add_action( "arcane_missiles,if=buff.clearcasting.react,chain=1" );
   am_spam->add_action( "arcane_missiles,if=!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down,chain=1" );
-  am_spam->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
+  am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
+  am_spam->add_action( "evocation" );
   am_spam->add_action( "arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   am_spam->add_action( "arcane_barrage" );
   am_spam->add_action( "arcane_blast" );
