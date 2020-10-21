@@ -2733,6 +2733,7 @@ void print_html_resource_changes_table( report::sc_html_stream& os, const player
      << "<th>Start</th>\n"
      << "<th>Gain/s</th>\n"
      << "<th>Loss/s</th>\n"
+     << "<th>Overflow (Total)</th>\n"
      << "<th>End (Avg)</th>\n"
      << "<th>Min</th>\n"
      << "<th>Max</th>\n"
@@ -2758,11 +2759,13 @@ void print_html_resource_changes_table( report::sc_html_stream& os, const player
                 "<td class=\"right\">%.1f</td>\n"
                 "<td class=\"right\">%.1f</td>\n"
                 "<td class=\"right\">%.1f</td>\n"
+                "<td class=\"right\">%.1f</td>\n"
                 "</tr>\n",
                 util::inverse_tokenize( util::resource_type_string( rt ) ),
                 p.collected_data.combat_start_resource[ rt ].mean(),
                 p.collected_data.resource_gained[ rt ].mean() / p.collected_data.fight_length.mean(),
                 p.collected_data.resource_lost[ rt ].mean() / p.collected_data.fight_length.mean(),
+                p.collected_data.resource_overflowed[ rt ].mean(),
                 p.collected_data.combat_end_resource[ rt ].mean(),
                 p.collected_data.combat_end_resource[ rt ].min(),
                 p.collected_data.combat_end_resource[ rt ].max() );
