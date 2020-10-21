@@ -8659,12 +8659,12 @@ void death_knight_t::default_apl_frost()
 
   // Cooldowns
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.obliteration.enabled&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20", "Cooldowns" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&(buff.breath_of_sindragosa.up|fight_remains<20)&runic_power.deficit>40&rune.time_to_5>gcd" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&runic_power.deficit>40&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
-  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<60)" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.icecap.enabled&!buff.pillar_of_frost.up" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
-  cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.pillar_of_frost.ready&runic_power.deficit<60" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration.enabled" );
   cooldowns -> add_action( this, "Frostwyrm's Fury", "if=active_enemies>=2&cooldown.pillar_of_frost.remains+15>target.time_to_die|fight_remains<gcd" );
   cooldowns -> add_action( this, "Frostwyrm's Fury", "if=talent.obliteration.enabled&!buff.pillar_of_frost.up&((buff.unholy_strength.up|!death_knight.runeforge.fallen_crusader)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice))" );
@@ -8725,7 +8725,7 @@ void death_knight_t::default_apl_frost()
   obliteration -> add_action( this, "Obliterate" );
 
   // Standard rotation
-  standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.biting_cold.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
+  standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.everfrost.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
   standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Frost Strike", "if=conduit.unleashed_frenzy.enabled&buff.unleashed_frenzy.remains<3|conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2" );
