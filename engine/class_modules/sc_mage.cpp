@@ -822,7 +822,6 @@ public:
   void init_finished() override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
-  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void do_dynamic_regen( bool = false ) override;
   void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void reset() override;
@@ -5603,6 +5602,8 @@ struct enlightened_event_t : public event_t
   void execute() override
   {
     mage->events.enlightened = nullptr;
+    // Do a non-forced regen first to figure out if we have enough mana to swap the buffs.
+    mage->do_dynamic_regen();
     mage->update_enlightened( true );
     mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, 2.0_s );
   }
@@ -6788,20 +6789,6 @@ void mage_t::invalidate_cache( cache_e c )
     recalculate_resource_max( RESOURCE_MANA );
 }
 
-double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* a )
-{
-  double g = player_t::resource_gain( resource_type, amount, source, a );
-
-  if ( resource_type == RESOURCE_MANA
-    && source != player_t::gains.resource_regen[ RESOURCE_MANA ]
-    && source != gains.evocation )
-  {
-    update_enlightened( true );
-  }
-
-  return g;
-}
-
 void mage_t::do_dynamic_regen( bool forced )
 {
   player_t::do_dynamic_regen( forced );
@@ -7341,9 +7328,6 @@ void mage_t::update_enlightened( bool double_regen )
 
   timespan_t last_update = state.last_enlightened_update;
   state.last_enlightened_update = sim->current_time();
-
-  // Do a non-forced regen first to figure out if we have enough mana to swap the buffs.
-  do_dynamic_regen();
 
   bool damage_buff = resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent();
   if ( damage_buff && buffs.enlightened_damage->check() == 0 )
