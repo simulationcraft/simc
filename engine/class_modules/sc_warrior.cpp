@@ -1487,6 +1487,7 @@ struct melee_t : public warrior_attack_t
     {
       // Protection generates a static 2 rage per successful auto attack landed
       rage_gain = 2.0;
+      rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
 
     rage_gain = util::round( rage_gain, 1 );
@@ -3992,9 +3993,7 @@ struct revenge_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + ( p()->talents.best_served_cold->effectN( 1 ).percent() *
-                  std::min( target_list().size(),
-                            static_cast<size_t>( p()->talents.best_served_cold->effectN( 2 ).base_value() ) ) );
+    am *= 1.0 + ( p()->talents.best_served_cold->effectN( 1 ).percent());
 
     return am;
   }
