@@ -8679,49 +8679,38 @@ void death_knight_t::default_apl_frost()
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before BoS is available" );
   bos_pooling -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled&rune>=5|active_enemies>=2" );
-  bos_pooling -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit>=25&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=25" );
+  bos_pooling -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit>=25" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&spell_targets.glacial_advance>=2&cooldown.pillar_of_frost.remains>5" );
-  bos_pooling -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit<20&!talent.frostscythe.enabled&cooldown.pillar_of_frost.remains>5" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>5" );
+  bos_pooling -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>5" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&runic_power.deficit>(15+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
-  bos_pooling -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)" );
+  bos_pooling -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&spell_targets.glacial_advance>=2" );
-  bos_pooling -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
+  bos_pooling -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power<=40&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=40" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power<=40" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|active_enemies>=2" );
   bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=rune.time_to_4<gcd|runic_power<=45&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd|runic_power<=45" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=rune.time_to_4<gcd|runic_power<=45" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>=2" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=40&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit>25|rune>3&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power.deficit>25|rune>3" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit>25|rune>3" );
   bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
   // Obliteration rotation
   obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled&active_enemies>=3", "Obliteration rotation" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
-  obliteration -> add_action( this, "Obliterate", "if=!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
+  obliteration -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
   obliteration -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance)))&spell_targets.frostscythe>=2" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10))&buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
-  obliteration -> add_action( this, "Obliterate", "if=buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
+  obliteration -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
   obliteration -> add_talent( this, "Glacial Advance", "if=(!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd)&spell_targets.glacial_advance>=2|!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<15)" );
   obliteration -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<gcd|conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>=2" );
-  obliteration -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd&!talent.frostscythe.enabled" );
-  obliteration -> add_action( this, "Frost Strike", "if=!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd" );
+  obliteration -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   obliteration -> add_talent( this, "Frostcythe", "if=spell_targets.frostscythe>=2" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=!talent.frostscythe.enabled" );
-  obliteration -> add_action( this, "Obliterate" );
+  obliteration -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1))" );
 
   // Standard rotation
   standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.everfrost.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
@@ -8740,20 +8729,16 @@ void death_knight_t::default_apl_frost()
   // AoE Rotation
   aoe -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "AoE Rotation" );
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3),if=!talent.frostscythe.enabled" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Remorseless Winter" );
   aoe -> add_talent( this, "Frostscythe" );
-  aoe -> add_action( this, "Obliterate", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
+  aoe -> add_action( this, "Obliterate", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1)),if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   aoe -> add_talent( this, "Glacial Advance" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<10)),if=!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:death_knight.runeforge.razorice&(debuff.razorice.remains<35%(debuff.razorice.stack+1))" );
   aoe -> add_talent( this, "Horn of Winter" );
   aoe -> add_action( "arcane_torrent" );
 }
