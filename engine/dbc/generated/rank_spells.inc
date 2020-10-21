@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.2.36267
-static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
+// Rank class spells, wow build 9.0.2.36294
+static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -14,7 +14,7 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   {  3,   0, 343241,      0, "Aspect of the Cheetah"             , "Rank 2" },
   {  7,   0, 343196,      0, "Astral Shift"                      , "Rank 2" },
   {  1,  73, 316438,      0, "Avatar"                            , "Rank 2" },
-  {  2,  66, 231665,      0, "Avenger's Shield"                  , "Rank 3" },
+  {  2,  66, 231665,      0, "Avenger's Shield"                  , "Rank 2" },
   {  2,   0, 317872,      0, "Avenging Wrath"                    , "Rank 2" },
   {  2,  65, 327979,      0, "Avenging Wrath"                    , "Rank 3" },
   {  4, 261, 319949,      0, "Backstab"                          , "Rank 2" },
@@ -219,6 +219,7 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   {  8,  62, 321742,      0, "Presence of Mind"                  , "Rank 2" },
   {  8,  62, 321745,      0, "Prismatic Barrier"                 , "Rank 2" },
   { 10,   0, 328670,      0, "Provoke"                           , "Rank 2" },
+  {  5,   0, 346736,      0, "Psychic Scream"                    , "Rank 2" },
   { 10, 268, 343743,      0, "Purifying Brew"                    , "Rank 2" },
   {  8,  63, 321711,      0, "Pyroblast"                         , "Rank 2" },
   {  1,  72, 316452,      0, "Raging Blow"                       , "Rank 2" },

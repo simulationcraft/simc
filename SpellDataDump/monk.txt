@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1799,6 +1799,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Max Targets      : 6
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Tear of Morning (337993 effect#2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
@@ -4952,7 +4953,7 @@ Category         : 1561
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Family Flags     : 4, 67, 80, 103
-Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
+Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6968,7 +6969,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725112)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 444.8573 (coefficient=18.40491) | PvP Coefficient: 0.50000 | Trigger Spell: 273468 | Target: Self (1)
-Description      : When you Blackout Strike, your Stagger is reduced by $s1.
+Description      : When you Blackout Kick, your Stagger is reduced by $s1.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10300,18 +10301,26 @@ Duration         : 3 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 24 seconds
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ..x..... ........ x....... 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Channeled (34), Channeled (38), Requires main-hand weapon (106), Requires off-hand weapon (120), Tick on application (169)
+                 : Channeled (34), Channeled (38), Requires main-hand weapon (106), Tick on application (169)
 Effects          :
-#1 (id=824785)   : Apply Aura (6) | Periodic Dummy (226): every 0.166 seconds
+#1 (id=824785)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=824786)   : Apply Aura (6) | Periodic Dummy (226): every 0.166 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 345714 | Target: Self (1)
+#3 (id=873485)   : Apply Aura (6) | Periodic Dummy (226): every 0.166 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 117418 | Target: Self (1)
-#2 (id=824786)   : Dummy (3)
+#4 (id=873486)   : Apply Aura (6) | Modify Parry% (47)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=873487)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
+#6 (id=873488)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc113656
 Tooltip          : $w3 damage every $t3 sec.
@@ -10492,7 +10501,7 @@ Description      : $@spelldesc323999
 Name             : Harm Denial (id=336379) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 15 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 15 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10512,7 +10521,7 @@ Description      : Expel Harm's healing is increased by |cFFFFFFFF${$s1}.1%|r.
 Name             : Inner Fury (id=336452) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 16 (values=4.0, 4.4, 4.8, 5.2, 5.6, 6.0, 6.4, 6.8, 7.2, 7.6, 8.0, 8.4, 8.8, 9.2, 9.6)
+Conduit Id       : 16 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10532,7 +10541,7 @@ Description      : Fists of Fury's damage is increased by |cFFFFFFFF${$s1}.1%|r.
 Name             : Calculated Strikes (id=336526) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 19 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 19 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10550,7 +10559,7 @@ Description      : Spinning Crane Kick's bonus from striking a unique target wit
 Name             : Coordinated Offensive (id=336598) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 22 (values=7.0, 7.7, 8.4, 9.1, 9.8, 10.5, 11.2, 11.9, 12.6, 13.3, 14.0, 14.7, 15.4, 16.1, 16.799999)
+Conduit Id       : 22 (values=8.75, 9.625, 10.5, 11.375, 12.25, 13.125, 14.0, 14.875, 15.75, 16.625, 17.5, 18.375, 19.25, 20.125, 21.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10568,7 +10577,7 @@ Description      : $?s152173[Serenity's damage bonus is increased by |cFFFFFFFF$
 Name             : Xuen's Bond (id=336616) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 24 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 24 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10590,7 +10599,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 60 seconds
 Proc Chance      : 101%
-Conduit Id       : 25 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
+Conduit Id       : 25 (values=15.0, 16.799999, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10611,7 +10620,7 @@ Variables        : $chance=${30}
 Name             : Jade Bond (id=336773) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 28 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 28 (values=6.25, 6.875, 7.5, 8.125, 8.75, 9.375, 10.0, 10.625, 11.25, 11.875, 12.5, 13.125, 13.75, 14.375, 15.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10631,7 +10640,7 @@ Description      : Abilities that activate Gust of Mist reduce the cooldown on $
 Name             : Resplendent Mist (id=336812) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 31 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 31 (values=50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10652,7 +10661,7 @@ Name             : Fortifying Ingredients (id=336853) [Spell Family (53), Passiv
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Conduit Id       : 33 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 33 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10689,7 +10698,7 @@ Tooltip          : Absorbs $w1 damage.
 Name             : Lingering Numbness (id=336884) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 35 (values=380.0, 418.0, 456.0, 494.0, 532.0, 570.0, 608.0, 646.0, 684.0, 722.0, 760.0, 798.0, 836.0, 874.0, 912.0)
+Conduit Id       : 35 (values=400.0, 440.0, 480.0, 520.0, 560.0, 600.0, 640.0, 680.0, 720.0, 760.0, 800.0, 840.0, 880.0, 920.0, 960.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10707,7 +10716,7 @@ Description      : When Paralysis ends, your target's movement speed is reduced 
 Name             : Dizzying Tumble (id=336890) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 37 (values=-50.0, -55.0, -60.0, -65.0, -70.0, -75.0, -80.0, -85.0, -90.0, -95.0, -100.0, -105.0, -110.0, -115.0, -120.0)
+Conduit Id       : 37 (values=-62.5, -68.75, -75.0, -81.25, -87.5, -93.75, -100.0, -106.25, -112.5, -118.75, -125.0, -131.25, -137.5, -143.75, -150.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10725,7 +10734,7 @@ Description      : Targets affected by your Leg Sweep deal |cFFFFFFFF${$s1*-.1}.
 Name             : Swift Transference (id=337078) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 41 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 41 (values=12.5, 13.75, 15.0, 16.25, 17.5, 18.75, 20.0, 21.25, 22.5, 23.75, 25.0, 26.25, 27.5, 28.75, 30.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10743,7 +10752,7 @@ Description      : Transcendence: Transfer increases your movement speed by |cFF
 Name             : Tumbling Technique (id=337084) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 42 (values=50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0)
+Conduit Id       : 42 (values=60.0, 66.0, 72.0, 78.0, 84.0, 90.0, 96.0, 102.0, 108.0, 114.0, 120.0, 126.0, 132.0, 138.0, 144.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10762,7 +10771,7 @@ Name             : Rising Sun Revival (id=337099) [Spell Family (53), Passive, H
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 44 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 44 (values=12.5, 13.75, 15.0, 16.25, 17.5, 18.75, 20.0, 21.25, 22.5, 23.75, 25.0, 26.25, 27.5, 28.75, 30.0)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10784,7 +10793,7 @@ Description      : Rising Sun Kick reduces the remaining cooldown on Revival by 
 Name             : Scalding Brew (id=337119) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 46 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 46 (values=7.5, 8.25, 9.0, 9.75, 10.5, 11.25, 12.0, 12.75, 13.5, 14.25, 15.0, 15.75, 16.5, 17.25, 18.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10802,7 +10811,7 @@ Description      : Keg Smash deals an additional |cFFFFFFFF${$s1}.1%|r damage to
 Name             : Celestial Effervescence (id=337134) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 47 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 47 (values=18.75, 20.625, 22.5, 24.375, 26.25, 28.125, 30.0, 31.875, 33.75, 35.625, 37.5, 39.375, 41.25, 43.125, 45.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10861,7 +10870,7 @@ Description      : Activating Thunder Focus Tea causes you to exhale the breath 
 Name             : Nourishing Chi (id=337241) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 54 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 54 (values=18.75, 20.625, 22.5, 24.375, 26.25, 28.125, 30.0, 31.875, 33.75, 35.625, 37.5, 39.375, 41.25, 43.125, 45.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10879,7 +10888,7 @@ Description      : Life Cocoon increases healing over time received by an additi
 Name             : Evasive Stride (id=337250) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 56 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 56 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10897,7 +10906,7 @@ Description      : During Shuffle, Heavy Stagger has a |cFFFFFFFF${$s1/10}.1%|r 
 Name             : Walk with the Ox (id=337264) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 57 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 57 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10937,7 +10946,7 @@ Description      : $@spelldesc337225
 Name             : Strike with Clarity (id=337286) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 59 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 59 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10949,7 +10958,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=835228)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835229)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Weapons of Order's duration is increased by ${$s2/1000}.1 sec, it increases your Mastery by an additional |cFFFFFFFF$<mastery>%|r.
@@ -11073,7 +11082,7 @@ Tooltip          : During $?s115008[Chi Torpedo][Roll], you are immune to roots 
 Name             : Bone Marrow Hops (id=337295) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 60 (values=32.0, 35.200001, 38.400002, 41.599998, 44.799999, 48.0, 51.200001, 54.400002, 57.599998, 60.799999, 64.0, 67.199997, 70.400002, 73.599998, 76.800003)
+Conduit Id       : 60 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11134,7 +11143,7 @@ Description      : You gain $338321m1% haste for $338321d after summoning your C
 Name             : Imbued Reflections (id=337301) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 62 (values=29.0, 31.9, 34.799999, 37.700001, 40.599998, 43.5, 46.400002, 49.299999, 52.200001, 55.099998, 58.0, 60.900002, 63.799999, 66.699997, 69.599998)
+Conduit Id       : 62 (values=36.25, 39.875, 43.5, 47.125, 50.75, 54.375, 58.0, 61.625, 65.25, 68.875, 72.5, 76.125, 79.75, 83.375, 87.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11152,7 +11161,7 @@ Description      : Fallen Order monks deal |cFFFFFFFF${$s1}.1%|r more damage and
 Name             : Way of the Fae (id=337303) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 63 (values=4.4, 4.8, 5.3, 5.7, 6.2, 6.6, 7.0, 7.5, 7.9, 8.4, 8.8, 9.2, 9.7, 10.1, 10.6)
+Conduit Id       : 63 (values=5.5, 6.05, 6.6, 7.15, 7.7, 8.25, 8.8, 9.35, 9.9, 10.45, 11.0, 11.55, 12.1, 12.65, 13.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11960,6 +11969,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Extend Life (185158 effect#2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Triggered by     : Fists of Fury (330898)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -1714,7 +1714,7 @@ Resource         : 3 Holy Power (9) (id=4098)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Royal Decree (340147 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Royal Decree (340147 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2538,7 +2538,6 @@ Effects          :
 
 Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin, Death Knight
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2947,9 +2946,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=215490)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
-#3 (id=317057)   : Energize Power% (137)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $?s137027[$s2 Holy Power][$s3% of your mana].
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 Holy Power.
 
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
 Class            : Paladin
@@ -3242,8 +3239,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=263301)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#2 (id=873920)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : @$spelldesc321136
-Tooltip          : After ${$321136s1~-$w1} Shield of the Righteous, your next Word of Glory is free.
+Tooltip          : After ${$321136s1~-$w1} $?$w1<$w2[Shields][Shield] of the Righteous, your next Word of Glory is free.
 
 Name             : Hand of Hindrance (id=183218) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -4851,7 +4850,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Judgment causes the target to take $s1% increased damage from your next Holy Power ability.
 
-Name             : Avenger's Shield (desc=Rank 3) (id=231665) [Spell Family (10), Passive] 
+Name             : Avenger's Shield (desc=Rank 2) (id=231665) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Holy
 Spell Type       : None
@@ -7844,8 +7843,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=749914)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 445.3021 (coefficient=18.42331) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Family Flags: 125
-Description      : Your $?s213652[Hand of the Protector][Light of the Protector] heals for $s1 additional healing, and is always increased by 200% during Avenging Wrath.
+                   Affected Spells: Word of Glory (85673)
+                   Family Flags: 78
+Description      : Word of Glory heals for $s1 additional healing. During Avenging Wrath, it receives the maximum value of any health-based bonuses.
 
 Name             : Glimmer of Light (id=287268) [Scaling Spell (-8), Spell Family (10), Passive] 
 Class            : Paladin
@@ -8627,7 +8627,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=808622)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every $s1 Shield of the Righteous make your next Word of Glory free.
+Description      : Every $s1 Shields of the Righteous make your next Word of Glory free.
 
 Name             : Glimmer of Light (id=325966) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -8993,7 +8993,7 @@ Resource         : 1 Holy Power (9) (id=215248)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Duration         : 15 seconds
+Duration         : 20 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%

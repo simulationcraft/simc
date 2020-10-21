@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (hotfix 2020-10-17/36267, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -651,7 +651,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173), Periodic effect can crit (265), Duration affected by haste (273)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25240 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -1589,7 +1589,7 @@ Effects          :
 #1 (id=41944)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | PvP Coefficient: 1.00000 | Target: Unknown(77)
 #2 (id=326288)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14824 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -3203,7 +3203,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1907 | Target: Self (1)
                    Affected Spells (Category): Shadow Crash (342834)
 #12 (id=868091)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 700 | Scaled Value: 700 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
                    Family Flags: 13
 
@@ -3322,11 +3322,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
 Description      : Your Shadowy Apparitions now deal $s1% increased damage and generate ${$m2/100} Insanity.
@@ -3812,6 +3812,8 @@ Effects          :
                    Affected Spells (Category): Shadow Word: Void (205351)
 #16 (id=752803)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#17 (id=873697)   : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 28 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc228264
 Tooltip          : Mind Blast has an additional charge.
 $?s193225[Spell damage dealt increased by $w16%.][Spell damage dealt increased by $w1%.]
@@ -7208,8 +7210,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734503)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.9565 (coefficient=0.0627) | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : When Voidform ends, gain $s1 Critical Strike for each stack of Voidform. This effect decays every $279572t3 sec.
+                   Base Value: 0 | Scaled Value: 7.03703 (coefficient=0.074074) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : When Voidform ends, gain $s1 Critical Strike, stacking 20 times. This effect decays every $279572t3 sec.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -9041,7 +9043,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=812771)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 0.67000 | Target: Enemy (6)
 #2 (id=812776)   : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=812810)   : Apply Aura (6) | Dummy (4)
@@ -9568,7 +9570,7 @@ Stance Mask      : 0x08000000
 Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Mend (342992 effect#1)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -9578,9 +9580,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.61200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=832088)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -9751,7 +9753,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=833243)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Shadow Word: Death consumes $s1 sec of Shadow Word: Pain and Vampiric Touch, instantly dealing that damage to the target and generating up to ${2*$336167s2/10} Insanity.
 
 Name             : Painbreaker Psalm (id=336167) 
@@ -9772,7 +9774,7 @@ Effects          :
 #1 (id=833246)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=833247)   : Energize Power (30)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc336165
 
 Name             : Eternal Call to the Void (id=336214) [Spell Family (6), Passive] 
@@ -10014,7 +10016,7 @@ Description      : After Spirit of Redemption expires, you will revive at up to 
 Name             : Translucent Image (id=337662) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 66 (values=-5.0, -5.5, -6.0, 6.5, -7.0, -7.5, -8.0, -8.5, -9.0, -9.5, -10.0, -10.5, -11.0, -11.5, -12.0)
+Conduit Id       : 66 (values=-6.0, -6.6, -7.2, -7.8, -8.4, -9.0, -9.6, -10.2, -10.8, -11.4, -12.0, -12.6, -13.2, -13.8, -14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10033,7 +10035,7 @@ Name             : Move with Grace (id=337678) [Spell Family (6), Passive, Hidde
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 67 (values=9.0, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 18.0, 18.9, 19.799999, 20.700001, 21.6)
+Conduit Id       : 67 (values=11.0, 12.1, 13.2, 14.3, 15.4, 16.5, 17.6, 18.700001, 19.799999, 20.9, 22.0, 23.1, 24.200001, 25.299999, 26.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10051,7 +10053,7 @@ Description      : Levitate grants |cFFFFFFFF${$s1}.1%|r increased movement spee
 Name             : Clear Mind (id=337707) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 69 (values=-15.0, -16.5, -18.0, -19.5, -21.0, -22.5, -24.0, -25.5, -27.0, -28.5, -30.0, -31.5, -33.0, -34.5, -36.0)
+Conduit Id       : 69 (values=-20.0, -22.0, -24.0, -26.0, -28.0, -30.0, -32.0, -34.0, -36.0, -38.0, -40.0, -42.0, -44.0, -46.0, -48.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10071,7 +10073,7 @@ Description      : Dispel Magic, Purify, and Mass Dispel cost |cFFFFFFFF${$s1*-1
 Name             : Charitable Soul (id=337715) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 71 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 71 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10090,7 +10092,7 @@ Name             : Light's Inspiration (id=337748) [Spell Family (6), Passive, H
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 72 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 72 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10110,7 +10112,7 @@ Description      : Desperate Prayer heals you for an additional |cFFFFFFFF${$s1}
 Name             : Power Unto Others (id=337762) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 73 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 73 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10128,7 +10130,7 @@ Description      : Power Infusion incurs a |cFFFFFFFF${$s1}.1 sec|r reduced cool
 Name             : Shining Radiance (id=337778) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 75 (values=33.0, 36.900002, 39.599998, 42.900002, 46.200001, 49.5, 52.799999, 56.099998, 59.400002, 62.700001, 66.0, 69.300003, 72.599998, 75.900002, 79.199997)
+Conduit Id       : 75 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10148,7 +10150,7 @@ Description      : Power Word: Radiance's healing is increased by |cFFFFFFFF${$s
 Name             : Pain Transformation (id=337786) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 76 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
+Conduit Id       : 76 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10166,7 +10168,7 @@ Description      : Pain Suppression also heals your target for |cFFFFFFFF${$s1}.
 Name             : Exaltation (id=337790) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 77 (values=10.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0)
+Conduit Id       : 77 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10190,7 +10192,7 @@ Description      : $?s109964[Spirit Shell's][Rapture's] duration is increased by
 Name             : Lasting Spirit (id=337811) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 78 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 78 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10214,7 +10216,7 @@ Description      : Guardian Spirit's duration is increased by ${$s2/1000}.1 sec,
 Name             : Swift Penitence (id=337891) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 81 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 81 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10232,7 +10234,7 @@ Description      : The damage or healing of your first bolt of Penance is increa
 Name             : Focused Mending (id=337914) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 82 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 82 (values=38.0, 41.799999, 45.599998, 49.400002, 53.200001, 57.0, 60.799999, 64.599998, 68.400002, 72.199997, 76.0, 79.800003, 83.599998, 87.400002, 91.199997)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10251,7 +10253,7 @@ Name             : Resonant Words (id=337947) [Spell Family (6), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 84 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 84 (values=38.0, 41.799999, 45.599998, 49.400002, 53.200001, 57.0, 60.799999, 64.599998, 68.400002, 72.199997, 76.0, 79.800003, 83.599998, 87.400002, 91.199997)
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10271,7 +10273,7 @@ Description      : Casting a Holy Word spell increases the healing of your next 
 Name             : Mental Recovery (id=337954) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 85 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 85 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10289,7 +10291,7 @@ Description      : After $?s205369[Mind Bomb][Psychic Scream] ends, affected tar
 Name             : Courageous Ascension (id=337966) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 87 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 87 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 38.0, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10311,7 +10313,7 @@ Name             : Festering Transfusion (id=337979) [Spell Family (6), Passive,
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 90 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 90 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10334,7 +10336,7 @@ Name             : Fae Fermata (id=338305) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 101 (values=3000.0, 3300.0, 3600.0, 3900.0, 4200.0, 4500.0, 4800.0, 5100.0, 5400.0, 5700.0, 6000.0, 6300.0, 6600.0, 6900.0, 7200.0)
+Conduit Id       : 101 (values=3800.0, 4180.0, 4560.0, 4940.0, 5320.0, 5700.0, 6080.0, 6460.0, 6840.0, 7220.0, 7600.0, 7980.0, 8360.0, 8740.0, 9120.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10354,7 +10356,7 @@ Description      : Your Fae Guardians leave behind a $s2% effective copy of thei
 Name             : Shattered Perceptions (id=338315) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 105 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 105 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10380,7 +10382,7 @@ Description      : Mindgames lasts an additional ${$s3/1000}.1 sec, deals an add
 Name             : Haunting Apparitions (id=338319) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 107 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 107 (values=31.0, 34.099998, 37.200001, 40.299999, 35.0, 46.5, 49.599998, 52.700001, 55.799999, 58.900002, 62.0, 65.099998, 68.199997, 71.300003, 74.400002)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10400,7 +10402,7 @@ Description      : Your Shadowy Apparitions deal |cFFFFFFFF${$s1}.1%|r more dama
 Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 113 (values=7.0, 7.7, 8.4, 9.1, 9.8, 10.5, 11.2, 11.9, 12.6, 13.3, 14.0, 14.7, 15.4, 16.1, 16.799999)
+Conduit Id       : 113 (values=9.0, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 14.0, 18.9, 19.799999, 20.700001, 21.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10422,7 +10424,7 @@ Description      : Mind Blast deals |cFFFFFFFF${$s1}.1%|r increased damage and h
 Name             : Rabid Shadows (id=338338) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 114 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 114 (values=19.0, 20.9, 22.799999, 24.700001, 26.6, 28.5, 30.4, 32.299999, 34.200001, 36.099998, 38.0, 31.5, 41.799999, 43.700001, 45.599998)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10435,14 +10437,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836863)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your $?s200174[Mindbender][Shadowfiend]'s attack speed is increased by |cFFFFFFFF${$s1}.1%|r .
+Description      : Your $?s200174[Mindbender][Shadowfiend]'s attack speed is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Dissonant Echoes (id=338342) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 115 (values=2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0)
+Conduit Id       : 115 (values=3.1, 3.41, 3.72, 4.03, 4.34, 4.65, 4.96, 5.27, 5.58, 5.89, 6.2, 6.51, 6.82, 7.13, 7.44)
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10468,7 +10470,7 @@ While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1%|r chance to reset the co
 Name             : Holy Oration (id=338345) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 116 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 116 (values=6.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10623,7 +10625,7 @@ Name             : Searing Nightmare (id=341385) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 35 Insanity (13) (id=215269)
+Resource         : 30 Insanity (13) (id=215269)
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -10631,7 +10633,7 @@ Stance Mask      : 0x08000000
 Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
 Family Flags     : 72
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ...x.... ........   x....... .x...... ........ ......x. 
+                 : ........ ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -10988,7 +10990,7 @@ Effects          :
 #2 (id=845062)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845063)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1200 | Scaled Value: 1200 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #4 (id=872630)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Sends a bolt of pure void energy at the enemy, causing $s2 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by $<ext> sec][]. Requires Voidform.
@@ -11013,7 +11015,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=845699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your damage is increased by ${$m1}.1% for each of Shadow Word: Pain, Vampiric Touch and Devouring Plague on the target. During Void Form, all targets receive the maximum effect.
+Description      : Your damage is increased by ${$m1}.1% for each of Shadow Word: Pain, Vampiric Touch and Devouring Plague on the target. During Voidform, all targets receive the maximum effect.
 
 Name             : Shadowfiend (desc=Rank 2) (id=343726) [Spell Family (6), Passive] 
 Class            : Discipline Priest
@@ -11251,5 +11253,24 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=872429)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Psychic Scream (desc=Rank 2) (id=346736) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=873518)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
+Description      : Psychic Scream can withstand $s1% more damage before breaking.
 
 
