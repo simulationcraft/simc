@@ -799,6 +799,8 @@ public:
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_target_crit_chance( player_t* target ) const override;
+  double    composite_player_target_armor( player_t* target ) const override;
   double    resource_regen_per_second( resource_e ) const override;
   double    passive_movement_modifier() const override;
   double    temporary_movement_modifier() const override;
@@ -1528,24 +1530,6 @@ public:
     }
 
     return c;
-  }
-
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double c = ab::composite_target_crit_chance( target );
-
-    c += td( target )->debuffs.between_the_eyes->stack_value();
-
-    return c;
-  }
-
-  double target_armor( player_t* target ) const override
-  {
-    double a = ab::target_armor( target );
-    
-    a *= 1.0 - td( target )->debuffs.find_weakness->value();
-    
-    return a;
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
@@ -6752,6 +6736,28 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
   m *= 1.0 + tdata->debuffs.prey_on_the_weak->stack_value();
 
   return m;
+}
+
+// rogue_t::composite_player_target_crit_chance =============================
+
+double rogue_t::composite_player_target_crit_chance( player_t* target ) const
+{
+  double c = player_t::composite_player_target_crit_chance( target );
+
+  c += get_target_data( target )->debuffs.between_the_eyes->stack_value();
+
+  return c;
+}
+
+// rogue_t::composite_player_target_armor ===================================
+
+double rogue_t::composite_player_target_armor( player_t* target ) const
+{
+  double a = player_t::composite_player_target_armor( target );
+
+  a *= 1.0 - get_target_data( target )->debuffs.find_weakness->value();
+
+  return a;
 }
 
 // rogue_t::default_flask ===================================================
