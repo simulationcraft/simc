@@ -2358,7 +2358,11 @@ struct trick_shots_t : public buff_t
     bool ret = buff_t::trigger( stacks, value, chance, duration );
 
     if ( ret )
-      debug_cast<hunter_t*>( player ) -> buffs.secrets_of_the_vigil -> trigger();
+    {
+      hunter_t* p = debug_cast<hunter_t*>( player );
+      if ( p -> buffs.secrets_of_the_vigil -> trigger() )
+        p -> cooldowns.aimed_shot -> reset( true );
+    }
 
     return ret;
   }
