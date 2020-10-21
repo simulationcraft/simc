@@ -634,11 +634,11 @@ public:
   // State
   struct state_t
   {
-    bool brain_freeze_active = false;
-    bool fingers_of_frost_active = false;
-    int mana_gem_charges = 0;
-    double from_the_ashes_mastery = 0.0;
-    timespan_t last_enlightened_update = timespan_t::min();
+    bool brain_freeze_active;
+    bool fingers_of_frost_active;
+    int mana_gem_charges;
+    double from_the_ashes_mastery;
+    timespan_t last_enlightened_update;
   } state;
 
   // Talents
@@ -1817,7 +1817,7 @@ public:
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
         {
-          make_event( *sim, 0_ms, [ this, t = s->target ]
+          make_event( *sim, [ this, t = s->target ]
           {
             p()->action.arcane_echo->set_target( t );
             p()->action.arcane_echo->execute();
@@ -2693,7 +2693,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     // will be consumed by Arcane Blast will not benefit from the damage bonus.
     // Check if this is still the case closer to Shadowlands release.
     if ( result_is_hit( s-> result ) && p()->conduits.nether_precision.ok() )
-      make_event( sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
   }
 
   double action_multiplier() const override
@@ -3357,7 +3357,7 @@ struct counterspell_t : public mage_spell_t
     bool success = p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
     if ( success && p()->conduits.grounding_surge.ok() )
       // At this point, Counterspell's cooldown hasn't started yet. Do the CDR in a separate event.
-      make_event( *sim, 0_ms, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
+      make_event( *sim, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -6794,8 +6794,8 @@ void mage_t::do_dynamic_regen( bool forced )
   player_t::do_dynamic_regen( forced );
 
   // Only update Enlightened buffs on resource updates that actually occur in game.
-  if ( forced )
-    update_enlightened();
+  if ( forced && talents.enlightened->ok() )
+    make_event( *sim, [ this ] { update_enlightened(); } );
 }
 
 void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
@@ -7323,18 +7323,12 @@ void mage_t::update_enlightened( bool double_regen )
   if ( !talents.enlightened->ok() )
     return;
 
-  if ( sim->current_time() == state.last_enlightened_update )
-    return;
-
-  timespan_t last_update = state.last_enlightened_update;
-  state.last_enlightened_update = sim->current_time();
-
   bool damage_buff = resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent();
   if ( damage_buff && buffs.enlightened_damage->check() == 0 )
   {
     // Periodic mana regen happens twice whenever the mana regen buff from Enlightened expires.
-    if ( bugs && double_regen )
-      regen( sim->current_time() - last_update );
+    if ( bugs && double_regen && sim->current_time() > state.last_enlightened_update )
+      regen( sim->current_time() - state.last_enlightened_update );
 
     buffs.enlightened_damage->trigger();
     buffs.enlightened_mana->expire();
@@ -7344,6 +7338,8 @@ void mage_t::update_enlightened( bool double_regen )
     buffs.enlightened_damage->expire();
     buffs.enlightened_mana->trigger();
   }
+
+  state.last_enlightened_update = sim->current_time();
 }
 
 void mage_t::update_from_the_ashes()
