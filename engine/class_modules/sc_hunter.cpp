@@ -750,7 +750,6 @@ public:
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
   void trigger_calling_the_shots();
-  void trigger_nessingwarys_apparatus( action_t* a );
 
   void consume_trick_shots();
 };
@@ -991,11 +990,8 @@ public:
       ab::player -> buffs.lucid_dreams -> trigger();
   }
 
-  virtual double cast_regen( const action_state_t* s ) const
+  virtual double energize_cast_regen( const action_state_t* s ) const
   {
-    const timespan_t execute_time = this -> execute_time();
-    const timespan_t cast_time = std::max( execute_time, this -> gcd() );
-    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
     const int num_targets = this -> n_targets();
     size_t targets_hit = 1;
     if ( ab::energize_type == action_energize::PER_HIT && ( num_targets == -1 || num_targets > 0 ) )
@@ -1003,8 +999,17 @@ public:
       size_t tl_size = this -> target_list().size();
       targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
     }
+    return targets_hit * this -> composite_energize_amount( s );
+  }
+
+  virtual double cast_regen( const action_state_t* s ) const
+  {
+    const timespan_t execute_time = this -> execute_time();
+    const timespan_t cast_time = std::max( execute_time, this -> gcd() );
+    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
+
     double total_regen = regen * cast_time.total_seconds();
-    double total_energize = targets_hit * this -> composite_energize_amount( s );
+    double total_energize = energize_cast_regen( s );
 
     if ( ab::player -> buffs.memory_of_lucid_dreams -> check() )
     {
@@ -1019,7 +1024,7 @@ public:
     if ( p() -> buffs.nesingwarys_apparatus -> check() )
     {
       const double mul = p() -> buffs.nesingwarys_apparatus -> check_value();
-      const timespan_t remains = ab::player -> buffs.memory_of_lucid_dreams -> remains();
+      const timespan_t remains = p() -> buffs.nesingwarys_apparatus -> remains();
       total_regen += regen * std::min( cast_time, remains ).total_seconds() * mul;
       if ( execute_time < remains )
         total_energize *= 1 + mul;
@@ -2458,16 +2463,6 @@ void hunter_t::trigger_calling_the_shots()
   cooldowns.trueshot -> adjust( - talents.calling_the_shots -> effectN( 1 ).time_value() );
 }
 
-void hunter_t::trigger_nessingwarys_apparatus( action_t* a )
-{
-  if ( !legendary.nesingwarys_apparatus.ok() )
-    return;
-
-  double amount = buffs.nesingwarys_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
-  resource_gain( RESOURCE_FOCUS, amount, gains.nesingwarys_apparatus_direct, a );
-  buffs.nesingwarys_apparatus -> trigger();
-}
-
 void hunter_t::consume_trick_shots()
 {
   if ( buffs.volley -> up() )
@@ -3156,11 +3151,10 @@ struct chimaera_shot_bm_t: public hunter_ranged_attack_t
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
   double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 
-  double cast_regen( const action_state_t* s ) const override
+  double energize_cast_regen( const action_state_t* ) const override
   {
     const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
-    return hunter_ranged_attack_t::cast_regen( s ) +
-           ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
+    return targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr );
   }
 };
 
@@ -3905,10 +3899,10 @@ struct rapid_fire_t: public hunter_spell_t
     return ( num_ticks( s ) - 1 ) * tick_time( s );
   }
 
-  double cast_regen( const action_state_t* s ) const override
+  double energize_cast_regen( const action_state_t* s ) const override
   {
-    return hunter_spell_t::cast_regen( s ) +
-           num_ticks( s ) * damage -> composite_energize_amount( nullptr );
+    // XXX: Not exactly true for Nesingwary's because the buff can fall off mid-channel. Meh
+    return num_ticks( s ) * damage -> composite_energize_amount( nullptr );
   }
 
   int num_ticks( const action_state_t* s ) const
@@ -4279,9 +4273,9 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t::init_finished();
   }
 
-  double cast_regen( const action_state_t* s ) const override
+  double energize_cast_regen( const action_state_t* ) const override
   {
-    return hunter_melee_attack_t::cast_regen( s ) + damage -> composite_energize_amount( nullptr );
+    return damage -> composite_energize_amount( nullptr );
   }
 
   void execute() override
@@ -4749,24 +4743,50 @@ struct summon_pet_t: public hunter_spell_t
   }
 };
 
-// Tar Trap =====================================================================
+// Trap =========================================================================
+// Base Trap action
 
-struct tar_trap_t : public hunter_spell_t
+struct trap_base_t : hunter_spell_t
 {
-  tar_trap_t( hunter_t* p, util::string_view options_str ) :
-    hunter_spell_t( "tar_trap", p, p -> find_class_spell( "Tar Trap" ) )
+  trap_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
+    hunter_spell_t( n, p, s )
   {
-    parse_options( options_str );
-
     harmful = may_miss = false;
-    cooldown -> duration = data().cooldown();
   }
 
   void impact( action_state_t* s ) override
   {
     hunter_spell_t::impact( s );
 
-    p() -> trigger_nessingwarys_apparatus( this );
+    if ( p() -> legendary.nesingwarys_apparatus.ok() )
+    {
+      double amount = p() -> buffs.nesingwarys_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
+      p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_apparatus_direct, this );
+      p() -> buffs.nesingwarys_apparatus -> trigger();
+    }
+  }
+
+  double energize_cast_regen( const action_state_t* ) const override
+  {
+    if ( p() -> legendary.nesingwarys_apparatus.ok() )
+      return p() -> buffs.nesingwarys_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
+    return 0;
+  }
+};
+
+// Tar Trap =====================================================================
+
+struct tar_trap_t : public trap_base_t
+{
+  tar_trap_t( hunter_t* p, util::string_view options_str ) :
+    trap_base_t( "tar_trap", p, p -> find_class_spell( "Tar Trap" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    trap_base_t::impact( s );
 
     p() -> state.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, 30_s );
   }
@@ -4774,22 +4794,12 @@ struct tar_trap_t : public hunter_spell_t
 
 // Freezing Trap =====================================================================
 
-struct freezing_trap_t : public hunter_spell_t
+struct freezing_trap_t : public trap_base_t
 {
   freezing_trap_t( hunter_t* p, util::string_view options_str ) :
-    hunter_spell_t( "freezing_trap", p, p -> find_class_spell( "Freezing Trap" ) )
+    trap_base_t( "freezing_trap", p, p -> find_class_spell( "Freezing Trap" ) )
   {
     parse_options( options_str );
-
-    harmful = may_miss = false;
-    cooldown -> duration = data().cooldown();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_spell_t::impact( s );
-
-    p() -> trigger_nessingwarys_apparatus( this );
   }
 };
 
