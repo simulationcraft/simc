@@ -1571,8 +1571,9 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
 struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
   double empowerment;
+  double mastery_value;
 
-  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 )
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
@@ -1585,6 +1586,23 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
       empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
     else if ( s->id() == p.spec.eclipse_lunar->id() )
       empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
+  }
+
+  void snapshot_mastery()
+  {
+    mastery_value = p().cache.mastery_value();
+  }
+
+  void execute( int s, double v, timespan_t d ) override
+  {
+    snapshot_mastery();
+    base_t::execute( s, v, d );
+  }
+
+  void extend_duration( player_t* p, timespan_t d ) override
+  {
+    snapshot_mastery();
+    base_t::extend_duration( p, d );
   }
 
   double value() override
@@ -2260,8 +2278,9 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreambinder );
     // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
-    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
-    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    // effect#3/#4 handled separately due to snapshotting
+    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u, 4u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2u, 4u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -2911,11 +2930,44 @@ private:
   using ab = druid_spell_base_t<spell_t>;
 
 public:
+  bool da_solar, ta_solar, da_lunar, ta_lunar;
+
   druid_spell_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  util::string_view options = std::string() )
-    : base_t( token, p, s )
+    : base_t( token, p, s ), da_solar( false ), ta_solar( false ), da_lunar( false ), ta_lunar( false )
   {
     parse_options( options );
+
+    da_solar = data().affected_by( p->spec.eclipse_solar->effectN( 3 ) );
+    ta_solar = data().affected_by( p->spec.eclipse_solar->effectN( 4 ) );
+    da_lunar = data().affected_by( p->spec.eclipse_lunar->effectN( 3 ) );
+    ta_lunar = data().affected_by( p->spec.eclipse_lunar->effectN( 4 ) );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = ab::composite_da_multiplier( s );
+
+    if ( da_solar && p()->buff.eclipse_solar->up() )
+      da *= 1.0 + debug_cast<buffs::eclipse_buff_t*>( p()->buff.eclipse_solar )->mastery_value;
+
+    if ( da_lunar && p()->buff.eclipse_lunar->up() )
+      da *= 1.0 + debug_cast<buffs::eclipse_buff_t*>( p()->buff.eclipse_lunar )->mastery_value;
+
+    return da;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double ta = ab::composite_ta_multiplier( s );
+
+    if ( ta_solar && p()->buff.eclipse_solar->up() )
+      ta *= 1.0 + debug_cast<buffs::eclipse_buff_t*>( p()->buff.eclipse_solar )->mastery_value;
+
+    if ( ta_lunar && p()->buff.eclipse_lunar->up() )
+      ta *= 1.0 + debug_cast<buffs::eclipse_buff_t*>( p()->buff.eclipse_lunar )->mastery_value;
+
+    return ta;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
