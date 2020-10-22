@@ -631,6 +631,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
     // random testing stuff
     bool unblinking_vigil_on_execute = false;
+    bool brutal_projectiles_on_execute = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -3710,6 +3711,9 @@ struct rapid_fire_t: public hunter_spell_t
 
       p() -> buffs.trick_shots -> up(); // benefit tracking
 
+      if ( p() -> options.brutal_projectiles_on_execute )
+        trigger_brutal_projectiles();
+
       if ( rng().roll( focused_fire.chance ) )
         p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
@@ -3722,15 +3726,8 @@ struct rapid_fire_t: public hunter_spell_t
       if ( s -> chain_target == 0 )
         triggers_wild_spirits = false;
 
-      if ( p() -> buffs.brutal_projectiles -> check() )
-      {
-        p() -> buffs.brutal_projectiles_hidden -> trigger();
-        p() -> buffs.brutal_projectiles -> expire();
-      }
-      else if ( p() -> buffs.brutal_projectiles_hidden -> check() )
-      {
-        p() -> buffs.brutal_projectiles_hidden -> trigger();
-      }
+      if ( !p() -> options.brutal_projectiles_on_execute )
+        trigger_brutal_projectiles();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -3749,6 +3746,19 @@ struct rapid_fire_t: public hunter_spell_t
       b += surging_shots.value * std::min( parent_dot -> current_tick, surging_shots.max_num_ticks );
 
       return b;
+    }
+
+    void trigger_brutal_projectiles() const
+    {
+      if ( p() -> buffs.brutal_projectiles -> check() )
+      {
+        p() -> buffs.brutal_projectiles_hidden -> trigger();
+        p() -> buffs.brutal_projectiles -> expire();
+      }
+      else if ( p() -> buffs.brutal_projectiles_hidden -> check() )
+      {
+        p() -> buffs.brutal_projectiles_hidden -> trigger();
+      }
     }
   };
 
@@ -7538,6 +7548,7 @@ void hunter_t::create_options()
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
   add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
+  add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
