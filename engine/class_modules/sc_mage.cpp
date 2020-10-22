@@ -7808,6 +7808,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_effect( "Mage", "2020-10-22", "Arcane Pummeling nerf on live servers.", 720338 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.5 )
+      .verification_value( 2.355828 );
   }
 
   bool valid() const override { return true; }
