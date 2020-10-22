@@ -3178,7 +3178,7 @@ public:
     {
       parse_options( options_str );
 
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
       owner = p->o();
 
       // We only want the monk to cast Tiger Palm 2 times during the duration.
