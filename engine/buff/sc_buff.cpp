@@ -803,7 +803,7 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
 
 buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
-  assert( _initial_stack > 0 && "Attempting to modify negative initial stack. Use set_initial_stack() with a postive value.");
+  assert( _initial_stack > 0 && "Cannot modify invalid initial stack. Use set_initial_stack() with a postive value.");
   set_initial_stack( _initial_stack + initial_stack );
   return this;
 }
@@ -1597,7 +1597,7 @@ bool buff_t::remains_lt( timespan_t time ) const
 int buff_t::_resolve_stacks( int stacks )
 {
   int ret = stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks;
-  assert( ret > 0 && "Stacks must be positive. If spell data has negative stacks, you must explicitly set them. " );
+  assert( ret > 0 && "Stacks must be positive. set_initial_stack() must be used if spell data is negative." );
   return ret;
 }
 
