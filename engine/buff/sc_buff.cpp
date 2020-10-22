@@ -707,16 +707,13 @@ buff_t* buff_t::set_max_stack( int max_stack )
   {
     if ( data().ok() )
     {
-      // NOTE: buffs can have negative stacks in the data, which can indicate special handling. We do NOT guard for it
-      // here, and instead will assert() out if such a buff is trigger'd/execute'd without explicitly setting a positive
-      // stack in the buff construction or explicitly passing a stack amount.
       if ( data().max_stacks() != 0 )
       {
         _max_stack = data().max_stacks();
       }
       else if ( data().initial_stacks() != 0 )
       {
-        _max_stack = data().initial_stacks();
+        _max_stack = std::abs( data().initial_stacks() );
       }
       else
       {
@@ -731,15 +728,14 @@ buff_t* buff_t::set_max_stack( int max_stack )
   else
   {
     _max_stack = max_stack;
-
-    if ( _max_stack < 1 )
-    {
-      sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
-      _max_stack = 1;
-    }
   }
 
-  if ( _max_stack > 999 )
+  if ( _max_stack < 1 )
+  {
+    sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
+    _max_stack = 1;
+  }
+  else if ( _max_stack > 999 )
   {
     sim->error( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
     _max_stack = 999;
