@@ -2928,16 +2928,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    // AM channel duration is a bit fuzzy, it will go above or below the standard 2 s
-    // to make sure it has the correct number of ticks.
     timespan_t full_duration = dot_duration * s->haste;
 
     if ( p()->buffs.clearcasting_channel->check() )
       full_duration *= 1.0 + cc_duration_reduction;
 
-    timespan_t tick_duration = tick_time( s );
-    double ticks = std::round( full_duration / tick_duration );
-    return ticks * tick_duration;
+    return full_duration;
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
@@ -2961,6 +2957,31 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p()->buffs.clearcasting_channel->expire();
 
     arcane_mage_spell_t::execute();
+  }
+
+  void trigger_dot( action_state_t* s )
+  {
+    dot_t* d = get_dot( s->target );
+    timespan_t new_tick_time = tick_time( s );
+    timespan_t old_tick_time = d->is_ticking() ? tick_time( d->state ) : 0_ms;
+
+    arcane_mage_spell_t::trigger_dot( s );
+
+    // When chaining Arcane Missiles casts, if the first scheduled tick
+    // after chaining would occur slower than the new tick time, it is
+    // rescheduled to occur using the new tick time instead. However,
+    // additional time is still added to the duration, which can result
+    // in extra ticks.
+    if ( p()->bugs && new_tick_time < old_tick_time )
+      d->reschedule_tick();
+
+    // AM channel duration is a bit fuzzy, it will go above or below the
+    // standard 2 s to make sure it has the correct number of ticks.
+    timespan_t old_remains = d->remains();
+    int ticks = as<int>( std::round( ( old_remains - d->time_to_next_full_tick() ) / new_tick_time ) );
+    timespan_t new_remains = ticks * new_tick_time + d->time_to_next_full_tick();
+
+    d->adjust_duration( new_remains - old_remains, timespan_t::min(), 0, false );
   }
 
   bool usable_moving() const override
