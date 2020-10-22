@@ -561,7 +561,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     p()->buffs.demonic_power->trigger();
 
     if ( p()->spec.summon_demonic_tyrant_2->ok() )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value(),
+      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
                           p()->gains.summon_demonic_tyrant );
 
     // BFA - Azerite
