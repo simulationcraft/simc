@@ -988,7 +988,7 @@ dot_t::dot_tick_event_t::dot_tick_event_t(dot_t* d, timespan_t tick_time ) :
   event_t(*d -> source, tick_time ),
   dot(d)
 {
-  sim().print_debug( "New DoT Tick Event: {} {} tick {}-of{} tick_time={}", *d->source, *dot, dot->current_tick + 1,
+  sim().print_debug( "New DoT Tick Event: {} {} tick {}-of-{} tick_time={}", *d->source, *dot, dot->current_tick + 1,
                      dot->num_ticks(), tick_time );
 }
 
