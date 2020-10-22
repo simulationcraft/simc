@@ -8622,7 +8622,7 @@ void death_knight_t::default_apl_frost()
   // Re-enable once on use trinkets are added
   // precombat -> add_action( "variable,name=other_on_use_equipped,value=()" );
 
-  def -> add_action( "auto_attack" );
+  def -> add_action( "auto_attack", "'target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice' Repeats a lot, this is intended to target the highest priority enemy with an ability that will apply razorice if runeforged. That being an enemy with 0 stacks, or an enemy that the debuff will soon expire on."  );
 
   // Interrupt
   // def -> add_action( this, "Mind Freeze" );
@@ -8634,7 +8634,7 @@ void death_knight_t::default_apl_frost()
 
   // Choose APL
   // def -> add_action( "call_action_list,name=covenants" );
-  def -> add_action( "call_action_list,name=cooldowns" );
+  def -> add_action( "call_action_list,name=cooldowns", "Choose Action list to run" );
   def -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&(buff.cold_heart.stack>=10&(debuff.razorice.stack=5|!death_knight.runeforge.razorice)|fight_remains<=gcd)" );
   def -> add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<10)" );
@@ -8676,8 +8676,8 @@ void death_knight_t::default_apl_frost()
   cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled", "Cold Heart Conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=talent.obliteration.enabled&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19)" );
 
-  // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
-  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before BoS is available" );
+  // Breath of Sindragosa pooling rotation : starts 10s before the cd becomes available
+  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 10s before BoS is available" );
   bos_pooling -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled&rune>=5|active_enemies>=2" );
   bos_pooling -> add_action( this, "Obliterate", "target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice,if=runic_power.deficit>=25" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&spell_targets.glacial_advance>=2&cooldown.pillar_of_frost.remains>5" );
