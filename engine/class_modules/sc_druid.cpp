@@ -90,6 +90,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* regrowth;
     dot_t* rejuvenation;
     dot_t* rip;
+    dot_t* feral_frenzy;
     dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* starfall;
@@ -4112,7 +4113,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->conduit.taste_for_blood->ok() )
     {
       auto t_td  = td( t );
-      int bleeds = t_td->dots.rake->is_ticking() + t_td->dots.rip->is_ticking() + t_td->dots.thrash_cat->is_ticking();
+      int bleeds = t_td->dots.rake->is_ticking() + t_td->dots.rip->is_ticking() + t_td->dots.thrash_cat->is_ticking() + t_td->dots.frenzied_assault->is_ticking() + t_td->dots.feral_frenzy->is_ticking();
 
       tm *= 1.0 + p()->conduit.taste_for_blood.percent() * bleeds;
     }
@@ -10843,6 +10844,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.rake                  = target.get_dot( "rake", &source );
   dots.regrowth              = target.get_dot( "regrowth", &source );
   dots.rejuvenation          = target.get_dot( "rejuvenation", &source );
+  dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );
   dots.rip                   = target.get_dot( "rip", &source );
   dots.sunfire               = target.get_dot( "sunfire", &source );
   dots.starfall              = target.get_dot( "starfall", &source );
