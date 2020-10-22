@@ -2787,11 +2787,10 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     p()->buffs.nights_vengeance->expire();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage?
+    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently before, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
-      // Seems to work fine with Echoing Reprimand.
       bonus_attack->last_eviscerate_cp = get_combo_points( cast_state( execute_state ) );
       bonus_attack->set_target( target );
       bonus_attack->execute();
@@ -2799,6 +2798,8 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( p()->legendary.finality.ok() )
     {
+      // TOCHECK: Finality Eviscerate currently triggers after shadow attack but is consumed before, causing the shadow part to never benefit. We do not implement this bug atm.
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/623
       if ( p()->buffs.finality_eviscerate->check() )
         p()->buffs.finality_eviscerate->expire();
       else
@@ -4038,7 +4039,7 @@ struct black_powder_t: public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the impact damage?
+    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
 
     if ( p()->legendary.finality.ok() )
     {
@@ -4055,7 +4056,6 @@ struct black_powder_t: public rogue_attack_t
 
     if ( bonus_attack && result_is_hit( state->result ) && td( state->target )->debuffs.find_weakness->up() )
     {
-      // TOCHECK: Does not seem to work with Echoing Reprimand on beta. Assuming bug and implementing correctly. Use state->cp otherwise.
       bonus_attack->last_cp = get_combo_points( cast_state( state ) );
       bonus_attack->set_target( state->target );
       bonus_attack->execute();
