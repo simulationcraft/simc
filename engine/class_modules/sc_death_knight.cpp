@@ -8643,7 +8643,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=standard" );
 
   // On-use items
-  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20" );
+  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20", "On Use Items, Potion and Racials" );
   
   // In-combat potion
   cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
@@ -8673,7 +8673,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
 
   // Cold Heart
-  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled", "Cold Heart Conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=talent.obliteration.enabled&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19)" );
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
@@ -8689,7 +8689,7 @@ void death_knight_t::default_apl_frost()
   bos_pooling -> add_action( this, "Frost Strike", "target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Obliterate", "target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice,if=runic_power<=40" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice,if=runic_power<=40", "Breath of Sindragosa Active Rotation" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|active_enemies>=2" );
   bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   bos_ticking -> add_action( this, "Obliterate", "target_if=max:((debuff.razorice.stack+1)%(debuff.razorice.remains+1))*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power<=45" );
