@@ -6559,6 +6559,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_default_value_from_effect_type( A_MOD_CRIT_CHANCE_FROM_CASTER )
     ->set_cooldown( timespan_t::zero() );
   debuffs.flagellation = make_buff( *this, "flagellation", source->covenant.flagellation )
+    ->set_initial_stack( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [ source ]( buff_t*, int, int new_ ) {
