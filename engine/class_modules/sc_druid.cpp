@@ -9933,17 +9933,17 @@ double druid_t::composite_spell_power( school_e school ) const
 {
   if ( spec_override.spell_power )
   {
-    weapon_t weapon;
+    double weapon_dps;
 
     if ( buff.cat_form->check() )
-      weapon = cat_weapon;
+      weapon_dps = cat_weapon.dps;
     else if ( buff.bear_form->check() )
-      weapon = bear_weapon;
+      weapon_dps = bear_weapon.dps;
     else
-      weapon = main_hand_weapon;
+      weapon_dps = main_hand_weapon.dps;
 
     return spec_override.spell_power * composite_attack_power_multiplier() *
-           ( cache.attack_power() + weapon.dps * WEAPON_POWER_COEFFICIENT );
+           ( cache.attack_power() + weapon_dps * WEAPON_POWER_COEFFICIENT );
   }
 
   return player_t::composite_spell_power( school );
