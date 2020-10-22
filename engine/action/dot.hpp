@@ -108,7 +108,6 @@ private:
   void check_tick_zero(bool start);
   bool is_higher_priority_action_available() const;
 
-
   struct dot_tick_event_t;
   struct dot_end_event_t;
 };
