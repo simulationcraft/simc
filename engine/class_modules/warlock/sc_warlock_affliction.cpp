@@ -633,6 +633,9 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_scouring_tithe->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_impending_catastrophe->is_ticking() )
+          mult += 1.0;
+
         // TODO:
         // Impending catastrophe
         return mult;
