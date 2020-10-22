@@ -227,8 +227,8 @@ void arcane( player_t* p )
   am_spam->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<=action.arcane_missiles.execute_time&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   am_spam->add_action( "arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down" );
   am_spam->add_action( "arcane_barrage,if=buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  am_spam->add_action( "arcane_missiles,if=buff.clearcasting.react,chain=1" );
-  am_spam->add_action( "arcane_missiles,if=!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down,chain=1" );
+  am_spam->add_action( "arcane_missiles,if=buff.clearcasting.react,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|buff.rune_of_power.up|cooldown.evocation.ready)" );
+  am_spam->add_action( "arcane_missiles,if=!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|buff.rune_of_power.up|cooldown.evocation.ready)" );
   am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
   am_spam->add_action( "evocation" );
   am_spam->add_action( "arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
