@@ -65,6 +65,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=aoe_totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=am_spam,op=reset,default=0" );
+  precombat->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&variable.am_spam=1" );
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
