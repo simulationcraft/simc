@@ -626,6 +626,7 @@ public:
     conduit_data_t planned_execution;
     conduit_data_t stiletto_staccato;
 
+    conduit_data_t lashing_scars;
     conduit_data_t reverberation;
     conduit_data_t sudden_fractures;
     conduit_data_t septic_shock;
@@ -689,7 +690,6 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
-    proc_t* sleight_of_hand;
 
     // Legendary
     proc_t* dustwalker_patch;
@@ -1068,6 +1068,7 @@ public:
     ab::apply_affecting_aura( p->legendary.tiny_toxic_blade );
 
     // Affecting Passive Conduits
+    ab::apply_affecting_conduit( p->conduit.lashing_scars );
     ab::apply_affecting_conduit( p->conduit.lethal_poisons );
     ab::apply_affecting_conduit( p->conduit.poisoned_katar );
     ab::apply_affecting_conduit( p->conduit.reverberation );
@@ -2861,13 +2862,6 @@ struct fan_of_knives_t: public rogue_attack_t
     }
   }
 
-  double composite_poison_flat_modifier( const action_state_t* state ) const override
-  {
-    double chance = rogue_attack_t::composite_poison_flat_modifier( state ); 
-    chance += p()->conduit.poisoned_katar.percent(); // TOCHECK: Spell data is kinda iffy on if this works...
-    return chance;
-  }
-
   double bonus_da( const action_state_t* state ) const override
   {
     double b = rogue_attack_t::bonus_da( state );
@@ -3527,12 +3521,6 @@ struct roll_the_bones_t : public rogue_spell_t
       d -= timespan_t::from_seconds( precombat_seconds );
 
     p()->buffs.roll_the_bones->trigger( d );
-
-    if ( p()->conduit.sleight_of_hand.ok() && p()->rng().roll( p()->conduit.sleight_of_hand.percent() ) )
-    {
-      cooldown->reset( true );
-      p()->procs.sleight_of_hand->occur();
-    }
   }
 };
 
@@ -4374,31 +4362,14 @@ struct shiv_t : public rogue_attack_t
   {
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    if ( p()->conduit.well_placed_steel.ok() && td( target )->is_bleeding() )
-    {
-      m *= 1.0 + p()->conduit.well_placed_steel.percent();
-    }
-
-    return m;
-  }
-
   void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
     
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && p()->spec.shiv_2->ok() )
     {
-      if ( p()->spec.shiv_2->ok() )
-        td( s->target )->debuffs.shiv->trigger();
-
-      // TOCHECK: Does this add an Envenom buff even if one is not already up?
-      if ( p()->conduit.well_placed_steel.ok() && p()->buffs.envenom->check() )
-        p()->buffs.envenom->extend_duration( p(), p()->conduit.well_placed_steel.time_value( conduit_data_t::time_type::S ) );
-    }    
+      td( s->target )->debuffs.shiv->trigger();
+    }
   }
 };
 
@@ -4719,13 +4690,20 @@ struct flagellation_cleanse_t : public rogue_spell_t
 
 struct flagellation_t : public rogue_attack_t
 {
+  int initial_lashes;
+
   flagellation_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p->covenant.flagellation, options_str )
+    rogue_attack_t( name, p, p->covenant.flagellation, options_str ),
+    initial_lashes( as<int>( p->covenant.flagellation->effectN( 2 ).base_value() ) )
   {
-    cooldown->duration = timespan_t::zero();
     if ( p->active.flagellation )
     {
       add_child( p->active.flagellation );
+    }
+
+    if ( p->conduit.lashing_scars->ok() )
+    {
+      initial_lashes += as<int>( p->conduit.lashing_scars->effectN( 2 ).base_value() );
     }
   }
 
@@ -4734,8 +4712,10 @@ struct flagellation_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->active.flagellation->debuff = td( execute_state->target )->debuffs.flagellation;
     p()->active.flagellation->debuff->trigger();
-    p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 1_s );
-    p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 1.25_s );
+    for ( int i = 1; i < initial_lashes; i++ )
+    {
+      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * i );
+    }
   }
 
   bool ready() override
@@ -5768,6 +5748,12 @@ struct roll_the_bones_t : public buff_t
       // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
       // Odds double checked on 2020-03-09.
       rogue->options.fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
+
+      if ( rogue->conduit.sleight_of_hand->ok() )
+      {
+        rogue->options.fixed_rtb_odds[ 0 ] -= rogue->conduit.sleight_of_hand.value();
+        rogue->options.fixed_rtb_odds[ 1 ] += rogue->conduit.sleight_of_hand.value();
+      }
     }
 
     if ( !rogue->options.fixed_rtb_odds.empty() )
@@ -6477,7 +6463,12 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
-  if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() ) )
+  // TOCHECK: Does this work with Vanish? Shadowmeld?
+  double chance = p()->conduit.count_the_odds.percent();
+  if ( p()->stealthed( STEALTH_BASIC ) )
+    chance *= 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent();
+
+  if ( !p()->rng().roll( chance ) )
     return;
 
   const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() );
@@ -6542,7 +6533,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.rupture           = new buffs::proxy_rupture_t( *this );
   debuffs.vendetta          = new buffs::vendetta_debuff_t( *this );
 
-  debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.shiv_2_debuff );
+  debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.shiv_2_debuff )
+    ->apply_affecting_conduit( source->conduit.well_placed_steel );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
     ->set_cooldown( timespan_t::zero() );
@@ -6607,11 +6599,15 @@ double rogue_t::composite_melee_speed() const
 {
   double h = player_t::composite_melee_speed();
 
-  if ( buffs.slice_and_dice -> check() )
-    h *= 1.0 / ( 1.0 + spell.slice_and_dice -> effectN( 1 ).percent() * buffs.slice_and_dice -> value() );
+  if ( buffs.slice_and_dice->check() )
+  {
+    h *= 1.0 / ( 1.0 + spell.slice_and_dice->effectN( 1 ).percent() * buffs.slice_and_dice->check_value() );
+  }
 
-  if ( buffs.adrenaline_rush -> check() )
-    h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
+  if ( buffs.adrenaline_rush->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.adrenaline_rush->check_value() );
+  }
 
   return h;
 }
@@ -6622,14 +6618,14 @@ double rogue_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.alacrity -> check() )
+  if ( buffs.alacrity->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
+    h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
   }
 
-  if ( buffs.flagellation -> check() )
+  if ( buffs.flagellation->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.flagellation -> stack_value() );
+    h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
   }
 
   return h;
@@ -6672,14 +6668,14 @@ double rogue_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.alacrity -> check() )
+  if ( buffs.alacrity->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
+    h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
   }
 
-  if ( buffs.flagellation -> check() )
+  if ( buffs.flagellation->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.flagellation -> stack_value() );
+    h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
   }
 
   return h;
@@ -7899,6 +7895,7 @@ void rogue_t::init_spells()
   conduit.planned_execution       = find_conduit_spell( "Planned Execution" );
   conduit.stiletto_staccato       = find_conduit_spell( "Stiletto Staccato" );
 
+  conduit.lashing_scars           = find_conduit_spell( "Lashing Scars" );
   conduit.reverberation           = find_conduit_spell( "Reverberation" );
   conduit.sudden_fractures        = find_conduit_spell( "Sudden Fractures" );
   conduit.septic_shock            = find_conduit_spell( "Septic Shock" );
@@ -8055,7 +8052,6 @@ void rogue_t::init_procs()
   procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
   procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
   procs.count_the_odds      = get_proc( "Count the Odds"               );
-  procs.sleight_of_hand     = get_proc( "Sleight of Hand"              );
 
   procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
 }
@@ -9152,6 +9148,12 @@ public:
 
   void register_hotfixes() const override
   {
+    // Manual hotfix for Poisoned Katar spell data
+    hotfix::register_effect( "Rogue", "2020-10-15", "Poisoned Katar Crit% Fix", 874233 )
+      .field( "sub_type" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 107 )
+      .verification_value( 108 );
   }
 
   void init( player_t* ) const override {}
