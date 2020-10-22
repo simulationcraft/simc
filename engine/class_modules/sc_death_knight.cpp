@@ -407,7 +407,7 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* deep_cuts;
 
     // Soulbinds
-    buff_t* biting_cold;
+    buff_t* everfrost;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -917,7 +917,7 @@ public:
 
     // Frost
     conduit_data_t accelerated_cold; // 79
-    conduit_data_t biting_cold;      // 91
+    conduit_data_t everfrost;        // 91
     conduit_data_t eradicating_blow; // 83
     conduit_data_t unleashed_frenzy; // 122
 
@@ -1166,8 +1166,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
                            -> set_default_value_from_effect( 1 );
 
-  debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
-                           -> set_default_value( p -> conduits.biting_cold.percent() );
+  debuff.everfrost         = make_buff( *this, "everfrost", p -> find_spell( 337989 ) )
+                           -> set_default_value( p -> conduits.everfrost.percent() );
 
   debuff.unholy_blight     = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
@@ -5879,7 +5879,14 @@ struct virulent_plague_t : public death_knight_spell_t
     aoe = -1;
 
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
+
+    // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
+    // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
+    // Tested Oct 21 2020 in beta build 36294
+    dot_duration += p -> conduits.lingering_plague -> effectN( 2 ).time_value();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+
+    base_multiplier *= 1.0 + p -> conduits.lingering_plague.percent();
     base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
 
     tick_may_crit = background = true;
@@ -6118,7 +6125,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    m *= 1.0 + p() -> get_target_data( t ) -> debuff.biting_cold -> stack_value();
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.everfrost -> stack_value();
 
     return m;
   }
@@ -6151,8 +6158,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       p() -> triggered_biting_cold = true;
     }
 
-    if ( p() -> conduits.biting_cold.ok() )
-      td( state -> target ) -> debuff.biting_cold -> trigger();
+    if ( p() -> conduits.everfrost.ok() )
+      td( state -> target ) -> debuff.everfrost -> trigger();
   }
 };
 
@@ -6288,11 +6295,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       p() -> burst_festering_wound( state, 1 );
-      death_knight_td_t* target_data = td( state -> target );
-      if ( target_data -> dot.virulent_plague -> is_ticking() )
-      {
-        target_data->dot.virulent_plague->adjust_duration( p()->conduits.lingering_plague.time_value() );
-      }
     }
   }
 };
@@ -8394,7 +8396,7 @@ void death_knight_t::init_spells()
 
   // Frost
   conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
-  conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
+  conduits.everfrost             = find_conduit_spell( "Everfrost" );
   conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
   conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
 
