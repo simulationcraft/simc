@@ -4277,8 +4277,6 @@ struct carve_base_t: public hunter_melee_attack_t
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
     p() -> buffs.butchers_bone_fragments -> expire();
-
-    p() -> buffs.flame_infusion -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -4286,6 +4284,7 @@ struct carve_base_t: public hunter_melee_attack_t
     hunter_melee_attack_t::impact( s );
 
     p() -> trigger_birds_of_prey( s -> target );
+    p() -> buffs.flame_infusion -> trigger();
     internal_bleeding.trigger( s );
   }
 
