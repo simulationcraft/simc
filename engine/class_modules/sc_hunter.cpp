@@ -629,6 +629,8 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.15;
+    // random testing stuff
+    bool unblinking_vigil_on_execute = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -3512,6 +3514,8 @@ struct aimed_shot_t : public aimed_shot_base_t
     p() -> consume_trick_shots();
 
     p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
+    if ( p() -> options.unblinking_vigil_on_execute )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
     if ( ! p() -> buffs.lock_and_load -> check() )
@@ -3549,7 +3553,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     aimed_shot_base_t::impact( s );
 
     // XXX: gets consumed on impact for some reason
-    if ( s -> chain_target == 0 )
+    if ( !p() -> options.unblinking_vigil_on_execute && s -> chain_target == 0 )
       p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
@@ -7533,6 +7537,7 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
+  add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
