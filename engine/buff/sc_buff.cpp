@@ -803,6 +803,7 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
 
 buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
+  assert( _initial_stack > 0 && "Attempting to modify negative initial stack. Use set_initial_stack() with a postive value.");
   set_initial_stack( _initial_stack + initial_stack );
   return this;
 }
