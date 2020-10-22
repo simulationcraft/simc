@@ -401,8 +401,8 @@ public:
   struct conduit_t
   {
     conduit_data_t dancing_with_fate;
-    conduit_data_t demons_touch;        // NYI
     conduit_data_t growing_inferno;
+    conduit_data_t relentless_onslaught;
     conduit_data_t serrated_glaive;
 
     conduit_data_t soul_furnace;        // NYI
@@ -555,14 +555,16 @@ public:
     // General
     heal_t* consume_soul_greater;
     heal_t* consume_soul_lesser;
-    spell_t* immolation_aura;
-    spell_t* collective_anguish;
+    spell_t* immolation_aura = nullptr;
+    spell_t* collective_anguish = nullptr;
 
     // Havoc
-    attack_t* demon_blades;
+    attack_t* demon_blades = nullptr;
+    attack_t* relentless_onslaught = nullptr;
+    attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
-    heal_t* spirit_bomb_heal;
+    heal_t* spirit_bomb_heal = nullptr;
   } active;
 
   // Pets
@@ -1187,6 +1189,7 @@ public:
     ab::apply_affecting_aura( p->spec.throw_glaive_rank_2 );
 
     // Conduit Passives
+    ab::apply_affecting_conduit( p->conduit.dancing_with_fate );
     ab::apply_affecting_conduit( p->conduit.increased_scrutiny );
     ab::apply_affecting_conduit( p->conduit.unnatural_malice );
 
@@ -1219,7 +1222,7 @@ public:
       {
         parse_affect_flags( p->spec.momentum_buff, affected_by.momentum );
       }      
-      if ( p->talent.essence_break->ok() || p->conduit.dancing_with_fate.ok() )
+      if ( p->talent.essence_break->ok() )
       {
         affected_by.essence_break = ab::data().affected_by( p->find_spell( 320338 )->effectN( 1 ) );
       }
@@ -3344,25 +3347,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         p()->buff.revolving_blades->trigger();
       }
     }
-
-    void execute() override
-    {
-      // Dancing With Fate Conduit - Applied before damage, rolls independant per-target, can happen on any impact
-      // Since this affects the impact damage that procs it, we need to iterate over the target list before execute()
-      // TOCHECK: Currently this only works with Blade Dance on beta.
-      if ( p()->conduit.dancing_with_fate.ok() )
-      {
-        auto tl = target_list();
-        const int max_targets = std::min( n_targets(), as<int>( tl.size() ) );
-        for ( int i = 0; i < max_targets; i++ )
-        {
-          if ( p()->rng().roll( p()->conduit.dancing_with_fate.percent() ) )
-            td( tl[ i ] )->debuffs.essence_break->trigger();
-        }
-      }
-
-      demon_hunter_attack_t::execute();
-    }
   };
 
   std::vector<blade_dance_damage_t*> attacks;
@@ -3533,7 +3517,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     timespan_t delay;
     chaos_strike_base_t* parent;
     bool may_refund;
-    bool affected_by_chaos_theory;
     double refund_proc_chance;
     double thirsting_blades_bonus_da;
 
@@ -3541,7 +3524,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, eff.trigger() ), 
       delay( timespan_t::from_millis( eff.misc_value1() ) ), 
       parent( a ),
-      affected_by_chaos_theory( false ),
       refund_proc_chance( 0.0 ),
       thirsting_blades_bonus_da( 0.0 )
     {
@@ -3554,23 +3536,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         refund_proc_chance = p->spec.chaos_strike_refund->proc_chance();
         refund_proc_chance += p->spec.chaos_strike_rank_2->effectN( 1 ).percent();
       }
-
-      if ( p->legendary.chaos_theory->ok() )
-      {
-        // TOCHECK: Currently Chaos Theory only applies to Chaos Strike and not Annihilation
-        // This is likely a bug and will not be needed eventually...
-        affected_by_chaos_theory = data().affected_by( p->buff.chaos_theory->data().effectN( 1 ) );
-      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = demon_hunter_attack_t::composite_da_multiplier( s );
 
-      if ( affected_by_chaos_theory )
-      {
-        m *= 1.0 + p()->buff.chaos_theory->stack_value();
-      }
+      m *= 1.0 + p()->buff.chaos_theory->stack_value();
 
       return m;
     }
@@ -3588,7 +3560,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       double chance = refund_proc_chance;
       
-      if ( affected_by_chaos_theory && p()->buff.chaos_theory->check() )
+      if ( p()->buff.chaos_theory->check() )
       {
         chance += p()->buff.chaos_theory->data().effectN( 2 ).percent();
       }
@@ -3600,7 +3572,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::execute();
 
-      // Technically this appears to have a 0.5s GCD, but this is not relevant at the moment
+      // Technically this appears to have a 0.5s ICD, but this is not relevant at the moment
       if ( may_refund && p()->rng().roll( this->get_refund_proc_chance() ) )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
@@ -3612,12 +3584,28 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         }
       }
     }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      // TOCHECK: Double check the timing of this as well as the ICD and refunds
+      if ( result_is_hit( s->result ) && may_refund && p()->conduit.relentless_onslaught->ok() )
+      {
+        if ( p()->rng().roll( p()->conduit.relentless_onslaught.percent() ) )
+        {
+          attack_t* const relentless_onslaught = p()->buff.metamorphosis->check() ?
+            p()->active.relentless_onslaught_annihilation : p()->active.relentless_onslaught;
+          relentless_onslaught->set_target( s->target );
+          relentless_onslaught->schedule_execute();
+        }
+      }
+    }
   };
 
   std::vector<chaos_strike_damage_t*> attacks;
 
-  chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
-                       const spell_data_t* s, const std::string& options_str = std::string())
+  chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, const std::string& options_str = "" )
     : demon_hunter_attack_t( n, p, s, options_str )
   {
   }
@@ -3688,13 +3676,18 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
 struct chaos_strike_t : public chaos_strike_base_t
 {
-  chaos_strike_t( demon_hunter_t* p, const std::string& options_str)
-    : chaos_strike_base_t( "chaos_strike", p, p->spec.chaos_strike, options_str )
+  chaos_strike_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "" )
+    : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
     if ( attacks.empty() )
     {
-      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( "chaos_strike_dmg_1", data().effectN( 2 ), this ) );
-      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( "chaos_strike_dmg_2", data().effectN( 3 ), this ) );
+      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ), data().effectN( 2 ), this ) );
+      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ), data().effectN( 3 ), this ) );
+    }
+
+    if ( p->active.relentless_onslaught )
+    {
+      add_child( p->active.relentless_onslaught );
     }
   }
 
@@ -3713,13 +3706,18 @@ struct chaos_strike_t : public chaos_strike_base_t
 
 struct annihilation_t : public chaos_strike_base_t
 {
-  annihilation_t( demon_hunter_t* p, const std::string& options_str )
-    : chaos_strike_base_t( "annihilation", p, p->spec.annihilation, options_str )
+  annihilation_t( util::string_view name, demon_hunter_t* p, const std::string& options_str = "" )
+    : chaos_strike_base_t( name, p, p->spec.annihilation, options_str )
   {
     if ( attacks.empty() )
     {
-      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( "annihilation_dmg_1", data().effectN( 2 ), this ) );
-      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( "annihilation_dmg_2", data().effectN( 3 ), this ) );
+      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ), data().effectN( 2 ), this ) );
+      attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ), data().effectN( 3 ), this ) );
+    }
+
+    if ( p->active.relentless_onslaught_annihilation )
+    {
+      add_child( p->active.relentless_onslaught_annihilation );
     }
   }
 
@@ -4680,9 +4678,9 @@ action_t* demon_hunter_t::create_action( util::string_view name, const std::stri
   using namespace actions::attacks;
 
   if ( name == "auto_attack" )        return new auto_attack_t( this, options_str );
-  if ( name == "annihilation" )       return new annihilation_t( this, options_str );
+  if ( name == "annihilation" )       return new annihilation_t( "annihilation", this, options_str );
   if ( name == "blade_dance" )        return new blade_dance_t( this, options_str );
-  if ( name == "chaos_strike" )       return new chaos_strike_t( this, options_str );
+  if ( name == "chaos_strike" )       return new chaos_strike_t( "chaos_strike", this, options_str );
   if ( name == "essence_break" )      return new essence_break_t( this, options_str );
   if ( name == "death_sweep" )        return new death_sweep_t( this, options_str );
   if ( name == "demons_bite" )        return new demons_bite_t( this, options_str );
@@ -5358,8 +5356,8 @@ void demon_hunter_t::init_spells()
   // Conduits ===============================================================
 
   conduit.dancing_with_fate     = find_conduit_spell( "Dancing with Fate" );
-  conduit.demons_touch          = find_conduit_spell( "Demon's Touch" );
   conduit.growing_inferno       = find_conduit_spell( "Growing Inferno" );
+  conduit.relentless_onslaught  = find_conduit_spell( "Relentless Onslaught" );
   conduit.serrated_glaive       = find_conduit_spell( "Serrated Glaive" );
 
   conduit.soul_furnace          = find_conduit_spell( "Soul Furnace" );
@@ -5404,6 +5402,14 @@ void demon_hunter_t::init_spells()
   {
     const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 333105 ) : find_spell( 333386 );
     active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish", driver );
+  }
+
+  if ( conduit.relentless_onslaught.ok() && specialization() == DEMON_HUNTER_HAVOC )
+  {
+    active.relentless_onslaught = get_background_action<chaos_strike_t>( "chaos_strike_onslaught" );
+    active.relentless_onslaught->base_costs.fill( 0 );
+    active.relentless_onslaught_annihilation = get_background_action<annihilation_t>( "annihilation_onslaught" );
+    active.relentless_onslaught_annihilation->base_costs.fill( 0 );
   }
 }
 
