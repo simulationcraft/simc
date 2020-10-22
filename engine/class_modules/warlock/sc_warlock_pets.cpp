@@ -1464,11 +1464,22 @@ namespace destruction
 {
 struct immolation_tick_t : public warlock_pet_spell_t
 {
+  //TODO: Probably should move this trigger into where it was being passed from, for clarity
   immolation_tick_t( warlock_pet_t* p, const spell_data_t* s )
     : warlock_pet_spell_t( "immolation", p, s->effectN( 1 ).trigger() )
   {
     aoe        = -1;
     background = may_crit = true;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
+
+    if ( td( t )->debuffs_infernal_brand->check() )
+      m *= 1.0 + td( t )->debuffs_infernal_brand->check_stack_value();
+
+    return m;
   }
 };
 
