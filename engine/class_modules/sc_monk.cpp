@@ -3154,7 +3154,6 @@ public:
       attack_power_mod.direct = 0;
       attack_power_mod.tick   = 0;
       weapon_power_mod        = 0;
-      ap_type                 = attack_power_type::NO_WEAPON;
 
       // Effect 2 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = dot_duration / 4;
@@ -3792,6 +3791,8 @@ public:
       parse_options( options_str );
 
       may_miss = false;
+      channeled = tick_zero = true;
+      interrupt_auto_attack = true;
 
       dot_duration       = data().duration();
       trigger_gcd        = timespan_t::from_millis( 750 );
