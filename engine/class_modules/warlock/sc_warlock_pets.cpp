@@ -1483,6 +1483,23 @@ struct immolation_tick_t : public warlock_pet_spell_t
   }
 };
 
+struct infernal_melee_t : warlock_pet_melee_t
+{
+  infernal_melee_t(warlock_pet_t* p, double wm, const char* name = "melee") :
+    warlock_pet_melee_t (p, wm, name)
+  {  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_melee_t::impact( s );
+
+    if ( p()->o()->conduit.infernal_brand.ok() )
+    {
+      td( s->target )->debuffs_infernal_brand->increment( 1, td( s->target )->debuffs_infernal_brand->default_value );
+    }
+  }
+};
+
 infernal_t::infernal_t( warlock_t* owner, const std::string& name )
   : warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ), immolation( nullptr )
 {
@@ -1493,7 +1510,7 @@ void infernal_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this );
+  melee_attack = new infernal_melee_t( this, 1.0 );
 }
 
 void infernal_t::create_buffs()
