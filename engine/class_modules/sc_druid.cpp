@@ -1630,19 +1630,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Warrior of Elune Buff ====================================================
-struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
-{
-  warrior_of_elune_buff_t( druid_t& p ) : base_t( p, "warrior_of_elune", p.talent.warrior_of_elune ) {}
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    p().cooldown.warrior_of_elune->start();
-  }
-};
-
 // Berserk (Feral) / Incarn Buff ============================================
 struct berserk_cat_buff_t : public druid_buff_t<buff_t>
 {
@@ -3702,11 +3689,10 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-
-      if (p()->legendary.frenzyband->ok())
+      if ( p()->legendary.frenzyband->ok() )
       {
-	p()->cooldown.berserk->adjust(-p()->legendary.frenzyband->effectN(1).time_value(), false);
-	p()->cooldown.incarnation->adjust(-p()->legendary.frenzyband->effectN(1).time_value(), false);
+        p()->cooldown.berserk->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
+        p()->cooldown.incarnation->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
       }
 
       if ( ( p()->specialization() == DRUID_FERAL ||
@@ -3733,9 +3719,6 @@ public:
         p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
         p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
       }
-
-
-
     }
 
     if ( !hit_any_target )
@@ -7170,13 +7153,17 @@ struct warrior_of_elune_t : public druid_spell_t
     harmful = may_crit = may_miss = false;
   }
 
+  timespan_t cooldown_duration() const override
+  {
+    // Cooldown handled by warrior_of_elune_buff_t::expire_override()
+    return 0_ms;
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
 
-    p()->cooldown.warrior_of_elune->reset( false );
-
-    p()->buff.warrior_of_elune->trigger( p()->talent.warrior_of_elune->initial_stacks() );
+    p()->buff.warrior_of_elune->trigger();
   }
 
   bool ready() override
@@ -8645,7 +8632,13 @@ void druid_t::create_buffs()
   buff.timeworn_dreambinder = make_buff( this, "timeworn_dreambinder", legendary.timeworn_dreambinder->effectN( 1 ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  buff.warrior_of_elune = make_buff<warrior_of_elune_buff_t>( *this );
+  buff.warrior_of_elune = make_buff( this, "warrior_of_elune", talent.warrior_of_elune )
+    ->set_cooldown( 0_ms )
+    ->set_reverse( true )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        cooldown.warrior_of_elune->start();
+    } );
 
   // Feral buffs
   buff.apex_predators_craving =
