@@ -237,7 +237,7 @@ public:
   bool at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
   // For trigger()/execute(), default value of stacks is -1, since we want to allow for explicit calls of stacks=1 to
   // override using buff_t::_initial_stack
-  int _resolve_stacks( int stacks ) { return stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks; }
+  int _resolve_stacks( int stacks );
   bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   bool trigger( timespan_t duration );
   bool trigger( int stacks, timespan_t duration );

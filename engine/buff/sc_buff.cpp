@@ -707,13 +707,16 @@ buff_t* buff_t::set_max_stack( int max_stack )
   {
     if ( data().ok() )
     {
+      // NOTE: buffs can have negative stacks in the data, which can indicate special handling. We do NOT guard for it
+      // here, and instead will assert() out if such a buff is trigger'd/execute'd without explicitly setting a positive
+      // stack in the buff construction or explicitly passing a stack amount.
       if ( data().max_stacks() != 0 )
       {
         _max_stack = data().max_stacks();
       }
       else if ( data().initial_stacks() != 0 )
       {
-        _max_stack = std::abs( data().initial_stacks() );
+        _max_stack = data().initial_stacks();
       }
       else
       {
@@ -728,18 +731,18 @@ buff_t* buff_t::set_max_stack( int max_stack )
   else
   {
     _max_stack = max_stack;
-  }
 
-  if ( _max_stack < 1 )
-  {
-    sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
-    _max_stack = 1;
+    if ( _max_stack < 1 )
+    {
+      sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
+      _max_stack = 1;
+    }
   }
 
   if ( _max_stack > 999 )
   {
-    _max_stack = 999;
     sim->error( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
+    _max_stack = 999;
   }
 
   stack_react_time.resize( _max_stack + 1 );
@@ -763,29 +766,33 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
   // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
   if ( initial_stack == -1 )
   {
-    if ( data().ok() && data().initial_stacks() )
+    // NOTE: buffs can have negative stacks in the data, which can indicate special handling. We do NOT guard for it
+    // here, and instead will assert() out if such a buff is trigger'd/execute'd without explicitly setting a positive
+    // stack in the buff construction or explicitly passing a stack amount.
+    if ( data().ok() && data().initial_stacks() != 0 )
     {
-      _initial_stack = std::abs( data().initial_stacks() );
+      _initial_stack = data().initial_stacks();
     }
     else
     {
-        _initial_stack = 1;
+      _initial_stack = 1;
     }
   }
   else
   {
     _initial_stack = initial_stack;
+
+    if ( _initial_stack < 1 )
+    {
+      sim->error( "{} initialized with initial_stack < 1 ({}). Setting initial_stack to 1.\n", *this, _initial_stack );
+      _initial_stack = 1;
+    }
   }
 
-  if ( _initial_stack < 1 )
+  if ( _initial_stack > 999 )
   {
-    sim->error( "{} initialized with initial_stack < 1 ({}). Setting initial_stack to 1.\n", *this, _initial_stack );
-    _initial_stack = 1;
-  }
-  else if ( _initial_stack > 999 )
-  {
-    _initial_stack = 999;
     sim->error( "{} initialized with initial_stack > 999. Setting initial_stack to 999.\n", *this );
+    _initial_stack = 999;
   }
 
   if ( _initial_stack > _max_stack )
@@ -1588,6 +1595,13 @@ bool buff_t::remains_lt( timespan_t time ) const
     return false;
 
   return ( time_remaining < time );
+}
+
+int buff_t::_resolve_stacks( int stacks )
+{
+  int ret = stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks;
+  assert( ret > 0 && "Stacks must be positive. If spell data has negative stacks, you must explicitly set them. " );
+  return ret;
 }
 
 bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration )
