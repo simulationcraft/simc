@@ -4348,9 +4348,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     switch ( t )
     {
-      case lava_burst_type::NORMAL: return "lava_burst_overload";
       case lava_burst_type::ASCENDANCE: return "lava_burst_overload_ascendance";
       case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_overload_pw";
+      default: return "lava_burst_overload";
     }
   }
 
@@ -4602,9 +4602,9 @@ struct lava_burst_t : public shaman_spell_t
   {
     switch ( t )
     {
-      case lava_burst_type::NORMAL: return "lava_burst";
       case lava_burst_type::ASCENDANCE: return "lava_burst_ascendance";
       case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_pw";
+      default: return "lava_burst";
     }
   }
 
@@ -4865,8 +4865,8 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     switch ( t )
     {
-      case lightning_bolt_type::NORMAL: return "lightning_bolt";
       case lightning_bolt_type::PRIMORDIAL_WAVE: return "lightning_bolt_pw";
+      default: return "lightning_bolt";
     }
   }
 
