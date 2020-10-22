@@ -99,12 +99,15 @@ public:
   bool channel_interrupt();
 
   friend void format_to( const dot_t&, fmt::format_context::iterator );
+
+  void reschedule_tick();
 private:
   void schedule_tick();
   void start(timespan_t duration);
   void refresh(timespan_t duration);
   void check_tick_zero(bool start);
   bool is_higher_priority_action_available() const;
+
 
   struct dot_tick_event_t;
   struct dot_end_event_t;
