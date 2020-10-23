@@ -1472,7 +1472,6 @@ struct melee_t : public warrior_attack_t
       {
         rage_gain *= 1.0 + seasoned_soldier_crit_mult;
       }
-      rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
     else if ( p() -> specialization() == WARRIOR_FURY )
     {
@@ -1481,14 +1480,14 @@ struct melee_t : public warrior_attack_t
       {
         rage_gain *= 0.5;
       }
-      rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
     else
     {
       // Protection generates a static 2 rage per successful auto attack landed
       rage_gain = 2.0;
     }
-
+    rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
+    
     rage_gain = util::round( rage_gain, 1 );
 
     if ( p()->specialization() == WARRIOR_ARMS && s->result == RESULT_CRIT )
@@ -2477,6 +2476,7 @@ struct dragon_roar_t : public warrior_attack_t
   dragon_roar_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "dragon_roar", p, p->talents.dragon_roar )
   {
+    energize_amount += p->spec.prot_warrior->effectN( 6 ).resource( RESOURCE_RAGE );
     crit_bonus_multiplier *= 1.0 + p->spell.warrior_aura->effectN( 6 ).percent();
     parse_options( options_str );
     aoe       = -1;
@@ -3942,6 +3942,7 @@ struct revenge_t : public warrior_attack_t
     parse_options( options_str );
     aoe           = -1;
     impact_action = p->active.deep_wounds_PROT;
+    base_multiplier = p -> talents.best_served_cold -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -3991,11 +3992,11 @@ struct revenge_t : public warrior_attack_t
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + ( p()->talents.best_served_cold->effectN( 1 ).percent() *
-                  std::min( target_list().size(),
-                            static_cast<size_t>( p()->talents.best_served_cold->effectN( 2 ).base_value() ) ) );
-
+    if( p() -> buff.revenge -> up() && p() -> talents.best_served_cold -> ok() )
+    {
+      am /= 1.0 + p() -> talents.best_served_cold -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> talents.best_served_cold -> effectN( 1 ).percent() + p() -> buff.revenge -> data().effectN( 2 ).percent();
+    }
     return am;
   }
 };
@@ -5287,6 +5288,17 @@ struct last_stand_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
+    if ( p() -> talents.bolster -> ok() )
+    {
+      if ( p()->buff.shield_block->check() )
+      {
+        p()->buff.shield_block->extend_duration( p(),data().duration() );
+      }
+      else
+      {
+        p()->buff.shield_block->trigger( data().duration() ) ;
+      }
+    }
     p()->buff.last_stand->trigger();
   }
 };
@@ -7588,11 +7600,6 @@ double warrior_t::composite_block() const
   if ( buff.shield_block -> up() )
   {
     b += spell.shield_block_buff -> effectN( 1 ).percent();
-  }
-
-  if ( buff.last_stand -> up() && talents.bolster -> ok() )
-  {
-    b+= talents.bolster -> effectN( 2 ).percent();
   }
 
   return b;
