@@ -983,7 +983,6 @@ class SpellDataGenerator(DataGenerator):
          52586,  68043,  68044,     # Gurthalak, Voice of the Deeps - LFR, N, H
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
          84745,  84746,             # Shallow Insight, Moderate Insight
-         138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
          137323, 137247,            # Healer legendary meta
          137331, 137326,
@@ -1235,7 +1234,6 @@ class SpellDataGenerator(DataGenerator):
         (
             ( 58385,  0 ),          # Glyph of Hamstring
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
-            ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
             ( 209700, 0 ),          # Void Cleave (arms artifact gold medal)
             ( 218877, 0 ),          # Gaze of the Val'kyr
@@ -1256,7 +1254,6 @@ class SpellDataGenerator(DataGenerator):
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
-            ( 144581, 0 ),          # Blessing of the Guardians (prot T16 2-piece bonus)
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
             ( 114852, 0, False ),   # Holy Prism false positives for activated
@@ -1264,7 +1261,6 @@ class SpellDataGenerator(DataGenerator):
             ( 65148, 0, False ),    # Sacred Shield absorb tick
             ( 136494, 0, False ),   # World of Glory false positive for activated
             ( 113075, 0, False ),   # Barkskin (from Symbiosis)
-            ( 144569, 0, False ),   # Bastion of Power (prot T16 4-piece bonus)
             ( 130552, 0, True ),    # Harsh Word
             ( 186876, 0 ),          # echoed Divine Storm (speculative)
             ( 186805, 0 ),          # echoed Templar's Verdict (speculative)
@@ -1325,7 +1321,6 @@ class SpellDataGenerator(DataGenerator):
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
             ( 86392, 0, False ),    # Main Gauche false positive for activatable
-            ( 145211, 0 ),          # Subtlety Tier16 4PC proc
             ( 168908, 0 ),          # Sinister Calling: Hemorrhage
             ( 168952, 0 ),          # Sinister Calling: Crimson Tempest
             ( 168971, 0 ),          # Sinister Calling: Garrote
@@ -1483,7 +1478,6 @@ class SpellDataGenerator(DataGenerator):
           ( 131581, 0 ),                            # Waterbolt
           ( 7268, 0, False ),                       # Arcane missiles trigger
           ( 115757, 0, False ),                     # Frost Nova false positive for activatable
-          ( 145264, 0 ),                            # T16 Frigid Blast
           ( 148022, 0 ),                            # Icicle
           ( 155152, 5 ),                            # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
@@ -1684,9 +1678,7 @@ class SpellDataGenerator(DataGenerator):
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
-          ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
-          ( 146874, 2 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
           ( 155627, 2 ),       # Lunar Inspiration
           ( 155625, 2 ),       # Lunar Inspiration Moonfire
