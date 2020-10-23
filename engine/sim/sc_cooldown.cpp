@@ -351,6 +351,7 @@ void cooldown_t::reset( bool require_reaction, int charges_ )
   ready = ready_init();
 
   current_charge = std::min( charges, current_charge + charges_ );
+  assert(current_charge > 0);
 
   if ( require_reaction && player )
   {
@@ -413,8 +414,9 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   // state besides removing a charge and adjusting ready.
   if ( recharge_event )
   {
-    assert( current_charge > 0 );
-    current_charge--;
+    if (current_charge > 0)
+      current_charge--;
+
     // No charges left, the cooldown won't be ready until a recharge event
     // occurs. Note, ready still needs to be properly set as it ultimately
     // controls whether a cooldown is "up".
@@ -463,6 +465,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     assert( current_charge > 1 && !recharge_event );
     last_charged = 0_ms;
     current_charge--;
+    assert(current_charge > 0);
     recharge_event = make_event<recharge_event_t>( sim, this, event_duration );
   }
   else

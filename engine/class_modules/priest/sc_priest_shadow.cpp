@@ -29,8 +29,6 @@ private:
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   bool only_cwc;
-  cooldown_t* dark_thought_dummy_cooldown;
-  cooldown_t* action_cooldown;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -48,9 +46,7 @@ public:
                                    .resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
       mind_sear_spell( player.find_class_spell( "Mind Sear" ) ),
-      only_cwc( false ),
-      dark_thought_dummy_cooldown( player.get_cooldown( "dark_thought_dummy_cooldown" ) ),
-      action_cooldown( player.get_cooldown( "mind_blast" ) )
+      only_cwc( false )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );
     parse_options( options_str );
@@ -77,29 +73,13 @@ public:
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
-  // Returns either mind blasts action cooldown, or when dark thoughts is up a dummy cooldown
-  cooldown_t* active_cooldown() const
+  void reset() override
   {
-    if ( priest().buffs.dark_thoughts->check() )
-    {
-      return dark_thought_dummy_cooldown;
-    }
-    return action_cooldown;
-  }
+    priest_spell_t::reset();
 
-  bool action_ready() override
-  {
-    cooldown   = active_cooldown();
-    auto ready = priest_spell_t::action_ready();
-    cooldown   = action_cooldown;
-    return ready;
-  }
-
-  void execute() override
-  {
-    cooldown = active_cooldown();
-    priest_spell_t::execute();
-    cooldown = action_cooldown;
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
+    cooldown->charges = data().charges();
   }
 
   bool ready() override
@@ -205,8 +185,8 @@ public:
 
     if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
-    else
-      priest_spell_t::update_ready( cd_duration );
+
+    priest_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -1291,8 +1271,9 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
-    priest().cooldowns.mind_blast->charges = 2;
-    priest().cooldowns.mind_blast->reset( true, 2 );
+
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+    priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
     priest().cooldowns.void_bolt->reset( true );
   }
 
@@ -1361,8 +1342,9 @@ struct surrender_to_madness_t final : public priest_spell_t
     if ( !priest().buffs.voidform->check() )
     {
       priest().buffs.voidform->trigger();
-      priest().cooldowns.mind_blast->charges = 2;
-      priest().cooldowns.mind_blast->reset( true, 2 );
+
+      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+      priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
       priest().cooldowns.void_bolt->reset( true );
     }
   }
@@ -1704,7 +1686,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
                         priest().cooldowns.mind_blast->charges_fractional() );
     }
     // Call new generic function to adjust charges.
-    adjust_max_charges( priest().cooldowns.mind_blast, 1 );
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
     if ( sim->debug )
     {
       sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
@@ -1766,6 +1748,26 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     this->reactable = true;
   }
 
+  void increment( int stacks, double value, timespan_t duration ) override
+  {
+    base_t::increment( stacks, value, duration );
+
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    base_t::decrement( stacks, value );
+
+    if ( overridden )
+      return;
+
+    if ( max_stack() == 0 || current_stack <= 0 )
+      return;
+
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( remaining_duration == timespan_t::zero() )
@@ -1775,6 +1777,8 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
         priest().procs.dark_thoughts_missed->occur();
       }
     }
+    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -expiration_stacks );
+
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
