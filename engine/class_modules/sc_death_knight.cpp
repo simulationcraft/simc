@@ -3002,6 +3002,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
+  void trigger_reanimated_shambler() const;
 };
 
 // ==========================================================================
@@ -3041,6 +3042,11 @@ void death_knight_melee_attack_t::execute()
 
   if ( hit_any_target && ! result_is_hit( execute_state -> result ) && last_resource_cost > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, last_resource_cost * RUNIC_POWER_REFUND, p() -> gains.power_refund );
+
+  if ( p()->legendary.reanimated_shambler->ok() )
+  {
+    trigger_reanimated_shambler();
+  }
 }
 
 // death_knight_melee_attack_t::schedule_travel() ===========================
@@ -3126,6 +3132,16 @@ void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state 
   td( state -> target ) -> debuff.razorice -> trigger();
 }
 
+void death_knight_melee_attack_t::trigger_reanimated_shambler() const
+{
+  if ( ! p() -> rppm.reanimated_shambler -> trigger() )
+  {
+    return;
+  }
+  p()->procs.reanimated_shambler->occur();
+
+  p()->pets.reanimated_shambler.spawn( 1 );
+}
 // ==========================================================================
 // Death Knight Secondary Abilities
 // ==========================================================================
@@ -6515,12 +6531,12 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   }
 };
 
-struct soul_reaper_t : public death_knight_spell_t
+struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_execute_t* soul_reaper_execute;
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper ),
     soul_reaper_execute( new soul_reaper_execute_t( p ) )
   {
     parse_options( options_str );
