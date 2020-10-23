@@ -795,7 +795,7 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
   {
     sim->print_debug( "{} initalized with initial_stack ({}) > max_stack ({}). Setting max_stack to {}.\n", *this,
                       _initial_stack, _max_stack, _initial_stack );
-    _max_stack = _initial_stack;
+    set_max_stack( _initial_stack );
   }
 
   return this;
