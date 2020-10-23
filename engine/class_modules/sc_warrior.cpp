@@ -5161,7 +5161,6 @@ struct last_stand_t : public warrior_spell_t
     parse_options( options_str );
     range              = -1;
     cooldown->duration = data().cooldown();
-    cooldown->duration *= 1.0 + p->sets->set( WARRIOR_PROTECTION, T18, B2 )->effectN( 1 ).percent();
     cooldown -> duration += timespan_t::from_millis( p -> talents.bolster -> effectN( 1 ).base_value() );
   }
 

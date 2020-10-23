@@ -818,17 +818,12 @@ enum set_bonus_type_e
   SET_BONUS_NONE = -1,
 
   // Actual tier support in SIMC
-  PVP,
-  T17LFR,
-  T18LFR,
   T19P_G1,
   T19P_G2,
   T19P_CLOTH,
   T19P_LEATHER,
   T19P_MAIL,
   T19P_PLATE,
-  T17,
-  T18,
   T21P_G1,
   T23_GIFT_OF_THE_LOA,
   T23_KEEPSAKES,

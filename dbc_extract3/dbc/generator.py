@@ -1001,7 +1001,6 @@ class SpellDataGenerator(DataGenerator):
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
-         179154, 179155, 179156, 179157, # T17 LFR cloth dps set bonus nukes
          183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
@@ -1333,7 +1332,6 @@ class SpellDataGenerator(DataGenerator):
             ( 168963, 0 ),          # Sinister Calling: Rupture
             ( 115189, 0 ),          # Anticipation buff
             ( 157562, 0 ),          # Crimson Poison (Enhanced Crimson Tempest perk)
-            ( 186183, 0 ),          # Assassination T18 2PC Nature Damage component
             ( 157957, 0 ),          # Shadow Reflection Dispatch
             ( 173458, 0 ),          # Shadow Reflection Backstab
             ( 195627, 0 ),          # Free Pistol Shot proc for Saber Slash
@@ -1447,8 +1445,6 @@ class SpellDataGenerator(DataGenerator):
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
-          ( 170512, 0 ), ( 170523, 0 ),                 # Feral Spirit windfury (t17 enhance 4pc set bonus)
-          ( 189078, 0 ),                                # Gathering Vortex (Elemental t18 4pc charge)
           ( 201846, 0 ),                                # Stormfury buff
           ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
           ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
@@ -1493,7 +1489,6 @@ class SpellDataGenerator(DataGenerator):
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
           ( 244813, 0 ),                            # Second Living Bomb DoT
           ( 187677, 0 ),                            # Aegwynn's Ascendance AOE
-          ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
           ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
@@ -1535,9 +1530,6 @@ class SpellDataGenerator(DataGenerator):
           ( 109468, 0 ),
           ( 104225, 0 ),
           ( 129476, 0 ),        # Immolation Aura
-          ( 189297, 0 ),        # Demonology Warlock T18 4P Pet
-          ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
-          ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
           ( 17941, 0 ),         # Agony energize
           ( 104318, 5 ),        # Wild Imp Firebolt
           ( 205196, 5 ),        # Dreadstalker Dreadbite
@@ -1703,8 +1695,6 @@ class SpellDataGenerator(DataGenerator):
           ( 155784, 3 ),       # Primal Tenacity buff
           ( 137542, 0 ),       # Displacer Beast buff
           ( 157228, 1 ),       # Owlkin Frenzy
-          ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
-          ( 188046, 5 ),       # T18 2P Faerie casts this spell
           ( 202461, 1 ),       # Stellar Drift mobility buff
           ( 202771, 1 ),       # Half Moon artifact power
           ( 202768, 1 ),       # Full Moon artifact power
@@ -3087,24 +3077,6 @@ class SetBonusListGenerator(DataGenerator):
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     set_bonus_map = [
-        # Warlords of Draenor PVP set bonuses
-        {
-            'name'   : 'pvp',
-            'bonuses': [ 1230, 1225, 1222, 1227, 1226, 1220, 1228, 1223, 1229, 1224, 1221 ],
-            'tier'   : 0,
-        },
-        # T17 LFR set bonuses
-        {
-            'name'   : 'tier17lfr',
-            'bonuses': [ 1245, 1248, 1246, 1247 ],
-            'tier'   : 17,
-        },
-        # T18 LFR set bonuses
-        {
-            'name'   : 'tier18lfr',
-            'bonuses': [ 1260, 1261, 1262, 1263 ],
-            'tier'   : 18,
-        },
         # Legion Dungeon, March of the Legion
         {
             'name'   : 'march_of_the_legion',
@@ -3140,16 +3112,6 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier19p_plate',
             'bonuses': [ 1298 ],
             'tier'   : 19
-        },
-        {
-            'name'   : 'tier17',
-            'bonuses': [ 1242, 1238, 1236, 1240, 1239, 1234, 1241, 1235, 1243, 1237, 1233 ],
-            'tier'   : 17
-        },
-        {
-            'name'   : 'tier18',
-            'bonuses': [ 1249, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259 ],
-            'tier'   : 18
         },
         {
             'name'   : 'waycrests_legacy',

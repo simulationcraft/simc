@@ -3425,14 +3425,6 @@ double player_t::resource_regen_per_second( resource_e r ) const
     }
   }
 
-  if ( r == RESOURCE_ENERGY )
-  {
-    if ( buffs.surge_of_energy && buffs.surge_of_energy->check() )
-    {
-      reg *= 1.0 + buffs.surge_of_energy->data().effectN( 1 ).percent();
-    }
-  }
-
   return reg;
 }
 
@@ -3481,11 +3473,6 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
-
-  if ( buffs.fel_winds && buffs.fel_winds->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.fel_winds->check_value() );
-  }
 
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
@@ -4042,11 +4029,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t* )
 double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = 1.0;
-
-  if ( buffs.brute_strength && buffs.brute_strength->check() )
-  {
-    m *= 1.0 + buffs.brute_strength->data().effectN( 1 ).percent();
-  }
 
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
     m *= 1.0 + buffs.legendary_aoe_ring->default_value;
