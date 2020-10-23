@@ -12,9 +12,16 @@ namespace warlock
 // Forward declarations
 struct warlock_t;
 struct warlock_td_t;
+struct warlock_pet_t;
 
-namespace pets
+struct warlock_pet_td_t : public actor_target_data_t
 {
+  propagate_const<buff_t*> debuff_infernal_brand;
+
+  warlock_pet_t& pet;
+  warlock_pet_td_t( player_t* target, warlock_pet_t& p );
+};
+
 struct warlock_pet_t : public pet_t
 {
   action_t* special_action; //Used for Felguard's Axe Toss
@@ -57,6 +64,18 @@ struct warlock_pet_t : public pet_t
   void init_spells_pets();
 
   void create_buffs_destruction();
+
+  target_specific_t<warlock_pet_td_t> target_data;
+
+  warlock_pet_td_t* get_target_data( player_t* target ) const override
+  {
+    warlock_pet_td_t*& td = target_data[ target ];
+    if ( !td )
+    {
+      td = new warlock_pet_td_t( target, const_cast<warlock_pet_t&>( *this ) );
+    }
+    return td;
+  }
 
   resource_e primary_resource() const override
   {
@@ -106,6 +125,8 @@ struct warlock_pet_t : public pet_t
   }
 };
 
+namespace pets
+{
 /**
  * A simple warlock pet that has a potential melee attack, and a single on-cooldown special ability
  * that it uses on cooldown.
@@ -176,14 +197,24 @@ public:
     }
   }
 
-  warlock_td_t* td( player_t* t )
+  warlock_td_t* owner_td( player_t* t )
   {
     return p()->o()->get_target_data( t );
   }
 
-  const warlock_td_t* td( player_t* t ) const
+  const warlock_td_t* owner_td( player_t* t ) const
   {
     return p()->o()->get_target_data( t );
+  }
+
+  warlock_pet_td_t* pet_td( player_t* t )
+  {
+    return p()->get_target_data( t );
+  }
+
+  const warlock_pet_td_t* pet_td( player_t* t ) const
+  {
+    return p()->get_target_data( t );
   }
 };
 

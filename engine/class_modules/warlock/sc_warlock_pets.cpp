@@ -6,8 +6,6 @@
 
 namespace warlock
 {
-namespace pets
-{
 warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian )
   : pet_t( owner->sim, owner, pet_name, pt, guardian ),
     special_action( nullptr ),
@@ -162,6 +160,15 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
+  actor_target_data_t( target, &p ), pet( p )
+{
+  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 340045 ) )
+                              ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
+}
+
+namespace pets
+{
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt )
   : warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
 {
@@ -1464,11 +1471,39 @@ namespace destruction
 {
 struct immolation_tick_t : public warlock_pet_spell_t
 {
+  //TODO: Probably should move this trigger into where it was being passed from, for clarity
   immolation_tick_t( warlock_pet_t* p, const spell_data_t* s )
     : warlock_pet_spell_t( "immolation", p, s->effectN( 1 ).trigger() )
   {
     aoe        = -1;
     background = may_crit = true;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
+
+    if ( pet_td( t )->debuff_infernal_brand->check() )
+      m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
+
+    return m;
+  }
+};
+
+struct infernal_melee_t : warlock_pet_melee_t
+{
+  infernal_melee_t(warlock_pet_t* p, double wm, const char* name = "melee") :
+    warlock_pet_melee_t (p, wm, name)
+  {  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_melee_t::impact( s );
+
+    if ( p()->o()->conduit.infernal_brand.ok() )
+    {
+      pet_td( s->target )->debuff_infernal_brand->trigger();
+    }
   }
 };
 
@@ -1482,7 +1517,7 @@ void infernal_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this );
+  melee_attack = new infernal_melee_t( this, 1.0 );
 }
 
 void infernal_t::create_buffs()
@@ -1539,7 +1574,7 @@ struct dark_glare_t : public warlock_pet_spell_t
 
     for ( const auto target : sim->target_non_sleeping_list )
     {
-      auto td = this->td( target );
+      auto td = this->owner_td( target );
       if ( !td )
         continue;
 
