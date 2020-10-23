@@ -185,8 +185,8 @@ public:
 
     if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
-
-    priest_spell_t::update_ready( cd_duration );
+    else
+      priest_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -1271,10 +1271,6 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
-
-    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
-    priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
-    priest().cooldowns.void_bolt->reset( true );
   }
 
   void consume_resource() override
@@ -1342,10 +1338,6 @@ struct surrender_to_madness_t final : public priest_spell_t
     if ( !priest().buffs.voidform->check() )
     {
       priest().buffs.voidform->trigger();
-
-      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
-      priest().cooldowns.mind_blast->reset( true, priest().cooldowns.mind_blast->charges );
-      priest().cooldowns.void_bolt->reset( true );
     }
   }
 
@@ -1661,6 +1653,19 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+    set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+      if ( cur )
+      {
+        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+        priest().cooldowns.mind_blast->reset( true, -1 );
+        priest().cooldowns.void_bolt->reset( true );
+      }
+      else
+      {
+        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+      }
+    } );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -1680,7 +1685,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     /// TODO: Verify if functionality is properly matching how it works in game.
-    if ( sim->debug )
+    /*if ( sim->debug )
     {
       sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
                         priest().cooldowns.mind_blast->charges_fractional() );
@@ -1691,7 +1696,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     {
       sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
                         priest().cooldowns.mind_blast->charges_fractional() );
-    }
+    }*/
     if ( priest().buffs.shadowform_state->check() )
     {
       priest().buffs.shadowform->trigger();
@@ -1746,26 +1751,10 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     this->set_refresh_behavior( buff_refresh_behavior::DURATION );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
-  }
 
-  void increment( int stacks, double value, timespan_t duration ) override
-  {
-    base_t::increment( stacks, value, duration );
-
-    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    base_t::decrement( stacks, value );
-
-    if ( overridden )
-      return;
-
-    if ( max_stack() == 0 || current_stack <= 0 )
-      return;
-
-    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
+    } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1777,7 +1766,6 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
         priest().procs.dark_thoughts_missed->occur();
       }
     }
-    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -expiration_stacks );
 
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
