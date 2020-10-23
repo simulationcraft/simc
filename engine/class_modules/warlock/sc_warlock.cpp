@@ -332,9 +332,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                   ->set_max_stack( 40 )
                                   ->set_default_value( source->find_conduit_spell("Combusting Engine").percent() );
 
-  debuffs_infernal_brand = make_buff( *this, "infernal_brand", source->find_spell( 340045 ) )
-                               ->set_default_value( source->find_conduit_spell( "Infernal Brand" ).percent() );
-
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
   dots_umbral_blaze = target->get_dot( "umbral_blaze", &p );

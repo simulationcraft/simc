@@ -55,7 +55,6 @@ struct warlock_td_t : public actor_target_data_t
 
   // SL - Conduit
   propagate_const<buff_t*> debuffs_combusting_engine;
-  propagate_const<buff_t*> debuffs_infernal_brand;
 
   // Demo
   propagate_const<dot_t*> dots_doom;
