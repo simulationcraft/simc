@@ -6117,11 +6117,6 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 228398, "228399trigger" );
   register_special_effect( 228400, "228401trigger" );
 
-  /* T19 Generic Order Hall set bonuses */
-  register_special_effect( 221533, set_bonus::passive_stat_aura     );
-  register_special_effect( 221534, set_bonus::passive_stat_aura     );
-  register_special_effect( 221535, set_bonus::passive_stat_aura     );
-
   /* 7.0 Dungeon 2 Set Bonuses */
   register_special_effect( 228445, set_bonus::march_of_the_legion );
   register_special_effect( 228447, set_bonus::journey_through_time );

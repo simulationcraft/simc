@@ -81,7 +81,6 @@ public:
     action_t* signet_bladestorm_f;
     action_t* signet_recklessness;
     action_t* charge;
-    action_t* slaughter;  // Fury T21 2PC
     action_t* iron_fortress; // Prot azerite trait
     action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
   } active;
@@ -125,15 +124,12 @@ public:
     buff_t* vengeance_ignore_pain;
     buff_t* whirlwind;
     buff_t* tornados_eye;
-    buff_t* protection_rage;
 
     // Legion Legendary
     buff_t* fujiedas_fury;
     buff_t* xavarics_magnum_opus;
     buff_t* sephuzs_secret;
     buff_t* in_for_the_kill;
-    buff_t* war_veteran;     // Arms T21 2PC
-    buff_t* weighted_blade;  // Arms T21 4PC
     // Azerite Traits
     buff_t* bloodcraze;
     buff_t* bloodcraze_driver;
@@ -223,7 +219,6 @@ public:
     gain_t* whirlwind;
     gain_t* booming_voice;
     gain_t* thunder_clap;
-    gain_t* protection_t20_2p;
     gain_t* endless_rage;
     gain_t* collateral_damage;
     gain_t* seethe_hit;
@@ -276,9 +271,6 @@ public:
   {
     proc_t* delayed_auto_attack;
     proc_t* tactician;
-
-    // Tier bonuses
-    proc_t* t19_2pc_arms;
   } proc;
 
   // Spec Passives
@@ -1695,7 +1687,6 @@ struct mortal_strike_t : public warrior_attack_t
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
-    p()->buff.weighted_blade->trigger( 1 );
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
@@ -2406,8 +2397,6 @@ struct colossus_smash_t : public warrior_attack_t
     {
       td( execute_state->target )->debuffs_colossus_smash->trigger();
       p()->buff.test_of_might_tracker->trigger();
-
-      p()->buff.war_veteran->trigger();
 
       if ( p()->talents.in_for_the_kill->ok() )
         p()->buff.in_for_the_kill->trigger();
@@ -3593,7 +3582,6 @@ struct warbreaker_t : public warrior_attack_t
 
     if ( hit_any_target )
     {
-      p()->buff.war_veteran->trigger();
       p()->buff.test_of_might_tracker->trigger();
 
       if ( p()->talents.in_for_the_kill->ok() )
@@ -3635,10 +3623,6 @@ struct rampage_attack_t : public warrior_attack_t
   {
     background = true;
     dual = true;
-    if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
-    {
-      base_multiplier *= ( 1.0 + p->find_spell( 200853 )->effectN( 1 ).percent() );
-    }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
     if ( p->spec.rampage->effectN( 3 ).trigger() == rampage )
       first_attack = true;
@@ -3668,12 +3652,6 @@ struct rampage_attack_t : public warrior_attack_t
       if ( p()->azerite.simmering_rage.ok() && target == s->target )
       {
         p()->resource_gain( RESOURCE_RAGE, rage_from_simmering_rage, p()->gain.simmering_rage );
-      }
-      if ( result_is_hit( s->result ) && p()->sets->has_set_bonus( WARRIOR_FURY, T21, B2 ) )
-      {
-        double amount = s->result_amount * p()->sets->set( WARRIOR_FURY, T21, B2 )->effectN( 1 ).percent();
-
-        residual_action::trigger( p()->active.slaughter, s->target, amount );
       }
       if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT )
       {
@@ -4097,12 +4075,6 @@ struct shield_slam_t : public warrior_attack_t
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
 
-    if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, T20, B4 ) )
-    {
-      p()->cooldown.berserker_rage->adjust(
-          timespan_t::from_seconds( -0.1 * p()->sets->set( WARRIOR_PROTECTION, T20, B4 )->effectN( 1 ).base_value() ),
-          false );
-    }
     if ( p() -> azerite.brace_for_impact.enabled() )
     {
       p() -> buff.brace_for_impact -> trigger();
@@ -4156,24 +4128,6 @@ struct slam_t : public warrior_attack_t
     return b;
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.weighted_blade->stack_value();
-
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    cc += p()->buff.weighted_blade->stack_value();
-
-    return cc;
-  }
-
   double cost() const override
   {
     if ( from_Fervor )
@@ -4194,7 +4148,6 @@ struct slam_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p()->buff.weighted_blade->expire();
     p()->buff.deadly_calm->decrement();
     if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
@@ -4209,16 +4162,6 @@ struct slam_t : public warrior_attack_t
       return false;
     }
     return warrior_attack_t::ready();
-  }
-};
-
-// Slaughter (T21 Fury Set Bonus) Dot
-struct slaughter_dot_t : public residual_action::residual_periodic_action_t<warrior_spell_t>
-{
-  slaughter_dot_t( warrior_t* p ) : base_t( "T21 2PC", p, p->find_spell( 253384 ) )
-  {
-    dual          = true;
-    tick_may_crit = false;
   }
 };
 
@@ -4502,29 +4445,6 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
     aoe = -1;
     background = true;
   }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.weighted_blade->stack_value();
-
-    //if ( p()->talents.fervor_of_battle->ok() )
-    //{
-      //am *= 1.0 + p()->talents.fervor_of_battle->effectN( 1 ).percent();
-    //}
-    // becomes collateral damage
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    cc += p()->buff.weighted_blade->stack_value();
-
-    return cc;
-  }
 };
 
 struct first_arms_whirlwind_mh_t : public warrior_attack_t
@@ -4534,29 +4454,6 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.weighted_blade->stack_value();
-
-    //if ( p()->talents.fervor_of_battle->ok() )
-    //{
-      //am *= 1.0 + p()->talents.fervor_of_battle->effectN( 1 ).percent();
-    //}
-    // becomes collateral damage
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    cc += p()->buff.weighted_blade->stack_value();
-
-    return cc;
   }
 };
 
@@ -4639,13 +4536,6 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     {
       mh_attack->execute();
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-
-    p()->buff.weighted_blade->expire();
   }
 
   bool ready() override
@@ -5121,15 +5011,6 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.berserker_rage->trigger();
-
-    if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, T20, B2 ) )
-    {
-      p()->resource_gain(
-          RESOURCE_RAGE,
-          p()->sets->set( WARRIOR_PROTECTION, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ),
-          p()->gain.protection_t20_2p );
-      p()->buff.protection_rage->trigger();
-    }
   }
 };
 
@@ -5983,7 +5864,6 @@ void warrior_t::init_spells()
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
   active.charge           = nullptr;
-  active.slaughter        = nullptr;
 
   // Runeforged Legendary Items
   legendary.leaper                    = find_runeforge_legendary( "Leaper" );
@@ -6011,8 +5891,6 @@ void warrior_t::init_spells()
     active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
   if ( spec.deep_wounds_PROT->ok() )
     active.deep_wounds_PROT = new deep_wounds_PROT_t( this );
-  if ( sets->has_set_bonus( WARRIOR_FURY, T21, B2 ) )
-    active.slaughter = new slaughter_dot_t( this );
   if ( spec.rampage->ok() )
   {
     // rampage now hits 4 times instead of 5 and effect indexes shifted
@@ -6715,24 +6593,6 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
   }
 };
 
-// Protection T20 2P buff that generates rage over time ==================================
-
-struct protection_rage_t : public warrior_buff_t<buff_t>
-{
-  protection_rage_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, n, s )
-  {
-    set_tick_callback( [&p]( buff_t*, int, timespan_t ) {
-            p.resource_gain(
-                RESOURCE_RAGE,
-                p.sets->set( WARRIOR_PROTECTION, T20, B2 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RAGE ),
-                p.gain.protection_t20_2p );
-          } );
-    // The initial tick generates 20 rage and is done in Berserker's Rage execute
-    tick_zero = false;
-  }
-};
-
 // Test of Might Tracker ===================================================================
 
 struct test_of_might_t : public warrior_buff_t<buff_t>
@@ -6951,18 +6811,6 @@ void warrior_t::create_buffs()
 
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
-  buff.war_veteran =
-      make_buff( this, "war_veteran", sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger() )
-      ->set_default_value( sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->set_chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B2 ) );
-
-  buff.weighted_blade =
-      make_buff( this, "weighted_blade", sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger() )
-      ->set_default_value( sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->set_chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B4 ) );
-
-  buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
-
   buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
@@ -7099,7 +6947,6 @@ void warrior_t::init_gains()
   gain.shield_slam                      = get_gain( "shield_slam" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
-  gain.protection_t20_2p                = get_gain( "t20_2p" );
   gain.whirlwind                        = get_gain( "whirlwind" );
   gain.collateral_damage                = get_gain( "collateral_damage" );
 
@@ -7673,9 +7520,6 @@ double warrior_t::composite_crit_block() const
     b += cache.mastery() * mastery.critical_block->effectN( 1 ).mastery_value();
   }
 
-  if ( buff.shield_block->check() && sets->has_set_bonus( WARRIOR_PROTECTION, T19, B2 ) )
-    b += find_spell( 212236 )->effectN( 1 ).percent();
-
   return b;
 }
 
@@ -7728,10 +7572,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( buff.war_veteran->check() )
-  {
-    cdm *= 1.0 + buff.war_veteran->value();
-  }
   if ( buff.glory->check() )
   {
     cdm *= 1.0 + buff.glory->stack_value();
@@ -8031,17 +7871,6 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
     else if ( buff.die_by_the_sword->up() )
     {
       s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
-    }
-  }
-
-  if ( action_t::result_is_block( s->block_result ) )
-  {
-    if ( s->block_result == BLOCK_RESULT_CRIT_BLOCKED )
-    {
-      resource_gain(
-          RESOURCE_RAGE,
-          sets->set( WARRIOR_PROTECTION, T19, B4 )->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ),
-          gain.critical_block );
     }
   }
 }

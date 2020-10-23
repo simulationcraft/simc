@@ -1277,7 +1277,6 @@ class SpellDataGenerator(DataGenerator):
             ( 238996, 0 ),          # Righteous Verdict
             ( 242981, 0 ),          # Blessing of the Ashbringer
             ( 211561, 0 ),          # Justice Gaze
-            ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
@@ -1345,7 +1344,6 @@ class SpellDataGenerator(DataGenerator):
             ( 192380, 0 ),          # Poisoned Knives damage component
             ( 202848, 0 ),          # Blunderbuss driver
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
-            ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
             ( 279043, 0 ),          # Shadow Blades damaging spell
             ( 121153, 0 ),          # Blindside proc buff
             ( 278981, 0 ),          # The First Dance, Azerite trait aura
@@ -1419,7 +1417,6 @@ class SpellDataGenerator(DataGenerator):
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
-          ( 253590, 0 ),    # T21 4P frost damage component
           ( 274373, 0 ),    # Festermight azerite trait
           ( 199373, 5 ),    # Army ghoul claw spell
           ( 275918, 0 ),    # Echoing Howl azerite trait
@@ -1474,7 +1471,6 @@ class SpellDataGenerator(DataGenerator):
           ( 198506, 0 ),                                # Wolves of Doom, summon spell
           ( 197568, 0 ),                                # Lightning Rod damage spell
           ( 207998, 0 ), ( 207999, 0 ),                 # 7.0 legendary ring Eye of the Twisting Nether
-          ( 252143, 0 ),                                # Earth Shock Overload (Elemental T21 2PC)
           ( 279515, 0 ),                                # Roiling Storm
           ( 275394, 0 ),                                # Lightning Conduit
           ( 273466, 0 ),                                # Strength of Earth
@@ -1502,7 +1498,6 @@ class SpellDataGenerator(DataGenerator):
           ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
           ( 228358, 0 ),                            # Winter's Chill
-          ( 242253, 0 ),                            # Frost T20 2P Frozen Mass
           ( 240689, 0 ),                            # Aluneth - Time and Space
           ( 248147, 0 ),                            # Erupting Infernal Core
           ( 248177, 0 ),                            # Rage of the Frost Wyrm
@@ -1510,7 +1505,6 @@ class SpellDataGenerator(DataGenerator):
           ( 222320, 0 ),                            # Sorcerous Frostbolt
           ( 222321, 0 ),                            # Sorcerous Arcane Blast
           ( 205473, 0 ),                            # Icicles buff
-          ( 253257, 0 ),                            # Frost T21 4P Arctic Blast
           ( 187292, 0 ),                            # Ro3 buff (?)
           ( 264352, 0 ),                            # Mana Adept
           ( 263725, 0 ),                            # Clearcasting buff
@@ -1630,12 +1624,10 @@ class SpellDataGenerator(DataGenerator):
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 196742, 3 ), # Whirling Dragon Punch Buff
-          ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
-          ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		  ( 290461, 3 ), # Reverse Harm Damage
@@ -1722,8 +1714,6 @@ class SpellDataGenerator(DataGenerator):
           ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
           ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
-          ( 211140, 2 ),       # Feral tier19_2pc
-          ( 211142, 2 ),       # Feral tier19_4pc
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
           ( 213771, 3 ),       # Swipe (Bear)
@@ -1732,7 +1722,6 @@ class SpellDataGenerator(DataGenerator):
           ( 213666, 1 ),       # Echoing Stars artifact spell
           ( 69369,  2 ),       # Predatory Swiftness buff
           ( 227034, 3 ),       # Nature's Guardian heal
-          ( 252750, 2 ),       # Feral tier21_2pc
           ( 272873, 1 ),       # Streaking Star (azerite) damage spell
           ( 274282, 1 ),       # Half Moon
           ( 274283, 1 ),       # Full Moon
@@ -3116,12 +3105,6 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1260, 1261, 1262, 1263 ],
             'tier'   : 18,
         },
-        # T19 Order Hall set bonuses
-        {
-            'name'   : 'tier19oh',
-            'bonuses': [ 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280 ],
-            'tier'   : 19
-        },
         # Legion Dungeon, March of the Legion
         {
             'name'   : 'march_of_the_legion',
@@ -3167,21 +3150,6 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier18',
             'bonuses': [ 1249, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259 ],
             'tier'   : 18
-        },
-        {
-            'name'   : 'tier19',
-            'bonuses': [ 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292 ],
-            'tier'   : 19
-        },
-        {
-            'name'   : 'tier20',
-            'bonuses': [ 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312 ],
-            'tier'   : 20
-        },
-        {
-            'name'   : 'tier21',
-            'bonuses': [ 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330 ],
-            'tier'   : 21
         },
         {
             'name'   : 'waycrests_legacy',
