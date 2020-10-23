@@ -159,6 +159,14 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
+
+warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
+  actor_target_data_t( target, &p ), pet( p )
+{
+  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 340045 ) )
+                              ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
+}
+
 namespace pets
 {
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt )

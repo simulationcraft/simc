@@ -12,6 +12,15 @@ namespace warlock
 // Forward declarations
 struct warlock_t;
 struct warlock_td_t;
+struct warlock_pet_t;
+
+struct warlock_pet_td_t : public actor_target_data_t
+{
+  propagate_const<buff_t*> debuff_infernal_brand;
+
+  warlock_pet_t& pet;
+  warlock_pet_td_t( player_t* target, warlock_pet_t& p );
+};
 
 struct warlock_pet_t : public pet_t
 {
