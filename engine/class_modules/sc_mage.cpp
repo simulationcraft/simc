@@ -1908,7 +1908,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Nether Precision is only triggered if the buff was actually decremented.
         // This is relevant when the player uses Expanded Potential.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
-          p()->buffs.nether_precision->trigger( p()->buffs.nether_precision->max_stack() );
+          p()->buffs.nether_precision->trigger();
         break;
       }
     }
@@ -2492,7 +2492,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-    p()->buffs.presence_of_mind->trigger( p()->buffs.presence_of_mind->max_stack() );
+    p()->buffs.presence_of_mind->trigger();
   }
 };
 
@@ -6408,7 +6408,7 @@ void mage_t::create_buffs()
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
-                                 ->modify_max_stack( as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
+                                 ->modify_initial_stack( as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value_from_effect( 1 )
