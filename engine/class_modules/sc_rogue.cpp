@@ -8370,7 +8370,8 @@ void rogue_t::create_buffs()
                                           ->set_max_stack( 1 )
                                           ->set_default_value( 4 );
 
-  buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
+  buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff )
+    ->set_initial_stack( covenant.sepsis->effectN( 6 ).base_value() );
 
   // Conduits ===============================================================
 
