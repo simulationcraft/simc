@@ -65,6 +65,18 @@ struct warlock_pet_t : public pet_t
 
   void create_buffs_destruction();
 
+  target_specific_t<warlock_pet_td_t> target_data;
+
+  warlock_pet_td_t* get_target_data( player_t* target ) const override
+  {
+    warlock_pet_td_t*& td = target_data[ target ];
+    if ( !td )
+    {
+      td = new warlock_pet_td_t( target, const_cast<warlock_pet_t&>( *this ) );
+    }
+    return td;
+  }
+
   resource_e primary_resource() const override
   {
     return RESOURCE_ENERGY;
@@ -185,14 +197,24 @@ public:
     }
   }
 
-  warlock_td_t* td( player_t* t )
+  warlock_td_t* owner_td( player_t* t )
   {
     return p()->o()->get_target_data( t );
   }
 
-  const warlock_td_t* td( player_t* t ) const
+  const warlock_td_t* owner_td( player_t* t ) const
   {
     return p()->o()->get_target_data( t );
+  }
+
+  warlock_pet_td_t* pet_td( player_t* t )
+  {
+    return p()->get_target_data( t );
+  }
+
+  const warlock_pet_td_t* pet_td( player_t* t ) const
+  {
+    return p()->get_target_data( t );
   }
 };
 

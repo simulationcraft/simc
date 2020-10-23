@@ -1483,8 +1483,8 @@ struct immolation_tick_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
 
-    if ( td( t )->debuffs_infernal_brand->check() )
-      m *= 1.0 + td( t )->debuffs_infernal_brand->check_stack_value();
+    if ( owner_td( t )->debuffs_infernal_brand->check() )
+      m *= 1.0 + owner_td( t )->debuffs_infernal_brand->check_stack_value();
 
     return m;
   }
@@ -1502,7 +1502,7 @@ struct infernal_melee_t : warlock_pet_melee_t
 
     if ( p()->o()->conduit.infernal_brand.ok() )
     {
-      td( s->target )->debuffs_infernal_brand->increment( 1, td( s->target )->debuffs_infernal_brand->default_value );
+      owner_td( s->target )->debuffs_infernal_brand->increment( 1, owner_td( s->target )->debuffs_infernal_brand->default_value );
     }
   }
 };
@@ -1574,7 +1574,7 @@ struct dark_glare_t : public warlock_pet_spell_t
 
     for ( const auto target : sim->target_non_sleeping_list )
     {
-      auto td = this->td( target );
+      auto td = this->owner_td( target );
       if ( !td )
         continue;
 
