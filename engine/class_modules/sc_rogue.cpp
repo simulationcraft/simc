@@ -7062,7 +7062,7 @@ void rogue_t::init_action_list()
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade.equipped" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
-    build->add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)", "Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down." );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
     build->add_action( this, "Sinister Strike" );
   }
@@ -8370,8 +8370,9 @@ void rogue_t::create_buffs()
                                           ->set_max_stack( 1 )
                                           ->set_default_value( 4 );
 
-  buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff )
-    ->set_initial_stack( covenant.sepsis->effectN( 6 ).base_value() );
+  buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
+  if( covenant.sepsis->ok() )
+    buffs.sepsis->set_initial_stack( covenant.sepsis->effectN( 6 ).base_value() );
 
   // Conduits ===============================================================
 
