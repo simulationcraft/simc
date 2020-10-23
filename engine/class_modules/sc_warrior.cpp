@@ -3942,6 +3942,7 @@ struct revenge_t : public warrior_attack_t
     parse_options( options_str );
     aoe           = -1;
     impact_action = p->active.deep_wounds_PROT;
+    base_multiplier = p -> talents.best_served_cold -> effectN( 1 ).percent();
   }
 
   double cost() const override
