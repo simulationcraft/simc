@@ -233,7 +233,11 @@ void grove_invigoration( special_effect_t& effect )
 {
   struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ) {}
+    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+    {
+      // TODO: The max stacks in spell data are wrong
+      set_max_stack( 10 );
+    }
 
     bool trigger( int, double v, double c, timespan_t d ) override
     {
@@ -243,7 +247,7 @@ void grove_invigoration( special_effect_t& effect )
       if ( !anima_stacks )
         return false;
 
-      anima_stacks = std::min( anima_stacks, as<int>( data().max_stacks() ) );
+      anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
       player->buffs.redirected_anima_stacks->decrement( anima_stacks );
 
       return stat_buff_t::trigger( anima_stacks, v, c, d );
