@@ -31,7 +31,7 @@ race=pandaren
 spec=outlaw
 role=attack
 position=back
-talents=2010022
+talents=3010022
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1500
