@@ -1204,7 +1204,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
     auto_attack_multiplier( 1.0 ),
-    insignia_of_the_grand_army_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
     // Movement & Position
     base_movement_speed( 7.0 ),
@@ -3185,21 +3184,6 @@ void player_t::create_buffs()
 {
   sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
-  struct norgannons_foresight_buff_t : public buff_t
-  {
-    norgannons_foresight_buff_t( player_t* p ) :
-      buff_t( p, "norgannons_foresight", p->find_spell( 234797 ) )
-    {
-      set_chance( 0 );
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-      player->buffs.norgannons_foresight_ready->trigger();
-    }
-  };
-
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
@@ -3265,11 +3249,6 @@ void player_t::create_buffs()
                            ->set_cooldown( timespan_t::zero() )
                            ->set_chance( 1 )
                            ->set_default_value( 0.1 );  // Not in spelldata
-
-    buffs.norgannons_foresight_ready =
-        make_buff( this, "norgannons_foresight_ready", find_spell( 236380 ) )->set_chance( 0 );
-
-    buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );
 
     buffs.courageous_primal_diamond_lucidity = make_buff( this, "lucidity", find_spell( 137288 ) );
 
@@ -4090,9 +4069,6 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( school != SCHOOL_PHYSICAL )
     m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
 
-  // 8.0 Legendary Insignia of the Grand Army Effect
-  m *= insignia_of_the_grand_army_multiplier;
-
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
     m *= 1 + buffs.echo_of_eonar->check_value();
 
@@ -4258,14 +4234,8 @@ double player_t::passive_movement_modifier() const
   {
     passive += find_spell( 292362 )->effectN( 1 ).percent();
   }
+
   passive += racials.quickness->effectN( 2 ).percent();
-  if ( buffs.aggramars_stride )
-  {
-    passive += ( buffs.aggramars_stride->check_value() *
-                 ( ( 1.0 / cache.attack_haste() - 1.0 ) > cache.attack_crit_chance()
-                       ? ( 1.0 / cache.attack_haste() - 1.0 )
-                       : cache.attack_crit_chance() ) );  // Takes the larger of the two values.
-  }
   passive += composite_run_speed();
 
   return passive;
@@ -4715,12 +4685,6 @@ void player_t::combat_begin()
 
   if ( buffs.amplification_2 )
     buffs.amplification_2->trigger();
-
-  if ( buffs.aggramars_stride )
-    buffs.aggramars_stride->trigger();
-
-  if ( buffs.norgannons_foresight_ready )
-    buffs.norgannons_foresight_ready->trigger();
 
   if ( buffs.tyrants_decree_driver )
   {  // Assume actor has stacked the buff to max stack precombat.
@@ -5771,18 +5735,11 @@ void player_t::stun()
 
 void player_t::moving()
 {
-  if ( !buffs.norgannons_foresight_ready || !buffs.norgannons_foresight_ready->check() )
-  {
-    halt();
-  }
+  halt();
 }
 
 void player_t::finish_moving()
 {
-  if ( buffs.norgannons_foresight )
-  {
-    buffs.norgannons_foresight->trigger();
-  }
 }
 
 void player_t::clear_debuffs()

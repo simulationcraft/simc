@@ -3632,7 +3632,6 @@ void sim_t::create_options()
   add_option( opt_int( "legion.engine_of_eradication_orbs", legion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
-  add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );

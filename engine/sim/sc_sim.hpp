@@ -227,7 +227,6 @@ struct sim_t : private sc_thread_t
     int                 void_stalkers_contract_targets = -1;
     double              specter_of_betrayal_overlap = 1.0;
     std::vector<double> cradle_of_anguish_resets;
-    double              archimondes_hatred_reborn_damage = 1.0;
   } legion_opts;
 
   struct bfa_opt_t

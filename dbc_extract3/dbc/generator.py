@@ -1027,7 +1027,6 @@ class SpellDataGenerator(DataGenerator):
          222050,                   # Wriggling Sinew trinket
          221865,                   # Twisting Wind trinket
          221804, 221805,           # Ravaged Seed Pod trinket
-         207694,                   # Symbiote Strike for Cinidaria, the Symbiote
          201639, 201640, 201641,   # 7.0 Lavish Suramar Feast food buffs
          201635, 201636, 201637,   # 7.0 Hearty Feast food buffs
          215047,                   # Terrorbound Nexus trinket
@@ -1040,8 +1039,6 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-         # 7.1.5 Archimonde's Hatred Reborn damage spell
-         235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
          # 7.3.0 Netherlight stuff
