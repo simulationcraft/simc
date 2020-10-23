@@ -8,7 +8,6 @@ namespace warlock
 {
 struct warlock_t;
 
-
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -18,7 +17,6 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
   assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
   return a;
 }
-
 
 struct warlock_td_t : public actor_target_data_t
 {
@@ -100,8 +98,8 @@ public:
   // Active Pet
   struct pets_t
   {
-    pets::warlock_pet_t* active;
-    pets::warlock_pet_t* last;
+    warlock_pet_t* active;
+    warlock_pet_t* last;
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
@@ -981,7 +979,7 @@ struct summon_pet_t : public warlock_spell_t
 {
   timespan_t summoning_duration;
   std::string pet_name;
-  pets::warlock_pet_t* pet;
+  warlock_pet_t* pet;
 
 private:
   void _init_summon_pet_t()
@@ -1023,7 +1021,7 @@ public:
 
   void init_finished() override
   {
-    pet = debug_cast<pets::warlock_pet_t*>( player->find_pet( pet_name ) );
+    pet = debug_cast<warlock_pet_t*>( player->find_pet( pet_name ) );
 
     warlock_spell_t::init_finished();
   }

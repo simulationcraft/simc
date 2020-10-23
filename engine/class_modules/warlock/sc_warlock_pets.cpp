@@ -6,8 +6,6 @@
 
 namespace warlock
 {
-namespace pets
-{
 warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian )
   : pet_t( owner->sim, owner, pet_name, pt, guardian ),
     special_action( nullptr ),
@@ -161,7 +159,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-
+namespace pets
+{
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt )
   : warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
 {

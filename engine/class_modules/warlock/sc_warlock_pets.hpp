@@ -13,8 +13,6 @@ namespace warlock
 struct warlock_t;
 struct warlock_td_t;
 
-namespace pets
-{
 struct warlock_pet_t : public pet_t
 {
   action_t* special_action; //Used for Felguard's Axe Toss
@@ -106,6 +104,8 @@ struct warlock_pet_t : public pet_t
   }
 };
 
+namespace pets
+{
 /**
  * A simple warlock pet that has a potential melee attack, and a single on-cooldown special ability
  * that it uses on cooldown.
