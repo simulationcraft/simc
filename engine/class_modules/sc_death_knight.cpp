@@ -7814,8 +7814,16 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
-  if ( name == "unholy_assault"            ) return new unholy_assault_t            ( this, options_str );
+  if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
+
+  // Dynamic actions
+  // any_dnd and dnd_any return defile if talented, or death and decay otherwise
+  if ( name == "any_dnd" || name == "dnd_any" )
+    return create_action( talent.defile -> ok() ? "defile" : "death_and_decay", options_str );
+  // wound_spender will return clawing shadows if talented, scourge strike if it's not
+  if ( name == "wound_spender" )
+    return create_action( talent.clawing_shadows -> ok() ? "clawing_shadows" : "scourge_strike", options_str );
 
   return player_t::create_action( name, options_str );
 }
