@@ -49,6 +49,8 @@ namespace runeforge {
   void sanguination( special_effect_t& );
   void spellwarding( special_effect_t& );
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
+  // Legendary runeforges, blame blizzard for the same names
+  void reanimated_shambler( special_effect_t& );
 }
 
 // ==========================================================================
@@ -1155,7 +1157,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
-                           -> set_trigger_spell( p -> spec.festering_wound )
                            -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
                            -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
@@ -3002,7 +3003,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
-  void trigger_reanimated_shambler() const;
 };
 
 // ==========================================================================
@@ -3042,11 +3042,6 @@ void death_knight_melee_attack_t::execute()
 
   if ( hit_any_target && ! result_is_hit( execute_state -> result ) && last_resource_cost > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, last_resource_cost * RUNIC_POWER_REFUND, p() -> gains.power_refund );
-
-  if ( p()->legendary.reanimated_shambler->ok() )
-  {
-    trigger_reanimated_shambler();
-  }
 }
 
 // death_knight_melee_attack_t::schedule_travel() ===========================
@@ -3132,16 +3127,6 @@ void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state 
   td( state -> target ) -> debuff.razorice -> trigger();
 }
 
-void death_knight_melee_attack_t::trigger_reanimated_shambler() const
-{
-  if ( ! p() -> rppm.reanimated_shambler -> trigger() )
-  {
-    return;
-  }
-  p()->procs.reanimated_shambler->occur();
-
-  p()->pets.reanimated_shambler.spawn( 1 );
-}
 // ==========================================================================
 // Death Knight Secondary Abilities
 // ==========================================================================
@@ -3290,10 +3275,6 @@ struct melee_t : public death_knight_melee_attack_t
         trigger_bloodworm();
       }
 
-      if ( p() -> legendary.reanimated_shambler -> ok() )
-      {
-        trigger_reanimated_shambler();
-      }
     }
   }
 
@@ -3310,17 +3291,6 @@ struct melee_t : public death_knight_melee_attack_t
     p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() -> duration(), 1 );
     // Pet spawn spelldata: 16s
     // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
-  }
-
-  void trigger_reanimated_shambler()
-  {
-    if  ( ! p() -> rppm.reanimated_shambler -> trigger() )
-    {
-      return;
-    }
-    p() -> procs.reanimated_shambler -> occur();
-
-    p() -> pets.reanimated_shambler.spawn( 1 );
   }
 };
 
@@ -7193,6 +7163,37 @@ void runeforge::unending_thirst( special_effect_t& effect )
   static_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
 }
 
+// Legendary runeforge Reanimated Shambler
+void runeforge::reanimated_shambler( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  struct trigger_reanimated_shambler_t : death_knight_spell_t
+  {
+    trigger_reanimated_shambler_t( death_knight_t* p ) :
+      death_knight_spell_t( "reanimated_shambler_trigger", p )
+    {
+      quiet = background = true;
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      p() -> procs.reanimated_shambler -> occur();
+
+      p() -> pets.reanimated_shambler.spawn( 1 );
+    }
+  };
+
+  effect.execute_action = new trigger_reanimated_shambler_t( static_cast<death_knight_t*>( effect.player ) );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 
 // Resource Manipulation ====================================================
 
@@ -8176,7 +8177,7 @@ void death_knight_t::create_pets()
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
     }
 
-    if (legendary.reanimated_shambler.ok())
+    if ( legendary.reanimated_shambler.ok() )
     {
       pets.reanimated_shambler.set_creation_callback(
           [] ( death_knight_t* p ) { return new pets::reanimated_shambler_pet_t( p ); } );
@@ -8242,7 +8243,6 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-  rppm.reanimated_shambler = get_rppm( "reanimated_shambler", legendary.reanimated_shambler );
 }
 
 // death_knight_t::init_base ================================================
@@ -10028,6 +10028,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+    unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
   void register_hotfixes() const override
