@@ -4156,13 +4156,13 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
   if ( actor_target_data_t* td = get_owner_or_self()->get_target_data( target ) )
   {
     // Essence: Blood of the Enemy Major debuff
-    c += td->debuff.blood_of_the_enemy->stack_value();
+    c += td->debuff.blood_of_the_enemy->check_stack_value();
 
     // Consumable: Potion of Focused Resolve
-    c += td->debuff.focused_resolve->stack_value();
+    c += td->debuff.focused_resolve->check_stack_value();
 
     // Darkmoon Deck: Putrescence
-    c += td->debuff.putrid_burst->stack_value();
+    c += td->debuff.putrid_burst->check_stack_value();
   }
 
   return c;
@@ -4468,7 +4468,7 @@ double player_t::composite_player_vulnerability( school_e school ) const
   double m = debuffs.invulnerable && debuffs.invulnerable->check() ? 0.0 : 1.0;
 
   if ( debuffs.vulnerable && debuffs.vulnerable->check() )
-    m *= 1.0 + debuffs.vulnerable->value();
+    m *= 1.0 + debuffs.vulnerable->check_value();
 
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )
@@ -4476,10 +4476,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
 
   if ( debuffs.mystic_touch &&
        debuffs.mystic_touch->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + debuffs.mystic_touch->value();
+    m *= 1.0 + debuffs.mystic_touch->check_value();
 
   if ( debuffs.chaos_brand && debuffs.chaos_brand->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + debuffs.chaos_brand->value();
+    m *= 1.0 + debuffs.chaos_brand->check_value();
 
   return m;
 }
