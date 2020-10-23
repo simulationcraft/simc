@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (git build shadowlands e4e8612b09)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9478,14 +9478,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-#2 (id=868651)   : Apply Aura (6) | Unknown(148)
+#2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
-#3 (id=868652)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Crusade (231895)
+#3 (id=868652)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Unknown(25)
-#4 (id=868655)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Storm, Earth, and Fire (137639)
+#4 (id=868655)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1572 | Target: Unknown(25)
-#5 (id=868656)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
+#5 (id=868656)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Unknown(25)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
 Description      : $@spelldesc327661
 Tooltip          : The cooldown of your major ability recovers $s1% faster.
 

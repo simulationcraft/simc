@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (git build shadowlands e4e8612b09)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -7234,7 +7234,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=720338)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 56.94173 (coefficient=2.355828) | PvP Coefficient: 0.50000 | Trigger Spell: 270671 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 36.25587 (coefficient=1.5) | PvP Coefficient: 0.50000 | Trigger Spell: 270671 | Target: Self (1)
 #2 (id=748104)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Clearcasting procs $s2% more often, and each wave of a Clearcast Arcane Missiles deals $s1 more damage than the previous.
