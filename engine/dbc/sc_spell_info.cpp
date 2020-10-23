@@ -680,10 +680,6 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
 } );
 
-static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
-  341, 411, 453, 454, 457
-} );
-
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
   { 130, "Charm"          },
   { 134, "Disorient"      },
@@ -1119,7 +1115,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && _category_effect_subtypes.contains( e -> subtype() ) )
+  if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
     if ( affected_spells.size() > 0 )
