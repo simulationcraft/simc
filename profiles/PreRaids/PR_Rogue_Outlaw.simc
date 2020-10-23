@@ -5,7 +5,7 @@ level=60
 race=pandaren
 role=attack
 position=back
-talents=2010022
+talents=3010022
 
 # Default consumables
 potion=potion_of_unbridled_fury

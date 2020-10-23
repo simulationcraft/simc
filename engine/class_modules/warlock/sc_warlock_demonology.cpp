@@ -439,7 +439,7 @@ struct implosion_t : public demonology_spell_t
   struct implosion_aoe_t : public demonology_spell_t
   {
     double casts_left = 5.0;
-    pets::warlock_pet_t* next_imp;
+    warlock_pet_t* next_imp;
 
     implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
     {
@@ -573,7 +573,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     for ( auto& pet : p()->pet_list )
     {
-      auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet );
+      auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
       if ( lock_pet == nullptr )
         continue;
@@ -1184,7 +1184,7 @@ void warlock_t::vision_of_perfection_proc_demo()
   // TOCHECK: Azerite traits, does proc tyrant extend summoned tyrant and vice versa?
   for ( auto& pet : pet_list )
   {
-    auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet );
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
     if ( lock_pet == nullptr )
       continue;
