@@ -31,8 +31,6 @@
 // - Spec Legendaries
 //   - Elemental Equilibrium
 //     - There are a number of spell-specific bugs here about which buffs get applied
-//   - Windspeaker's Lava Resurgence
-//     - Implement the bugged behavior, not the tooltip behavior
 // - Spec Conduits
 //   - Earth and Sky
 //     - Still waiting on them to reimplement this on beta for post-Fulmination
@@ -412,6 +410,7 @@ public:
     buff_t* chains_of_devastation_chain_heal;
     buff_t* chains_of_devastation_chain_lightning;
     buff_t* echoes_of_great_sundering;
+    buff_t* windspeakers_lava_resurgence;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -551,7 +550,7 @@ public:
     item_runeforge_t skybreakers_fiery_demise;
     item_runeforge_t elemental_equilibrium;  // NYI
     item_runeforge_t echoes_of_great_sundering;
-    item_runeforge_t windspeakers_lava_resurgence;  // NYI
+    item_runeforge_t windspeakers_lava_resurgence;
 
     // Enhancement
     item_runeforge_t doom_winds;                 // NYI
@@ -4410,6 +4409,10 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->cache.spell_crit_chance();
     }
 
+    if ( p()->buff.windspeakers_lava_resurgence->up() ) {
+      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->value();
+    }
+
     return m;
   }
 
@@ -4714,9 +4717,14 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( s->chain_target == 0 && result_is_hit( s->result ) && p()->buff.surge_of_power->up() )
     {
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->buff.surge_of_power->decrement();
+      if (p()->buff.surge_of_power->up()) {
+        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->buff.surge_of_power->decrement();
+      }
+      if ( p()->legendary.windspeakers_lava_resurgence->ok() && p()->buff.windspeakers_lava_resurgence->up() ) {
+        p()->buff.windspeakers_lava_resurgence->expire();
+      }
     }
 
     stats = normal_stats;
@@ -4729,6 +4737,10 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->buff.ascendance->up() )
     {
       m *= 1.0 + p()->cache.spell_crit_chance();
+    }
+
+    if ( p()->buff.windspeakers_lava_resurgence->up() ){
+      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->value();
     }
 
     return m;
@@ -5374,10 +5386,22 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.echoes_of_great_sundering->trigger();
     }
 
-    if ( p()->legendary.echoes_of_great_sundering->ok() )
+    if ( p()->legendary.windspeakers_lava_resurgence->ok() )
     {
-      p()->buff.echoes_of_great_sundering->trigger();
+      p()->buff.windspeakers_lava_resurgence->trigger();
+
+      if ( p()->buff.lava_surge->check() ) {
+        p()->proc.wasted_lava_surge->occur();
+      }
+
+      p()->proc.lava_surge->occur();
+      if ( !p()->executing || p()->executing->id != 51505 ) {
+        p()->cooldown.lava_burst->reset( true );
+      }
+
+      p()->buff.lava_surge->trigger();
     }
+
     if ( p()->conduit.pyroclastic_shock->ok() && rng().roll( p()->conduit.pyroclastic_shock.percent() ) )
     {
       dot_t* fs = this->td(target)->dot.flame_shock;
@@ -8097,6 +8121,9 @@ void shaman_t::create_buffs()
   buff.chains_of_devastation_chain_lightning =
       make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 329771 ) );
 
+  buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence", find_spell( 336065 ) )
+                            ->set_default_value( find_spell( 336065 )->effectN( 1 ).percent() );
+
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
                            ->set_cooldown( timespan_t::zero() )
@@ -8546,7 +8573,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
-  def->add_action( this, "Feral Spirit" );  
+  def->add_action( this, "Feral Spirit" );
   def->add_talent( this, "Ascendance" );
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
