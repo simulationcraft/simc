@@ -4715,14 +4715,15 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_spell_t::impact( s );
 
-    if ( s->chain_target == 0 && result_is_hit( s->result ) && p()->buff.surge_of_power->up() )
+    if ( s->chain_target == 0 && result_is_hit( s->result ) )
     {
       if (p()->buff.surge_of_power->up()) {
         p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
         p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
         p()->buff.surge_of_power->decrement();
       }
-      if ( p()->legendary.windspeakers_lava_resurgence->ok() && p()->buff.windspeakers_lava_resurgence->up() ) {
+
+      if ( p()->buff.windspeakers_lava_resurgence->up() ) {
         p()->buff.windspeakers_lava_resurgence->expire();
       }
     }
