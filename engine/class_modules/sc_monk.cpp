@@ -953,7 +953,7 @@ public:
       regen_caches[ CACHE_HASTE ]        = true;
       regen_caches[ CACHE_ATTACK_HASTE ] = true;
     }
-    user_options.initial_chi = 0;
+    user_options.initial_chi = 1;
     user_options.expel_harm_effectiveness = 1.0;
   }
 
@@ -3094,7 +3094,7 @@ public:
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
       : melee_attack_t( "fists_of_fury_tick_fo", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
-      dual = direct_tick = background = may_crit = may_miss = true;
+      background              = true;
       aoe                     = 1 + (int)owner->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
       attack_power_mod.direct = owner->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_MAINHAND;
@@ -11310,7 +11310,8 @@ void monk_t::combat_begin()
 
     if ( user_options.initial_chi > 0 )
       resources.current[ RESOURCE_CHI ] =
-          clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
+          clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
+                 resources.max[ RESOURCE_CHI ] );
     sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
   }
 
@@ -11724,6 +11725,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( "concentrated_flame,if=dot.concentrated_flame.remains=0" );
   def->add_action( "heart_essence,if=!essence.the_crucible_of_flame.major" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
+  def->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action(
       this, "Breath of Fire",
@@ -11732,8 +11734,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
                    "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
-  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd"
-                   "&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>execute_time&"
+                   "(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
@@ -11789,16 +11791,15 @@ void monk_t::apl_combat_windwalker()
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Opener
-  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains", "Opener" );
-  opener->add_action( this, "Expel Harm", "if=talent.chi_burst.enabled" );
-  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
-  opener->add_action( this, "Chi Wave", "if=chi.max-chi=2&talent.hit_combo.enabled" );
-  opener->add_action( this, "Expel Harm", "if=chi.max-chi=3|chi.max-chi=1" );
-  opener->add_action( this, "Flying Serpent Kick", "if=talent.hit_combo.enabled" );
-  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2" );
+  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3", "Opener" );
+  opener->add_action( this, "Expel Harm", "if=talent.chi_burst.enabled&chi.max-chi>=3" );
+  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=combo_strike&chi.max-chi>=2" );
+  opener->add_action( this, "Chi Wave", "if=chi.max-chi=2" );
+  opener->add_action( this, "Expel Harm" );
+  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi.max-chi>=2" );
 
   // AoE
-  aoe->add_talent( this, "Whirling Dragon Punch", "",
+  aoe->add_talent( this, "Whirling Dragon Punch", "if=buff.whirling_dragon_punch.up",
       "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
   aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   aoe->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
@@ -11816,7 +11817,7 @@ void monk_t::apl_combat_windwalker()
   aoe->add_talent( this, "Chi Wave", "if=combo_strike" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=14&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=1&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
 
   // Serenity Cooldowns
   cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|fight_remains<20", "Serenity Cooldowns" );
@@ -11863,7 +11864,7 @@ void monk_t::apl_combat_windwalker()
     }
   }
 
-  cd_serenity->add_action( this, "Touch of Death" );
+  cd_serenity->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
   cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
   cd_serenity->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
@@ -11878,7 +11879,7 @@ void monk_t::apl_combat_windwalker()
       cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1", "Use Arcane Torrent if you are missing at least 1 Chi" );
   }
 
-  cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down" );
+  cd_sef->add_action( this, "Touch of Death", "if=target.health.pct <= 15&buff.storm_earth_and_fire.down" );
 
   // TODO: Remove in 9.0.2
   cd_sef->add_action( "blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12" );
@@ -11935,7 +11936,7 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Spinning Crane Kick" );
 
   // Single Target
-  st->add_talent( this, "Whirling Dragon Punch", "", "Single Target Priority" );
+  st->add_talent( this, "Whirling Dragon Punch", "if=buff.whirling_dragon_punch.up", "Single Target Priority" );
   st->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   st->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
   st->add_action( this, "Fists of Fury" );
