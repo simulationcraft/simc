@@ -4843,6 +4843,7 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     if (
+      type == lava_burst_type::NORMAL &&
       p()->legendary.deeply_rooted_elements->ok() &&
       rng().roll( p()->legendary.deeply_rooted_elements->proc_chance() )
     ) {
