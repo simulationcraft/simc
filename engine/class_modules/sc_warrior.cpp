@@ -1487,7 +1487,7 @@ struct melee_t : public warrior_attack_t
       rage_gain = 2.0;
     }
     rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
-    
+
     rage_gain = util::round( rage_gain, 1 );
 
     if ( p()->specialization() == WARRIOR_ARMS && s->result == RESULT_CRIT )
@@ -3942,7 +3942,7 @@ struct revenge_t : public warrior_attack_t
     parse_options( options_str );
     aoe           = -1;
     impact_action = p->active.deep_wounds_PROT;
-    base_multiplier = p -> talents.best_served_cold -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talents.best_served_cold -> effectN( 1 ).percent();
   }
 
   double cost() const override
