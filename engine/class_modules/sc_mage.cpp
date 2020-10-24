@@ -2936,6 +2936,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return full_duration;
   }
 
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration + d->time_to_next_full_tick();
+  }
+
   timespan_t tick_time( const action_state_t* s ) const override
   {
     timespan_t t = arcane_mage_spell_t::tick_time( s );
@@ -4911,6 +4916,11 @@ struct pyroblast_dot_t : public fire_mage_spell_t
     cooldown->duration = 0_ms;
     affected_by.radiant_spark = false;
   }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration + d->time_to_next_full_tick();
+  }
 };
 
 struct pyroblast_t : public hot_streak_spell_t
@@ -5416,7 +5426,7 @@ struct radiant_spark_t : public mage_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
-    return duration + d->time_to_next_tick();
+    return duration + d->time_to_next_full_tick();
   }
 };
 
