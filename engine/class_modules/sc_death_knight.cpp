@@ -37,7 +37,8 @@ namespace pets {
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
-}
+  struct reanimated_shambler_pet_t;
+  }
 
 namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
@@ -48,6 +49,8 @@ namespace runeforge {
   void sanguination( special_effect_t& );
   void spellwarding( special_effect_t& );
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
+  // Legendary runeforges, blame blizzard for the same names
+  void reanimated_shambler( special_effect_t& );
 }
 
 // ==========================================================================
@@ -808,6 +811,7 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
+    real_ppm_t* reanimated_shambler;
   } rppm;
 
   // Pets and Guardians
@@ -822,12 +826,14 @@ public:
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
+    spawner::pet_spawner_t<pets::reanimated_shambler_pet_t, death_knight_t> reanimated_shambler;
 
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
       apoc_ghouls( "apoc_ghoul", p ),
       bloodworms( "bloodworm", p ),
-      magus_of_the_dead( "magus_of_the_dead", p )
+      magus_of_the_dead( "magus_of_the_dead", p ),
+      reanimated_shambler( "reanimated_shambler", p )
     {}
   } pets;
 
@@ -861,8 +867,12 @@ public:
     proc_t* fw_infected_claws;
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
+    proc_t* fw_necroblast;
 
     proc_t* vision_of_perfection;
+
+    proc_t* reanimated_shambler;
+
   } procs;
 
   // Azerite Traits
@@ -956,8 +966,8 @@ public:
     // Unholy
     item_runeforge_t deadliest_coil; // 6952
     item_runeforge_t deaths_certainty; // 6951
-    item_runeforge_t frenzied_monstrosity;        // 6950
-    // item_runeforge_t reanimated_shambler; // 6949
+    item_runeforge_t frenzied_monstrosity; // 6950
+    item_runeforge_t reanimated_shambler; // 6949
 
     // Defensive/Utility
     // item_runeforge_t deaths_embrace; // 6947
@@ -1147,7 +1157,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
-                           -> set_trigger_spell( p -> spec.festering_wound )
                            -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
                            -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
@@ -2666,6 +2675,122 @@ struct magus_pet_t : public death_knight_pet_t
   }
 };
 
+struct reanimated_shambler_pet_t : public death_knight_pet_t
+{
+  struct necroblast_t : public pet_action_t<reanimated_shambler_pet_t, melee_attack_t>
+  {
+    necroblast_t( reanimated_shambler_pet_t* player ) :
+      pet_action_t( player, "necroblast", player -> find_spell( 334851 ) )
+    {
+    }
+
+    void execute() override
+    {
+      pet_action_t::execute();
+
+      p()->dismiss();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      pet_action_t::impact( state );
+      p() -> o() -> trigger_festering_wound( state, 1, p() -> o() -> procs.fw_necroblast );
+    }
+
+    double calculate_direct_amount( action_state_t* state ) const override
+    {
+      if ( p() -> o() -> bugs )
+      {
+        // See https://github.com/SimCMinMax/WoW-BugTracker/issues/725
+        // we think the total ap for necroblast is (total_ap + base_amount) * ap_coefficient
+        // action_t::calculate_direct_amount gets the total ap with base_amount + ap_coefficient * total_ap
+        // because of this, I need to directly modify the ap for the action instead of setting the base damage in
+        // the necroblast constructor as the latter method throws off the calcuations and doesn't reflect in game values
+        state->attack_power += 150;
+      }
+
+      double da = pet_action_t::calculate_direct_amount( state );
+
+      return da;
+    }
+  };
+
+  struct travel_t : public action_t
+  {
+    bool executed;
+
+    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ), executed( false )
+    {
+      may_miss = false;
+      dual     = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    {
+      return RESULT_HIT;
+    }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    {
+      return BLOCK_RESULT_UNBLOCKED;
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    timespan_t execute_time() const override
+    {
+      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 4.597, 0.3399 ) );
+    }
+
+    bool ready() override
+    {
+      return !executed;
+    }
+  };
+
+  reanimated_shambler_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "reanimated_shambler", true, false )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "travel" );
+    def->add_action( "necroblast" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "necroblast" )
+      return new necroblast_t( this );
+    if ( name == "travel" )
+      return new travel_t( this );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+};
+
 } // namespace pets
 
 namespace { // UNNAMED NAMESPACE
@@ -3149,6 +3274,7 @@ struct melee_t : public death_knight_melee_attack_t
       {
         trigger_bloodworm();
       }
+
     }
   }
 
@@ -6377,12 +6503,12 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   }
 };
 
-struct soul_reaper_t : public death_knight_spell_t
+struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_execute_t* soul_reaper_execute;
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper ),
     soul_reaper_execute( new soul_reaper_execute_t( p ) )
   {
     parse_options( options_str );
@@ -7037,6 +7163,37 @@ void runeforge::unending_thirst( special_effect_t& effect )
 
   // Placeholder for APL tracking purpose, effect NYI
   static_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
+}
+
+// Legendary runeforge Reanimated Shambler
+void runeforge::reanimated_shambler( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  struct trigger_reanimated_shambler_t : death_knight_spell_t
+  {
+    trigger_reanimated_shambler_t( death_knight_t* p ) :
+      death_knight_spell_t( "reanimated_shambler_trigger", p )
+    {
+      quiet = background = true;
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      p() -> procs.reanimated_shambler -> occur();
+
+      p() -> pets.reanimated_shambler.spawn( 1 );
+    }
+  };
+
+  effect.execute_action = new trigger_reanimated_shambler_t( static_cast<death_knight_t*>( effect.player ) );
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 
@@ -8029,6 +8186,12 @@ void death_knight_t::create_pets()
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
     }
+
+    if ( legendary.reanimated_shambler.ok() )
+    {
+      pets.reanimated_shambler.set_creation_callback(
+          [] ( death_knight_t* p ) { return new pets::reanimated_shambler_pet_t( p ); } );
+    }
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -8443,7 +8606,7 @@ void death_knight_t::init_spells()
   legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
-  // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
+  legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
 
   // Defensive/Utility
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
@@ -9168,9 +9331,12 @@ void death_knight_t::init_procs()
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
-  procs.fw_unholy_assault    = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
 
   procs.vision_of_perfection = get_proc( "Vision of Perfection" );
+
+  procs.reanimated_shambler = get_proc( "Reanimated Shambler" );
 }
 
 // death_knight_t::init_finished ============================================
@@ -9828,6 +9994,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+    unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
   void register_hotfixes() const override
