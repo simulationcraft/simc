@@ -29,7 +29,6 @@ namespace
   Vengeance:
   * Add AoE component to Sinful Brand Meta
   * Add Revel in Pain passive
-  ** Add Infernal Armor
   ** Ruinous Bulwark Absorb
   
   Maybe:
@@ -259,7 +258,7 @@ public:
     const spell_data_t* fallout;
     const spell_data_t* burning_alive;
 
-    const spell_data_t* infernal_armor;     // NYI
+    const spell_data_t* infernal_armor;
     const spell_data_t* charred_flesh;
     const spell_data_t* spirit_bomb;
     
@@ -564,6 +563,7 @@ public:
     attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
+    spell_t* infernal_armor = nullptr;
     heal_t* spirit_bomb_heal = nullptr;
   } active;
 
@@ -626,6 +626,7 @@ public:
 
   // overridden player_t stat functions
   double composite_armor() const override;
+  double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -2459,6 +2460,14 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
 struct immolation_aura_t : public demon_hunter_spell_t
 {
+  struct infernal_armor_damage_t : public demon_hunter_spell_t
+  {
+    infernal_armor_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->find_spell( 320334 ) )
+    {
+    }
+  };
+
   struct immolation_aura_damage_t : public demon_hunter_spell_t
   {
     bool initial;
@@ -2551,6 +2560,12 @@ struct immolation_aura_t : public demon_hunter_spell_t
     // Initial damage is referenced indirectly in Immolation Aura (Rank 2) (id=320364) tooltip
     initial_damage = p->get_background_action<immolation_aura_damage_t>( "immolation_aura_initial", p->find_spell( 258921 ), true );
     initial_damage->stats = stats;
+
+    if ( p->talent.infernal_armor->ok() && !p->active.infernal_armor )
+    {
+      p->active.infernal_armor = p->get_background_action<infernal_armor_damage_t>( "infernal_armor" );
+      add_child( p->active.infernal_armor );
+    }
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
   }
@@ -4371,6 +4386,11 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     {
       add_invalidate( CACHE_RUN_SPEED );
     }
+
+    if ( p->talent.infernal_armor->ok() )
+    {
+      add_invalidate( CACHE_ARMOR );
+    }
   }
 };
 
@@ -5794,11 +5814,11 @@ double demon_hunter_t::composite_armor() const
   return a;
 }
 
-// demon_hunter_t::composite_armor_multiplier ===============================
+// demon_hunter_t::composite_base_armor_multiplier ==========================
 
-double demon_hunter_t::composite_armor_multiplier() const
+double demon_hunter_t::composite_base_armor_multiplier() const
 {
-  double am = player_t::composite_armor_multiplier();
+  double am = player_t::composite_base_armor_multiplier();
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
@@ -5807,6 +5827,23 @@ double demon_hunter_t::composite_armor_multiplier() const
     if ( buff.metamorphosis->check() )
     {
       am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
+    }
+  }
+
+  return am;
+}
+
+// demon_hunter_t::composite_armor_multiplier ===============================
+
+double demon_hunter_t::composite_armor_multiplier() const
+{
+  double am = player_t::composite_armor_multiplier();
+
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    if ( buff.immolation_aura->check() )
+    {
+      am *= 1.0 + talent.infernal_armor->effectN( 1 ).percent();
     }
   }
 
@@ -6082,6 +6119,13 @@ void demon_hunter_t::assess_damage( school_e school, result_amount_type dt, acti
   if ( s->action->may_parry )
   {
     buff.demon_spikes->up();
+  }
+
+  if ( active.infernal_armor && buff.immolation_aura->check() && s->action->player->is_enemy() &&
+       dbc::is_school( school, SCHOOL_PHYSICAL ) && dt == result_amount_type::DMG_DIRECT && s->action->result_is_hit( s->result ) )
+  {
+    active.infernal_armor->set_target( s->action->player );
+    active.infernal_armor->execute();
   }
 }
 
