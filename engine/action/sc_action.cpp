@@ -3920,28 +3920,14 @@ void action_t::do_teleport( action_state_t* state )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  if ( !channeled )
-  {
-    // WoD Pandemic
-    // New WoD Formula: Get no malus during the last 30% of the dot.
-    return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
-  }
-  else
-  {
-    return dot->time_to_next_tick() + triggered_duration;
-  }
+  // WoD Pandemic
+  // New WoD Formula: Get no malus during the last 30% of the dot.
+  return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  if ( !channeled )
-  {
-    return dot->remains() <= triggered_duration * 0.3;
-  }
-  else
-  {
-    return dot->remains() <= dot->time_to_next_tick();
-  }
+  return dot->remains() <= triggered_duration * 0.3;
 }
 
 call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )
