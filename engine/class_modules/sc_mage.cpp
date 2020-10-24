@@ -5955,7 +5955,7 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "shifting_power"         ) return new         shifting_power_t( name, this, options_str );
 
   // Special
-  if ( name == "blink_any" )
+  if ( name == "blink_any" || name == "any_blink" )
     return create_action( talents.shimmer->ok() ? "shimmer" : "blink", options_str );
 
   return player_t::create_action( name, options_str );
