@@ -210,6 +210,8 @@ enum class lava_burst_type : unsigned
 {
   NORMAL = 0,
   ASCENDANCE,
+  // Deeply Rooted Elements
+  DRE_ASCENDANCE,
   PRIMORDIAL_WAVE
 };
 
@@ -363,10 +365,14 @@ public:
     action_t* lightning_bolt_pw;
     action_t* lava_burst_pw;
     action_t* lava_burst_ascendance;
+    action_t* lava_burst_dre; // Deeply Rooted Elements
 
     // Azerite
     spell_t* lightning_conduit;
     spell_t* strength_of_earth;
+
+    // Legendaries
+    action_t* dre_ascendance; // Deeply Rooted Elements
   } action;
 
   // Pets
@@ -544,7 +550,7 @@ public:
     item_runeforge_t ancestral_reminder;
     item_runeforge_t chains_of_devastation;
     item_runeforge_t deeptremor_stone;
-    item_runeforge_t deeply_rooted_elements;  // NYI
+    item_runeforge_t deeply_rooted_elements;
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
@@ -1008,7 +1014,6 @@ struct ascendance_buff_t : public buff_t
                                                         : p->find_spell( 114050 ) ),  // No resto for now
       lava_burst( nullptr )
   {
-    set_trigger_spell( p->talent.ascendance );
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
   }
 
@@ -4348,6 +4353,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     switch ( t )
     {
       case lava_burst_type::ASCENDANCE: return "lava_burst_overload_ascendance";
+      case lava_burst_type::DRE_ASCENDANCE: return "lava_burst_overload_dre";
       case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_overload_pw";
       default: return "lava_burst_overload";
     }
@@ -4606,6 +4612,7 @@ struct lava_burst_t : public shaman_spell_t
     switch ( t )
     {
       case lava_burst_type::ASCENDANCE: return "lava_burst_ascendance";
+      case lava_burst_type::DRE_ASCENDANCE: return "lava_burst_dre";
       case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_pw";
       default: return "lava_burst";
     }
@@ -4648,9 +4655,21 @@ struct lava_burst_t : public shaman_spell_t
           }
           break;
         case lava_burst_type::ASCENDANCE:
-          if ( auto asc_action = p()->find_action( "ascendance" ) )
           {
-            asc_action->add_child( this );
+            auto asc_action = p()->find_action( "ascendance" );
+            if ( p()->talent.ascendance->ok() && asc_action )
+            {
+              asc_action->add_child( this );
+            }
+          }
+          break;
+        case lava_burst_type::DRE_ASCENDANCE:
+          {
+            auto dre_asc_action = p()->find_action( "dre_ascendance" );
+            if ( dre_asc_action )
+            {
+              dre_asc_action->add_child( this );
+            }
           }
           break;
         default:
@@ -4822,6 +4841,14 @@ struct lava_burst_t : public shaman_spell_t
       p()->action.lava_burst_pw->set_target( execute_state->target );
       p()->action.lava_burst_pw->schedule_execute();
     }
+
+    if (
+      p()->legendary.deeply_rooted_elements->ok() &&
+      rng().roll( p()->legendary.deeply_rooted_elements->proc_chance() )
+    ) {
+      p()->action.dre_ascendance->execute();
+    }
+
   }
 
   timespan_t execute_time() const override
@@ -5686,9 +5713,10 @@ struct ascendance_t : public shaman_spell_t
 {
   flame_shock_t* fs;
   ascendance_damage_t* ascendance_damage;
+  bool legendary;
 
-  ascendance_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "ascendance", player, player->talent.ascendance, options_str ),
+  ascendance_t( shaman_t* player, const std::string& options_str, bool legendary_ = false )
+    : shaman_spell_t( legendary_ ? "dre_ascendance" : "ascendance", player, legendary_ ? player->find_spell( 114050 ) : player->talent.ascendance, options_str ),
       fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
       ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player )
                                                                         : nullptr )
@@ -5700,6 +5728,11 @@ struct ascendance_t : public shaman_spell_t
     }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
+    legendary = legendary_;
+    if (legendary) {
+      background = true;
+      cooldown->duration = timespan_t::zero();
+    }
   }
 
   void execute() override
@@ -5712,13 +5745,25 @@ struct ascendance_t : public shaman_spell_t
     }
 
     p()->cooldown.strike->reset( false );
-    p()->buff.ascendance->trigger();
+    if (legendary) {
+      sim->print_debug("Triggering dre_ascendance buff");
+      p()->buff.ascendance->trigger( p()->legendary.deeply_rooted_elements->effectN(1).time_value() );
+    } else {
+      p()->buff.ascendance->trigger();
+    }
 
-    if ( p()->action.lava_burst_ascendance &&
+    if ( !legendary &&
+         p()->action.lava_burst_ascendance &&
          p()->action.lava_burst_ascendance->target_list().size() > 0 )
     {
       p()->action.lava_burst_ascendance->set_target( player->target );
       p()->action.lava_burst_ascendance->execute();
+    } else if ( legendary &&
+                p()->action.lava_burst_dre &&
+                p()->action.lava_burst_dre->target_list().size() > 0 )
+    {
+      p()->action.lava_burst_dre->set_target( player->target );
+      p()->action.lava_burst_dre->execute();
     }
 
     // Refresh Flame Shock to max duration
@@ -7170,10 +7215,16 @@ void shaman_t::create_actions()
       action.lava_burst_pw = new lava_burst_t( this, lava_burst_type::PRIMORDIAL_WAVE );
     }
 
-    if ( talent.ascendance->ok() )
+    if ( talent.ascendance->ok())
     {
       action.lava_burst_ascendance = new lava_burst_t( this, lava_burst_type::ASCENDANCE );
     }
+  }
+
+  // Legendaries
+  if ( legendary.deeply_rooted_elements.ok() ) {
+    action.lava_burst_dre = new lava_burst_t( this, lava_burst_type::DRE_ASCENDANCE );
+    action.dre_ascendance = new ascendance_t( this, "", true );
   }
 }
 
