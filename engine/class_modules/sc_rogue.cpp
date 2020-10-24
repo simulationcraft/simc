@@ -1303,7 +1303,7 @@ public:
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
-  { return ab::callbacks && !ab::proc && ab::weapon != nullptr && ab::weapon->slot == SLOT_MAIN_HAND; }
+  { return false; }
 
   // Generic rules for proccing Combat Potency, used by rogue_t::trigger_combat_potency()
   virtual bool procs_combat_potency() const
@@ -2180,6 +2180,9 @@ struct melee_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  bool procs_main_gauche() const override
+  { return weapon->slot == SLOT_MAIN_HAND; }
 };
 
 // Auto Attack ==============================================================
@@ -2306,9 +2309,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_count_the_odds( execute_state );
   }
-
-  bool procs_main_gauche() const override
-  { return false; }
 };
 
 // Backstab =================================================================
@@ -2481,9 +2481,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  bool procs_main_gauche() const override
-  { return false; }
-
   bool procs_blade_flurry() const override
   { return false; }
 
@@ -2512,9 +2509,6 @@ struct blade_flurry_t : public rogue_attack_t
     {
       range = -1.0;
     }
-
-    bool procs_main_gauche() const override
-    { return false; }
 
     bool procs_blade_flurry() const override
     { return false; }
@@ -2648,11 +2642,6 @@ struct dispatch_t: public rogue_attack_t
   dispatch_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
-  }
-
-  bool procs_main_gauche() const override
-  {
-    return false;
   }
 
   void execute() override
@@ -3051,9 +3040,6 @@ struct ghostly_strike_t : public rogue_attack_t
   {
   }
 
-  bool procs_main_gauche() const override
-  { return false; }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -3150,6 +3136,9 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
     direct_tick = true;
   }
+
+  bool procs_main_gauche() const override
+  { return weapon->slot == SLOT_MAIN_HAND; }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -3316,9 +3305,6 @@ struct main_gauche_t : public rogue_attack_t
 
     return ap;
   }
-
-  bool procs_main_gauche() const override
-  { return false; }
 
   bool procs_combat_potency() const override
   { return true; }
@@ -4194,6 +4180,9 @@ struct sinister_strike_t : public rogue_attack_t
         p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 0, 300_ms );
       }
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   sinister_strike_extra_attack_t* extra_attack;
@@ -4252,6 +4241,9 @@ struct sinister_strike_t : public rogue_attack_t
       p()->buffs.concealed_blunderbuss->trigger();
     }
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 };
 
 // Slice and Dice ===========================================================
@@ -4577,9 +4569,6 @@ struct cheap_shot_t : public rogue_attack_t
     // TODO: Shot in the Dark talent reduces cost to free
     return c;
   }
-
-  bool procs_main_gauche() const override
-  { return false; }
 
   void impact( action_state_t* state ) override
   {
@@ -8372,7 +8361,7 @@ void rogue_t::create_buffs()
 
   buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
   if( covenant.sepsis->ok() )
-    buffs.sepsis->set_initial_stack( covenant.sepsis->effectN( 6 ).base_value() );
+    buffs.sepsis->set_initial_stack( as<int>( covenant.sepsis->effectN( 6 ).base_value() ) );
 
   // Conduits ===============================================================
 
