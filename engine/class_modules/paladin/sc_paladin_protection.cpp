@@ -923,25 +923,36 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( "call_action_list,name=cooldowns" );
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
-  cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
+  cds -> add_talent( this, "Seraphim" );
   cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
+  cds -> add_action( this, "Holy Avenger", "if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
-
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
+  cds -> add_action( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield" );
 
-  def -> add_action( this, "Shield of the Righteous" );
-  def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );
-  def -> add_action( this, "Consecration", "if=!consecration.up" );
+  def -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up&(debuff.vengeful_shock.up|!conduit.vengeful_shock.enabled)&!(talent.seraphim.enabled&cooldown.seraphim.up)" );
+  def -> add_action( this, "Shield of the Righteous" , "if=(holy_power=5|buff.holy_avenger.up|(holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up))&!(talent.seraphim.enabled&cooldown.seraphim.up)" );
+  
+  def -> add_action( this, "Hammer of Wrath", "if=buff.avenging_wrath.up&target.health.pct>20&buff.avenging_wrath.remains<=floor(buff.avenging_wrath.remains%cooldown%attack_haste)*cooldown*attack_haste+gcd" ,"Tries to fit in an extra HoW into wings. It can attempt and fail if *just* below a haste breakpoint" );
 
-  def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled" );
-  def -> add_action( this, "Avenger's Shield", "if=cooldown_react" );
-  def -> add_action( this, "Judgment","if=cooldown_react|!talent.crusaders_judgment.enabled" );
-  def -> add_action( "concentrated_flame,if=(!talent.seraphim.enabled|buff.seraphim.up)&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3" );
-  def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
+  def -> add_action( this, "Judgment", "cycle_targets=1,if=charges=2" );
+  def -> add_action( this, "Avenger's Shield", "if=debuff.vengeful_shock.down|!conduit.vengeful_shock.enabled" );
+  def -> add_action( this, "Judgment", "cycle_targets=1,if=!talent.crusaders_judgment.enabled" );
   def -> add_action( "Hammer of Wrath" );
-  def -> add_talent( this, "Blessed Hammer", "strikes=3" );
+  def -> add_action( this, "Avengers Shield" );
+  def -> add_action( this, "Judgment", "cycle_targets=1" );
+  def -> add_action( this, "Vanquishers Hammer" );
+  def -> add_action( this, "Consecration", "if=consecration.up" );
+  def -> add_action( this, "Divine Toll" );
+  def -> add_talent( this, "Blessed Hammer", "strikes=2.4,if=charges=3" );
+  def -> add_talent( this, "Ashen Hallow" );
+  def -> add_action( this, "Hammer of the Righteous", "if=charges=3" );
+  def -> add_action( this, "Word of Glory", "if=buff.vanquishers_hammer.up" );
+  def -> add_action( this, "Blessed Hammer", "strikes=2.4" );
   def -> add_action( this, "Hammer of the Righteous" );
+  def -> add_action( "lights_judgment" );
   def -> add_action( this, "Consecration" );
+  def -> add_action( this, "Word of Glory", "if=buff.shining_light_free.up&!covenant.necrolord" );
 
 }
 }
