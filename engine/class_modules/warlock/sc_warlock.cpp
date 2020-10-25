@@ -14,9 +14,55 @@ namespace actions
 {
 struct drain_life_t : public warlock_spell_t
 {
+  //Note: Soul Rot (Night Fae Covenant) turns Drain Life into a multi-target channeled spell. Nothing else in simc behaves this way and
+  //we currently do not have core support for it. Applying this dot to the secondary targets should cover most of the behavior, although
+  //it will be unable to handle the case where primary channel target dies (in-game, this appears to force-swap primary target to another
+  //target currently affected by Drain Life if possible).
+  struct drain_life_dot_t : public warlock_spell_t
+  {
+    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "Drain Life (aoe)", p, p->find_spell( "Drain Life" ) )
+    {
+      parse_options( options_str );
+      dual = true;
+      background = true;
+      hasted_ticks = false;
+      may_crit = false;
+      dot_behavior = DOT_REFRESH;
+    }
+
+    double bonus_ta( const action_state_t* s ) const override
+    {
+      double ta = warlock_spell_t::bonus_ta( s );
+
+      ta += p()->buffs.id_azerite->check_stack_value();
+
+      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+        ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+
+      return ta;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      {
+        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+      }
+      return m;
+    }
+  };
+
+  drain_life_dot_t* aoe_dot;
+
   drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( p, "Drain Life" )
   {
     parse_options( options_str );
+
+    aoe_dot = new drain_life_dot_t( p , options_str );
+    add_child( aoe_dot );
+    
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
