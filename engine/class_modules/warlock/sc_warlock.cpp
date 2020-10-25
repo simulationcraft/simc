@@ -264,6 +264,13 @@ struct soul_rot_t : public warlock_spell_t
     radius *= 1.0 + p->conduit.soul_eater.percent();
   }
 
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.soul_rot->trigger();
+  }
+
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
