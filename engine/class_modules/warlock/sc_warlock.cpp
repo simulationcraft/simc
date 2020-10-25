@@ -20,7 +20,7 @@ struct drain_life_t : public warlock_spell_t
   //target currently affected by Drain Life if possible).
   struct drain_life_dot_t : public warlock_spell_t
   {
-    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "Drain Life (aoe)", p, p->find_spell( "Drain Life" ) )
+    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "drain_life_aoe", p, p->find_spell( "Drain Life" ) )
     {
       parse_options( options_str );
       dual = true;
@@ -144,6 +144,18 @@ struct drain_life_t : public warlock_spell_t
     p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
+
+    if ( p()->covenant.soul_rot->ok() )
+    {
+      const auto& tl = target_list();
+
+      for ( auto& t : tl )
+      {
+        auto data = td( t );
+        if ( data->dots_drain_life_aoe->is_ticking() )
+          data->dots_drain_life_aoe->cancel();
+      }
+    }
   }
 };  
 
@@ -353,6 +365,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
+  dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
   dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
   dots_soul_rot       = target->get_dot( "soul_rot", &p );
