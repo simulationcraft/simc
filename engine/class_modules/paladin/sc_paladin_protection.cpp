@@ -924,7 +924,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
   cds -> add_talent( this, "Seraphim" );
-  cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
+  cds -> add_action( this, "Avenging Wrath" );
   cds -> add_action( this, "Holy Avenger", "if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
@@ -937,8 +937,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   def -> add_action( this, "Judgment", "cycle_targets=1,if=charges=2" );
   def -> add_action( this, "Avenger's Shield", "if=debuff.vengeful_shock.down|!conduit.vengeful_shock.enabled" );
-  def -> add_action( this, "Judgment", "cycle_targets=1,if=!talent.crusaders_judgment.enabled" );
-  def -> add_action( "Hammer of Wrath" );
+  def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Avengers Shield" );
   def -> add_action( this, "Judgment", "cycle_targets=1" );
   def -> add_action( this, "Vanquishers Hammer" );
