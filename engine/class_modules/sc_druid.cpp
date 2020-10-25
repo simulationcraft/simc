@@ -8910,53 +8910,72 @@ void druid_t::create_actions()
   player_t::create_actions();
 }
 
-// ALL Spec Pre-Combat Action Priority List =================================
+// Default Consumables ======================================================
+
 std::string druid_t::default_flask() const
 {
+  if ( true_level >= 60 )
+    return "spectral_flask_of_power";
+  else if ( true_level < 40 )
+    return "disabled";
+
   switch ( specialization() )
   {
-    case DRUID_FERAL:
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
+      return "greater_flask_of_endless_fathoms";
+    case DRUID_FERAL:
     case DRUID_GUARDIAN:
-    default: return "disabled";
+      return "greater_flask_of_the_currents";
+    default:
+      return "disabled";
   }
 }
+
 std::string druid_t::default_potion() const
 {
   switch ( specialization() )
   {
-    case DRUID_FERAL:
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
+      if ( true_level >= 60 )
+        return "spectral_intellect";
+      else if ( true_level >= 40 )
+        return "superior_battle_potion_of_intellect";
+    case DRUID_FERAL:
     case DRUID_GUARDIAN:
-    default: return "disabled";
+      if ( true_level >= 60 )
+        return "spectral_agility";
+      else if ( true_level >= 40 )
+        return "superior_battle_potion_of_agility";
+    default:
+      return "disabled";
   }
 }
 
 std::string druid_t::default_food() const
 {
-  switch ( specialization() )
-  {
-    case DRUID_FERAL:
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    default: return "disabled";
-  }
+  if ( true_level >= 60 )
+    return "feast_of_gluttonous_hedonism";
+  else if ( true_level >= 55 )
+    return "surprisingly_palatable_feast";
+  else if ( true_level >= 45 )
+    return "famine_evaluator_and_snack_table";
+  else
+    return "disabled";
 }
 
 std::string druid_t::default_rune() const
 {
-  switch ( specialization() )
-  {
-    case DRUID_FERAL:
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    default: return "disabled";
-  }
+  if ( true_level >= 50 )
+    return "battle_scarred";
+  else if ( true_level >= 45 )
+    return "defiled";
+  else
+    return "disabled";
 }
+
+// ALL Spec Pre-Combat Action Priority List =================================
 
 void druid_t::apl_precombat()
 {
@@ -8968,6 +8987,7 @@ void druid_t::apl_precombat()
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 }
+
 // NO Spec Combat Action Priority List ======================================
 
 void druid_t::apl_default()
