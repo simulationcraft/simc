@@ -85,6 +85,21 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
+
+    if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
+    {
+      const auto& tl = target_list();
+      
+      for ( auto& t : tl )
+      {
+        auto data = td( t );
+        if ( data->dots_soul_rot->is_ticking() )
+        {
+          aoe_dot->set_target( t );
+          aoe_dot->execute();
+        }
+      }
+    }
   }
 
   double bonus_ta( const action_state_t* s ) const override
