@@ -950,6 +950,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Blessed Hammer", "strikes=2.4" );
   def -> add_action( this, "Hammer of the Righteous" );
   def -> add_action( "lights_judgment" );
+  def -> add_action( "arcane_torrent" );
   def -> add_action( this, "Consecration" );
   def -> add_action( this, "Word of Glory", "if=buff.shining_light_free.up&!covenant.necrolord" );
 
