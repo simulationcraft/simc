@@ -1402,6 +1402,13 @@ class SpellDataGenerator(DataGenerator):
             ( 346111, 0 ),          # Shadow Weaving Mastery spell
             ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
             ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
+            # Holy Priest
+            ( 196809, 5 ),           # Healing Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Dazzling Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Searing Light (Divine Image legendary pet spell)
+            ( 196812, 5 ),           # Light Eruption (Divine Image legendary pet spell)
+            ( 196813, 5 ),           # Blessed Light (Divine Image legendary pet spell)
+            ( 196816, 5 ),           # Tranquil Light (Divine Image legendary pet spell)
         ),
 
         # Death Knight:
