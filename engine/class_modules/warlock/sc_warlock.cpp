@@ -53,6 +53,18 @@ struct drain_life_t : public warlock_spell_t
     return ta;
   }
 
+  double cost() const override
+  {
+    if ( resource_current == RESOURCE_MANA && p()->buffs.soul_rot->check() )
+    {
+      return 0.0;
+    }
+    else
+    {
+      return warlock_spell_t::cost();
+    }
+  }
+
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -765,12 +777,20 @@ void warlock_t::create_buffs()
       make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() )
           ->set_chance( 1.0 );
 
+  // Covenants
+  buffs.soul_rot = make_buff(this, "soul_rot", covenant.soul_rot);
+
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
                               ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
+  // Conduits
+  buffs.soul_tithe = make_buff(this, "soul_tithe", find_spell(340238))
+    ->set_default_value(conduit.soul_tithe.percent());
+
+  // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
 }

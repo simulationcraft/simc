@@ -481,6 +481,7 @@ public:
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
     propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
