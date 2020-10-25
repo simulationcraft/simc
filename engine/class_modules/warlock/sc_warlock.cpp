@@ -172,6 +172,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->covenant.soul_rot->effectN( 3 ).base_value() );
+    radius *= 1.0 + p->conduit.soul_eater.percent();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
