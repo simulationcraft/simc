@@ -1125,9 +1125,6 @@ void warlock_t::create_buffs_demonology()
   buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
                            ->set_default_value( conduit.tyrants_soul.percent() );
 
-  buffs.soul_tithe = make_buff( this, "soul_tithe", find_spell( 340238 ) )
-                         ->set_default_value( conduit.soul_tithe.percent() );
-
   // Legendaries
   buffs.balespiders_burning_core =
       make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )

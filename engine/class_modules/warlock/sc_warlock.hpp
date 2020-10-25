@@ -23,6 +23,7 @@ struct warlock_td_t : public actor_target_data_t
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
   propagate_const<dot_t*> dots_scouring_tithe;
   propagate_const<dot_t*> dots_impending_catastrophe;
   propagate_const<dot_t*> dots_soul_rot;
@@ -481,6 +482,7 @@ public:
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
     propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;

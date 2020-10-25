@@ -14,9 +14,64 @@ namespace actions
 {
 struct drain_life_t : public warlock_spell_t
 {
+  //Note: Soul Rot (Night Fae Covenant) turns Drain Life into a multi-target channeled spell. Nothing else in simc behaves this way and
+  //we currently do not have core support for it. Applying this dot to the secondary targets should cover most of the behavior, although
+  //it will be unable to handle the case where primary channel target dies (in-game, this appears to force-swap primary target to another
+  //target currently affected by Drain Life if possible).
+  struct drain_life_dot_t : public warlock_spell_t
+  {
+    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "drain_life_aoe", p, p->find_spell( "Drain Life" ) )
+    {
+      parse_options( options_str );
+      dual = true;
+      background = true;
+      may_crit = false;
+      dot_behavior = DOT_REFRESH;
+    }
+
+    double bonus_ta( const action_state_t* s ) const override
+    {
+      double ta = warlock_spell_t::bonus_ta( s );
+
+      ta += p()->buffs.id_azerite->check_stack_value();
+
+      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+        ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+
+      return ta;
+    }
+
+    double cost_per_tick( resource_e r ) const override
+    {
+      return 0.0;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      {
+        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+      }
+      return m;
+    }
+
+    timespan_t composite_dot_duration(const action_state_t* s) const override
+    {
+        return dot_duration * ( tick_time( s ) / base_tick_time);
+    }
+  };
+
+  drain_life_dot_t* aoe_dot;
+
   drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( p, "Drain Life" )
   {
     parse_options( options_str );
+
+    aoe_dot = new drain_life_dot_t( p , options_str );
+    add_child( aoe_dot );
+    
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
@@ -39,6 +94,25 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
+
+    if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
+    {
+      const auto& tl = target_list();
+      
+      for ( auto& t : tl )
+      {
+        //Don't apply aoe version to primary target
+        if ( t == target )
+          continue;
+
+        auto data = td( t );
+        if ( data->dots_soul_rot->is_ticking() )
+        {
+          aoe_dot->set_target( t );
+          aoe_dot->execute();
+        }
+      }
+    }
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -51,6 +125,18 @@ struct drain_life_t : public warlock_spell_t
       ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
     return ta;
+  }
+
+  double cost_per_tick( resource_e r ) const override
+  {
+    if ( r == RESOURCE_MANA && p()->buffs.soul_rot->check() )
+    {
+      return 0.0;
+    }
+    else
+    {
+      return warlock_spell_t::cost_per_tick( r );
+    }
   }
 
   double action_multiplier() const override
@@ -71,6 +157,18 @@ struct drain_life_t : public warlock_spell_t
     p()->buffs.id_azerite->expire();
 
     warlock_spell_t::last_tick( d );
+
+    if ( p()->covenant.soul_rot->ok() )
+    {
+      const auto& tl = target_list();
+
+      for ( auto& t : tl )
+      {
+        auto data = td( t );
+        if ( data->dots_drain_life_aoe->is_ticking() )
+          data->dots_drain_life_aoe->cancel();
+      }
+    }
   }
 };  
 
@@ -171,7 +269,15 @@ struct soul_rot_t : public warlock_spell_t
 
   {
     parse_options( options_str );
-    aoe = 4;
+    aoe = 1 + as<int>( p->covenant.soul_rot->effectN( 3 ).base_value() );
+    radius *= 1.0 + p->conduit.soul_eater.percent();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.soul_rot->trigger();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -179,7 +285,7 @@ struct soul_rot_t : public warlock_spell_t
     double pm = warlock_spell_t::composite_ta_multiplier( s );
     if ( s->chain_target == 0 )
     {
-      pm *= pm * 2;
+      pm *= 2.0; //Hardcoded in tooltip, primary takes double damage
     }
 
     pm *= 1.0 + p()->conduit.soul_eater.percent();
@@ -279,6 +385,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
+  dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
   dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
   dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
   dots_soul_rot       = target->get_dot( "soul_rot", &p );
@@ -764,12 +871,20 @@ void warlock_t::create_buffs()
       make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() )
           ->set_chance( 1.0 );
 
+  // Covenants
+  buffs.soul_rot = make_buff(this, "soul_rot", covenant.soul_rot);
+
   // 4.0 is the multiplier for a 0% health mob
   buffs.decimating_bolt =
       make_buff( this, "decimating_bolt", find_spell( 325299 ) )->set_duration( find_spell( 325299 )->duration() )
                               ->set_default_value(1.6)
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
+  // Conduits
+  buffs.soul_tithe = make_buff(this, "soul_tithe", find_spell(340238))
+    ->set_default_value(conduit.soul_tithe.percent());
+
+  // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
 }
