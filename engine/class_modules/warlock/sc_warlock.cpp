@@ -179,7 +179,7 @@ struct soul_rot_t : public warlock_spell_t
     double pm = warlock_spell_t::composite_ta_multiplier( s );
     if ( s->chain_target == 0 )
     {
-      pm *= pm * 2;
+      pm *= 2.0; //Hardcoded in tooltip, primary takes double damage
     }
 
     pm *= 1.0 + p()->conduit.soul_eater.percent();
