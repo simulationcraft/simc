@@ -178,8 +178,7 @@ actions.stealthed+=/shuriken_storm,if=spell_targets>=3+(buff.premeditation.up|bu
 # Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible.
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
 actions.stealthed+=/pool_resource,for_next=1
-actions.stealthed+=/gloomblade,if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=13-(9*conduit.deeper_dagger.enabled+conduit.deeper_dagger.rank)
-actions.stealthed+=/gloomblade,if=runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&(conduit.perforated_veins.rank+conduit.deeper_dagger.rank)>=16
+actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500
