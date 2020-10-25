@@ -92,6 +92,10 @@ struct drain_life_t : public warlock_spell_t
       
       for ( auto& t : tl )
       {
+        //Don't apply aoe version to primary target
+        if ( t == target )
+          continue;
+
         auto data = td( t );
         if ( data->dots_soul_rot->is_ticking() )
         {
