@@ -42,6 +42,11 @@ struct drain_life_t : public warlock_spell_t
       return ta;
     }
 
+    double cost_per_tick( resource_e r ) const override
+    {
+      return 0.0;
+    }
+
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
@@ -118,15 +123,15 @@ struct drain_life_t : public warlock_spell_t
     return ta;
   }
 
-  double cost() const override
+  double cost_per_tick( resource_e r ) const override
   {
-    if ( resource_current == RESOURCE_MANA && p()->buffs.soul_rot->check() )
+    if ( r == RESOURCE_MANA && p()->buffs.soul_rot->check() )
     {
       return 0.0;
     }
     else
     {
-      return warlock_spell_t::cost();
+      return warlock_spell_t::cost_per_tick( r );
     }
   }
 
