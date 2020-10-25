@@ -25,7 +25,6 @@ struct drain_life_t : public warlock_spell_t
       parse_options( options_str );
       dual = true;
       background = true;
-      hasted_ticks = false;
       may_crit = false;
       dot_behavior = DOT_REFRESH;
     }
@@ -56,6 +55,11 @@ struct drain_life_t : public warlock_spell_t
         m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
       }
       return m;
+    }
+
+    timespan_t composite_dot_duration(const action_state_t* s) const override
+    {
+        return dot_duration * ( tick_time( s ) / base_tick_time);
     }
   };
 
