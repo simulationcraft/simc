@@ -243,10 +243,9 @@ struct scouring_tithe_t : public warlock_spell_t
 {
   scouring_tithe_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
-
   {
     parse_options( options_str );
-    //can_havoc = true; NYI
+    can_havoc = true;
   }
 
   void last_tick( dot_t* d ) override
@@ -257,9 +256,7 @@ struct scouring_tithe_t : public warlock_spell_t
     {
       p()->cooldowns.scouring_tithe->reset( true );
     }
-    warlock_spell_t::last_tick( d );
   }
-
 };
 
 struct soul_rot_t : public warlock_spell_t
@@ -467,7 +464,7 @@ void warlock_td_t::target_demise()
   }
   if ( dots_drain_soul->is_ticking() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(),
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(),
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
@@ -475,7 +472,7 @@ void warlock_td_t::target_demise()
 
   if ( dots_scouring_tithe->is_ticking() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} gains 5 shards from scouring tithe.", target->name(),
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains 5 shards from Scouring Tithe.", target->name(),
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 5, warlock.gains.scouring_tithe );
@@ -488,14 +485,14 @@ void warlock_td_t::target_demise()
 
   if ( debuffs_haunt->check() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name() );
+    warlock.sim->print_log( "Player {} demised. Warlock {} reset Haunt's cooldown.", target->name(), warlock.name() );
 
     warlock.cooldowns.haunt->reset( true );
   }
 
   if ( debuffs_shadowburn->check() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} reset shadowburn's cooldown.", target->name(),
+    warlock.sim->print_log( "Player {} demised. Warlock {} reset Shadowburn's cooldown.", target->name(),
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
