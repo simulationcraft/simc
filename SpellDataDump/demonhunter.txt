@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (git build shadowlands e4e8612b09)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-24/36294, git build shadowlands a6ecfc4ad5)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8608,6 +8608,38 @@ Effects          :
 #2 (id=835671)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Blade Dance has a $s1% chance to grant you Chaotic Blades, increasing the damage of Chaos Strike by $337567s1% and its chance to refund Fury by an additional $337567s2% for $337567d.
+
+Name             : Chaotic Blades (id=337567) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Cooldown         : 120 seconds
+Family Flags     : 62
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835662)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518)
+                   Family Flags: 6, 14, 50, 127
+#2 (id=835672)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+                   Affected Spells: Chaos Strike (162794), Chaos Strike (197125)
+                   Family Flags: 52
+Description      : Increases the damage of Chaos Strike by $s1% for $d.
+
+While active, your Chaos Strikes have a ${$s2+$197125h}% chance to refund $193840s1 Fury.
+
+Tooltip          : Chaos Strike damage increased by $w1%.
+
+Chaos Strike has a $197125h% chance to refund $193840s1 Fury.
 
 Name             : Erratic Fel Core (id=337685) [Spell Family (107), Passive] 
 School           : Physical
