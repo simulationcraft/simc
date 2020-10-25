@@ -528,6 +528,8 @@ public:
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t mirrors_of_torment_interval = 1.5_s;
+    timespan_t arcane_missiles_chain_delay = 200_ms;
+    double arcane_missiles_chain_stddev = 0.1;
   } options;
 
   // Pets
@@ -2901,6 +2903,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
+    // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting, p->buffs.rule_of_threes };
@@ -2967,26 +2970,31 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void trigger_dot( action_state_t* s )
   {
     dot_t* d = get_dot( s->target );
-    timespan_t new_tick_time = tick_time( s );
-    timespan_t old_tick_time = d->is_ticking() ? tick_time( d->state ) : 0_ms;
+    timespan_t base_duration = composite_dot_duration( s );
+    timespan_t chained_tick_remains = d->is_ticking() ? d->time_to_next_full_tick() : 0_ms;
+
+    // There is a bug when chaining where instead of using the base
+    // duration to calculate the rounded number of ticks, the time
+    // between the tick zero and chained tick is also included.
+    // Because this results in a substantial DPS gain from chaining
+    // casts immediately after a tick, we model delay in chaining here.
+    if ( p()->bugs && d->is_ticking() )
+    {
+      timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
+      base_duration += chained_tick_remains - 100_ms;
+      base_duration -= std::max( 0_ms, std::min( chained_tick_remains - 1_ms,
+        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
+    }
 
     arcane_mage_spell_t::trigger_dot( s );
 
-    // When chaining Arcane Missiles casts, if the first scheduled tick
-    // after chaining would occur slower than the new tick time, it is
-    // rescheduled to occur using the new tick time instead. However,
-    // additional time is still added to the duration, which can result
-    // in extra ticks.
-    if ( p()->bugs && new_tick_time < old_tick_time )
-      d->reschedule_tick();
-
     // AM channel duration is a bit fuzzy, it will go above or below the
     // standard 2 s to make sure it has the correct number of ticks.
-    timespan_t old_remains = d->remains();
-    int ticks = as<int>( std::round( ( old_remains - d->time_to_next_full_tick() ) / new_tick_time ) );
-    timespan_t new_remains = ticks * new_tick_time + d->time_to_next_full_tick();
+    timespan_t new_tick_time = tick_time( s );
+    int ticks = as<int>( std::round( base_duration / new_tick_time ) );
+    timespan_t new_remains = ticks * new_tick_time + chained_tick_remains;
 
-    d->adjust_duration( new_remains - old_remains, timespan_t::min(), 0, false );
+    d->adjust_duration( new_remains - d->remains(), timespan_t::min(), 0, false );
   }
 
   bool usable_moving() const override
@@ -6035,6 +6043,8 @@ void mage_t::create_options()
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "arcane_missiles_chain_stddev", options.arcane_missiles_chain_stddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
 }
