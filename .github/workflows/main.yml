@@ -239,7 +239,7 @@ jobs:
             platform: x64
             configuration: Debug-NoNetworking
             projectFile: vs/simc_vs2019.vcxproj
-            executable: vs\x64\Debug-NoNetworking\simc_vs2019.exe
+            executable: simc_vs2019.exe
             runSmokeTest: true
 
     steps:
