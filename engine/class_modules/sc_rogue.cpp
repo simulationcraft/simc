@@ -3916,7 +3916,10 @@ struct shadowstrike_t : public rogue_attack_t
       }
 
       timespan_t premed_duration = timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() );
-      p()->buffs.slice_and_dice->extend_duration_or_trigger( premed_duration );
+      // Slice and Dice extension from Premeditation appears to be capped at 46.8s in any build, which equals 5CP duration with full pandemic.
+      premed_duration = std::min( premed_duration, 46.8_s - p()->buffs.slice_and_dice->remains() );
+      if ( premed_duration > timespan_t::zero() )
+        p()->buffs.slice_and_dice->extend_duration_or_trigger( premed_duration );
 
       p()->buffs.premeditation->expire();
     }
