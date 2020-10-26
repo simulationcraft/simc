@@ -27,6 +27,10 @@ struct drain_life_t : public warlock_spell_t
       background = true;
       may_crit = false;
       dot_behavior = DOT_REFRESH;
+
+      // SL - Legendary
+      dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
     }
 
     double bonus_ta( const action_state_t* s ) const override
@@ -75,6 +79,10 @@ struct drain_life_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
+
+    // SL - Legendary
+    dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
   }
 
   void execute() override
