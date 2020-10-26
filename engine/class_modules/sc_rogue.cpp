@@ -4706,7 +4706,7 @@ struct flagellation_t : public rogue_attack_t
     p()->active.flagellation->debuff->trigger();
     for ( int i = 1; i < initial_lashes; i++ )
     {
-      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * i );
+      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * ( 1 + i ) );
     }
   }
 
@@ -6320,9 +6320,9 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
     {
-      for ( unsigned i = 0; i < max_spend; ++i )
+      for ( unsigned i = 1; i <= max_spend; ++i )
       {
-        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 1_s + 0.25_s * i );
+        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 0.25_s * ( 1 + i ) );
       }
     }
   }
@@ -6578,6 +6578,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
         source->cooldowns.serrated_bone_spike->reset( false, 1 );
+    } );
+  }
+
+  if (source->covenant.flagellation->ok())
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
+      if ( debuffs.flagellation->check() )
+        source->buffs.flagellation->trigger( debuffs.flagellation->stack() );
     } );
   }
 }
