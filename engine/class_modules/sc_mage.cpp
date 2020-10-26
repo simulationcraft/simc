@@ -2946,7 +2946,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // between the tick zero and chained tick is also included.
     // Because this results in a substantial DPS gain from chaining
     // casts immediately after a tick, we model delay in chaining here.
-    if ( p()->bugs )
+    // TODO: verify whether this can ever happen for a channel without
+    // clearcasting or if it can not happen for a channel with clearcasting.
+    if ( p()->bugs && p()->buffs.clearcasting_channel->check() )
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
       duration += d->time_to_next_full_tick() - 100_ms;
