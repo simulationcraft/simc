@@ -1628,6 +1628,7 @@ class SpellDataGenerator(DataGenerator):
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
+          ( 325092, 1 ), # Purified Chi
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
