@@ -609,6 +609,7 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double mult = 0.0;
         auto td = this->td( target );
+
         if ( td->dots_agony->is_ticking() )
           mult += 1.0;
 
@@ -636,8 +637,6 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_impending_catastrophe->is_ticking() )
           mult += 1.0;
 
-        // TODO:
-        // Impending catastrophe
         return mult;
       }
 
