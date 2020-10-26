@@ -2447,8 +2447,24 @@ void action_t::init()
     else
       player->precombat_action_list.push_back( this );
   }
-  else if ( !( background || sequence ) && action_list )
-    player->find_action_priority_list( action_list->name_str )->foreground_action_list.push_back( this );
+  else if ( action_list && action_list->name_str != "precombat" )
+  {
+    action_priority_list_t* apl = player->find_action_priority_list( action_list->name_str );
+    if ( !( background || sequence ) )
+    {
+      apl->foreground_action_list.push_back( this );
+    }
+    // Special case for disabled actions that are preceded by pool_resource,for_next=1 lines
+    // If we are skipping adding the action to the foreground_action_list above, we also need to disable the pool_resource entry
+    else if ( apl->foreground_action_list.size() > 0 &&
+              apl->foreground_action_list.back()->name_str == "pool_resource"  &&
+              util::str_in_str_ci( apl->foreground_action_list.back()->signature_str, "for_next=1" ) )
+    {
+      sim->print_debug( "{} pruning action '{}' due to action {} being disabled", *player, apl->foreground_action_list.back()->signature_str, *this );
+      apl->foreground_action_list.back()->background = true;
+      apl->foreground_action_list.pop_back();
+    }
+  }
 
   initialized = true;
 

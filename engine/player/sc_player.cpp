@@ -8706,7 +8706,7 @@ struct pool_resource_t : public action_t
   {
     action_t::reset();
 
-    if ( !next_action && for_next )
+    if ( !next_action && !background && for_next )
     {
       for ( size_t i = 0; i < player->action_priority_list.size(); i++ )
       {
