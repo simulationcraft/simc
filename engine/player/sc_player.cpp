@@ -1178,6 +1178,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     iteration_executed_foreground_actions( 0 ),
     iteration_resource_lost(),
     iteration_resource_gained(),
+    iteration_resource_overflowed(),
     rps_gain( 0 ),
     rps_loss( 0 ),
     tmi_window( 6.0 ),
@@ -4811,6 +4812,7 @@ void player_t::datacollection_begin()
 
   range::fill( iteration_resource_lost, 0.0 );
   range::fill( iteration_resource_gained, 0.0 );
+  range::fill( iteration_resource_overflowed, 0.0 );
 
   if ( collected_data.health_changes.collect )
   {
@@ -5030,6 +5032,7 @@ void player_t::merge( player_t& other )
   {
     iteration_resource_lost[ i ] += other.iteration_resource_lost[ i ];
     iteration_resource_gained[ i ] += other.iteration_resource_gained[ i ];
+    iteration_resource_overflowed[ i ] += other.iteration_resource_overflowed[ i ];
   }
 
   buff_merge::merge( *this, other );
@@ -5989,6 +5992,11 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
   {
     resources.current[ resource_type ] += actual_amount;
     iteration_resource_gained[ resource_type ] += actual_amount;
+  }
+  double overflow_amount = amount - actual_amount;
+  if (overflow_amount > 0)
+  {
+    iteration_resource_overflowed[ resource_type ] += overflow_amount;
   }
 
   if ( resource_type && resource_type == primary_resource() &&
@@ -11814,6 +11822,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   {
     resource_lost.resize( RESOURCE_MAX );
     resource_gained.resize( RESOURCE_MAX );
+    resource_overflowed.resize( RESOURCE_MAX );
   }
 
   // Enemies only have health
@@ -11821,6 +11830,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   {
     resource_lost.resize( RESOURCE_HEALTH + 1 );
     resource_gained.resize( RESOURCE_HEALTH + 1 );
+    resource_overflowed.resize( RESOURCE_HEALTH + 1 );
   }
 }
 
@@ -11894,6 +11904,7 @@ void player_collected_data_t::merge( const player_t& other_player )
   {
     resource_lost[ i ].merge( other.resource_lost[ i ] );
     resource_gained[ i ].merge( other.resource_gained[ i ] );
+    resource_overflowed[ i ].merge( other.resource_overflowed[ i ] );
   }
 
   if ( resource_timelines.size() == other.resource_timelines.size() )
@@ -12148,8 +12159,15 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost[ i ].add( p.iteration_resource_lost[ i ] );
+  }  
+  for ( size_t i = 0, end = resource_gained.size(); i < end; ++i )
+  {
     resource_gained[ i ].add( p.iteration_resource_gained[ i ] );
-  }
+  }  
+  for ( size_t i = 0, end = resource_overflowed.size(); i < end; ++i )
+  {
+    resource_overflowed[ i ].add( p.iteration_resource_overflowed[ i ] );
+  }  
 
   for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
   {

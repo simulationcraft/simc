@@ -58,7 +58,7 @@ struct player_collected_data_t
   extended_sample_data_t target_metric;
   mutex_t target_metric_mutex;
 
-  std::vector<simple_sample_data_t> resource_lost, resource_gained;
+  std::vector<simple_sample_data_t> resource_lost, resource_gained, resource_overflowed;
   struct resource_timeline_t
   {
     resource_e type;
