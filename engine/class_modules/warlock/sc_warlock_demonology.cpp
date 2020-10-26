@@ -1345,7 +1345,7 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "blood_fury,if=pet.demonic_tyrant.active" );
   ogcd->add_action( "fireblood,if=pet.demonic_tyrant.active" );
 
-  ess->add_action( "worldvein_resonance" );
+  ess->add_action( "worldvein_resonance,if=cooldown.summon_demonic_tyrant.remains>45" );
   ess->add_action( "memory_of_lucid_dreams" );
   ess->add_action( "blood_of_the_enemy" );
   ess->add_action( "guardian_of_azeroth" );
