@@ -455,6 +455,15 @@ struct incinerate_fnb_t : public destruction_spell_t
 
     return m;
   }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
 };
 
 struct incinerate_t : public destruction_spell_t
@@ -575,7 +584,7 @@ struct incinerate_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }

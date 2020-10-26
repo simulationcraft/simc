@@ -322,7 +322,7 @@ public:
     // Covenant Abilities
     conduit_data_t catastrophic_origin;   // Venthyr
     conduit_data_t soul_eater;          // Night Fae
-    conduit_data_t prolonged_decimation;  // Necrolord
+    conduit_data_t fatal_decimation;  // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
     conduit_data_t cold_embrace;
