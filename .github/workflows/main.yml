@@ -239,7 +239,7 @@ jobs:
             platform: x64
             configuration: Debug-NoNetworking
             projectFile: vs/simc_vs2019.vcxproj
-            executable: simc.exe
+            executable: vs\simc.exe
             runSmokeTest: true
 
     steps:
@@ -250,10 +250,6 @@ jobs:
       - name: Build
         run: MSBuild.exe /maxcpucount /p:Configuration="${{ matrix.configuration }}" /p:Platform=${{ matrix.platform }} ${{ matrix.projectFile }}
 
-      - name: Mark Solution as Executable
-        if: ${{ matrix.runSmokeTest }}
-        run: chmod +x ${{ matrix.executable }}
-
       - name: Smoke Test
         if: ${{ matrix.runSmokeTest }}
-        run: ./${{ matrix.executable }} $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: ${{ matrix.executable }} $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
