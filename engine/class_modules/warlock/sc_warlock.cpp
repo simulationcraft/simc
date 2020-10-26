@@ -181,7 +181,6 @@ struct impending_catastrophe_dot_t : public warlock_spell_t
     background = true;
     may_miss   = false;
     dual       = true;
-    aoe        = -1;
   }
   
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -223,20 +222,14 @@ struct impending_catastrophe_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto targets = target_list();
-
     warlock_spell_t::impact( s );
 
     impending_catastrophe_dot->set_target( target );
     impending_catastrophe_dot->execute();
 
-    for ( auto t : targets )
-    {
-      impending_catastrophe_impact->set_target( t );
-      impending_catastrophe_impact->execute();
-    }
+    impending_catastrophe_impact->set_target( target );
+    impending_catastrophe_impact->execute();
   }
-
 };
 
 struct scouring_tithe_t : public warlock_spell_t
