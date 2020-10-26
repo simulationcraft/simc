@@ -68,8 +68,8 @@ struct demonic_synergy_pet_proc_t : pets::warlock_pet_action_t<spell_t>
 
   void execute() override
   {
-    p()->sim->print_log("Pet synergy procced!");
-    //p()->o()->buffs.demonic_synergy->trigger();
+    //Owner's buff holds the proper default value always
+    p()->o()->buffs.demonic_synergy->trigger();
   }
 };
 
@@ -193,6 +193,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( pet_type == PET_DREADSTALKER && o()->legendary.grim_inquisitors_dread_calling->ok() )
     m *= 1.0 + buffs.grim_inquisitors_dread_calling->check_value();
+
+  m *= 1.0 + buffs.demonic_synergy->check_stack_value();
 
   return m;
 }

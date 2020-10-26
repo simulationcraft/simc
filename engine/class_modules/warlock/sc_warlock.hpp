@@ -884,6 +884,8 @@ public:
     if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
       pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
 
+    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+
     return pm;
   }
 
@@ -989,8 +991,8 @@ struct demonic_synergy_proc_t : public warlock_spell_t
     if ( p()->warlock_pet_list.active )
     {
       auto pet = p()->warlock_pet_list.active;
-      //pet->buffs.demonic_synergy->trigger( 1, p()->buffs.demonic_synergy->default_value );
-      p()->sim->print_log("We did a synergy proc!");
+      //Always set the pet's buff value using the owner's to ensure specialization value is correct
+      pet->buffs.demonic_synergy->trigger( 1, p()->buffs.demonic_synergy->default_value );
     }
   }
 };
