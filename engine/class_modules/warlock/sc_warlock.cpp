@@ -934,7 +934,7 @@ void warlock_t::init_spells()
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
-  legendary.mark_of_borrowed_power               = find_runeforge_legendary( "Mark of Borrowed Power" );
+  legendary.relic_of_demonic_synergy             = find_runeforge_legendary( "Relic of Demonic Synergy" );
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );

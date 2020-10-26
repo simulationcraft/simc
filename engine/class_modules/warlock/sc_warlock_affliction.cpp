@@ -678,18 +678,6 @@ struct malefic_rapture_t : public affliction_spell_t
       add_child( impact_action );
 
     }
-
-    void consume_resource() override
-    {
-      affliction_spell_t::consume_resource();
-
-      if ( p()->legendary.mark_of_borrowed_power->ok() )
-      {
-        double chance = p()->legendary.mark_of_borrowed_power->effectN(1).percent();
-        make_event<borrowed_power_event_t>(*p()->sim, p(), as<int>(last_resource_cost), chance);
-      }
-    }
-
 };
 
 // Talents

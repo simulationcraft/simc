@@ -297,7 +297,7 @@ public:
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t mark_of_borrowed_power; //TODO: SL Beta - Confirm with long dummy log that the % chances have no BLP
+    item_runeforge_t relic_of_demonic_synergy; //TODO: SL Beta - Do pet and warlock procs share a single RPPM?
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
