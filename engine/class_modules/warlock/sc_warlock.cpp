@@ -320,7 +320,7 @@ struct decimating_bolt_t : public warlock_spell_t
 
   {
     parse_options( options_str );
-    // can_havoc = true; NYI
+    can_havoc = true;
     travel_speed = p->find_spell( 327072 )->missile_speed();
 
     add_child( decimating_bolt_dmg );
@@ -328,6 +328,8 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
+    //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
+    //checked regularly to ensure accuracy
     double value = p()->buffs.decimating_bolt->default_value - 0.006 * s->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
@@ -335,11 +337,14 @@ struct decimating_bolt_t : public warlock_spell_t
     
     warlock_spell_t::impact( s );
     
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( 0.1_s )
       .target( s->target )
       .n_pulses( 4 )
       .action( decimating_bolt_dmg ), true );
+
+    if ( s->chain_target > 0 )
+      e->pulse_state->persistent_multiplier *= base_aoe_multiplier;
 
   };
 
