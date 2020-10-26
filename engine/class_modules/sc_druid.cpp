@@ -3011,6 +3011,10 @@ public:
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+
+          // Temporary workaround while BFA is still relevant, as VoP/BFA pulsar does not reset empowerments, but SL pulsar does.
+          // TODO: Move into buff_t::celestial_alignment_buff_t::extend_duration() once BFA is no longer relevant.
+          p()->buff.starsurge->expire();
         }
       }
     }
