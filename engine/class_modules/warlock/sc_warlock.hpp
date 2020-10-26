@@ -372,6 +372,7 @@ public:
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
+    propagate_const<cooldown_t*> infernal;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -861,6 +862,24 @@ public:
       if ( p()->talents.soul_conduit->ok() )
       {
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
+      }
+
+      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+      {
+        switch ( p()->specialization() )
+        {
+          case WARLOCK_AFFLICTION:
+            p()->cooldowns.darkglare->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 1 ).time_value(), false );
+            break;
+          case WARLOCK_DEMONOLOGY:
+            p()->cooldowns.demonic_tyrant->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+            break;
+          case WARLOCK_DESTRUCTION:
+            p()->cooldowns.infernal->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 3 ).time_value(), false );
+            break;
+          default:
+            break;
+        }
       }
     }
   }
