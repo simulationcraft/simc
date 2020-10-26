@@ -935,7 +935,7 @@ void paladin_t::generate_action_prio_list_prot()
   
   def -> add_action( this, "Hammer of Wrath", "if=buff.avenging_wrath.up&target.health.pct>20&buff.avenging_wrath.remains<=floor(buff.avenging_wrath.remains%cooldown%attack_haste)*cooldown*attack_haste+gcd" ,"Tries to fit in an extra HoW into wings. It can attempt and fail if *just* below a haste breakpoint" );
 
-  def -> add_action( this, "Judgment", "cycle_targets=1,if=charges=2|!talent.crusadersjudgment.enabled" );
+  def -> add_action( this, "Judgment", "cycle_targets=1,if=charges=2|!talent.crusaders_judgment.enabled" );
   def -> add_action( this, "Avenger's Shield", "if=debuff.vengeful_shock.down|!conduit.vengeful_shock.enabled" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Avengers Shield" );
