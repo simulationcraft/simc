@@ -491,6 +491,7 @@ public:
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> implosive_potential;
     propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -971,6 +972,26 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
   {
     background = true;
     proc = true;
+  }
+};
+
+struct demonic_synergy_proc_t : public warlock_spell_t
+{
+  demonic_synergy_proc_t( warlock_t* p )
+    : warlock_spell_t( "demonic_synergy_proc", p, p->find_spell( 337060 ) )
+  {
+    background = true;
+    proc = true;
+  }
+
+  void execute() override
+  {
+    if ( p()->warlock_pet_list.active )
+    {
+      auto pet = p()->warlock_pet_list.active;
+      //Trigger buff on pet
+      p()->sim->print_log("We did a synergy proc!");
+    }
   }
 };
 

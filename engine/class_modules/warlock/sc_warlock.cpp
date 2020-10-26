@@ -899,6 +899,9 @@ void warlock_t::create_buffs()
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
+
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
+                              ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
 }
 
 void warlock_t::init_spells()
@@ -1174,13 +1177,13 @@ void warlock_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  auto const effect = new special_effect_t( this );
-  effect->name_str = "grimoire_of_sacrifice_effect";
-  effect->spell_id = 196099;
-  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
-  special_effects.push_back( effect );
+  auto const sac_effect = new special_effect_t( this );
+  sac_effect->name_str = "grimoire_of_sacrifice_effect";
+  sac_effect->spell_id = 196099;
+  sac_effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+  special_effects.push_back( sac_effect );
 
-  auto cb = new dbc_proc_callback_t( this, *effect );
+  auto cb = new dbc_proc_callback_t( this, *sac_effect );
 
   cb->initialize();
   cb->deactivate();
@@ -1189,6 +1192,19 @@ void warlock_t::init_special_effects()
       if ( new_ == 1 ) cb->activate();
       else cb->deactivate();
     } );
+
+  auto const syn_effect = new special_effect_t( this );
+  syn_effect->name_str = "demonic_synergy_effect";
+  syn_effect->spell_id = 337057;
+  syn_effect->execute_action = new warlock::actions::demonic_synergy_proc_t( this );
+  special_effects.push_back( syn_effect );
+
+  cb = new dbc_proc_callback_t( this, *syn_effect );
+  
+  cb->initialize();
+  
+  if ( !legendary.relic_of_demonic_synergy->ok() )
+    cb->deactivate();
 }
 
 void warlock_t::combat_begin()
