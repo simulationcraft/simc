@@ -613,6 +613,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
+  cooldowns.infernal            = get_cooldown( "summon_infernal" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;

@@ -777,7 +777,7 @@ struct summon_infernal_t : public destruction_spell_t
   timespan_t infernal_duration;
 
   summon_infernal_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "Summon_Infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
+    : destruction_spell_t( "summon_infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
   {
     parse_options( options_str );
 
@@ -786,6 +786,7 @@ struct summon_infernal_t : public destruction_spell_t
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
+
     // BFA - Azerite
     if ( p->azerite.crashing_chaos.ok() )
       cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
@@ -821,6 +822,11 @@ struct summon_infernal_t : public destruction_spell_t
       p()->buffs.crashing_chaos_vop->expire();
       p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
     }
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
