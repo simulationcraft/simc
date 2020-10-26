@@ -942,9 +942,9 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Judgment", "cycle_targets=1" );
   def -> add_action( this, "Vanquishers Hammer" );
   def -> add_action( this, "Consecration", "if=consecration.up" );
-  def -> add_action( this, "Divine Toll" );
-  def -> add_talent( this, "Blessed Hammer", "strikes=2.4,if=charges=3" );
-  def -> add_talent( this, "Ashen Hallow" );
+  def -> add_action( "Divine Toll" );
+  def -> add_action( this, "Blessed Hammer", "strikes=2.4,if=charges=3" );
+  def -> add_talent( "Ashen Hallow" );
   def -> add_action( this, "Hammer of the Righteous", "if=charges=2" );
   def -> add_action( this, "Word of Glory", "if=buff.vanquishers_hammer.up" );
   def -> add_action( this, "Blessed Hammer", "strikes=2.4" );
