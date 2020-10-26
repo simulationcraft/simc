@@ -80,7 +80,7 @@ public:
   // Returns either mind blasts action cooldown, or when dark thoughts is up a dummy cooldown
   cooldown_t* active_cooldown() const
   {
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thought->check() )
     {
       return dark_thought_dummy_cooldown;
     }
@@ -106,7 +106,7 @@ public:
   {
     if ( only_cwc )
     {
-      if ( !priest().buffs.dark_thoughts->check() )
+      if ( !priest().buffs.dark_thought->check() )
         return false;
       if ( player->channeling == nullptr )
         return false;
@@ -181,7 +181,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thought->check() )
     {
       return timespan_t::zero();
     }
@@ -203,8 +203,8 @@ public:
   {
     priest().buffs.voidform->up();  // Benefit tracking
 
-    if ( priest().buffs.dark_thoughts->up() )
-      priest().buffs.dark_thoughts->decrement();
+    if ( priest().buffs.dark_thought->up() )
+      priest().buffs.dark_thought->decrement();
     else
       priest_spell_t::update_ready( cd_duration );
   }
@@ -1754,14 +1754,10 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 // Dark Thoughts
 // ==========================================================================
-struct dark_thoughts_t final : public priest_buff_t<buff_t>
+struct dark_thought_t final : public priest_buff_t<buff_t>
 {
-  dark_thoughts_t( priest_t& p ) : base_t( p, "dark_thoughts", p.find_specialization_spell( "Dark Thoughts" ) )
+  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.find_spell( 341207 ) )
   {
-    // Spell data does not contain information about the spell, must manually set.
-    this->set_max_stack( 5 );
-    this->set_duration( timespan_t::from_seconds( 6 ) );
-    this->set_refresh_behavior( buff_refresh_behavior::DURATION );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
   }
@@ -1946,7 +1942,7 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.dark_thoughts    = make_buff<buffs::dark_thoughts_t>( *this );
+  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
 
   // Talents
   buffs.void_torrent           = make_buff( this, "void_torrent", find_talent_spell( "Void Torrent" ) );
@@ -2298,12 +2294,12 @@ void priest_t::generate_apl_shadow()
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,"
+      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thought.up,chain=1,interrupt_immediate=1,"
       "interrupt_if=ticks>=2",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
-                    "if=buff.dark_thoughts.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
+                    "if=buff.dark_thought.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );

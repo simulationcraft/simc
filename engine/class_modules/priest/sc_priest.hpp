@@ -139,7 +139,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> dark_thoughts;
+    propagate_const<buff_t*> dark_thought;
 
     // Azerite Powers
     // Shadow
@@ -1478,7 +1478,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
                           dark_thoughts_proc_percent * dots, dots );
       }
-      priest().buffs.dark_thoughts->trigger();
+      priest().buffs.dark_thought->trigger();
       proc->occur();
     }
   }

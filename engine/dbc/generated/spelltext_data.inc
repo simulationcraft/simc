@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36294
-static const std::array<spelltext_data_t, 15704> __spelltext_data { {
+static const std::array<spelltext_data_t, 15705> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15321,6 +15321,7 @@ static const std::array<spelltext_data_t, 15704> __spelltext_data { {
   { 341165, "$@spelldesc341163", 0, 0 },
   { 341202, "$@spelldesc340092", "Damage increased by $w1%.", 0 },
   { 341205, "For each of your Shadow damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought.\r\n\r\n|CFFFFFFFFDark Thought|R\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", 0, "Passive" },
+  { 341207, "For each damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought. \r\n\r\nDark Thought\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast has no cooldown and can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", "Maximum number of charges of Mind Blast increased by $w1.\r\n\r\nMind Blast no longer has a  cooldown, can be cast instantly, and while channelling Mind Flay or Mind Sear.", 0 },
   { 341222, "When Kill Command's cooldown is reset, gain|cFFFFFFFF ${$s1}.1%|r increased damage for $341223d.", 0, 0 },
   { 341223, "$@spelldesc341222", "Damage done increased by ${$w1}.1%.", 0 },
   { 341240, "Voidform increases your critical strike chance by $s1% for $194249d, reducing by $s2% every sec.", 0, 0 },
