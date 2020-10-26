@@ -211,6 +211,7 @@ public:
     // Covenant
     buff_t* fodder_to_the_flame;
     buff_t* growing_inferno;
+    buff_t* soul_furance;
 
     // Legendary
     buff_t* chaos_theory;
@@ -404,7 +405,7 @@ public:
     conduit_data_t relentless_onslaught;
     conduit_data_t serrated_glaive;
 
-    conduit_data_t soul_furnace;        // NYI
+    conduit_data_t soul_furnace;
 
     conduit_data_t repeat_decree;
     conduit_data_t increased_scrutiny;
@@ -427,8 +428,8 @@ public:
     item_runeforge_t burning_wound;
 
     // Vengeance
-    item_runeforge_t fiery_soul;                    // NYI
-    item_runeforge_t razelikhs_defilement;          // NYI
+    item_runeforge_t fiery_soul;
+    item_runeforge_t razelikhs_defilement;
     item_runeforge_t fel_flame_fortification;       // NYI
     item_runeforge_t spirit_of_the_darkness_flame;  // NYI
   } legendary;
@@ -450,6 +451,7 @@ public:
     // General
     cooldown_t* consume_magic;
     cooldown_t* disrupt;
+    cooldown_t* elysian_decree;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
 
@@ -581,6 +583,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
     int fodder_to_the_flame_kill_seconds = 4;
     double fodder_to_the_flame_min_percent = 0.75;
+    double razelikhs_defilement_utility_pct = 0;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1011,6 +1014,11 @@ struct soul_fragment_t
       }
 
       dh->cooldown.eye_beam->adjust( -duration );
+    }
+
+    if ( dh->conduit.soul_furnace.ok() )
+    {
+      dh->buff.soul_furance->trigger();
     }
 
     if ( type == soul_fragment::GREATER && from_demon )
@@ -4146,6 +4154,18 @@ struct soul_cleave_t : public demon_hunter_attack_t
       aoe = as<int>( data().effectN( 2 ).base_value() );
     }
     
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_attack_t::action_multiplier();
+
+      if ( p()->buff.soul_furance->at_max_stacks() )
+      {
+        am *= 1.0 + p()->buff.soul_furance->check_value();
+      }
+
+      return am;
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -4158,6 +4178,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
   };
 
   heals::soul_cleave_heal_t* heal;
+  std::vector<cooldown_t*> sigil_cooldowns;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -4173,6 +4194,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
     }
+
+    if ( p->legendary.razelikhs_defilement->ok() )
+    {
+      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree };
+    }
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
@@ -4187,8 +4213,30 @@ struct soul_cleave_t : public demon_hunter_attack_t
       heal->execute();
     }
 
+    if ( p()->buff.soul_furance->at_max_stacks() )
+    {
+      p()->buff.soul_furance->expire();
+    }
+
+    if ( p()->legendary.razelikhs_defilement->ok() && !p()->rng().roll( p()->options.razelikhs_defilement_utility_pct ) )
+    {
+      std::vector<cooldown_t*> sigils_on_cooldown;
+      range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
+      if ( sigils_on_cooldown.size() > 0 )
+      {
+        const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
+        sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ]->adjust( adjust_duration );
+      }
+    }
+
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
+    unsigned consumed = p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
+    
+    if ( p()->legendary.fiery_soul->ok() )
+    {
+      const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.fiery_soul->effectN( 1 ).base_value() );
+      p()->cooldown.fiery_brand->adjust( adjust_duration * consumed );
+    }
   }
 };
 
@@ -4838,6 +4886,9 @@ void demon_hunter_t::create_buffs()
     ->set_max_stack( 99 )
     ->set_duration( 20_s );
 
+  buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
+    ->set_default_value( conduit.soul_furnace.percent() );
+
   // Legendary ==============================================================
 
   const spell_data_t* chaos_theory_buff = legendary.chaos_theory->ok() ? find_spell( 337567 ) : spell_data_t::not_found();
@@ -4996,6 +5047,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "fodder_to_the_flame_min_percent", options.fodder_to_the_flame_min_percent, 0.0, 1.0 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
+  add_option( opt_float( "razelikhs_defilement_utility_pct", options.razelikhs_defilement_utility_pct, 0.0, 1.0 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -5712,15 +5764,16 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=cooldown.fiery_brand.remains<2" );
+  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&cooldown.fiery_brand.remains<2" );
   apl_brand->add_action( this, "Infernal Strike", "if=cooldown.fiery_brand.remains=0" );
   apl_brand->add_action( this, "Fiery Brand" );
   apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
   apl_brand->add_talent( this, "Fel Devastation", "if=dot.fiery_brand.ticking" );
   apl_brand->add_action( this, "Infernal Strike", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=dot.fiery_brand.ticking" );
+  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
+  apl_normal->add_action( "elysian_decree" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
   apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
@@ -5730,7 +5783,7 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_action( this, "Immolation Aura", "if=fury<=90" );
   apl_normal->add_talent( this, "Felblade", "if=fury<=70" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_action( this, "Sigil of Flame" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
@@ -5742,6 +5795,7 @@ void demon_hunter_t::create_cooldowns()
   // General
   cooldown.consume_magic        = get_cooldown( "consume_magic" );
   cooldown.disrupt              = get_cooldown( "disrupt" );
+  cooldown.elysian_decree       = get_cooldown( "elysian_decree" );
   cooldown.felblade             = get_cooldown( "felblade" );
   cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
 
