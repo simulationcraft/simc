@@ -172,6 +172,7 @@ struct drain_life_t : public warlock_spell_t
   }
 };  
 
+//Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
 struct impending_catastrophe_dot_t : public warlock_spell_t
 {
   impending_catastrophe_dot_t( warlock_t* p )
@@ -185,11 +186,11 @@ struct impending_catastrophe_dot_t : public warlock_spell_t
   
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-   if ( s->chain_target == 0 ) // main target
-     return dot_duration * ( 1 + p()->conduit.catastrophic_origin.percent() );
+   if ( s->chain_target == 0 )
+     return dot_duration * ( 1.0 + p()->conduit.catastrophic_origin.percent() );
+
    return dot_duration;
   }
-  
 };
 
 struct impending_catastrophe_impact_t : public warlock_spell_t
@@ -200,7 +201,6 @@ struct impending_catastrophe_impact_t : public warlock_spell_t
     background = true;
     may_miss   = false;
     dual       = true;
-
   }
 };
 
@@ -211,7 +211,7 @@ struct impending_catastrophe_t : public warlock_spell_t
 
   impending_catastrophe_t( warlock_t* p, util::string_view options_str ) : 
     warlock_spell_t( "impending_catastrophe", p, p->covenant.impending_catastrophe ),
-    impending_catastrophe_impact( new impending_catastrophe_impact_t(p) ),
+    impending_catastrophe_impact( new impending_catastrophe_impact_t( p ) ),
     impending_catastrophe_dot( new impending_catastrophe_dot_t( p ) )
   {
     parse_options( options_str );
