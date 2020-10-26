@@ -308,6 +308,15 @@ struct decimating_bolt_dmg_t : public warlock_spell_t
 
     return m;
   };
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->conduit.fatal_decimation.percent();
+
+    return m;
+  }
 };
 
 struct decimating_bolt_t : public warlock_spell_t
@@ -934,7 +943,7 @@ void warlock_t::init_spells()
   // Conduits
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
   conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
-  conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
+  conduit.fatal_decimation     = find_conduit_spell( "Fatal Decimation" );      // Necrolord
   conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
