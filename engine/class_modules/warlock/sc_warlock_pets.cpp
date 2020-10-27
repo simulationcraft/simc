@@ -73,6 +73,22 @@ struct demonic_synergy_pet_proc_t : pets::warlock_pet_action_t<spell_t>
   }
 };
 
+struct demonic_synergy_pet_callback_t : public dbc_proc_callback_t
+{
+  warlock_pet_t* pet;
+
+  demonic_synergy_pet_callback_t( warlock_pet_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), pet( p )
+  {
+  }
+
+  void execute(action_t* /* a */, action_state_t* state) override
+  {
+    //Owner's buff holds the proper default value always
+    pet->o()->buffs.demonic_synergy->trigger();
+  }
+};
+
 void warlock_pet_t::init_base_stats()
 {
   pet_t::init_base_stats();
@@ -118,6 +134,7 @@ void warlock_pet_t::init_special_effects()
 {
   pet_t::init_special_effects();
 
+  /*
   auto const syn_effect = new special_effect_t(this);
   syn_effect->name_str = "demonic_synergy_pet_effect";
   syn_effect->spell_id = 337057;
@@ -130,6 +147,19 @@ void warlock_pet_t::init_special_effects()
 
   if ( !o()->legendary.relic_of_demonic_synergy->ok() || !is_main_pet )
     cb->deactivate();
+    */
+
+  if ( o()->legendary.relic_of_demonic_synergy->ok() && is_main_pet )
+  {
+    auto const syn_effect = new special_effect_t( this );
+    syn_effect->name_str = "demonic_synergy_pet_effect";
+    syn_effect->spell_id = 337057;
+    special_effects.push_back( syn_effect );
+
+    auto cb = new demonic_synergy_pet_callback_t( this, *syn_effect );
+
+    cb->initialize();
+  }
 }
 
 void warlock_pet_t::create_buffs_demonology()
