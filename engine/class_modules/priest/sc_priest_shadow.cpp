@@ -184,8 +184,8 @@ public:
     priest().buffs.voidform->up();  // Benefit tracking
     // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
-    if ( priest().buffs.dark_thoughts->up() )
-      priest().buffs.dark_thoughts->decrement();
+    if ( priest().buffs.dark_thought->up() )
+      priest().buffs.dark_thought->decrement();
     else
       priest_spell_t::update_ready( cd_duration );
   }
