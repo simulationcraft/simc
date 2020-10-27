@@ -1,0 +1,144 @@
+rogue="PR_Rogue_Outlaw"
+source=default
+spec=outlaw
+level=60
+race=pandaren
+role=attack
+position=back
+talents=3010022
+
+# Default consumables
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
+actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
+actions.precombat+=/roll_the_bones,precombat_seconds=1
+actions.precombat+=/slice_and_dice,precombat_seconds=2
+actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Currently not worth rerolling in SL in any known situation
+actions+=/variable,name=rtb_reroll,value=0
+actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up
+# With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
+actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
+actions+=/call_action_list,name=stealth,if=stealthed.all
+actions+=/call_action_list,name=cds
+# Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second. Always max BtE with 2+ Ace.
+actions+=/run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))*(azerite.ace_up_your_sleeve.rank<2|!cooldown.between_the_eyes.up)|combo_points=animacharged_cp
+actions+=/call_action_list,name=build
+actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
+actions+=/arcane_pulse
+actions+=/lights_judgment
+actions+=/bag_of_tricks
+
+# Builders
+actions.build=shiv,if=runeforge.tiny_toxic_blade.equipped
+actions.build+=/echoing_reprimand
+actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
+# Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down.
+actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)
+actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
+actions.build+=/sinister_strike
+
+# Cooldowns
+actions.cds=call_action_list,name=essences,if=!stealthed.all
+actions.cds+=/flagellation
+actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30
+actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)
+actions.cds+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
+# If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
+# If no adds will die within the next 30s, use MfD on boss without any CP.
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1
+# Blade Flurry on 2+ enemies. ST with Ambidexterity if no adds in the next 10s.
+actions.cds+=/blade_flurry,if=spell_targets>=2-conduit.ambidexterity.enabled&!buff.blade_flurry.up&raid_event.adds.in>10
+actions.cds+=/ghostly_strike,if=combo_points.deficit>=1+buff.broadside.up
+actions.cds+=/killing_spree,if=variable.blade_flurry_sync&energy.time_to_max>2
+actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>2
+# Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
+actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
+actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=1
+actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
+actions.cds+=/sepsis,if=!stealthed.all
+actions.cds+=/potion,if=buff.bloodlust.react|buff.adrenaline_rush.up
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/fireblood
+actions.cds+=/ancestral_call
+actions.cds+=/use_item,effect_name=cyclotronic_blast,if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5
+actions.cds+=/use_item,name=azsharas_font_of_power,if=!buff.adrenaline_rush.up&!buff.blade_flurry.up&cooldown.adrenaline_rush.remains<15
+# Very roughly rule of thumbified maths below: Use for Inkpod crit, otherwise with AR at 20+ stacks or 10+ with also Blood up.
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<32&target.health.pct>=30|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=20-10*debuff.blood_of_the_enemy.up|target.time_to_die<60)&buff.adrenaline_rush.remains>18
+# Default fallback for usable items.
+actions.cds+=/use_items,if=buff.bloodlust.react|fight_remains<=20|combo_points.deficit<=2
+
+# Essences
+actions.essences=concentrated_flame,if=energy.time_to_max>1&!buff.blade_flurry.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
+actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync&cooldown.between_the_eyes.up&(spell_targets.blade_flurry>=2|raid_event.adds.in>45)
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60&!buff.adrenaline_rush.up
+actions.essences+=/purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60
+actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=energy<45
+# Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies.
+actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die
+actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
+
+# Finishers
+# BtE on cooldown to keep the Crit debuff up
+actions.finish=between_the_eyes
+actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8
+actions.finish+=/dispatch
+
+# Stealth
+actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
+actions.stealth+=/ambush
+
+head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1500
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1500
+back=dealer_xyexas_cape,id=179349,bonus_id=6807/1500
+chest=rainshadow_hauberk,id=178698,bonus_id=6807/1500
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1500
+hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1500
+waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
+legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
+feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
+trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
+main_hand=bloodspiller,id=179328,bonus_id=6807/1500
+off_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
+
+# Gear Summary
+# gear_ilvl=184.38
+# gear_agility=562
+# gear_stamina=862
+# gear_crit_rating=398
+# gear_haste_rating=326
+# gear_mastery_rating=444
+# gear_versatility_rating=147
+# gear_armor=482

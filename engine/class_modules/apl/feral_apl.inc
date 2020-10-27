@@ -22,7 +22,7 @@ precombat->add_action( "snapshot_stats" );
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
-def->add_action( "cat_form,if=buff.cat_form.down" );
+def->add_action( "cat_form,if=buff.cat_form.down", "Balance weaving investigation" );
 def->add_action( "prowl", "Prowl whenever possible" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "variable,name=reaping_delay,value=target.time_to_die,if=variable.reaping_delay=0" );
@@ -77,7 +77,7 @@ essence->add_action( "ripple_in_space,if=buff.tigers_fury.up" );
 essence->add_action( "worldvein_resonance,if=buff.tigers_fury.up" );
 essence->add_action( "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&variable.reaping_delay>29)|(target.time_to_pct_20>30&variable.reaping_delay>44)" );
 
-finisher->add_action( "savage_roar,if=refreshable" );
+finisher->add_action( "savage_roar,if=buff.savage_roar.down|buff.savage_roar.remains<(combo_points*5+1)*0.3" );
 finisher->add_action( "variable,name=best_rip,value=0,if=talent.primal_wrath.enabled", "Make sure to zero the variable so some old value don't end up lingering" );
 finisher->add_action( "cycling_variable,name=best_rip,op=max,value=druid.rip.ticks_gained_on_refresh,if=talent.primal_wrath.enabled" );
 finisher->add_action( "primal_wrath,if=druid.primal_wrath.ticks_gained_on_refresh>(variable.rip_ticks>?variable.best_rip)|spell_targets.primal_wrath>(3+1*talent.sabertooth.enabled)" );

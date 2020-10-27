@@ -660,8 +660,6 @@ public:
 
   virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
 
-  virtual double target_armor(player_t* t) const;
-
   virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
 
@@ -791,6 +789,8 @@ public:
   virtual double composite_attack_power() const;
 
   virtual double composite_spell_power() const;
+
+  virtual double composite_target_armor( player_t* t ) const;
 
   virtual double composite_target_crit_chance( player_t* target ) const;
 

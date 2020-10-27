@@ -1178,6 +1178,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     iteration_executed_foreground_actions( 0 ),
     iteration_resource_lost(),
     iteration_resource_gained(),
+    iteration_resource_overflowed(),
     rps_gain( 0 ),
     rps_loss( 0 ),
     tmi_window( 6.0 ),
@@ -1562,7 +1563,7 @@ void player_t::init_base_stats()
     base.dodge_per_agility =
         dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
-  // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
+  // only certain classes get Str->Parry conversions, parry_per_strength defaults to 0.00
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
     base.parry_per_strength =
         dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
@@ -1581,18 +1582,18 @@ void player_t::init_base_stats()
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
   {
-    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
-    base.block_reduction = 0;
+    // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
+    // Further increased by mastery for both Protection specs
+    base.block = 0.03;
 
-    // Base block chance is 10% for players, warriors have a bonus 8% in their spec aura
+    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     switch ( type )
     {
     case WARRIOR:
     case PALADIN:
-      base.block = 0.10;
+      base.block_reduction = 0;
       break;
     default:
-      base.block = 0.03;
       base.block_reduction = 0.30;
       break;
     }
@@ -4093,6 +4094,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   // 8.0 Legendary Insignia of the Grand Army Effect
   m *= insignia_of_the_grand_army_multiplier;
 
+  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
+    m *= 1 + buffs.echo_of_eonar->check_value();
+
   return m;
 }
 
@@ -4119,14 +4123,13 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
     m *= 1.0 + buffs.wild_hunt_tactics->default_value;
 
-  auto td = get_target_data( target );
+  auto td = find_target_data( target );
   if ( td )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
-    m *= 1.0 + td->debuff.echo_of_eonar->check_value();
   }
 
   return m;
@@ -4151,16 +4154,16 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 {
   double c = 0.0;
 
-  if ( actor_target_data_t* td = get_owner_or_self()->get_target_data( target ) )
+  if ( const actor_target_data_t* td = get_owner_or_self()->find_target_data( target ) )
   {
     // Essence: Blood of the Enemy Major debuff
-    c += td->debuff.blood_of_the_enemy->stack_value();
+    c += td->debuff.blood_of_the_enemy->check_stack_value();
 
     // Consumable: Potion of Focused Resolve
-    c += td->debuff.focused_resolve->stack_value();
+    c += td->debuff.focused_resolve->check_stack_value();
 
     // Darkmoon Deck: Putrescence
-    c += td->debuff.putrid_burst->stack_value();
+    c += td->debuff.putrid_burst->check_stack_value();
   }
 
   return c;
@@ -4466,7 +4469,7 @@ double player_t::composite_player_vulnerability( school_e school ) const
   double m = debuffs.invulnerable && debuffs.invulnerable->check() ? 0.0 : 1.0;
 
   if ( debuffs.vulnerable && debuffs.vulnerable->check() )
-    m *= 1.0 + debuffs.vulnerable->value();
+    m *= 1.0 + debuffs.vulnerable->check_value();
 
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )
@@ -4474,12 +4477,17 @@ double player_t::composite_player_vulnerability( school_e school ) const
 
   if ( debuffs.mystic_touch &&
        debuffs.mystic_touch->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + debuffs.mystic_touch->value();
+    m *= 1.0 + debuffs.mystic_touch->check_value();
 
   if ( debuffs.chaos_brand && debuffs.chaos_brand->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + debuffs.chaos_brand->value();
+    m *= 1.0 + debuffs.chaos_brand->check_value();
 
   return m;
+}
+
+double player_t::composite_player_target_armor( player_t* target ) const
+{
+  return target->cache.armor();
 }
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
@@ -4804,6 +4812,7 @@ void player_t::datacollection_begin()
 
   range::fill( iteration_resource_lost, 0.0 );
   range::fill( iteration_resource_gained, 0.0 );
+  range::fill( iteration_resource_overflowed, 0.0 );
 
   if ( collected_data.health_changes.collect )
   {
@@ -5023,6 +5032,7 @@ void player_t::merge( player_t& other )
   {
     iteration_resource_lost[ i ] += other.iteration_resource_lost[ i ];
     iteration_resource_gained[ i ] += other.iteration_resource_gained[ i ];
+    iteration_resource_overflowed[ i ] += other.iteration_resource_overflowed[ i ];
   }
 
   buff_merge::merge( *this, other );
@@ -5667,13 +5677,8 @@ void player_t::demise()
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
-  {
-    buff_t* b = buff_list[ i ];
-    b->expire();
-    // Dead actors speak no lies .. or proc aura delayed buffs
-    event_t::cancel( b->delay );
-    event_t::cancel( b->expiration_delay );
-  }
+    buff_list[ i ]->cancel();
+
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ]->cancel();
 
@@ -5988,6 +5993,11 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
     resources.current[ resource_type ] += actual_amount;
     iteration_resource_gained[ resource_type ] += actual_amount;
   }
+  double overflow_amount = amount - actual_amount;
+  if (overflow_amount > 0)
+  {
+    iteration_resource_overflowed[ resource_type ] += overflow_amount;
+  }
 
   if ( resource_type && resource_type == primary_resource() &&
        resources.max[ resource_type ] <= resources.current[ resource_type ] )
@@ -6161,7 +6171,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   cache_e cache_type = cache_from_stat( stat );
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
-    do_dynamic_regen();
+    do_dynamic_regen( true );
 
   sim->print_log( "{} gains {:.2f} {}{}", name(), amount, stat,
                   temporary_stat ? " (temporary)" : "" );
@@ -6299,7 +6309,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   cache_e cache_type = cache_from_stat( stat );
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
-    do_dynamic_regen();
+    do_dynamic_regen( true );
 
   sim->print_log( "{} loses {:.2f} {}{}", name(), amount, stat,
                   temporary_buff ? " (temporary)" : "" );
@@ -8704,7 +8714,7 @@ struct pool_resource_t : public action_t
   {
     action_t::reset();
 
-    if ( !next_action && for_next )
+    if ( !next_action && !background && for_next )
     {
       for ( size_t i = 0; i < player->action_priority_list.size(); i++ )
       {
@@ -10384,6 +10394,42 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
   }
 
+  // dbc
+  if ( splits.size() == 4 && util::str_compare_ci( splits[ 0 ], "dbc" ) )
+  {
+    double value = -std::numeric_limits<double>::max();
+
+    if ( util::str_compare_ci( splits[ 1 ], "spell" ) )
+    {
+      unsigned spell_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spell_data_t* s = find_spell( spell_id );
+      if ( s->ok() )
+        value = s->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
+    {
+      unsigned effect_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spelleffect_data_t* e = dbc::find_effect( this, effect_id );
+      if ( e->ok() )
+        value = e->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+
+    if ( util::str_compare_ci( splits[ 1 ], "power" ) )
+    {
+      unsigned power_id = util::to_int( splits[ 2 ] );
+      auto field = splits[ 3 ];
+      const spellpower_data_t* p = dbc::find_power( this, power_id );
+      if ( p->id() != 0 )
+        value = p->get_field( field );
+      return expr_t::create_constant( name_str, value );
+    }
+  }
+
   if ( splits[ 0 ] == "azerite" )
   {
     return azerite -> create_expression( splits );
@@ -10774,6 +10820,16 @@ std::string player_t::create_profile( save_e stype )
         }
       }
       profile_str += term;
+    }
+
+    if ( apl_variable_map.size() > 0 )
+    {
+      profile_str += term;
+      profile_str += "# Custom default values for APL variables." + term;
+      for ( auto v : apl_variable_map )
+      {
+        profile_str += "apl_variable." + v.first + "=" + v.second + term;
+      }
     }
   }
 
@@ -11766,6 +11822,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   {
     resource_lost.resize( RESOURCE_MAX );
     resource_gained.resize( RESOURCE_MAX );
+    resource_overflowed.resize( RESOURCE_MAX );
   }
 
   // Enemies only have health
@@ -11773,6 +11830,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   {
     resource_lost.resize( RESOURCE_HEALTH + 1 );
     resource_gained.resize( RESOURCE_HEALTH + 1 );
+    resource_overflowed.resize( RESOURCE_HEALTH + 1 );
   }
 }
 
@@ -11846,6 +11904,7 @@ void player_collected_data_t::merge( const player_t& other_player )
   {
     resource_lost[ i ].merge( other.resource_lost[ i ] );
     resource_gained[ i ].merge( other.resource_gained[ i ] );
+    resource_overflowed[ i ].merge( other.resource_overflowed[ i ] );
   }
 
   if ( resource_timelines.size() == other.resource_timelines.size() )
@@ -12100,8 +12159,15 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost[ i ].add( p.iteration_resource_lost[ i ] );
+  }  
+  for ( size_t i = 0, end = resource_gained.size(); i < end; ++i )
+  {
     resource_gained[ i ].add( p.iteration_resource_gained[ i ] );
-  }
+  }  
+  for ( size_t i = 0, end = resource_overflowed.size(); i < end; ++i )
+  {
+    resource_overflowed[ i ].add( p.iteration_resource_overflowed[ i ] );
+  }  
 
   for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
   {
@@ -12879,8 +12945,11 @@ bool player_t::is_active() const
 
 /**
  * Perform dynamic resource regeneration
+ *
+ * The forced parameter indicates whether the resource regen would
+ * also occur in game at the same time.
  */
-void player_t::do_dynamic_regen()
+void player_t::do_dynamic_regen( bool forced )
 {
   if (sim->current_time() == last_regen)
     return;
@@ -12893,7 +12962,7 @@ void player_t::do_dynamic_regen()
     for (auto& elem : active_pets)
     {
       if (elem->resource_regeneration == regen_type::DYNAMIC)
-        elem->do_dynamic_regen();
+        elem->do_dynamic_regen( forced );
     }
   }
 }

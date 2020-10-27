@@ -225,7 +225,7 @@ bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
 
     if ( level == 0 )
     {
-      if ( stats->num_executes.mean() == 0 )
+      if ( stats->num_executes.mean() == 0  && stats->compound_amount == 0)
       {
         return false;
       }
@@ -260,8 +260,8 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
     }
     if (level == 0)
     {
-      // top-level is just abilities that were executed
-      if (s -> num_executes.mean() == 0)
+      // top-level is just abilities that were executed or did some damage
+      if (s -> num_executes.mean() == 0 && s -> compound_amount == 0)
       {
         return;
       }
@@ -620,6 +620,8 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
     // Rest of the resource summaries are printed only based on relevant resources
     range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
       root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
+      
+      root[ "resource_overflowed" ][ util::resource_type_string( r ) ] = cd.resource_overflowed[ r ];
 
       if ( r < cd.combat_end_resource.size() )
       {

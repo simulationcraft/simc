@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.0.2.36267
+// Talent tree specialization abilities, wow build 9.0.2.36294
 static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
@@ -137,7 +137,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  2,   66, 213644,      0, "Cleanse Toxins"                    , 0 },
   {  2,   66, 229976,      0, "Blessed Hammer"                    , 0 },
   {  2,   66, 231663,      0, "Judgment"                          , "Rank 4" },
-  {  2,   66, 231665,      0, "Avenger's Shield"                  , "Rank 3" },
+  {  2,   66, 231665,      0, "Avenger's Shield"                  , "Rank 2" },
   {  2,   66, 275779,  20271, "Judgment"                          , 0 },
   {  2,   66, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   66, 315921,      0, "Word of Glory"                     , "Rank 2" },

@@ -427,7 +427,7 @@ struct unholy_transfusion_t final : public priest_spell_t
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
-      dot_duration += timespan_t::from_seconds( priest().conduits.festering_transfusion->effectN( 2 ).base_value() );
+      dot_duration += priest().conduits.festering_transfusion->effectN( 2 ).time_value();
       base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
@@ -1920,9 +1920,9 @@ pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
   return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
-void priest_t::do_dynamic_regen()
+void priest_t::do_dynamic_regen( bool forced )
 {
-  player_t::do_dynamic_regen();
+  player_t::do_dynamic_regen( forced );
 }
 
 void priest_t::apply_affecting_auras( action_t& action )
@@ -2039,6 +2039,11 @@ void priest_t::create_apl_default()
   }
   def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
   def->add_action( this, "Smite" );
+}
+
+const priest_td_t* priest_t::find_target_data( const player_t* target ) const
+{
+  return _target_data[ target ];
 }
 
 /**

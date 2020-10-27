@@ -233,7 +233,11 @@ void grove_invigoration( special_effect_t& effect )
 {
   struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ) {}
+    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+    {
+      // TODO: The max stacks in spell data are wrong
+      set_max_stack( 10 );
+    }
 
     bool trigger( int, double v, double c, timespan_t d ) override
     {
@@ -243,7 +247,7 @@ void grove_invigoration( special_effect_t& effect )
       if ( !anima_stacks )
         return false;
 
-      anima_stacks = std::min( anima_stacks, as<int>( data().max_stacks() ) );
+      anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
       player->buffs.redirected_anima_stacks->decrement( anima_stacks );
 
       return stat_buff_t::trigger( anima_stacks, v, c, d );
@@ -391,8 +395,8 @@ void dauntless_duelist( special_effect_t& effect )
       if ( p->sim->event_mgr.canceled )
         return;
 
-      auto td = p->get_target_data( t );
-      if ( td->debuff.adversary->check() )
+      auto td = p->find_target_data( t );
+      if ( td && td->debuff.adversary->check() )
         cb->activate();
     } );
   } );
@@ -425,11 +429,6 @@ void thrill_seeker( special_effect_t& effect )
   } );
 
   // TODO: implement gains from killing blows
-}
-
-void refined_palate( special_effect_t& effect )
-{
-
 }
 
 void soothing_shade( special_effect_t& effect )
@@ -472,7 +471,7 @@ void built_for_war( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
-      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
@@ -999,8 +998,7 @@ void register_special_effects()
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
-  register_soulbind_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );
+  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );

@@ -80,7 +80,7 @@ public:
   // Returns either mind blasts action cooldown, or when dark thoughts is up a dummy cooldown
   cooldown_t* active_cooldown() const
   {
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thought->check() )
     {
       return dark_thought_dummy_cooldown;
     }
@@ -106,7 +106,7 @@ public:
   {
     if ( only_cwc )
     {
-      if ( !priest().buffs.dark_thoughts->check() )
+      if ( !priest().buffs.dark_thought->check() )
         return false;
       if ( player->channeling == nullptr )
         return false;
@@ -181,7 +181,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thought->check() )
     {
       return timespan_t::zero();
     }
@@ -203,8 +203,8 @@ public:
   {
     priest().buffs.voidform->up();  // Benefit tracking
 
-    if ( priest().buffs.dark_thoughts->up() )
-      priest().buffs.dark_thoughts->decrement();
+    if ( priest().buffs.dark_thought->up() )
+      priest().buffs.dark_thought->decrement();
     else
       priest_spell_t::update_ready( cd_duration );
   }
@@ -486,7 +486,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
         // Right now in-game this is not using the spell data value
         if ( priest().bugs )
-        { 
+        {
           insanity_per_dot = 5;
         }
         double insanity_gain = dots * insanity_per_dot;
@@ -796,8 +796,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Only applied if you hard cast SW:P, Misery and Damnation do not trigger this
-    if ( casted && result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) )
     {
       if ( priest().buffs.fae_guardians->check() )
       {
@@ -829,15 +828,19 @@ struct shadow_word_pain_t final : public priest_spell_t
 // ==========================================================================
 struct unfurling_darkness_t final : public priest_spell_t
 {
-  double vampiric_touch_sp;
-
   unfurling_darkness_t( priest_t& p )
-    : priest_spell_t( "unfurling_darkness", p, p.find_talent_spell( "Unfurling Darkness" ) ),
-      vampiric_touch_sp( p.find_spell( 34914 )->effectN( 4 ).sp_coeff() )
+    : priest_spell_t( "unfurling_darkness", p, p.find_class_spell( "Vampiric Touch" ) )
   {
     background                 = true;
-    spell_power_mod.direct     = vampiric_touch_sp;
     affected_by_shadow_weaving = true;
+    energize_type              = action_energize::NONE;  // no insanity gain
+    energize_amount            = 0;
+    energize_resource          = RESOURCE_NONE;
+    ignores_automatic_mastery  = 1;
+
+    // Since we are re-using the Vampiric Touch spell disable the DoT
+    dot_duration       = timespan_t::from_seconds( 0 );
+    base_td_multiplier = spell_power_mod.tick = 0;
   }
 };
 
@@ -861,6 +864,9 @@ struct vampiric_touch_t final : public priest_spell_t
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
+    // Disable initial hit damage, only Unfurling Darkness uses it
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+
     if ( priest().talents.misery->ok() && casted )
     {
       child_swp             = new shadow_word_pain_t( priest(), false );
@@ -872,6 +878,7 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( priest().talents.unfurling_darkness->ok() )
     {
       child_ud = new unfurling_darkness_t( priest() );
+      add_child( child_ud );
     }
   }
 
@@ -893,19 +900,9 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
-
     trigger_heal( s );
 
-    if ( child_swp )
-    {
-      child_swp->target = s->target;
-      child_swp->execute();
-    }
-
-    // TODO: check if talbadars_stratagem can proc this
-    // Damnation does not proc Unfurling Darkness, but can generate it
-    if ( priest().buffs.unfurling_darkness->check() && casted )
+    if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -920,6 +917,15 @@ struct vampiric_touch_t final : public priest_spell_t
         priest().buffs.unfurling_darkness_cd->trigger();
       }
     }
+
+    // Trigger SW:P after UD since it does not benefit from the automatic Mastery benefit
+    if ( child_swp )
+    {
+      child_swp->target = s->target;
+      child_swp->execute();
+    }
+
+    priest_spell_t::impact( s );
   }
 
   timespan_t execute_time() const override
@@ -1456,12 +1462,12 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
+    child_dp->set_target( target );
+    child_dp->execute();
+
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-
-    child_dp->set_target( target );
-    child_dp->execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1559,12 +1565,6 @@ struct shadow_crash_t final : public priest_spell_t
       td.buffs.shadow_crash_debuff->trigger();
     }
   }
-
-  timespan_t travel_time() const override
-  {
-    // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
 };
 
 // ==========================================================================
@@ -1599,7 +1599,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
     const priest_td_t* td = find_td( t );
 
@@ -1631,7 +1631,7 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.find_talent_spell( "Damnation" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
       child_vt( new vampiric_touch_t( priest(), false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
@@ -1754,14 +1754,10 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 // Dark Thoughts
 // ==========================================================================
-struct dark_thoughts_t final : public priest_buff_t<buff_t>
+struct dark_thought_t final : public priest_buff_t<buff_t>
 {
-  dark_thoughts_t( priest_t& p ) : base_t( p, "dark_thoughts", p.find_specialization_spell( "Dark Thoughts" ) )
+  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.find_spell( 341207 ) )
   {
-    // Spell data does not contain information about the spell, must manually set.
-    this->set_max_stack( 5 );
-    this->set_duration( timespan_t::from_seconds( 6 ) );
-    this->set_refresh_behavior( buff_refresh_behavior::DURATION );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
   }
@@ -1946,7 +1942,7 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.dark_thoughts    = make_buff<buffs::dark_thoughts_t>( *this );
+  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
 
   // Talents
   buffs.void_torrent           = make_buff( this, "void_torrent", find_talent_spell( "Void Torrent" ) );
@@ -2213,11 +2209,11 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
-  cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
-  cds->add_action( this, covenant.mindgames, "Mindgames",
+  cds->add_action( this, covenant.fae_guardians, "fae_guardians" );
+  cds->add_action( this, covenant.mindgames, "mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
-  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>20" );
-  cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
+  cds->add_action( this, covenant.unholy_nova, "unholy_nova", "if=raid_event.adds.in>20" );
+  cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
                    "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
                    "buff.voidform.up&talent.searing_nightmare.enabled)" );
@@ -2298,12 +2294,12 @@ void priest_t::generate_apl_shadow()
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,"
+      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thought.up,chain=1,interrupt_immediate=1,"
       "interrupt_if=ticks>=2",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
-                    "if=buff.dark_thoughts.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
+                    "if=buff.dark_thought.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );

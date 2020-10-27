@@ -492,6 +492,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     cooldown(),
     rppm( nullptr ),
     _max_stack( -1 ),
+    _initial_stack( -1 ),
     trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
@@ -594,7 +595,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   if ( player && !player->cache.active )
     requires_invalidation = false;
 
+  // These are initialized at -1 then set to their spell data values here (along with error checking)
   set_max_stack( _max_stack );
+  set_initial_stack( _initial_stack );
 
   update_trigger_calculations();
 }
@@ -699,7 +702,7 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
 
 buff_t* buff_t::set_max_stack( int max_stack )
 {
-  // Set Max stacks
+  // _max_stack is initialized at -1, then set_max_stack is called in the buff_t base constructor
   if ( max_stack == -1 )
   {
     if ( data().ok() )
@@ -732,11 +735,10 @@ buff_t* buff_t::set_max_stack( int max_stack )
     sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
     _max_stack = 1;
   }
-
-  if ( _max_stack > 999 )
+  else if ( _max_stack > 999 )
   {
-    _max_stack = 999;
     sim->error( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
+    _max_stack = 999;
   }
 
   stack_react_time.resize( _max_stack + 1 );
@@ -752,6 +754,57 @@ buff_t* buff_t::set_max_stack( int max_stack )
 buff_t* buff_t::modify_max_stack( int max_stack )
 {
   set_max_stack( _max_stack + max_stack );
+  return this;
+}
+
+buff_t* buff_t::set_initial_stack( int initial_stack )
+{
+  // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
+  if ( initial_stack == -1 )
+  {
+    // NOTE: buffs can have negative stacks in the data, which can indicate special handling. We do NOT guard for it
+    // here, and instead will assert() out if such a buff is trigger'd/execute'd without explicitly setting a positive
+    // stack in the buff construction or explicitly passing a stack amount.
+    if ( data().ok() && data().initial_stacks() != 0 )
+    {
+      _initial_stack = data().initial_stacks();
+    }
+    else
+    {
+      _initial_stack = 1;
+    }
+  }
+  else
+  {
+    _initial_stack = initial_stack;
+
+    if ( _initial_stack < 1 )
+    {
+      sim->error( "{} initialized with initial_stack < 1 ({}). Setting initial_stack to 1.\n", *this, _initial_stack );
+      _initial_stack = 1;
+    }
+  }
+
+  if ( _initial_stack > 999 )
+  {
+    sim->error( "{} initialized with initial_stack > 999. Setting initial_stack to 999.\n", *this );
+    _initial_stack = 999;
+  }
+
+  if ( _initial_stack > _max_stack )
+  {
+    sim->print_debug( "{} initalized with initial_stack ({}) > max_stack ({}). Setting max_stack to {}.\n", *this,
+                      _initial_stack, _max_stack, _initial_stack );
+    set_max_stack( _initial_stack );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::modify_initial_stack( int initial_stack )
+{
+  assert( _initial_stack > 0 && "Cannot modify invalid initial stack. Use set_initial_stack() with a postive value.");
+  set_initial_stack( _initial_stack + initial_stack );
   return this;
 }
 
@@ -1139,9 +1192,14 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
+      case P_STACK:
+        modify_initial_stack( as<int>( effect.base_value() ) );
+        sim->print_debug( "{} initial stacks modified by {} to {}", *this, effect.base_value(), initial_stack() );
+        break;
+
       case P_MAX_STACKS:
         modify_max_stack( as<int>( effect.base_value() ) );
-        sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
+        sim->print_debug( "{} maximum stacks modified by {} to {}", *this, effect.base_value(), max_stack() );
         break;
 
       case P_EFFECT_1:
@@ -1536,6 +1594,13 @@ bool buff_t::remains_lt( timespan_t time ) const
   return ( time_remaining < time );
 }
 
+int buff_t::_resolve_stacks( int stacks )
+{
+  int ret = stacks == -1 ? ( reverse ? _max_stack : _initial_stack ) : stacks;
+  assert( ret > 0 && "Stacks must be positive. set_initial_stack() must be used if spell data is negative." );
+  return ret;
+}
+
 bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration )
 {
   double chance = default_chance;
@@ -1546,7 +1611,7 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
 
 bool buff_t::trigger( timespan_t duration )
 {
-  return trigger( 1, duration );
+  return trigger( -1, duration );
 }
 
 bool buff_t::trigger( int stacks, timespan_t duration )
@@ -1597,13 +1662,21 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
       return false;
   }
 
+  // In-game, procs that happen "close to eachother" are usually delayed into the same time slot. We roughly model this
+  // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the
+  // first delayed proc will happen.
   if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
        sim->default_aura_delay > timespan_t::zero() )
   {
-    // In-game, procs that happen "close to eachother" are usually delayed into the
-    // same time slot. We roughly model this by allowing procs that happen during the
-    // buff's already existing delay period to trigger at the same time as the first
-    // delayed proc will happen.
+    // Since we're storing stacks as value in buff_delay_t, _resolve default values first
+    if ( reverse && current_stack > 0 )
+    {
+      // Expected behavior of a default value (-1) call on an existing reversible buff is `decrement( 1 )`
+      stacks = stacks == -1 ? 1 : stacks;
+    }
+    else
+      stacks = _resolve_stacks( stacks );
+
     if ( delay )
     {
       buff_delay_t& d = *static_cast<buff_delay_t*>( delay );
@@ -1614,7 +1687,10 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
       delay = make_event<buff_delay_t>( *sim, this, stacks, value, duration );
   }
   else
+  {
+    // We can pass stacks value as-is to execute() to have it _resolve'd there
     execute( stacks, value, duration );
+  }
 
   return true;
 }
@@ -1635,17 +1711,22 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
     expansion::bfa::trigger_leyshocks_grand_compilation( data().id(), source );
   }
 
-  // If the buff has a tick event ongoing, the rules change a bit for ongoing
-  // ticking buffs, we treat executes as another "normal trigger", which
-  // refreshes the buff
+  // For cases where the buff trigger hasn't been processed through buff_delay_t, or where buff_t::execute() is called
+  // directly, default value remains -1, so it needs to get _resolve'd
+
+  // If the buff has a tick event ongoing, the rules change a bit for ongoing ticking buffs, we treat executes as
+  // another "normal trigger", which refreshes the buff
   if ( tick_event )
-    increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
+    increment( _resolve_stacks( stacks ), value, duration );
   else
   {
     if ( reverse && current_stack > 0 )
-      decrement( stacks, value );
+    {
+      // Expected behavior of a default value (-1) call on an existing reversible buff is `decrement( 1 )`
+      decrement( stacks == -1 ? 1 : stacks, value );
+    }
     else
-      increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
+      increment( _resolve_stacks( stacks ), value, duration );
   }
 
   // new buff cooldown impl
@@ -1817,7 +1898,10 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   start_count++;
 
   if ( player && change_regen_rate )
-    player->do_dynamic_regen();
+  {
+    if ( player->resource_regeneration == regen_type::DYNAMIC )
+      player->do_dynamic_regen( true );
+  }
   else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
@@ -1830,7 +1914,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
       {
         if ( actor->regen_caches[ elem ] )
         {
-          actor->do_dynamic_regen();
+          actor->do_dynamic_regen( true );
           break;
         }
       }
@@ -2162,7 +2246,10 @@ void buff_t::expire( timespan_t delay )
   stack_uptime[ current_stack ].update( false, sim->current_time() );
 
   if ( player && change_regen_rate )
-    player->do_dynamic_regen();
+  {
+    if ( player->resource_regeneration == regen_type::DYNAMIC )
+      player->do_dynamic_regen( true );
+  }
   else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
@@ -2175,7 +2262,7 @@ void buff_t::expire( timespan_t delay )
       {
         if ( actor->regen_caches[ elem ] )
         {
-          actor->do_dynamic_regen();
+          actor->do_dynamic_regen( true );
           break;
         }
       }
@@ -2231,6 +2318,13 @@ void buff_t::expire( timespan_t delay )
 
   if ( player )
     player->trigger_ready();
+}
+
+void buff_t::cancel()
+{
+  expire();
+  event_t::cancel( expiration_delay );
+  event_t::cancel( delay );
 }
 
 void buff_t::predict()

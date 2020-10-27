@@ -236,6 +236,8 @@ struct immolate_t : public destruction_spell_t
 
     can_havoc = true;
 
+    //TODO: Check immolate interactions with destro mastery
+
     // All of the DoT data for Immolate is in spell 157736
     base_tick_time       = dmg_spell->effectN( 1 ).period();
     dot_duration         = dmg_spell->duration();
@@ -261,6 +263,30 @@ struct immolate_t : public destruction_spell_t
     // BFA - Trinket
     // For some reason this triggers on every tick
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    destruction_spell_t::last_tick( d );
+
+    td( d->target )->debuffs_combusting_engine->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    td( s->target )->debuffs_combusting_engine->expire();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override 
+  {
+    double m = destruction_spell_t::composite_ta_multiplier( s );
+
+    if ( td( s->target )->debuffs_combusting_engine->check() )
+      m *= 1.0 + td( s->target )->debuffs_combusting_engine->check_stack_value();
+
+    return m;
   }
 };
 
@@ -301,6 +327,10 @@ struct conflagrate_t : public destruction_spell_t
 
     if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
       td( s->target )->debuffs_roaring_blaze->trigger();
+
+    //TODO: Check if combusting engine stacks up when there is no immolate on the target (currently implemented as NO)
+    if ( p()->conduit.combusting_engine.value() > 0 && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+      td( s->target )->debuffs_combusting_engine->increment( 1, td( s->target)->debuffs_combusting_engine->default_value );
   }
 
   void execute() override
@@ -425,6 +455,15 @@ struct incinerate_fnb_t : public destruction_spell_t
 
     return m;
   }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+
+    return m;
+  }
 };
 
 struct incinerate_t : public destruction_spell_t
@@ -545,7 +584,7 @@ struct incinerate_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }
@@ -706,17 +745,6 @@ struct chaos_bolt_t : public destruction_spell_t
 
     return state->result_total;
   }
-
-  void consume_resource() override
-  {
-    destruction_spell_t::consume_resource();
-
-    if ( p()->legendary.mark_of_borrowed_power->ok() )
-    {
-      double chance = p()->legendary.mark_of_borrowed_power->effectN( 3 ).percent();
-      make_event<borrowed_power_event_t>( *p()->sim, p(), as<int>( last_resource_cost ), chance );
-    }
-  }
 };
 
 struct infernal_awakening_t : public destruction_spell_t
@@ -738,7 +766,7 @@ struct summon_infernal_t : public destruction_spell_t
   timespan_t infernal_duration;
 
   summon_infernal_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "Summon_Infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
+    : destruction_spell_t( "summon_infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
   {
     parse_options( options_str );
 
@@ -747,6 +775,7 @@ struct summon_infernal_t : public destruction_spell_t
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
+
     // BFA - Azerite
     if ( p->azerite.crashing_chaos.ok() )
       cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
@@ -782,6 +811,11 @@ struct summon_infernal_t : public destruction_spell_t
       p()->buffs.crashing_chaos_vop->expire();
       p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
     }
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 

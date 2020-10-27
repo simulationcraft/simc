@@ -99,6 +99,8 @@ public:
   bool channel_interrupt();
 
   friend void format_to( const dot_t&, fmt::format_context::iterator );
+
+  void reschedule_tick();
 private:
   void schedule_tick();
   void start(timespan_t duration);

@@ -111,6 +111,7 @@ double spell_data_t::get_field( util::string_view field ) const
 // ==========================================================================
 
 static constexpr auto spelleffect_data_fields = std::make_tuple(
+  data_field( "sub_type",                &spelleffect_data_t::_subtype ),
   data_field( "coefficient",             &spelleffect_data_t::_m_coeff ),
   data_field( "delta",                   &spelleffect_data_t::_m_delta ),
   data_field( "bonus",                   &spelleffect_data_t::_m_unk ),

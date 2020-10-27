@@ -327,6 +327,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  34, "Channeled"                         },
   {  37, "Does not break stealth"            },
   {  38, "Channeled"                         },
+  {  60, "Don't display in aura bar"         },
   {  93, "Cannot crit"                       },
   {  95, "Food buff"                         },
   { 105, "Not a proc"                        },
@@ -577,6 +578,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 142, "Modify Base Resistance"                       },
   { 143, "Modify Cooldown Recharge Rate"                },
   { 144, "Reduce Fall Damage"                           },
+  { 148, "Modify Cooldown Recharge Rate% (Category)"    },
   { 149, "Modify Casting Pushback"                      },
   { 150, "Modify Block Effectiveness"                   },
   { 152, "Modify Aggro Distance"                        },
@@ -626,6 +628,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 271, "Modify Damage Taken% from Caster's Spells"    },
   { 275, "Modify Stance Mask"                           },
   { 283, "Modify Healing Taken% from Caster's Spells"   },
+  { 286, "Modify Cooldown Recharge Rate%"               },
   { 290, "Modify Critical Strike%"                      },
   { 291, "Modify Experience Gained from Quests"         },
   { 301, "Absorb Healing"                               },
@@ -675,10 +678,6 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
-} );
-
-static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
-  341, 411, 453, 454, 457
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1116,7 +1115,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && _category_effect_subtypes.contains( e -> subtype() ) )
+  if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
     if ( affected_spells.size() > 0 )

@@ -139,7 +139,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> dark_thoughts;
+    propagate_const<buff_t*> dark_thought;
 
     // Azerite Powers
     // Shadow
@@ -439,6 +439,7 @@ public:
     azerite_power_t sacred_flame;
     // Disc
     azerite_power_t depth_of_the_shadows;
+    azerite_power_t contemptuous_homily;
     // Shadow
     azerite_power_t chorus_of_insanity;
     azerite_power_t death_throes;
@@ -544,11 +545,12 @@ public:
   void init_action_list() override;
   void combat_begin() override;
   void init_rng() override;
+  const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
   void vision_of_perfection_proc() override;
-  void do_dynamic_regen() override;
+  void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
   void invalidate_cache( cache_e ) override;
 
@@ -603,10 +605,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
-  const priest_td_t* find_target_data( const player_t* target ) const
-  {
-    return _target_data[ target ];
-  }
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1320,11 +1318,13 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  bool ignores_automatic_mastery;
   unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
       mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
   {
     weapon_multiplier = 0.0;
@@ -1404,7 +1404,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      tdm *= priest().shadow_weaving_multiplier( t, id );
+      // Guarding against Unfurling Darkness, it does not get the mastery benefit
+      unsigned int spell_id = id;
+      if ( ignores_automatic_mastery )
+      {
+        sim->print_debug( "{} {} cast does not benefit from Mastery automatically.", *player, name_str );
+        spell_id = 1;
+      }
+
+      tdm *= priest().shadow_weaving_multiplier( t, spell_id );
     }
 
     return tdm;
@@ -1467,7 +1475,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
                           dark_thoughts_proc_percent * dots, dots );
       }
-      priest().buffs.dark_thoughts->trigger();
+      priest().buffs.dark_thought->trigger();
       proc->occur();
     }
   }

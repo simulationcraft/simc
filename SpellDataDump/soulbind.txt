@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.36267 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -17,8 +17,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=805487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for ${$342761d*$<mod>} sec that increase your Haste by $342774s1% while you stand with them.
-Variables        : $mod=$?a137005[${0.5}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
+Description      : $?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for ${$342761d*$<mod>}.1 sec that increase your Haste by $342774s1% while you stand with them.
+Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Social Butterfly (id=319210) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -211,7 +211,6 @@ Description      : When a nearby ally gains temporary increased movement speed, 
 
 Name             : Wasteland Propriety (id=319983) [Passive] 
 Covenant         : Venthyr
-Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -301,15 +300,15 @@ Effects          :
 #1 (id=807855)   : Apply Aura (6) | Proc Trigger Spell (42): Paralytic Poison
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Target: Self (1)
 Description      : Your interrupts apply Niya's Paralytic Poison to your target, dealing ${$<pointsA>*$321519d} Nature damage over $321519d. Targets with Niya's Paralytic Poison take an additional $<pointsB> Nature damage if interrupted once more.
-Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}
-$pointsB=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}
+Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
+$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden] 
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
-Proc Chance      : 100%
-Real PPM         : 3
+Internal Cooldown: 15 seconds
+Proc Chance      : 50%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -395,6 +394,7 @@ Tooltip          : $spelldesc322721
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
 Covenant         : Necrolord
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -411,7 +411,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=833121)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Using Fleshcraft with nearby corpses derives a benefit from a corpse, differing based on the creature's type.
+Description      : Using Fleshcraft with nearby corpses consumes their essence completely, granting a benefit based on the creature's type.
 
 Name             : Kevin's Keyring (id=323079) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -521,7 +521,6 @@ Effects          :
 Description      : When reduced below $m1% health, Ooz courses over you, granting you a shield for $323385m2% of your maximum health for $323385d. May only occur once per $323536d.
 
 Name             : Ultimate Form (id=323095) [Passive, Hidden] 
-Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1033,8 +1032,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=821660)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=825671)   : Unknown(90)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 168885 | Target: Self (1)
 Description      : Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
 
 Name             : Ever Forward (id=328258) [Passive, Hidden] 
@@ -1137,10 +1134,10 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=820394)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>} sec and occasionally expels Sorrowful Memories. 
+Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. 
 
-Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>} sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
-Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${1}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
+Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
+Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1194,7 +1191,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=823160)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.
+Description      : Chance to critical strike is increased by $330511s1% for every nearby enemy or ally, up to $330511u%.
 
 Name             : Bearer's Pursuit (id=329779) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1238,7 +1235,7 @@ Effects          :
 #1 (id=823165)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=839991)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.
 
 Name             : Cleansing Rites (id=329784) [Passive, Hidden] 
@@ -1366,22 +1363,22 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=825879)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 958 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 958 (Label) | Target: Self (1)
                    Affected Spells (Label): Flask of the Currents (251836), Flask of Endless Fathoms (251837), Flask of the Vast Horizon (251838), Flask of the Undertow (251839), Greater Flask of the Currents (298836), Greater Flask of Endless Fathoms (298837), Greater Flask of the Vast Horizon (298839), Greater Flask of the Undertow (298841), Eternal Flask (307166), Spectral Flask of Power (307185), Spectral Stamina Flask (307187)
 #2 (id=826350)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 959 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 959 (Label) | Target: Self (1)
                    Affected Spells (Label): Well Fed (257408), Well Fed (257410), Well Fed (257413), Well Fed (257415), Well Fed (257418), Well Fed (257420), Well Fed (257422), Well Fed (257424), Well Fed (259448), Well Fed (259449), Well Fed (259452), Well Fed (259453), Well Fed (259454), Well Fed (259455), Well Fed (259456), Well Fed (259457), Well Fed (288074), Well Fed (288075), Well Fed (290467), Well Fed (290468), Well Fed (290469), Well Fed (297034), Well Fed (297035), Well Fed (297037), Well Fed (297039), Well Fed (297040), Well Fed (297116), Well Fed (297117), Well Fed (297118), Well Fed (297119), Well Fed (308430), Well Fed (308434), Well Fed (308474), Well Fed (308488), Well Fed (308504), Well Fed (308506), Well Fed (308509), Well Fed (308514), Well Fed (308520), Well Fed (308525), Well Fed (308629), Pungent Belch (308646), Well Fed (327701), Well Fed (327702), Well Fed (327704), Well Fed (327705), Well Fed (327706), Well Fed (327707), Well Fed (327708), Well Fed (327709), Well Fed (327715), Well Fed (327851), Sprint (327864), Well Fed (332915)
 #3 (id=826364)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 960 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 960 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightless Force (324184), Eternal Grace (324202), Ascended Vigor (324226), Sinful Revelation (324260), Celestial Guidance (324748)
 #4 (id=826365)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
                    Affected Spells (Label): Razorice (50401), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984)
 #5 (id=826366)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
                    Affected Spells (Label): Razorice (50401), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984)
 #6 (id=826367)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
                    Affected Spells (Label): Razorice (50401), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984)
 Description      : The benefits of Well Fed, Flask, $?a137005[weapon enchant, and Runeforge][and weapon enchant] effects are increased by $s1%.
 
@@ -1528,7 +1525,7 @@ Effects          :
 #1 (id=825940)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 332423 | Target: Self (1)
 #2 (id=840945)   : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When reduced below $s1% health, you stun nearby enemies for $332423d. This effect may only occur once every $s2 sec.
 
 Name             : Resilient Plumage (id=331725) [Passive, Hidden] 
@@ -1591,7 +1588,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ .x...... 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Cannot cancel aura (31)
+                 : Passive (6), Hidden (7), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
 #1 (id=827548)   : Apply Player/Pet Aura (202) | Proc Trigger Spell (42): Superior Tactics
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 332922 | Radius: 100 yards | Target: Self (1)
@@ -1612,7 +1609,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Tick on application (169)
 Effects          :
 #1 (id=827549)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Standing still for at least $333085d grants you $333089s1% increased Stamina, and $333089s2% increased healing done. This effect persists for ${$s1/1000} sec after you start moving.
 
 Name             : Unbreakable Body (id=332755) [Passive, Hidden] 
@@ -1777,6 +1774,7 @@ Description      : You have a chance to obtain an assortment of flavorful herbs 
 
 Name             : Soothing Shade (id=336239) [Passive] 
 Covenant         : Venthyr
+Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
 Internal Cooldown: 20 seconds
@@ -1813,9 +1811,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=833361)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834395)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The effects of combat potions last $s1% to $s2% longer.
 
 Name             : Token of Appreciation (id=336245) [Passive] 
@@ -1839,7 +1837,7 @@ Effects          :
 #1 (id=833363)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Grant a shield that absorbs $<points> damage to allies who aid you with healing or beneficial magic effects. You will only shield each ally once every $337471d.
-Variables        : $points=${$cond($gt($SP,$AP),$SP*1.0,$AP*1.0)*(1+$@versadmg)}
+Variables        : $points=${$cond($gt($SP,$AP),$SP*1.5,$AP*1.5)*(1+$@versadmg)}
 
 Name             : Life of the Party (id=336247) [Passive] 
 Covenant         : Venthyr
@@ -1956,8 +1954,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=843209)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=843210)   : Unknown(90)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 172708 | Target: Self (1)
 Description      : While in Soulshape, you regenerate $342309s% of your maximum health every $342309t sec.
 
 

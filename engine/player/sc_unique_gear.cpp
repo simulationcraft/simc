@@ -396,7 +396,7 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
       tick_may_crit = false;
     }
 
-    double target_armor( player_t* ) const override
+    double composite_target_armor( player_t* ) const override
     { return 0.0; }
   };
 
@@ -2551,7 +2551,7 @@ struct cleave_t : public T
     return tl.size();
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 

@@ -319,7 +319,7 @@ struct player_t : public actor_t
   timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
-  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
+  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained, iteration_resource_overflowed;
   double rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
@@ -526,6 +526,7 @@ struct player_t : public actor_t
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
+    buff_t* echo_of_eonar;               // passive self buff
 
     // 9.0 Trinkets
     buff_t* overflowing_anima_prison;  // needed to allow usage of buff expr even when not equipped
@@ -939,6 +940,7 @@ public:
   virtual double composite_player_target_crit_chance( player_t* target ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
+  virtual double composite_player_target_armor( player_t* target ) const;
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double temporary_movement_modifier() const;
   virtual double passive_movement_modifier() const;
@@ -1064,7 +1066,7 @@ public:
                                   cache::behavior_e /* behavior */ = cache::players() )
   {}
 
-  virtual void do_dynamic_regen();
+  virtual void do_dynamic_regen( bool forced = false );
 
   /**
    * Returns owner if available, otherwise the player itself.
@@ -1079,6 +1081,9 @@ public:
   virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
+  virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
+  { return nullptr; }
+
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 

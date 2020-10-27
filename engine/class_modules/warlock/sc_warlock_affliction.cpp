@@ -531,7 +531,7 @@ struct seed_of_corruption_t : public affliction_spell_t
     hasted_ticks   = false;
     add_child( explosion );
     if ( p->talents.sow_the_seeds->ok() )
-      aoe = 2;
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -609,6 +609,7 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double mult = 0.0;
         auto td = this->td( target );
+
         if ( td->dots_agony->is_ticking() )
           mult += 1.0;
 
@@ -624,15 +625,18 @@ struct malefic_rapture_t : public affliction_spell_t
         if ( td->dots_phantom_singularity->is_ticking() )
           mult += 1.0;
 
+        if ( td->dots_soul_rot->is_ticking() )
+          mult += 1.0;
+
         if ( td->dots_siphon_life->is_ticking() )
           mult += 1.0;
 
         if ( td->dots_scouring_tithe->is_ticking() )
           mult += 1.0;
 
-        // TODO:
-        // Impending catastrophe
-        // Soul Rot
+        if ( td->dots_impending_catastrophe->is_ticking() )
+          mult += 1.0;
+
         return mult;
       }
 
@@ -674,18 +678,6 @@ struct malefic_rapture_t : public affliction_spell_t
       add_child( impact_action );
 
     }
-
-    void consume_resource() override
-    {
-      affliction_spell_t::consume_resource();
-
-      if ( p()->legendary.mark_of_borrowed_power->ok() )
-      {
-        double chance = p()->legendary.mark_of_borrowed_power->effectN(1).percent();
-        make_event<borrowed_power_event_t>(*p()->sim, p(), as<int>(last_resource_cost), chance);
-      }
-    }
-
 };
 
 // Talents

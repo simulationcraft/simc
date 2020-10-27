@@ -593,7 +593,7 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
     {
       may_block = true;
     }
-    double target_armor( player_t* ) const override
+    double composite_target_armor( player_t* ) const override
     { return 0.0; }
   };
 
@@ -1915,7 +1915,8 @@ struct shadow_blade_t : public proc_spell_t
   {
     double ctm = proc_spell_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + player -> get_target_data( target ) -> debuff.shadow_blades -> check_stack_value();
+    if ( auto td = player -> find_target_data( target ) )
+      ctm *= 1.0 + td -> debuff.shadow_blades -> check_stack_value();
 
     return ctm;
   }
@@ -2669,7 +2670,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     if ( trigger_state -> result_amount <= 0 )
       return;
 
-    actor_target_data_t* td = effect.player -> get_target_data( trigger_state -> target );
+    const actor_target_data_t* td = effect.player -> find_target_data( trigger_state -> target );
 
     if ( td && td -> debuff.brutal_haymaker -> check() )
       accumulator -> damage += trigger_state -> result_amount * multiplier;
@@ -5004,7 +5005,7 @@ struct spontaneous_appendages_t: public proc_spell_t
       effect.item )
   {}
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -5568,7 +5569,7 @@ struct legion_potion_damage_t : public T
     this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 

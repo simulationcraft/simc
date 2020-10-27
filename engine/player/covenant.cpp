@@ -436,6 +436,14 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
     {
       return expr_t::create_constant( "conduit_rank", as<double>( conduit_ability.rank() ) );
     }
+    else if ( util::str_compare_ci( expr_str[ 2 ], "value" ) )
+    {
+      return expr_t::create_constant( "conduit_value", as<double>( conduit_ability.value() ) );
+    }
+    else if ( util::str_compare_ci( expr_str[ 2 ], "time_value" ) )
+    {
+      return expr_t::create_constant( "conduit_time_value", as<double>( conduit_ability.time_value().total_seconds() ) );
+    }
   }
   else if ( util::str_compare_ci( expr_str[ 0 ], "soulbind" ) )
   {

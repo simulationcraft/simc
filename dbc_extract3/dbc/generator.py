@@ -1290,6 +1290,9 @@ class SpellDataGenerator(DataGenerator):
             ( 339538, 0 ),          # TV echo
             ( 327510, 0 ),          # Shining Light free WoG
             ( 182104, 0 ),          # Shining Light stacks 1-4
+            ( 340147, 0 ),          # Royal Decree
+            ( 339119, 0 ),          # Golden Path
+            ( 340193, 0 ),          # Righteous Might heal
         ),
 
         # Hunter:
@@ -1374,6 +1377,7 @@ class SpellDataGenerator(DataGenerator):
             ( 343173, 0 ),          # Premeditation buff
             ( 319190, 0 ),          # Shadow Vault shadow damage spell
             ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
+            ( 185422, 0 ),          # Shadow Dance buff spell
         ),
 
         # Priest:
@@ -1398,6 +1402,14 @@ class SpellDataGenerator(DataGenerator):
             ( 346111, 0 ),          # Shadow Weaving Mastery spell
             ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
             ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
+            ( 341207, 0 ),          # Dark Thoughts Buff
+            # Holy Priest
+            ( 196809, 5 ),           # Healing Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Dazzling Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Searing Light (Divine Image legendary pet spell)
+            ( 196812, 5 ),           # Light Eruption (Divine Image legendary pet spell)
+            ( 196813, 5 ),           # Blessed Light (Divine Image legendary pet spell)
+            ( 196816, 5 ),           # Tranquil Light (Divine Image legendary pet spell)
         ),
 
         # Death Knight:
@@ -1595,7 +1607,8 @@ class SpellDataGenerator(DataGenerator):
           ( 266087, 3 ),    # Rain of Chaos Buff
           ( 339784, 2 ),    # Tyrant's Soul Buff
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
-          ( 342997, 2 )     # Grim Inquisitor's Dread Calling Buff 2
+          ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
+          ( 339986, 3 )     # Hidden Combusting Engine Debuff
         ),
 
         # Monk:
@@ -1615,6 +1628,7 @@ class SpellDataGenerator(DataGenerator):
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
+          ( 325092, 1 ), # Purified Chi
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -1765,6 +1779,7 @@ class SpellDataGenerator(DataGenerator):
         (
           # General
           ( 225102, 0 ), # Fel Eruption damage
+          ( 339229, 0 ), # Serrated Glaive conduit debuff
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate
@@ -1783,7 +1798,7 @@ class SpellDataGenerator(DataGenerator):
           ( 333105, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption aura
           ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption damage trigger
           ( 333120, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption heal
-          ( 339229, 0 ), # Serrated Glaive conduit debuff
+          ( 337567, 1 ), # Chaotic Blades legendary buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -3805,6 +3820,11 @@ class ClientDataVersionGenerator(DataGenerator):
         self._out.write('#define {} "{}"\n'.format(
             self.format_str('CLIENT_DATA_WOW_VERSION').upper(),
             self._options.build))
+
+        self._out.write('#define {} "{}"\n'.format(
+            self.format_str('SIMC_WOW_VERSION').upper(),
+            '{}{}{}'.format(self._options.build.expansion(), self._options.build.patch(),
+                self._options.build.minor())))
 
         if self._options.hotfix_file:
             self._out.write('\n// Hotfix data versioning information\n\n')

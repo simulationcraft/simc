@@ -1125,14 +1125,16 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   if ( !weapon || weapon_multiplier <= 0 )
     return 0;
 
-  double dmg              = sim->averaged_range( weapon->min_dmg, weapon->max_dmg ) + weapon->bonus_dmg;
+  // The weapon damage roll (and its bonus damage) is affected by attak power modifiers just like regular attack power
+  double capm             = player -> composite_attack_power_multiplier();
+  double dmg              = capm * ( sim->averaged_range( weapon->min_dmg, weapon->max_dmg ) + weapon->bonus_dmg );
   timespan_t weapon_speed = normalize_weapon_speed ? weapon->get_normalized_speed() : weapon->swing_time;
   double power_damage     = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg        = dmg + power_damage;
 
-  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} "
+  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} multiplier={}"
       "speed={} power_damage={} ap={}",
-      *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg,
+      *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm,
       weapon_speed, power_damage, attack_power );
 
   return total_dmg;
@@ -1334,11 +1336,6 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
   return state->result_total;
 }
 
-double action_t::target_armor(player_t* t) const
-{
-  return t->cache.armor();
-}
-
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
 
@@ -1359,6 +1356,11 @@ double action_t::composite_spell_power() const
   }
 
   return spell_power;
+}
+
+double action_t::composite_target_armor( player_t* target ) const
+{
+  return player->composite_player_target_armor( target );
 }
 
 double action_t::composite_target_crit_chance( player_t* target ) const
@@ -1620,7 +1622,7 @@ void action_t::execute()
 
   if ( player->resource_regeneration == regen_type::DYNAMIC)
   {
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
   }
 
   update_ready();  // Based on testing with warrior mechanics, Blizz updates cooldowns before consuming resources.
@@ -1968,6 +1970,11 @@ void action_t::schedule_execute( action_state_t* execute_state )
         player->off_hand_attack->execute_event->reschedule( time_to_next_hit );
       }
     }
+  }
+
+  if ( player->resource_regeneration == regen_type::DYNAMIC )
+  {
+    player->do_dynamic_regen( true );
   }
 }
 
@@ -2440,8 +2447,24 @@ void action_t::init()
     else
       player->precombat_action_list.push_back( this );
   }
-  else if ( !( background || sequence ) && action_list )
-    player->find_action_priority_list( action_list->name_str )->foreground_action_list.push_back( this );
+  else if ( action_list && action_list->name_str != "precombat" )
+  {
+    action_priority_list_t* apl = player->find_action_priority_list( action_list->name_str );
+    if ( !( background || sequence ) )
+    {
+      apl->foreground_action_list.push_back( this );
+    }
+    // Special case for disabled actions that are preceded by pool_resource,for_next=1 lines
+    // If we are skipping adding the action to the foreground_action_list above, we also need to disable the pool_resource entry
+    else if ( apl->foreground_action_list.size() > 0 &&
+              apl->foreground_action_list.back()->name_str == "pool_resource"  &&
+              util::str_in_str_ci( apl->foreground_action_list.back()->signature_str, "for_next=1" ) )
+    {
+      sim->print_debug( "{} pruning action '{}' due to action {} being disabled", *player, apl->foreground_action_list.back()->signature_str, *this );
+      apl->foreground_action_list.back()->background = true;
+      apl->foreground_action_list.pop_back();
+    }
+  }
 
   initialized = true;
 
@@ -3743,7 +3766,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_mitigation_ta_multiplier = composite_target_mitigation( state->target, get_school() );
 
   if ( flags & STATE_TGT_ARMOR )
-    state->target_armor = target_armor( state->target );
+    state->target_armor = composite_target_armor( state->target );
 }
 
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
@@ -3913,28 +3936,14 @@ void action_t::do_teleport( action_state_t* state )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  if ( !channeled )
-  {
-    // WoD Pandemic
-    // New WoD Formula: Get no malus during the last 30% of the dot.
-    return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
-  }
-  else
-  {
-    return dot->time_to_next_tick() + triggered_duration;
-  }
+  // WoD Pandemic
+  // New WoD Formula: Get no malus during the last 30% of the dot.
+  return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
-  if ( !channeled )
-  {
-    return dot->remains() <= triggered_duration * 0.3;
-  }
-  else
-  {
-    return dot->remains() <= dot->time_to_next_tick();
-  }
+  return dot->remains() <= triggered_duration * 0.3;
 }
 
 call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )
@@ -4055,7 +4064,7 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
   }
 
   if ( player->resource_regeneration == regen_type::DYNAMIC )
-    player->do_dynamic_regen();
+    player->do_dynamic_regen( true );
 
   // Consume resources
   /*
