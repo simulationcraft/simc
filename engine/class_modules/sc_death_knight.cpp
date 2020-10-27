@@ -1121,6 +1121,11 @@ public:
 
   target_specific_t<death_knight_td_t> target_data;
 
+  const death_knight_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   death_knight_td_t* get_target_data( player_t* target ) const override
   {
     death_knight_td_t*& td = target_data[ target ];
@@ -2576,6 +2581,11 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   target_specific_t<magus_td_t> target_data;
+
+  const magus_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
 
   magus_td_t* get_target_data( player_t* target ) const override
   {

@@ -2041,6 +2041,11 @@ void priest_t::create_apl_default()
   def->add_action( this, "Smite" );
 }
 
+const priest_td_t* priest_t::find_target_data( const player_t* target ) const
+{
+  return _target_data[ target ];
+}
+
 /**
  * Obtain target_data for given target.
  * Always returns non-null targetdata pointer

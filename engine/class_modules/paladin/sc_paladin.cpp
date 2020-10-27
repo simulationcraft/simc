@@ -54,6 +54,11 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   resource_regeneration = regen_type::DYNAMIC;
 }
 
+const paladin_td_t* paladin_t::find_target_data( const player_t* target ) const
+{
+  return target_data[ target ];
+}
+
 paladin_td_t* paladin_t::get_target_data( player_t* target ) const
 {
   paladin_td_t*& td = target_data[ target ];

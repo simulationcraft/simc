@@ -545,6 +545,7 @@ public:
   void init_action_list() override;
   void combat_begin() override;
   void init_rng() override;
+  const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
@@ -604,10 +605,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
-  const priest_td_t* find_target_data( const player_t* target ) const
-  {
-    return _target_data[ target ];
-  }
 
   std::string default_potion() const override;
   std::string default_flask() const override;

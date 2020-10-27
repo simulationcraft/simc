@@ -69,6 +69,11 @@ struct warlock_pet_t : public pet_t
 
   target_specific_t<warlock_pet_td_t> target_data;
 
+  const warlock_pet_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   warlock_pet_td_t* get_target_data( player_t* target ) const override
   {
     warlock_pet_td_t*& td = target_data[ target ];

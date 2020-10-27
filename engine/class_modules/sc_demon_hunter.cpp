@@ -651,6 +651,7 @@ public:
   // overridden player_t combat functions
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
   void combat_begin() override;
+  const demon_hunter_td_t* find_target_data( const player_t* target ) const override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
   void regen( timespan_t periodicity ) override;
@@ -6617,6 +6618,11 @@ std::unique_ptr<expr_t> actions::demon_hunter_sigil_t::create_sigil_expression( 
   }
 
   return {};
+}
+
+const demon_hunter_td_t* demon_hunter_t::find_target_data( const player_t* target ) const
+{
+  return _target_data[ target ];
 }
 
 /* Always returns non-null targetdata pointer
