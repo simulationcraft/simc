@@ -1539,7 +1539,10 @@ public:
   const mage_spell_state_t* cast_state( const action_state_t* s ) const
   { return debug_cast<const mage_spell_state_t*>( s ); }
 
-  mage_td_t* td( player_t* t ) const
+  const mage_td_t* find_td( const player_t* t ) const
+  { return p()->find_target_data( t ); }
+
+  mage_td_t* get_td( player_t* t )
   { return p()->get_target_data( t ); }
 
   action_state_t* new_state() override
@@ -1642,7 +1645,7 @@ public:
   {
     double m = spell_t::composite_target_multiplier( target );
 
-    if ( auto td = p()->target_data[ target ] )
+    if ( auto td = find_td( target ) )
     {
       // TODO: Confirm how Radiant Spark is supposed to interact with Ignite.
       // Right now in beta, the damage multiplier gets factored out when triggering Ignite.
@@ -1666,7 +1669,7 @@ public:
   // Returns all currently active frozen effects as a bitfield (see frozen_flag_e).
   virtual unsigned frozen( const action_state_t* s ) const
   {
-    const mage_td_t* td = p()->target_data[ s->target ];
+    const mage_td_t* td = find_td( s->target );
 
     if ( !td )
       return 0u;
@@ -1797,7 +1800,7 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    if ( auto td = p()->target_data[ s->target ] )
+    if ( auto td = find_td( s->target ) )
     {
       auto spark_dot = td->dots.radiant_spark;
       if ( triggers.radiant_spark && spark_dot->is_ticking() )
@@ -2405,7 +2408,7 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( triggers.bone_chilling )
         p()->buffs.bone_chilling->trigger();
 
-      if ( auto td = p()->target_data[ s->target ] )
+      if ( auto td = find_td( s->target ) )
       {
         if ( consumes_winters_chill && td->debuffs.winters_chill->check() )
         {
@@ -3737,7 +3740,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     if ( p()->state.brain_freeze_active )
     {
-      auto wc = td( s->target )->debuffs.winters_chill;
+      auto wc = get_td( s->target )->debuffs.winters_chill;
       wc->trigger( wc->max_stack() );
       for ( int i = 0; i < wc->max_stack(); i++ )
         p()->procs.winters_chill_applied->occur();
@@ -3950,7 +3953,7 @@ struct frost_nova_t : public mage_spell_t
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
       // The damage taken debuff is triggered even on targets that cannot be rooted.
-      auto debuff = td( s->target )->debuffs.grisly_icicle;
+      auto debuff = get_td( s->target )->debuffs.grisly_icicle;
       duration = debuff->buff_duration();
       debuff->trigger();
     }
@@ -4004,8 +4007,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
-      td( s->target )->debuffs.packed_ice->trigger();
+    if ( result_is_hit( s->result ) && p()->azerite.packed_ice.enabled() )
+      get_td( s->target )->debuffs.packed_ice->trigger();
   }
 };
 
@@ -4400,7 +4403,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     double da = frost_mage_spell_t::bonus_da( s );
 
-    if ( auto td = p()->target_data[ s->target ] )
+    if ( auto td = find_td( s->target ) )
     {
       double pi_bonus = td->debuffs.packed_ice->check_value();
 
@@ -4777,7 +4780,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
     if ( hit_any_target )
     {
       if ( p()->last_bomb_target && p()->last_bomb_target != target )
-        td( p()->last_bomb_target )->dots.nether_tempest->cancel();
+        get_td( p()->last_bomb_target )->dots.nether_tempest->cancel();
       p()->last_bomb_target = target;
     }
   }
@@ -5290,7 +5293,7 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      td( s->target )->debuffs.touch_of_the_magi->trigger();
+      get_td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
 };
 
@@ -5403,7 +5406,7 @@ struct mirrors_of_torment_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      td( s->target )->debuffs.mirrors_of_torment->trigger();
+      get_td( s->target )->debuffs.mirrors_of_torment->trigger();
   }
 };
 
@@ -5423,7 +5426,7 @@ struct radiant_spark_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( auto td = p()->target_data[ s->target ] )
+    if ( auto td = find_td( s->target ) )
     {
       // If Radiant Spark is refreshed, the vulnerability debuff can be
       // triggered once again. Any previous stacks of the debuff are removed.
@@ -5436,7 +5439,7 @@ struct radiant_spark_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
 
-    if ( auto td = p()->target_data[ d->target ] )
+    if ( auto td = find_td( d->target ) )
       td->debuffs.radiant_spark_vulnerability->expire();
   }
 
@@ -6906,7 +6909,7 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
-  if ( auto td = target_data[ target ] )
+  if ( auto td = find_target_data( target ) )
   {
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
