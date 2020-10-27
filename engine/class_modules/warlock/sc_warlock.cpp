@@ -1177,34 +1177,36 @@ void warlock_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  auto const sac_effect = new special_effect_t( this );
-  sac_effect->name_str = "grimoire_of_sacrifice_effect";
-  sac_effect->spell_id = 196099;
-  sac_effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
-  special_effects.push_back( sac_effect );
+  if ( talents.grimoire_of_sacrifice->ok() )
+  {
+    auto const sac_effect = new special_effect_t( this );
+    sac_effect->name_str = "grimoire_of_sacrifice_effect";
+    sac_effect->spell_id = 196099;
+    sac_effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+    special_effects.push_back( sac_effect );
 
-  auto cb = new dbc_proc_callback_t( this, *sac_effect );
+    auto cb = new dbc_proc_callback_t( this, *sac_effect );
 
-  cb->initialize();
-  cb->deactivate();
-
-  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
-      if ( new_ == 1 ) cb->activate();
-      else cb->deactivate();
-    } );
-
-  auto const syn_effect = new special_effect_t( this );
-  syn_effect->name_str = "demonic_synergy_effect";
-  syn_effect->spell_id = 337057;
-  syn_effect->execute_action = new warlock::actions::demonic_synergy_proc_t( this );
-  special_effects.push_back( syn_effect );
-
-  cb = new dbc_proc_callback_t( this, *syn_effect );
-  
-  cb->initialize();
-  
-  if ( !legendary.relic_of_demonic_synergy->ok() )
+    cb->initialize();
     cb->deactivate();
+
+    buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+        if ( new_ == 1 ) cb->activate();
+        else cb->deactivate();
+      } );
+  }
+
+  if ( legendary.relic_of_demonic_synergy->ok() )
+  {
+    auto const syn_effect = new special_effect_t( this );
+    syn_effect->name_str = "demonic_synergy_effect";
+    syn_effect->spell_id = 337057;
+    special_effects.push_back( syn_effect );
+
+    auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
+
+    cb->initialize();
+  }
 }
 
 void warlock_t::combat_begin()

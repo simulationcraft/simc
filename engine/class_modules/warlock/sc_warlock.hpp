@@ -977,22 +977,22 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
   }
 };
 
-struct demonic_synergy_proc_t : public warlock_spell_t
+struct demonic_synergy_callback_t : public dbc_proc_callback_t
 {
-  demonic_synergy_proc_t( warlock_t* p )
-    : warlock_spell_t( "demonic_synergy_proc", p, p->find_spell( 337060 ) )
+  warlock_t* owner;
+
+  demonic_synergy_callback_t( warlock_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), owner( p )
   {
-    background = true;
-    proc = true;
   }
 
-  void execute() override
+  void execute( action_t* /* a */, action_state_t* state ) override
   {
-    if ( p()->warlock_pet_list.active )
+    if ( owner->warlock_pet_list.active )
     {
-      auto pet = p()->warlock_pet_list.active;
+      auto pet = owner->warlock_pet_list.active;
       //Always set the pet's buff value using the owner's to ensure specialization value is correct
-      pet->buffs.demonic_synergy->trigger( 1, p()->buffs.demonic_synergy->default_value );
+      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
     }
   }
 };
