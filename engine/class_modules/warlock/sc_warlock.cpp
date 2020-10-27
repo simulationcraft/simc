@@ -900,6 +900,9 @@ void warlock_t::create_buffs()
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
+
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
+                              ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
 }
 
 void warlock_t::init_spells()
@@ -935,7 +938,7 @@ void warlock_t::init_spells()
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
-  legendary.mark_of_borrowed_power               = find_runeforge_legendary( "Mark of Borrowed Power" );
+  legendary.relic_of_demonic_synergy             = find_runeforge_legendary( "Relic of Demonic Synergy" );
   legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
   // Sacrolash is the only spec-specific legendary that can be used by other specs.
   legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
@@ -1175,21 +1178,36 @@ void warlock_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  auto const effect = new special_effect_t( this );
-  effect->name_str = "grimoire_of_sacrifice_effect";
-  effect->spell_id = 196099;
-  effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
-  special_effects.push_back( effect );
+  if ( talents.grimoire_of_sacrifice->ok() )
+  {
+    auto const sac_effect = new special_effect_t( this );
+    sac_effect->name_str = "grimoire_of_sacrifice_effect";
+    sac_effect->spell_id = 196099;
+    sac_effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
+    special_effects.push_back( sac_effect );
 
-  auto cb = new dbc_proc_callback_t( this, *effect );
+    auto cb = new dbc_proc_callback_t( this, *sac_effect );
 
-  cb->initialize();
-  cb->deactivate();
+    cb->initialize();
+    cb->deactivate();
 
-  buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
-      if ( new_ == 1 ) cb->activate();
-      else cb->deactivate();
-    } );
+    buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+        if ( new_ == 1 ) cb->activate();
+        else cb->deactivate();
+      } );
+  }
+
+  if ( legendary.relic_of_demonic_synergy->ok() )
+  {
+    auto const syn_effect = new special_effect_t( this );
+    syn_effect->name_str = "demonic_synergy_effect";
+    syn_effect->spell_id = 337057;
+    special_effects.push_back( syn_effect );
+
+    auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
+
+    cb->initialize();
+  }
 }
 
 void warlock_t::combat_begin()

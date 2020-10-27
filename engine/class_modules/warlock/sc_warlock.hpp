@@ -297,7 +297,7 @@ public:
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t mark_of_borrowed_power; //TODO: SL Beta - Confirm with long dummy log that the % chances have no BLP
+    item_runeforge_t relic_of_demonic_synergy; //TODO: SL Beta - Do pet and warlock procs share a single RPPM?
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
@@ -492,6 +492,7 @@ public:
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> implosive_potential;
     propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -902,6 +903,8 @@ public:
     if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
       pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
 
+    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+
     return pm;
   }
 
@@ -990,6 +993,26 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
   {
     background = true;
     proc = true;
+  }
+};
+
+struct demonic_synergy_callback_t : public dbc_proc_callback_t
+{
+  warlock_t* owner;
+
+  demonic_synergy_callback_t( warlock_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), owner( p )
+  {
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    if ( owner->warlock_pet_list.active )
+    {
+      auto pet = owner->warlock_pet_list.active;
+      //Always set the pet's buff value using the owner's to ensure specialization value is correct
+      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
+    }
   }
 };
 

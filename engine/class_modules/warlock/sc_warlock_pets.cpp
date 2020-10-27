@@ -52,6 +52,9 @@ void warlock_pet_t::create_buffs()
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                        o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
                      } );
+
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
+                              ->set_default_value( o()->legendary.relic_of_demonic_synergy->effectN( 1 ).base_value() );
 }
 
 void warlock_pet_t::init_base_stats()
@@ -93,6 +96,24 @@ void warlock_pet_t::init_action_list()
   if ( summon_stats )
     for ( size_t i = 0; i < action_list.size(); ++i )
       summon_stats->add_child( action_list[ i ]->stats );
+}
+
+void warlock_pet_t::init_special_effects()
+{
+  pet_t::init_special_effects();
+
+  if ( o()->legendary.relic_of_demonic_synergy->ok() && is_main_pet )
+  {
+    auto const syn_effect = new special_effect_t( this );
+    syn_effect->name_str = "demonic_synergy_pet_effect";
+    syn_effect->spell_id = 337057;
+    syn_effect->custom_buff = o()->buffs.demonic_synergy;
+    special_effects.push_back( syn_effect );
+
+    auto cb = new dbc_proc_callback_t( this, *syn_effect );
+
+    cb->initialize();
+  }
 }
 
 void warlock_pet_t::create_buffs_demonology()
@@ -157,6 +178,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( pet_type == PET_DREADSTALKER && o()->legendary.grim_inquisitors_dread_calling->ok() )
     m *= 1.0 + buffs.grim_inquisitors_dread_calling->check_value();
 
+  m *= 1.0 + buffs.demonic_synergy->check_stack_value();
+
   return m;
 }
 
@@ -206,6 +229,8 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELHUNTER, name != "felhunter" )
 {
   action_list_str = "shadow_bite";
+
+  is_main_pet = true;
 }
 
 void felhunter_pet_t::init_base_stats()
@@ -244,6 +269,8 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.ap_from_sp *= 1.25;
   owner_coeff.sp_from_sp *= 1.25;
   owner_coeff.health = 0.45;
+
+  is_main_pet = true;
 }
 
 action_t* imp_pet_t::create_action( util::string_view name, const std::string& options_str )
@@ -295,6 +322,8 @@ succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
 {
   main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   action_list_str             = "lash_of_pain";
+
+  is_main_pet = true;
 }
 
 void succubus_pet_t::init_base_stats()
@@ -330,6 +359,8 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_VOIDWALKER, name != "voidwalker" )
 {
   action_list_str = "consuming_shadows";
+
+  is_main_pet = true;
 }
 
 void voidwalker_pet_t::init_base_stats()
@@ -512,6 +543,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   felstorm_cd = get_cooldown( "felstorm" );
 
   owner_coeff.health = 0.75;
+
+  is_main_pet = true;
 }
 
 timespan_t felguard_pet_t::available() const
