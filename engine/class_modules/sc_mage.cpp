@@ -639,6 +639,7 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
+    int active_frozen_orbs;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
   } state;
@@ -4052,6 +4053,8 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    p()->state.active_frozen_orbs++;
+
     if ( background )
       return;
 
@@ -4076,7 +4079,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
       .action( frozen_orb_bolt )
       .expiration_callback( [ this ]
         {
-          if ( p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] <= sim->current_time() )
+          if ( --p()->state.active_frozen_orbs == 0 )
             p()->buffs.freezing_winds->expire();
         } ), true );
   }
