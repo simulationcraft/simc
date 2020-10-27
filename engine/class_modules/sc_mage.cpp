@@ -639,6 +639,7 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
+    int inactive_frozen_orbs;
     int active_frozen_orbs;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
@@ -4049,11 +4050,22 @@ struct frozen_orb_t final : public frost_mage_spell_t
     return t;
   }
 
+  void adjust_orb_count( timespan_t duration, int& counter )
+  {
+    counter++;
+    make_event( *sim, duration, [ this, &counter ]
+    {
+      counter--;
+      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 )
+        p()->buffs.freezing_winds->expire();
+    } );
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
 
-    p()->state.active_frozen_orbs++;
+    adjust_orb_count( travel_time(), p()->state.inactive_frozen_orbs );
 
     if ( background )
       return;
@@ -4070,18 +4082,16 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
-    p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
+    timespan_t duration = ( pulse_count - 1 ) * pulse_time;
+    p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
+
+    adjust_orb_count( duration, p()->state.active_frozen_orbs );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulse_count )
-      .action( frozen_orb_bolt )
-      .expiration_callback( [ this ]
-        {
-          if ( --p()->state.active_frozen_orbs == 0 )
-            p()->buffs.freezing_winds->expire();
-        } ), true );
+      .action( frozen_orb_bolt ), true );
   }
 };
 
