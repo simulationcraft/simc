@@ -129,7 +129,7 @@ struct icicle_tuple_t
   event_t*  expiration;
 };
 
-struct mage_td_t : public actor_target_data_t
+struct mage_td_t final : public actor_target_data_t
 {
   struct dots_t
   {
@@ -313,7 +313,7 @@ struct effect_source_t : private noncopyable
 
 using shatter_source_t = effect_source_t<FROZEN_MAX>;
 
-struct mage_t : public player_t
+struct mage_t final : public player_t
 {
 public:
   // Icicles
@@ -956,7 +956,7 @@ namespace water_elemental {
 // Pet Water Elemental
 // ==========================================================================
 
-struct water_elemental_pet_t : public mage_pet_t
+struct water_elemental_pet_t final : public mage_pet_t
 {
   struct actions_t
   {
@@ -980,7 +980,7 @@ struct water_elemental_pet_t : public mage_pet_t
   void      create_actions() override;
 };
 
-struct waterbolt_t : public mage_pet_spell_t
+struct waterbolt_t final : public mage_pet_spell_t
 {
   waterbolt_t( util::string_view n, water_elemental_pet_t* p, util::string_view options_str ) :
     mage_pet_spell_t( n, p, p->find_pet_spell( "Waterbolt" ) )
@@ -989,7 +989,7 @@ struct waterbolt_t : public mage_pet_spell_t
   }
 };
 
-struct freeze_t : public mage_pet_spell_t
+struct freeze_t final : public mage_pet_spell_t
 {
   freeze_t( util::string_view n, water_elemental_pet_t* p ) :
     mage_pet_spell_t( n, p, p->find_pet_spell( "Freeze" ) )
@@ -1027,7 +1027,7 @@ namespace mirror_image {
 // Pet Mirror Image
 // ==========================================================================
 
-struct mirror_image_pet_t : public mage_pet_t
+struct mirror_image_pet_t final : public mage_pet_t
 {
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
     mage_pet_t( sim, owner, "mirror_image", true, true )
@@ -1044,7 +1044,7 @@ struct mirror_image_pet_t : public mage_pet_t
   }
 };
 
-struct frostbolt_t : public mage_pet_spell_t
+struct frostbolt_t final : public mage_pet_spell_t
 {
   frostbolt_t( util::string_view n, mirror_image_pet_t* p, util::string_view options_str ) :
     mage_pet_spell_t( n, p, p->find_spell( 59638 ) )
@@ -1076,7 +1076,7 @@ namespace buffs {
 
 // Touch of the Magi debuff =================================================
 
-struct touch_of_the_magi_t : public buff_t
+struct touch_of_the_magi_t final : public buff_t
 {
   double accumulated_damage;
 
@@ -1121,7 +1121,7 @@ struct touch_of_the_magi_t : public buff_t
   }
 };
 
-struct combustion_t : public buff_t
+struct combustion_t final : public buff_t
 {
   double current_amount; // Amount of mastery rating granted by the buff
   double multiplier;
@@ -1184,7 +1184,7 @@ struct expanded_potential_buff_t : public buff_t
   }
 };
 
-struct ice_floes_t : public buff_t
+struct ice_floes_t final : public buff_t
 {
   ice_floes_t( mage_t* p ) :
     buff_t( p, "ice_floes", p->talents.ice_floes )
@@ -1202,7 +1202,7 @@ struct ice_floes_t : public buff_t
   }
 };
 
-struct icy_veins_t : public buff_t
+struct icy_veins_t final : public buff_t
 {
   icy_veins_t( mage_t* p ) :
     buff_t( p, "icy_veins", p->find_spell( 12472 ) )
@@ -1227,7 +1227,7 @@ struct icy_veins_t : public buff_t
   }
 };
 
-struct incanters_flow_t : public buff_t
+struct incanters_flow_t final : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
     buff_t( p, "incanters_flow", p->find_spell( 116267 ) )
@@ -1261,7 +1261,7 @@ struct incanters_flow_t : public buff_t
   }
 };
 
-struct rune_of_power_t : public buff_t
+struct rune_of_power_t final : public buff_t
 {
   rune_of_power_t( mage_t* p ) :
     buff_t( p, "rune_of_power", p->find_spell( 116014 ) )
@@ -1280,7 +1280,7 @@ struct rune_of_power_t : public buff_t
   }
 };
 
-struct mirrors_of_torment_t : public buff_t
+struct mirrors_of_torment_t final : public buff_t
 {
   cooldown_t* icd;
   int successful_triggers;
@@ -2438,7 +2438,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
 // Icicles ==================================================================
 
-struct icicle_t : public frost_mage_spell_t
+struct icicle_t final : public frost_mage_spell_t
 {
   icicle_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 148022 ) )
@@ -2482,7 +2482,7 @@ struct icicle_t : public frost_mage_spell_t
 
 // Presence of Mind Spell ===================================================
 
-struct presence_of_mind_t : public arcane_mage_spell_t
+struct presence_of_mind_t final : public arcane_mage_spell_t
 {
   presence_of_mind_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Presence of Mind" ) )
@@ -2508,7 +2508,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 // Ignite Spell =============================================================
 
-struct ignite_t : public residual_action_t
+struct ignite_t final : public residual_action_t
 {
   ignite_t( util::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
@@ -2539,7 +2539,7 @@ struct ignite_t : public residual_action_t
 
 // Arcane Barrage Spell =====================================================
 
-struct arcane_barrage_t : public arcane_mage_spell_t
+struct arcane_barrage_t final : public arcane_mage_spell_t
 {
   int artifice_of_the_archmage_charges;
 
@@ -2623,7 +2623,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
 // Arcane Blast Spell =======================================================
 
-struct arcane_blast_t : public arcane_mage_spell_t
+struct arcane_blast_t final : public arcane_mage_spell_t
 {
   double equipoise_threshold;
   double equipoise_reduction;
@@ -2732,7 +2732,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
 // Arcane Explosion Spell ===================================================
 
-struct arcane_explosion_t : public arcane_mage_spell_t
+struct arcane_explosion_t final : public arcane_mage_spell_t
 {
   arcane_explosion_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_class_spell( "Arcane Explosion" ) )
@@ -2775,7 +2775,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
 // Arcane Familiar Spell ====================================================
 
-struct arcane_assault_t : public arcane_mage_spell_t
+struct arcane_assault_t final : public arcane_mage_spell_t
 {
   arcane_assault_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
@@ -2785,7 +2785,7 @@ struct arcane_assault_t : public arcane_mage_spell_t
   }
 };
 
-struct arcane_familiar_t : public arcane_mage_spell_t
+struct arcane_familiar_t final : public arcane_mage_spell_t
 {
   arcane_familiar_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->talents.arcane_familiar )
@@ -2812,7 +2812,7 @@ struct arcane_familiar_t : public arcane_mage_spell_t
 
 // Arcane Intellect Spell ===================================================
 
-struct arcane_intellect_t : public mage_spell_t
+struct arcane_intellect_t final : public mage_spell_t
 {
   arcane_intellect_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Arcane Intellect" ) )
@@ -2834,7 +2834,7 @@ struct arcane_intellect_t : public mage_spell_t
 
 // Arcane Missiles Spell ====================================================
 
-struct arcane_missiles_tick_t : public arcane_mage_spell_t
+struct arcane_missiles_tick_t final : public arcane_mage_spell_t
 {
   arcane_missiles_tick_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
@@ -2873,7 +2873,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   }
 };
 
-struct am_state_t : public mage_spell_state_t
+struct am_state_t final : public mage_spell_state_t
 {
   double tick_time_multiplier;
 
@@ -2901,7 +2901,7 @@ struct am_state_t : public mage_spell_state_t
   }
 };
 
-struct arcane_missiles_t : public arcane_mage_spell_t
+struct arcane_missiles_t final : public arcane_mage_spell_t
 {
   double cc_duration_reduction;
   double cc_tick_time_reduction;
@@ -3025,7 +3025,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
 // Arcane Orb Spell =========================================================
 
-struct arcane_orb_bolt_t : public arcane_mage_spell_t
+struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
@@ -3043,7 +3043,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   }
 };
 
-struct arcane_orb_t : public arcane_mage_spell_t
+struct arcane_orb_t final : public arcane_mage_spell_t
 {
   arcane_orb_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->talents.arcane_orb )
@@ -3065,7 +3065,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
 // Arcane Power Spell =======================================================
 
-struct arcane_power_t : public arcane_mage_spell_t
+struct arcane_power_t final : public arcane_mage_spell_t
 {
   arcane_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Power" ) )
@@ -3086,7 +3086,7 @@ struct arcane_power_t : public arcane_mage_spell_t
 
 // Blast Wave Spell =========================================================
 
-struct blast_wave_t : public fire_mage_spell_t
+struct blast_wave_t final : public fire_mage_spell_t
 {
   blast_wave_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.blast_wave )
@@ -3099,7 +3099,7 @@ struct blast_wave_t : public fire_mage_spell_t
 
 // Blink Spell ==============================================================
 
-struct blink_t : public mage_spell_t
+struct blink_t final : public mage_spell_t
 {
   blink_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Blink" ) )
@@ -3117,7 +3117,7 @@ struct blink_t : public mage_spell_t
 
 // Blizzard Spell ===========================================================
 
-struct blizzard_shard_t : public frost_mage_spell_t
+struct blizzard_shard_t final : public frost_mage_spell_t
 {
   blizzard_shard_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 190357 ) )
@@ -3155,7 +3155,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
   }
 };
 
-struct blizzard_t : public frost_mage_spell_t
+struct blizzard_t final : public frost_mage_spell_t
 {
   action_t* blizzard_shard;
 
@@ -3194,7 +3194,7 @@ struct blizzard_t : public frost_mage_spell_t
 
 // Cold Snap Spell ==========================================================
 
-struct cold_snap_t : public frost_mage_spell_t
+struct cold_snap_t final : public frost_mage_spell_t
 {
   cold_snap_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Cold Snap" ) )
@@ -3215,7 +3215,7 @@ struct cold_snap_t : public frost_mage_spell_t
 
 // Combustion Spell =========================================================
 
-struct combustion_t : public fire_mage_spell_t
+struct combustion_t final : public fire_mage_spell_t
 {
   combustion_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Combustion" ) )
@@ -3239,7 +3239,7 @@ struct combustion_t : public fire_mage_spell_t
 
 // Comet Storm Spell ========================================================
 
-struct comet_storm_projectile_t : public frost_mage_spell_t
+struct comet_storm_projectile_t final : public frost_mage_spell_t
 {
   comet_storm_projectile_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
@@ -3249,7 +3249,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
   }
 };
 
-struct comet_storm_t : public frost_mage_spell_t
+struct comet_storm_t final : public frost_mage_spell_t
 {
   timespan_t delay;
   action_t* projectile;
@@ -3293,7 +3293,7 @@ struct comet_storm_t : public frost_mage_spell_t
 
 // Cone of Cold Spell =======================================================
 
-struct cone_of_cold_t : public frost_mage_spell_t
+struct cone_of_cold_t final : public frost_mage_spell_t
 {
   cone_of_cold_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Cone of Cold" ) )
@@ -3306,7 +3306,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
 
 // Conflagration Spell ======================================================
 
-struct conflagration_t : public fire_mage_spell_t
+struct conflagration_t final : public fire_mage_spell_t
 {
   conflagration_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 226757 ) )
@@ -3316,7 +3316,7 @@ struct conflagration_t : public fire_mage_spell_t
   }
 };
 
-struct conflagration_flare_up_t : public fire_mage_spell_t
+struct conflagration_flare_up_t final : public fire_mage_spell_t
 {
   conflagration_flare_up_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 205345 ) )
@@ -3331,7 +3331,7 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
 
 // Technically, this spell cannot be used when a Mana Gem is in the player's inventory,
 // but we assume the player would just delete it before conjuring a new one.
-struct conjure_mana_gem_t : public arcane_mage_spell_t
+struct conjure_mana_gem_t final : public arcane_mage_spell_t
 {
   conjure_mana_gem_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Conjure Mana Gem" ) )
@@ -3348,7 +3348,7 @@ struct conjure_mana_gem_t : public arcane_mage_spell_t
   }
 };
 
-struct use_mana_gem_t : public action_t
+struct use_mana_gem_t final : public action_t
 {
   use_mana_gem_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     action_t( ACTION_USE, n, p, p->find_spell( 5405 ) )
@@ -3385,7 +3385,7 @@ struct use_mana_gem_t : public action_t
 
 // Counterspell Spell =======================================================
 
-struct counterspell_t : public mage_spell_t
+struct counterspell_t final : public mage_spell_t
 {
   counterspell_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Counterspell" ) )
@@ -3416,7 +3416,7 @@ struct counterspell_t : public mage_spell_t
 
 // Dragon's Breath Spell ====================================================
 
-struct dragons_breath_t : public fire_mage_spell_t
+struct dragons_breath_t final : public fire_mage_spell_t
 {
   dragons_breath_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Dragon's Breath" ) )
@@ -3451,7 +3451,7 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 // Evocation Spell ==========================================================
 
-struct evocation_t : public arcane_mage_spell_t
+struct evocation_t final : public arcane_mage_spell_t
 {
   int brain_storm_charges;
   int siphon_storm_charges;
@@ -3529,7 +3529,7 @@ struct evocation_t : public arcane_mage_spell_t
 
 // Ebonbolt Spell ===========================================================
 
-struct ebonbolt_t : public frost_mage_spell_t
+struct ebonbolt_t final : public frost_mage_spell_t
 {
   ebonbolt_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ebonbolt )
@@ -3561,7 +3561,7 @@ struct ebonbolt_t : public frost_mage_spell_t
 
 // Fireball Spell ===========================================================
 
-struct fireball_t : public fire_mage_spell_t
+struct fireball_t final : public fire_mage_spell_t
 {
   fireball_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Fireball" ) )
@@ -3646,7 +3646,7 @@ struct fireball_t : public fire_mage_spell_t
 
 // Flame Patch Spell ========================================================
 
-struct flame_patch_t : public fire_mage_spell_t
+struct flame_patch_t final : public fire_mage_spell_t
 {
   flame_patch_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 205472 ) )
@@ -3664,7 +3664,7 @@ struct flame_patch_t : public fire_mage_spell_t
 
 // Flamestrike Spell ========================================================
 
-struct flamestrike_t : public hot_streak_spell_t
+struct flamestrike_t final : public hot_streak_spell_t
 {
   action_t* flame_patch;
   timespan_t flame_patch_duration;
@@ -3707,7 +3707,7 @@ struct flamestrike_t : public hot_streak_spell_t
 
 // Flurry Spell =============================================================
 
-struct glacial_assault_t : public frost_mage_spell_t
+struct glacial_assault_t final : public frost_mage_spell_t
 {
   glacial_assault_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 279856 ) )
@@ -3718,7 +3718,7 @@ struct glacial_assault_t : public frost_mage_spell_t
   }
 };
 
-struct flurry_bolt_t : public frost_mage_spell_t
+struct flurry_bolt_t final : public frost_mage_spell_t
 {
   double glacial_assault_chance;
 
@@ -3772,7 +3772,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   }
 };
 
-struct flurry_t : public frost_mage_spell_t
+struct flurry_t final : public frost_mage_spell_t
 {
   action_t* flurry_bolt;
 
@@ -3843,7 +3843,7 @@ struct flurry_t : public frost_mage_spell_t
 
 // Frostbolt Spell ==========================================================
 
-struct frostbolt_t : public frost_mage_spell_t
+struct frostbolt_t final : public frost_mage_spell_t
 {
   frostbolt_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) )
@@ -3934,7 +3934,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
 // Frost Nova Spell =========================================================
 
-struct frost_nova_t : public mage_spell_t
+struct frost_nova_t final : public mage_spell_t
 {
   frost_nova_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Frost Nova" ) )
@@ -3970,7 +3970,7 @@ struct frost_nova_t : public mage_spell_t
 // eight targets, random target selection should be added as an option for
 // all actions, because many target-capped abilities probably work this way.
 
-struct frozen_orb_bolt_t : public frost_mage_spell_t
+struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
   frozen_orb_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
@@ -4012,7 +4012,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   }
 };
 
-struct frozen_orb_t : public frost_mage_spell_t
+struct frozen_orb_t final : public frost_mage_spell_t
 {
   action_t* frozen_orb_bolt;
 
@@ -4084,7 +4084,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
 // Glacial Spike Spell ======================================================
 
-struct glacial_spike_t : public frost_mage_spell_t
+struct glacial_spike_t final : public frost_mage_spell_t
 {
   glacial_spike_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
@@ -4173,7 +4173,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
 // Ice Floes Spell ==========================================================
 
-struct ice_floes_t : public mage_spell_t
+struct ice_floes_t final : public mage_spell_t
 {
   ice_floes_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->talents.ice_floes )
@@ -4193,7 +4193,7 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
-struct glacial_fragments_t : public frost_mage_spell_t
+struct glacial_fragments_t final : public frost_mage_spell_t
 {
   glacial_fragments_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 327498 ) )
@@ -4203,7 +4203,7 @@ struct glacial_fragments_t : public frost_mage_spell_t
   }
 };
 
-struct ice_lance_state_t : public mage_spell_state_t
+struct ice_lance_state_t final : public mage_spell_state_t
 {
   bool fingers_of_frost;
 
@@ -4231,7 +4231,7 @@ struct ice_lance_state_t : public mage_spell_state_t
   }
 };
 
-struct ice_lance_t : public frost_mage_spell_t
+struct ice_lance_t final : public frost_mage_spell_t
 {
   shatter_source_t* extension_source;
   shatter_source_t* cleave_source;
@@ -4421,7 +4421,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
 // Ice Nova Spell ===========================================================
 
-struct ice_nova_t : public frost_mage_spell_t
+struct ice_nova_t final : public frost_mage_spell_t
 {
   ice_nova_t( util::string_view n, mage_t* p, util::string_view options_str ) :
      frost_mage_spell_t( n, p, p->talents.ice_nova )
@@ -4440,7 +4440,7 @@ struct ice_nova_t : public frost_mage_spell_t
 
 // Icy Veins Spell ==========================================================
 
-struct icy_veins_t : public frost_mage_spell_t
+struct icy_veins_t final : public frost_mage_spell_t
 {
   icy_veins_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Icy Veins" ) )
@@ -4466,7 +4466,7 @@ struct icy_veins_t : public frost_mage_spell_t
 
 // Fire Blast Spell =========================================================
 
-struct fire_blast_t : public fire_mage_spell_t
+struct fire_blast_t final : public fire_mage_spell_t
 {
   fire_blast_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->spec.fire_blast_3->ok() ? p->spec.fire_blast_3 : p->find_spell( 319836 ) ) // TODO: figure out how not to hardcode these
@@ -4509,7 +4509,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
 // Living Bomb Spell ========================================================
 
-struct living_bomb_dot_t : public fire_mage_spell_t
+struct living_bomb_dot_t final : public fire_mage_spell_t
 {
   // The game has two spells for the DoT, one for pre-spread one and one for
   // post-spread one. This allows two copies of the DoT to be up on one target.
@@ -4572,7 +4572,7 @@ struct living_bomb_dot_t : public fire_mage_spell_t
   }
 };
 
-struct living_bomb_explosion_t : public fire_mage_spell_t
+struct living_bomb_explosion_t final : public fire_mage_spell_t
 {
   living_bomb_explosion_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 44461 ) )
@@ -4583,7 +4583,7 @@ struct living_bomb_explosion_t : public fire_mage_spell_t
   }
 };
 
-struct living_bomb_t : public fire_mage_spell_t
+struct living_bomb_t final : public fire_mage_spell_t
 {
   living_bomb_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.living_bomb )
@@ -4612,7 +4612,7 @@ struct living_bomb_t : public fire_mage_spell_t
 // - Meteor Burn (id=155158) is the ground effect tick damage
 // - Meteor Burn (id=175396) provides the tooltip's burn duration
 // - Meteor (id=177345) contains the time between cast and impact
-struct meteor_burn_t : public fire_mage_spell_t
+struct meteor_burn_t final : public fire_mage_spell_t
 {
   meteor_burn_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
@@ -4629,7 +4629,7 @@ struct meteor_burn_t : public fire_mage_spell_t
   }
 };
 
-struct meteor_impact_t : public fire_mage_spell_t
+struct meteor_impact_t final : public fire_mage_spell_t
 {
   action_t* meteor_burn;
 
@@ -4669,7 +4669,7 @@ struct meteor_impact_t : public fire_mage_spell_t
   }
 };
 
-struct meteor_t : public fire_mage_spell_t
+struct meteor_t final : public fire_mage_spell_t
 {
   timespan_t meteor_delay;
 
@@ -4706,7 +4706,7 @@ struct meteor_t : public fire_mage_spell_t
 
 // Mirror Image Spell =======================================================
 
-struct mirror_image_t : public mage_spell_t
+struct mirror_image_t final : public mage_spell_t
 {
   mirror_image_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Mirror Image" ) )
@@ -4737,7 +4737,7 @@ struct mirror_image_t : public mage_spell_t
 
 // Nether Tempest Spell =====================================================
 
-struct nether_tempest_aoe_t : public arcane_mage_spell_t
+struct nether_tempest_aoe_t final : public arcane_mage_spell_t
 {
   nether_tempest_aoe_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 114954 ) )
@@ -4758,7 +4758,7 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
   }
 };
 
-struct nether_tempest_t : public arcane_mage_spell_t
+struct nether_tempest_t final : public arcane_mage_spell_t
 {
   action_t* nether_tempest_aoe;
 
@@ -4815,7 +4815,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
 // Phoenix Flames Spell =====================================================
 
-struct phoenix_flames_splash_t : public fire_mage_spell_t
+struct phoenix_flames_splash_t final : public fire_mage_spell_t
 {
   int max_spread_targets;
 
@@ -4894,7 +4894,7 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   }
 };
 
-struct phoenix_flames_t : public fire_mage_spell_t
+struct phoenix_flames_t final : public fire_mage_spell_t
 {
   phoenix_flames_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
@@ -4915,7 +4915,7 @@ struct phoenix_flames_t : public fire_mage_spell_t
 
 // Pyroblast Spell ==========================================================
 
-struct trailing_embers_t : public fire_mage_spell_t
+struct trailing_embers_t final : public fire_mage_spell_t
 {
   trailing_embers_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 277703 ) )
@@ -4926,7 +4926,7 @@ struct trailing_embers_t : public fire_mage_spell_t
   }
 };
 
-struct pyroblast_dot_t : public fire_mage_spell_t
+struct pyroblast_dot_t final : public fire_mage_spell_t
 {
   pyroblast_dot_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 321712 ) )
@@ -4942,7 +4942,7 @@ struct pyroblast_dot_t : public fire_mage_spell_t
   }
 };
 
-struct pyroblast_t : public hot_streak_spell_t
+struct pyroblast_t final : public hot_streak_spell_t
 {
   action_t* trailing_embers;
   action_t* pyroblast_dot;
@@ -5042,7 +5042,7 @@ struct pyroblast_t : public hot_streak_spell_t
 
 // Ray of Frost Spell =======================================================
 
-struct ray_of_frost_t : public frost_mage_spell_t
+struct ray_of_frost_t final : public frost_mage_spell_t
 {
   ray_of_frost_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
@@ -5089,7 +5089,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
 // Rune of Power Spell ======================================================
 
-struct rune_of_power_t : public mage_spell_t
+struct rune_of_power_t final : public mage_spell_t
 {
   rune_of_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->talents.rune_of_power )
@@ -5107,7 +5107,7 @@ struct rune_of_power_t : public mage_spell_t
 
 // Scorch Spell =============================================================
 
-struct scorch_t : public fire_mage_spell_t
+struct scorch_t final : public fire_mage_spell_t
 {
   scorch_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
@@ -5158,7 +5158,7 @@ struct scorch_t : public fire_mage_spell_t
 
 // Shimmer Spell ============================================================
 
-struct shimmer_t : public mage_spell_t
+struct shimmer_t final : public mage_spell_t
 {
   shimmer_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->talents.shimmer )
@@ -5174,7 +5174,7 @@ struct shimmer_t : public mage_spell_t
 
 // Slow Spell ===============================================================
 
-struct slow_t : public arcane_mage_spell_t
+struct slow_t final : public arcane_mage_spell_t
 {
   slow_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Slow" ) )
@@ -5186,7 +5186,7 @@ struct slow_t : public arcane_mage_spell_t
 
 // Supernova Spell ==========================================================
 
-struct supernova_t : public arcane_mage_spell_t
+struct supernova_t final : public arcane_mage_spell_t
 {
   supernova_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->talents.supernova )
@@ -5203,7 +5203,7 @@ struct supernova_t : public arcane_mage_spell_t
 
 // Summon Water Elemental Spell =============================================
 
-struct summon_water_elemental_t : public frost_mage_spell_t
+struct summon_water_elemental_t final : public frost_mage_spell_t
 {
   summon_water_elemental_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Summon Water Elemental" ) )
@@ -5231,7 +5231,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
 // Time Warp Spell ==========================================================
 
-struct time_warp_t : public mage_spell_t
+struct time_warp_t final : public mage_spell_t
 {
   time_warp_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Time Warp" ) )
@@ -5269,7 +5269,7 @@ struct time_warp_t : public mage_spell_t
 
 // Touch of the Magi Spell ==================================================
 
-struct touch_of_the_magi_t : public arcane_mage_spell_t
+struct touch_of_the_magi_t final : public arcane_mage_spell_t
 {
   touch_of_the_magi_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->spec.touch_of_the_magi )
@@ -5297,7 +5297,7 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
   }
 };
 
-struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
+struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
 {
   touch_of_the_magi_explosion_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 210833 ) )
@@ -5329,7 +5329,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   }
 };
 
-struct arcane_echo_t : public arcane_mage_spell_t
+struct arcane_echo_t final : public arcane_mage_spell_t
 {
   arcane_echo_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
@@ -5347,7 +5347,7 @@ struct arcane_echo_t : public arcane_mage_spell_t
 
 // Deathborne Spell =========================================================
 
-struct deathborne_t : public mage_spell_t
+struct deathborne_t final : public mage_spell_t
 {
   deathborne_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_covenant_spell( "Deathborne" ) )
@@ -5366,7 +5366,7 @@ struct deathborne_t : public mage_spell_t
 
 // Mirrors of Torment Spell =================================================
 
-struct agonizing_backlash_t : public mage_spell_t
+struct agonizing_backlash_t final : public mage_spell_t
 {
   agonizing_backlash_t( util::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 320035 ) )
@@ -5376,7 +5376,7 @@ struct agonizing_backlash_t : public mage_spell_t
   }
 };
 
-struct tormenting_backlash_t : public mage_spell_t
+struct tormenting_backlash_t final : public mage_spell_t
 {
   tormenting_backlash_t( util::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 317589 ) )
@@ -5386,7 +5386,7 @@ struct tormenting_backlash_t : public mage_spell_t
   }
 };
 
-struct mirrors_of_torment_t : public mage_spell_t
+struct mirrors_of_torment_t final : public mage_spell_t
 {
   mirrors_of_torment_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_covenant_spell( "Mirrors of Torment" ) )
@@ -5412,7 +5412,7 @@ struct mirrors_of_torment_t : public mage_spell_t
 
 // Radiant Spark Spell ======================================================
 
-struct radiant_spark_t : public mage_spell_t
+struct radiant_spark_t final : public mage_spell_t
 {
   radiant_spark_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_covenant_spell( "Radiant Spark" ) )
@@ -5451,7 +5451,7 @@ struct radiant_spark_t : public mage_spell_t
 
 // Shifting Power Spell =====================================================
 
-struct shifting_power_pulse_t : public mage_spell_t
+struct shifting_power_pulse_t final : public mage_spell_t
 {
   shifting_power_pulse_t( util::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 325130 ) )
@@ -5462,7 +5462,7 @@ struct shifting_power_pulse_t : public mage_spell_t
   }
 };
 
-struct shifting_power_t : public mage_spell_t
+struct shifting_power_t final : public mage_spell_t
 {
   std::vector<cooldown_t*> shifting_power_cooldowns;
   timespan_t reduction;
@@ -5521,7 +5521,7 @@ void report_burn_switch_error( action_t* a )
                  a->player->name(), a->name(), a->signature_str ) );
 }
 
-struct start_burn_phase_t : public action_t
+struct start_burn_phase_t final : public action_t
 {
   start_burn_phase_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     action_t( ACTION_OTHER, n, p )
@@ -5554,7 +5554,7 @@ struct start_burn_phase_t : public action_t
   }
 };
 
-struct stop_burn_phase_t : public action_t
+struct stop_burn_phase_t final : public action_t
 {
   stop_burn_phase_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     action_t( ACTION_OTHER, n, p )
@@ -5590,7 +5590,7 @@ struct stop_burn_phase_t : public action_t
 
 // Proxy Freeze Action ======================================================
 
-struct freeze_t : public action_t
+struct freeze_t final : public action_t
 {
   freeze_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     action_t( ACTION_OTHER, n, p, p->find_specialization_spell( "Freeze" ) )
@@ -5628,7 +5628,7 @@ struct freeze_t : public action_t
 
 namespace events {
 
-struct enlightened_event_t : public event_t
+struct enlightened_event_t final : public event_t
 {
   mage_t* mage;
 
@@ -5650,7 +5650,7 @@ struct enlightened_event_t : public event_t
   }
 };
 
-struct focus_magic_event_t : public event_t
+struct focus_magic_event_t final : public event_t
 {
   mage_t* mage;
 
@@ -5681,7 +5681,7 @@ struct focus_magic_event_t : public event_t
   }
 };
 
-struct icicle_event_t : public event_t
+struct icicle_event_t final : public event_t
 {
   mage_t* mage;
   player_t* target;
@@ -5723,7 +5723,7 @@ struct icicle_event_t : public event_t
   }
 };
 
-struct from_the_ashes_event_t : public event_t
+struct from_the_ashes_event_t final : public event_t
 {
   mage_t* mage;
 
@@ -5743,7 +5743,7 @@ struct from_the_ashes_event_t : public event_t
   }
 };
 
-struct time_anomaly_tick_event_t : public event_t
+struct time_anomaly_tick_event_t final : public event_t
 {
   mage_t* mage;
 
