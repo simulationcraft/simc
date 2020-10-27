@@ -57,22 +57,6 @@ void warlock_pet_t::create_buffs()
                               ->set_default_value( o()->legendary.relic_of_demonic_synergy->effectN( 1 ).base_value() );
 }
 
-struct demonic_synergy_pet_proc_t : pets::warlock_pet_action_t<spell_t>
-{
-  demonic_synergy_pet_proc_t( warlock_pet_t* p ) 
-    : pets::warlock_pet_action_t<spell_t>( "demonic_synergy_pet_proc", p, p->find_spell( 337057 ) )
-  {
-    background = true;
-    proc = true;
-  }
-
-  void execute() override
-  {
-    //Owner's buff holds the proper default value always
-    p()->o()->buffs.demonic_synergy->trigger();
-  }
-};
-
 struct demonic_synergy_pet_callback_t : public dbc_proc_callback_t
 {
   warlock_pet_t* pet;
@@ -133,21 +117,6 @@ void warlock_pet_t::init_action_list()
 void warlock_pet_t::init_special_effects()
 {
   pet_t::init_special_effects();
-
-  /*
-  auto const syn_effect = new special_effect_t(this);
-  syn_effect->name_str = "demonic_synergy_pet_effect";
-  syn_effect->spell_id = 337057;
-  syn_effect->execute_action = new demonic_synergy_pet_proc_t(this);
-  special_effects.push_back(syn_effect);
-
-  auto cb = new dbc_proc_callback_t(this, *syn_effect);
-
-  cb->initialize();
-
-  if ( !o()->legendary.relic_of_demonic_synergy->ok() || !is_main_pet )
-    cb->deactivate();
-    */
 
   if ( o()->legendary.relic_of_demonic_synergy->ok() && is_main_pet )
   {
