@@ -2941,21 +2941,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
-    // There is a bug when chaining where instead of using the base
-    // duration to calculate the rounded number of ticks, the time
-    // between the tick zero and chained tick is also included.
-    // Because this results in a substantial DPS gain from chaining
-    // casts immediately after a tick, we model delay in chaining here.
-    // TODO: verify whether this can ever happen for a channel without
-    // clearcasting or if it can not happen for a channel with clearcasting.
-    if ( p()->bugs && p()->buffs.clearcasting_channel->check() )
-    {
-      timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
-      duration += d->time_to_next_full_tick() - 100_ms;
-      duration -= std::max( 0_ms, std::min( d->time_to_next_full_tick() - 1_ms,
-        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
-    }
-
     return duration + d->time_to_next_full_tick();
   }
 
@@ -2984,14 +2969,33 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   void trigger_dot( action_state_t* s )
   {
+    dot_t* d = get_dot( s->target );
+    timespan_t tick_remains = d->time_to_next_full_tick();
+    timespan_t tt = tick_time( s );
+    int ticks = 0;
+
+    // There is a bug when chaining where instead of using the base
+    // duration to calculate the rounded number of ticks, the time
+    // left in the previous tick can add extra ticks if there is
+    // more than the new tick time remaining before that tick.
+    if ( p()->bugs && tick_remains > 0_ms )
+    {
+      timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
+      timespan_t chain_remains = tick_remains - std::min( tick_remains - 1_ms, std::max( 0_ms,
+        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
+      // If tick_remains == 0_ms, this would subtract 1 from ticks.
+      // This is not implemented in simc, but this actually appears
+      // to happen in game, which can result in missing ticks if
+      // the player refreshes the cast too quickly after a tick.
+      ticks += as<int>( std::ceil( chain_remains / tt ) - 1 );
+    }
+
     arcane_mage_spell_t::trigger_dot( s );
 
     // AM channel duration is a bit fuzzy, it will go above or below the
-    // standard 2 s to make sure it has the correct number of ticks.
-    dot_t* d = get_dot( s->target );
-    timespan_t tt = tick_time( s );
-    int ticks = as<int>( std::round( ( d->remains() - d->time_to_next_full_tick() ) / tt ) );
-    timespan_t new_remains = ticks * tt + d->time_to_next_full_tick();
+    // standard duration to make sure it has the correct number of ticks.
+    ticks += as<int>( std::round( ( d->remains() - tick_remains ) / tt ) );
+    timespan_t new_remains = ticks * tt + tick_remains;
 
     d->adjust_duration( new_remains - d->remains(), timespan_t::min(), 0, false );
   }
