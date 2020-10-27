@@ -431,11 +431,6 @@ void thrill_seeker( special_effect_t& effect )
   // TODO: implement gains from killing blows
 }
 
-void refined_palate( special_effect_t& effect )
-{
-
-}
-
 void soothing_shade( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "soothing_shade" );
@@ -1003,8 +998,7 @@ void register_special_effects()
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
-  register_soulbind_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );
+  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
