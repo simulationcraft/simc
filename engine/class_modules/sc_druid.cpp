@@ -1002,6 +1002,7 @@ public:
   void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
+  const druid_td_t* find_target_data( const player_t* target ) const override;
   druid_td_t* get_target_data( player_t* target ) const override;
   void copy_from( player_t* ) override;
   void output_json_report( js::JsonOutput& /* root */ ) const override;
@@ -10604,6 +10605,14 @@ void druid_t::shapeshift( form_e f )
   }
 
   form = f;
+}
+
+// druid_t::find_target_data ================================================
+
+const druid_td_t* druid_t::find_target_data( const player_t* target ) const
+{
+  assert( target );
+  return target_data[ target ];
 }
 
 // druid_t::get_target_data =================================================

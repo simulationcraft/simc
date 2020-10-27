@@ -1081,6 +1081,9 @@ public:
   virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
+  virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
+  { return nullptr; }
+
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 

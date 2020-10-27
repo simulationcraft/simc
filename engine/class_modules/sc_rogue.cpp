@@ -820,6 +820,11 @@ public:
 
   target_specific_t<rogue_td_t> target_data;
 
+  const rogue_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   rogue_td_t* get_target_data( player_t* target ) const override
   {
     rogue_td_t*& td = target_data[ target ];

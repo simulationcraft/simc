@@ -583,6 +583,7 @@ public:
 
   target_specific_t<paladin_td_t> target_data;
 
+  virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
   cooldown_waste_data_t* get_cooldown_waste_data( cooldown_t* cd, cooldown_waste_data_t *(*factory)(cooldown_t*) = nullptr )

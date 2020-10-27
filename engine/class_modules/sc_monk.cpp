@@ -1020,6 +1020,10 @@ public:
   void activate() override;
   void collect_resource_timeline_information() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  const monk_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
   monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[ target ];
@@ -2137,6 +2141,11 @@ public:
   const monk_t* o() const
   {
     return debug_cast<const monk_t*>( owner );
+  }
+
+  const sef_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
   }
 
   sef_td_t* get_target_data( player_t* target ) const override

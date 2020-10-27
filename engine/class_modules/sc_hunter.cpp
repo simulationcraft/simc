@@ -721,16 +721,16 @@ public:
 
   target_specific_t<hunter_td_t> target_data;
 
+  const hunter_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_td_t* get_target_data( player_t* target ) const override
   {
     hunter_td_t*& td = target_data[target];
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
-  }
-
-  const hunter_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   std::vector<action_t*> background_actions;
@@ -1585,17 +1585,17 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
   target_specific_t<hunter_main_pet_td_t> target_data;
 
+  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_main_pet_td_t* get_target_data( player_t* target ) const override
   {
     hunter_main_pet_td_t*& td = target_data[target];
     if ( !td )
       td = new hunter_main_pet_td_t( target, const_cast<hunter_main_pet_t*>( this ) );
     return td;
-  }
-
-  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   resource_e primary_resource() const override
