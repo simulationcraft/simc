@@ -4123,7 +4123,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
     m *= 1.0 + buffs.wild_hunt_tactics->default_value;
 
-  auto td = get_target_data( target );
+  auto td = find_target_data( target );
   if ( td )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
@@ -4154,7 +4154,7 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 {
   double c = 0.0;
 
-  if ( actor_target_data_t* td = get_owner_or_self()->get_target_data( target ) )
+  if ( const actor_target_data_t* td = get_owner_or_self()->find_target_data( target ) )
   {
     // Essence: Blood of the Enemy Major debuff
     c += td->debuff.blood_of_the_enemy->check_stack_value();
