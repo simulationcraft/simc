@@ -1723,14 +1723,6 @@ inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges 
     if ( !cooldown->player->executing || !cooldown->player->channeling && !cooldown->player->readying )
       cooldown->player->schedule_ready();
   }
-  /*if ( cooldown->player && cooldown->player->queueing )
-  {
-    cooldown->player->queueing->cancel();
-    //event_t::cancel( cooldown->player->queueing->queue_event );
-    //cooldown->player->queueing = nullptr;
-    //if ( was_busy && player->arise_time >= timespan_t::zero() && !player->readying )
-    //  player->schedule_ready();
-  }//*/
 }
 
 inline void adjust_cooldown_max_charges( cooldown_t* cooldown, int charge_change )

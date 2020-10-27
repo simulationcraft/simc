@@ -182,7 +182,8 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
-
+    // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
+    // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
     else
@@ -1654,6 +1655,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
+    // Use a stack change callback to trigger voidform effects.
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
       {
@@ -1684,19 +1686,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    /// TODO: Verify if functionality is properly matching how it works in game.
-    /*if ( sim->debug )
-    {
-      sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
-                        priest().cooldowns.mind_blast->charges_fractional() );
-    }
-    // Call new generic function to adjust charges.
-    adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
-                        priest().cooldowns.mind_blast->charges_fractional() );
-    }*/
     if ( priest().buffs.shadowform_state->check() )
     {
       priest().buffs.shadowform->trigger();
@@ -1752,6 +1741,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
+    // Create a stack change callback to adjust the number of mindblast charges.
     set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
       adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
     } );
