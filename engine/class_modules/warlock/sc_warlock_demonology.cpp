@@ -330,8 +330,6 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    p()->buffs.balespiders_burning_core->expire();
-
     p()->buffs.decimating_bolt->decrement();
   }
 
