@@ -1665,9 +1665,9 @@ void items::briny_barnacle( special_effect_t& effect )
         return;
       }
 
-      auto td = p->get_target_data( target );
+      auto td = p->find_target_data( target );
 
-      if ( td->debuff.choking_brine->up() )
+      if ( td && td->debuff.choking_brine->up() )
       {
         target->sim->print_log( "Enemy {} dies while afflicted by Choking Brine, applying debuff on all neaby enemies",
                                 target->name_str );
@@ -4427,11 +4427,9 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      auto td = listener->get_target_data( s->target );
-      assert( td );
-      assert( td->debuff.conductive_ink );
+      auto td = listener->find_target_data( s->target );
 
-      if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
+      if ( td && td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
         dbc_proc_callback_t::trigger( a, s );
       }
@@ -4439,11 +4437,11 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      auto td = listener->get_target_data( s->target );
+      auto td = listener->find_target_data( s->target );
 
       // Simultaneous attacks that hit at once can all count as the damage to burst the debuff, triggering the callback
       // multiple times. Ensure the event-scheduled callback execute checks for the debuff so we don't get multiple hits
-      if ( td->debuff.conductive_ink->check() )
+      if ( td && td->debuff.conductive_ink->check() )
       {
         dbc_proc_callback_t::execute( a, s );
       }
@@ -5698,9 +5696,8 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
       return;
     }
 
-    auto td        = a->player->get_target_data( target );
-    buff_t* debuff = td->debuff.psyche_shredder;
-    if ( !debuff->check() )
+    auto td = a->player->find_target_data( target );
+    if ( !td || !td->debuff.psyche_shredder->check() )
       return;
 
     dbc_proc_callback_t::trigger( a, state );

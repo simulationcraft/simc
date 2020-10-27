@@ -5666,7 +5666,8 @@ struct reaping_flames_t : public azerite_essence_major_t
 
         target->register_on_demise_callback( player, [ this ] ( player_t* enemy )
         {
-          if ( player->get_target_data( enemy )->debuff.reaping_flames_tracker->check() )
+          auto td = player->find_target_data( enemy );
+          if ( td && td->debuff.reaping_flames_tracker->check() )
           {
             cooldown->adjust( timespan_t::from_seconds( cd_reset ) - cooldown->duration );
             damage_buff->trigger();

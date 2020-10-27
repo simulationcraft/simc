@@ -1915,7 +1915,8 @@ struct shadow_blade_t : public proc_spell_t
   {
     double ctm = proc_spell_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + player -> get_target_data( target ) -> debuff.shadow_blades -> check_stack_value();
+    if ( auto td = player -> find_target_data( target ) )
+      ctm *= 1.0 + td -> debuff.shadow_blades -> check_stack_value();
 
     return ctm;
   }
@@ -2669,7 +2670,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     if ( trigger_state -> result_amount <= 0 )
       return;
 
-    actor_target_data_t* td = effect.player -> get_target_data( trigger_state -> target );
+    const actor_target_data_t* td = effect.player -> find_target_data( trigger_state -> target );
 
     if ( td && td -> debuff.brutal_haymaker -> check() )
       accumulator -> damage += trigger_state -> result_amount * multiplier;

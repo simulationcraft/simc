@@ -395,8 +395,8 @@ void dauntless_duelist( special_effect_t& effect )
       if ( p->sim->event_mgr.canceled )
         return;
 
-      auto td = p->get_target_data( t );
-      if ( td->debuff.adversary->check() )
+      auto td = p->find_target_data( t );
+      if ( td && td->debuff.adversary->check() )
         cb->activate();
     } );
   } );
