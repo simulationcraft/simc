@@ -1402,6 +1402,14 @@ class SpellDataGenerator(DataGenerator):
             ( 346111, 0 ),          # Shadow Weaving Mastery spell
             ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
             ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
+            ( 341207, 0 ),          # Dark Thoughts Buff
+            # Holy Priest
+            ( 196809, 5 ),           # Healing Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Dazzling Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),           # Searing Light (Divine Image legendary pet spell)
+            ( 196812, 5 ),           # Light Eruption (Divine Image legendary pet spell)
+            ( 196813, 5 ),           # Blessed Light (Divine Image legendary pet spell)
+            ( 196816, 5 ),           # Tranquil Light (Divine Image legendary pet spell)
         ),
 
         # Death Knight:
@@ -1620,6 +1628,7 @@ class SpellDataGenerator(DataGenerator):
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
+          ( 325092, 1 ), # Purified Chi
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc

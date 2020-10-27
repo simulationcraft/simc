@@ -82,7 +82,7 @@ actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flage
 actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin.equipped&combo_points.deficit<=3|runeforge.deathly_shadows.equipped&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
 actions.cds+=/call_action_list,name=essences,if=!stealthed.all&variable.snd_condition|essence.breath_of_the_dying.major&time>=2
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
-actions.cds+=/pool_resource,for_next=1,if=!talent.shadow_focus.enabled
+actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
 # Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
 actions.cds+=/shuriken_tornado,if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
 actions.cds+=/serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3
@@ -145,7 +145,7 @@ actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.char
 actions.stealth_cds+=/vanish,if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin.equipped
 actions.stealth_cds+=/sepsis
 # Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
-actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
+actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40,if=race.night_elf
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1
 # CP requirement: Dance at low CP by default.
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=4
@@ -177,9 +177,7 @@ actions.stealthed+=/shadowstrike,if=variable.use_priority_rotation&(debuff.find_
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3+(buff.premeditation.up|buff.the_rotten.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)
 # Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible.
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
-actions.stealthed+=/pool_resource,for_next=1
-actions.stealthed+=/gloomblade,if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=13-(9*conduit.deeper_dagger.enabled+conduit.deeper_dagger.rank)
-actions.stealthed+=/gloomblade,if=runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&(conduit.perforated_veins.rank+conduit.deeper_dagger.rank)>=16
+actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500

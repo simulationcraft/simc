@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -4918,7 +4918,7 @@ Spell Type       : None
 Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6)
+Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 10 maximum
 Proc Chance      : 100%

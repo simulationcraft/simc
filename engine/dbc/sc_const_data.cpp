@@ -173,10 +173,7 @@ static void generate_indices( bool ptr )
 
     for ( const spelleffect_data_t& effect : spell.effects() )
     {
-      static constexpr effect_subtype_t category_subtypes[] = {
-        A_MODIFY_CATEGORY_COOLDOWN, A_MOD_MAX_CHARGES, A_MOD_RECHARGE_TIME, A_MOD_RECHARGE_MULTIPLIER, A_HASTED_CATEGORY
-      };
-      if ( range::contains( category_subtypes, effect.subtype() ) )
+      if ( range::contains( dbc::effect_category_subtypes(), effect.subtype() ) )
       {
         const unsigned value = as<unsigned>( effect.misc_value1() );
         if ( value != 0 )
@@ -968,6 +965,19 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
     return true;
   // Trying to specify a repalced_id for an existing spell id
   return false;
+}
+
+util::span<const effect_subtype_t> dbc::effect_category_subtypes()
+{
+  static constexpr effect_subtype_t subtypes[] = {
+    A_MODIFY_CATEGORY_COOLDOWN,
+    A_MOD_MAX_CHARGES,
+    A_MOD_RECHARGE_TIME,
+    A_MOD_RECHARGE_MULTIPLIER,
+    A_HASTED_CATEGORY,
+    A_MOD_RECHARGE_RATE_CATEGORY,
+  };
+  return util::make_span( subtypes );
 }
 
 double dbc_t::combat_rating_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const

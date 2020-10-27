@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -10645,7 +10645,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723)
                    Family Flags: 50
-#2 (id=874233)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#2 (id=874233)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723)
                    Family Flags: 50

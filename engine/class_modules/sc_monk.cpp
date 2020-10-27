@@ -953,7 +953,7 @@ public:
       regen_caches[ CACHE_HASTE ]        = true;
       regen_caches[ CACHE_ATTACK_HASTE ] = true;
     }
-    user_options.initial_chi = 0;
+    user_options.initial_chi = 1;
     user_options.expel_harm_effectiveness = 1.0;
   }
 
@@ -1020,6 +1020,10 @@ public:
   void activate() override;
   void collect_resource_timeline_information() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  const monk_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
   monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[ target ];
@@ -1047,9 +1051,11 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains_percent();
   double current_stagger_amount_remains();
+  double current_stagger_amount_remains_to_total_percent();
   timespan_t current_stagger_dot_remains();
   double stagger_base_value();
   double stagger_pct( int target_level );
+  double stagger_total();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_bonedust_brew ( const action_state_t* );
@@ -2137,6 +2143,11 @@ public:
     return debug_cast<const monk_t*>( owner );
   }
 
+  const sef_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   sef_td_t* get_target_data( player_t* target ) const override
   {
     sef_td_t*& td = target_data[ target ];
@@ -3094,7 +3105,7 @@ public:
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
       : melee_attack_t( "fists_of_fury_tick_fo", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
-      dual = direct_tick = background = may_crit = may_miss = true;
+      background              = true;
       aoe                     = 1 + (int)owner->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
       attack_power_mod.direct = owner->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_MAINHAND;
@@ -4055,17 +4066,17 @@ public:
 
   void trigger_shuffle( double time_extension )
   {
-    if ( p()->specialization() == MONK_BREWMASTER )
+    if ( p()->specialization() == MONK_BREWMASTER && p()->spec.shuffle->ok() )
     {
       timespan_t base_time = timespan_t::from_seconds( time_extension );
       if ( p()->buff.shuffle->up() )
       {
-        timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration();
+        timespan_t max_time   = p()->buff.shuffle->buff_duration();
         timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
-        p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+        p()->buff.shuffle->refresh_duration( new_length );
 
         if ( p()->azerite.straight_no_chaser.ok() )
-          p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+          p()->buff.straight_no_chaser->refresh_duration( new_length );
       }
       else
       {
@@ -4074,7 +4085,6 @@ public:
         if ( p()->azerite.straight_no_chaser.ok() )
           p()->buff.straight_no_chaser->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
-
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
@@ -5505,6 +5515,8 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->azerite.staggering_strikes.ok() )
           p()->sample_datas.staggering_strikes_cleared->add(
               p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() ) );
+
+        trigger_shuffle( p()->spec.blackout_kick_brm->effectN( 2 ).base_value() );
         break;
       }
       case MONK_MISTWEAVER:
@@ -7288,7 +7300,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     dot_duration = s->duration();
     dot_duration += timespan_t::from_seconds( p->talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_tick_time = timespan_t::from_millis( 500 );
     hasted_ticks = tick_may_crit = false;
     target                       = p;
   }
@@ -7339,7 +7351,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_t::init();
 
     // We don't want this counted towards our dps
-    stats->type = STATS_NEUTRAL;
+    stats->type = stats_e::STATS_NEUTRAL;
   }
 
   void delay_tick( timespan_t seconds )
@@ -7463,11 +7475,35 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     return 0;
   }
 
+  double tick_ratio_to_hp()
+  {
+    dot_t* d = get_dot();
+    if ( d && d->state )
+      return base_ta( d->state ) / p()->resources.max[ RESOURCE_HEALTH ];
+    return 0;
+  }
+
   double amount_remaining()
   {
     dot_t* d = get_dot();
     if ( d && d->state )
       return base_ta( d->state ) * d->ticks_left();
+    return 0;
+  }
+
+  double stagger_total()
+  {
+    dot_t* d = get_dot();
+    if ( d && d->state )
+      return base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time );
+    return 0;
+  }
+
+  double amount_remaining_to_total()
+  {
+    dot_t* d = get_dot();
+    if ( d && d->state )
+      return ( base_ta( d->state ) * d->ticks_left() ) / ( base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time ) );
     return 0;
   }
 };
@@ -9073,11 +9109,14 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   {
     double health_multiplier = p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
-    // TODO: Double check later. This is potentally a bug
-    if ( p().specialization() == MONK_BREWMASTER && p().spec.fortifying_brew_brm )
-      // hard-coded the 20% into the spell
-      // health_multiplier = health_multiplier * ( 0.20 * ( 1 / health_multiplier ) );
-      health_multiplier = 1.0 + ( 0.20 * ( 1 / health_multiplier ) );
+    if ( p().specialization() == MONK_BREWMASTER && p().spec.fortifying_brew_2_brm->ok() )
+    {
+      // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
+      // Currently it's bugged and giving 17.39% HP instead of the intended 20%
+      // The intended calculation is:
+      // health_multiplier = health_multiplier * ( 0.20 * ( 1 / (1 + health_multiplier ) ) );
+      health_multiplier = 0.20 * ( 1 / (1 + health_multiplier) );
+    }
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * health_multiplier );
@@ -10236,8 +10275,9 @@ void monk_t::create_buffs()
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
-  buff.shuffle =
-      make_buff( this, "shuffle", passives.shuffle )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
+                     ->set_duration_multiplier( 3 )
+                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
@@ -10357,6 +10397,9 @@ void monk_t::create_buffs()
   // Brewmaster
   buff.straight_no_chaser = make_buff<stat_buff_t>( this, "straight_no_chaser", find_spell( 285959 ) )
                                 ->add_stat( STAT_ARMOR, azerite.straight_no_chaser.value() );
+//                                ->set_duration_multiplier( 3 )
+//                                 ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  ;
   buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
                           ->set_reverse( true );
@@ -10777,6 +10820,13 @@ double monk_t::partial_clear_stagger_amount( double clear_amount )
 double monk_t::clear_stagger()
 {
   return active_actions.stagger_self_damage->clear_all_damage();
+}
+
+// monk_t::stagger_total ==================================================
+
+double monk_t::stagger_total()
+{
+  return active_actions.stagger_self_damage->stagger_total();
 }
 
 /**
@@ -11310,7 +11360,8 @@ void monk_t::combat_begin()
 
     if ( user_options.initial_chi > 0 )
       resources.current[ RESOURCE_CHI ] =
-          clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
+          clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
+                 resources.max[ RESOURCE_CHI ] );
     sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
   }
 
@@ -11687,11 +11738,10 @@ void monk_t::apl_combat_brewmaster()
   }
   def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
   // Purifying Brew
-  def->add_action( this, "Purifying Brew",
-                   "if=stagger.pct>(6*(1-(cooldown.purifying_brew.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0."
-                   "001*(1-cooldown.purifying_brew.charges_fractional))*stagger.last_tick_damage_30))",
-                   "Purifying behaviour is based on normalization (iE the late expression triggers if stagger size "
-                   "increased over the last 30 ticks or 15 seconds)." );
+  def->add_action( this, "Purifying Brew", "if=stagger.pct>18", "Purifying behaviour is based on normalization." );
+  def->add_action( this, "Purifying Brew", "if=stagger.pct>9&stagger.amounttototalpct>53" );
+  def->add_action( this, "Purifying Brew", "if=stagger.pct>4.5&stagger.amounttototalpct>71" );
+  def->add_action( this, "Purifying Brew", "if=stagger.pct>3&stagger.amounttototalpct>80" );
 
   // Black Ox Brew
   def->add_talent( this, "Black Ox Brew", "if=cooldown.purifying_brew.charges_fractional<0.5",
@@ -11724,6 +11774,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( "concentrated_flame,if=dot.concentrated_flame.remains=0" );
   def->add_action( "heart_essence,if=!essence.the_crucible_of_flame.major" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
+  def->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action(
       this, "Breath of Fire",
@@ -11732,8 +11783,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
                    "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
-  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd"
-                   "&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>execute_time&"
+                   "(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
@@ -11789,16 +11840,15 @@ void monk_t::apl_combat_windwalker()
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Opener
-  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains", "Opener" );
-  opener->add_action( this, "Expel Harm", "if=talent.chi_burst.enabled" );
-  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
-  opener->add_action( this, "Chi Wave", "if=chi.max-chi=2&talent.hit_combo.enabled" );
-  opener->add_action( this, "Expel Harm", "if=chi.max-chi=3|chi.max-chi=1" );
-  opener->add_action( this, "Flying Serpent Kick", "if=talent.hit_combo.enabled" );
-  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2" );
+  opener->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3", "Opener" );
+  opener->add_action( this, "Expel Harm", "if=talent.chi_burst.enabled&chi.max-chi>=3" );
+  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=combo_strike&chi.max-chi>=2" );
+  opener->add_action( this, "Chi Wave", "if=chi.max-chi=2" );
+  opener->add_action( this, "Expel Harm" );
+  opener->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi.max-chi>=2" );
 
   // AoE
-  aoe->add_talent( this, "Whirling Dragon Punch", "",
+  aoe->add_talent( this, "Whirling Dragon Punch", "if=buff.whirling_dragon_punch.up",
       "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
   aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   aoe->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
@@ -11816,7 +11866,7 @@ void monk_t::apl_combat_windwalker()
   aoe->add_talent( this, "Chi Wave", "if=combo_strike" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=14&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=1&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
 
   // Serenity Cooldowns
   cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|fight_remains<20", "Serenity Cooldowns" );
@@ -11863,7 +11913,7 @@ void monk_t::apl_combat_windwalker()
     }
   }
 
-  cd_serenity->add_action( this, "Touch of Death" );
+  cd_serenity->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
   cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
   cd_serenity->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
@@ -11878,7 +11928,7 @@ void monk_t::apl_combat_windwalker()
       cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1", "Use Arcane Torrent if you are missing at least 1 Chi" );
   }
 
-  cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down" );
+  cd_sef->add_action( this, "Touch of Death", "if=target.health.pct <= 15&buff.storm_earth_and_fire.down" );
 
   // TODO: Remove in 9.0.2
   cd_sef->add_action( "blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12" );
@@ -11935,7 +11985,7 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Spinning Crane Kick" );
 
   // Single Target
-  st->add_talent( this, "Whirling Dragon Punch", "", "Single Target Priority" );
+  st->add_talent( this, "Whirling Dragon Punch", "if=buff.whirling_dragon_punch.up", "Single Target Priority" );
   st->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
   st->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
   st->add_action( this, "Fists of Fury" );
@@ -12160,7 +12210,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
   if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
   {
     auto current_tick_dmg                = current_stagger_tick_dmg();
-    auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
+    auto current_tick_dmg_per_max_health = current_stagger_tick_dmg_percent();
     sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
     if ( current_tick_dmg_per_max_health > 0.045 )
     {
@@ -12202,6 +12252,13 @@ double monk_t::current_stagger_amount_remains()
   if ( active_actions.stagger_self_damage )
     dmg = active_actions.stagger_self_damage->amount_remaining();
   return dmg;
+}
+
+// monk_t::current_stagger_amount_remains_to_total_percent ==========================================
+
+double monk_t::current_stagger_amount_remains_to_total_percent()
+{
+  return active_actions.stagger_self_damage->amount_remaining_to_total();
 }
 
 // monk_t::current_stagger_dmg_percent ==================================================
@@ -12270,6 +12327,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
         return player.current_stagger_tick_dmg_percent() > stagger_health_pct;
       }
     };
+    // WoW API has this as the 16th node from UnitDebuff
     struct stagger_amount_expr_t : public expr_t
     {
       monk_t& player;
@@ -12294,6 +12352,20 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
         return player.current_stagger_tick_dmg_percent() * 100;
       }
     };
+    // This is the current stagger amount remaining compared to the total amount of the stagger dot
+    struct stagger_amount_to_total_percent_expr_t : public expr_t
+    {
+      monk_t& player;
+      stagger_amount_to_total_percent_expr_t( monk_t& p )
+        : expr_t( "stagger_amount_to_total_percent" ), player( p )
+      {
+      }
+
+      double evaluate() override
+      {
+        return player.current_stagger_amount_remains_to_total_percent() * 100;
+      }
+    };
 
     if ( splits[ 1 ] == "light" )
       return std::make_unique<stagger_threshold_expr_t>( *this, light_stagger_threshold );
@@ -12305,6 +12377,8 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
       return std::make_unique<stagger_amount_expr_t>( *this );
     else if ( splits[ 1 ] == "pct" )
       return std::make_unique<stagger_percent_expr_t>( *this );
+    else if ( splits[ 1 ] == "amounttototalpct" )
+      return std::make_unique<stagger_amount_to_total_percent_expr_t>( *this );
     else if ( splits[ 1 ] == "remains" )
     {
       return make_fn_expr( name_str, [this]() { return current_stagger_dot_remains(); } );

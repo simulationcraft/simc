@@ -620,6 +620,8 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
     // Rest of the resource summaries are printed only based on relevant resources
     range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
       root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
+      
+      root[ "resource_overflowed" ][ util::resource_type_string( r ) ] = cd.resource_overflowed[ r ];
 
       if ( r < cd.combat_end_resource.size() )
       {

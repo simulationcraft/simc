@@ -958,7 +958,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_PET_TALENT_POINTS = 145,
     A_ALLOW_TAME_PET_TYPE = 146,
     A_MECHANIC_IMMUNITY_MASK = 147,
-    A_RETAIN_COMBO_POINTS = 148,
+    A_MOD_RECHARGE_RATE_CATEGORY = 148, // Modifies recharge "rate" of a cooldown - rate /= (1 + pct)
     A_REDUCE_PUSHBACK = 149, // Reduce Pushback
     A_MOD_SHIELD_BLOCKVALUE_PCT = 150,
     A_TRACK_STEALTHED = 151, // Track Stealthed
@@ -1096,7 +1096,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_HEALING_RECEIVED = 283, // Possibly only for some spell family class spells
     A_284,
     A_MOD_ATTACK_POWER_OF_ARMOR = 285,
-    A_ABILITY_PERIODIC_CRIT = 286,
+    A_MOD_RECHARGE_RATE = 286,
     A_DEFLECT_SPELLS = 287,
     A_288 = 288,
     A_289 = 289,

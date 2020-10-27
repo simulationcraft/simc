@@ -37,6 +37,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_consumption; //Talent that buffs Demonic Tyrant
     propagate_const<buff_t*> grimoire_of_service; //Buff used by Grimoire: Felguard talent
     propagate_const<buff_t*> grim_inquisitors_dread_calling; //Buff used by SL Legendary
+    propagate_const<buff_t*> demonic_synergy; //Buff used by SL Legendary (Relic of Demonic Synergy)
   } buffs;
 
   //TODO: SL Beta - this struct and spell_t are unused
@@ -48,7 +49,7 @@ struct warlock_pet_t : public pet_t
   //TODO: SL Beta - these booleans may be unused
   bool is_demonbolt_enabled = true;
   bool is_lord_of_flames    = false;
-  bool is_warlock_pet       = true;
+  bool is_main_pet          = false;
   int dreadbite_executes    = 0;
 
   warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian = false );
@@ -62,10 +63,16 @@ struct warlock_pet_t : public pet_t
   void create_buffs_pets();
   void create_buffs_demonology();
   void init_spells_pets();
+  void init_special_effects() override;
 
   void create_buffs_destruction();
 
   target_specific_t<warlock_pet_td_t> target_data;
+
+  const warlock_pet_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
 
   warlock_pet_td_t* get_target_data( player_t* target ) const override
   {

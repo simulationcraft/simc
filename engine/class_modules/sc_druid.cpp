@@ -1002,6 +1002,7 @@ public:
   void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
+  const druid_td_t* find_target_data( const player_t* target ) const override;
   druid_td_t* get_target_data( player_t* target ) const override;
   void copy_from( player_t* ) override;
   void output_json_report( js::JsonOutput& /* root */ ) const override;
@@ -3011,6 +3012,10 @@ public:
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+
+          // Temporary workaround while BFA is still relevant, as VoP/BFA pulsar does not reset empowerments, but SL pulsar does.
+          // TODO: Move into buff_t::celestial_alignment_buff_t::extend_duration() once BFA is no longer relevant.
+          p()->buff.starsurge->expire();
         }
       }
     }
@@ -8910,53 +8915,72 @@ void druid_t::create_actions()
   player_t::create_actions();
 }
 
-// ALL Spec Pre-Combat Action Priority List =================================
+// Default Consumables ======================================================
+
 std::string druid_t::default_flask() const
 {
+  if ( true_level >= 60 )
+    return "spectral_flask_of_power";
+  else if ( true_level < 40 )
+    return "disabled";
+
   switch ( specialization() )
   {
-    case DRUID_FERAL:
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
+      return "greater_flask_of_endless_fathoms";
+    case DRUID_FERAL:
     case DRUID_GUARDIAN:
-    default: return "disabled";
+      return "greater_flask_of_the_currents";
+    default:
+      return "disabled";
   }
 }
+
 std::string druid_t::default_potion() const
 {
   switch ( specialization() )
   {
-    case DRUID_FERAL:
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
+      if ( true_level >= 60 )
+        return "spectral_intellect";
+      else if ( true_level >= 40 )
+        return "superior_battle_potion_of_intellect";
+    case DRUID_FERAL:
     case DRUID_GUARDIAN:
-    default: return "disabled";
+      if ( true_level >= 60 )
+        return "spectral_agility";
+      else if ( true_level >= 40 )
+        return "superior_battle_potion_of_agility";
+    default:
+      return "disabled";
   }
 }
 
 std::string druid_t::default_food() const
 {
-  switch ( specialization() )
-  {
-    case DRUID_FERAL:
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    default: return "disabled";
-  }
+  if ( true_level >= 60 )
+    return "feast_of_gluttonous_hedonism";
+  else if ( true_level >= 55 )
+    return "surprisingly_palatable_feast";
+  else if ( true_level >= 45 )
+    return "famine_evaluator_and_snack_table";
+  else
+    return "disabled";
 }
 
 std::string druid_t::default_rune() const
 {
-  switch ( specialization() )
-  {
-    case DRUID_FERAL:
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-    case DRUID_GUARDIAN:
-    default: return "disabled";
-  }
+  if ( true_level >= 50 )
+    return "battle_scarred";
+  else if ( true_level >= 45 )
+    return "defiled";
+  else
+    return "disabled";
 }
+
+// ALL Spec Pre-Combat Action Priority List =================================
 
 void druid_t::apl_precombat()
 {
@@ -8968,6 +8992,7 @@ void druid_t::apl_precombat()
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 }
+
 // NO Spec Combat Action Priority List ======================================
 
 void druid_t::apl_default()
@@ -9097,8 +9122,8 @@ void druid_t::apl_balance()
   aoe->add_action( "half_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "full_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "warrior_of_elune" );
-  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>8+floor(mastery_value%20)+floor(buff.starsurge_empowerment.stack%4)" );
-  aoe->add_action( "wrath,if=eclipse.lunar_next|eclipse.any_next&variable.is_cleave|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&!variable.is_cleave&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&spell_haste>0.6&(spell_targets<=3|!talent.soul_of_the_forest.enabled)|!variable.is_cleave&buff.ca_inc.remains>execute_time" );
+  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>4+floor(mastery_value%20)+floor(buff.starsurge_empowerment.stack%4)" );
+  aoe->add_action( "wrath,if=eclipse.lunar_next|eclipse.any_next&variable.is_cleave|buff.eclipse_solar.remains<action.starfire.execute_time&buff.eclipse_solar.up|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&!variable.is_cleave&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&spell_haste>0.6&(spell_targets<=3|!talent.soul_of_the_forest.enabled)|!variable.is_cleave&buff.ca_inc.remains>execute_time" );
   aoe->add_action( "starfire" );
   aoe->add_action( "run_action_list,name=fallthru" );
 
@@ -10580,6 +10605,14 @@ void druid_t::shapeshift( form_e f )
   }
 
   form = f;
+}
+
+// druid_t::find_target_data ================================================
+
+const druid_td_t* druid_t::find_target_data( const player_t* target ) const
+{
+  assert( target );
+  return target_data[ target ];
 }
 
 // druid_t::get_target_data =================================================

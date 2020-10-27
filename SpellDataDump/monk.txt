@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3652,7 +3652,7 @@ Spell Level      : 27
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 1592: Storm, Earth, and Fire (231627 effect#1), Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4)
+Category         : 1592: Storm, Earth, and Fire (231627 effect#1), Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 2 maximum
 Proc Chance      : 100%
@@ -3785,7 +3785,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #4 (id=303757)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
-#5 (id=330099)   : Apply Aura (6) | Unknown(148)
+#5 (id=330099)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)

@@ -721,16 +721,16 @@ public:
 
   target_specific_t<hunter_td_t> target_data;
 
+  const hunter_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_td_t* get_target_data( player_t* target ) const override
   {
     hunter_td_t*& td = target_data[target];
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
-  }
-
-  const hunter_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   std::vector<action_t*> background_actions;
@@ -1585,17 +1585,17 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
   target_specific_t<hunter_main_pet_td_t> target_data;
 
+  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_main_pet_td_t* get_target_data( player_t* target ) const override
   {
     hunter_main_pet_td_t*& td = target_data[target];
     if ( !td )
       td = new hunter_main_pet_td_t( target, const_cast<hunter_main_pet_t*>( this ) );
     return td;
-  }
-
-  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   resource_e primary_resource() const override
@@ -6917,20 +6917,27 @@ void hunter_t::apl_mm()
     cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
     cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
+    /* TODO:
+     * - optimize Double Tap usage re Streamline & Surging Shots (p. sure it's always "better" to DT RF even without CA)
+     * - spread the AiS love with Serpentstalker's Trickery
+     * - add some simple ttd checks to optimize the end of the fight / "short" sims?
+     * - check why Explo can't be executed in precombat (throws while it *should* have travel time)
+     */
     trickshots -> add_action( "double_tap,if=cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains" );
     trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
     trickshots -> add_action( "flare,if=tar_trap.up" );
+    trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "wild_spirits" );
     trickshots -> add_action( "volley" );
     trickshots -> add_action( "resonating_arrow" );
     trickshots -> add_action( "barrage" );
-    trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "trueshot,if=cooldown.rapid_fire.remains|focus+action.rapid_fire.cast_regen>focus.max|target.time_to_die<15" );
-    trickshots -> add_action( "aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
+    trickshots -> add_action( "aimed_shot,if=(buff.trick_shots.remains>=execute_time)&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
     trickshots -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    trickshots -> add_action( "rapid_fire,if=buff.trick_shots.up&buff.double_tap.down" );
-    trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus-cost+cast_regen>action.aimed_shot.cost" );
+    trickshots -> add_action( "rapid_fire,if=(buff.trick_shots.remains>=execute_time)&buff.double_tap.down" );
+    trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up" );
     trickshots -> add_action( "kill_shot,if=buff.dead_eye.down" );
+    trickshots -> add_action( "multishot,if=focus-cost+cast_regen>action.aimed_shot.cost" );
     trickshots -> add_action( "a_murder_of_crows" );
     trickshots -> add_action( "flayed_shot" );
     trickshots -> add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );

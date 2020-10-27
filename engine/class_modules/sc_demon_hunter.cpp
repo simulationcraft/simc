@@ -29,7 +29,6 @@ namespace
   Vengeance:
   * Add AoE component to Sinful Brand Meta
   * Add Revel in Pain passive
-  ** Add Infernal Armor
   ** Ruinous Bulwark Absorb
   
   Maybe:
@@ -212,6 +211,7 @@ public:
     // Covenant
     buff_t* fodder_to_the_flame;
     buff_t* growing_inferno;
+    buff_t* soul_furance;
 
     // Legendary
     buff_t* chaos_theory;
@@ -259,7 +259,7 @@ public:
     const spell_data_t* fallout;
     const spell_data_t* burning_alive;
 
-    const spell_data_t* infernal_armor;     // NYI
+    const spell_data_t* infernal_armor;
     const spell_data_t* charred_flesh;
     const spell_data_t* spirit_bomb;
     
@@ -405,7 +405,7 @@ public:
     conduit_data_t relentless_onslaught;
     conduit_data_t serrated_glaive;
 
-    conduit_data_t soul_furnace;        // NYI
+    conduit_data_t soul_furnace;
 
     conduit_data_t repeat_decree;
     conduit_data_t increased_scrutiny;
@@ -428,8 +428,8 @@ public:
     item_runeforge_t burning_wound;
 
     // Vengeance
-    item_runeforge_t fiery_soul;                    // NYI
-    item_runeforge_t razelikhs_defilement;          // NYI
+    item_runeforge_t fiery_soul;
+    item_runeforge_t razelikhs_defilement;
     item_runeforge_t fel_flame_fortification;       // NYI
     item_runeforge_t spirit_of_the_darkness_flame;  // NYI
   } legendary;
@@ -451,6 +451,7 @@ public:
     // General
     cooldown_t* consume_magic;
     cooldown_t* disrupt;
+    cooldown_t* elysian_decree;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
 
@@ -564,6 +565,7 @@ public:
     attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
+    spell_t* infernal_armor = nullptr;
     heal_t* spirit_bomb_heal = nullptr;
   } active;
 
@@ -581,6 +583,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
     int fodder_to_the_flame_kill_seconds = 4;
     double fodder_to_the_flame_min_percent = 0.75;
+    double razelikhs_defilement_utility_pct = 0;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -626,6 +629,7 @@ public:
 
   // overridden player_t stat functions
   double composite_armor() const override;
+  double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -647,6 +651,7 @@ public:
   // overridden player_t combat functions
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
   void combat_begin() override;
+  const demon_hunter_td_t* find_target_data( const player_t* target ) const override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
   void regen( timespan_t periodicity ) override;
@@ -1010,6 +1015,11 @@ struct soul_fragment_t
       }
 
       dh->cooldown.eye_beam->adjust( -duration );
+    }
+
+    if ( dh->conduit.soul_furnace.ok() )
+    {
+      dh->buff.soul_furance->trigger();
     }
 
     if ( type == soul_fragment::GREATER && from_demon )
@@ -2459,6 +2469,14 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
 struct immolation_aura_t : public demon_hunter_spell_t
 {
+  struct infernal_armor_damage_t : public demon_hunter_spell_t
+  {
+    infernal_armor_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->find_spell( 320334 ) )
+    {
+    }
+  };
+
   struct immolation_aura_damage_t : public demon_hunter_spell_t
   {
     bool initial;
@@ -2551,6 +2569,12 @@ struct immolation_aura_t : public demon_hunter_spell_t
     // Initial damage is referenced indirectly in Immolation Aura (Rank 2) (id=320364) tooltip
     initial_damage = p->get_background_action<immolation_aura_damage_t>( "immolation_aura_initial", p->find_spell( 258921 ), true );
     initial_damage->stats = stats;
+
+    if ( p->talent.infernal_armor->ok() && !p->active.infernal_armor )
+    {
+      p->active.infernal_armor = p->get_background_action<infernal_armor_damage_t>( "infernal_armor" );
+      add_child( p->active.infernal_armor );
+    }
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
   }
@@ -4131,6 +4155,18 @@ struct soul_cleave_t : public demon_hunter_attack_t
       aoe = as<int>( data().effectN( 2 ).base_value() );
     }
     
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_attack_t::action_multiplier();
+
+      if ( p()->buff.soul_furance->at_max_stacks() )
+      {
+        am *= 1.0 + p()->buff.soul_furance->check_value();
+      }
+
+      return am;
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -4143,6 +4179,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
   };
 
   heals::soul_cleave_heal_t* heal;
+  std::vector<cooldown_t*> sigil_cooldowns;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -4158,6 +4195,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
     }
+
+    if ( p->legendary.razelikhs_defilement->ok() )
+    {
+      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree };
+    }
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
@@ -4172,8 +4214,30 @@ struct soul_cleave_t : public demon_hunter_attack_t
       heal->execute();
     }
 
+    if ( p()->buff.soul_furance->at_max_stacks() )
+    {
+      p()->buff.soul_furance->expire();
+    }
+
+    if ( p()->legendary.razelikhs_defilement->ok() && !p()->rng().roll( p()->options.razelikhs_defilement_utility_pct ) )
+    {
+      std::vector<cooldown_t*> sigils_on_cooldown;
+      range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
+      if ( sigils_on_cooldown.size() > 0 )
+      {
+        const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
+        sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ]->adjust( adjust_duration );
+      }
+    }
+
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
+    unsigned consumed = p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
+    
+    if ( p()->legendary.fiery_soul->ok() )
+    {
+      const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.fiery_soul->effectN( 1 ).base_value() );
+      p()->cooldown.fiery_brand->adjust( adjust_duration * consumed );
+    }
   }
 };
 
@@ -4370,6 +4434,11 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p->talent.agonizing_flames->ok() )
     {
       add_invalidate( CACHE_RUN_SPEED );
+    }
+
+    if ( p->talent.infernal_armor->ok() )
+    {
+      add_invalidate( CACHE_ARMOR );
     }
   }
 };
@@ -4818,6 +4887,9 @@ void demon_hunter_t::create_buffs()
     ->set_max_stack( 99 )
     ->set_duration( 20_s );
 
+  buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
+    ->set_default_value( conduit.soul_furnace.percent() );
+
   // Legendary ==============================================================
 
   const spell_data_t* chaos_theory_buff = legendary.chaos_theory->ok() ? find_spell( 337567 ) : spell_data_t::not_found();
@@ -4976,6 +5048,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "fodder_to_the_flame_min_percent", options.fodder_to_the_flame_min_percent, 0.0, 1.0 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
+  add_option( opt_float( "razelikhs_defilement_utility_pct", options.razelikhs_defilement_utility_pct, 0.0, 1.0 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -5692,15 +5765,16 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=cooldown.fiery_brand.remains<2" );
+  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&cooldown.fiery_brand.remains<2" );
   apl_brand->add_action( this, "Infernal Strike", "if=cooldown.fiery_brand.remains=0" );
   apl_brand->add_action( this, "Fiery Brand" );
   apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
   apl_brand->add_talent( this, "Fel Devastation", "if=dot.fiery_brand.ticking" );
   apl_brand->add_action( this, "Infernal Strike", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=dot.fiery_brand.ticking" );
+  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
+  apl_normal->add_action( "elysian_decree" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
   apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
@@ -5710,7 +5784,7 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_action( this, "Immolation Aura", "if=fury<=90" );
   apl_normal->add_talent( this, "Felblade", "if=fury<=70" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_action( this, "Sigil of Flame" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
@@ -5722,6 +5796,7 @@ void demon_hunter_t::create_cooldowns()
   // General
   cooldown.consume_magic        = get_cooldown( "consume_magic" );
   cooldown.disrupt              = get_cooldown( "disrupt" );
+  cooldown.elysian_decree       = get_cooldown( "elysian_decree" );
   cooldown.felblade             = get_cooldown( "felblade" );
   cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
 
@@ -5794,11 +5869,11 @@ double demon_hunter_t::composite_armor() const
   return a;
 }
 
-// demon_hunter_t::composite_armor_multiplier ===============================
+// demon_hunter_t::composite_base_armor_multiplier ==========================
 
-double demon_hunter_t::composite_armor_multiplier() const
+double demon_hunter_t::composite_base_armor_multiplier() const
 {
-  double am = player_t::composite_armor_multiplier();
+  double am = player_t::composite_base_armor_multiplier();
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
@@ -5807,6 +5882,23 @@ double demon_hunter_t::composite_armor_multiplier() const
     if ( buff.metamorphosis->check() )
     {
       am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
+    }
+  }
+
+  return am;
+}
+
+// demon_hunter_t::composite_armor_multiplier ===============================
+
+double demon_hunter_t::composite_armor_multiplier() const
+{
+  double am = player_t::composite_armor_multiplier();
+
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    if ( buff.immolation_aura->check() )
+    {
+      am *= 1.0 + talent.infernal_armor->effectN( 1 ).percent();
     }
   }
 
@@ -6082,6 +6174,13 @@ void demon_hunter_t::assess_damage( school_e school, result_amount_type dt, acti
   if ( s->action->may_parry )
   {
     buff.demon_spikes->up();
+  }
+
+  if ( active.infernal_armor && buff.immolation_aura->check() && s->action->player->is_enemy() &&
+       dbc::is_school( school, SCHOOL_PHYSICAL ) && dt == result_amount_type::DMG_DIRECT && s->action->result_is_hit( s->result ) )
+  {
+    active.infernal_armor->set_target( s->action->player );
+    active.infernal_armor->execute();
   }
 }
 
@@ -6519,6 +6618,11 @@ std::unique_ptr<expr_t> actions::demon_hunter_sigil_t::create_sigil_expression( 
   }
 
   return {};
+}
+
+const demon_hunter_td_t* demon_hunter_t::find_target_data( const player_t* target ) const
+{
+  return _target_data[ target ];
 }
 
 /* Always returns non-null targetdata pointer

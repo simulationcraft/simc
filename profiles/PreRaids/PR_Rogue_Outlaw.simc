@@ -55,8 +55,8 @@ actions+=/bag_of_tricks
 actions.build=shiv,if=runeforge.tiny_toxic_blade.equipped
 actions.build+=/echoing_reprimand
 actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
-# Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up.
-actions.build+=/pistol_shot,if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)
+# Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down.
+actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)
 actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
 actions.build+=/sinister_strike
 

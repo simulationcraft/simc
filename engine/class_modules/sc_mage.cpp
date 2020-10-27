@@ -528,6 +528,8 @@ public:
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t mirrors_of_torment_interval = 1.5_s;
+    timespan_t arcane_missiles_chain_delay = 200_ms;
+    double arcane_missiles_chain_stddev = 0.1;
   } options;
 
   // Pets
@@ -859,6 +861,11 @@ public:
   void vision_of_perfection_proc() override;
 
   target_specific_t<mage_td_t> target_data;
+
+  const mage_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
 
   mage_td_t* get_target_data( player_t* target ) const override
   {
@@ -2901,6 +2908,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
+    // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting, p->buffs.rule_of_threes };
@@ -2936,6 +2944,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return full_duration;
   }
 
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration + d->time_to_next_full_tick();
+  }
+
   timespan_t tick_time( const action_state_t* s ) const override
   {
     timespan_t t = arcane_mage_spell_t::tick_time( s );
@@ -2962,26 +2975,34 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void trigger_dot( action_state_t* s )
   {
     dot_t* d = get_dot( s->target );
-    timespan_t new_tick_time = tick_time( s );
-    timespan_t old_tick_time = d->is_ticking() ? tick_time( d->state ) : 0_ms;
+    timespan_t tick_remains = d->time_to_next_full_tick();
+    timespan_t tt = tick_time( s );
+    int ticks = 0;
+
+    // There is a bug when chaining where instead of using the base
+    // duration to calculate the rounded number of ticks, the time
+    // left in the previous tick can add extra ticks if there is
+    // more than the new tick time remaining before that tick.
+    if ( p()->bugs && tick_remains > 0_ms )
+    {
+      timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
+      timespan_t chain_remains = tick_remains - std::min( tick_remains - 1_ms, std::max( 0_ms,
+        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
+      // If tick_remains == 0_ms, this would subtract 1 from ticks.
+      // This is not implemented in simc, but this actually appears
+      // to happen in game, which can result in missing ticks if
+      // the player refreshes the cast too quickly after a tick.
+      ticks += as<int>( std::ceil( chain_remains / tt ) - 1 );
+    }
 
     arcane_mage_spell_t::trigger_dot( s );
 
-    // When chaining Arcane Missiles casts, if the first scheduled tick
-    // after chaining would occur slower than the new tick time, it is
-    // rescheduled to occur using the new tick time instead. However,
-    // additional time is still added to the duration, which can result
-    // in extra ticks.
-    if ( p()->bugs && new_tick_time < old_tick_time )
-      d->reschedule_tick();
-
     // AM channel duration is a bit fuzzy, it will go above or below the
-    // standard 2 s to make sure it has the correct number of ticks.
-    timespan_t old_remains = d->remains();
-    int ticks = as<int>( std::round( ( old_remains - d->time_to_next_full_tick() ) / new_tick_time ) );
-    timespan_t new_remains = ticks * new_tick_time + d->time_to_next_full_tick();
+    // standard duration to make sure it has the correct number of ticks.
+    ticks += as<int>( std::round( ( d->remains() - tick_remains ) / tt ) );
+    timespan_t new_remains = ticks * tt + tick_remains;
 
-    d->adjust_duration( new_remains - old_remains, timespan_t::min(), 0, false );
+    d->adjust_duration( new_remains - d->remains(), timespan_t::min(), 0, false );
   }
 
   bool usable_moving() const override
@@ -4911,6 +4932,11 @@ struct pyroblast_dot_t : public fire_mage_spell_t
     cooldown->duration = 0_ms;
     affected_by.radiant_spark = false;
   }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration + d->time_to_next_full_tick();
+  }
 };
 
 struct pyroblast_t : public hot_streak_spell_t
@@ -5416,7 +5442,7 @@ struct radiant_spark_t : public mage_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
-    return duration + d->time_to_next_tick();
+    return duration + d->time_to_next_full_tick();
   }
 };
 
@@ -5748,7 +5774,7 @@ struct time_anomaly_tick_event_t : public event_t
         possible_procs.push_back( TA_ARCANE_POWER );
       if ( mage->buffs.evocation->check() == 0 )
         possible_procs.push_back( TA_EVOCATION );
-      if ( mage->buffs.time_warp->check() == 0 && mage->player_t::buffs.bloodlust->check() == 0 )
+      if ( mage->buffs.time_warp->check() == 0 )
         possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
@@ -5955,7 +5981,7 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "shifting_power"         ) return new         shifting_power_t( name, this, options_str );
 
   // Special
-  if ( name == "blink_any" )
+  if ( name == "blink_any" || name == "any_blink" )
     return create_action( talents.shimmer->ok() ? "shimmer" : "blink", options_str );
 
   return player_t::create_action( name, options_str );
@@ -6025,6 +6051,8 @@ void mage_t::create_options()
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "arcane_missiles_chain_stddev", options.arcane_missiles_chain_stddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
 }
