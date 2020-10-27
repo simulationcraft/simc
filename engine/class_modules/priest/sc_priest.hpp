@@ -1717,7 +1717,7 @@ inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges 
   {
     event_t::cancel( cooldown->player->queueing->queue_event );
     cooldown->player->queueing = nullptr;
-    if ( !cooldown->player->executing || !cooldown->player->channeling && !cooldown->player->readying )
+    if ( !cooldown->player->executing && !cooldown->player->channeling && !cooldown->player->readying )
       cooldown->player->schedule_ready();
   }
 }
