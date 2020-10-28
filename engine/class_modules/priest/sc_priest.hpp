@@ -1640,7 +1640,7 @@ struct priest_module_t final : public module_t
  * Takes the cooldown and new maximum charge count
  * Function depends on the internal working of cooldown_t::reset
  */
-inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
+inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges )
 {
   assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
   assert( cooldown && "Cooldown must not be null" );
@@ -1651,6 +1651,8 @@ inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
   if ( charges_max == new_max_charges )
     return;
 
+  cooldown->sim.print_debug( "{} adjusts {} max charges from {} to {}", *cooldown->player, *cooldown, charges_max,
+                             new_max_charges );
   /**
    * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
    * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
@@ -1709,6 +1711,22 @@ inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
      */
     cooldown->adjust( -charges_fractional * cooldown_t::cooldown_duration( cooldown ) );
   }
+
+  // If the player is queueing an action, cancel it.
+  if ( cooldown->player && cooldown->player->queueing )
+  {
+    event_t::cancel( cooldown->player->queueing->queue_event );
+    cooldown->player->queueing = nullptr;
+    if ( !cooldown->player->executing && !cooldown->player->channeling && !cooldown->player->readying )
+      cooldown->player->schedule_ready();
+  }
+}
+
+inline void adjust_cooldown_max_charges( cooldown_t* cooldown, int charge_change )
+{
+  auto new_charges = cooldown->charges + charge_change;
+  assert( new_charges > 0 && "Adjusting cooldown charges results in 0 new charges." );
+  set_cooldown_max_charges( cooldown, new_charges );
 }
 
 }  // namespace priestspace
