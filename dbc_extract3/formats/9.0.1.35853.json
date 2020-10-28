@@ -329,8 +329,8 @@
       { "data_type": "H", "field": "unk_1" },
       { "data_type": "i", "field": "garr_talent_tree_type" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "unk_3" },
-      { "data_type": "i", "field": "unk_4" }
+      { "data_type": "i", "field": "feature_type" },
+      { "data_type": "i", "field": "feature_rank" }
     ]
   },
   "GarrTalentRank": {
@@ -849,7 +849,7 @@
       { "data_type": "i", "field": "id_bonus", "formats": { "cpp": "%4d" } },
       { "data_type": "i", "field": "id_player_cond" },
       { "data_type": "i", "field": "unk_8" },
-      { "data_type": "i", "field": "unk_9" }
+      { "data_type": "i", "field": "id_item" }
     ]
   },
   "SkillLine": {
@@ -978,13 +978,13 @@
     "parent": "SpellName",
     "fields": [
       { "data_type": "b", "field": "unk_1" },
-      { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "id_cooldown_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" },
       { "data_type": "b", "field": "dmg_class" },
       { "data_type": "b", "field": "dispel" },
-      { "data_type": "b", "field": "mechanic" },
+      { "data_type": "b", "field": "id_mechanic", "ref": "SpellMechanic" },
       { "data_type": "b", "field": "type_prevention" },
       { "data_type": "H", "field": "start_recovery_category" },
-      { "data_type": "H", "field": "charge_category", "formats": { "cpp": "%4u" } }
+      { "data_type": "H", "field": "id_charge_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" }
     ]
   },
   "SpellCategory": {
