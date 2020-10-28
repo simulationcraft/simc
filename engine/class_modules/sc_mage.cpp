@@ -3889,6 +3889,15 @@ struct frostbolt_t final : public frost_mage_spell_t
     return t;
   }
 
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
