@@ -9154,12 +9154,6 @@ public:
 
   void register_hotfixes() const override
   {
-    // Manual hotfix for Poisoned Katar spell data
-    hotfix::register_effect( "Rogue", "2020-10-15", "Poisoned Katar Crit% Fix", 874233 )
-      .field( "sub_type" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 107 )
-      .verification_value( 108 );
   }
 
   void init( player_t* ) const override {}
