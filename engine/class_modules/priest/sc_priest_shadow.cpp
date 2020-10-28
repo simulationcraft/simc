@@ -1411,18 +1411,7 @@ struct void_torrent_t final : public priest_spell_t
   // DoT duration is fixed at 3s
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return data().duration();
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    timespan_t t = base_tick_time;
-
-    double h = priest().composite_spell_haste();
-
-    t *= h;
-
-    return t;
+    return dot_duration;
   }
 
   void last_tick( dot_t* d ) override
