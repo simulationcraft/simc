@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (git build shadowlands 0b7129aebc)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -107,7 +107,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=806782)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When falling farther than $m2 yd, faerie dust slows your fall.
+Description      : When falling farther than $m2 yd, faerie dust slows your fall for the next $319970d. This cannot occur more often than once per $332913d.
 
 Name             : Somnambulist (id=319216) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -307,8 +307,8 @@ Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden]
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
-Internal Cooldown: 15 seconds
-Proc Chance      : 50%
+Internal Cooldown: 10 seconds
+Proc Chance      : 30%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -389,7 +389,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=844396)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342937 | Target: Self (1)
-Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, up to $342802u. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] consumes Redirected Anima and grants you $342814s1% maximum health and $342814s2 Mastery per stack for $342814d.
+Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, stacking up to $342802u times. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] consumes all Redirected Anima to grant you $342814s1% maximum health and $342814s2 Mastery, per stack, for $342814d.
 Tooltip          : $spelldesc322721
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
@@ -422,7 +422,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
@@ -705,10 +705,10 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=815074)   : Apply Aura (6) | Unknown(303)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-#2 (id=815928)   : Apply Aura (6) | Unknown(359)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
+#1 (id=815074)   : Unknown(174) | Unknown(303)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Radius: 100 yards | Target: Self (1)
+#2 (id=815928)   : Unknown(174) | Unknown(359)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 13 | Radius: 100 yards | Target: Self (1)
 #3 (id=815931)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
 #4 (id=840995)   : Apply Aura (6) | Dummy (4)
@@ -1674,15 +1674,14 @@ Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
-Internal Cooldown: 0.7 seconds
 Proc Chance      : 101%
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :

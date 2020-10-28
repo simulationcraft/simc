@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (git build shadowlands 0b7129aebc)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -42,7 +42,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effects: #1, #2), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2), Frostbolt (343177 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effects: #1, #2), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2, #3), Frostbolt (343177 effect#1)
 Family Flags     : 5, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -5141,7 +5141,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Ice Shard (166869 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effects: #1, #3), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #5, #7), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Ice Shard (166869 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effects: #1, #3), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #5, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
 Triggered by     : Frostbolt (116)
 Family Flags     : 3, 5
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
@@ -10211,7 +10211,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10308,7 +10308,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819011)   : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Trigger Spell: 327511 | Target: Self (1)
-Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1%, stacking up to $327509u times.
+Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and its damage by $327509s2%, stacking up to $327509u times.
 
 Name             : Slick Ice (id=327511) [Spell Family (3), Hidden] 
 School           : Physical
@@ -10709,7 +10709,7 @@ Tooltip          : Damage done by your next Pyroblast or Flamestrike is increase
 Name             : Unrelenting Cold (id=336460) [Spell Family (3), Passive, Hidden] 
 School           : Frost
 Spell Type       : None
-Conduit Id       : 17 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 17 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10729,7 +10729,7 @@ Description      : Frozen Orb's damage is increased by |cFFFFFFFF${$s1}.1%|r.
 Name             : Shivering Core (id=336472) [Spell Family (3), Passive, Hidden] 
 School           : Frost
 Spell Type       : None
-Conduit Id       : 18 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 18 (values=8, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10753,7 +10753,7 @@ Name             : Icy Propulsion (id=336522) [Spell Family (3), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 20 (values=9.0, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 18.0, 18.9, 19.799999, 20.700001, 21.6)
+Conduit Id       : 20 (values=9, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 18, 18.9, 19.799999, 20.700001, 21.6)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10773,7 +10773,7 @@ Description      : While Icy Veins is active, your critical hits reduce its cool
 Name             : Ice Bite (id=336569) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 21 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 21 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10785,13 +10785,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=834069)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of Ice Lance against frozen enemies by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Winter's Protection (id=336613) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 23 (values=-25000.0, -27500.0, -30000.0, -32500.0, -35000.0, -37500.0, -40000.0, -42500.0, -45000.0, -47500.0, -50000.0, -52500.0, -55000.0, -57500.0, -60000.0)
+Conduit Id       : 23 (values=-25000, -27500, -30000, -32500, -35000, -37500, -40000, -42500, -45000, -47500, -50000, -52500, -55000, -57500, -60000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10811,7 +10811,7 @@ Description      : The cooldown of Ice Block is reduced by |cFFFFFFFF${$s1/-1000
 Name             : Flow of Time (id=336636) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 26 (values=-2000.0, -2200.0, -2400.0, -2600.0, -2800.0, -3000.0, -3200.0, -3400.0, -3600.0, -3800.0, -4000.0, -4200.0, -4400.0, -4600.0, -4800.0)
+Conduit Id       : 26 (values=-2000, -2200, -2400, -2600, -2800, -3000, -3200, -3400, -3600, -3800, -4000, -4200, -4400, -4600, -4800)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10834,7 +10834,7 @@ Name             : Grounding Surge (id=336777) [Spell Family (3), Passive, Hidde
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 29 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 29 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10855,7 +10855,7 @@ Name             : Infernal Cascade (id=336821) [Spell Family (3), Passive, Hidd
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 30 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 30 (values=10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10875,7 +10875,7 @@ Description      : While Combustion is active, your Fire Blast grants you |cFFFF
 Name             : Master Flame (id=336852) [Spell Family (3), Passive, Hidden] 
 School           : Fire
 Spell Type       : None
-Conduit Id       : 32 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 32 (values=8, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10900,7 +10900,7 @@ Name             : Arcane Prodigy (id=336873) [Spell Family (3), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 34 (values=1.5, 1.65, 1.8, 1.95, 2.1, 2.25, 2.4, 2.55, 2.7, 2.85, 3.0, 3.15, 3.3, 3.45, 3.6)
+Conduit Id       : 34 (values=1.5, 1.65, 1.8, 1.95, 2.1, 2.25, 2.4, 2.55, 2.7, 2.85, 3, 3.15, 3.3, 3.45, 3.6)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10921,7 +10921,7 @@ Name             : Nether Precision (id=336886) [Spell Family (3), Passive, Hidd
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 36 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 36 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10964,7 +10964,7 @@ Tooltip          : Arcane Blast damage increased by $w1%.
 Name             : Discipline of the Grove (id=336992) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 38 (values=-1000.0, -1100.0, -1200.0, -1300.0, -1400.0, -1500.0, -1600.0, -1700.0, -1800.0, -1900.0, -2000.0, -2100.0, -2200.0, -2300.0, -2400.0)
+Conduit Id       : 38 (values=-1000, -1100, -1200, -1300, -1400, -1500, -1600, -1700, -1800, -1900, -2000, -2100, -2200, -2300, -2400)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10983,7 +10983,7 @@ Description      : Shifting Power reduces your Mage ability cooldowns by an addi
 Name             : Gift of the Lich (id=336999) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 39 (values=6000.0, 6600.0, 7200.0, 7800.0, 8400.0, 9000.0, 9600.0, 10200.0, 10800.0, 11400.0, 12000.0, 12600.0, 13200.0, 13800.0, 14400.0)
+Conduit Id       : 39 (values=6000, 6600, 7200, 7800, 8400, 9000, 9600, 10200, 10800, 11400, 12000, 12600, 13200, 13800, 14400)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11002,7 +11002,7 @@ Description      : Deathborne's duration is increased by|cFFFFFFFF ${$s1/1000}.1
 Name             : Ire of the Ascended (id=337058) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 40 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 40 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11022,7 +11022,7 @@ Name             : Siphoned Malice (id=337087) [Spell Family (3), Passive, Hidde
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 43 (values=2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8)
+Conduit Id       : 43 (values=2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11067,7 +11067,7 @@ Tooltip          : Spell Damage increased by ${$w1}.1%.
 Name             : Cryo-Freeze (id=337123) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 45 (values=5.5, 6.05, 6.6, 7.15, 7.7, 8.25, 8.8, 9.35, 9.9, 10.45, 11.0, 11.55, 12.1, 12.65, 13.2)
+Conduit Id       : 45 (values=5.5, 6.05, 6.6, 7.15, 7.7, 8.25, 8.8, 9.35, 9.9, 10.45, 11, 11.55, 12.1, 12.65, 13.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11087,7 +11087,7 @@ Description      : While inside Ice Block, you heal for |cFFFFFFFF${$s1*10}%|r o
 Name             : Diverted Energy (id=337136) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 48 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 48 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11105,7 +11105,7 @@ Description      : Your Barriers heal you for |cFFFFFFFF$s1%|r of the damage abs
 Name             : Magi's Brand (id=337192) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 51 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 15.0)
+Conduit Id       : 51 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 15)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11126,7 +11126,7 @@ Name             : Flame Accretion (id=337224) [Spell Family (3), Passive, Hidde
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 53 (values=2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0)
+Conduit Id       : 53 (values=2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11147,7 +11147,7 @@ Name             : Artifice of the Archmage (id=337240) [Spell Family (3), Passi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 55 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 55 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11168,7 +11168,7 @@ Name             : Incantation of Swiftness (id=337275) [Spell Family (3), Passi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 58 (values=45.0, 49.5, 54.0, 58.5, 63.0, 67.5, 72.0, 76.5, 81.0, 85.5, 90.0, 94.5, 99.0, 103.5, 108.0)
+Conduit Id       : 58 (values=45, 49.5, 54, 58.5, 63, 67.5, 72, 76.5, 81, 85.5, 90, 94.5, 99, 103.5, 108)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11187,7 +11187,7 @@ Name             : Tempest Barrier (id=337293) [Spell Family (3), Passive, Hidde
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 61 (values=4.0, 4.4, 4.8, 5.2, 5.6, 6.0, 6.4, 6.8, 7.2, 7.6, 8.0, 8.4, 8.8, 9.2, 9.6)
+Conduit Id       : 61 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11224,7 +11224,7 @@ Tooltip          : Absorbs $w1 damage.
 Name             : Controlled Destruction (id=341325) [Spell Family (3), Passive, Hidden] 
 School           : Fire
 Spell Type       : None
-Conduit Id       : 249 (values=4.0, 4.4, 4.8, 5.2, 5.6, 6.0, 6.4, 6.8, 7.2, 7.6, 8.0, 8.4, 8.8, 9.2, 9.6)
+Conduit Id       : 249 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11705,7 +11705,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc314793
 
-Name             : Mirrors of Torment (id=345977) [Hidden] 
+Name             : Mirrors of Torment (id=345977) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Nature
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (git build shadowlands 0b7129aebc)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -418,7 +418,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 6
-Travel Time      : 0.2 seconds
 Duration         : 360 seconds
 Cooldown         : 30 seconds
 Affecting spells : Improved Feign Death (24432 effect#1), Duck and Cover (280169 effect#2), Craven Strategem (336747 effect#1)
@@ -717,7 +716,7 @@ Spell Type       : Ranged
 Spell Level      : 37
 Range            : 40 yards
 GCD              : 1 seconds
-Velocity         : 40 yards/sec
+Velocity         : 50 yards/sec
 Cooldown         : 10 seconds
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
@@ -4067,7 +4066,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : A sweeping attack that strikes up to $I enemies in front of you for $s1 Physical damage.$?s294029[
 
-Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hit, up to $s3.][]
+Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hit.][]
 Variables        : $cdr=${$s2/1000}
 
 Name             : Harpoon (id=190925) [Spell Family (9)] 
@@ -10999,7 +10998,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ..x..... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
@@ -11015,8 +11014,8 @@ Effects          :
 #5 (id=837984)   : Apply Aura (6) | Unknown(381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc308491
-Tooltip          : Chance to suffer a critical strike from the Hunter increased by $s1%.
-Hunter ignoring line of sight.
+Tooltip          : Chance to suffer a critical strike from $@auracaster increased by $s1%.
+$@auracaster ignoring line of sight.
 
 Name             : Thrill of the Hunt (id=312365) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -12133,7 +12132,7 @@ Tooltip          : Damage of your next $?s212436[Butchery][Carve] increased by $
 Name             : Enfeebled Mark (id=339018) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 137 (values=7.5, 8.2, 8.9, 9.6, 10.3, 11.0, 11.7, 12.4, 13.1, 13.8, 14.5, 15.2, 15.9, 16.6, 17.200001)
+Conduit Id       : 137 (values=7.5, 8.2, 8.9, 9.6, 10.3, 11, 11.7, 12.4, 13.1, 13.8, 14.5, 15.2, 15.9, 16.6, 17.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12155,7 +12154,7 @@ Description      : Your attacks and abilities deal |cFFFFFFFF${$s1}.1%|r increas
 Name             : Empowered Release (id=339059) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 139 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 139 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12168,12 +12167,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838040)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Flayed Shot has an additional $s1% chance to proc Flayer's Mark and it increases the damage of your next Kill Shot by |cFFFFFFFF ${$s1}.1%|r.
+Description      : Flayed Shot has an additional $s1% chance to proc Flayer's Mark and it increases the damage of your next Kill Shot by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Spirit Attunement (desc=Kyrian) (id=339109) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 140 (values=10.0, 11.0, 12.0, 13.5, 14.5, 15.5, 16.5, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0)
+Conduit Id       : 140 (values=10, 11, 12, 13.5, 14.5, 15.5, 16.5, 18, 19, 20, 21, 22, 23, 24, 25)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12198,7 +12197,7 @@ Description      : Wild Spirits lasts ${$s2/1000} sec longer, and deals |cFFFFFF
 Name             : Necrotic Barrage (id=339129) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 143 (values=5.0, 6.0, 7.0, 8.5, 9.5, 10.5, 11.5, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 143 (values=5, 6, 7, 8.5, 9.5, 10.5, 11.5, 13, 14, 15, 16, 17, 18, 19, 20)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12222,7 +12221,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 157 (values=-3.0, -3.5, -4.0, -4.5, -5.0, -5.5, -6.0, -6.5, -7.0, -7.5, -8.0, -8.5, -9.0, -9.5, -10.0)
+Conduit Id       : 157 (values=-3, -3.5, -4, -4.5, -5, -5.5, -6, -6.5, -7, -7.5, -8, -8.5, -9, -9.5, -10)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12240,7 +12239,7 @@ Description      : Hunter's Mark decreases the damage the target deals to you by
 Name             : Harmony of the Tortollan (id=339377) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 166 (values=-10000.0, -11500.0, -13000.0, -14500.0, -16000.0, -17500.0, -19000.0, -20500.0, -23000.0, -24500.0, -26000.0, -27500.0, -29000.0, -30500.0, -32000.0)
+Conduit Id       : 166 (values=-10000, -11500, -13000, -14500, -16000, -17500, -19000, -20500, -23000, -24500, -26000, -27500, -29000, -30500, -32000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12261,7 +12260,7 @@ Name             : Rejuvenating Wind (id=339399) [Spell Family (9), Passive, Hid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 170 (values=10.0, 11.0, 12.0, 13.5, 14.5, 16.0, 17.5, 19.0, 20.5, 22.0, 23.5, 25.0, 26.5, 28.0, 30.0)
+Conduit Id       : 170 (values=10, 11, 12, 13.5, 14.5, 16, 17.5, 19, 20.5, 22, 23.5, 25, 26.5, 28, 30)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12299,7 +12298,7 @@ Tooltip          : Heals you for $w1% every $t sec.
 Name             : Resilience of the Hunter (id=339459) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 173 (values=-3.0, -3.8, -4.6, -5.4, -6.2, -7.0, -7.8, -8.6, -9.4, -10.2, -11.0, -11.8, -12.6, -13.4, -14.2)
+Conduit Id       : 173 (values=-3, -3.8, -4.6, -5.4, -6.2, -7, -7.8, -8.6, -9.4, -10.2, -11, -11.8, -12.6, -13.4, -14.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12318,7 +12317,7 @@ Name             : Reversal of Fortune (id=339495) [Spell Family (9), Passive, H
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 175 (values=5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0)
+Conduit Id       : 175 (values=5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
 Proc Flags       : ....x... x....... ........ ........ 
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12338,7 +12337,7 @@ Description      : Successfully interrupting an enemy with $?s147362[Counter Sho
 Name             : Cheetah's Vigor (id=339558) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 178 (values=-16000.0, -17000.0, -18000.0, -19000.0, -20000.0, -21000.0, -22000.0, -23000.0, -24000.0, -25000.0, -26000.0, -27000.0, -28000.0, -29000.0, -30000.0)
+Conduit Id       : 178 (values=-16000, -17000, -18000, -19000, -20000, -21000, -22000, -23000, -24000, -25000, -26000, -27000, -28000, -29000, -30000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12361,7 +12360,7 @@ Description      : Aspect of the Cheetah's secondary movement speed lasts an add
 Name             : Tactical Retreat (id=339651) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 181 (values=-20.0, -22.0, -24.0, -27.0, -29.0, -31.0, -33.0, -36.0, -38.0, -40.0, -42.0, -44.0, -46.0, -48.0, -50.0)
+Conduit Id       : 181 (values=-20, -22, -24, -27, -29, -31, -33, -36, -38, -40, -42, -44, -46, -48, -50)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12379,7 +12378,7 @@ Description      : Disengage slows nearby enemy movement speed by|cFFFFFFFF ${$s
 Name             : Ferocious Appetite (id=339704) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 183 (values=10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 25.0, 27.0, 29.0, 31.0, 34.0, 36.0, 38.0, 40.0)
+Conduit Id       : 183 (values=10, 12, 14, 16, 18, 20, 22, 25, 27, 29, 31, 34, 36, 38, 40)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12391,13 +12390,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=839144)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Kill Command critical hits reduce the cooldown of Aspect of the Wild by |cFFFFFFFF${$s1/10}.1 sec|r.
 
 Name             : One With the Beast (id=339750) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 185 (values=1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0)
+Conduit Id       : 185 (values=1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12422,7 +12421,7 @@ Description      : Bestial Wrath increases all damage you and your pet deal by a
 Name             : Sharpshooter's Focus (id=339920) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 188 (values=20.0, 22.0, 24.0, 27.0, 29.0, 31.0, 33.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0)
+Conduit Id       : 188 (values=20, 22, 24, 27, 29, 31, 33, 36, 38, 40, 42, 44, 46, 48, 50)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12444,7 +12443,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 189 (values=3.0, 3.25, 3.5, 4.0, 4.25, 4.5, 4.75, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0)
+Conduit Id       : 189 (values=3, 3.25, 3.5, 4, 4.25, 4.5, 4.75, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12481,7 +12480,7 @@ Effects          :
 #1 (id=839483)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc339924
-Tooltip          : Your next Rapid Fire deals $339924s1% increased damage per shot.
+Tooltip          : Your next Rapid Fire deals ${$339924s1}.1% increased damage per shot.
 
 Name             : Brutal Projectiles (id=339929) [Spell Family (9)] 
 Class            : Hunter
@@ -12510,7 +12509,7 @@ Tooltip          : Rapid Fire is dealing $339924s1% increased damage per shot.
 Name             : Deadly Chain (id=339973) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 192 (values=5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 192 (values=5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12532,7 +12531,7 @@ Description      : Trick Shots secondary damage is increased by|cFFFFFFFF ${$s1}
 Name             : Powerful Precision (id=340033) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 199 (values=5.0, 6.0, 7.0, 8.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 199 (values=5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12556,7 +12555,7 @@ Description      : Precise Shots increases the damage of your next Arcane Shot o
 Name             : Echoing Call (id=340876) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 223 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 223 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12577,7 +12576,7 @@ Name             : Strength of the Pack (id=341222) [Spell Family (9), Passive, 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Conduit Id       : 224 (values=3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0)
+Conduit Id       : 224 (values=3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12617,7 +12616,7 @@ Tooltip          : Damage done increased by ${$w1}.1%.
 Name             : Stinging Strike (id=341246) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 226 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 226 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12637,7 +12636,7 @@ Description      : $?s259387[Mongoose Bite][Raptor Strike]'s damage is increased
 Name             : Deadly Tandem (id=341350) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 251 (values=4000.0, 4500.0, 5000.0, 5500.0, 6000.0, 6500.0, 7000.0, 7500.0, 8000.0, 8500.0, 9000.0, 9500.0, 10000.0, 10500.0, 11000.0)
+Conduit Id       : 251 (values=4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12658,7 +12657,7 @@ Name             : Flame Infusion (id=341399) [Spell Family (9), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 252 (values=5.0, 5.33, 5.66, 6.0, 6.33, 6.66, 7.0, 7.33, 8.66, 9.0, 9.33, 9.66, 10.0, 10.33, 10.66)
+Conduit Id       : 252 (values=5, 5.33, 5.66, 6, 6.33, 6.66, 7, 7.33, 8.66, 9, 9.33, 9.66, 10, 10.33, 10.66)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12672,13 +12671,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=841766)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s212436[Butchery][Carve] increases the damage of your next Wildfire Bomb explosion by|cFFFFFFFF ${$s1}.1%|r, stacks up to $341401u times.
 
 Name             : Bloodletting (id=341440) [Spell Family (9), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 253 (values=5.0, 11.0, 12.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 253 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13083,7 +13082,7 @@ Name             : Ambuscade (id=346747) [Spell Family (9), Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 282 (values=1000.0, 1100.0, 1200.0, 1300.0, 1400.0, 1500.0, 1600.0, 1700.0, 1800.0, 1900.0, 2000.0, 2100.0, 1000.0, 2300.0, 2400.0)
+Conduit Id       : 282 (values=1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 1000, 2300, 2400)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 

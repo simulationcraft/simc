@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-26/36294)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (git build shadowlands 0b7129aebc)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -126,7 +126,7 @@ Spell Type       : Magic
 Spell Level      : 9
 Range            : 40 yards
 Cooldown         : 600 seconds
-Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Tyr's Hand of Faith (206380 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Tyr's Hand of Faith (206380 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1)
 Family Flags     : 15
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -213,7 +213,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=107)
-Spell Level      : 41
+Spell Level      : 32
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -312,7 +312,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 7% Base Mana (0) (id=284)
-Spell Level      : 32
+Spell Level      : 41
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 1 seconds
@@ -385,7 +385,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3), Sanctuary (105805 effect#5), Selfless Healer (114250 effects: #1, #2), Retribution Paladin (137027 effects: #8, #9), Protection Paladin (137028 effects: #11, #12), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3), Sanctuary (105805 effect#5), Selfless Healer (114250 effects: #1, #2), Retribution Paladin (137027 effects: #8, #9), Protection Paladin (137028 effects: #11, #12), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -640,7 +640,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 19
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Focused Light (339984 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1)
 Family Flags     : 46, 48
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -1193,7 +1193,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 60 yards
-Affecting spells : Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1)
 Family Flags     : 100
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ...x.... ........ ........ .....x..   ........ .x...... ........ .....x.. 
@@ -1585,7 +1585,7 @@ Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1632,11 +1632,11 @@ Spell Type       : None
 Resource         : 3 Holy Power (9) (id=3994)
 Spell Level      : 34
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
+Affecting spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Enkindled Spirit (341741 effect#1)
 Family Flags     : 82
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1714,7 +1714,7 @@ Resource         : 3 Holy Power (9) (id=4098)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Royal Decree (340147 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Sacred Judgment (253806 effect#1), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2177,7 +2177,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1)
 Family Flags     : 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2234,7 +2234,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65, 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -2263,7 +2263,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#1), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 65, 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   ........ .x...... ........ ........ 
@@ -2397,7 +2397,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 46, 101
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
@@ -3328,7 +3328,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Triggered by     : Judgment of Light (196941)
 Family Flags     : 32, 46
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
@@ -3371,7 +3371,7 @@ Resource         : 7% Base Mana (0) (id=10087)
 Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1)
 Family Flags     : 46, 124
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4629,7 +4629,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 46, 97
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4739,7 +4739,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effects: #1, #2, #4), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1), Enkindled Spirit (341741 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effects: #1, #2, #4), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Enkindled Spirit (341741 effect#1)
 Family Flags     : 46, 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -8416,7 +8416,7 @@ Class            : Paladin
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8654,7 +8654,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Shadowbreaker, Dawn of the Sun (337815 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9125,7 +9125,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=821066)   : School Damage (2): frost
@@ -9435,7 +9435,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Judgment has a $?s137029[$s1%]?s137028[$s2%][$s3%] chance to reduce the cost of your next Holy Power spender by $@switch<$s4>[1-2][$337682s1].
 
-Name             : From Dusk till Dawn (id=337746) [Spell Family (10), Passive] 
+Name             : Of Dusk and Dawn (id=337746) [Spell Family (10), Passive] 
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -9465,7 +9465,7 @@ Name             : Blessing of Dawn (id=337747) [Spell Family (10)]
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Triggered by     : From Dusk till Dawn (337746)
+Triggered by     : Of Dusk and Dawn (337746)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9492,7 +9492,7 @@ Name             : Blessing of Dusk (id=337757) [Spell Family (10)]
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Triggered by     : From Dusk till Dawn (337746)
+Triggered by     : Of Dusk and Dawn (337746)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9550,38 +9550,13 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=836030)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-Description      : Light of Dawn's range is increased to $85222a3 yards, and all allies inside your Light of Dawn receive $337815s1% increased healing from your spells for $337815d.
-
-Name             : Shock Barrier (id=337824) [Spell Family (10)] 
-School           : Holy
-Spell Type       : Magic
-Spell Level      : 24
-Range            : 60 yards
-Max Targets      : 3
-Duration         : 18 seconds
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2)
-Triggered by     : Shock Barrier (337825)
-Family Flags     : 46
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   .....x.. xx...... ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ x...x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Tick on application (169)
-Effects          :
-#1 (id=836043)   : Apply Aura (6) | Periodic Dummy (226): every 6 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-#2 (id=836044)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
-#3 (id=836045)   : Dummy (3)
-                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : $@spelldesc337825
-Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][Absorption exhausted.]
-Refreshed to $w1 absorption every $t1 sec.
-Variables        : $shield=${$337824s3/100*$SPH}
+#2 (id=874812)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=874813)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Light of Dawn's range is increased to $85222a3 yards. All allies within your Light of Dawn benefit from Mastery: Lightbringer as though they were within $s2 yards for $337815d.
+
+Word of Glory receives $s3% increased benefit from your Mastery.
 
 Name             : Shock Barrier (id=337825) [Spell Family (10), Passive] 
 School           : Physical
@@ -9599,9 +9574,11 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31), Don't display in aura bar (60)
 Effects          :
-#1 (id=836046)   : Apply Aura (6) | Proc Trigger Spell (42): Shock Barrier
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 337824 | Target: Self (1)
-Description      : Holy Shock protects the target with a shield of Holy Light for $337824d, absorbing up to $<shield> damage every $337824t1 sec. Can protect up to $s1 targets.
+#1 (id=836046)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=874827)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Holy Shock protects the target with a shield of Holy Light for $337824d, absorbing damage equal to $s2% of the Holy Shock every $337824t1 sec. Can protect up to $s1 targets.
 Variables        : $shield=${$337824s3/100*$SPH}
 
 Name             : Holy Avenger's Engraved Sigil (id=337831) [Spell Family (10), Passive] 
@@ -9713,7 +9690,7 @@ Name             : Divine Call (id=338741) [Spell Family (10), Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 129 (values=30.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0)
+Conduit Id       : 129 (values=48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9736,7 +9713,7 @@ Name             : Shielding Words (id=338787) [Spell Family (10), Passive, Hidd
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 133 (values=15.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0)
+Conduit Id       : 133 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9759,7 +9736,7 @@ Name             : Golden Path (id=339114) [Spell Family (10), Passive, Hidden]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Conduit Id       : 141 (values=200.0, 220.0, 240.0, 260.0, 280.0, 300.0, 320.0, 340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0)
+Conduit Id       : 141 (values=200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9772,7 +9749,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838188)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every $26573t1 sec while standing within it.
+Description      : Consecration heals you for |cFFFFFFFF$<points>|r every $26573t1 sec while standing within it.
+Variables        : $points=${$AP*.05*($s1/100)}
 
 Name             : Golden Path (id=339119) [Spell Family (10)] 
 Class            : Paladin
@@ -9782,7 +9760,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -9796,7 +9774,7 @@ Name             : Pure Concentration (id=339124) [Spell Family (10), Passive, H
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Conduit Id       : 142 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 142 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9814,7 +9792,7 @@ Description      : Concentration Aura reduces the duration of incoming Fear effe
 Name             : Light's Barding (id=339268) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 159 (values=50.0, 55.0, 60.0, 64.0, 67.0, 70.0, 74.0, 77.0, 80.0, 84.0, 87.0, 90.0, 94.0, 97.0, 100.0)
+Conduit Id       : 159 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9834,7 +9812,7 @@ Description      : Divine Steed's duration is increased by |cFFFFFFFF${$s1}.1%|r
 Name             : Wrench Evil (id=339292) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 161 (values=-50.0, -55.0, -60.0, -64.0, -67.0, -70.0, -74.0, -77.0, -80.0, -84.0, -87.0, -90.0, -94.0, -97.0, -100.0)
+Conduit Id       : 161 (values=-40, -44, -48, -52, -56, -60, -64, -68, -72, -76, -80, -84, -88, -92, -96)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9858,7 +9836,7 @@ Description      : Turn Evil's cast time is reduced by |cFFFFFFFF${-$s1}.1%|r, a
 Name             : Echoing Blessings (id=339316) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 163 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 163 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9891,7 +9869,7 @@ Name             : Expurgation (id=339371) [Spell Family (10), Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 164 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 164 (values=32, 35.200001, 38.400002, 41.599998, 44.799999, 48, 51.200001, 54.400002, 57.599998, 60.799999, 64, 67.199997, 70.400002, 73.599998, 76.800003)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9913,7 +9891,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 167 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 167 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9958,7 +9936,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 182 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 182 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9974,14 +9952,14 @@ Effects          :
 #1 (id=838858)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838859)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Judgment grants you Virtuous Command for $339664d, which gives your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks a $s2% chance to deal |cFFFFFFFF${$s1}.1%|r additional Holy damage.
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Judgment grants you Virtuous Command for $339664d, which causes your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks to deal |cFFFFFFFF${$s1}.1%|r additional Holy damage.
 
 Name             : Templar's Vindication (id=339531) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 176 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 176 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9995,9 +9973,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=838875)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838876)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Templar's Verdict has a |cFFFFFFFF${$s1}.1%|r chance to strike again for $s2% of its damage.
 
 Name             : Templar's Verdict (id=339538) [Spell Family (10)] 
@@ -10029,7 +10007,7 @@ Name             : Enkindled Spirit (id=339570) [Spell Family (10), Passive, Hid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 177 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 177 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10090,7 +10068,7 @@ Name             : Resplendent Light (id=339712) [Spell Family (10), Passive, Hi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 184 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 184 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10114,7 +10092,7 @@ Description      : Holy Light heals up to $s2 targets within $339744a1 yds for |
 Name             : Focused Light (id=339984) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 193 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 193 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10135,7 +10113,7 @@ Name             : Untempered Dedication (id=339987) [Spell Family (10), Passive
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 194 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 5.0)
+Conduit Id       : 194 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10179,7 +10157,7 @@ Name             : Vengeful Shock (id=340006) [Spell Family (10), Passive, Hidde
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 195 (values=15.0, 19.0, 21.0, 23.0, 25.0, 27.0, 29.0, 31.0, 33.0, 35.0, 37.0, 39.0, 41.0, 43.0, 45.0)
+Conduit Id       : 195 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10222,7 +10200,7 @@ Tooltip          : Suffering $w1% more Holy damage.
 Name             : Punish the Guilty (id=340012) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 196 (values=50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0)
+Conduit Id       : 196 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10240,7 +10218,7 @@ Description      : Shield of the Righteous deals |cFFFFFFFF$s1%|r more damage to
 Name             : Resolute Defender (id=340023) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 197 (values=1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4)
+Conduit Id       : 197 (values=1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10261,7 +10239,7 @@ Name             : Royal Decree (id=340030) [Spell Family (10), Passive, Hidden]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Conduit Id       : 209 (values=-15000.0, -17000.0, -18000.0, -19000.0, -20000.0, -21000.0, -22000.0, -23000.0, -24000.0, -25000.0, -26000.0, -27000.0, -28000.0, -29000.0, -30000.0)
+Conduit Id       : 209 (values=-15000, -16500, -18000, -19500, -21000, -22500, -24000, -25500, -27000, -28500, -30000, -31500, -33000, -34500, -36000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10304,7 +10282,7 @@ Tooltip          : Word of Glory costs 0 Holy Power.
 Name             : The Long Summer (id=340185) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 210 (values=30.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0, 52.0, 54.0, 56.0, 58.0, 60.0)
+Conduit Id       : 210 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10325,7 +10303,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 213 (values=50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0)
+Conduit Id       : 213 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10367,7 +10345,7 @@ Description      : $@spelldesc340192
 Name             : Hallowed Discernment (id=340212) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 215 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 215 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10386,7 +10364,7 @@ Name             : Ringing Clarity (id=340218) [Spell Family (10), Passive, Hidd
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 216 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 216 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10402,7 +10380,7 @@ Effects          :
 #1 (id=839972)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=868309)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast $s2 extra $ltime:times; on the main target.
 
 Name             : Enkindled Spirit (id=341741) [Spell Family (10)] 
