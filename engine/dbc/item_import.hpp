@@ -11,8 +11,8 @@
 
 namespace dbc
 {
-  util::span<const dbc_item_data_t> items();
-  util::span<const dbc_item_data_t> items_ptr();
+  util::span<const util::span<const dbc_item_data_t>> items();
+  util::span<const util::span<const dbc_item_data_t>> items_ptr();
 }
 
 #endif /* ITEM_IMPORT_HPP */

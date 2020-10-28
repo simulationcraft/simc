@@ -9,7 +9,7 @@
 
 #include "generated/item_data.inc"
 
-util::span<const dbc_item_data_t> dbc::items()
+util::span<const util::span<const dbc_item_data_t>> dbc::items()
 {
   return __item_data;
 }

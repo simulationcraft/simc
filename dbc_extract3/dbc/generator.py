@@ -806,7 +806,7 @@ class ItemDataGenerator(DataGenerator):
             self.format_str('item_stats'), len(items_stats_index)))
         for stats in items_stats_index.items():
             self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
-        self._out.write('};\n')
+        self._out.write('};\n\n')
 
         def item_stats_fields(id):
             stats = items_stats_index.get(id)
@@ -814,38 +814,49 @@ class ItemDataGenerator(DataGenerator):
                 return [ '0', '0' ]
             return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
 
-        self.output_header(
-                header = 'Items, ilevel {}-{}'.format(self._options.min_ilevel, self._options.max_ilevel),
-                type = 'dbc_item_data_t',
-                array = 'item',
-                length = len(data))
+        self._out.write('// Items, ilevel {}-{}, wow build {}\n\n'.format(
+                self._options.min_ilevel, self._options.max_ilevel, self._options.build))
 
-        for item in data:
-            item2 = self.db('Item')[item.id]
+        CHUNK_SIZE = 1<<14
+        chunk_index = 0
+        for i in range(0, len(data), CHUNK_SIZE):
+            chunk = data[i: i + CHUNK_SIZE]
+            self._out.write('static const std::array<dbc_item_data_t, {}> __{}_data_chunk{} {{ {{\n'.format(
+                len(chunk), self.format_str('item'), chunk_index))
 
-            fields = item.field('name', 'id', 'flags_1', 'flags_2')
+            for item in chunk:
+                item2 = self.db('Item')[item.id]
 
-            flag_types = 0x00
+                fields = item.field('name', 'id', 'flags_1', 'flags_2')
 
-            for entry in item.child_refs('JournalEncounterItem'):
-                if entry.flags_1 == 0x10:
-                    flag_types |= self._type_flags['Raid Finder']
-                elif entry.flags_1 == 0xC:
-                    flag_types |= self._type_flags['Heroic']
+                flag_types = 0x00
 
-            flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
+                for entry in item.child_refs('JournalEncounterItem'):
+                    if entry.flags_1 == 0x10:
+                        flag_types |= self._type_flags['Raid Finder']
+                    elif entry.flags_1 == 0xC:
+                        flag_types |= self._type_flags['Heroic']
 
-            fields += [ '%#.2x' % flag_types ]
-            fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
-            fields += item2.field('classs', 'subclass')
-            fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
-            fields += item_stats_fields(item.id)
-            fields += item.field('class_mask', 'race_mask')
-            fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
+                flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
 
-            self.output_record(fields)
+                fields += [ '%#.2x' % flag_types ]
+                fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
+                fields += item2.field('classs', 'subclass')
+                fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
+                fields += item_stats_fields(item.id)
+                fields += item.field('class_mask', 'race_mask')
+                fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
+                fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
+                self.output_record(fields)
+
+            self._out.write('} };\n')
+            chunk_index += 1
+
+        self._out.write('\n')
+        self._out.write('static const std::array<util::span<const dbc_item_data_t>, {}> __{}_data {{ {{\n'.format(
+                chunk_index, self.format_str('item')))
+        self._out.write(''.join('  __{}_data_chunk{},\n'.format(self.format_str('item'), i) for i in range(chunk_index)))
         self.output_footer()
 
     def generate_json(self, data = None):
