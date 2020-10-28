@@ -1404,12 +1404,13 @@ class SpellDataGenerator(DataGenerator):
             ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
             ( 341207, 0 ),          # Dark Thoughts Buff
             # Holy Priest
-            ( 196809, 5 ),           # Healing Light (Divine Image legendary pet spell)
-            ( 196810, 5 ),           # Dazzling Light (Divine Image legendary pet spell)
-            ( 196810, 5 ),           # Searing Light (Divine Image legendary pet spell)
-            ( 196812, 5 ),           # Light Eruption (Divine Image legendary pet spell)
-            ( 196813, 5 ),           # Blessed Light (Divine Image legendary pet spell)
-            ( 196816, 5 ),           # Tranquil Light (Divine Image legendary pet spell)
+            ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
+            ( 196810, 5 ),          # Searing Light (Divine Image legendary pet spell)
+            ( 196812, 5 ),          # Light Eruption (Divine Image legendary pet spell)
+            ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
+            ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
+            ( 325315, 0 ),          # Ascended Blast heal
         ),
 
         # Death Knight:
