@@ -73,7 +73,7 @@ actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=co
 actions.cd_sef=invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
 # Use Arcane Torrent if you are missing at least 1 Chi
 actions.cd_sef+=/arcane_torrent,if=chi.max-chi>=1
-actions.cd_sef+=/touch_of_death,if=target.health.pct <= 15&buff.storm_earth_and_fire.down
+actions.cd_sef+=/touch_of_death,if=target.health.pct<=15&buff.storm_earth_and_fire.down
 actions.cd_sef+=/blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12
 actions.cd_sef+=/guardian_of_azeroth
 actions.cd_sef+=/worldvein_resonance
