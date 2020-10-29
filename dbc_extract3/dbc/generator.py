@@ -1293,6 +1293,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340147, 0 ),          # Royal Decree
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
+            ( 337228, 0 ),          # Final verdict buff
         ),
 
         # Hunter:

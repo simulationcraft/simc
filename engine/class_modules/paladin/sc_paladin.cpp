@@ -49,6 +49,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
 
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
+  cooldowns.hammer_of_wrath         = get_cooldown( "hammer_of_wrath" );
 
   beacon_target = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -1137,6 +1138,16 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return paladin_melee_attack_t::target_ready( candidate_target );
   }
 
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> buffs.final_verdict -> up() )
+    {
+      p() -> buffs.final_verdict -> expire();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -1629,6 +1640,7 @@ void paladin_t::create_buffs()
         -> add_invalidate( CACHE_HASTE );
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
         -> set_default_value( find_spell( 337682 ) -> effectN( 1 ).base_value() );
+  buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
         -> set_cooldown( 0_ms );
@@ -2566,6 +2578,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
   bool buffs_ok = spells.hammer_of_wrath_2 -> ok() && ( buffs.avenging_wrath -> up() || buffs.crusade -> up() );
+  buffs_ok = buffs_ok || buffs.final_verdict -> up();
   return ( buffs_ok || standing_in_hallow() || t -> health_percentage() <= 20 );
 }
 
