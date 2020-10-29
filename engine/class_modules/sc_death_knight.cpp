@@ -7427,11 +7427,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
-      // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
       if ( talent.red_thirst -> ok() )
       {
-        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() ) *
+        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() / 100 ) *
           actual_amount / talent.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
