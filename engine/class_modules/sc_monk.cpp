@@ -4891,8 +4891,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery                    = true;
     may_combo_strike              = true;
     trigger_chiji                 = true;
-    if ( !p->bugs )
-      sef_ability                   = SEF_TIGER_PALM;
+    sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
@@ -7817,6 +7816,7 @@ struct weapons_of_order_t : public monk_spell_t
     : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7839,6 +7839,7 @@ struct bonedust_brew_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew", &p, p.covenant.necrolord )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7862,6 +7863,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
+    ww_mastery = true;
   }
 
   double action_multiplier() const override
@@ -7926,6 +7928,7 @@ struct faeline_stomp_ww_damage_t : public monk_spell_t
       monk_spell_t( "faeline_stomp_ww_dmg", &p, p.passives.faeline_stomp_ww_damage )
   {
     background = true;
+    ww_mastery = true;
   }
 };
 
@@ -7935,6 +7938,7 @@ struct faeline_stomp_damage_t : public monk_spell_t
     : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage )
   {
     background = true;
+    ww_mastery = true;
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -7970,6 +7974,7 @@ struct faeline_stomp_t : public monk_spell_t
       ww_damage( new faeline_stomp_ww_damage_t( p ) )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     aoe = 5; // Currently hard-coded
   }
 
