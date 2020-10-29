@@ -472,6 +472,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 156, "Add Socket"               },
   { 157, "Create Item"              },
   { 164, "Cancel Aura"              },
+  { 174, "Apply Aura Pet"           },
   { 202, "Apply Player/Pet Aura"    },
 } );
 
