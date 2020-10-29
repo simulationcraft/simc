@@ -467,6 +467,7 @@ public:
     item_runeforge_t holy_avengers_engraved_sigil;
     item_runeforge_t the_ardent_protectors_sanctum;
     item_runeforge_t relentless_inquisitor;
+    item_runeforge_t tempest_of_the_lightbringer;
   } legendary;
 
   // Paladin options

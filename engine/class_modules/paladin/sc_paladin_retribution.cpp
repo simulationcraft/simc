@@ -245,6 +245,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     is_divine_storm = true;
 
     aoe = data().effectN( 2 ).base_value();
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   divine_storm_t( paladin_t* p, bool is_free, float mul ) :
@@ -255,6 +258,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     background = is_free;
     base_multiplier *= mul;
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   double bonus_da( const action_state_t* s ) const override

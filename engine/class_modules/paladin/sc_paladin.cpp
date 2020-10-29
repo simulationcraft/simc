@@ -1883,6 +1883,7 @@ void paladin_t::init_spells()
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
   legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
   legendary.relentless_inquisitor = find_runeforge_legendary( "Relentless Inquisitor" );
+  legendary.tempest_of_the_lightbringer = find_runeforge_legendary( "Tempest of the Lightbringer" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
