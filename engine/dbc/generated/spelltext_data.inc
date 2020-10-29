@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15727> __spelltext_data { {
+static const std::array<spelltext_data_t, 15728> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14074,6 +14074,7 @@ static const std::array<spelltext_data_t, 15727> __spelltext_data { {
   { 324522, "$@spelldesc324386", 0, "Kyrian" },
   { 324523, "$@spelldesc324440", "Absorbs $w damage.", 0 },
   { 324536, "Your damaging periodic effects erupt on all targets, causing $<damage> Shadow damage per effect.", 0, 0 },
+  { 324540, "$@spelldesc324536", 0, 0 },
   { 324631, "Form a shield of flesh and bone over $d that absorbs damage equal to $s1% of your maximum health for $324867d.\r\n\r\nChanneling near a corpse claims their essence to grow the shield, up to $s3% of your maximum health. This is most effective against powerful enemies.", "Anima is being siphoned.", "Necrolord" },
   { 324701, "Teleports you forward $A1 yds or until reaching an obstacle.", 0, "Night Fae" },
   { 324724, "An explosion of dark energy infects enemies within $325203A1 yds with Unholy Transfusion, and heals up to $s2 allies for $s1.\r\n\r\n|TInterface\\ICONS\\Spell_AnimaMaldraxxus_Debuff.blp:24|t |cFFFFFFFFUnholy Tranfusion|r\r\n$@spelldesc325203", "Attackers siphon $325118s1 health.", "Necrolord" },
