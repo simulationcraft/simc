@@ -942,9 +942,7 @@ struct hand_of_reckoning_t: public paladin_melee_attack_t
 struct righteous_might_t : public heal_t
 {
   righteous_might_t( paladin_t* p ) :
-    // Should be 340193 but I don't have spell data for that.
-    // p -> conduit.righteous_might may just work when that's added.
-    heal_t( "righteous_might", p, p -> find_spell( 340192 ) )
+    heal_t( "righteous_might", p, p -> conduit.righteous_might )
     {
       background = true;
       callbacks = may_crit = may_miss = false;
