@@ -201,6 +201,7 @@ public:
     buff_t* blessing_of_dawn;
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
+    buff_t* final_verdict;
   } buffs;
 
   // Gains
@@ -257,6 +258,7 @@ public:
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
+    cooldown_t* hammer_of_wrath;
   } cooldowns;
 
   // Passives

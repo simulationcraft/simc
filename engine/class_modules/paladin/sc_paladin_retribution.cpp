@@ -346,6 +346,16 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p() -> buffs.vanquishers_hammer -> expire();
       p() -> active.necrolord_divine_storm -> execute();
     }
+
+    // TODO(mserrano): figure out the actionbar override thing instead of this hack.
+    if ( p() -> legendary.final_verdict -> ok() )
+    {
+      if ( rng().roll( p() -> legendary.final_verdict -> effectN( 2 ).percent() ) )
+      {
+        p() -> cooldowns.hammer_of_wrath -> reset( true );
+        p() -> buffs.final_verdict -> trigger();
+      }
+    }
   }
 };
 
