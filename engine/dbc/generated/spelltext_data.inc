@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15726> __spelltext_data { {
+static const std::array<spelltext_data_t, 15727> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14878,6 +14878,7 @@ static const std::array<spelltext_data_t, 15726> __spelltext_data { {
   { 337214, "Rampage has a |cFFFFFFFF${$s1/10}.1%|r chance to refund a charge of Raging Blow.", 0, 0 },
   { 337224, "Fireball grants |cFFFFFFFF${$s1}.1%|r Mastery when it fails to critically strike.", 0, 0 },
   { 337225, "Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $337268a1 yards for ${$337268s1*($337267d/$337267t1+1)} over $337267d.", 0, 0 },
+  { 337228, "$@spelldesc336872", "Hammer of Wrath can be used on any target.", 0 },
   { 337240, "Your Arcane Barrage has a |cFFFFFFFF${$s1/10}.1%|r chance to grant $337244s1 Arcane Charges.", 0, 0 },
   { 337241, "Life Cocoon increases healing over time received by an additional |cFFFFFFFF${$s1}.1%|r, and this effect lingers for an additional $337242d after the cocoon is removed.", 0, 0 },
   { 337242, "$@spelldesc337241", "Healing from heal over time effect is increased by $w1%.", 0 },
