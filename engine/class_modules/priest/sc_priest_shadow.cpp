@@ -2259,8 +2259,10 @@ void priest_t::generate_apl_shadow()
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Blast",
-                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
-                    "TODO Verify target cap" );
+                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&(spell_targets.mind_sear<4|!talent."
+                    "searing_nightmare.enabled)",
+                    "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
+                    "Nightmare talented." );
   main->add_action( this, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
