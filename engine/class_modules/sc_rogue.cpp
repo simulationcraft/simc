@@ -4032,8 +4032,11 @@ struct black_powder_t: public rogue_attack_t
 
   void execute() override
   {
+    // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
+    // For consistency with Evis, we move it before, so that both are self-affecting.
+    p()->buffs.deeper_daggers->trigger();
+
     rogue_attack_t::execute();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
 
     if ( p()->legendary.finality.ok() )
     {
