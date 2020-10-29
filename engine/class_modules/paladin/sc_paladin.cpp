@@ -1614,9 +1614,9 @@ void paladin_t::create_buffs()
 
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
         -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() );
-  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() )
-        -> set_default_value( legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() );
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() )
+        -> set_default_value( legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
         -> set_default_value( find_spell( 337315 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_HASTE );
@@ -1870,7 +1870,7 @@ void paladin_t::init_spells()
   legendary.vanguards_momentum = find_runeforge_legendary( "Vanguard's Momentum" );
   legendary.the_mad_paragon = find_runeforge_legendary( "The Mad Paragon" );
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
-  legendary.from_dusk_till_dawn = find_runeforge_legendary( "Of Dusk and Dawn" );
+  legendary.of_dusk_and_dawn = find_runeforge_legendary( "Of Dusk and Dawn" );
   legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );
   legendary.bulwark_of_righteous_fury = find_runeforge_legendary( "Bulwark of Righteous Fury" );
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
@@ -2381,8 +2381,8 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
   if (
       resource_type == RESOURCE_HOLY_POWER &&
       result > 0 &&
-      legendary.from_dusk_till_dawn -> ok() &&
-      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 1 ).base_value()
+      legendary.of_dusk_and_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn -> effectN( 1 ).base_value()
     )
   {
     buffs.blessing_of_dawn -> trigger();
@@ -2398,8 +2398,8 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
   if (
       resource_type == RESOURCE_HOLY_POWER &&
       result > 0 &&
-      legendary.from_dusk_till_dawn -> ok() &&
-      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 2 ).base_value()
+      legendary.of_dusk_and_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn -> effectN( 2 ).base_value()
     )
   {
     buffs.blessing_of_dusk -> trigger();

@@ -456,7 +456,7 @@ public:
     item_runeforge_t vanguards_momentum;
     item_runeforge_t the_mad_paragon;
     item_runeforge_t final_verdict;
-    item_runeforge_t from_dusk_till_dawn;
+    item_runeforge_t of_dusk_and_dawn;
     item_runeforge_t the_magistrates_judgment;
     item_runeforge_t bulwark_of_righteous_fury;
     item_runeforge_t holy_avengers_engraved_sigil;
@@ -758,7 +758,7 @@ public:
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
   }
 
@@ -880,7 +880,7 @@ public:
 
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> legendary.from_dusk_till_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      am *= 1.0 + p() -> legendary.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
     }
 
     return am;
