@@ -299,6 +299,7 @@ public:
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
+    buff_t* faeline_stomp_brm;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -636,6 +637,7 @@ public:
     const spell_data_t* bonedust_brew_chi;
     const spell_data_t* faeline_stomp_damage;
     const spell_data_t* faeline_stomp_ww_damage;
+    const spell_data_t* faeline_stomp_brm;
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
@@ -7999,6 +8001,8 @@ struct faeline_stomp_t : public monk_spell_t
       {
         p()->active_actions.breath_of_fire->target = s->target;
         p()->active_actions.breath_of_fire->execute();
+
+        p()->buff.faeline_stomp_brm->trigger();
         break;
       }
       default:
@@ -10086,6 +10090,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi                    = find_spell( 328296 );
   passives.faeline_stomp_damage                 = find_spell( 327264 );
   passives.faeline_stomp_ww_damage              = find_spell( 345727 );
+  passives.faeline_stomp_brm                    = find_spell( 347480 );
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
@@ -10456,6 +10461,9 @@ void monk_t::create_buffs()
 
   buff.faeline_stomp = make_buff( this, "faeline_stomp", covenant.night_fae )
                            ->set_default_value_from_effect( 2 );
+
+  buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
+                               ->set_default_value_from_effect( 1 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
@@ -12143,19 +12151,18 @@ double monk_t::stagger_base_value()
     stagger_base = agility() * spec.stagger->effectN( 1 ).percent();
 
     if ( talent.high_tolerance->ok() )
-    {
       stagger_base *= 1 + talent.high_tolerance->effectN( 5 ).percent();
-    }
 
     if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
-    {
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
-    }
+
+    if ( bugs )
+      // Hard coding the 125% multiplier until Blizzard fixes this
+      if ( buff.faeline_stomp_brm->up() )
+        stagger_base *= 1.0 + 0.25;
 
     if ( buff.shuffle->check() )
-    {
       stagger_base *= 1.0 + passives.shuffle->effectN( 1 ).percent();
-    }
   }
 
   return stagger_base;
@@ -12172,6 +12179,12 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
 
   double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
+
+  // Bug: This is right now hard-coding the 5% instead of the estimated 125% multiplier to stagger_base
+  if (!bugs)
+    if ( buff.faeline_stomp_brm->up() )
+      stagger += buff.faeline_stomp_brm->value();
+
   return std::min( stagger, 0.99 );
 }
 
