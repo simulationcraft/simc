@@ -560,6 +560,25 @@ struct blinding_light_t : public paladin_spell_t
   }
 };
 
+// Devotion Aura ===============================================
+
+struct devotion_aura_t : public paladin_spell_t
+{
+  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.devotion_aura -> trigger();
+  }
+};
+
 // ==========================================================================
 // End Spells, Heals, and Absorbs
 // ==========================================================================
@@ -1351,6 +1370,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
+  if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
@@ -1604,16 +1624,17 @@ void paladin_t::create_buffs()
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
        -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
-
   buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
        -> add_invalidate( CACHE_CRIT_CHANCE )
        -> add_invalidate( CACHE_HASTE )
        -> add_invalidate( CACHE_MASTERY )
        -> add_invalidate( CACHE_VERSATILITY )
        -> set_cooldown( 0_ms ); // let the ability handle the cooldown
-
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
         -> set_cooldown( 0_ms ); // handled by the ability
+  buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) );
+
+  // Legendaries
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() );
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() )
         -> set_default_value( legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );

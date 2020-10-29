@@ -625,6 +625,9 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buffs.blessing_of_dusk -> value();
   }
 
+  if ( buffs.devotion_aura -> up() )
+    s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
+
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() )
   {
@@ -903,6 +906,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( "flask" );
   precombat -> add_action( "food" );
   precombat -> add_action( "augmentation" );
+  precombat -> add_action( "devotion_aura" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );

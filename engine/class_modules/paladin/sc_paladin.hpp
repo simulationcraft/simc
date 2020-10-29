@@ -152,6 +152,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
+    buff_t* devotion_aura;
 
     buff_t* avengers_might;
 
