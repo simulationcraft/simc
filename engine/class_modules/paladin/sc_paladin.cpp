@@ -1524,14 +1524,19 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.art_of_war                = get_proc( "Art of War"       );
-  procs.divine_purpose            = get_proc( "Divine Purpose"   );
-  procs.fires_of_justice          = get_proc( "Fires of Justice" );
-  procs.grand_crusader            = get_proc( "Grand Crusader"   );
-  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
-  procs.final_reckoning           = get_proc( "Final Reckoning"  );
-  procs.empyrean_power            = get_proc( "Empyrean Power"   );
-  procs.holy_avengers_engraved_sigil = get_proc( "Holy Avenger's Engraved Sigil" );
+  procs.art_of_war                = get_proc( "Art of War"        );
+  procs.divine_purpose            = get_proc( "Divine Purpose"    );
+  procs.fires_of_justice          = get_proc( "Fires of Justice"  );
+  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR" );
+  procs.final_reckoning           = get_proc( "Final Reckoning"   );
+  procs.empyrean_power            = get_proc( "Empyrean Power"    );
+
+  procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader"         );
+  procs.as_grand_crusader_wasted  = get_proc( "Avenger's Shield: Grand Crusader wasted"  );
+  procs.as_engraved_sigil         = get_proc( "Avenger's Shield: Engraved Sigil"         );
+  procs.as_engraved_sigil_wasted  = get_proc( "Avenger's Shield: Engraved Sigil wasted"  );
+  procs.as_moment_of_glory        = get_proc( "Avenger's Shield: Moment of Glory"        );
+  procs.as_moment_of_glory_wasted = get_proc( "Avenger's Shield: Moment of Glory wasted" );
 }
 
 // paladin_t::init_scaling ==================================================
