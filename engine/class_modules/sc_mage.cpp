@@ -4863,56 +4863,64 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     return ignite_state->tick_amount * ignite->ticks_left();
   }
 
+  void spread_ignite( player_t* primary )
+  {
+    auto source = primary->get_dot( "ignite", player );
+    if ( source->is_ticking() )
+    {
+      std::vector<dot_t*> ignites;
+
+      // Collect the Ignite DoT objects of all targets that are in range.
+      for ( auto t : target_list() )
+        ignites.push_back( t->get_dot( "ignite", player ) );
+
+      // Sort candidate Ignites by descending bank size.
+      // TODO: Double check what targets the Ignite spread prioritizes.
+      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) > ignite_bank( b ); } );
+
+      auto source_bank = ignite_bank( source );
+      auto targets_remaining = max_spread_targets;
+      for ( auto destination : ignites )
+      {
+        // The original spread source doesn't count towards the spread target limit.
+        if ( source == destination )
+          continue;
+
+        // Target cap was reached, stop.
+        if ( targets_remaining-- <= 0 )
+          break;
+
+        // Source Ignite cannot spread to targets with higher Ignite bank. It will
+        // still count towards the spread target cap, though.
+        if ( ignite_bank( destination ) >= source_bank )
+          continue;
+
+        if ( destination->is_ticking() )
+          p()->procs.ignite_overwrite->occur();
+        else
+          p()->procs.ignite_new_spread->occur();
+
+        // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
+        // sometimes have partial ticks, but the conditions for this are not known.
+        destination->cancel();
+        source->copy( destination->target, DOT_COPY_CLONE );
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
+    fire_mage_spell_t::impact( s );
+
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      auto source = s->target->get_dot( "ignite", player );
-      if ( source->is_ticking() )
-      {
-        std::vector<dot_t*> ignites;
-
-        // Collect the Ignite DoT objects of all targets that are in range.
-        for ( auto t : target_list() )
-          ignites.push_back( t->get_dot( "ignite", player ) );
-
-        // Sort candidate Ignites by descending bank size.
-        // TODO: Double check what targets the Ignite spread prioritizes.
-        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
-        { return ignite_bank( a ) > ignite_bank( b ); } );
-
-        auto source_bank = ignite_bank( source );
-        auto targets_remaining = max_spread_targets;
-        for ( auto destination : ignites )
-        {
-          // The original spread source doesn't count towards the spread target limit.
-          if ( source == destination )
-            continue;
-
-          // Target cap was reached, stop.
-          if ( targets_remaining-- <= 0 )
-            break;
-
-          // Source Ignite cannot spread to targets with higher Ignite bank. It will
-          // still count towards the spread target cap, though.
-          if ( ignite_bank( destination ) >= source_bank )
-            continue;
-
-          if ( destination->is_ticking() )
-            p()->procs.ignite_overwrite->occur();
-          else
-            p()->procs.ignite_new_spread->occur();
-
-          // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
-          // sometimes have partial ticks, but the conditions for this are not known.
-          destination->cancel();
-          source->copy( destination->target, DOT_COPY_CLONE );
-        }
-      }
+      // Delay sperading Ignite by double the delay of Ignite's residual action
+      // so that it occurs after the Ignite from Phoenix Flames has been applied.
+      timespan_t delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+      make_event( *sim, delay, [ this, t = s->target ] { spread_ignite( t ); } );
     }
-
-    fire_mage_spell_t::impact( s );
   }
 };
 
