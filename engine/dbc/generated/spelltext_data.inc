@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15728> __spelltext_data { {
+static const std::array<spelltext_data_t, 15737> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14379,6 +14379,15 @@ static const std::array<spelltext_data_t, 15728> __spelltext_data { {
   { 330325, "Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 35% health.\r\n\r\nThe primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[\r\n\r\n|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]", 0, "Venthyr" },
   { 330334, "Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 35% health.\r\n\r\nThe primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[\r\n\r\nIf your foe survives, $s2% of the Rage spent is refunded.][]", 0, "Venthyr" },
   { 330338, "Place a containment device on the ground that, once armed, will activate when an enemy steps on it, banishing them for $330607d.\r\n\r\n... Unless it backfires.\r\n\r\nReduced effect against players.", 0, 0 },
+  { 330363, "Because you were affected by a crowd control effect when you activated the Inscrutable Quantum Device, it freed you from all crowd control effects.", 0, 0 },
+  { 330364, "Because you or a nearby ally were below $s2% health when you activated it, the Inscrutable Quantum Device healed the injured target for $s1.", 0, 0 },
+  { 330366, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Critical Strike.", "Critical Strike, which appears to be useful for you, increased by $w1.", 0 },
+  { 330367, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Versatility.", "Versatility, which appears to be useful for you, increased by $w1.", 0 },
+  { 330368, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Haste.", "Haste, which appears to be useful for you, increased by $w1.", 0 },
+  { 330372, "Because you were in imminent danger, the Inscrutable Quantum Device created an illusory decoy to distract your nearby enemies.", 0, 0 },
+  { 330373, "Because your foe was mortally wounded, the Inscrutable Quantum Device dealt $s1 damage to them in an attempt to execute them.", 0, 0 },
+  { 330376, "Because your nearby healer was below $s2% mana, the Inscrutable Quantum Device granted them $s1 mana.", 0, 0 },
+  { 330380, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Mastery.", "Mastery, which appears to be useful for you, increased by $w1.", 0 },
   { 330382, "$@spelldesc316958", 0, 0 },
   { 330511, "$@spelldesc329778", "Chance to critical strike increased by $w%.", 0 },
   { 330530, "Throw a kyrian Javelin at a current target inflicting Arcane damage.", 0, 0 },
