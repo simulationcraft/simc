@@ -6587,9 +6587,6 @@ struct soul_reaper_execute_t : public death_knight_spell_t
     death_knight_spell_t( "soul_reaper_execute", p, p -> spell.soul_reaper_execute )
   {
     background = true;
-    // Hotfixed into the whitelist on prepatch
-    // Still missing from the unholy spec aura
-    affected_by.dreadblade = true;
   }
 };
 
