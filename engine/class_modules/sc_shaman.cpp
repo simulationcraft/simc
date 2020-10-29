@@ -3879,11 +3879,7 @@ struct earthquake_t : public shaman_spell_t
       rumble( new earthquake_damage_t( player ) )
   {
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-  }
-  void init_finished() override
-  {
-    shaman_spell_t::init_finished();
-    this->add_child( rumble );
+    add_child( rumble );
   }
 
   double cost() const override
