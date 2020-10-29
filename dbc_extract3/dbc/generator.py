@@ -1621,7 +1621,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339784, 2 ),    # Tyrant's Soul Buff
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
-          ( 339986, 3 )     # Hidden Combusting Engine Debuff
+          ( 339986, 3 ),    # Hidden Combusting Engine Debuff
+          ( 324540, 0 )     # Malefic Rapture damage
         ),
 
         # Monk:
