@@ -1237,8 +1237,10 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
-         # Sunblod Amethyst Trinket
+         # Sunblood Amethyst Trinket
          343395, 343396,
+         # Inscrutable Quantum Device Trinket
+         330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
