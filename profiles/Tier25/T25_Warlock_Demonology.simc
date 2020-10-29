@@ -9,10 +9,10 @@ talents=3302032
 azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/inner_demons,if=talent.inner_demons.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/demonbolt
 actions.precombat+=/variable,name=tyrant_ready,value=0
 
@@ -44,13 +43,14 @@ actions+=/bilescourge_bombers
 actions+=/hand_of_guldan,if=soul_shard=5|buff.nether_portal.up
 actions+=/hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2
 actions+=/demonbolt,if=buff.demonic_core.react&soul_shard<4
-actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.dummon_demonic_tyrant.remains+15
+actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.summon_demonic_tyrant.remains+15
 actions+=/use_items
 actions+=/power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3
+actions+=/implosion,if=azerite.explosive_potential.rank>1&buff.explosive_potential.remains<3&buff.wild_imps.stack>=3
 actions+=/soul_strike
 actions+=/shadow_bolt
 
-actions.essences=worldvein_resonance
+actions.essences=worldvein_resonance,if=cooldown.summon_demonic_tyrant.remains>45
 actions.essences+=/memory_of_lucid_dreams
 actions.essences+=/blood_of_the_enemy
 actions.essences+=/guardian_of_azeroth

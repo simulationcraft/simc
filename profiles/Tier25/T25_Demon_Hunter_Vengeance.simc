@@ -38,12 +38,12 @@ actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=normal
 
 # Fiery Brand Rotation
-actions.brand=sigil_of_flame,if=cooldown.fiery_brand.remains<2
+actions.brand=sigil_of_flame,if=!runeforge.razelikhs_defilement.equipped&cooldown.fiery_brand.remains<2
 actions.brand+=/infernal_strike,if=cooldown.fiery_brand.remains=0
 actions.brand+=/fiery_brand
 actions.brand+=/immolation_aura,if=dot.fiery_brand.ticking
 actions.brand+=/infernal_strike,if=dot.fiery_brand.ticking
-actions.brand+=/sigil_of_flame,if=dot.fiery_brand.ticking
+actions.brand+=/sigil_of_flame,if=!runeforge.razelikhs_defilement.equipped&dot.fiery_brand.ticking
 
 actions.cooldowns=potion
 actions.cooldowns+=/concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
@@ -62,7 +62,8 @@ actions.defensives+=/metamorphosis
 actions.defensives+=/fiery_brand
 
 # Normal Rotation
-actions.normal=infernal_strike
+actions.normal=elysian_decree
+actions.normal+=/infernal_strike
 actions.normal+=/bulk_extraction
 actions.normal+=/spirit_bomb,if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)
 actions.normal+=/soul_cleave,if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))
@@ -70,7 +71,7 @@ actions.normal+=/soul_cleave,if=talent.spirit_bomb.enabled&soul_fragments=0
 actions.normal+=/immolation_aura,if=fury<=90
 actions.normal+=/felblade,if=fury<=70
 actions.normal+=/fracture,if=soul_fragments<=3
-actions.normal+=/sigil_of_flame
+actions.normal+=/sigil_of_flame,if=!runeforge.razelikhs_defilement.equipped
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 

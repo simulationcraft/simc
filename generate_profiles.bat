@@ -12,10 +12,10 @@ echo Running PR_Generate.simc in %cd%
 "%~dp0simc.exe" PR_Generate.simc
 cd ..\
 :: DungeonSlice doesn't match the typical pattern
-cd "DungeonSlice"
-echo Running DS_Generate.simc in %cd%
-"%~dp0simc.exe" DS_Generate.simc
-cd ..\
+:: cd "DungeonSlice"
+:: echo Running DS_Generate.simc in %cd%
+:: "%~dp0simc.exe" DS_Generate.simc
+:: cd ..\
 :: TierXX profiles generation
 for %%g in (25) do (
   cd Tier%%g

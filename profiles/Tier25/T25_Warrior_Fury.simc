@@ -68,11 +68,15 @@ actions.single_target+=/rampage,if=(buff.recklessness.up|buff.memory_of_lucid_dr
 actions.single_target+=/execute
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
+actions.single_target+=/bloodbath,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/onslaught
 actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=charges=2
+actions.single_target+=/crushing_blow,if=charges=2
 actions.single_target+=/bloodthirst
+actions.single_target+=/bloodbath
 actions.single_target+=/raging_blow
+actions.single_target+=/crushing_blow
 actions.single_target+=/whirlwind
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=437/176/21/13

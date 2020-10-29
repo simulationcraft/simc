@@ -9,10 +9,10 @@ talents=2103023
 azerite_essences=27:3:1/22:3:0/35:3:0/5:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/soul_fire
 actions.precombat+=/incinerate,if=!talent.soul_fire.enabled
 
