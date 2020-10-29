@@ -965,6 +965,7 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
   cds -> add_talent( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
+  cds -> add_action( "heart_essence" );
 
   std -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up&(debuff.vengeful_shock.up|!conduit.vengeful_shock.enabled)" );
   std -> add_action( this, "Shield of the Righteous" , "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );
