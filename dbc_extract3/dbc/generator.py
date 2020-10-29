@@ -709,6 +709,10 @@ class ItemDataGenerator(DataGenerator):
             elif item.quality == 7:
                 filter_ilevel = False
 
+            # Include all Armor and Weapons
+            if classdata.classs in [2, 4]:
+                filter_ilevel = False
+
             # Item-level based non-equippable items
             if filter_ilevel and item.inv_type == 0:
                 continue
