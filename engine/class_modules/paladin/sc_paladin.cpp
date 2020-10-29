@@ -1042,6 +1042,7 @@ struct divine_toll_t : public paladin_spell_t
 // TODO: fix AoE scaling once the formula is found, implement healing as well
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
+  ashen_hallow_tick_t* hallowed_discernment_tick;
   ashen_hallow_tick_t( paladin_t* p ) :
     paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
   {
@@ -1051,6 +1052,20 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     background = true;
     may_crit = true;
     ground_aoe = true;
+    if ( p -> conduit.hallowed_discernment -> ok () )
+      hallowed_discernment_tick = new ashen_hallow_tick_t( p, true );
+  }
+
+  ashen_hallow_tick_t( paladin_t* p, bool child ) :
+    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
+  {
+    aoe = 1;
+    dual = true;
+    direct_tick = true;
+    background = true;
+    may_crit = true;
+    // ground_aoe = true;
+    base_multiplier *= p -> conduit.hallowed_discernment.percent();
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -1076,6 +1091,31 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     {
       return cam * ( 8.0 / state -> n_targets );
     }
+  }
+
+  void execute() override
+  {
+    // using aoe == -1 to check if it's the initial tick or the hallowed discernment child
+    if ( aoe == -1 && p() -> conduit.hallowed_discernment -> ok() )
+    {
+      std::vector<player_t*> targets = target_list();
+      bool use_actual_hp = std::all_of( targets.begin(), targets.end(),
+        [] ( player_t * t ) { return t -> max_health() > 0; }
+      );
+      player_t* lowest_hp_target = *std::min_element(
+        targets.begin(), targets.end(), [ use_actual_hp ] ( player_t* lhs, player_t* rhs )
+        {
+          if ( use_actual_hp )
+            return lhs -> current_health() < rhs -> current_health();
+          return lhs -> health_percentage() < rhs -> health_percentage();
+        }
+      );
+      hallowed_discernment_tick -> set_target( lowest_hp_target );
+      hallowed_discernment_tick -> execute();
+    }
+
+    // To Do: Check if the initial tick affects the target picked, if so then move this up
+    paladin_spell_t::execute();
   }
 };
 
