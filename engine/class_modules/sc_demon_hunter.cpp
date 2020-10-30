@@ -3928,6 +3928,7 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
+  // TOREMOVE: Beta vs. Prepatch Mechanics
   struct unbound_chaos_t : public demon_hunter_spell_t
   {
     unbound_chaos_t( util::string_view name, demon_hunter_t* p )
@@ -3946,6 +3947,15 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_spell_t::action_multiplier();
+
+      am *= 1.0 + p()->buff.unbound_chaos->value();
+
+      return am;
     }
   };
 
@@ -3966,7 +3976,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     execute_action = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
     execute_action->stats = stats;
 
-    if ( p->talent.unbound_chaos->ok() && !unbound_chaos )
+    // TOREMOVE: Beta vs. Prepatch Mechanics
+    if ( p->level() <= 50 && p->talent.unbound_chaos->ok() && !unbound_chaos )
     {
       unbound_chaos = p->get_background_action<unbound_chaos_t>( "unbound_chaos" );
       add_child( unbound_chaos );
@@ -3985,17 +3996,17 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    // 07/14/2018 -- As of the latest build, Momentum is now triggered before the damage
     p()->buff.momentum->trigger();
 
     demon_hunter_attack_t::execute();
 
-    if ( unbound_chaos && p()->buff.unbound_chaos->up() )
+    // TOREMOVE: Beta vs. Prepatch Mechanics
+    if ( unbound_chaos && p()->buff.unbound_chaos->check() )
     {
       unbound_chaos->set_target( target );
       unbound_chaos->schedule_execute();
-      p()->buff.unbound_chaos->expire();
     }
+    p()->buff.unbound_chaos->expire();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
@@ -4821,7 +4832,16 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
-  buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 337313 ) );
+  // TOREMOVE: Beta vs. Prepatch Mechanics
+  if ( level() <= 50 )
+  {
+    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 337313 ) );
+  }
+  else
+  {
+    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 347462 ) )
+      ->set_default_value_from_effect( 1 );
+  }
 
   buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
   buff.vengeful_retreat_move
@@ -6783,6 +6803,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Demon Hunter", "2020-10-29", "Prepatch Unbound Chaos Damage", 728000 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.75 )
+      .verification_value( 2.3375 );
   }
 
   void combat_begin( sim_t* ) const override
