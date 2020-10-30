@@ -422,6 +422,7 @@ public:
     buff_t* doom_winds_buff;
     buff_t* doom_winds_debuff;
     buff_t* legacy_of_the_frost_witch;
+    buff_t* primal_lava_actuators;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -572,7 +573,7 @@ public:
     // Enhancement
     item_runeforge_t doom_winds;
     item_runeforge_t legacy_of_the_frost_witch;
-    item_runeforge_t primal_lava_actuators;      // NYI
+    item_runeforge_t primal_lava_actuators;
     item_runeforge_t witch_doctors_wolf_bones;   // NYI
   } legendary;
 
@@ -3437,6 +3438,8 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
 
+    m *= 1.0 + p()->buff.primal_lava_actuators->stack_value();
+
     return m;
   }
 
@@ -3450,6 +3453,13 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     return tc;
+  }
+
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    p()->buff.primal_lava_actuators->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -5620,6 +5630,13 @@ struct flame_shock_t : public shaman_spell_t
     {
       p()->cooldown.storm_elemental->adjust( -1.0 * skybreakers_effect->effectN( 1 ).time_value() );
       p()->cooldown.fire_elemental->adjust( -1.0 * skybreakers_effect->effectN( 2 ).time_value() );
+    }
+
+    if ( p()->legendary.primal_lava_actuators.ok() && d->state->result_amount > 0 )
+    {
+      p()->cooldown.lava_lash->adjust( timespan_t::from_seconds(
+        -( p()->legendary.primal_lava_actuators->effectN( 1 ).base_value() / 10.0 ) ) );
+      p()->buff.primal_lava_actuators->trigger();
     }
   }
 
@@ -8371,6 +8388,9 @@ void shaman_t::create_buffs()
     buff.doom_winds_buff->data().effectN( 2 ).trigger() );
   buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch",
       find_spell( 335901 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buff.primal_lava_actuators = make_buff<buff_t>( this, "primal_lava_actuators",
+      find_spell( 335896 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 }
 
