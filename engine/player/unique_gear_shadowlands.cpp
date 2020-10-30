@@ -525,8 +525,6 @@ void soul_igniter( special_effect_t& effect )
   struct blazing_surge_t : public proc_spell_t
   {
     double buff_fraction_elapsed;
-    double target_dd_bonus_min;
-    double target_dd_bonus_max;
     double max_time_multiplier;
 
     blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
