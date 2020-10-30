@@ -1800,6 +1800,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 225102, 0 ), # Fel Eruption damage
           ( 339229, 0 ), # Serrated Glaive conduit debuff
+          ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate
