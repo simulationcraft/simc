@@ -381,8 +381,6 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
-  // Prepatch Insignia of the Grand Army flat dmg multiplier
-  double insignia_of_the_grand_army_multiplier;
 
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
@@ -449,22 +447,12 @@ struct player_t : public actor_t
     buff_t* legendary_aoe_ring; // Legendary ring buff.
     buff_t* legendary_tank_buff;
 
-    // T17 LFR stuff
-    buff_t* surge_of_energy;
-    buff_t* natures_fury;
-    buff_t* brute_strength;
-
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
-    // 7.0 Legendaries
-    buff_t* aggramars_stride;
-
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
-    buff_t* norgannons_foresight; //Legendary item that allows movement for 5 seconds if you stand still for 8.
-    buff_t* norgannons_foresight_ready;
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
 
@@ -473,7 +461,6 @@ struct player_t : public actor_t
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
-    buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
     // Darkmoon Faire versatility food
