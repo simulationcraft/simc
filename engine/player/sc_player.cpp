@@ -3333,13 +3333,6 @@ void player_t::create_buffs()
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );
 
-      // Soulbind buffs required for APL parsing
-      buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
-      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) );
-      buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
-      buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
-        ->modify_max_stack( 1 );
-
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );

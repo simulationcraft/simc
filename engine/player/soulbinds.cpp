@@ -231,9 +231,16 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 void grove_invigoration( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima", "redirected_anima_stacks" } ) )
+    return;
+
   struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+    buff_t* counter;
+
+    redirected_anima_buff_t( player_t* p, buff_t* counter_ ) :
+      stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ),
+      counter( counter_ )
     {
       // TODO: The max stacks in spell data are wrong
       set_max_stack( 10 );
@@ -242,25 +249,29 @@ void grove_invigoration( special_effect_t& effect )
     bool trigger( int, double v, double c, timespan_t d ) override
     {
       // TODO: does this convert ALL stacks or only up to 4 stacks, as per max_stack of the mastery buff
-      int anima_stacks = player->buffs.redirected_anima_stacks->check();
+      int anima_stacks = counter->check();
 
       if ( !anima_stacks )
         return false;
 
       anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
-      player->buffs.redirected_anima_stacks->decrement( anima_stacks );
+      counter->decrement( anima_stacks );
 
       return stat_buff_t::trigger( anima_stacks, v, c, d );
     }
   };
 
-  effect.custom_buff = effect.player->buffs.redirected_anima_stacks;
+  auto counter_buff = buff_t::find( effect.player, "redirected_anima_stacks" );
+  if ( !counter_buff )
+    counter_buff = make_buff( effect.player, "redirected_anima_stacks", effect.player->find_spell( 342802 ) );
+
+  effect.custom_buff = counter_buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
   auto buff = buff_t::find( effect.player, "redirected_anima" );
   if ( !buff )
-    buff = make_buff<redirected_anima_buff_t>( effect.player );
+    buff = make_buff<redirected_anima_buff_t>( effect.player, counter_buff );
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
@@ -407,6 +418,13 @@ void dauntless_duelist( special_effect_t& effect )
 
 void thrill_seeker( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "thrill_seeker", "euphoria" } ) )
+    return;
+
+  auto counter_buff = buff_t::find( effect.player, "thrill_seeker" );
+  if ( !counter_buff )
+    counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) );
+
   auto buff = buff_t::find( effect.player, "euphoria" );
   if ( !buff )
   {
@@ -414,7 +432,7 @@ void thrill_seeker( special_effect_t& effect )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-    effect.player->buffs.thrill_seeker->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
+    counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
     {
       if ( b->at_max_stacks() )
       {
@@ -427,8 +445,8 @@ void thrill_seeker( special_effect_t& effect )
   auto eff_data = &effect.driver()->effectN( 1 );
 
   // TODO: do you still gain stacks while euphoria is active?
-  effect.player->register_combat_begin( [eff_data]( player_t* p ) {
-    make_repeating_event( *p->sim, eff_data->period(), [p]() { p->buffs.thrill_seeker->trigger(); } );
+  effect.player->register_combat_begin( [ eff_data, counter_buff ]( player_t* p ) {
+    make_repeating_event( *p->sim, eff_data->period(), [ counter_buff ] { counter_buff->trigger(); } );
   } );
 
   // TODO: implement gains from killing blows
@@ -656,6 +674,9 @@ struct bron_action_t : public Base
 
 void brons_call_to_action( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "brons_call_to_action" } ) )
+    return;
+
   struct bron_pet_t : public pet_t
   {
     struct bron_anima_cannon_t : public bron_action_t<spell_t>
@@ -799,9 +820,9 @@ void brons_call_to_action( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      if ( listener->buffs.brons_call_to_action->at_max_stacks() )
+      if ( proc_buff->at_max_stacks() )
       {
-        listener->buffs.brons_call_to_action->expire();
+        proc_buff->expire();
 
         if ( bron->is_sleeping() )
           bron->summon( bron_dur);
@@ -813,7 +834,10 @@ void brons_call_to_action( special_effect_t& effect )
 
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.custom_buff  = effect.player->buffs.brons_call_to_action;
+
+  effect.custom_buff = buff_t::find( effect.player, "brons_call_to_action" );
+  if ( !effect.custom_buff )
+    effect.custom_buff = make_buff( effect.player, "brons_call_to_action", effect.player->find_spell( 332514 ) );
 
   new brons_call_to_action_cb_t( effect );
 }
@@ -949,6 +973,13 @@ void serrated_spaulders( special_effect_t& effect )
 
 void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "marrowed_gemstone_charging", "marrowed_gemstone_enhancement" } ) )
+    return;
+
+  auto counter_buff = buff_t::find( effect.player, "marrowed_gemstone_charging" );
+  if ( !counter_buff )
+    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )->modify_max_stack( 1 );
+
   auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
   if ( !buff )
   {
@@ -957,7 +988,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
     buff->set_cooldown( buff->buff_duration() + effect.player->find_spell( 327073 )->duration() );
-    effect.player->buffs.marrowed_gemstone_charging->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
+    counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
     {
       if ( b->at_max_stacks() )
       {
@@ -968,7 +999,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   }
 
   effect.proc_flags2_ = PF2_CRIT;
-  effect.custom_buff = effect.player->buffs.marrowed_gemstone_charging;
+  effect.custom_buff = counter_buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -991,7 +1022,7 @@ void register_special_effects()
   register_soulbind_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
   register_soulbind_special_effect( 320660, soulbinds::niyas_tools_poison );
   register_soulbind_special_effect( 320662, soulbinds::niyas_tools_herbs );
-  register_soulbind_special_effect( 322721, soulbinds::grove_invigoration );
+  register_soulbind_special_effect( 322721, soulbinds::grove_invigoration, true );
   register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
   register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
@@ -999,7 +1030,7 @@ void register_special_effects()
   // Venthyr
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
-  register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
+  register_soulbind_special_effect( 331586, soulbinds::thrill_seeker, true );
   register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
@@ -1009,14 +1040,14 @@ void register_special_effects()
   register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
   register_soulbind_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
   register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
-  register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action );
+  register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action, true );
   // Necrolord
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
-  register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
+  register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }
 
 void initialize_soulbinds( player_t* player )

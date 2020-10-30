@@ -517,11 +517,7 @@ struct player_t : public actor_t
     buff_t* power_infusion; // Priest spell
 
     // 9.0 Soulbinds
-    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
-    buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
-    buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
-    buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
+    buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
