@@ -656,7 +656,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   // Divine Bulwark and consecration reduction
-  if ( standing_in_consecration() )
+  if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
   {
     s -> result_amount *= 1.0 + spec.consecration_2 -> effectN( 1 ).percent()
       + cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value();
