@@ -1007,8 +1007,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
 void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
 {
-  unique_gear::register_special_effect( spell_id, [ &, init_callback, fallback ]( special_effect_t& effect ) {
-    if ( !fallback && !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+  unique_gear::register_special_effect( spell_id, [ &, init_callback ] ( special_effect_t& effect ) {
+    if ( effect.source != SPECIAL_EFFECT_SOURCE_FALLBACK && !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
       return;
     init_callback( effect );
   }, fallback );
