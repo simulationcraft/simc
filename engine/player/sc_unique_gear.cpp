@@ -4577,7 +4577,7 @@ void unique_gear::register_special_effect( unsigned spell_id, const char* encode
   __special_effect_db.push_back( dbitem );
 }
 
-bool unique_gear::create_fallback_buffs( const special_effect_t& effect, std::vector<util::string_view> names )
+bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names )
 {
   if ( effect.source != SPECIAL_EFFECT_SOURCE_FALLBACK )
     return false;
