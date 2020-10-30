@@ -546,6 +546,7 @@ public:
     conduit_data_t chilled_to_the_core;
     conduit_data_t focused_lightning;
     conduit_data_t magma_fist;
+    conduit_data_t unruly_winds;
   } conduit;
 
   // Legendaries
@@ -591,13 +592,13 @@ public:
     proc_t* surge_during_lvb;
 
     // Enhancement
-    proc_t* windfury;
     proc_t* hot_hand;
     proc_t* maelstrom_weapon;
     proc_t* maelstrom_weapon_fs;
     proc_t* maelstrom_weapon_ea;
     proc_t* maelstrom_weapon_cttc;
     proc_t* stormflurry;
+    proc_t* windfury_uw;
   } proc;
 
   // Class Specializations
@@ -7442,6 +7443,7 @@ void shaman_t::init_spells()
   conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
   conduit.focused_lightning = find_conduit_spell( "Focused Lightning" );
   conduit.magma_fist = find_conduit_spell( "Magma Fist" );
+  conduit.unruly_winds = find_conduit_spell( "Unruly Winds" );
 
   // Shared Legendaries
   legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
@@ -8028,6 +8030,12 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     trigger_secondary_ability( state, a );
     trigger_secondary_ability( state, a );
 
+    if ( rng().roll( conduit.unruly_winds.percent() ) )
+    {
+      trigger_secondary_ability( state, a );
+      proc.windfury_uw->occur();
+    }
+
     attack->proc_wf->occur();
   }
 }
@@ -8337,7 +8345,7 @@ void shaman_t::init_procs()
 
   proc.lava_surge        = get_proc( "Lava Surge" );
   proc.wasted_lava_surge = get_proc( "Lava Surge: Wasted" );
-  proc.windfury          = get_proc( "Windfury" );
+  proc.windfury_uw       = get_proc( "Windfury: Unruly Winds" );
   proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
