@@ -2966,7 +2966,10 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
 
-    m *= 1.0 + p()->buff.legacy_of_the_frost_witch->stack_value();
+    if ( !stormflurry )
+    {
+      m *= 1.0 + p()->buff.legacy_of_the_frost_witch->stack_value();
+    }
 
     return m;
   }
@@ -3609,6 +3612,7 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->proc.maelstrom_weapon_ea->occur();
     }
 
+    p()->buff.legacy_of_the_frost_witch->expire();
   }
 
   void reset() override
