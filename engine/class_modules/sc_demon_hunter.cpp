@@ -4279,7 +4279,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
   throw_glaive_damage_t* fel_bombardment;
 
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "throw_glaive", p, p->spec.throw_glaive, options_str )
+    : demon_hunter_attack_t( "throw_glaive", p, p->spec.throw_glaive, options_str ),
+    fel_bombardment( nullptr )
   {
     execute_action = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
     execute_action->stats = stats;
