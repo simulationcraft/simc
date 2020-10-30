@@ -89,6 +89,7 @@ public:
 
     // Legendary
     buff_t* burning_wound;
+    buff_t* fel_bombardment;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -4269,7 +4270,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     {
       double m = demon_hunter_attack_t::composite_da_multiplier( s );
 
-      m *= 1.0 + p()->buff.fel_bombardment->stack_value();
+      m *= 1.0 + td( s->target )->debuffs.fel_bombardment->stack_value();
 
       return m;
     }
@@ -4292,6 +4293,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    const int bombardment_stacks = p()->buff.fel_bombardment->check();
+    if ( bombardment_stacks > 0 )
+    {
+      // Apply hidden damage debuff to the primary target before execute
+      td( target )->debuffs.fel_bombardment->trigger( bombardment_stacks );
+      p()->buff.fel_bombardment->expire();
+    }
+
     demon_hunter_attack_t::execute();
 
     // Fel Bombardment Legendary
@@ -4299,20 +4308,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // For SimC purposes, using a cloned spell for better stats tracking
     if ( hit_any_target && fel_bombardment )
     {
-      const int bombardment_triggers = p()->buff.fel_bombardment->check();
+      // For each stack of the buff, iterate through the target list and pick a random "primary" target
       const auto targets_in_range = targets_in_range_list( target_list() );
       assert( targets_in_range.size() > 0 );
-
-      // For each stack of the buff, iterate through the target list and pick a random "primary" target
-      for ( int i = 0; i < bombardment_triggers; ++i )
+      for ( int i = 0; i < bombardment_stacks; ++i )
       {
         const size_t index = rng().range( targets_in_range.size() );
         fel_bombardment->set_target( targets_in_range[ index ] );
         fel_bombardment->execute();
       }
     }
-
-    p()->buff.fel_bombardment->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4637,6 +4642,10 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "exposed_wound", p.conduit.serrated_glaive->effectN( 1 ).trigger() )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
 
+  debuffs.fel_bombardment = make_buff( *this, "fel_bombardment_debuff", p.find_spell( 337849 ) )
+    ->set_default_value_from_effect( 1, 0.01 )
+    ->set_duration( 0.5_s );
+
   target->register_on_demise_callback( &p, [this]( player_t* ) { target_demise(); } );
 }
 
@@ -4919,9 +4928,9 @@ void demon_hunter_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
-  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", legendary.fel_bombardment->effectN( 1 ).trigger() )
-    ->set_trigger_spell( legendary.fel_bombardment )
-    ->set_default_value_from_effect( 1 );
+  const spell_data_t* fel_bombardment_buff = legendary.fel_bombardment->ok() ? find_spell( 337849 ) : spell_data_t::not_found();
+  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff )
+    ->set_chance( 0.2 );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6803,11 +6812,13 @@ public:
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Demon Hunter", "2020-10-29", "Prepatch Unbound Chaos Damage", 728000 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 2.75 )
       .verification_value( 2.3375 );
+    */
   }
 
   void combat_begin( sim_t* ) const override
