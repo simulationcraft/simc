@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-10-30/36401, git build shadowlands 493ac7b6b6)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -508,7 +508,7 @@ Name             : Prowl (id=5215) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Spell Level      : 17
+Spell Level      : 13
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
@@ -528,7 +528,7 @@ Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... .....
                  : Stop attacks (20), Cannot be used in combat (28)
 Effects          :
 #1 (id=1852)     : Apply Aura (6) | Stealth (16)
-                   Base Value: 85 | Scaled Value: 300 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 85 | Scaled Value: 320 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1853)     : Apply Aura (6) | Dummy (4)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=167327)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
@@ -4434,11 +4434,11 @@ Effects          :
                    Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=872569)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748)
+                   Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748)
                    Family Flags: 22
 #9 (id=873101)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748)
+                   Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748)
                    Family Flags: 22
 
 Name             : Charged Bolt (id=137542) 
@@ -5543,7 +5543,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4756 | Target: Self (1)
 #2 (id=804237)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216)
+                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 #3 (id=844885)   : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5962,7 +5962,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Typhoon (61391), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Lifebloom (188550), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Overgrowth (203651), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Lone Empowerment (338142)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Typhoon (61391), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Lifebloom (188550), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Overgrowth (203651), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Lone Empowerment (338142)
                    Family Flags: 0, 2, 4, 5, 6, 9, 11, 12, 13, 15, 21, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 49, 52, 53, 54, 56, 58, 63, 64, 66, 68, 69, 73, 74, 79, 82, 85, 87, 89, 90, 91, 94, 99, 100, 102, 103, 104, 105, 106, 108, 110, 111, 115, 117, 120, 123, 126
 #2 (id=314659)   : Apply Aura (6) | Modify Auto Attack Range (153)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5972,6 +5972,9 @@ Effects          :
                    Family Flags: 7, 10, 27, 32, 52, 53, 54, 55, 56, 72, 74, 82, 87, 91, 99, 100, 126
 #4 (id=340874)   : Apply Aura (6) | Unknown(188)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=874468)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 1162 (Label) | Target: Self (1)
+                   Affected Spells (Label): Adaptive Swarm (325727)
 Description      : Increases the range of all of your abilities by $s1 yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -6663,7 +6666,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298471)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216)
+                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Thrash (77758), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Thorns (236696), Strength of the Wild (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 Description      : Can cast while moving while inside Starfall.
 Tooltip          : Can cast while moving while inside Starfall.
@@ -9838,7 +9841,7 @@ Name             : Aquatic Form (id=276012) [Spell Family (7), Passive]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Spell Level      : 13
+Spell Level      : 17
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 29
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -11909,8 +11912,7 @@ Resource         : 5% Base Mana (0) (id=215287)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
-Affecting spells : Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Evolved Swarm (341447 effect#1)
-Family Flags     : 22
+Labels           : 1162: Astral Influence (197524 effect#5)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13008,7 +13010,7 @@ Proc Flags       : ........ ........ x....... ........
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13033,7 +13035,7 @@ Proc Flags       : ........ ......x. ........ ........
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13235,7 +13237,7 @@ Tooltip          : You feel Lycara's inspiration arriving.
 Name             : Tough as Bark (id=340529) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 254 (values=-10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0)
+Conduit Id       : 254 (values=-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13256,7 +13258,7 @@ Name             : Ursine Vigor (id=340540) [Spell Family (7), Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 255 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
+Conduit Id       : 255 (values=12, 13.2, 14.4, 15.6, 16.799999, 18, 19.200001, 20.4, 21.6, 22.799999, 24, 25.200001, 26.4, 27.6, 28.799999)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13297,7 +13299,7 @@ Tooltip          : Health and armor increased by ${$w1}.1%.
 Name             : Innate Resolve (id=340543) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 256 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
+Conduit Id       : 256 (values=12, 13.2, 14.4, 15.6, 16.799999, 18, 19.200001, 20.4, 21.6, 22.799999, 24, 25.200001, 26.4, 27.6, 28.799999)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13317,7 +13319,7 @@ Description      : Regrowth and Frenzied Regeneration healing is increased by |c
 Name             : Tireless Pursuit (id=340545) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 257 (values=3000.0, 3300.0, 3600.0, 3900.0, 4200.0, 4500.0, 4800.0, 5100.0, 5400.0, 5700.0, 6000.0, 6300.0, 6600.0, 6900.0, 7200.0)
+Conduit Id       : 257 (values=3000, 3300, 3600, 3900, 4200, 4500, 4800, 5100, 5400, 5700, 6000, 6300, 6600, 6900, 7200)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13337,7 +13339,7 @@ Description      : For |cFFFFFFFF${$s1/1000}.1 sec|r after leaving Cat Form or T
 Name             : Unstoppable Growth (id=340549) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 273 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 273 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13349,13 +13351,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840547)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 Description      : Wild Growth's healing falls off |cFFFFFFFF$s1%|r less over time.
 
 Name             : Ready for Anything (id=340550) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 276 (values=-10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0)
+Conduit Id       : 276 (values=-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13376,7 +13378,7 @@ Name             : Unchecked Aggression (id=340552) [Spell Family (7), Passive, 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 269 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 269 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13388,7 +13390,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840554)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Berserk (50334), Incarnation: Guardian of Ursoc (102558)
                    Family Flags: 84, 96
 Description      : You gain |cFFFFFFFF${$s1}.1%|r haste during Berserk in Bear Form.
@@ -13396,7 +13398,7 @@ Description      : You gain |cFFFFFFFF${$s1}.1%|r haste during Berserk in Bear F
 Name             : Well-Honed Instincts (id=340553) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 271 (values=90.0, 81.818184, 75.0, 69.230766, 64.285713, 60.0, 56.25, 52.941177, 50.0, 47.36842, 45.0, 42.857143, 40.909092, 39.130436, 37.5)
+Conduit Id       : 271 (values=90, 81.818184, 75, 69.230766, 64.285713, 60, 56.25, 52.941177, 50, 47.36842, 45, 42.857143, 40.909092, 39.130436, 37.5)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13410,7 +13412,7 @@ Effects          :
 #1 (id=840555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=840556)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 340555 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 340555 | Target: Self (1)
 Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every |cFFFFFFFF$s1 sec|r.
 
 Name             : Well-Honed Instincts (id=340555) [Spell Family (7), Hidden] 
@@ -13436,7 +13438,7 @@ Description      : $@spelldesc340553
 Name             : Layered Mane (id=340605) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 272 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 272 (values=8, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13456,7 +13458,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 270 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 270 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13468,7 +13470,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840636)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 340613 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 340613 | Target: Self (1)
 Description      : Mangle increases the damage of your next Maul by |cFFFFFFFF${$s1}.1%|r, stacking up to $340613u.
 
 Name             : Savage Combatant (id=340613) [Spell Family (7)] 
@@ -13498,7 +13500,7 @@ Tooltip          : Your next Maul deals $w1% increased damage.
 Name             : Flash of Clarity (id=340616) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 274 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 274 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13518,7 +13520,7 @@ Description      : Clearcast Regrowths heal for an additional |cFFFFFFFF${$s1}.1
 Name             : Floral Recycling (id=340621) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 275 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 275 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13530,14 +13532,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840656)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 Description      : Swiftmend's healing is increased by |cFFFFFFFF$s1%|r of the consumed heal over time effect.
 
 Name             : Taste for Blood (id=340682) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 265 (values=2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8)
+Conduit Id       : 265 (values=2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13557,7 +13559,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 266 (values=10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
+Conduit Id       : 266 (values=10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -13598,7 +13600,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 267 (values=3.0, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6.0, 6.3, 6.6, 6.9, 7.2)
+Conduit Id       : 267 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, Generic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -13641,7 +13643,7 @@ Name             : Carnivorous Instinct (id=340705) [Spell Family (7), Passive, 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 268 (values=3.0, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6.0, 6.3, 6.6, 6.9, 7.2)
+Conduit Id       : 268 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13670,7 +13672,7 @@ Name             : Precise Alignment (id=340706) [Spell Family (7), Passive, Hid
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 262 (values=4000.0, 4400.0, 4800.0, 5200.0, 5600.0, 6000.0, 6400.0, 6800.0, 7200.0, 7600.0, 8000.0, 8400.0, 8800.0, 9200.0, 9600.0)
+Conduit Id       : 262 (values=5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13682,7 +13684,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840798)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Celestial Alignment (194223)
                    Family Flags: 113
 Description      : The duration of $?a102560[Incarnation: Chosen of Elune][Celestial Alignment] is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
@@ -13691,7 +13693,7 @@ Name             : Fury of the Skies (id=340708) [Spell Family (7), Passive, Hid
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 263 (values=1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4)
+Conduit Id       : 263 (values=1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13712,7 +13714,7 @@ Name             : Umbral Intensity (id=340719) [Spell Family (7), Passive, Hidd
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 264 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 264 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13724,7 +13726,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517), Eclipse (Lunar) (48518)
                    Family Flags: 42, 59
 Description      : Eclipse's damage bonus to Wrath and Starfire starts |cFFFFFFFF${$s1}.1%|r stronger.
@@ -13733,7 +13735,7 @@ Name             : Stellar Inspiration (id=340720) [Spell Family (7), Passive, H
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 261 (values=8.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 261 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13745,13 +13747,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=840817)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Starsurge and Starfall have a |cFFFFFFFF${$s1}.1%|r chance to empower Eclipse or extend Moonfire and Sunfire by double the amount.
 
 Name             : Born Anew (id=341280) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 258 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 258 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13770,7 +13772,7 @@ Name             : Deep Allegiance (id=341378) [Spell Family (7), Passive, Hidde
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 277 (values=-10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0)
+Conduit Id       : 277 (values=-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13791,7 +13793,7 @@ Name             : Endless Thirst (id=341383) [Spell Family (7), Passive, Hidden
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 280 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 280 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13803,16 +13805,16 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=841733)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Ravenous Frenzy (323546)
                    Family Flags: 19
-Description      : Ravenous Frenzy increases your critical chance by |cFFFFFFFF${$s1/10}.1%|r per stack.
+Description      : Ravenous Frenzy increases your critical chance by |cFFFFFFFF${$s1/10}.2%|r per stack.
 
 Name             : Conflux of Elements (id=341446) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 279 (values=12.0, 13.2, 14.4, 15.6, 16.799999, 18.0, 19.200001, 20.4, 21.6, 22.799999, 24.0, 25.200001, 26.4, 27.6, 28.799999)
+Conduit Id       : 279 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13824,11 +13826,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=841847)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 #2 (id=841848)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
 Description      : While channeling Convoke the Spirits, your damage and healing are increased by |cFFFFFFFF${$s1}.1%|r.
@@ -13837,7 +13839,7 @@ Name             : Evolved Swarm (id=341447) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Conduit Id       : 278 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 278 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13850,14 +13852,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841849)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748)
+                   Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748)
                    Family Flags: 22
 Description      : Adaptive Swarm increases periodic effects by an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Front of the Pack (id=341450) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 259 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 259 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13881,7 +13883,7 @@ Description      : Stampeding Roar's radius and duration are increased by |cFFFF
 Name             : Born of the Wilds (id=341451) [Spell Family (7), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 260 (values=-10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0)
+Conduit Id       : 260 (values=-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

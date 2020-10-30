@@ -8,7 +8,6 @@ namespace warlock
 {
 struct warlock_t;
 
-
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -19,12 +18,12 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
-
 struct warlock_td_t : public actor_target_data_t
 {
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
   propagate_const<dot_t*> dots_scouring_tithe;
   propagate_const<dot_t*> dots_impending_catastrophe;
   propagate_const<dot_t*> dots_soul_rot;
@@ -99,8 +98,8 @@ public:
   // Active Pet
   struct pets_t
   {
-    pets::warlock_pet_t* active;
-    pets::warlock_pet_t* last;
+    warlock_pet_t* active;
+    warlock_pet_t* last;
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
@@ -298,7 +297,7 @@ public:
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t mark_of_borrowed_power; //TODO: SL Beta - Confirm with long dummy log that the % chances have no BLP
+    item_runeforge_t relic_of_demonic_synergy; //TODO: SL Beta - Do pet and warlock procs share a single RPPM?
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
@@ -323,7 +322,7 @@ public:
     // Covenant Abilities
     conduit_data_t catastrophic_origin;   // Venthyr
     conduit_data_t soul_eater;          // Night Fae
-    conduit_data_t prolonged_decimation;  // Necrolord
+    conduit_data_t fatal_decimation;  // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
     conduit_data_t cold_embrace;
@@ -373,6 +372,7 @@ public:
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> scouring_tithe;
+    propagate_const<cooldown_t*> infernal;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -483,6 +483,7 @@ public:
     propagate_const<buff_t*> decimating_bolt;
     propagate_const<buff_t*> tyrants_soul;
     propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
@@ -491,6 +492,7 @@ public:
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> implosive_potential;
     propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -642,6 +644,11 @@ public:
   void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_td_t> target_data;
+
+  const warlock_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
 
   warlock_td_t* get_target_data( player_t* target ) const override
   {
@@ -862,6 +869,24 @@ public:
       {
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
       }
+
+      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+      {
+        switch ( p()->specialization() )
+        {
+          case WARLOCK_AFFLICTION:
+            p()->cooldowns.darkglare->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 1 ).time_value(), false );
+            break;
+          case WARLOCK_DEMONOLOGY:
+            p()->cooldowns.demonic_tyrant->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+            break;
+          case WARLOCK_DESTRUCTION:
+            p()->cooldowns.infernal->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 3 ).time_value(), false );
+            break;
+          default:
+            break;
+        }
+      }
     }
   }
 
@@ -882,6 +907,8 @@ public:
 
     if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
       pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
+
+    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 
     return pm;
   }
@@ -974,13 +1001,33 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
   }
 };
 
+struct demonic_synergy_callback_t : public dbc_proc_callback_t
+{
+  warlock_t* owner;
+
+  demonic_synergy_callback_t( warlock_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), owner( p )
+  {
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    if ( owner->warlock_pet_list.active )
+    {
+      auto pet = owner->warlock_pet_list.active;
+      //Always set the pet's buff value using the owner's to ensure specialization value is correct
+      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
+    }
+  }
+};
+
 using residual_action_t = residual_action::residual_periodic_action_t<warlock_spell_t>;
 
 struct summon_pet_t : public warlock_spell_t
 {
   timespan_t summoning_duration;
   std::string pet_name;
-  pets::warlock_pet_t* pet;
+  warlock_pet_t* pet;
 
 private:
   void _init_summon_pet_t()
@@ -1022,7 +1069,7 @@ public:
 
   void init_finished() override
   {
-    pet = debug_cast<pets::warlock_pet_t*>( player->find_pet( pet_name ) );
+    pet = debug_cast<warlock_pet_t*>( player->find_pet( pet_name ) );
 
     warlock_spell_t::init_finished();
   }

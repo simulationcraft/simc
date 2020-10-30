@@ -330,8 +330,6 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    p()->buffs.balespiders_burning_core->expire();
-
     p()->buffs.decimating_bolt->decrement();
   }
 
@@ -421,17 +419,6 @@ struct call_dreadstalkers_t : public demonology_spell_t
       p()->buffs.dread_calling->expire();
     }
   }
-
-  void consume_resource() override
-  {
-    demonology_spell_t::consume_resource();
-
-    if ( p()->legendary.mark_of_borrowed_power->ok() )
-    {
-      double chance = p()->legendary.mark_of_borrowed_power->effectN( 2 ).percent();
-      make_event<borrowed_power_event_t>( *p()->sim, p(), as<int>( last_resource_cost ), chance );
-    }
-  }
 };
 
 struct implosion_t : public demonology_spell_t
@@ -439,7 +426,7 @@ struct implosion_t : public demonology_spell_t
   struct implosion_aoe_t : public demonology_spell_t
   {
     double casts_left = 5.0;
-    pets::warlock_pet_t* next_imp;
+    warlock_pet_t* next_imp;
 
     implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
     {
@@ -573,7 +560,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     for ( auto& pet : p()->pet_list )
     {
-      auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet );
+      auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
       if ( lock_pet == nullptr )
         continue;
@@ -1125,9 +1112,6 @@ void warlock_t::create_buffs_demonology()
   buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
                            ->set_default_value( conduit.tyrants_soul.percent() );
 
-  buffs.soul_tithe = make_buff( this, "soul_tithe", find_spell( 340238 ) )
-                         ->set_default_value( conduit.soul_tithe.percent() );
-
   // Legendaries
   buffs.balespiders_burning_core =
       make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
@@ -1184,7 +1168,7 @@ void warlock_t::vision_of_perfection_proc_demo()
   // TOCHECK: Azerite traits, does proc tyrant extend summoned tyrant and vice versa?
   for ( auto& pet : pet_list )
   {
-    auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet );
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
     if ( lock_pet == nullptr )
       continue;
@@ -1348,7 +1332,7 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "blood_fury,if=pet.demonic_tyrant.active" );
   ogcd->add_action( "fireblood,if=pet.demonic_tyrant.active" );
 
-  ess->add_action( "worldvein_resonance" );
+  ess->add_action( "worldvein_resonance,if=cooldown.summon_demonic_tyrant.remains>45" );
   ess->add_action( "memory_of_lucid_dreams" );
   ess->add_action( "blood_of_the_enemy" );
   ess->add_action( "guardian_of_azeroth" );

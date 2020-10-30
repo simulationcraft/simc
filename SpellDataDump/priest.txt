@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-10-30/36401, git build shadowlands 493ac7b6b6)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -125,7 +125,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#5), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Smite (262861 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#4)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#5), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Smite (262861 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#4), Hungering Void (345219 effect#1)
 Family Flags     : 7, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -175,14 +175,15 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1.8% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032)
-Resource         : 1.2% Base Mana (0) (id=215244) w/ Holy Priest (id=137031)
+Resource         : 0.3% Base Mana (0) (id=215244) w/ Holy Priest (id=137031)
+Resource         : 0.3% Base Mana (0) (id=232137) w/ Shadow Priest (id=137033)
 Spell Level      : 2
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8), Shadow Priest (137033 effects: #1, #2, #4, #5), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3), Shadow Word: Pain (327820 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8), Shadow Priest (137033 effects: #1, #2, #4, #5), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3), Shadow Word: Pain (327820 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -453,14 +454,15 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2.5% Base Mana (0) (id=192724) w/ Discipline Priest (id=137032)
-Resource         : 2.5% Base Mana (0) (id=192725) w/ Holy Priest (id=137031)
+Resource         : 0.25% Base Mana (0) (id=192725) w/ Holy Priest (id=137031)
+Resource         : 0.25% Base Mana (0) (id=232138) w/ Shadow Priest (id=137033)
 Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
-Category         : 1602: Priest (137030 effect#2), Item - Priest T17 Shadow 2P Bonus (165628 effect#1), Voidform (194249 effect#6), Mangaza's Madness (207701 effect#1), Mind Blast (319899 effect#1)
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#9), Shadow Priest (137033 effects: #1, #2, #12), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #2, #4), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Empty Mind (247226 effects: #1, #2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Mind Devourer (338332 effect#1)
+Category         : 1602: Priest (137030 effect#2), Item - Priest T17 Shadow 2P Bonus (165628 effect#1), Voidform (194249 effect#6), Mangaza's Madness (207701 effect#1), Mind Blast (319899 effect#1), Dark Thought (341207 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#9), Shadow Priest (137033 effects: #1, #2, #12), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #2, #4), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Empty Mind (247226 effects: #1, #2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Hungering Void (345219 effect#1)
 Family Flags     : 13, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -551,7 +553,7 @@ Duration         : 20 seconds
 Cooldown         : 120 seconds
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 61
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -579,7 +581,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 20, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -638,7 +640,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #1, #3), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#7)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effects: #1, #3), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 70, 72
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -928,14 +930,14 @@ Name             : Shadow Word: Death (id=32379) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 1.6% Base Mana (0) (id=215322)
+Resource         : 0.5% Base Mana (0) (id=215322)
 Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1169: Priest (137030 effect#5), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#2)
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effect#6), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Zeks Exterminatus (236546 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Kiss of Death (336133 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effect#6), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Zeks Exterminatus (236546 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Kiss of Death (336133 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 33, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1181,7 +1183,7 @@ GCD              : 1.5 seconds
 Duration         : 21 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2, #4, #5), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Surrender to Madness (319952 effect#7), Unfurling Darkness (341282 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2, #4, #5), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Surrender to Madness (319952 effect#7), Unfurling Darkness (341282 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 42, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1421,7 +1423,7 @@ Spell Type       : Magic
 Spell Level      : 25
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Radiant Focus (252848 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Radiant Focus (252848 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Triggered by     : Penance (47758)
 Family Flags     : 47, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1546,7 +1548,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3), Hungering Void (345219 effect#1)
 Family Flags     : 65, 72
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1573,7 +1575,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3), Hungering Void (345219 effect#1)
 Triggered by     : Mind Sear (48045)
 Family Flags     : 65, 72
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
@@ -2012,7 +2014,7 @@ Duration         : 1.5 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x88000000
 Mechanic         : Grip
-Affecting spells : Surrender to Madness (193223 effect#2), Death Denied (287723 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Death Denied (287723 effect#1), Surrender to Madness (319952 effect#7), Move with Grace (337678 effect#1)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
@@ -2224,7 +2226,7 @@ Spell Level      : 23
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 21, 69, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2524,9 +2526,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#3 (id=124256)   : Trigger Spell (64): Move with Grace
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343988 | Target: Unknown(57)
-#4 (id=283243)   : Apply Aura (6) | Levitate (106)
+#3 (id=124256)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(57)
 Description      : $@spelldesc1706
 Tooltip          : Levitating.$?a343988[
@@ -2678,7 +2678,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72, 97
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
@@ -2744,7 +2744,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72, 98
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2922,7 +2922,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Travel Time      : 0.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2966,7 +2966,7 @@ Spell Type       : Magic
 Resource         : 1.6% Base Mana (0) (id=7897)
 Spell Level      : 31
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 49, 72
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3189,7 +3189,7 @@ Effects          :
                    Affected Spells: Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
                    Family Flags: 39, 52
 #8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #9 (id=260940)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3289,7 +3289,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Haunting Apparitions (338319 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Haunting Apparitions (338319 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 72, 90
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ......x. ......x. 
@@ -3970,9 +3970,10 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x....x.. ........ 
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Trap Triggered
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
+                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Triggered by     : Invoke the Naaru (196685), Divine Image (336401)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4011,6 +4012,103 @@ Effects          :
                    Affected Spells: Spirit of Redemption (20711), Spirit of Redemption (27827), Spirit of Redemption (215769)
                    Family Flags: 5, 73
 Description      : Increases the duration of Spirit of Redemption by $s1% and increases the range of your healing spells while in Spirit of Redemption by $m2%.
+
+Name             : Healing Light (id=196809) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=288947)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : Heals the target for $s1.
+
+Name             : Dazzling Lights (id=196810) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Max Targets      : 5
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=288949)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE friendly (31)
+#2 (id=336109)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Heals up to $s2 nearby targets for $s1.
+
+Name             : Light Eruption (id=196812) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=288951)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
+Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
+
+Name             : Blessed Light (id=196813) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Velocity         : 15 yards/sec
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=288952)   : Direct Heal (10)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.37500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Friend (21)
+Description      : Heals up to $x targets for $s1.
+
+Name             : Tranquil Light (id=196816) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
+Effects          :
+#1 (id=288956)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : Heals the target for $o over $d.
+Tooltip          : Healing for $w1 every $t sec.
 
 Name             : Light of the Naaru (id=196985) [Spell Family (6), Passive] 
 Class            : Priest
@@ -4454,7 +4552,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4479,7 +4577,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Triggered by     : Purge the Wicked (204197)
 Family Flags     : 20, 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4590,7 +4688,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1590: Shadow Priest (137033 effect#10), Voidform (194249 effect#15), Mangaza's Madness (207701 effect#2)
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Empty Mind (247226 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Empty Mind (247226 effects: #1, #2), Twist of Fate (265258 effects: #1, #2), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 30, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4722,7 +4820,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Crash (342835 effect#2)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Crash (342835 effect#2), Hungering Void (345219 effect#1)
 Triggered by     : Shadow Crash (205385)
 Family Flags     : 31, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4749,7 +4847,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5026,7 +5124,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 24 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1)
 Family Flags     : 56, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5243,7 +5341,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 35 yards/sec
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effects: #1, #2, #12), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Heart of the Void (248296 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effects: #1, #2, #12), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Heart of the Void (248296 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1), Hungering Void (345219 effect#1)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5266,7 +5364,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effects: #1, #2, #12), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Heart of the Void (248296 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effects: #1, #2, #12), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Heart of the Void (248296 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1), Hungering Void (345219 effect#1)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5809,10 +5907,10 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 4 seconds
-Cooldown         : 45 seconds
+Duration         : 3 seconds
+Cooldown         : 30 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 51, 72
 Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -5825,12 +5923,12 @@ Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. .....
                  : Channeled (34), Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.02000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=651861)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=754067)   : Trigger Spell (64): Void Torrent
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289577 | Target: Self (1)
-Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d. While channelling, all of your Shadow damage over time effects are refreshed on the target.
+Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d.
 
 |cFFFFFFFFGenerates ${$289577s1*$289577s2/100} Insanity over the duration.|r
 Tooltip          : Dealing $s1 Shadow damage to the target every $t1 sec.
@@ -7059,7 +7157,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=728947)   : Energize Power (30)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc275725
 
 Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -7097,7 +7195,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732994)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 259.5001 (coefficient=10.7362) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 169.1941 (coefficient=7) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
 Name             : Contemptuous Homily (id=278629) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -8419,9 +8517,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Don't display in aura bar (60), Tick on application (169)
 Effects          :
 #1 (id=754055)   : Apply Aura (6) | Periodic Energize Power (24): every 0.975 seconds
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #2 (id=754058)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc263165
 Tooltip          : |cFFFFFFFFGenerates ${$s1*$s2/100} Insanity over $d.|r
 
@@ -9031,7 +9129,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9077,14 +9175,14 @@ Range            : 100 yards
 Duration         : 6 seconds
 Triggered by     : Mindgames (323673)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ ........ ........   ........ ........ xx..x... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Hidden (7), Don't display in aura bar (60)
+                 : Hidden (7), Don't display in aura bar (60), Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=812814)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
@@ -9099,14 +9197,14 @@ Range            : 100 yards
 Duration         : 6 seconds
 Triggered by     : Mindgames (323673)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ ........ ........   ........ ........ xx..x... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Hidden (7), Don't display in aura bar (60)
+                 : Hidden (7), Don't display in aura bar (60), Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=812821)   : Apply Aura (6) | Absorb Healing (301)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
@@ -9223,7 +9321,7 @@ Class            : Priest
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9300,7 +9398,7 @@ Labels           : 1102: Festering Transfusion (337979 effect#1), Festering Tran
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... x....... 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Death
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#3)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#3), Hungering Void (345219 effect#1)
 Family Flags     : 72, 114
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9328,7 +9426,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 42 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9349,11 +9447,30 @@ Description      : Blasts the enemy with pure Anima, causing $s1 Arcane damage a
 
 Grants $s3 $lstack:stacks; of Boon of the Ascended.
 
+Name             : Ascended Blast (desc=Kyrian) (id=325315) [Spell Family (6)] 
+Class            : Priest
+School           : Arcane
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... .....x..   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ...x....   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Cannot crit (93)
+Effects          :
+#1 (id=815508)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+Description      : $@spelldesc325283
+
 Name             : Ascended Eruption (id=325326) [Spell Family (6)] 
 Class            : Priest
 School           : Arcane
 Spell Type       : Magic
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1)
 Family Flags     : 72, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9478,14 +9595,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-#2 (id=868651)   : Apply Aura (6) | Unknown(148)
+#2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
-#3 (id=868652)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Crusade (231895)
+#3 (id=868652)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Unknown(25)
-#4 (id=868655)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Storm, Earth, and Fire (137639)
+#4 (id=868655)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1572 | Target: Unknown(25)
-#5 (id=868656)   : Apply Aura (6) | Unknown(148)
+                   Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
+#5 (id=868656)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Unknown(25)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
 Description      : $@spelldesc327661
 Tooltip          : The cooldown of your major ability recovers $s1% faster.
 
@@ -9567,7 +9688,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Mend (342992 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Mend (342992 effect#1), Hungering Void (345219 effect#1)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10016,7 +10137,7 @@ Description      : After Spirit of Redemption expires, you will revive at up to 
 Name             : Translucent Image (id=337662) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 66 (values=-6.0, -6.6, -7.2, -7.8, -8.4, -9.0, -9.6, -10.2, -10.8, -11.4, -12.0, -12.6, -13.2, -13.8, -14.4)
+Conduit Id       : 66 (values=-6, -6.6, -7.2, -7.8, -8.4, -9, -9.6, -10.2, -10.8, -11.4, -12, -12.6, -13.2, -13.8, -14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10035,7 +10156,7 @@ Name             : Move with Grace (id=337678) [Spell Family (6), Passive, Hidde
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 67 (values=11.0, 12.1, 13.2, 14.3, 15.4, 16.5, 17.6, 18.700001, 19.799999, 20.9, 22.0, 23.1, 24.200001, 25.299999, 26.4)
+Conduit Id       : 67 (values=-20000, -22000, -24000, -26000, -28000, -30000, -32000, -34000, -36000, -38000, -40000, -42000, -44000, -46000, -48000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10046,14 +10167,19 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=835836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Levitate grants |cFFFFFFFF${$s1}.1%|r increased movement speed.
+#1 (id=835836)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Leap of Faith (73325), Leap of Faith (336471)
+                   Family Flags: 83
+#2 (id=874881)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 1898 | Target: Self (1)
+                   Affected Spells (Category): Leap of Faith (336471)
+Description      : Leap of Faith's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Clear Mind (id=337707) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 69 (values=-20.0, -22.0, -24.0, -26.0, -28.0, -30.0, -32.0, -34.0, -36.0, -38.0, -40.0, -42.0, -44.0, -46.0, -48.0)
+Conduit Id       : 69 (values=-20, -22, -24, -26, -28, -30, -32, -34, -36, -38, -40, -42, -44, -46, -48)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10073,7 +10199,7 @@ Description      : Dispel Magic, Purify, and Mass Dispel cost |cFFFFFFFF${$s1*-1
 Name             : Charitable Soul (id=337715) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 71 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
+Conduit Id       : 71 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10092,7 +10218,7 @@ Name             : Light's Inspiration (id=337748) [Spell Family (6), Passive, H
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 72 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 72 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10112,7 +10238,7 @@ Description      : Desperate Prayer heals you for an additional |cFFFFFFFF${$s1}
 Name             : Power Unto Others (id=337762) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 73 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 73 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10130,7 +10256,7 @@ Description      : Power Infusion incurs a |cFFFFFFFF${$s1}.1 sec|r reduced cool
 Name             : Shining Radiance (id=337778) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 75 (values=40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0, 80.0, 84.0, 88.0, 92.0, 96.0)
+Conduit Id       : 75 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10150,7 +10276,7 @@ Description      : Power Word: Radiance's healing is increased by |cFFFFFFFF${$s
 Name             : Pain Transformation (id=337786) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 76 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 76 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10168,7 +10294,7 @@ Description      : Pain Suppression also heals your target for |cFFFFFFFF${$s1}.
 Name             : Exaltation (id=337790) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 77 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
+Conduit Id       : 77 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10192,7 +10318,7 @@ Description      : $?s109964[Spirit Shell's][Rapture's] duration is increased by
 Name             : Lasting Spirit (id=337811) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 78 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
+Conduit Id       : 78 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10216,7 +10342,7 @@ Description      : Guardian Spirit's duration is increased by ${$s2/1000}.1 sec,
 Name             : Swift Penitence (id=337891) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 81 (values=30.0, 33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 81 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10234,7 +10360,7 @@ Description      : The damage or healing of your first bolt of Penance is increa
 Name             : Focused Mending (id=337914) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 82 (values=38.0, 41.799999, 45.599998, 49.400002, 53.200001, 57.0, 60.799999, 64.599998, 68.400002, 72.199997, 76.0, 79.800003, 83.599998, 87.400002, 91.199997)
+Conduit Id       : 82 (values=38, 41.799999, 45.599998, 49.400002, 53.200001, 57, 60.799999, 64.599998, 68.400002, 72.199997, 76, 79.800003, 83.599998, 87.400002, 91.199997)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10253,7 +10379,7 @@ Name             : Resonant Words (id=337947) [Spell Family (6), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 84 (values=38.0, 41.799999, 45.599998, 49.400002, 53.200001, 57.0, 60.799999, 64.599998, 68.400002, 72.199997, 76.0, 79.800003, 83.599998, 87.400002, 91.199997)
+Conduit Id       : 84 (values=38, 41.799999, 45.599998, 49.400002, 53.200001, 57, 60.799999, 64.599998, 68.400002, 72.199997, 76, 79.800003, 83.599998, 87.400002, 91.199997)
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10273,7 +10399,7 @@ Description      : Casting a Holy Word spell increases the healing of your next 
 Name             : Mental Recovery (id=337954) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 85 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 85 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10291,7 +10417,7 @@ Description      : After $?s205369[Mind Bomb][Psychic Scream] ends, affected tar
 Name             : Courageous Ascension (id=337966) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 87 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 38.0, 50.0, 52.5, 55.0, 57.5, 60.0)
+Conduit Id       : 87 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 38, 50, 52.5, 55, 57.5, 60)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10313,7 +10439,7 @@ Name             : Festering Transfusion (id=337979) [Spell Family (6), Passive,
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 90 (values=6.0, 6.6, 7.2, 7.8, 8.4, 9.0, 9.6, 10.2, 10.8, 11.4, 12.0, 12.6, 13.2, 13.8, 14.4)
+Conduit Id       : 90 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10336,7 +10462,7 @@ Name             : Fae Fermata (id=338305) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 101 (values=3800.0, 4180.0, 4560.0, 4940.0, 5320.0, 5700.0, 6080.0, 6460.0, 6840.0, 7220.0, 7600.0, 7980.0, 8360.0, 8740.0, 9120.0)
+Conduit Id       : 101 (values=3800, 4180, 4560, 4940, 5320, 5700, 6080, 6460, 6840, 7220, 7600, 7980, 8360, 8740, 9120)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10356,7 +10482,7 @@ Description      : Your Fae Guardians leave behind a $s2% effective copy of thei
 Name             : Shattered Perceptions (id=338315) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 105 (values=13.0, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26.0, 27.299999, 28.6, 29.9, 31.200001)
+Conduit Id       : 105 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10382,7 +10508,7 @@ Description      : Mindgames lasts an additional ${$s3/1000}.1 sec, deals an add
 Name             : Haunting Apparitions (id=338319) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 107 (values=31.0, 34.099998, 37.200001, 40.299999, 35.0, 46.5, 49.599998, 52.700001, 55.799999, 58.900002, 62.0, 65.099998, 68.199997, 71.300003, 74.400002)
+Conduit Id       : 107 (values=31, 34.099998, 37.200001, 40.299999, 35, 46.5, 49.599998, 52.700001, 55.799999, 58.900002, 62, 65.099998, 68.199997, 71.300003, 74.400002)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10402,7 +10528,7 @@ Description      : Your Shadowy Apparitions deal |cFFFFFFFF${$s1}.1%|r more dama
 Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 113 (values=9.0, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 14.0, 18.9, 19.799999, 20.700001, 21.6)
+Conduit Id       : 113 (values=9, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 14, 18.9, 19.799999, 20.700001, 21.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10424,7 +10550,7 @@ Description      : Mind Blast deals |cFFFFFFFF${$s1}.1%|r increased damage and h
 Name             : Rabid Shadows (id=338338) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 114 (values=19.0, 20.9, 22.799999, 24.700001, 26.6, 28.5, 30.4, 32.299999, 34.200001, 36.099998, 38.0, 31.5, 41.799999, 43.700001, 45.599998)
+Conduit Id       : 114 (values=19, 20.9, 22.799999, 24.700001, 26.6, 28.5, 30.4, 32.299999, 34.200001, 36.099998, 38, 31.5, 41.799999, 43.700001, 45.599998)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10470,7 +10596,7 @@ While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1%|r chance to reset the co
 Name             : Holy Oration (id=338345) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 116 (values=6.0, 8.8, 9.6, 10.4, 11.2, 12.0, 12.8, 13.6, 14.4, 15.2, 16.0, 16.799999, 17.6, 18.4, 19.200001)
+Conduit Id       : 116 (values=6, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10509,6 +10635,40 @@ Description      : For each of your Shadow damage over time effects on the targe
 
 |CFFFFFFFFDark Thought|R
 Increases the number of charges of Mind Blast by 1, Mind Blast can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.
+
+Name             : Dark Thought (id=341207) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Spell Level      : 1
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=841455)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
+                   Affected Spells (Category): Mind Blast (8092)
+#2 (id=841456)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Mind Blast (8092)
+                   Family Flags: 13
+#3 (id=841543)   : Apply Aura (6) | Unknown(500)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
+Description      : For each damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought. 
+
+Dark Thought
+Increases the number of charges of Mind Blast by 1, Mind Blast has no cooldown and can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.
+Tooltip          : Maximum number of charges of Mind Blast increased by $w1.
+
+Mind Blast no longer has a  cooldown, can be cast instantly, and while channelling Mind Flay or Mind Sear.
 
 Name             : Ancient Madness (id=341240) [Spell Family (6), Passive] 
 Class            : Priest
@@ -10630,7 +10790,7 @@ Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   x....... .x...... ........ ......x. 
@@ -10799,7 +10959,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342835 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=844191)   : Energize Power (30)
                    Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
-Description      : Hurl a bolt of slow-moving, far-reaching Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
+Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
 
 If Shadow Crash hits a lone target, they suffer $342835m2% increased damage from your next Shadow Crash within $342835d. Stacks up to $342835u.
 
@@ -10814,7 +10974,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Triggered by     : Shadow Crash (342834)
 Family Flags     : 31, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10974,7 +11134,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11041,7 +11201,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : 600 seconds
-Triggered by     : Levitate (111759)
 Attributes       : .......x ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11107,7 +11266,7 @@ Spell Level      : 26
 Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effect#11), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effects: #2, #3), Hungering Void (345219 effect#1)
 Family Flags     : 65, 72
 Attributes       : ........ ........ x....... ........   ..x....x ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -11173,9 +11332,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=870296)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
+#1 (id=870296)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Searing Nightmare (341385), Shadow Crash (342835), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111)
+                   Family Flags: 72
+#2 (id=874718)   : Apply Aura (6) | Unknown(380)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc345218
 Tooltip          : Damage taken from the Priest increased by $w1%.
 
@@ -11217,7 +11379,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
 Family Flags     : 72
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ..x..... .....x.. 

@@ -571,7 +571,7 @@ void echo_of_eonar( special_effect_t& effect )
   if ( !effect.player->buffs.echo_of_eonar )
   {
     effect.player->buffs.echo_of_eonar =
-      make_buff( effect.player, "echo_of_eonar", effect.driver() )
+      make_buff( effect.player, "echo_of_eonar", effect.driver()->effectN( 2 ).trigger() )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         ->set_chance( 1 );

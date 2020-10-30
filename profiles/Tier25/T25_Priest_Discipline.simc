@@ -6,7 +6,7 @@ race=human
 role=spell
 position=ranged_back
 talents=3020110
-azerite_essences=27:3:1/5:3:0/12:3:0/35:3:0
+azerite_essences=14:4:1/23:4:0/27:4:0/12:4:0
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -55,31 +55,31 @@ actions+=/shadow_word_pain
 actions.boon=ascended_blast
 actions.boon+=/ascended_nova
 
-head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=405/403/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=403/405/18/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=236/405/21/13
-wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517
-hands=emberscale_gloves,id=174125,bonus_id=4824/1517/6465/6476
-waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/6465/6482
-legs=trousers_of_peculiar_potency,id=174121,bonus_id=4824/1517
-feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517
-finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_haste
-finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
-trinket1=psyche_shredder,id=174060,bonus_id=4824/1517/6560
-trinket2=forbidden_obsidian_claw,id=173944,bonus_id=4824/1517/6552
-main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517,enchant=quick_navigation
-off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517
+head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4786/6511/4775,azerite_powers=403/582/31/83/13
+neck=heart_of_azeroth,id=158075,bonus_id=6316/4932/4933/1564,azerite_level=96
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4786/6512/4775,azerite_powers=403/582/18/204/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6603/1472,enchant_id=6088
+chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=5448/1543/4786/6510/4775,azerite_powers=236/403/459/84/13
+wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517/4786/6514/6476/6470
+hands=emberscale_gloves,id=174125,bonus_id=4824/1517/4786/6476/6470/6514
+waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/4786/6476/6470/6514
+legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/6578/6515/1517/4786/6573
+feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/4786/6476/6470/6514
+finger1=logic_loop_of_recursion,id=169158,bonus_id=6536/1514/4786/6476/6470/6514,enchant_id=6108
+finger2=overclocking_bit_band,id=169159,bonus_id=6536/1514/4786/6482/6470/6514,enchant_id=6108
+trinket1=highborne_compendium_of_storms,id=169328
+trinket2=manifesto_of_madness,id=174103,bonus_id=4824/6515/1517/4786
+main_hand=vorzz_yoqal,id=172196,bonus_id=4824/6578/1517/4786/6513/6476/6470,enchant_id=5949
+off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/6578/6579/6481/6462/1517/4786/6514
 
 # Gear Summary
-# gear_ilvl=139.13
-# gear_stamina=740
-# gear_intellect=549
-# gear_crit_rating=274
-# gear_haste_rating=313
-# gear_mastery_rating=169
-# gear_versatility_rating=71
-# gear_corruption=95
-# gear_corruption_resistance=50
-# gear_armor=167
+# gear_ilvl=131.38
+# gear_stamina=701
+# gear_intellect=551
+# gear_crit_rating=220
+# gear_haste_rating=219
+# gear_mastery_rating=164
+# gear_versatility_rating=55
+# gear_corruption=170
+# gear_corruption_resistance=125
+# gear_armor=178

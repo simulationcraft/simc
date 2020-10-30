@@ -84,6 +84,12 @@ public:
     }
   }
 
+  void init( util::span<const util::span<const T>> list, bool ptr )
+  {
+    for ( auto sublist : list )
+      init( sublist, ptr );
+  }
+
   template <typename Predicate>
   const T& get( bool ptr, Predicate&& pred ) const
   {

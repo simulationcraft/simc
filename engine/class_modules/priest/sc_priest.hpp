@@ -139,7 +139,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> dark_thoughts;
+    propagate_const<buff_t*> dark_thought;
 
     // Azerite Powers
     // Shadow
@@ -545,6 +545,7 @@ public:
   void init_action_list() override;
   void combat_begin() override;
   void init_rng() override;
+  const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
@@ -604,10 +605,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
-  const priest_td_t* find_target_data( const player_t* target ) const
-  {
-    return _target_data[ target ];
-  }
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1478,7 +1475,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
                           dark_thoughts_proc_percent * dots, dots );
       }
-      priest().buffs.dark_thoughts->trigger();
+      priest().buffs.dark_thought->trigger();
       proc->occur();
     }
   }
@@ -1643,7 +1640,7 @@ struct priest_module_t final : public module_t
  * Takes the cooldown and new maximum charge count
  * Function depends on the internal working of cooldown_t::reset
  */
-inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
+inline void set_cooldown_max_charges( cooldown_t* cooldown, int new_max_charges )
 {
   assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
   assert( cooldown && "Cooldown must not be null" );
@@ -1654,6 +1651,8 @@ inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
   if ( charges_max == new_max_charges )
     return;
 
+  cooldown->sim.print_debug( "{} adjusts {} max charges from {} to {}", *cooldown->player, *cooldown, charges_max,
+                             new_max_charges );
   /**
    * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
    * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
@@ -1712,6 +1711,22 @@ inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
      */
     cooldown->adjust( -charges_fractional * cooldown_t::cooldown_duration( cooldown ) );
   }
+
+  // If the player is queueing an action, cancel it.
+  if ( cooldown->player && cooldown->player->queueing )
+  {
+    event_t::cancel( cooldown->player->queueing->queue_event );
+    cooldown->player->queueing = nullptr;
+    if ( !cooldown->player->executing && !cooldown->player->channeling && !cooldown->player->readying )
+      cooldown->player->schedule_ready();
+  }
+}
+
+inline void adjust_cooldown_max_charges( cooldown_t* cooldown, int charge_change )
+{
+  auto new_charges = cooldown->charges + charge_change;
+  assert( new_charges > 0 && "Adjusting cooldown charges results in 0 new charges." );
+  set_cooldown_max_charges( cooldown, new_charges );
 }
 
 }  // namespace priestspace

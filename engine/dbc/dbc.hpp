@@ -99,6 +99,9 @@ const dbc_item_data_t& find_gem( util::string_view gem, bool ptr, bool tokenized
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
 std::vector<const spell_data_t*> class_passives( const player_t* );
 
+// Retuns a list of all effect subtypes affecting the spell through categories
+util::span<const effect_subtype_t> effect_category_subtypes();
+
 } // namespace dbc
 
 struct custom_dbc_data_t
@@ -322,7 +325,7 @@ public:
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }
 
-  util::span<const dbc_item_data_t> items() const
+  util::span<const util::span<const dbc_item_data_t>> items() const
   { return dbc_item_data_t::data( ptr ); }
 
   // Gametables removed in Legion

@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.2.36294
+// 636 talents, wow build 9.0.2.36401
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -464,7 +464,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Fervor of Battle"                  , 22489, 0x00, 0x0001,  71,   1,   2,  202316,       0,  0 },
   { "Fresh Meat"                        , 22491, 0x00, 0x0001,  72,   2,   0,  215568,       0,  0 },
   { "Demonic Appetite"                  , 22493, 0x00, 0x0800, 577,   1,   0,  206478,       0,  0 },
-  { "Unbound Chaos"                     , 22494, 0x00, 0x0800, 577,   1,   2,  275144,       0,  0 },
+  { "Unbound Chaos"                     , 22494, 0x00, 0x0800, 577,   1,   2,  347461,       0,  0 },
   { "Careful Aim"                       , 22495, 0x00, 0x0004, 254,   0,   1,  260228,       0,  0 },
   { "Barrage"                           , 22497, 0x00, 0x0004, 254,   1,   1,  120360,       0,  0 },
   { "Explosive Shot"                    , 22498, 0x00, 0x0004, 254,   2,   1,  212431,       0,  0 },

@@ -37,7 +37,8 @@ namespace pets {
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
-}
+  struct reanimated_shambler_pet_t;
+  }
 
 namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
@@ -48,6 +49,8 @@ namespace runeforge {
   void sanguination( special_effect_t& );
   void spellwarding( special_effect_t& );
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
+  // Legendary runeforges, blame blizzard for the same names
+  void reanimated_shambler( special_effect_t& );
 }
 
 // ==========================================================================
@@ -489,6 +492,7 @@ public:
     buff_t* icy_citadel;
 
     buff_t* festermight;
+    buff_t* helchains;
 
     // Conduits
     buff_t* eradicating_blow;
@@ -808,6 +812,7 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
+    real_ppm_t* reanimated_shambler;
   } rppm;
 
   // Pets and Guardians
@@ -822,12 +827,16 @@ public:
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead_azerite;
+    spawner::pet_spawner_t<pets::reanimated_shambler_pet_t, death_knight_t> reanimated_shambler;
 
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
       apoc_ghouls( "apoc_ghoul", p ),
       bloodworms( "bloodworm", p ),
-      magus_of_the_dead( "magus_of_the_dead", p )
+      magus_of_the_dead( "magus_of_the_dead", p ),
+      magus_of_the_dead_azerite( "magus_of_the_dead_azerite", p ),
+      reanimated_shambler( "reanimated_shambler", p )
     {}
   } pets;
 
@@ -861,8 +870,12 @@ public:
     proc_t* fw_infected_claws;
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
+    proc_t* fw_necroblast;
 
     proc_t* vision_of_perfection;
+
+    proc_t* reanimated_shambler;
+
   } procs;
 
   // Azerite Traits
@@ -956,13 +969,13 @@ public:
     // Unholy
     item_runeforge_t deadliest_coil; // 6952
     item_runeforge_t deaths_certainty; // 6951
-    item_runeforge_t frenzied_monstrosity;        // 6950
-    // item_runeforge_t reanimated_shambler; // 6949
+    item_runeforge_t frenzied_monstrosity; // 6950
+    item_runeforge_t reanimated_shambler; // 6949
 
     // Defensive/Utility
     // item_runeforge_t deaths_embrace; // 6947
     // item_runeforge_t grip_of_the_everlasting; // 6948
-    // item_runeforge_t gorefiends_domination; // 6943
+    item_runeforge_t gorefiends_domination; // 6943
     // item_runeforge_t vampiric_aura; // 6942
   } legendary;
 
@@ -1108,6 +1121,11 @@ public:
 
   target_specific_t<death_knight_td_t> target_data;
 
+  const death_knight_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   death_knight_td_t* get_target_data( player_t* target ) const override
   {
     death_knight_td_t*& td = target_data[ target ];
@@ -1147,7 +1165,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
-                           -> set_trigger_spell( p -> spec.festering_wound )
                            -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
                            -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
@@ -2452,6 +2469,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     int n_targets() const override
     { return p() -> o() -> in_death_and_decay() ? aoe + as<int>( p() -> o() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
 
+    void execute( ) override
+    {
+      drw_attack_t::execute();
+      if ( p() -> o() -> legendary.gorefiends_domination.ok() )
+      {
+        p() -> o() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( p() -> o() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
+      }
+    }
+
     void impact( action_state_t* s ) override
     {
       drw_attack_t::impact( s );
@@ -2550,6 +2576,8 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
+  bool azerite_pet;
+
   struct magus_td_t : public actor_target_data_t
   {
     buff_t* frostbolt_debuff;
@@ -2562,6 +2590,11 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   target_specific_t<magus_td_t> target_data;
+
+  const magus_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
 
   magus_td_t* get_target_data( player_t* target ) const override
   {
@@ -2584,6 +2617,8 @@ struct magus_pet_t : public death_knight_pet_t
       super( player, name, spell )
     {
       parse_options( options_str );
+      if ( player -> azerite_pet )
+        base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
     }
 
     // There's a 1 energy cost in spelldata but it might as well be ignored
@@ -2594,7 +2629,7 @@ struct magus_pet_t : public death_knight_pet_t
   struct frostbolt_magus_t : public magus_spell_t
   {
     frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 317792 ), options_str )
+      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( player -> azerite_pet ? 288548 : 317792 ), options_str )
     {
       // Frostbolt has a 3s cooldown, set in a manual hotfix
     }
@@ -2629,12 +2664,13 @@ struct magus_pet_t : public death_knight_pet_t
   struct shadow_bolt_magus_t : public magus_spell_t
   {
     shadow_bolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 317791 ), options_str )
+      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( player -> azerite_pet ? 288546 : 317791 ), options_str )
     { }
   };
 
-  magus_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "magus_of_the_dead", true, false )
+  magus_pet_t( death_knight_t* owner, bool azerite = false ) :
+    death_knight_pet_t( owner, azerite ? "magus_of_the_dead_azerite" : "magus_of_the_dead", true, false ),
+    azerite_pet( azerite )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
@@ -2661,6 +2697,122 @@ struct magus_pet_t : public death_knight_pet_t
   {
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+};
+
+struct reanimated_shambler_pet_t : public death_knight_pet_t
+{
+  struct necroblast_t : public pet_action_t<reanimated_shambler_pet_t, melee_attack_t>
+  {
+    necroblast_t( reanimated_shambler_pet_t* player ) :
+      pet_action_t( player, "necroblast", player -> find_spell( 334851 ) )
+    {
+    }
+
+    void execute() override
+    {
+      pet_action_t::execute();
+
+      p()->dismiss();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      pet_action_t::impact( state );
+      p() -> o() -> trigger_festering_wound( state, 1, p() -> o() -> procs.fw_necroblast );
+    }
+
+    double calculate_direct_amount( action_state_t* state ) const override
+    {
+      if ( p() -> o() -> bugs )
+      {
+        // See https://github.com/SimCMinMax/WoW-BugTracker/issues/725
+        // we think the total ap for necroblast is (total_ap + base_amount) * ap_coefficient
+        // action_t::calculate_direct_amount gets the total ap with base_amount + ap_coefficient * total_ap
+        // because of this, I need to directly modify the ap for the action instead of setting the base damage in
+        // the necroblast constructor as the latter method throws off the calcuations and doesn't reflect in game values
+        state->attack_power += 150;
+      }
+
+      double da = pet_action_t::calculate_direct_amount( state );
+
+      return da;
+    }
+  };
+
+  struct travel_t : public action_t
+  {
+    bool executed;
+
+    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ), executed( false )
+    {
+      may_miss = false;
+      dual     = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    {
+      return RESULT_HIT;
+    }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    {
+      return BLOCK_RESULT_UNBLOCKED;
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    timespan_t execute_time() const override
+    {
+      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 4.597, 0.3399 ) );
+    }
+
+    bool ready() override
+    {
+      return !executed;
+    }
+  };
+
+  reanimated_shambler_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "reanimated_shambler", true, false )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "travel" );
+    def->add_action( "necroblast" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "necroblast" )
+      return new necroblast_t( this );
+    if ( name == "travel" )
+      return new travel_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -3149,6 +3301,7 @@ struct melee_t : public death_knight_melee_attack_t
       {
         trigger_bloodworm();
       }
+
     }
   }
 
@@ -3226,12 +3379,14 @@ struct apocalypse_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration;
   timespan_t magus_duration;
+  timespan_t magus_azerite_duration;
   int rune_generation;
 
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
     magus_duration( p -> find_spell( 317776 ) -> duration() ),
+    magus_azerite_duration( p -> find_spell( 288544 ) -> duration() ),
     rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -3253,6 +3408,11 @@ struct apocalypse_t : public death_knight_melee_attack_t
       p() -> burst_festering_wound( execute_state, n_wounds );
 
       p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
+    }
+
+    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    {
+      p() -> pets.magus_of_the_dead_azerite.spawn( magus_azerite_duration, 1 );
     }
 
     if ( p() -> talent.army_of_the_damned -> ok() )
@@ -3285,6 +3445,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   double precombat_time;
   timespan_t summon_duration;
   timespan_t magus_duration;
+  timespan_t magus_azerite_duration;
 
   struct summon_army_event_t : public event_t
   {
@@ -3315,7 +3476,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
     precombat_time( 6.0 ),
     summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
-    magus_duration( p -> find_spell( 317776 ) -> duration() )
+    magus_duration( p -> find_spell( 317776 ) -> duration() ),
+    magus_azerite_duration( p -> find_spell( 288544 ) -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
@@ -3402,6 +3564,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // Summon the rest
     if ( n_ghoul < 8 )
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
+
+    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    {
+      p() -> pets.magus_of_the_dead_azerite.spawn( magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
+    }
 
     if ( p() -> talent.army_of_the_damned -> ok() )
     {
@@ -3953,6 +4120,56 @@ struct dark_command_t: public death_knight_spell_t
 
 // Dark Transformation ======================================================
 
+struct helchains_damage_t : public death_knight_spell_t
+{
+  helchains_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "helchains", p, p -> find_spell( 290814 ) )
+  {
+    background = true;
+    base_dd_min = base_dd_max = p -> azerite.helchains.value( 1 );
+
+    // TODO: the aoe is a line between the player and its pet, find a better way to translate that into # of targets hit
+    // limited target threshold?
+    // User inputted value?
+    // 2018-12-30 hitting everything is good enough for now
+    aoe = -1;
+  }
+};
+
+struct helchains_buff_t : public buff_t
+{
+  helchains_damage_t* damage;
+
+  helchains_buff_t( death_knight_t* p ) :
+    buff_t( p, "helchains_buff",
+            p -> azerite.helchains.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
+    damage( new helchains_damage_t( p ) )
+  {
+    tick_zero = true;
+    buff_period = 1.0_s;
+    set_tick_behavior( buff_tick_behavior::CLIP );
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+    {
+      damage -> execute();
+    } );
+  }
+
+  // Helchains ticks twice on buff application and buff expiration, hence the following overrides
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/390
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+    damage -> execute();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    damage -> execute();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+
 struct unholy_pact_damage_t : public death_knight_spell_t
 {
   unholy_pact_damage_t( death_knight_t* p ) :
@@ -4028,6 +4245,11 @@ struct dark_transformation_t : public death_knight_spell_t
     {
       p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
                                               p() -> pets.ghoul_pet -> dark_transformation_gain, this );
+    }
+
+    if ( p() -> azerite.helchains.enabled() )
+    {
+      p() -> buffs.helchains -> trigger();
     }
 
     if ( p() -> talent.unholy_pact -> ok() )
@@ -5348,6 +5570,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
     }
 
+    if ( p() -> legendary.gorefiends_domination.ok() )
+    {
+      p() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( p() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
+    }
+
     // Deep cuts is applied to the primary target
     if ( p() -> azerite.deep_cuts.enabled() && result_is_hit( execute_state -> result ) )
     {
@@ -6377,12 +6604,12 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   }
 };
 
-struct soul_reaper_t : public death_knight_spell_t
+struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_execute_t* soul_reaper_execute;
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper ),
     soul_reaper_execute( new soul_reaper_execute_t( p ) )
   {
     parse_options( options_str );
@@ -7039,6 +7266,37 @@ void runeforge::unending_thirst( special_effect_t& effect )
   static_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
 }
 
+// Legendary runeforge Reanimated Shambler
+void runeforge::reanimated_shambler( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  struct trigger_reanimated_shambler_t : death_knight_spell_t
+  {
+    trigger_reanimated_shambler_t( death_knight_t* p ) :
+      death_knight_spell_t( "reanimated_shambler_trigger", p )
+    {
+      quiet = background = true;
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      p() -> procs.reanimated_shambler -> occur();
+
+      p() -> pets.reanimated_shambler.spawn( 1 );
+    }
+  };
+
+  effect.execute_action = new trigger_reanimated_shambler_t( static_cast<death_knight_t*>( effect.player ) );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 
 // Resource Manipulation ====================================================
 
@@ -7166,11 +7424,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
-      // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
       if ( talent.red_thirst -> ok() )
       {
-        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() ) *
+        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() / 100 ) *
           actual_amount / talent.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
@@ -7629,8 +7885,10 @@ void death_knight_t::vision_of_perfection_proc()
     // VoP also spawns a magus of the dead if the azerite trait is equipped
     if ( azerite.magus_of_the_dead.enabled() )
     {
-      pets.magus_of_the_dead.spawn( spawn_duration, 1 );
+      pets.magus_of_the_dead_azerite.spawn( spawn_duration, 1 );
     }
+
+    // TODO: if someone wants bother checking whether VoP procs azerite magus, aotd magus, or both, they're free to do so.
     return;
   }
 
@@ -7814,8 +8072,16 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
-  if ( name == "unholy_assault"            ) return new unholy_assault_t            ( this, options_str );
+  if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
+
+  // Dynamic actions
+  // any_dnd and dnd_any return defile if talented, or death and decay otherwise
+  if ( name == "any_dnd" || name == "dnd_any" )
+    return create_action( talent.defile -> ok() ? "defile" : "death_and_decay", options_str );
+  // wound_spender will return clawing shadows if talented, scourge strike if it's not
+  if ( name == "wound_spender" )
+    return create_action( talent.clawing_shadows -> ok() ? "clawing_shadows" : "scourge_strike", options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -8016,10 +8282,22 @@ void death_knight_t::create_pets()
 
     }
 
+    if ( azerite.magus_of_the_dead.enabled() )
+    {
+      pets.magus_of_the_dead_azerite.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::magus_pet_t( p, true ); } );
+    }
+
     if ( talent.army_of_the_damned -> ok() )
     {
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
+    }
+
+    if ( legendary.reanimated_shambler.ok() )
+    {
+      pets.reanimated_shambler.set_creation_callback(
+          [] ( death_knight_t* p ) { return new pets::reanimated_shambler_pet_t( p ); } );
     }
   }
 
@@ -8435,12 +8713,12 @@ void death_knight_t::init_spells()
   legendary.deadliest_coil = find_runeforge_legendary( "Deadliest Coil" );
   legendary.deaths_certainty = find_runeforge_legendary( "Death's Certainty" );
   legendary.frenzied_monstrosity = find_runeforge_legendary( "Frenzied Monstrosity" );
-  // legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
+  legendary.reanimated_shambler = find_runeforge_legendary( "Reanimated Shambler" );
 
   // Defensive/Utility
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
-  // legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
+  legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
   // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
 
 }
@@ -8612,13 +8890,13 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_pooling  = get_action_priority_list( "bos_pooling" );
   action_priority_list_t* bos_ticking  = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
-  action_priority_list_t* essences     = get_action_priority_list( "essences" );
+  // action_priority_list_t* covenants     = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.corrupted_gladiators_badge|equipped.corrupted_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)" );
+  // Re-enable once on use trinkets are added
+  // precombat -> add_action( "variable,name=other_on_use_equipped,value=()" );
 
   def -> add_action( "auto_attack" );
 
@@ -8626,44 +8904,22 @@ void death_knight_t::default_apl_frost()
   // def -> add_action( this, "Mind Freeze" );
 
   // Apply frost fever and maintain Icy Talons
-  def -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)", "Apply Frost Fever and maintain Icy Talons" );
+  def -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking&(talent.icecap.enabled|cooldown.breath_of_sindragosa.remains>15|talent.obliteration.enabled&cooldown.pillar_of_frost.remains<dot.frost_fever.remains)", "Apply Frost Fever and maintain Icy Talons" );
   def -> add_talent( this, "Glacial Advance", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
   def -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
 
   // Choose APL
-  def -> add_action( "call_action_list,name=essences" );
-  def -> add_action( "call_action_list,name=cooldowns" );
+  // def -> add_action( "call_action_list,name=covenants" );
+  def -> add_action( "call_action_list,name=cooldowns", "Choose Action list to run" );
+  def -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&(buff.cold_heart.stack>=10&(debuff.razorice.stack=5|!death_knight.runeforge.razorice)|fight_remains<=gcd)" );
   def -> add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
-  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&((cooldown.breath_of_sindragosa.remains=0&cooldown.pillar_of_frost.remains<10)|(cooldown.breath_of_sindragosa.remains<20&target.1.time_to_die<35))" );
+  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<10)" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
 
-  // Hearth of Azeroth Essences
-  essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<10&(buff.breath_of_sindragosa.up|talent.obliteration.enabled|talent.icecap.enabled&!azerite.icy_citadel.enabled)|buff.icy_citadel.up&talent.icecap.enabled)" );
-  essences -> add_action( "guardian_of_azeroth,if=!talent.icecap.enabled|talent.icecap.enabled&azerite.icy_citadel.enabled&buff.pillar_of_frost.remains<6&buff.pillar_of_frost.up|talent.icecap.enabled&!azerite.icy_citadel.enabled" );
-  essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5&buff.pillar_of_frost.up|target.1.time_to_die<5" );
-  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
-  essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
-  essences -> add_action( "purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "worldvein_resonance,if=buff.pillar_of_frost.up|buff.empower_rune_weapon.up|cooldown.breath_of_sindragosa.remains>60+15|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
-  essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
-  essences -> add_action( "reaping_flames" );
-
   // On-use items
-  cooldowns -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.empowered_rune_weapon.ready&!variable.other_on_use_equipped)|(cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)" );
-  cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
-  cooldowns -> add_action( "use_item,name=cyclotronic_blast,if=!buff.pillar_of_frost.up" );
-  cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
-  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
-  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=cooldown.empower_rune_weapon.remains>90&debuff.razor_coral_debuff.up&variable.other_on_use_equipped|buff.breath_of_sindragosa.up&debuff.razor_coral_debuff.up&!variable.other_on_use_equipped|buff.empower_rune_weapon.up&debuff.razor_coral_debuff.up&!talent.breath_of_sindragosa.enabled|target.1.time_to_die<21" );
-  cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up)" );
-  cooldowns -> add_action( "use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40");
-  cooldowns -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)" );
-  cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
-  cooldowns -> add_action( "use_item,name=merekthas_fang,if=!buff.breath_of_sindragosa.up&!buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20", "On Use Items, Potion and Racials" );
 
   // In-combat potion
   cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
@@ -8675,83 +8931,70 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "lights_judgment,if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
-  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1|buff.seething_rage.up&active_enemies=1" );
+  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1" );
 
-  // Pillar of Frost
-  cooldowns -> add_action( this, "Pillar of Frost", "if=(cooldown.empower_rune_weapon.remains|talent.icecap.enabled)&!buff.pillar_of_frost.up", "Frost cooldowns" );
-  cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
+  // Cooldowns
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.obliteration.enabled&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20", "Cooldowns" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&runic_power.deficit>40&rune.time_to_5>gcd&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<60)" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.icecap.enabled&!buff.pillar_of_frost.up" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration.enabled" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=active_enemies>=2&cooldown.pillar_of_frost.remains+15>target.time_to_die|fight_remains<gcd" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=talent.obliteration.enabled&!buff.pillar_of_frost.up&((buff.unholy_strength.up|!death_knight.runeforge.fallen_crusader)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice))" );
+  cooldowns -> add_talent( this, "Hypothermic Presence", "if=talent.breath_of_sindragosa.enabled&runic_power.deficit>40&rune>=3&buff.pillar_of_frost.up|!talent.breath_of_sindragosa.enabled&runic_power.deficit>=25" );
+  cooldowns -> add_action( this, "Raise Dead", "if=buff.pillar_of_frost.up" );
+  cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
+  cooldowns -> add_action( "heart_essence" );
 
-  // Cold Heart and Frostwyrm's Fury
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
-  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))" );
-  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.up&!talent.icecap.enabled&(buff.unholy_strength.up|buff.icy_citadel.remains<=gcd))|buff.icy_citadel.up&buff.icy_citadel.remains<=gcd&talent.icecap.enabled&buff.pillar_of_frost.up" );
-  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
+  // Cold Heart
+  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled", "Cold Heart Conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=talent.obliteration.enabled&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19)" );
 
-  // Cold Heart conditionals
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.seething_rage.remains<gcd)&buff.seething_rage.up" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)&!talent.icecap.enabled" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)&!talent.icecap.enabled" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up&!talent.icecap.enabled" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up&!talent.icecap.enabled" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<4&buff.pillar_of_frost.up&talent.icecap.enabled&buff.cold_heart.stack>=18&azerite.icy_citadel.rank<=1" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&talent.icecap.enabled&azerite.icy_citadel.rank>=2&(buff.cold_heart.stack>=19&buff.icy_citadel.remains<gcd&buff.icy_citadel.up|buff.unholy_strength.up&buff.cold_heart.stack>=18)" );
-
-
-  // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
-  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
-  bos_pooling -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&&runic_power.deficit>=25&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=25" );
+  // Breath of Sindragosa pooling rotation : starts 10s before the cd becomes available
+  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 10s before BoS is available" );
+  bos_pooling -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled&rune>=5|active_enemies>=2" );
+  bos_pooling -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=25", "'target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice' Repeats a lot, this is intended to target the highest priority enemy with an ability that will apply razorice if runeforged. That being an enemy with 0 stacks, or an enemy that the debuff will soon expire on." );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&spell_targets.glacial_advance>=2&cooldown.pillar_of_frost.remains>5" );
-  bos_pooling -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit<20&!talent.frostscythe.enabled&cooldown.pillar_of_frost.remains>5" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>5" );
+  bos_pooling -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>5" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&runic_power.deficit>(15+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
-  bos_pooling -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)" );
+  bos_pooling -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&spell_targets.glacial_advance>=2" );
-  bos_pooling -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&!talent.frostscythe.enabled" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
+  bos_pooling -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power<=32&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=32" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power<=40", "Breath of Sindragosa Active Rotation" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|active_enemies>=2" );
   bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&rune.time_to_5<gcd|runic_power<=45&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=rune.time_to_5<gcd|runic_power<=45" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power<=45" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>=2" );
-  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=32&rune.time_to_3>gcd" );
-  bos_ticking -> add_action( this, "Remorseless Winter" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=40&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>25|rune>3&!talent.frostscythe.enabled" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power.deficit>25|rune>3" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25|rune>3" );
   bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
   // Obliteration rotation
-  obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Obliteration rotation" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
-  obliteration -> add_action( this, "Obliterate", "if=!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
-  obliteration -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance)))&spell_targets.frostscythe>=2" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
-  obliteration -> add_action( this, "Obliterate", "if=buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
-  obliteration -> add_talent( this, "Glacial Advance", "if=(!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd)&spell_targets.glacial_advance>=2" );
+  obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled&active_enemies>=3", "Obliteration rotation" );
+  obliteration -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking&!buff.killing_machine.up" );
+  obliteration -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&spell_targets.frostscythe>=2" );
+  obliteration -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react|!buff.rime.up&spell_targets.howling_blast>=3" );
+  obliteration -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2&(runic_power.deficit<10|rune.time_to_2>gcd)|(debuff.razorice.stack<5|debuff.razorice.remains<15)" );
+  obliteration -> add_action( this, "Frost Strike", "if=conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2&active_enemies=1" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>=2" );
-  obliteration -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd&!talent.frostscythe.enabled" );
-  obliteration -> add_action( this, "Frost Strike", "if=!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd" );
+  obliteration -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  obliteration -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<10|rune.time_to_2>gcd|!buff.rime.up" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  obliteration -> add_talent( this, "Frostcythe", "if=spell_targets.frostscythe>=2" );
-  obliteration -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&!talent.frostscythe.enabled" );
-  obliteration -> add_action( this, "Obliterate" );
+  obliteration -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
   // Standard rotation
-  standard -> add_action( this, "Remorseless Winter", "", "Standard single-target rotation" );
+  standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.everfrost.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
+  standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
+  standard -> add_action( this, "Frost Strike", "if=conduit.unleashed_frenzy.enabled&buff.unleashed_frenzy.remains<3|conduit.eradicating_blow.enabled&buff.eradicating_blow.stack=2" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  standard -> add_action( this, "Obliterate", "if=talent.icecap.enabled&buff.pillar_of_frost.up&azerite.icy_citadel.rank>=2" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&rune.time_to_4>=gcd" );
@@ -8761,131 +9004,123 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( "arcane_torrent" );
 
   // AoE Rotation
-  aoe -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|(azerite.frozen_tempest.rank&spell_targets.remorseless_winter>=3&!buff.rime.up)", "AoE Rotation" );
+  aoe -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "AoE Rotation" );
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit<(15+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Remorseless Winter" );
   aoe -> add_talent( this, "Frostscythe" );
-  aoe -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>(25+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
+  aoe -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)" );
   aoe -> add_talent( this, "Glacial Advance" );
-  aoe -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike" );
+  aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
   aoe -> add_talent( this, "Horn of Winter" );
   aoe -> add_action( "arcane_torrent" );
 }
 
 void death_knight_t::default_apl_unholy()
 {
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default" );
-  action_priority_list_t* generic   = get_action_priority_list( "generic" );
-  action_priority_list_t* aoe       = get_action_priority_list( "aoe" );
-  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* essences  = get_action_priority_list( "essences" );
+  action_priority_list_t* precombat   = get_action_priority_list( "precombat" );
+  action_priority_list_t* def         = get_action_priority_list( "default" );
+  action_priority_list_t* generic     = get_action_priority_list( "generic" );
+  action_priority_list_t* aoe_setup   = get_action_priority_list( "aoe_setup" );
+  action_priority_list_t* aoe_burst   = get_action_priority_list( "aoe_burst" );
+  action_priority_list_t* generic_aoe = get_action_priority_list( "generic_aoe" );
+  action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
+  // action_priority_list_t* covenants    = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
   precombat -> add_action( this, "Raise Dead" );
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( this, "Army of the Dead", "precombat_time=2" );
 
   def -> add_action( "auto_attack" );
   // Interrupt
   // def -> add_action( this, "Mind Freeze" );
 
   // Gargoyle pooling variable
-  def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled" );
+  def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled", "Variables" );
 
-  // Ogcd cooldowns
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
-  def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
-  def -> add_action( "berserking,if=buff.unholy_assault.up|pet.gargoyle.active|(talent.army_of_the_damned.enabled&pet.apoc_ghoul.active)" );
-  def -> add_action( "lights_judgment,if=(buff.unholy_strength.up&buff.festermight.remains<=5)|active_enemies>=2&(buff.unholy_strength.up|buff.festermight.remains<=5)" );
-  def -> add_action( "ancestral_call,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active" );
+  // Racials
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials" );
+  def -> add_action( "blood_fury,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
+  def -> add_action( "berserking,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
+  def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
+  def -> add_action( "ancestral_call,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
   def -> add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
-  def -> add_action( "fireblood,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active" );
-  def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1|buff.festermight.remains<gcd&active_enemies=1" );
-  def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
-  def -> add_action( "use_item,name=azsharas_font_of_power,if=(essence.vision_of_perfection.enabled&!talent.unholy_assault.enabled)|(!essence.condensed_lifeforce.major&!essence.vision_of_perfection.enabled)" );
-  def -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.apocalypse.remains<14&(essence.condensed_lifeforce.major|essence.vision_of_perfection.enabled&talent.unholy_assault.enabled)" );
-  def -> add_action( "use_item,name=azsharas_font_of_power,if=target.1.time_to_die<cooldown.apocalypse.remains+34" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack<1" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=pet.guardian_of_azeroth.active&pet.apoc_ghoul.active" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=cooldown.apocalypse.ready&(essence.condensed_lifeforce.major&target.1.time_to_die<cooldown.condensed_lifeforce.remains+20|!essence.condensed_lifeforce.major)" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.1.time_to_die<cooldown.apocalypse.remains+20" );
-  def -> add_action( "use_item,name=vision_of_demise,if=(cooldown.apocalypse.ready&debuff.festering_wound.stack>=4&essence.vision_of_perfection.enabled)|buff.unholy_assault.up|pet.gargoyle.active" );
-  def -> add_action( "use_item,name=ramping_amplitude_gigavolt_engine,if=cooldown.apocalypse.remains<2|talent.army_of_the_damned.enabled|raid_event.adds.in<5" );
-  def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
-  def -> add_action( "use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
-  def -> add_action( "use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
-  def -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&(time>20|!equipped.ramping_amplitude_gigavolt_engine)" );
-  def -> add_action( "potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_assault.up" );
+  def -> add_action( "fireblood,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
+  def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
+
   // Maintain Virulent Plague
-  def -> add_action( this, "Outbreak", "target_if=dot.virulent_plague.remains<=gcd", "Maintaining Virulent Plague is a priority" );
+  def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
+  def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
+
   // Action Lists
-  def -> add_action( "call_action_list,name=essences" );
-  def -> add_action( "call_action_list,name=cooldowns" );
-  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
-  def -> add_action( "call_action_list,name=generic" );
+  // def -> add_action( "call_action_list,name=covenants" );
+  def -> add_action( "call_action_list,name=cooldowns", "Action Lists" );
+  def -> add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile.enabled|cooldown.defile.remains<10&talent.defile.enabled)&!death_and_decay.ticking" );
+  def -> add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
+  def -> add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile.enabled|cooldown.defile.remains>10&talent.defile.enabled))" );
+  def -> add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  // Heart of Azeroth Essences
-  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "blood_of_the_enemy,if=death_and_decay.ticking|pet.apoc_ghoul.active&active_enemies=1" );
-  essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
-  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
-  essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
-  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
-  essences -> add_action( "purifying_blast,if=!death_and_decay.ticking" );
-  essences -> add_action( "worldvein_resonance,if=talent.army_of_the_damned.enabled&essence.vision_of_perfection.minor&buff.unholy_strength.up|essence.vision_of_perfection.minor&pet.apoc_ghoul.active|talent.army_of_the_damned.enabled&pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>60|talent.army_of_the_damned.enabled&pet.army_ghoul.active" );
-  essences -> add_action( "worldvein_resonance,if=!death_and_decay.ticking&buff.unholy_strength.up&!essence.vision_of_perfection.minor&!talent.army_of_the_damned.enabled|target.time_to_die<cooldown.apocalypse.remains" );
-  essences -> add_action( "ripple_in_space,if=!death_and_decay.ticking" );
-  essences -> add_action( "reaping_flames" );
+  // Potions and Other on use
+  cooldowns -> add_action( "use_items", "Potions and other on use" );
+  cooldowns -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
 
-  cooldowns -> add_action( this, "Army of the Dead" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(active_enemies>=2|!essence.vision_of_perfection.enabled|!azerite.magus_of_the_dead.enabled|essence.vision_of_perfection.enabled&(talent.unholy_assault.enabled&cooldown.unholy_assault.remains<=3|!talent.unholy_assault.enabled))" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
+  // Cooldowns
+  cooldowns -> add_action( this, "Army of the Dead", "if=cooldown.unholy_blight.remains<5&talent.unholy_blight.enabled|!talent.unholy_blight.enabled", "Cooldowns" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=!raid_event.adds.exists&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3)|cooldown.apocalypse.remains)&!raid_event.adds.exists" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=raid_event.adds.exists&(active_enemies>=2|raid_event.adds.in>15)" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&cooldown.unholy_blight.remains&(!runeforge.deadliest_coil.equipped|runeforge.deadliest_coil.equipped&(!buff.dark_transformation.up&!talent.unholy_pact.enabled|talent.unholy_pact.enabled))" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&!talent.unholy_blight.enabled" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=raid_event.adds.exists&(active_enemies>=2|raid_event.adds.in>15)" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&((!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled)|talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&dot.unholy_blight.remains)" );
+  cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Assault", "if=essence.vision_of_perfection.enabled&pet.apoc_ghoul.active|debuff.festering_wound.stack<4&!essence.vision_of_perfection.enabled&(!azerite.magus_of_the_dead.enabled|azerite.magus_of_the_dead.enabled&pet.apoc_ghoul.active)" );
-  cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
-  cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
-  cooldowns -> add_talent( this, "Soul Reaper", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_assault.up)" );
-  cooldowns -> add_talent( this, "Unholy Blight" );
+  cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies=1&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead.enabled)" );
+  cooldowns -> add_talent( this, "Unholy Assault", "target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
+  cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_pct_35<5&target.time_to_die>5" );
+  cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
+  cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready" );
+  cooldowns -> add_action( "heart_essence" );
 
-  generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd&!variable.pooling_for_gargoyle|pet.gargoyle.active" );
-  generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&rune.time_to_4>gcd&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)" );
+  // General Single Target Priority
+  generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
+  generic -> add_action( this, "Death Coil", "if=runic_power.deficit<13&!variable.pooling_for_gargoyle" );
+  generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
+  generic -> add_action( "wound_spender,if=debuff.festering_wound.stack>4" );
+  generic -> add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
+  generic -> add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight.enabled&cooldown.unholy_blight.remains>5&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!cooldown.apocalypse.ready&!raid_event.adds.exists" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<1" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!raid_event.adds.exists&cooldown.apocalypse.ready&(cooldown.unholy_blight.remains<3|dot.unholy_blight.remains)" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
-  // Generic AOE actions to be done
-  aoe -> add_action( this, "Death and Decay", "if=cooldown.apocalypse.remains", "AoE rotation" );
-  aoe -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<14&!talent.bursting_sores.enabled&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
-  aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
-  aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=2&cooldown.death_and_decay.remains&cooldown.apocalypse.remains>5&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
-  aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd" );
-  aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active" );
-  aoe -> add_action( this, "Death Coil", "if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Scourge Strike", "target_if=((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
-  aoe -> add_talent( this, "Clawing Shadows", "target_if=((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
-  aoe -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_assault.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
-  aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking" );
-  aoe -> add_action( this, "Clawing Shadows", "if=death_and_decay.ticking" );
-  aoe -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
+  // AoE Setup Actions
+  aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
+  aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
+  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react" );
+  aoe_setup -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
+  aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
+  aoe_setup -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile.enabled|cooldown.defile.remains&talent.defile.enabled)" );
+  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
+
+  // AoE Burst Actions
+  aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle", "AoE Burst" );
+  aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle" );
+  aoe_burst -> add_action( this, "Epidemic", "if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle" );
+  aoe_burst -> add_action( "wound_spender" );
+  aoe_burst -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
+
+  // Generic AoE Actions
+  generic_aoe -> add_action( this, "Epidemic", "if=buff.sudden_doom.react", "Generic AoE Priority" );
+  generic_aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
+  generic_aoe -> add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
+  generic_aoe -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
+  generic_aoe -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1" );
 }
 
 // death_knight_t::init_action_list =========================================
@@ -9109,6 +9344,8 @@ void death_knight_t::create_buffs()
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
     -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
 
+  buffs.helchains = new helchains_buff_t( this );
+
   player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
   {
     _runes.update_coefficient();
@@ -9205,9 +9442,12 @@ void death_knight_t::init_procs()
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
-  procs.fw_unholy_assault    = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
+  procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
 
   procs.vision_of_perfection = get_proc( "Vision of Perfection" );
+
+  procs.reanimated_shambler = get_proc( "Reanimated Shambler" );
 }
 
 // death_knight_t::init_finished ============================================
@@ -9865,6 +10105,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+    unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
   void register_hotfixes() const override
@@ -9875,10 +10116,10 @@ struct death_knight_module_t : public module_t {
       .modifier( 3000 )
       .verification_value( 0 );
 
-    hotfix::register_spell( "Death Knight", "2019-05-15", "Real Procs Per Minute data removed from Killing Machine.", 51128 )
-      .field( "rppm" )
+    hotfix::register_spell( "Death Knight", "2020-10-25", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 288548  )
+      .field( "cooldown" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 4.5 )
+      .modifier( 3000 )
       .verification_value( 0 );
   }
 

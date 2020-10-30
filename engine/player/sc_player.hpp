@@ -319,7 +319,7 @@ struct player_t : public actor_t
   timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
-  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
+  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained, iteration_resource_overflowed;
   double rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
@@ -1068,6 +1068,9 @@ public:
   virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
+  virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
+  { return nullptr; }
+
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 

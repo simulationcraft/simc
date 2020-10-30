@@ -629,6 +629,9 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.15;
+    // random testing stuff
+    bool unblinking_vigil_on_execute = false;
+    bool brutal_projectiles_on_execute = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -718,16 +721,16 @@ public:
 
   target_specific_t<hunter_td_t> target_data;
 
+  const hunter_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_td_t* get_target_data( player_t* target ) const override
   {
     hunter_td_t*& td = target_data[target];
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
-  }
-
-  const hunter_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   std::vector<action_t*> background_actions;
@@ -1582,17 +1585,17 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
   target_specific_t<hunter_main_pet_td_t> target_data;
 
+  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   hunter_main_pet_td_t* get_target_data( player_t* target ) const override
   {
     hunter_main_pet_td_t*& td = target_data[target];
     if ( !td )
       td = new hunter_main_pet_td_t( target, const_cast<hunter_main_pet_t*>( this ) );
     return td;
-  }
-
-  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   resource_e primary_resource() const override
@@ -3512,6 +3515,8 @@ struct aimed_shot_t : public aimed_shot_base_t
     p() -> consume_trick_shots();
 
     p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
+    if ( p() -> options.unblinking_vigil_on_execute )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
     if ( ! p() -> buffs.lock_and_load -> check() )
@@ -3549,7 +3554,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     aimed_shot_base_t::impact( s );
 
     // XXX: gets consumed on impact for some reason
-    if ( s -> chain_target == 0 )
+    if ( !p() -> options.unblinking_vigil_on_execute && s -> chain_target == 0 )
       p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
@@ -3706,6 +3711,9 @@ struct rapid_fire_t: public hunter_spell_t
 
       p() -> buffs.trick_shots -> up(); // benefit tracking
 
+      if ( p() -> options.brutal_projectiles_on_execute )
+        trigger_brutal_projectiles();
+
       if ( rng().roll( focused_fire.chance ) )
         p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
@@ -3718,15 +3726,8 @@ struct rapid_fire_t: public hunter_spell_t
       if ( s -> chain_target == 0 )
         triggers_wild_spirits = false;
 
-      if ( p() -> buffs.brutal_projectiles -> check() )
-      {
-        p() -> buffs.brutal_projectiles_hidden -> trigger();
-        p() -> buffs.brutal_projectiles -> expire();
-      }
-      else if ( p() -> buffs.brutal_projectiles_hidden -> check() )
-      {
-        p() -> buffs.brutal_projectiles_hidden -> trigger();
-      }
+      if ( !p() -> options.brutal_projectiles_on_execute )
+        trigger_brutal_projectiles();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -3745,6 +3746,19 @@ struct rapid_fire_t: public hunter_spell_t
       b += surging_shots.value * std::min( parent_dot -> current_tick, surging_shots.max_num_ticks );
 
       return b;
+    }
+
+    void trigger_brutal_projectiles() const
+    {
+      if ( p() -> buffs.brutal_projectiles -> check() )
+      {
+        p() -> buffs.brutal_projectiles_hidden -> trigger();
+        p() -> buffs.brutal_projectiles -> expire();
+      }
+      else if ( p() -> buffs.brutal_projectiles_hidden -> check() )
+      {
+        p() -> buffs.brutal_projectiles_hidden -> trigger();
+      }
     }
   };
 
@@ -4263,8 +4277,6 @@ struct carve_base_t: public hunter_melee_attack_t
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
     p() -> buffs.butchers_bone_fragments -> expire();
-
-    p() -> buffs.flame_infusion -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -4272,6 +4284,7 @@ struct carve_base_t: public hunter_melee_attack_t
     hunter_melee_attack_t::impact( s );
 
     p() -> trigger_birds_of_prey( s -> target );
+    p() -> buffs.flame_infusion -> trigger();
     internal_bleeding.trigger( s );
   }
 
@@ -4690,10 +4703,28 @@ struct summon_pet_t: public hunter_spell_t
 
 struct trap_base_t : hunter_spell_t
 {
+  timespan_t precast_time;
+
   trap_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_spell_t( n, p, s )
   {
+    add_option( opt_timespan( "precast_time", precast_time ) );
+
     harmful = may_miss = false;
+  }
+
+  void init() override
+  {
+    hunter_spell_t::init();
+
+    precast_time = clamp( precast_time, 0_ms, cooldown -> duration );
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    adjust_precast_cooldown( precast_time );
   }
 
   void impact( action_state_t* s ) override
@@ -4706,6 +4737,14 @@ struct trap_base_t : hunter_spell_t
       p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_apparatus_direct, this );
       p() -> buffs.nesingwarys_apparatus -> trigger();
     }
+  }
+
+  timespan_t travel_time() const override
+  {
+    timespan_t time_to_travel = hunter_spell_t::travel_time();
+    if ( is_precombat )
+      return std::max( 0_ms, time_to_travel - precast_time );
+    return time_to_travel;
   }
 
   double energize_cast_regen( const action_state_t* ) const override
@@ -6904,20 +6943,27 @@ void hunter_t::apl_mm()
     cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
     cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
+    /* TODO:
+     * - optimize Double Tap usage re Streamline & Surging Shots (p. sure it's always "better" to DT RF even without CA)
+     * - spread the AiS love with Serpentstalker's Trickery
+     * - add some simple ttd checks to optimize the end of the fight / "short" sims?
+     * - check why Explo can't be executed in precombat (throws while it *should* have travel time)
+     */
     trickshots -> add_action( "double_tap,if=cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains" );
     trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
     trickshots -> add_action( "flare,if=tar_trap.up" );
+    trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "wild_spirits" );
     trickshots -> add_action( "volley" );
     trickshots -> add_action( "resonating_arrow" );
     trickshots -> add_action( "barrage" );
-    trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "trueshot,if=cooldown.rapid_fire.remains|focus+action.rapid_fire.cast_regen>focus.max|target.time_to_die<15" );
-    trickshots -> add_action( "aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
+    trickshots -> add_action( "aimed_shot,if=(buff.trick_shots.remains>=execute_time)&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
     trickshots -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    trickshots -> add_action( "rapid_fire,if=buff.trick_shots.up&buff.double_tap.down" );
-    trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus-cost+cast_regen>action.aimed_shot.cost" );
+    trickshots -> add_action( "rapid_fire,if=(buff.trick_shots.remains>=execute_time)&buff.double_tap.down" );
+    trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up" );
     trickshots -> add_action( "kill_shot,if=buff.dead_eye.down" );
+    trickshots -> add_action( "multishot,if=focus-cost+cast_regen>action.aimed_shot.cost" );
     trickshots -> add_action( "a_murder_of_crows" );
     trickshots -> add_action( "flayed_shot" );
     trickshots -> add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
@@ -7533,6 +7579,8 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
+  add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
+  add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 

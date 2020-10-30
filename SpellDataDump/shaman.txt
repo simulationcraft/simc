@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-10-30/36401, git build shadowlands 493ac7b6b6)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -655,7 +655,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=15497)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc33757
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -2036,7 +2036,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68166)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Flame Shock damage over time has a $<chance>% chance to reset the remaining cooldown on Lava Burst and cause your next Lava Burst to be instant.
 Variables        : $chance=$?a279830[${$s1+$279830s1}][${$s1}]
 
@@ -3958,7 +3958,7 @@ Spell Type       : Magic
 Duration         : 30 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Focused Lightning (338322 effect#1)
+Affecting spells : Focused Lightning (338322 effects: #1, #2)
 Family Flags     : 100
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4637,7 +4637,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
@@ -5037,7 +5037,7 @@ Spell Level      : 34
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1), Fire Elemental Totem (343226 effect#1)
 Family Flags     : 55
@@ -6227,7 +6227,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
-#2 (id=811659)   : Apply Aura (6) | Unknown(286)
+#2 (id=811659)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
@@ -7025,7 +7025,7 @@ Effects          :
                    Family Flags: 23
 #2 (id=722347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@pelldesc262647
+Description      : $@spelldesc262647
 Tooltip          : Windfury attack damage increased by $s1%.
 
 Name             : Astral Shift (id=263786) [Scaling Spell (-1), Spell Family (11), Passive] 
@@ -11488,7 +11488,7 @@ Effects          :
 #2 (id=832822)   : Trigger Spell (64): Doom Winds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335904 | Target: Self (1)
 #3 (id=873599)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
                    Family Flags: 23
 Description      : $@spelldesc335902
@@ -11606,7 +11606,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=834305)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Dealing direct Fire damage increases the damage of your next Frost spell by $s1%. Dealing Frost damage increases the damage of your next Nature spell by $s2%. Dealing Nature damage increases the damage of your next Fire spell by $s3%.
+Description      : Dealing direct Fire, Frost, and Nature damage within $336731d will increase all damage dealt by $347348s1% for $347348d. This can only occur once every $347349d.
 
 Name             : Skybreaker's Fiery Demise (id=336734) [Spell Family (11), Passive] 
 School           : Physical
@@ -11673,7 +11673,13 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834316)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137041[Using][Casting] $?a137039[Riptide]?a137040[Lava Burst][Stormstrike] has a $h.1% chance to activate Ascendance for ${$m1/1000}.1 sec.
+#2 (id=874833)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=874834)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=874835)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137041[Using][Casting] $?a137039[Riptide]?a137040[Lava Burst][Stormstrike] has a $?a137039[$s4]?a137040[$s2][$s3]% chance to activate Ascendance for ${$m1/1000}.1 sec.
 
 Name             : Deeptremor Stone (id=336739) [Spell Family (11), Passive] 
 School           : Physical
@@ -11715,7 +11721,7 @@ Name             : Astral Protection (id=337964) [Spell Family (11), Passive, Hi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 92 (values=-3.0, -3.5, -4.0, -4.5, -5.0, -5.5, -6.0, -6.5, -7.0, -7.5, -8.0, -8.5, -9.0, -9.5, -10.0)
+Conduit Id       : 92 (values=-3, -3.5, -4, -4.5, -5, -5.5, -6, -6.5, -7, -7.5, -8, -8.5, -9, -9.5, -10)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11741,7 +11747,7 @@ Description      : Reincarnation's cooldown is reduced by |cFFFFFFFF${-$s1}.1 mi
 Name             : Refreshing Waters (id=337974) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 93 (values=15.0, 16.0, 17.0, 18.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0)
+Conduit Id       : 93 (values=15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11761,7 +11767,7 @@ Description      : Your Healing Surge is |cFFFFFFFF$s1%|r more effective on your
 Name             : Vital Accretion (id=337981) [Spell Family (11), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
-Conduit Id       : 94 (values=20.0, 21.0, 23.0, 24.0, 26.0, 27.0, 29.0, 30.0, 31.0, 33.0, 34.0, 36.0, 38.0, 39.0, 40.0)
+Conduit Id       : 94 (values=20, 21, 23, 24, 26, 27, 29, 30, 31, 33, 34, 36, 38, 39, 40)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11781,7 +11787,7 @@ School           : Nature
 Spell Type       : None
 Internal Cooldown: 60 seconds
 Proc Chance      : 100%
-Conduit Id       : 95 (values=10.0, 12.0, 14.0, 16.0, 19.0, 21.0, 23.0, 25.0, 27.0, 29.0, 31.0, 34.0, 36.0, 38.0, 40.0)
+Conduit Id       : 95 (values=10, 12, 14, 16, 19, 21, 23, 25, 27, 29, 31, 34, 36, 38, 40)
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11824,7 +11830,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Totemic Surge (id=338042) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 96 (values=-1000.0, -2000.0, -3000.0, -4000.0, -5000.0, -6000.0, -7000.0, -8000.0, -9000.0, -10000.0, -11000.0, -12000.0, -13000.0, -14000.0, -15000.0)
+Conduit Id       : 96 (values=-1000, -2000, -3000, -4000, -5000, -6000, -7000, -8000, -9000, -10000, -11000, -12000, -13000, -14000, -15000)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11845,7 +11851,7 @@ Name             : Spiritual Resonance (id=338048) [Spell Family (11), Passive, 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 98 (values=4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0, 11000.0, 12000.0, 13000.0, 14000.0, 15000.0, 16000.0, 17000.0, 18000.0)
+Conduit Id       : 98 (values=4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000)
 Proc Flags       : ........ .......x ........ ........ 
                  : Magic Heal Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11865,7 +11871,7 @@ Description      : $?s32182[Heroism][Bloodlust] or any similar effects also gran
 Name             : Crippling Hex (id=338054) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 97 (values=-8.0, -8.5, -9.0, -9.5, -10.0, -10.5, -11.0, -11.5, -12.0, -12.5, -13.0, -13.5, -14.0, -14.5, -15.0)
+Conduit Id       : 97 (values=-8, -8.5, -9, -9.5, -10, -10.5, -11, -11.5, -12, -12.5, -13, -13.5, -14, -14.5, -15)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11884,7 +11890,7 @@ Name             : High Voltage (id=338131) [Spell Family (11), Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 102 (values=25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 40.0)
+Conduit Id       : 102 (values=25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11904,7 +11910,7 @@ Description      : Lightning Bolt has a |cFFFFFFFF$s1%|r chance to generate doub
 Name             : Shake the Foundations (id=338252) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 103 (values=10.0, 10.66, 11.33, 12.0, 12.66, 13.33, 14.0, 15.0, 15.66, 16.33, 17.0, 17.66, 18.33, 19.0, 19.66)
+Conduit Id       : 103 (values=10, 10.66, 11.33, 12, 12.66, 13.33, 14, 15, 15.66, 16.33, 17, 17.66, 18.33, 19, 19.66)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11922,7 +11928,7 @@ Description      : Casting Earthquake has a |cFFFFFFFF$s1%|r chance to instantly
 Name             : Call of Flame (id=338303) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 104 (values=35.0, 36.0, 37.0, 38.0, 39.0, 40.0, 41.0, 43.0, 44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0)
+Conduit Id       : 104 (values=35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11942,7 +11948,7 @@ Description      : $?s192249[Storm Elemental][Fire Elemental] lasts |cFFFFFFFF$s
 Name             : Unruly Winds (id=338318) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 109 (values=20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0)
+Conduit Id       : 109 (values=20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11960,7 +11966,7 @@ Description      : Windfury Weapon has a |cFFFFFFFF$s1%|r chance to trigger a th
 Name             : Focused Lightning (id=338322) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 110 (values=1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5)
+Conduit Id       : 110 (values=1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11972,7 +11978,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=836836)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Maelstrom Weapon (187881), Maelstrom Weapon (344179)
+                   Family Flags: 100
+#2 (id=874550)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881), Maelstrom Weapon (344179)
                    Family Flags: 100
 Description      : Maelstrom Weapon increases the damage or healing of your next spell by an additional |cFFFFFFFF${$s1}.1%|r per stack.
@@ -11981,7 +11991,7 @@ Name             : Chilled to the Core (id=338325) [Spell Family (11), Passive, 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 112 (values=21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0)
+Conduit Id       : 112 (values=21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12003,7 +12013,7 @@ Description      : Frost Shock has a |cFFFFFFFF$s1%|r chance to grant $s2 $Lstac
 Name             : Embrace of Earth (id=338329) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 117 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
+Conduit Id       : 117 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12023,7 +12033,7 @@ Description      : Earth Shield increases your healing done to the target by an 
 Name             : Magma Fist (id=338331) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 111 (values=15.0, 15.66, 16.33, 17.0, 17.66, 18.33, 19.0, 20.0, 21.0, 21.66, 22.33, 23.0, 23.66, 24.33, 25.0)
+Conduit Id       : 111 (values=15, 15.66, 16.33, 17, 17.66, 18.33, 19, 20, 21, 21.66, 22.33, 23, 23.66, 24.33, 25)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12042,7 +12052,7 @@ Name             : Swirling Currents (id=338339) [Spell Family (11), Passive, Hi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 118 (values=20.0, 21.0, 23.0, 24.0, 26.0, 28.0, 29.0, 30.0, 31.0, 33.0, 34.0, 36.0, 37.0, 39.0, 40.0)
+Conduit Id       : 118 (values=20, 21, 23, 24, 26, 28, 29, 30, 31, 33, 34, 36, 37, 39, 40)
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12092,7 +12102,7 @@ Name             : Heavy Rainfall (id=338343) [Spell Family (11), Passive, Hidde
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 119 (values=75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0, 125.0, 130.0, 135.0, 140.0, 145.0)
+Conduit Id       : 119 (values=75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145)
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12138,7 +12148,7 @@ Name             : Nature's Focus (id=338346) [Spell Family (11), Passive, Hidde
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Conduit Id       : 120 (values=10.0, 10.66, 11.33, 12.0, 12.66, 13.33, 14.0, 15.0, 16.0, 16.66, 17.33, 18.0, 18.66, 19.33, 20.0)
+Conduit Id       : 120 (values=10, 10.66, 11.33, 12, 12.66, 13.33, 14, 15, 16, 16.66, 17.33, 18, 18.66, 19.33, 20)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12156,7 +12166,7 @@ Description      : The primary target of your Chain Heal is healed for an additi
 Name             : Elysian Dirge (id=339182) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 146 (values=40.0, 43.0, 46.0, 49.0, 52.0, 55.0, 58.0, 61.0, 64.0, 67.0, 70.0, 73.0, 76.0, 79.0, 82.0)
+Conduit Id       : 146 (values=40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12174,7 +12184,7 @@ Description      : Vesper Totem is |cFFFFFFFF$s1%|r more effective against the t
 Name             : Essential Extraction (id=339183) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 148 (values=30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 38.0, 39.0, 40.0, 41.0, 42.0, 43.0, 44.0, 45.0)
+Conduit Id       : 148 (values=30, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 43, 44, 45)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12202,7 +12212,7 @@ Description      : Fae Transfusion deals |cFFFFFFFF$s1%|r increased damage, and 
 Name             : Lavish Harvest (id=339185) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 149 (values=10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 14.5, 15.0, 15.5, 16.0, 16.5, 17.0)
+Conduit Id       : 149 (values=10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12222,7 +12232,7 @@ Name             : Tumbling Waves (id=339186) [Spell Family (11), Passive, Hidde
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 147 (values=200.0, 210.0, 230.0, 240.0, 260.0, 270.0, 290.0, 300.0, 310.0, 330.0, 340.0, 360.0, 370.0, 390.0, 400.0)
+Conduit Id       : 147 (values=200, 210, 230, 240, 260, 270, 290, 300, 310, 330, 340, 360, 370, 390, 400)
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -12500,7 +12510,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Affecting spells : Focused Lightning (338322 effect#1)
+Affecting spells : Focused Lightning (338322 effects: #1, #2)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12513,8 +12523,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=868298)   : Apply Aura (6) | Dummy (4)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+#2 (id=874551)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
 Description      : $@spelldesc187880
-Tooltip          : Your next damage or healing spell has its cast time reduced by ${$max($187881s1, -100)*-1}% and damage or healing increased by ${$min($187881s2, 100)}%.
+Tooltip          : Your next damage or healing spell has its cast time reduced by ${$max($187881s1, -100)*-1}% and damage or healing increased by ${$min($187881s2, 5*$s~2)}%.
 
 Name             : Stormflurry (id=344357) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -12566,7 +12578,7 @@ Name             : Pyroclastic Shock (id=345594) [Spell Family (11), Passive, Hi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 100 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 100 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 

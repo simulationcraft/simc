@@ -820,6 +820,11 @@ public:
 
   target_specific_t<rogue_td_t> target_data;
 
+  const rogue_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   rogue_td_t* get_target_data( player_t* target ) const override
   {
     rogue_td_t*& td = target_data[ target ];
@@ -1303,7 +1308,7 @@ public:
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
-  { return ab::callbacks && !ab::proc && ab::weapon != nullptr && ab::weapon->slot == SLOT_MAIN_HAND; }
+  { return false; }
 
   // Generic rules for proccing Combat Potency, used by rogue_t::trigger_combat_potency()
   virtual bool procs_combat_potency() const
@@ -1681,7 +1686,7 @@ public:
       p()->buffs.blindside->expire();
 
     if ( affected_by.sepsis )
-      p()->buffs.sepsis->expire();
+      p()->buffs.sepsis->decrement();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -2180,6 +2185,9 @@ struct melee_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  bool procs_main_gauche() const override
+  { return weapon->slot == SLOT_MAIN_HAND; }
 };
 
 // Auto Attack ==============================================================
@@ -2306,9 +2314,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_count_the_odds( execute_state );
   }
-
-  bool procs_main_gauche() const override
-  { return false; }
 };
 
 // Backstab =================================================================
@@ -2481,9 +2486,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  bool procs_main_gauche() const override
-  { return false; }
-
   bool procs_blade_flurry() const override
   { return false; }
 
@@ -2512,9 +2514,6 @@ struct blade_flurry_t : public rogue_attack_t
     {
       range = -1.0;
     }
-
-    bool procs_main_gauche() const override
-    { return false; }
 
     bool procs_blade_flurry() const override
     { return false; }
@@ -2648,11 +2647,6 @@ struct dispatch_t: public rogue_attack_t
   dispatch_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
-  }
-
-  bool procs_main_gauche() const override
-  {
-    return false;
   }
 
   void execute() override
@@ -3051,9 +3045,6 @@ struct ghostly_strike_t : public rogue_attack_t
   {
   }
 
-  bool procs_main_gauche() const override
-  { return false; }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -3150,6 +3141,9 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
     direct_tick = true;
   }
+
+  bool procs_main_gauche() const override
+  { return weapon->slot == SLOT_MAIN_HAND; }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -3316,9 +3310,6 @@ struct main_gauche_t : public rogue_attack_t
 
     return ap;
   }
-
-  bool procs_main_gauche() const override
-  { return false; }
 
   bool procs_combat_potency() const override
   { return true; }
@@ -3930,7 +3921,10 @@ struct shadowstrike_t : public rogue_attack_t
       }
 
       timespan_t premed_duration = timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() );
-      p()->buffs.slice_and_dice->extend_duration_or_trigger( premed_duration );
+      // Slice and Dice extension from Premeditation appears to be capped at 46.8s in any build, which equals 5CP duration with full pandemic.
+      premed_duration = std::min( premed_duration, 46.8_s - p()->buffs.slice_and_dice->remains() );
+      if ( premed_duration > timespan_t::zero() )
+        p()->buffs.slice_and_dice->extend_duration_or_trigger( premed_duration );
 
       p()->buffs.premeditation->expire();
     }
@@ -4038,8 +4032,11 @@ struct black_powder_t: public rogue_attack_t
 
   void execute() override
   {
+    // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
+    // For consistency with Evis, we move it before, so that both are self-affecting.
+    p()->buffs.deeper_daggers->trigger();
+
     rogue_attack_t::execute();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
 
     if ( p()->legendary.finality.ok() )
     {
@@ -4194,6 +4191,9 @@ struct sinister_strike_t : public rogue_attack_t
         p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 0, 300_ms );
       }
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   sinister_strike_extra_attack_t* extra_attack;
@@ -4252,6 +4252,9 @@ struct sinister_strike_t : public rogue_attack_t
       p()->buffs.concealed_blunderbuss->trigger();
     }
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 };
 
 // Slice and Dice ===========================================================
@@ -4578,9 +4581,6 @@ struct cheap_shot_t : public rogue_attack_t
     return c;
   }
 
-  bool procs_main_gauche() const override
-  { return false; }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4714,7 +4714,7 @@ struct flagellation_t : public rogue_attack_t
     p()->active.flagellation->debuff->trigger();
     for ( int i = 1; i < initial_lashes; i++ )
     {
-      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * i );
+      p()->active.flagellation->trigger_secondary_action( execute_state->target, 0, 0.25_s * ( 1 + i ) );
     }
   }
 
@@ -6328,9 +6328,9 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     buff_t* debuff = p()->active.flagellation->debuff;
     if ( debuff && debuff->up() )
     {
-      for ( unsigned i = 0; i < max_spend; ++i )
+      for ( unsigned i = 1; i <= max_spend; ++i )
       {
-        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 1_s + 0.25_s * i );
+        p()->active.flagellation->trigger_secondary_action( debuff->player, 0, 0.25_s * ( 1 + i ) );
       }
     }
   }
@@ -6586,6 +6586,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
         source->cooldowns.serrated_bone_spike->reset( false, 1 );
+    } );
+  }
+
+  if (source->covenant.flagellation->ok())
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
+      if ( debuffs.flagellation->check() )
+        source->buffs.flagellation->trigger( debuffs.flagellation->stack() );
     } );
   }
 }
@@ -7062,7 +7070,7 @@ void rogue_t::init_action_list()
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade.equipped" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
-    build->add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)", "Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down." );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
     build->add_action( this, "Sinister Strike" );
   }
@@ -7103,9 +7111,9 @@ void rogue_t::init_action_list()
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30" );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped&combo_points.deficit<=3|runeforge.deathly_shadows.equipped&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&variable.snd_condition|essence.breath_of_the_dying.major&time>=2" );
-    cds->add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
+    cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
-    cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5" );
+    cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
@@ -7146,7 +7154,7 @@ void rogue_t::init_action_list()
     stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
     stealth_cds->add_action( this, "Vanish", "if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin.equipped", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
     stealth_cds->add_action( "sepsis" );
-    stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
+    stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=4", "CP requirement: Dance at low CP by default." );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation", "CP requirement: Dance only before finishers if we have priority rotation." );
@@ -7166,9 +7174,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
     stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|buff.the_rotten.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)" );
     stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
-    stealthed->add_action( "pool_resource,for_next=1" );
-    stealthed->add_talent( this, "Gloomblade", "if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=13-(9*conduit.deeper_dagger.enabled+conduit.deeper_dagger.rank)" );
-    stealthed->add_talent( this, "Gloomblade", "if=runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&(conduit.perforated_veins.rank+conduit.deeper_dagger.rank)>=16" );
+    stealthed->add_talent( this, "Gloomblade", "if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
     stealthed->add_action( this, "Shadowstrike" );
 
     // Finishers
@@ -8371,6 +8377,8 @@ void rogue_t::create_buffs()
                                           ->set_default_value( 4 );
 
   buffs.sepsis = make_buff( this, "sepsis_buff", covenant.sepsis_buff );
+  if( covenant.sepsis->ok() )
+    buffs.sepsis->set_initial_stack( as<int>( covenant.sepsis->effectN( 6 ).base_value() ) );
 
   // Conduits ===============================================================
 
@@ -9149,12 +9157,6 @@ public:
 
   void register_hotfixes() const override
   {
-    // Manual hotfix for Poisoned Katar spell data
-    hotfix::register_effect( "Rogue", "2020-10-15", "Poisoned Katar Crit% Fix", 874233 )
-      .field( "sub_type" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 107 )
-      .verification_value( 108 );
   }
 
   void init( player_t* ) const override {}

@@ -245,6 +245,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     is_divine_storm = true;
 
     aoe = data().effectN( 2 ).base_value();
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   divine_storm_t( paladin_t* p, bool is_free, float mul ) :
@@ -255,6 +258,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     background = is_free;
     base_multiplier *= mul;
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -339,6 +345,16 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p() -> buffs.vanquishers_hammer -> expire();
       p() -> active.necrolord_divine_storm -> execute();
+    }
+
+    // TODO(mserrano): figure out the actionbar override thing instead of this hack.
+    if ( p() -> legendary.final_verdict -> ok() )
+    {
+      if ( rng().roll( p() -> legendary.final_verdict -> effectN( 2 ).percent() ) )
+      {
+        p() -> cooldowns.hammer_of_wrath -> reset( true );
+        p() -> buffs.final_verdict -> trigger();
+      }
     }
   }
 };
@@ -865,7 +881,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
   cds -> add_talent( this, "Crusade", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
-  // cds -> add_action( "ashen_hallow" );
+  cds -> add_action( "ashen_hallow" );
   cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&((buff.avenging_wrath.up|buff.crusade.up)|(buff.avenging_wrath.down&cooldown.avenging_wrath.remains>40|buff.crusade.down&cooldown.crusade.remains>40))" );
   cds -> add_talent( this, "Final Reckoning", "if=holy_power>=3&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim.enabled|buff.seraphim.up)" );
   cds -> add_action( "the_unbound_force,if=time<=2|buff.reckless_force.up" );

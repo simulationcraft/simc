@@ -4183,14 +4183,14 @@ void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
     __fallback_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned           spell_id,
-                                           custom_cb_t init_callback )
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback )
 {
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
   dbitem.cb_obj = new wrapper_callback_t( std::move(init_callback) );
+  dbitem.fallback = fallback;
 
-  __special_effect_db.push_back( dbitem );
+  add_effect( dbitem );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
@@ -4200,6 +4200,17 @@ void unique_gear::register_special_effect( unsigned spell_id, const char* encode
   dbitem.encoded_options = encoded_str;
 
   __special_effect_db.push_back( dbitem );
+}
+
+bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names )
+{
+  if ( effect.source != SPECIAL_EFFECT_SOURCE_FALLBACK )
+    return false;
+
+  for ( auto name : names )
+    make_buff( effect.player, name )->set_chance( 0.0 );
+
+  return true;
 }
 
 /**

@@ -233,7 +233,11 @@ void grove_invigoration( special_effect_t& effect )
 {
   struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ) {}
+    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+    {
+      // TODO: The max stacks in spell data are wrong
+      set_max_stack( 10 );
+    }
 
     bool trigger( int, double v, double c, timespan_t d ) override
     {
@@ -243,7 +247,7 @@ void grove_invigoration( special_effect_t& effect )
       if ( !anima_stacks )
         return false;
 
-      anima_stacks = std::min( anima_stacks, as<int>( data().max_stacks() ) );
+      anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
       player->buffs.redirected_anima_stacks->decrement( anima_stacks );
 
       return stat_buff_t::trigger( anima_stacks, v, c, d );
@@ -263,6 +267,9 @@ void grove_invigoration( special_effect_t& effect )
 
 void field_of_blossoms( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "field_of_blossoms" } ) )
+    return;
+
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
     return;
 
@@ -391,8 +398,8 @@ void dauntless_duelist( special_effect_t& effect )
       if ( p->sim->event_mgr.canceled )
         return;
 
-      auto td = p->get_target_data( t );
-      if ( td->debuff.adversary->check() )
+      auto td = p->find_target_data( t );
+      if ( td && td->debuff.adversary->check() )
         cb->activate();
     } );
   } );
@@ -425,11 +432,6 @@ void thrill_seeker( special_effect_t& effect )
   } );
 
   // TODO: implement gains from killing blows
-}
-
-void refined_palate( special_effect_t& effect )
-{
-
 }
 
 void soothing_shade( special_effect_t& effect )
@@ -560,8 +562,7 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur = duration_mod *
-          timespan_t::from_seconds( data().effectN( 2 ).trigger()->effectN( 1 ).trigger()->effectN( 2 ).base_value() );
+      ext_dur = duration_mod * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -973,13 +974,13 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 }
 
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
-void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback )
+void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
 {
-  unique_gear::register_special_effect( spell_id, [ &, init_callback ]( special_effect_t& effect ) {
-    if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+  unique_gear::register_special_effect( spell_id, [ &, init_callback, fallback ]( special_effect_t& effect ) {
+    if ( !fallback && !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
       return;
     init_callback( effect );
-  } );
+  }, fallback );
 }
 
 }  // namespace
@@ -991,7 +992,7 @@ void register_special_effects()
   register_soulbind_special_effect( 320660, soulbinds::niyas_tools_poison );
   register_soulbind_special_effect( 320662, soulbinds::niyas_tools_herbs );
   register_soulbind_special_effect( 322721, soulbinds::grove_invigoration );
-  register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
+  register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
   register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
@@ -999,8 +1000,7 @@ void register_special_effects()
   //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
-  register_soulbind_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );
+  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );  // Theotar
   register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
   register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
   register_soulbind_special_effect( 332753, soulbinds::superior_tactics );

@@ -49,9 +49,15 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
 
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
+  cooldowns.hammer_of_wrath         = get_cooldown( "hammer_of_wrath" );
 
   beacon_target = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
+}
+
+const paladin_td_t* paladin_t::find_target_data( const player_t* target ) const
+{
+  return target_data[ target ];
 }
 
 paladin_td_t* paladin_t::get_target_data( player_t* target ) const
@@ -1132,6 +1138,16 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return paladin_melee_attack_t::target_ready( candidate_target );
   }
 
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> buffs.final_verdict -> up() )
+    {
+      p() -> buffs.final_verdict -> expire();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -1519,14 +1535,19 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.art_of_war                = get_proc( "Art of War"       );
-  procs.divine_purpose            = get_proc( "Divine Purpose"   );
-  procs.fires_of_justice          = get_proc( "Fires of Justice" );
-  procs.grand_crusader            = get_proc( "Grand Crusader"   );
-  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
-  procs.final_reckoning           = get_proc( "Final Reckoning"  );
-  procs.empyrean_power            = get_proc( "Empyrean Power"   );
-  procs.holy_avengers_engraved_sigil = get_proc( "Holy Avenger's Engraved Sigil" );
+  procs.art_of_war                = get_proc( "Art of War"        );
+  procs.divine_purpose            = get_proc( "Divine Purpose"    );
+  procs.fires_of_justice          = get_proc( "Fires of Justice"  );
+  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR" );
+  procs.final_reckoning           = get_proc( "Final Reckoning"   );
+  procs.empyrean_power            = get_proc( "Empyrean Power"    );
+
+  procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader"         );
+  procs.as_grand_crusader_wasted  = get_proc( "Avenger's Shield: Grand Crusader wasted"  );
+  procs.as_engraved_sigil         = get_proc( "Avenger's Shield: Engraved Sigil"         );
+  procs.as_engraved_sigil_wasted  = get_proc( "Avenger's Shield: Engraved Sigil wasted"  );
+  procs.as_moment_of_glory        = get_proc( "Avenger's Shield: Moment of Glory"        );
+  procs.as_moment_of_glory_wasted = get_proc( "Avenger's Shield: Moment of Glory wasted" );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -1619,6 +1640,7 @@ void paladin_t::create_buffs()
         -> add_invalidate( CACHE_HASTE );
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
         -> set_default_value( find_spell( 337682 ) -> effectN( 1 ).base_value() );
+  buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
         -> set_cooldown( 0_ms );
@@ -1764,16 +1786,6 @@ void paladin_t::init_action_list()
     return;
   }
 
-  // Protection isn't supported atm
-  if ( !sim->allow_experimental_specializations && specialization() == PALADIN_PROTECTION )
-  {
-    if ( !quiet )
-      sim->error( "Specialization Protection Paladin for {} is currently not supported.", *this );
-
-    quiet = true;
-    return;
-  }
-
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
@@ -1883,6 +1895,7 @@ void paladin_t::init_spells()
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
   legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
   legendary.relentless_inquisitor = find_runeforge_legendary( "Relentless Inquisitor" );
+  legendary.tempest_of_the_lightbringer = find_runeforge_legendary( "Tempest of the Lightbringer" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
@@ -2565,6 +2578,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
   bool buffs_ok = spells.hammer_of_wrath_2 -> ok() && ( buffs.avenging_wrath -> up() || buffs.crusade -> up() );
+  buffs_ok = buffs_ok || buffs.final_verdict -> up();
   return ( buffs_ok || standing_in_hallow() || t -> health_percentage() <= 20 );
 }
 

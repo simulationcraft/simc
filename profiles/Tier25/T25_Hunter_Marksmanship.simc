@@ -65,7 +65,8 @@ actions.cds+=/memory_of_lucid_dreams,if=!buff.trueshot.up
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.remains>14&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)
 actions.cds+=/trueshot,if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15
 
-actions.st=kill_shot
+actions.st=steady_shot,if=talent.steady_focus.enabled&prev_gcd.1.steady_shot&buff.steady_focus.remains<5
+actions.st+=/kill_shot
 actions.st+=/explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
@@ -94,7 +95,7 @@ actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&!b
 actions.trickshots+=/focused_azerite_beam
 actions.trickshots+=/purifying_blast
 actions.trickshots+=/concentrated_flame
-actions.trickshots+=/blood_of_the_enemy
+actions.trickshots+=/blood_of_the_enemy,if=prev_gcd.1.volley|!talent.volley.enabled|target.time_to_die<11
 actions.trickshots+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight

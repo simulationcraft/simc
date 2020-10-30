@@ -201,6 +201,7 @@ public:
     buff_t* blessing_of_dawn;
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
+    buff_t* final_verdict;
   } buffs;
 
   // Gains
@@ -257,6 +258,7 @@ public:
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
+    cooldown_t* hammer_of_wrath;
   } cooldowns;
 
   // Passives
@@ -294,10 +296,15 @@ public:
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
     proc_t* final_reckoning;
-    proc_t* grand_crusader;
     proc_t* prot_lucid_dreams;
     proc_t* empyrean_power;
-    proc_t* holy_avengers_engraved_sigil;
+
+    proc_t* as_grand_crusader;
+    proc_t* as_grand_crusader_wasted;
+    proc_t* as_engraved_sigil;
+    proc_t* as_engraved_sigil_wasted;
+    proc_t* as_moment_of_glory;
+    proc_t* as_moment_of_glory_wasted;
   } procs;
 
   // Spells
@@ -462,6 +469,7 @@ public:
     item_runeforge_t holy_avengers_engraved_sigil;
     item_runeforge_t the_ardent_protectors_sanctum;
     item_runeforge_t relentless_inquisitor;
+    item_runeforge_t tempest_of_the_lightbringer;
   } legendary;
 
   // Paladin options
@@ -583,6 +591,7 @@ public:
 
   target_specific_t<paladin_td_t> target_data;
 
+  virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
   cooldown_waste_data_t* get_cooldown_waste_data( cooldown_t* cd, cooldown_waste_data_t *(*factory)(cooldown_t*) = nullptr )
