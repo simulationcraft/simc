@@ -340,6 +340,9 @@ public:
   player_t* recent_target =
       nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
 
+  /// Legacy of the Frost Witch maelstrom stack counter
+  unsigned lotfw_counter;
+
   // Options
   bool raptor_glyph;
 
@@ -418,6 +421,7 @@ public:
     buff_t* windspeakers_lava_resurgence;
     buff_t* doom_winds_buff;
     buff_t* doom_winds_debuff;
+    buff_t* legacy_of_the_frost_witch;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -567,7 +571,7 @@ public:
 
     // Enhancement
     item_runeforge_t doom_winds;
-    item_runeforge_t legacy_of_the_frost_witch;  // NYI
+    item_runeforge_t legacy_of_the_frost_witch;
     item_runeforge_t primal_lava_actuators;      // NYI
     item_runeforge_t witch_doctors_wolf_bones;   // NYI
   } legendary;
@@ -756,6 +760,7 @@ public:
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
+      lotfw_counter( 0u ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -834,6 +839,9 @@ public:
   void trigger_strength_of_earth( const action_state_t* state );
   void trigger_ancestral_resonance( const action_state_t* state );
   void trigger_natural_harmony( const action_state_t* );
+
+  // Legendary
+  void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
@@ -1849,6 +1857,8 @@ public:
       {
         p()->buff.hailstorm->trigger( stacks );
       }
+
+      p()->trigger_legacy_of_the_frost_witch( stacks );
     }
 
     // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
@@ -2954,6 +2964,8 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
+
+    m *= 1.0 + p()->buff.legacy_of_the_frost_witch->stack_value();
 
     return m;
   }
@@ -7830,6 +7842,24 @@ void shaman_t::trigger_windfury_totem( const action_state_t* state )
   main_hand_attack->repeating = true;
 }
 
+void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
+{
+  if ( !legendary.legacy_of_the_frost_witch.ok() )
+  {
+    return;
+  }
+
+  lotfw_counter += consumed_stacks;
+
+  auto threshold = as<unsigned>( legendary.legacy_of_the_frost_witch->effectN( 1 ).base_value() );
+  if ( lotfw_counter >= threshold )
+  {
+    lotfw_counter -= threshold;
+    buff.legacy_of_the_frost_witch->trigger();
+    cooldown.strike->reset( false );
+  }
+}
+
 void shaman_t::trigger_primal_primer( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
@@ -8339,6 +8369,9 @@ void shaman_t::create_buffs()
     } );
   buff.doom_winds_debuff = make_buff<buff_t>( this, "doom_winds_debuff",
     buff.doom_winds_buff->data().effectN( 2 ).trigger() );
+  buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch",
+      find_spell( 335901 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 }
 
 // shaman_t::init_gains =====================================================
@@ -9181,6 +9214,7 @@ void shaman_t::reset()
     elem->reset();
 
   vesper_totem = nullptr;
+  lotfw_counter = 0u;
 }
 
 // shaman_t::merge ==========================================================
