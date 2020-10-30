@@ -545,6 +545,7 @@ public:
     // Enhancement
     conduit_data_t chilled_to_the_core;
     conduit_data_t focused_lightning;
+    conduit_data_t magma_fist;
   } conduit;
 
   // Legendaries
@@ -3418,6 +3419,18 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     return m;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double tc = shaman_attack_t::composite_target_crit_chance( target );
+
+    if ( td( target )->dot.flame_shock->is_ticking() )
+    {
+      tc += p()->conduit.magma_fist.percent();
+    }
+
+    return tc;
   }
 
   void impact( action_state_t* state ) override
@@ -7428,6 +7441,7 @@ void shaman_t::init_spells()
   // Enhancement Conduits
   conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
   conduit.focused_lightning = find_conduit_spell( "Focused Lightning" );
+  conduit.magma_fist = find_conduit_spell( "Magma Fist" );
 
   // Shared Legendaries
   legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
