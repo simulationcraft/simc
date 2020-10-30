@@ -541,6 +541,9 @@ public:
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
     conduit_data_t pyroclastic_shock;
+
+    // Enhancement
+    conduit_data_t chilled_to_the_core;
   } conduit;
 
   // Legendaries
@@ -591,6 +594,7 @@ public:
     proc_t* maelstrom_weapon;
     proc_t* maelstrom_weapon_fs;
     proc_t* maelstrom_weapon_ea;
+    proc_t* maelstrom_weapon_cttc;
     proc_t* stormflurry;
   } proc;
 
@@ -5674,6 +5678,13 @@ struct frost_shock_t : public shaman_spell_t
     maelstrom_gain = 0.0;
 
     p()->buff.strength_of_earth->trigger();
+
+    if ( rng().roll( p()->conduit.chilled_to_the_core.percent() ) )
+    {
+      p()->buff.maelstrom_weapon->trigger( p()->conduit.chilled_to_the_core->effectN( 2 ).base_value() );
+      p()->proc.maelstrom_weapon_cttc->occur();
+      p()->proc.maelstrom_weapon_cttc->occur();
+    }
   }
 };
 
@@ -7407,6 +7418,9 @@ void shaman_t::init_spells()
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
   conduit.pyroclastic_shock = find_conduit_spell( "Pyroclastic Shock" );
 
+  // Enhancement Conduits
+  conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
+
   // Shared Legendaries
   legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
   legendary.chains_of_devastation  = find_runeforge_legendary( "Chains of Devastation" );
@@ -8306,6 +8320,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
+  proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Grave" );
   proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
