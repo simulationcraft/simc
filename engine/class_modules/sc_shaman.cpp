@@ -6483,10 +6483,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->conduit.essential_extraction->ok() )
-    {
-      m *= 1.0 + p()->conduit.essential_extraction->effectN( 1 ).percent();
-    }
+    m *= 1.0 + p()->conduit.essential_extraction.percent();
 
     return m;
   }
@@ -6510,10 +6507,7 @@ struct fae_transfusion_t : public shaman_spell_t
     channeled   = true;
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
 
-    if ( player->conduit.essential_extraction->ok() )
-    {
-      base_tick_time *= 1.0 + p()->conduit.essential_extraction->effectN( 3 ).percent();
-    }
+    base_tick_time *= 1.0 + p()->conduit.essential_extraction.percent();
   }
 };
 
