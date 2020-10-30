@@ -267,6 +267,9 @@ void grove_invigoration( special_effect_t& effect )
 
 void field_of_blossoms( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "field_of_blossoms" } ) )
+    return;
+
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
     return;
 
@@ -971,13 +974,13 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 }
 
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
-void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback )
+void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
 {
-  unique_gear::register_special_effect( spell_id, [ &, init_callback ]( special_effect_t& effect ) {
-    if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+  unique_gear::register_special_effect( spell_id, [ &, init_callback, fallback ]( special_effect_t& effect ) {
+    if ( !fallback && !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
       return;
     init_callback( effect );
-  } );
+  }, fallback );
 }
 
 }  // namespace
@@ -989,7 +992,7 @@ void register_special_effects()
   register_soulbind_special_effect( 320660, soulbinds::niyas_tools_poison );
   register_soulbind_special_effect( 320662, soulbinds::niyas_tools_herbs );
   register_soulbind_special_effect( 322721, soulbinds::grove_invigoration );
-  register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
+  register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms, true );  // Dreamweaver
   register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
   register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );

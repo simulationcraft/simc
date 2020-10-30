@@ -25,7 +25,8 @@ namespace unique_gear
   
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
-void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_cb );
+void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_cb, bool fallback = false );
+bool create_fallback_buffs( const special_effect_t& effect, std::vector<util::string_view> names );
 
 // New-style special effect registering function
 template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>
