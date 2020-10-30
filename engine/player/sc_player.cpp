@@ -8255,7 +8255,7 @@ struct use_item_t : public action_t
       return false;
     }
 
-    if ( action && !action->ready() )
+    if ( action && ( !action->ready() || !action->cooldown->up() ) )
     {
       return false;
     }
@@ -8405,7 +8405,7 @@ struct use_items_t : public action_t
     // Check all use_item actions, if at least one of them is ready, this use_items action is ready
     for ( const auto action : use_actions )
     {
-      if ( action->ready() )
+      if ( action->ready() && action->cooldown->up() )
       {
         return true;
       }
@@ -12159,15 +12159,15 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost[ i ].add( p.iteration_resource_lost[ i ] );
-  }  
+  }
   for ( size_t i = 0, end = resource_gained.size(); i < end; ++i )
   {
     resource_gained[ i ].add( p.iteration_resource_gained[ i ] );
-  }  
+  }
   for ( size_t i = 0, end = resource_overflowed.size(); i < end; ++i )
   {
     resource_overflowed[ i ].add( p.iteration_resource_overflowed[ i ] );
-  }  
+  }
 
   for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
   {
