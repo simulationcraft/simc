@@ -48,7 +48,6 @@
 // - Lightning Shield? Maelstrom gen? Do we proc for sims?
 // - Windfury Totem - Does this need to be implemented as a raid buff?
 // - Spec Legendaries
-// - Spec Conduits
 // - Review target caps
 
 // Resto DPS?
@@ -417,6 +416,8 @@ public:
     buff_t* chains_of_devastation_chain_lightning;
     buff_t* echoes_of_great_sundering;
     buff_t* windspeakers_lava_resurgence;
+    buff_t* doom_winds_buff;
+    buff_t* doom_winds_debuff;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -565,7 +566,7 @@ public:
     item_runeforge_t windspeakers_lava_resurgence;
 
     // Enhancement
-    item_runeforge_t doom_winds;                 // NYI
+    item_runeforge_t doom_winds;
     item_runeforge_t legacy_of_the_frost_witch;  // NYI
     item_runeforge_t primal_lava_actuators;      // NYI
     item_runeforge_t witch_doctors_wolf_bones;   // NYI
@@ -2843,6 +2844,11 @@ struct windfury_attack_t : public shaman_attack_t
     double m = shaman_attack_t::action_multiplier();
 
     m *= 1.0 + p()->buff.forceful_winds->stack_value();
+
+    if ( p()->buff.doom_winds_buff->check() )
+    {
+      m *= 1.0 + p()->buff.doom_winds_buff->data().effectN( 3 ).percent();
+    }
 
     return m;
   }
@@ -6078,6 +6084,11 @@ struct windfury_totem_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.windfury_totem->trigger();
+
+    if ( !p()->buff.doom_winds_debuff->up() )
+    {
+      p()->buff.doom_winds_buff->trigger();
+    }
   }
 };
 
@@ -8008,6 +8019,8 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   proc_chance *= 1.0 + buff.thunderaans_fury->stack_value();
 
+  proc_chance += buff.doom_winds_buff->stack_value();
+
   if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( proc_chance ) )
   {
     action_t* a = windfury_mh;
@@ -8314,6 +8327,18 @@ void shaman_t::create_buffs()
     ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
     ->set_trigger_spell( azerite.synapse_shock );
 
+  // Legendary buffs
+  buff.doom_winds_buff = make_buff<buff_t>( this, "doom_winds",
+    legendary.doom_winds->effectN( 1 ).trigger() )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+        if ( new_ > 0 )
+        {
+          buff.doom_winds_debuff->trigger();
+        }
+    } );
+  buff.doom_winds_debuff = make_buff<buff_t>( this, "doom_winds_debuff",
+    buff.doom_winds_buff->data().effectN( 2 ).trigger() );
 }
 
 // shaman_t::init_gains =====================================================
