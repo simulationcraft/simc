@@ -709,6 +709,10 @@ class ItemDataGenerator(DataGenerator):
             elif item.quality == 7:
                 filter_ilevel = False
 
+            # Include all Armor and Weapons
+            if classdata.classs in [2, 4]:
+                filter_ilevel = False
+
             # Item-level based non-equippable items
             if filter_ilevel and item.inv_type == 0:
                 continue
@@ -806,7 +810,7 @@ class ItemDataGenerator(DataGenerator):
             self.format_str('item_stats'), len(items_stats_index)))
         for stats in items_stats_index.items():
             self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
-        self._out.write('};\n')
+        self._out.write('};\n\n')
 
         def item_stats_fields(id):
             stats = items_stats_index.get(id)
@@ -814,38 +818,49 @@ class ItemDataGenerator(DataGenerator):
                 return [ '0', '0' ]
             return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
 
-        self.output_header(
-                header = 'Items, ilevel {}-{}'.format(self._options.min_ilevel, self._options.max_ilevel),
-                type = 'dbc_item_data_t',
-                array = 'item',
-                length = len(data))
+        self._out.write('// Items, ilevel {}-{}, wow build {}\n\n'.format(
+                self._options.min_ilevel, self._options.max_ilevel, self._options.build))
 
-        for item in data:
-            item2 = self.db('Item')[item.id]
+        CHUNK_SIZE = 1<<14
+        chunk_index = 0
+        for i in range(0, len(data), CHUNK_SIZE):
+            chunk = data[i: i + CHUNK_SIZE]
+            self._out.write('static const std::array<dbc_item_data_t, {}> __{}_data_chunk{} {{ {{\n'.format(
+                len(chunk), self.format_str('item'), chunk_index))
 
-            fields = item.field('name', 'id', 'flags_1', 'flags_2')
+            for item in chunk:
+                item2 = self.db('Item')[item.id]
 
-            flag_types = 0x00
+                fields = item.field('name', 'id', 'flags_1', 'flags_2')
 
-            for entry in item.child_refs('JournalEncounterItem'):
-                if entry.flags_1 == 0x10:
-                    flag_types |= self._type_flags['Raid Finder']
-                elif entry.flags_1 == 0xC:
-                    flag_types |= self._type_flags['Heroic']
+                flag_types = 0x00
 
-            flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
+                for entry in item.child_refs('JournalEncounterItem'):
+                    if entry.flags_1 == 0x10:
+                        flag_types |= self._type_flags['Raid Finder']
+                    elif entry.flags_1 == 0xC:
+                        flag_types |= self._type_flags['Heroic']
 
-            fields += [ '%#.2x' % flag_types ]
-            fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
-            fields += item2.field('classs', 'subclass')
-            fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
-            fields += item_stats_fields(item.id)
-            fields += item.field('class_mask', 'race_mask')
-            fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
+                flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
 
-            self.output_record(fields)
+                fields += [ '%#.2x' % flag_types ]
+                fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
+                fields += item2.field('classs', 'subclass')
+                fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
+                fields += item_stats_fields(item.id)
+                fields += item.field('class_mask', 'race_mask')
+                fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
+                fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
+                self.output_record(fields)
+
+            self._out.write('} };\n')
+            chunk_index += 1
+
+        self._out.write('\n')
+        self._out.write('static const std::array<util::span<const dbc_item_data_t>, {}> __{}_data {{ {{\n'.format(
+                chunk_index, self.format_str('item')))
+        self._out.write(''.join('  __{}_data_chunk{},\n'.format(self.format_str('item'), i) for i in range(chunk_index)))
         self.output_footer()
 
     def generate_json(self, data = None):
@@ -1226,8 +1241,10 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
-         # Sunblod Amethyst Trinket
+         # Sunblood Amethyst Trinket
          343395, 343396,
+         # Inscrutable Quantum Device Trinket
+         330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
@@ -1610,7 +1627,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339784, 2 ),    # Tyrant's Soul Buff
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
-          ( 339986, 3 )     # Hidden Combusting Engine Debuff
+          ( 339986, 3 ),    # Hidden Combusting Engine Debuff
+          ( 324540, 0 )     # Malefic Rapture damage
         ),
 
         # Monk:
@@ -1782,6 +1800,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 225102, 0 ), # Fel Eruption damage
           ( 339229, 0 ), # Serrated Glaive conduit debuff
+          ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (git build shadowlands 0b7129aebc)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-10-30/36401, git build shadowlands 493ac7b6b6)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -2958,7 +2958,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=198243)   : Unknown(174) | Scale% (Stacking) (61)
+#1 (id=198243)   : Apply Aura Pet (174) | Scale% (Stacking) (61)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the size of your Water Elemental by $s1%.
 

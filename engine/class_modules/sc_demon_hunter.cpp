@@ -89,6 +89,7 @@ public:
 
     // Legendary
     buff_t* burning_wound;
+    buff_t* fel_bombardment;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -3928,6 +3929,7 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
+  // TOREMOVE: Beta vs. Prepatch Mechanics
   struct unbound_chaos_t : public demon_hunter_spell_t
   {
     unbound_chaos_t( util::string_view name, demon_hunter_t* p )
@@ -3946,6 +3948,15 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_spell_t::action_multiplier();
+
+      am *= 1.0 + p()->buff.unbound_chaos->value();
+
+      return am;
     }
   };
 
@@ -3966,7 +3977,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     execute_action = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
     execute_action->stats = stats;
 
-    if ( p->talent.unbound_chaos->ok() && !unbound_chaos )
+    // TOREMOVE: Beta vs. Prepatch Mechanics
+    if ( p->level() <= 50 && p->talent.unbound_chaos->ok() && !unbound_chaos )
     {
       unbound_chaos = p->get_background_action<unbound_chaos_t>( "unbound_chaos" );
       add_child( unbound_chaos );
@@ -3985,17 +3997,17 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    // 07/14/2018 -- As of the latest build, Momentum is now triggered before the damage
     p()->buff.momentum->trigger();
 
     demon_hunter_attack_t::execute();
 
-    if ( unbound_chaos && p()->buff.unbound_chaos->up() )
+    // TOREMOVE: Beta vs. Prepatch Mechanics
+    if ( unbound_chaos && p()->buff.unbound_chaos->check() )
     {
       unbound_chaos->set_target( target );
       unbound_chaos->schedule_execute();
-      p()->buff.unbound_chaos->expire();
     }
+    p()->buff.unbound_chaos->expire();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
@@ -4258,7 +4270,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     {
       double m = demon_hunter_attack_t::composite_da_multiplier( s );
 
-      m *= 1.0 + p()->buff.fel_bombardment->stack_value();
+      m *= 1.0 + td( s->target )->debuffs.fel_bombardment->stack_value();
 
       return m;
     }
@@ -4281,6 +4293,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    const int bombardment_stacks = p()->buff.fel_bombardment->check();
+    if ( bombardment_stacks > 0 )
+    {
+      // Apply hidden damage debuff to the primary target before execute
+      td( target )->debuffs.fel_bombardment->trigger( bombardment_stacks );
+      p()->buff.fel_bombardment->expire();
+    }
+
     demon_hunter_attack_t::execute();
 
     // Fel Bombardment Legendary
@@ -4288,20 +4308,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // For SimC purposes, using a cloned spell for better stats tracking
     if ( hit_any_target && fel_bombardment )
     {
-      const int bombardment_triggers = p()->buff.fel_bombardment->check();
+      // For each stack of the buff, iterate through the target list and pick a random "primary" target
       const auto targets_in_range = targets_in_range_list( target_list() );
       assert( targets_in_range.size() > 0 );
-
-      // For each stack of the buff, iterate through the target list and pick a random "primary" target
-      for ( int i = 0; i < bombardment_triggers; ++i )
+      for ( int i = 0; i < bombardment_stacks; ++i )
       {
         const size_t index = rng().range( targets_in_range.size() );
         fel_bombardment->set_target( targets_in_range[ index ] );
         fel_bombardment->execute();
       }
     }
-
-    p()->buff.fel_bombardment->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4626,6 +4642,10 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "exposed_wound", p.conduit.serrated_glaive->effectN( 1 ).trigger() )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
 
+  debuffs.fel_bombardment = make_buff( *this, "fel_bombardment_debuff", p.find_spell( 337849 ) )
+    ->set_default_value_from_effect( 1, 0.01 )
+    ->set_duration( 0.5_s );
+
   target->register_on_demise_callback( &p, [this]( player_t* ) { target_demise(); } );
 }
 
@@ -4821,7 +4841,16 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
-  buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 337313 ) );
+  // TOREMOVE: Beta vs. Prepatch Mechanics
+  if ( level() <= 50 )
+  {
+    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 337313 ) );
+  }
+  else
+  {
+    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 347462 ) )
+      ->set_default_value_from_effect( 1 );
+  }
 
   buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
   buff.vengeful_retreat_move
@@ -4899,9 +4928,9 @@ void demon_hunter_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
-  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", legendary.fel_bombardment->effectN( 1 ).trigger() )
-    ->set_trigger_spell( legendary.fel_bombardment )
-    ->set_default_value_from_effect( 1 );
+  const spell_data_t* fel_bombardment_buff = legendary.fel_bombardment->ok() ? find_spell( 337849 ) : spell_data_t::not_found();
+  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff )
+    ->set_chance( 0.2 );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6783,6 +6812,13 @@ public:
 
   void register_hotfixes() const override
   {
+    /*
+    hotfix::register_effect( "Demon Hunter", "2020-10-29", "Prepatch Unbound Chaos Damage", 728000 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.75 )
+      .verification_value( 2.3375 );
+    */
   }
 
   void combat_begin( sim_t* ) const override

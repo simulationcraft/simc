@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15726> __spelltext_data { {
+static const std::array<spelltext_data_t, 15737> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14074,6 +14074,7 @@ static const std::array<spelltext_data_t, 15726> __spelltext_data { {
   { 324522, "$@spelldesc324386", 0, "Kyrian" },
   { 324523, "$@spelldesc324440", "Absorbs $w damage.", 0 },
   { 324536, "Your damaging periodic effects erupt on all targets, causing $<damage> Shadow damage per effect.", 0, 0 },
+  { 324540, "$@spelldesc324536", 0, 0 },
   { 324631, "Form a shield of flesh and bone over $d that absorbs damage equal to $s1% of your maximum health for $324867d.\r\n\r\nChanneling near a corpse claims their essence to grow the shield, up to $s3% of your maximum health. This is most effective against powerful enemies.", "Anima is being siphoned.", "Necrolord" },
   { 324701, "Teleports you forward $A1 yds or until reaching an obstacle.", 0, "Night Fae" },
   { 324724, "An explosion of dark energy infects enemies within $325203A1 yds with Unholy Transfusion, and heals up to $s2 allies for $s1.\r\n\r\n|TInterface\\ICONS\\Spell_AnimaMaldraxxus_Debuff.blp:24|t |cFFFFFFFFUnholy Tranfusion|r\r\n$@spelldesc325203", "Attackers siphon $325118s1 health.", "Necrolord" },
@@ -14378,6 +14379,15 @@ static const std::array<spelltext_data_t, 15726> __spelltext_data { {
   { 330325, "Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 35% health.\r\n\r\nThe primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[\r\n\r\n|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]", 0, "Venthyr" },
   { 330334, "Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 35% health.\r\n\r\nThe primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[\r\n\r\nIf your foe survives, $s2% of the Rage spent is refunded.][]", 0, "Venthyr" },
   { 330338, "Place a containment device on the ground that, once armed, will activate when an enemy steps on it, banishing them for $330607d.\r\n\r\n... Unless it backfires.\r\n\r\nReduced effect against players.", 0, 0 },
+  { 330363, "Because you were affected by a crowd control effect when you activated the Inscrutable Quantum Device, it freed you from all crowd control effects.", 0, 0 },
+  { 330364, "Because you or a nearby ally were below $s2% health when you activated it, the Inscrutable Quantum Device healed the injured target for $s1.", 0, 0 },
+  { 330366, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Critical Strike.", "Critical Strike, which appears to be useful for you, increased by $w1.", 0 },
+  { 330367, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Versatility.", "Versatility, which appears to be useful for you, increased by $w1.", 0 },
+  { 330368, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Haste.", "Haste, which appears to be useful for you, increased by $w1.", 0 },
+  { 330372, "Because you were in imminent danger, the Inscrutable Quantum Device created an illusory decoy to distract your nearby enemies.", 0, 0 },
+  { 330373, "Because your foe was mortally wounded, the Inscrutable Quantum Device dealt $s1 damage to them in an attempt to execute them.", 0, 0 },
+  { 330376, "Because your nearby healer was below $s2% mana, the Inscrutable Quantum Device granted them $s1 mana.", 0, 0 },
+  { 330380, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Mastery.", "Mastery, which appears to be useful for you, increased by $w1.", 0 },
   { 330382, "$@spelldesc316958", 0, 0 },
   { 330511, "$@spelldesc329778", "Chance to critical strike increased by $w%.", 0 },
   { 330530, "Throw a kyrian Javelin at a current target inflicting Arcane damage.", 0, 0 },
@@ -14878,6 +14888,7 @@ static const std::array<spelltext_data_t, 15726> __spelltext_data { {
   { 337214, "Rampage has a |cFFFFFFFF${$s1/10}.1%|r chance to refund a charge of Raging Blow.", 0, 0 },
   { 337224, "Fireball grants |cFFFFFFFF${$s1}.1%|r Mastery when it fails to critically strike.", 0, 0 },
   { 337225, "Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $337268a1 yards for ${$337268s1*($337267d/$337267t1+1)} over $337267d.", 0, 0 },
+  { 337228, "$@spelldesc336872", "Hammer of Wrath can be used on any target.", 0 },
   { 337240, "Your Arcane Barrage has a |cFFFFFFFF${$s1/10}.1%|r chance to grant $337244s1 Arcane Charges.", 0, 0 },
   { 337241, "Life Cocoon increases healing over time received by an additional |cFFFFFFFF${$s1}.1%|r, and this effect lingers for an additional $337242d after the cocoon is removed.", 0, 0 },
   { 337242, "$@spelldesc337241", "Healing from heal over time effect is increased by $w1%.", 0 },
