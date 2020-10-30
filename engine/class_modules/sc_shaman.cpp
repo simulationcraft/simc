@@ -544,6 +544,7 @@ public:
 
     // Enhancement
     conduit_data_t chilled_to_the_core;
+    conduit_data_t focused_lightning;
   } conduit;
 
   // Legendaries
@@ -1807,7 +1808,13 @@ public:
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
-    m *= 1.0 + p()->spell.maelstrom_weapon->effectN( 2 ).percent() * maelstrom_weapon_stacks();
+    if ( auto mw_stacks = maelstrom_weapon_stacks() )
+    {
+      double stack_value = p()->spell.maelstrom_weapon->effectN( 2 ).percent() +
+        p()->conduit.focused_lightning.percent();
+
+      m *= 1.0 + stack_value * mw_stacks;
+    }
 
     return m;
   }
@@ -7420,6 +7427,7 @@ void shaman_t::init_spells()
 
   // Enhancement Conduits
   conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
+  conduit.focused_lightning = find_conduit_spell( "Focused Lightning" );
 
   // Shared Legendaries
   legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
@@ -8320,7 +8328,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
-  proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Grave" );
+  proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
   proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
