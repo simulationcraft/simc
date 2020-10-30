@@ -3799,6 +3799,7 @@ void sim_t::create_options()
   add_option( opt_bool( "shadowlands.volatile_solvent_crit", shadowlands_opts.volatile_solvent_crit ) );
   add_option( opt_bool( "shadowlands.volatile_solvent_primary", shadowlands_opts.volatile_solvent_primary ) );
   add_option( opt_bool( "shadowlands.volatile_solvent_mastery", shadowlands_opts.volatile_solvent_mastery ) );
+  add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
 }
 
 // sim_t::parse_option ======================================================

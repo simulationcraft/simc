@@ -7,6 +7,7 @@
 
 #include "sim/sc_sim.hpp"
 
+#include "sim/sc_cooldown.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
@@ -507,9 +508,131 @@ void glyph_of_assimilation( special_effect_t& effect )
   } );
 }
 
+/**Soul Igniter
+ * id=345251 driver with 500 ms cooldown
+ * id=345211 buff
+ * id=345215 damage effect and category cooldown of second action
+ * id=345214 damage coefficients and multipliers
+ *           effect #1: base damage (effect #2) + buff time bonus (effect #3)
+ *                      incorrectly listed as the self damage in the tooltip
+ *           effect #2: base damage
+ *           effect #3: max bonus damage (40%) from buff time
+ *           effect #4: multiplier based on buff elapsed duration (maybe only used for the tooltip)
+ *           effect #5: self damage per 1-second buff tick (NYI)
+ */
 void soul_igniter( special_effect_t& effect )
 {
+  struct blazing_surge_t : public proc_spell_t
+  {
+    double buff_fraction_elapsed;
+    double target_dd_bonus_min;
+    double target_dd_bonus_max;
+    double max_time_multiplier;
 
+    blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
+    {
+      split_aoe_damage = true;
+      base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
+      base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
+      max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
+    }
+
+    double action_multiplier() const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      // This may actually be added as flat damage using the coefficients,
+      // but for a trinket like this it is difficult to verify this.
+      m *= 1.0 + buff_fraction_elapsed * max_time_multiplier;
+
+      return m;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      // The extra damage for each target appears to be a 15%
+      // multiplier that is not listed in spell data anywhere.
+      // TODO: this has been tested on 6 targets, verify that
+      // it does not continue scaling higher at 7 targets.
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, 5u );
+
+      return m;
+    }
+  };
+
+  struct soul_ignition_t : public proc_spell_t
+  {
+    buff_t* buff;
+    const spell_data_t* second_action;
+
+    soul_ignition_t( const special_effect_t& e ) :
+    proc_spell_t( "soul_ignition", e.player, e.driver() ),
+    second_action( e.player->find_spell( 345215 ) ) {}
+
+    void init_finished() override
+    {
+      buff = buff_t::find( player, "soul_ignition" );
+    }
+
+    bool ready() override
+    {
+      if ( buff->check() && sim->shadowlands_opts.disable_soul_igniter_second_use )
+        return false;
+
+      return proc_spell_t::ready();
+    }
+
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Need to trigger the category cooldown that this trinket does not have on other trinkets.
+      auto cd_group = player->get_cooldown( "item_cd_" + util::to_string( second_action->category() ) );
+      if ( cd_group )
+        cd_group->start( second_action->category_cooldown() );
+
+      if ( buff->check() )
+        buff->expire();
+      else
+        buff->trigger();
+    }
+  };
+
+  struct soul_ignition_buff_t : public buff_t
+  {
+    special_effect_t& effect;
+    blazing_surge_t* damage_action;
+
+    soul_ignition_buff_t( special_effect_t& e, action_t* d ) :
+      buff_t( e.player, "soul_ignition", e.player->find_spell( 345211 ) ),
+      effect( e ),
+      damage_action( debug_cast<blazing_surge_t*>( d ) )
+    {}
+
+    void expire_override( int stacks, timespan_t remaining_duration )
+    {
+      buff_t::expire_override( stacks, remaining_duration );
+
+      damage_action->buff_fraction_elapsed = ( buff_duration() - remaining_duration ) / buff_duration();
+      damage_action->set_target( source->target );
+      damage_action->execute();
+      // the 60 second cooldown associated with the damage effect trigger
+      // does not appear in spell data anywhere and is just inthe tooltip.
+      effect.execute_action->cooldown->start( effect.execute_action, 60_s );
+      auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
+      if ( cd_group )
+        cd_group->start( effect.cooldown_group_duration() );
+    }
+  };
+
+  auto damage_action = create_proc_action<blazing_surge_t>( "blazing_surge", effect );
+  effect.execute_action = new soul_ignition_t( effect );
+  auto buff = buff_t::find( effect.player, "soul_ignition" );
+  if ( !buff )
+    buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
 void skulkers_wing( special_effect_t& effect )

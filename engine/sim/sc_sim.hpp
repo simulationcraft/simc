@@ -359,6 +359,10 @@ struct sim_t : private sc_thread_t
     bool volatile_solvent_crit = false;
     bool volatile_solvent_primary = false;
     bool volatile_solvent_mastery = false;
+    // Prevents Soul Ignite from being used a second time to trigger the
+    // AoE early. This results in the highest possible damage and the
+    // player can alternatively trigger it early by canceling the buff.
+    bool disable_soul_igniter_second_use = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs
@@ -638,7 +642,7 @@ struct sim_t : private sc_thread_t
 
     set_error( fmt::format( format, std::forward<Args>(args)... ) );
   }
-  
+
   void abort();
   void combat();
   void combat_begin();
