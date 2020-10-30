@@ -975,7 +975,7 @@ public:
     // Defensive/Utility
     // item_runeforge_t deaths_embrace; // 6947
     // item_runeforge_t grip_of_the_everlasting; // 6948
-    // item_runeforge_t gorefiends_domination; // 6943
+    item_runeforge_t gorefiends_domination; // 6943
     // item_runeforge_t vampiric_aura; // 6942
   } legendary;
 
@@ -2468,6 +2468,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     int n_targets() const override
     { return p() -> o() -> in_death_and_decay() ? aoe + as<int>( p() -> o() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
+
+    void execute( ) override
+    {
+      drw_attack_t::execute();
+      if ( p() -> o() -> legendary.gorefiends_domination.ok() )
+      {
+        p() -> o() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( p() -> o() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
+      }
+    }
 
     void impact( action_state_t* s ) override
     {
@@ -5561,6 +5570,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
     }
 
+    if ( p() -> legendary.gorefiends_domination.ok() )
+    {
+      p() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( p() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
+    }
+
     // Deep cuts is applied to the primary target
     if ( p() -> azerite.deep_cuts.enabled() && result_is_hit( execute_state -> result ) )
     {
@@ -7410,11 +7424,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
-      // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
       if ( talent.red_thirst -> ok() )
       {
-        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() ) *
+        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() / 100 ) *
           actual_amount / talent.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
@@ -8706,7 +8718,7 @@ void death_knight_t::init_spells()
   // Defensive/Utility
   // legendary.deaths_embrace = find_runeforge_legendary( "Death's Embrace" );
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
-  // legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
+  legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
   // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
 
 }
