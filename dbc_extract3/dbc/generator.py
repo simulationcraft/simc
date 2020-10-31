@@ -1495,6 +1495,7 @@ class SpellDataGenerator(DataGenerator):
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
+          ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
         ),
 
         # Mage:

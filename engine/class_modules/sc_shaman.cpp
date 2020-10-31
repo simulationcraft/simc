@@ -27,9 +27,6 @@
 //   - Elysian Dirge (Kyrian)
 //
 // Elemental
-// - Spec Legendaries
-//   - Elemental Equilibrium
-//     - There are a number of spell-specific bugs here about which buffs get applied
 // - Spec Conduits
 //   - Earth and Sky
 //     - Still waiting on them to reimplement this on beta for post-Fulmination
@@ -421,6 +418,12 @@ public:
     buff_t* primal_lava_actuators;
     buff_t* witch_doctors_wolf_bones;
 
+    buff_t* elemental_equilibrium;
+    buff_t* elemental_equilibrium_debuff;
+    buff_t* elemental_equilibrium_fire;
+    buff_t* elemental_equilibrium_frost;
+    buff_t* elemental_equilibrium_nature;
+
     // Elemental, Restoration
     buff_t* lava_surge;
 
@@ -563,7 +566,7 @@ public:
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
-    item_runeforge_t elemental_equilibrium;  // NYI
+    item_runeforge_t elemental_equilibrium;
     item_runeforge_t echoes_of_great_sundering;
     item_runeforge_t windspeakers_lava_resurgence;
 
@@ -840,6 +843,7 @@ public:
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
+  void trigger_elemental_equilibrium( const action_state_t* state );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
@@ -1366,6 +1370,7 @@ public:
 
     p()->trigger_stormbringer( state );
     p()->trigger_ancestral_resonance( state );
+    p()->trigger_elemental_equilibrium( state );
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
@@ -7886,6 +7891,59 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
   }
 }
 
+void shaman_t::trigger_elemental_equilibrium( const action_state_t* state )
+{
+  if ( !legendary.elemental_equilibrium.ok() )
+  {
+    return;
+  }
+
+  if ( state->result_type != result_amount_type::DMG_DIRECT || state->result_amount <= 0 )
+  {
+    return;
+  }
+
+  auto school = state->action->get_school();
+
+  if ( !dbc::is_school( school, SCHOOL_FIRE ) &&
+       !dbc::is_school( school, SCHOOL_NATURE ) &&
+       !dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    return;
+  }
+
+  if ( buff.elemental_equilibrium_debuff->check() )
+  {
+    return;
+  }
+
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    buff.elemental_equilibrium_fire->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    buff.elemental_equilibrium_frost->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    buff.elemental_equilibrium_nature->trigger();
+  }
+
+  if ( buff.elemental_equilibrium_fire->up() &&
+       buff.elemental_equilibrium_frost->up() &&
+       buff.elemental_equilibrium_nature->up() )
+  {
+    buff.elemental_equilibrium->trigger();
+    buff.elemental_equilibrium_debuff->trigger();
+    buff.elemental_equilibrium_fire->expire();
+    buff.elemental_equilibrium_frost->expire();
+    buff.elemental_equilibrium_nature->expire();
+  }
+}
+
 void shaman_t::trigger_primal_primer( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
@@ -8405,6 +8463,18 @@ void shaman_t::create_buffs()
   buff.witch_doctors_wolf_bones = make_buff<buff_t>( this, "witch_doctors_wolf_bones",
       legendary.witch_doctors_wolf_bones )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
+  buff.elemental_equilibrium = make_buff<buff_t>( this, "elemental_equilibrium",
+      find_spell( 347348 ) )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.elemental_equilibrium_debuff = make_buff<buff_t>( this, "elemental_equilibrium_debuff",
+      find_spell( 347349 ) );
+  buff.elemental_equilibrium_frost = make_buff<buff_t>( this, "elemental_equilibrium_frost",
+      find_spell( 336731 ) );
+  buff.elemental_equilibrium_nature = make_buff<buff_t>( this, "elemental_equilibrium_nature",
+      find_spell( 336732 ) );
+  buff.elemental_equilibrium_fire = make_buff<buff_t>( this, "elemental_equilibrium_fire",
+      find_spell( 336733 ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -9148,6 +9218,8 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  m *= 1.0 + buff.elemental_equilibrium->stack_value();
+
   return m;
 }
 
@@ -9179,6 +9251,8 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   // Enhancement
   m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
+
+  m *= 1.0 + buff.elemental_equilibrium->stack_value();
 
   return m;
 }
