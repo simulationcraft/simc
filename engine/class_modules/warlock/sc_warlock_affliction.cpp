@@ -601,7 +601,6 @@ struct malefic_rapture_t : public affliction_spell_t
         aoe = 1;
         background = true;
         spell_power_mod.direct = parent_data.effectN( 1 ).sp_coeff();
-        // base_costs[ RESOURCE_SOUL_SHARD ] = 0;
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
 
         p->spells.malefic_rapture_aoe = this;
