@@ -444,6 +444,7 @@ public:
     conduit_data_t punish_the_guilty;
     conduit_data_t resolute_defender;
     conduit_data_t shielding_words;
+    conduit_data_t golden_path;
   } conduit;
 
   struct convenants_t {

@@ -240,10 +240,24 @@ struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 
 // Consecration =============================================================
 
+
+struct golden_path_t : public paladin_heal_t
+{
+  golden_path_t( paladin_t* p ) :
+    paladin_heal_t( "golden_path", p, p -> find_spell( 339119 ) )
+  {
+    background = true;
+    base_multiplier *= p -> conduit.golden_path.percent();
+  }
+};
+
 struct consecration_tick_t : public paladin_spell_t
 {
+  golden_path_t* heal_tick;
+
   consecration_tick_t( paladin_t* p ) :
-    paladin_spell_t( "consecration_tick", p, p -> find_spell( 81297 ) )
+    paladin_spell_t( "consecration_tick", p, p -> find_spell( 81297 ) ),
+    heal_tick( new golden_path_t( p ) )
   {
     aoe = -1;
     dual = true;
@@ -251,6 +265,13 @@ struct consecration_tick_t : public paladin_spell_t
     background = true;
     may_crit = true;
     ground_aoe = true;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() -> conduit.golden_path -> ok() & p() -> standing_in_consecration() )
+      heal_tick -> execute();
   }
 };
 
@@ -1961,6 +1982,7 @@ void paladin_t::init_spells()
   conduit.punish_the_guilty = find_conduit_spell( "Punish the Guilty" );
   conduit.resolute_defender = find_conduit_spell( "Resolute Defender");
   conduit.shielding_words = find_conduit_spell( "Shielding Words" );
+  conduit.golden_path = find_conduit_spell( "Golden Path" );
 }
 
 // paladin_t::primary_role ==================================================
