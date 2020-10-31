@@ -543,13 +543,44 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 struct wake_of_ashes_t : public paladin_spell_t
 {
+  struct truths_wake_t : public paladin_spell_t
+  {
+    truths_wake_t( paladin_t* p ) :
+      paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+      base_multiplier *= p -> conduit.truths_wake.percent();
+    }
+  };
+
+  truths_wake_t* truths_wake;
+
   wake_of_ashes_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) )
+    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) ),
+    truths_wake( nullptr )
   {
     parse_options( options_str );
 
     may_crit = true;
     aoe = -1;
+
+    if ( p -> conduit.truths_wake -> ok() )
+    {
+      truths_wake = new truths_wake_t( p );
+      add_child( truths_wake );
+    }
+  }
+
+  void impact( action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
+    {
+      truths_wake -> set_target( s -> target );
+      truths_wake -> execute();
+    }
   }
 };
 
