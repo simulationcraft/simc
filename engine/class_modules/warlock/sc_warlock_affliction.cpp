@@ -592,14 +592,16 @@ struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
+      const spell_data_t parent_data;
 
-      malefic_rapture_damage_instance_t(warlock_t *p) : 
-          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324536 ) )
+      malefic_rapture_damage_instance_t( warlock_t *p, const spell_data_t pd ) : 
+          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) ),
+          parent_data( pd )
       {
         aoe = 1;
         background = true;
-        spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-        base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+        spell_power_mod.direct = parent_data.effectN( 1 ).sp_coeff();
+        // base_costs[ RESOURCE_SOUL_SHARD ] = 0;
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
 
         p->spells.malefic_rapture_aoe = this;
@@ -668,11 +670,12 @@ struct malefic_rapture_t : public affliction_spell_t
     malefic_rapture_damage_instance_t* damage_instance;
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) ), 
-        damage_instance( new malefic_rapture_damage_instance_t(p) )
+      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
     {
       parse_options( options_str );
       aoe = -1;
+
+      damage_instance = new malefic_rapture_damage_instance_t( p, data() );
 
       impact_action = damage_instance;
       add_child( impact_action );
