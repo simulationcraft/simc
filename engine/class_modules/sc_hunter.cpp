@@ -1374,7 +1374,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> apply_affecting_aura( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).trigger() );
+        -> modify_duration( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).time_value() );
 
     buffs.rylakstalkers_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
