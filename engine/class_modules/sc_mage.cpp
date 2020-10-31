@@ -923,10 +923,11 @@ namespace pets {
 
 struct mage_pet_t : public pet_t
 {
-  mage_pet_t( sim_t* sim, mage_t* owner, util::string_view pet_name,
-              bool guardian = false, bool dynamic = false ) :
+  mage_pet_t( sim_t* sim, mage_t* owner, util::string_view pet_name, bool guardian = false, bool dynamic = false ) :
     pet_t( sim, owner, pet_name, guardian, dynamic )
-  { }
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
 
   const mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
