@@ -440,7 +440,7 @@ public:
     conduit_data_t ringing_clarity;
     conduit_data_t vengeful_shock;
     conduit_data_t focused_light;
-    conduit_data_t lights_reach;
+    conduit_data_t expurgation;
     conduit_data_t templars_vindication;
     conduit_data_t the_long_summer;
     conduit_data_t truths_wake;

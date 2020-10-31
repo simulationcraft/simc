@@ -173,9 +173,9 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct expurgation_t : public paladin_spell_t
+  struct azerite_expurgation_t : public paladin_spell_t
   {
-    expurgation_t( paladin_t* p ) :
+    azerite_expurgation_t( paladin_t* p ) :
       paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
     {
       base_td = p -> azerite.expurgation.value();
@@ -184,15 +184,33 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
+  struct expurgation_t : public paladin_spell_t
+  {
+    expurgation_t( paladin_t* p ):
+      paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+    }
+  };
+
+  azerite_expurgation_t* azerite_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, const std::string& options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
+    azerite_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
 
     if ( p -> azerite.expurgation.ok() )
+    {
+      azerite_expurgation = new azerite_expurgation_t( p );
+      add_child( azerite_expurgation );
+    }
+
+    if ( p -> conduit.expurgation -> ok() )
     {
       expurgation = new expurgation_t( p );
       add_child( expurgation );
@@ -203,8 +221,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
-
-    base_multiplier *= 1.0 + p -> conduit.lights_reach.percent();
   }
 
   double action_multiplier() const override
@@ -226,10 +242,20 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( state );
 
-    if ( p() -> azerite.expurgation.ok() && state -> result == RESULT_CRIT )
+    if ( state -> result == RESULT_CRIT )
     {
-      expurgation -> set_target( state -> target );
-      expurgation -> execute();
+      if ( p() -> azerite.expurgation.ok() )
+      {
+        azerite_expurgation -> set_target( state -> target );
+        azerite_expurgation -> execute();
+      }
+
+      if ( p() -> conduit.expurgation -> ok() )
+      {
+        expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
+        expurgation -> set_target( state -> target );
+        expurgation -> execute();
+      }
     }
   }
 };
