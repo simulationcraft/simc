@@ -31,7 +31,7 @@ def->add_action( "run_action_list,name=stealth,if=buff.shadowmeld.up|buff.prowl.
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)" );
 def->add_action( "run_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up", "Multi-gcd stealth" );
-def->add_action( "pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))>=(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0", "The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)" );
+def->add_action( "pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0", "The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)" );
 def->add_action( "run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&(buff.bloodtalons.down|active_bt_triggers=2)" );
 def->add_action( "rake,target_if=refreshable|persistent_multiplier>dot.rake.pmultiplier" );
 def->add_action( "feral_frenzy,if=combo_points=0" );
