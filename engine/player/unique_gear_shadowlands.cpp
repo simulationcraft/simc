@@ -510,7 +510,7 @@ void glyph_of_assimilation( special_effect_t& effect )
 
 /**Soul Igniter
  * id=345251 driver with 500 ms cooldown
- * id=345211 buff
+ * id=345211 buff and max scaling targets
  * id=345215 damage effect and category cooldown of second action
  * id=345214 damage coefficients and multipliers
  *           effect #1: base damage (effect #2) + buff time bonus (effect #3)
@@ -526,6 +526,7 @@ void soul_igniter( special_effect_t& effect )
   {
     double buff_fraction_elapsed;
     double max_time_multiplier;
+    unsigned max_scaling_targets;
 
     blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
     {
@@ -533,6 +534,7 @@ void soul_igniter( special_effect_t& effect )
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
     }
 
     double action_multiplier() const override
@@ -554,7 +556,7 @@ void soul_igniter( special_effect_t& effect )
       // multiplier that is not listed in spell data anywhere.
       // TODO: this has been tested on 6 targets, verify that
       // it does not continue scaling higher at 7 targets.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, 5u );
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
 
       return m;
     }
@@ -566,8 +568,9 @@ void soul_igniter( special_effect_t& effect )
     const spell_data_t* second_action;
 
     soul_ignition_t( const special_effect_t& e ) :
-    proc_spell_t( "soul_ignition", e.player, e.driver() ),
-    second_action( e.player->find_spell( 345215 ) ) {}
+      proc_spell_t( "soul_ignition", e.player, e.driver() ),
+      second_action( e.player->find_spell( 345215 ) )
+    {}
 
     void init_finished() override
     {
@@ -581,7 +584,6 @@ void soul_igniter( special_effect_t& effect )
 
       return proc_spell_t::ready();
     }
-
 
     void execute() override
     {
@@ -618,7 +620,7 @@ void soul_igniter( special_effect_t& effect )
       damage_action->set_target( source->target );
       damage_action->execute();
       // the 60 second cooldown associated with the damage effect trigger
-      // does not appear in spell data anywhere and is just inthe tooltip.
+      // does not appear in spell data anywhere and is just in the tooltip.
       effect.execute_action->cooldown->start( effect.execute_action, 60_s );
       auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
       if ( cd_group )
