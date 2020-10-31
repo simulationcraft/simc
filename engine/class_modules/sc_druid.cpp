@@ -6496,6 +6496,11 @@ struct sunfire_t : public druid_spell_t
     else
       energize_type = action_energize::NONE;
 
+    if ( p->specialization() == DRUID_FERAL || p->specialization() == DRUID_GUARDIAN )
+    {
+      form_mask = MOONKIN_FORM;  // not in spell data for affinity version (id=197630)
+      base_costs[ RESOURCE_MANA ] = 0.0;   // so we don't need to enable mana regen
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -10686,6 +10691,7 @@ const affinity_spells_t affinity_spells[] =
     { "Starfire", 197628, DRUID_BALANCE },
     { "Starsurge", 197626, DRUID_BALANCE },
     { "Wrath", 5176, SPEC_NONE },
+    { "Sunfire", 197630, DRUID_BALANCE },
     { "Frenzied Regeneration", 22842, DRUID_GUARDIAN },
     { "Thrash", 77758, DRUID_GUARDIAN },
     { "Rake", 1822, DRUID_FERAL },
