@@ -5076,6 +5076,8 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     // is set to the impact action from epidemic_damage_aoe_t
     // Number of targets for hit for this spell is controlled by epidemic_t spell_data
     aoe = aoe - 1;
+    // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
 };
 
