@@ -7424,8 +7424,7 @@ void mage_t::update_from_the_ashes()
   state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * cooldowns.phoenix_flames->charges_fractional();
   invalidate_cache( CACHE_MASTERY );
 
-  if ( sim->debug )
-    sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, cache.mastery() );
+  sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, state.from_the_ashes_mastery );
 }
 
 action_t* mage_t::get_icicle()
