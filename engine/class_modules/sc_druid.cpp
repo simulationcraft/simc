@@ -4429,8 +4429,11 @@ struct primal_wrath_t : public cat_attack_t
     special = true;
     aoe     = -1;
 
-    rip = p->get_secondary_action<rip_t>( "Rip", p->find_spell( 1079 ), "" );
+    rip = p->get_secondary_action<rip_t>( "rip", p->find_spell( 1079 ), "" );
     rip->stats = stats;
+
+    // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
+    snapshots.bloodtalons = true;
 
     if ( p->legendary.circle_of_life_and_death->ok() )
       base_dur *= 1.0 + p->query_aura_effect( p->legendary.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, s )->percent();
@@ -4465,8 +4468,6 @@ struct primal_wrath_t : public cat_attack_t
     auto b_state    = rip->get_state();
     b_state->target = s->target;
     rip->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
-    // Copy persistent multipliers from the direct attack.
-    b_state->persistent_multiplier = s->persistent_multiplier;
 
     auto target_rip = td( s->target )->dots.rip;
 
