@@ -1137,7 +1137,7 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
+    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ / Magistrate's
     int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
 
     if ( p -> azerite.relentless_inquisitor.ok() )
@@ -1198,9 +1198,15 @@ struct holy_power_consumer_t : public Base
       }
     }
 
+    // We should only have should_continue false in the event that we're a divine storm
+    // assert-check here for safety
+    assert( is_divine_storm || should_continue );
+
     // WARNING: This is correct for prot (as of 2020-09-10), ret may work
     // differently so be wary. Shining light and magistrate get consumed at the same time.
-    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() )
+    // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
+    // with FoJ.
+    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
       p -> buffs.the_magistrates_judgment -> expire();
 
     // Divine Purpose isn't consumed on DS if EP was consumed
