@@ -27,7 +27,6 @@
 //   - Elysian Dirge (Kyrian)
 //
 // Elemental
-// - Implement Static Discharge
 // - Spec Legendaries
 //   - Elemental Equilibrium
 //     - There are a number of spell-specific bugs here about which buffs get applied
@@ -45,9 +44,6 @@
 //     - single_target, cleave, and aoe APLs
 //
 // Enhancement
-// - Lightning Shield? Maelstrom gen? Do we proc for sims?
-// - Windfury Totem - Does this need to be implemented as a raid buff?
-// - Spec Legendaries
 // - Review target caps
 
 // Resto DPS?
@@ -423,6 +419,7 @@ public:
     buff_t* doom_winds_debuff;
     buff_t* legacy_of_the_frost_witch;
     buff_t* primal_lava_actuators;
+    buff_t* witch_doctors_wolf_bones;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -574,7 +571,7 @@ public:
     item_runeforge_t doom_winds;
     item_runeforge_t legacy_of_the_frost_witch;
     item_runeforge_t primal_lava_actuators;
-    item_runeforge_t witch_doctors_wolf_bones;   // NYI
+    item_runeforge_t witch_doctors_wolf_bones;
   } legendary;
 
   // Gains
@@ -1010,7 +1007,15 @@ struct crackling_surge_buff_t : public buff_t
 struct maelstrom_weapon_buff_t : public buff_t
 {
   maelstrom_weapon_buff_t( shaman_t* p ) : buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) )
-  { }
+  {
+    set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ ) {
+      if ( old_ <= new_ && p->buff.witch_doctors_wolf_bones->check() )
+      {
+        p->cooldown.feral_spirits->adjust(
+            -p->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
+      }
+    } );
+  }
 };
 
 struct gathering_storms_buff_t : public buff_t
@@ -8112,6 +8117,7 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   }
 
   double proc_chance = spec.maelstrom_weapon->proc_chance();
+  proc_chance += buff.witch_doctors_wolf_bones->stack_value();
 
   if ( rng().roll( proc_chance ) )
   {
@@ -8396,6 +8402,9 @@ void shaman_t::create_buffs()
   buff.primal_lava_actuators = make_buff<buff_t>( this, "primal_lava_actuators",
       find_spell( 335896 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buff.witch_doctors_wolf_bones = make_buff<buff_t>( this, "witch_doctors_wolf_bones",
+      legendary.witch_doctors_wolf_bones )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
 }
 
 // shaman_t::init_gains =====================================================
@@ -9225,6 +9234,8 @@ void shaman_t::combat_begin()
     buff.roiling_storm_buff_driver->trigger();
     buff.stormbringer->trigger( buff.stormbringer->max_stack() );
   }
+
+  buff.witch_doctors_wolf_bones->trigger();
 }
 
 // shaman_t::reset ==========================================================
