@@ -1081,17 +1081,10 @@ namespace buffs {
 
 struct touch_of_the_magi_t final : public buff_t
 {
-  double accumulated_damage;
-
   touch_of_the_magi_t( mage_td_t* td ) :
-    buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) ),
-    accumulated_damage()
-  { }
-
-  void reset() override
+    buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
-    buff_t::reset();
-    accumulated_damage = 0.0;
+    set_default_value( 0.0 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1107,20 +1100,8 @@ struct touch_of_the_magi_t final : public buff_t
     // Verify whether we need a floor operation here to trim those values down to integers,
     // which sometimes happens when Blizzard uses floating point numbers like this.
     damage_fraction += p->conduits.magis_brand.percent();
-    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * accumulated_damage;
+    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * current_value;
     explosion->execute();
-
-    accumulated_damage = 0.0;
-  }
-
-  void accumulate_damage( const action_state_t* s )
-  {
-    sim->print_debug(
-      "{}'s {} accumulates {} additional damage: {} -> {}",
-      player->name(), name(), s->result_total,
-      accumulated_damage, accumulated_damage + s->result_total );
-
-    accumulated_damage += s->result_total;
   }
 };
 
@@ -1821,10 +1802,10 @@ public:
         }
       }
 
-      auto totm = debug_cast<buffs::touch_of_the_magi_t*>( td->debuffs.touch_of_the_magi );
+      auto totm = td->debuffs.touch_of_the_magi;
       if ( totm->check() )
       {
-        totm->accumulate_damage( s );
+        totm->current_value += s->result_total;
 
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
