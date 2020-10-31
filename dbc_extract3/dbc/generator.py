@@ -1293,6 +1293,8 @@ class SpellDataGenerator(DataGenerator):
             ( 340147, 0 ),          # Royal Decree
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
+            ( 340203, 0 ),          # Hallowed Discernment damage
+            ( 340214, 0 ),          # Hallowed Discernment heal
         ),
 
         # Hunter:

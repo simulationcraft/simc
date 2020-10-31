@@ -1060,10 +1060,22 @@ struct divine_toll_t : public paladin_spell_t
 
 };
 
+struct hallowed_discernment_tick_t : public paladin_spell_t
+{
+  // This should be using 340203 but I don't have its spell data.
+  hallowed_discernment_tick_t( paladin_t* p ) :
+    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 317221 ) )
+    {
+      base_multiplier *= p -> conduit.hallowed_discernment.percent();
+      background = true;
+      dual = true;
+    }
+};
+
 // TODO: fix AoE scaling once the formula is found, implement healing as well
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
-  ashen_hallow_tick_t* hallowed_discernment_tick;
+  hallowed_discernment_tick_t* hallowed_discernment_tick;
   ashen_hallow_tick_t( paladin_t* p ) :
     paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
   {
@@ -1074,19 +1086,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     may_crit = true;
     ground_aoe = true;
     if ( p -> conduit.hallowed_discernment -> ok () )
-      hallowed_discernment_tick = new ashen_hallow_tick_t( p, true );
-  }
-
-  ashen_hallow_tick_t( paladin_t* p, bool child ) :
-    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
-  {
-    aoe = 1;
-    dual = true;
-    direct_tick = true;
-    background = true;
-    may_crit = true;
-    // ground_aoe = true;
-    base_multiplier *= p -> conduit.hallowed_discernment.percent();
+      hallowed_discernment_tick = new hallowed_discernment_tick_t( p );
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -1116,8 +1116,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
 
   void execute() override
   {
-    // using aoe == -1 to check if it's the initial tick or the hallowed discernment child
-    if ( aoe == -1 && p() -> conduit.hallowed_discernment -> ok() )
+    if ( p() -> conduit.hallowed_discernment -> ok() )
     {
       std::vector<player_t*> targets = target_list();
       bool use_actual_hp = std::all_of( targets.begin(), targets.end(),
@@ -1132,6 +1131,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
         }
       );
       hallowed_discernment_tick -> set_target( lowest_hp_target );
+      // Damage is calculated independently of Ashen Hallow.
       hallowed_discernment_tick -> execute();
     }
 
@@ -1155,6 +1155,7 @@ struct ashen_hallow_t : public paladin_spell_t
     may_miss = false;
 
     add_child( damage_tick );
+    add_child( new hallowed_discernment_tick_t( p ) );
   }
 
   void execute() override
