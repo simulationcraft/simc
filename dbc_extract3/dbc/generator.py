@@ -709,6 +709,10 @@ class ItemDataGenerator(DataGenerator):
             elif item.quality == 7:
                 filter_ilevel = False
 
+            # Include all Armor and Weapons
+            if classdata.classs in [2, 4]:
+                filter_ilevel = False
+
             # Item-level based non-equippable items
             if filter_ilevel and item.inv_type == 0:
                 continue
@@ -806,7 +810,7 @@ class ItemDataGenerator(DataGenerator):
             self.format_str('item_stats'), len(items_stats_index)))
         for stats in items_stats_index.items():
             self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
-        self._out.write('};\n')
+        self._out.write('};\n\n')
 
         def item_stats_fields(id):
             stats = items_stats_index.get(id)
@@ -814,38 +818,49 @@ class ItemDataGenerator(DataGenerator):
                 return [ '0', '0' ]
             return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
 
-        self.output_header(
-                header = 'Items, ilevel {}-{}'.format(self._options.min_ilevel, self._options.max_ilevel),
-                type = 'dbc_item_data_t',
-                array = 'item',
-                length = len(data))
+        self._out.write('// Items, ilevel {}-{}, wow build {}\n\n'.format(
+                self._options.min_ilevel, self._options.max_ilevel, self._options.build))
 
-        for item in data:
-            item2 = self.db('Item')[item.id]
+        CHUNK_SIZE = 1<<14
+        chunk_index = 0
+        for i in range(0, len(data), CHUNK_SIZE):
+            chunk = data[i: i + CHUNK_SIZE]
+            self._out.write('static const std::array<dbc_item_data_t, {}> __{}_data_chunk{} {{ {{\n'.format(
+                len(chunk), self.format_str('item'), chunk_index))
 
-            fields = item.field('name', 'id', 'flags_1', 'flags_2')
+            for item in chunk:
+                item2 = self.db('Item')[item.id]
 
-            flag_types = 0x00
+                fields = item.field('name', 'id', 'flags_1', 'flags_2')
 
-            for entry in item.child_refs('JournalEncounterItem'):
-                if entry.flags_1 == 0x10:
-                    flag_types |= self._type_flags['Raid Finder']
-                elif entry.flags_1 == 0xC:
-                    flag_types |= self._type_flags['Heroic']
+                flag_types = 0x00
 
-            flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
+                for entry in item.child_refs('JournalEncounterItem'):
+                    if entry.flags_1 == 0x10:
+                        flag_types |= self._type_flags['Raid Finder']
+                    elif entry.flags_1 == 0xC:
+                        flag_types |= self._type_flags['Heroic']
 
-            fields += [ '%#.2x' % flag_types ]
-            fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
-            fields += item2.field('classs', 'subclass')
-            fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
-            fields += item_stats_fields(item.id)
-            fields += item.field('class_mask', 'race_mask')
-            fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
+                flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
 
-            self.output_record(fields)
+                fields += [ '%#.2x' % flag_types ]
+                fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
+                fields += item2.field('classs', 'subclass')
+                fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
+                fields += item_stats_fields(item.id)
+                fields += item.field('class_mask', 'race_mask')
+                fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
+                fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
+                self.output_record(fields)
+
+            self._out.write('} };\n')
+            chunk_index += 1
+
+        self._out.write('\n')
+        self._out.write('static const std::array<util::span<const dbc_item_data_t>, {}> __{}_data {{ {{\n'.format(
+                chunk_index, self.format_str('item')))
+        self._out.write(''.join('  __{}_data_chunk{},\n'.format(self.format_str('item'), i) for i in range(chunk_index)))
         self.output_footer()
 
     def generate_json(self, data = None):
@@ -983,7 +998,6 @@ class SpellDataGenerator(DataGenerator):
          52586,  68043,  68044,     # Gurthalak, Voice of the Deeps - LFR, N, H
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
          84745,  84746,             # Shallow Insight, Moderate Insight
-         138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
          137323, 137247,            # Healer legendary meta
          137331, 137326,
@@ -1001,7 +1015,6 @@ class SpellDataGenerator(DataGenerator):
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
-         179154, 179155, 179156, 179157, # T17 LFR cloth dps set bonus nukes
          183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
@@ -1027,7 +1040,6 @@ class SpellDataGenerator(DataGenerator):
          222050,                   # Wriggling Sinew trinket
          221865,                   # Twisting Wind trinket
          221804, 221805,           # Ravaged Seed Pod trinket
-         207694,                   # Symbiote Strike for Cinidaria, the Symbiote
          201639, 201640, 201641,   # 7.0 Lavish Suramar Feast food buffs
          201635, 201636, 201637,   # 7.0 Hearty Feast food buffs
          215047,                   # Terrorbound Nexus trinket
@@ -1040,8 +1052,6 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-         # 7.1.5 Archimonde's Hatred Reborn damage spell
-         235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
          # 7.3.0 Netherlight stuff
@@ -1226,8 +1236,10 @@ class SpellDataGenerator(DataGenerator):
          311484, 311485, 311486, 311487, 311488, 311489,
          # Soul Igniter Trinket
          345215,
-         # Sunblod Amethyst Trinket
+         # Sunblood Amethyst Trinket
          343395, 343396,
+         # Inscrutable Quantum Device Trinket
+         330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
@@ -1239,7 +1251,6 @@ class SpellDataGenerator(DataGenerator):
         (
             ( 58385,  0 ),          # Glyph of Hamstring
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
-            ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
             ( 209700, 0 ),          # Void Cleave (arms artifact gold medal)
             ( 218877, 0 ),          # Gaze of the Val'kyr
@@ -1260,7 +1271,6 @@ class SpellDataGenerator(DataGenerator):
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
-            ( 144581, 0 ),          # Blessing of the Guardians (prot T16 2-piece bonus)
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
             ( 114852, 0, False ),   # Holy Prism false positives for activated
@@ -1268,7 +1278,6 @@ class SpellDataGenerator(DataGenerator):
             ( 65148, 0, False ),    # Sacred Shield absorb tick
             ( 136494, 0, False ),   # World of Glory false positive for activated
             ( 113075, 0, False ),   # Barkskin (from Symbiosis)
-            ( 144569, 0, False ),   # Bastion of Power (prot T16 4-piece bonus)
             ( 130552, 0, True ),    # Harsh Word
             ( 186876, 0 ),          # echoed Divine Storm (speculative)
             ( 186805, 0 ),          # echoed Templar's Verdict (speculative)
@@ -1280,7 +1289,6 @@ class SpellDataGenerator(DataGenerator):
             ( 238996, 0 ),          # Righteous Verdict
             ( 242981, 0 ),          # Blessing of the Ashbringer
             ( 211561, 0 ),          # Justice Gaze
-            ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
@@ -1293,6 +1301,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340147, 0 ),          # Royal Decree
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
+            ( 337228, 0 ),          # Final verdict buff
             ( 340203, 0 ),          # Hallowed Discernment damage
             ( 340214, 0 ),          # Hallowed Discernment heal
         ),
@@ -1332,14 +1341,12 @@ class SpellDataGenerator(DataGenerator):
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
             ( 86392, 0, False ),    # Main Gauche false positive for activatable
-            ( 145211, 0 ),          # Subtlety Tier16 4PC proc
             ( 168908, 0 ),          # Sinister Calling: Hemorrhage
             ( 168952, 0 ),          # Sinister Calling: Crimson Tempest
             ( 168971, 0 ),          # Sinister Calling: Garrote
             ( 168963, 0 ),          # Sinister Calling: Rupture
             ( 115189, 0 ),          # Anticipation buff
             ( 157562, 0 ),          # Crimson Poison (Enhanced Crimson Tempest perk)
-            ( 186183, 0 ),          # Assassination T18 2PC Nature Damage component
             ( 157957, 0 ),          # Shadow Reflection Dispatch
             ( 173458, 0 ),          # Shadow Reflection Backstab
             ( 195627, 0 ),          # Free Pistol Shot proc for Saber Slash
@@ -1350,7 +1357,6 @@ class SpellDataGenerator(DataGenerator):
             ( 192380, 0 ),          # Poisoned Knives damage component
             ( 202848, 0 ),          # Blunderbuss driver
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
-            ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
             ( 279043, 0 ),          # Shadow Blades damaging spell
             ( 121153, 0 ),          # Blindside proc buff
             ( 278981, 0 ),          # The First Dance, Azerite trait aura
@@ -1433,7 +1439,6 @@ class SpellDataGenerator(DataGenerator):
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
-          ( 253590, 0 ),    # T21 4P frost damage component
           ( 274373, 0 ),    # Festermight azerite trait
           ( 199373, 5 ),    # Army ghoul claw spell
           ( 275918, 0 ),    # Echoing Howl azerite trait
@@ -1464,8 +1469,6 @@ class SpellDataGenerator(DataGenerator):
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
-          ( 170512, 0 ), ( 170523, 0 ),                 # Feral Spirit windfury (t17 enhance 4pc set bonus)
-          ( 189078, 0 ),                                # Gathering Vortex (Elemental t18 4pc charge)
           ( 201846, 0 ),                                # Stormfury buff
           ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
           ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
@@ -1488,7 +1491,6 @@ class SpellDataGenerator(DataGenerator):
           ( 198506, 0 ),                                # Wolves of Doom, summon spell
           ( 197568, 0 ),                                # Lightning Rod damage spell
           ( 207998, 0 ), ( 207999, 0 ),                 # 7.0 legendary ring Eye of the Twisting Nether
-          ( 252143, 0 ),                                # Earth Shock Overload (Elemental T21 2PC)
           ( 279515, 0 ),                                # Roiling Storm
           ( 275394, 0 ),                                # Lightning Conduit
           ( 273466, 0 ),                                # Strength of Earth
@@ -1505,18 +1507,15 @@ class SpellDataGenerator(DataGenerator):
           ( 131581, 0 ),                            # Waterbolt
           ( 7268, 0, False ),                       # Arcane missiles trigger
           ( 115757, 0, False ),                     # Frost Nova false positive for activatable
-          ( 145264, 0 ),                            # T16 Frigid Blast
           ( 148022, 0 ),                            # Icicle
           ( 155152, 5 ),                            # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
           ( 244813, 0 ),                            # Second Living Bomb DoT
           ( 187677, 0 ),                            # Aegwynn's Ascendance AOE
-          ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
           ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
           ( 228358, 0 ),                            # Winter's Chill
-          ( 242253, 0 ),                            # Frost T20 2P Frozen Mass
           ( 240689, 0 ),                            # Aluneth - Time and Space
           ( 248147, 0 ),                            # Erupting Infernal Core
           ( 248177, 0 ),                            # Rage of the Frost Wyrm
@@ -1524,7 +1523,6 @@ class SpellDataGenerator(DataGenerator):
           ( 222320, 0 ),                            # Sorcerous Frostbolt
           ( 222321, 0 ),                            # Sorcerous Arcane Blast
           ( 205473, 0 ),                            # Icicles buff
-          ( 253257, 0 ),                            # Frost T21 4P Arctic Blast
           ( 187292, 0 ),                            # Ro3 buff (?)
           ( 264352, 0 ),                            # Mana Adept
           ( 263725, 0 ),                            # Clearcasting buff
@@ -1555,9 +1553,6 @@ class SpellDataGenerator(DataGenerator):
           ( 109468, 0 ),
           ( 104225, 0 ),
           ( 129476, 0 ),        # Immolation Aura
-          ( 189297, 0 ),        # Demonology Warlock T18 4P Pet
-          ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
-          ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
           ( 17941, 0 ),         # Agony energize
           ( 104318, 5 ),        # Wild Imp Firebolt
           ( 205196, 5 ),        # Dreadstalker Dreadbite
@@ -1611,7 +1606,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339784, 2 ),    # Tyrant's Soul Buff
           ( 337142, 2 ),    # Grim Inquisitor's Dread Calling Buff
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
-          ( 339986, 3 )     # Hidden Combusting Engine Debuff
+          ( 339986, 3 ),    # Hidden Combusting Engine Debuff
+          ( 324540, 0 )     # Malefic Rapture damage
         ),
 
         # Monk:
@@ -1645,12 +1641,10 @@ class SpellDataGenerator(DataGenerator):
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 196742, 3 ), # Whirling Dragon Punch Buff
-          ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
-          ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		  ( 290461, 3 ), # Reverse Harm Damage
@@ -1715,9 +1709,7 @@ class SpellDataGenerator(DataGenerator):
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
-          ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
-          ( 146874, 2 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
           ( 155627, 2 ),       # Lunar Inspiration
           ( 155625, 2 ),       # Lunar Inspiration Moonfire
@@ -1726,8 +1718,6 @@ class SpellDataGenerator(DataGenerator):
           ( 155784, 3 ),       # Primal Tenacity buff
           ( 137542, 0 ),       # Displacer Beast buff
           ( 157228, 1 ),       # Owlkin Frenzy
-          ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
-          ( 188046, 5 ),       # T18 2P Faerie casts this spell
           ( 202461, 1 ),       # Stellar Drift mobility buff
           ( 202771, 1 ),       # Half Moon artifact power
           ( 202768, 1 ),       # Full Moon artifact power
@@ -1737,8 +1727,6 @@ class SpellDataGenerator(DataGenerator):
           ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
           ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
-          ( 211140, 2 ),       # Feral tier19_2pc
-          ( 211142, 2 ),       # Feral tier19_4pc
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
           ( 213771, 3 ),       # Swipe (Bear)
@@ -1747,7 +1735,6 @@ class SpellDataGenerator(DataGenerator):
           ( 213666, 1 ),       # Echoing Stars artifact spell
           ( 69369,  2 ),       # Predatory Swiftness buff
           ( 227034, 3 ),       # Nature's Guardian heal
-          ( 252750, 2 ),       # Feral tier21_2pc
           ( 272873, 1 ),       # Streaking Star (azerite) damage spell
           ( 274282, 1 ),       # Half Moon
           ( 274283, 1 ),       # Full Moon
@@ -1783,6 +1770,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 225102, 0 ), # Fel Eruption damage
           ( 339229, 0 ), # Serrated Glaive conduit debuff
+          ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate
@@ -3113,30 +3101,6 @@ class SetBonusListGenerator(DataGenerator):
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     set_bonus_map = [
-        # Warlords of Draenor PVP set bonuses
-        {
-            'name'   : 'pvp',
-            'bonuses': [ 1230, 1225, 1222, 1227, 1226, 1220, 1228, 1223, 1229, 1224, 1221 ],
-            'tier'   : 0,
-        },
-        # T17 LFR set bonuses
-        {
-            'name'   : 'tier17lfr',
-            'bonuses': [ 1245, 1248, 1246, 1247 ],
-            'tier'   : 17,
-        },
-        # T18 LFR set bonuses
-        {
-            'name'   : 'tier18lfr',
-            'bonuses': [ 1260, 1261, 1262, 1263 ],
-            'tier'   : 18,
-        },
-        # T19 Order Hall set bonuses
-        {
-            'name'   : 'tier19oh',
-            'bonuses': [ 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280 ],
-            'tier'   : 19
-        },
         # Legion Dungeon, March of the Legion
         {
             'name'   : 'march_of_the_legion',
@@ -3172,31 +3136,6 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier19p_plate',
             'bonuses': [ 1298 ],
             'tier'   : 19
-        },
-        {
-            'name'   : 'tier17',
-            'bonuses': [ 1242, 1238, 1236, 1240, 1239, 1234, 1241, 1235, 1243, 1237, 1233 ],
-            'tier'   : 17
-        },
-        {
-            'name'   : 'tier18',
-            'bonuses': [ 1249, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259 ],
-            'tier'   : 18
-        },
-        {
-            'name'   : 'tier19',
-            'bonuses': [ 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292 ],
-            'tier'   : 19
-        },
-        {
-            'name'   : 'tier20',
-            'bonuses': [ 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312 ],
-            'tier'   : 20
-        },
-        {
-            'name'   : 'tier21',
-            'bonuses': [ 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330 ],
-            'tier'   : 21
         },
         {
             'name'   : 'waycrests_legacy',

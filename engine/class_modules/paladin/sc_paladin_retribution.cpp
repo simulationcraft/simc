@@ -173,9 +173,9 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct expurgation_t : public paladin_spell_t
+  struct azerite_expurgation_t : public paladin_spell_t
   {
-    expurgation_t( paladin_t* p ) :
+    azerite_expurgation_t( paladin_t* p ) :
       paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
     {
       base_td = p -> azerite.expurgation.value();
@@ -184,15 +184,33 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
+  struct expurgation_t : public paladin_spell_t
+  {
+    expurgation_t( paladin_t* p ):
+      paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+    }
+  };
+
+  azerite_expurgation_t* azerite_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, const std::string& options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
+    azerite_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
 
     if ( p -> azerite.expurgation.ok() )
+    {
+      azerite_expurgation = new azerite_expurgation_t( p );
+      add_child( azerite_expurgation );
+    }
+
+    if ( p -> conduit.expurgation -> ok() )
     {
       expurgation = new expurgation_t( p );
       add_child( expurgation );
@@ -203,8 +221,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
-
-    base_multiplier *= 1.0 + p -> conduit.lights_reach.percent();
   }
 
   double action_multiplier() const override
@@ -226,10 +242,20 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( state );
 
-    if ( p() -> azerite.expurgation.ok() && state -> result == RESULT_CRIT )
+    if ( state -> result == RESULT_CRIT )
     {
-      expurgation -> set_target( state -> target );
-      expurgation -> execute();
+      if ( p() -> azerite.expurgation.ok() )
+      {
+        azerite_expurgation -> set_target( state -> target );
+        azerite_expurgation -> execute();
+      }
+
+      if ( p() -> conduit.expurgation -> ok() )
+      {
+        expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
+        expurgation -> set_target( state -> target );
+        expurgation -> execute();
+      }
     }
   }
 };
@@ -245,6 +271,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     is_divine_storm = true;
 
     aoe = data().effectN( 2 ).base_value();
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   divine_storm_t( paladin_t* p, bool is_free, float mul ) :
@@ -255,6 +284,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     background = is_free;
     base_multiplier *= mul;
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -339,6 +371,16 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p() -> buffs.vanquishers_hammer -> expire();
       p() -> active.necrolord_divine_storm -> execute();
+    }
+
+    // TODO(mserrano): figure out the actionbar override thing instead of this hack.
+    if ( p() -> legendary.final_verdict -> ok() )
+    {
+      if ( rng().roll( p() -> legendary.final_verdict -> effectN( 2 ).percent() ) )
+      {
+        p() -> cooldowns.hammer_of_wrath -> reset( true );
+        p() -> buffs.final_verdict -> trigger();
+      }
     }
   }
 };
@@ -501,13 +543,44 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 struct wake_of_ashes_t : public paladin_spell_t
 {
+  struct truths_wake_t : public paladin_spell_t
+  {
+    truths_wake_t( paladin_t* p ) :
+      paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+      base_multiplier *= p -> conduit.truths_wake.percent();
+    }
+  };
+
+  truths_wake_t* truths_wake;
+
   wake_of_ashes_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) )
+    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) ),
+    truths_wake( nullptr )
   {
     parse_options( options_str );
 
     may_crit = true;
     aoe = -1;
+
+    if ( p -> conduit.truths_wake -> ok() )
+    {
+      truths_wake = new truths_wake_t( p );
+      add_child( truths_wake );
+    }
+  }
+
+  void impact( action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
+    {
+      truths_wake -> set_target( s -> target );
+      truths_wake -> execute();
+    }
   }
 };
 
@@ -865,7 +938,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
   cds -> add_talent( this, "Crusade", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
-  // cds -> add_action( "ashen_hallow" );
+  cds -> add_action( "ashen_hallow" );
   cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&((buff.avenging_wrath.up|buff.crusade.up)|(buff.avenging_wrath.down&cooldown.avenging_wrath.remains>40|buff.crusade.down&cooldown.crusade.remains>40))" );
   cds -> add_talent( this, "Final Reckoning", "if=holy_power>=3&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim.enabled|buff.seraphim.up)" );
   cds -> add_action( "the_unbound_force,if=time<=2|buff.reckless_force.up" );

@@ -54,7 +54,7 @@ actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
 # Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized
-actions.aoe=whirling_dragon_punch
+actions.aoe=whirling_dragon_punch,if=buff.whirling_dragon_punch.up
 actions.aoe+=/energizing_elixir,if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)
 actions.aoe+=/spinning_crane_kick,if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)
 actions.aoe+=/fists_of_fury,if=energy.time_to_max>execute_time-1|buff.storm_earth_and_fire.remains
@@ -67,13 +67,13 @@ actions.aoe+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.rem
 actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|combo_strike)
 actions.aoe+=/chi_wave,if=combo_strike
 actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
-actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=14&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))
+actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=1&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))
 
 # Storm, Earth, and Fire Cooldowns
 actions.cd_sef=invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
 # Use Arcane Torrent if you are missing at least 1 Chi
 actions.cd_sef+=/arcane_torrent,if=chi.max-chi>=1
-actions.cd_sef+=/touch_of_death,if=buff.storm_earth_and_fire.down
+actions.cd_sef+=/touch_of_death,if=target.health.pct<=15&buff.storm_earth_and_fire.down
 actions.cd_sef+=/blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12
 actions.cd_sef+=/guardian_of_azeroth
 actions.cd_sef+=/worldvein_resonance
@@ -116,18 +116,17 @@ actions.cd_serenity+=/fireblood,if=fight_remains>125|variable.serenity_burst
 actions.cd_serenity+=/ancestral_call,if=fight_remains>125|variable.serenity_burst
 actions.cd_serenity+=/bag_of_tricks,if=variable.serenity_burst
 actions.cd_serenity+=/use_item,name=ashvanes_razor_coral
-actions.cd_serenity+=/touch_of_death
+actions.cd_serenity+=/touch_of_death,if=target.health.pct<=15
 actions.cd_serenity+=/touch_of_karma,interval=90,pct_health=0.5
 actions.cd_serenity+=/serenity,if=cooldown.rising_sun_kick.remains<2|fight_remains<15
 actions.cd_serenity+=/bag_of_tricks
 
 # Opener
-actions.opener=fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains
-actions.opener+=/expel_harm,if=talent.chi_burst.enabled
-actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2
-actions.opener+=/expel_harm,if=chi.max-chi=3|chi.max-chi=1
-actions.opener+=/flying_serpent_kick,if=talent.hit_combo.enabled
-actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2
+actions.opener=fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3
+actions.opener+=/expel_harm,if=talent.chi_burst.enabled&chi.max-chi>=3
+actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=combo_strike&chi.max-chi>=2
+actions.opener+=/expel_harm
+actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi.max-chi>=2
 
 # Priority While Serenity Is Up
 actions.serenity=fists_of_fury,if=buff.serenity.remains<1|active_enemies>1
@@ -142,7 +141,7 @@ actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,
 actions.serenity+=/spinning_crane_kick
 
 # Single Target Priority
-actions.st=whirling_dragon_punch
+actions.st=whirling_dragon_punch,if=buff.whirling_dragon_punch.up
 actions.st+=/energizing_elixir,if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)
 actions.st+=/spinning_crane_kick,if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)
 actions.st+=/fists_of_fury

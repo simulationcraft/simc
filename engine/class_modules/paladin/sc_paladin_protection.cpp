@@ -96,7 +96,7 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
   avengers_shield_dt_t( paladin_t* p ) :
     avengers_shield_base_t( "avengers_shield_divine_toll", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
   {
-    background=true;
+    background = true;
   }
 };
 
@@ -111,16 +111,39 @@ struct avengers_shield_t : public avengers_shield_base_t
   void execute() override
   {
     avengers_shield_base_t::execute();
-    if( p() -> buffs.moment_of_glory -> up() )
+
+    bool wasted_reset = false;
+
+    // Moment of Glory (MoG) will be consumed regardless of Holy Avengers Engraved Sigil (HAES) proc
+    // If they happen at the same time, HAES proc will be considered wasted over MoG as its cost is higher
+    // Assuming Legendary > Talents > Baseline
+    // Feel free to swap around these parts if the stance on the above changes
+    if ( p() -> buffs.moment_of_glory -> up() )
     {
-      p() -> cooldowns.avengers_shield -> reset( false );
+      if ( ! wasted_reset )
+      {
+        p() -> cooldowns.avengers_shield -> reset( false );
+        p() -> procs.as_moment_of_glory -> occur();
+        wasted_reset = true;
+      }
+      else
+        p() -> procs.as_moment_of_glory_wasted -> occur();
+
       p() -> buffs.moment_of_glory -> decrement( 1 );
     }
+
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
       rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
     {
-      p() -> cooldowns.avengers_shield -> reset( false );
-      p() -> procs.holy_avengers_engraved_sigil -> occur();
+      if ( ! wasted_reset )
+      {
+        // With 35% chance to proc, the average skill player can expect a proc to happen
+        p() -> cooldowns.avengers_shield -> reset( false );
+        p() -> procs.as_engraved_sigil -> occur();
+        wasted_reset = true;
+      }
+      else
+        p() -> procs.as_engraved_sigil_wasted -> occur();
     }
   }
 
@@ -151,8 +174,15 @@ struct moment_of_glory_t : public paladin_spell_t
     // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
     // then when you use the last stack you get another (4th) AS without a cooldown
     // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
+    if ( ! p() -> cooldowns.avengers_shield -> is_ready() )
+    {
+      p() -> procs.as_moment_of_glory -> occur();
+      p() -> cooldowns.avengers_shield -> reset( false );
+    }
+    else
+      p() -> procs.as_moment_of_glory_wasted -> occur();
+
     p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
-    p() -> cooldowns.avengers_shield -> reset( false );
   }
 };
 
@@ -629,7 +659,7 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
 
   // Divine Bulwark and consecration reduction
-  if ( standing_in_consecration() )
+  if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
   {
     s -> result_amount *= 1.0 + spec.consecration_2 -> effectN( 1 ).percent()
       + cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value();
@@ -722,8 +752,14 @@ void paladin_t::trigger_grand_crusader()
   if ( ! success )
     return;
 
-  // reset AS cooldown
-  cooldowns.avengers_shield -> reset( true );
+  // reset AS cooldown and count procs
+  if ( ! cooldowns.avengers_shield -> is_ready() )
+  {
+    procs.as_grand_crusader -> occur();
+    cooldowns.avengers_shield -> reset( true );
+  }
+  else
+    procs.as_grand_crusader_wasted -> occur();
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
@@ -734,8 +770,6 @@ void paladin_t::trigger_grand_crusader()
   {
     buffs.inspiring_vanguard -> trigger();
   }
-
-  procs.grand_crusader -> occur();
 }
 
 void paladin_t::trigger_holy_shield( action_state_t* s )
@@ -935,6 +969,7 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
   cds -> add_talent( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
+  cds -> add_action( "heart_essence" );
 
   std -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up&(debuff.vengeful_shock.up|!conduit.vengeful_shock.enabled)" );
   std -> add_action( this, "Shield of the Righteous" , "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );

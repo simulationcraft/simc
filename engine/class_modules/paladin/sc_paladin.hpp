@@ -202,6 +202,7 @@ public:
     buff_t* blessing_of_dawn;
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
+    buff_t* final_verdict;
   } buffs;
 
   // Gains
@@ -258,6 +259,7 @@ public:
 
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
+    cooldown_t* hammer_of_wrath;
   } cooldowns;
 
   // Passives
@@ -295,10 +297,15 @@ public:
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
     proc_t* final_reckoning;
-    proc_t* grand_crusader;
     proc_t* prot_lucid_dreams;
     proc_t* empyrean_power;
-    proc_t* holy_avengers_engraved_sigil;
+
+    proc_t* as_grand_crusader;
+    proc_t* as_grand_crusader_wasted;
+    proc_t* as_engraved_sigil;
+    proc_t* as_engraved_sigil_wasted;
+    proc_t* as_moment_of_glory;
+    proc_t* as_moment_of_glory_wasted;
   } procs;
 
   // Spells
@@ -434,7 +441,7 @@ public:
     conduit_data_t ringing_clarity;
     conduit_data_t vengeful_shock;
     conduit_data_t focused_light;
-    conduit_data_t lights_reach;
+    conduit_data_t expurgation;
     conduit_data_t templars_vindication;
     conduit_data_t the_long_summer;
     conduit_data_t truths_wake;
@@ -464,6 +471,7 @@ public:
     item_runeforge_t holy_avengers_engraved_sigil;
     item_runeforge_t the_ardent_protectors_sanctum;
     item_runeforge_t relentless_inquisitor;
+    item_runeforge_t tempest_of_the_lightbringer;
   } legendary;
 
   // Paladin options
@@ -1131,7 +1139,7 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
+    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ / Magistrate's
     int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
 
     if ( p -> azerite.relentless_inquisitor.ok() )
@@ -1192,9 +1200,15 @@ struct holy_power_consumer_t : public Base
       }
     }
 
+    // We should only have should_continue false in the event that we're a divine storm
+    // assert-check here for safety
+    assert( is_divine_storm || should_continue );
+
     // WARNING: This is correct for prot (as of 2020-09-10), ret may work
     // differently so be wary. Shining light and magistrate get consumed at the same time.
-    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() )
+    // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
+    // with FoJ.
+    if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
       p -> buffs.the_magistrates_judgment -> expire();
 
     // Divine Purpose isn't consumed on DS if EP was consumed

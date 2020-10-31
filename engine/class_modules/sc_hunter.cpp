@@ -4703,10 +4703,28 @@ struct summon_pet_t: public hunter_spell_t
 
 struct trap_base_t : hunter_spell_t
 {
+  timespan_t precast_time;
+
   trap_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_spell_t( n, p, s )
   {
+    add_option( opt_timespan( "precast_time", precast_time ) );
+
     harmful = may_miss = false;
+  }
+
+  void init() override
+  {
+    hunter_spell_t::init();
+
+    precast_time = clamp( precast_time, 0_ms, cooldown -> duration );
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    adjust_precast_cooldown( precast_time );
   }
 
   void impact( action_state_t* s ) override
@@ -4719,6 +4737,14 @@ struct trap_base_t : hunter_spell_t
       p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_apparatus_direct, this );
       p() -> buffs.nesingwarys_apparatus -> trigger();
     }
+  }
+
+  timespan_t travel_time() const override
+  {
+    timespan_t time_to_travel = hunter_spell_t::travel_time();
+    if ( is_precombat )
+      return std::max( 0_ms, time_to_travel - precast_time );
+    return time_to_travel;
   }
 
   double energize_cast_regen( const action_state_t* ) const override

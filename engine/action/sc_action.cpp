@@ -2047,9 +2047,6 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
 bool action_t::usable_moving() const
 {
-  if ( player->buffs.norgannons_foresight_ready && player->buffs.norgannons_foresight_ready->check() )
-    return true;
-
   if ( player->buffs.norgannons_sagacity && player->buffs.norgannons_sagacity->check() )
     return true;
 

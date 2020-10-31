@@ -525,11 +525,11 @@ public:
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
     timespan_t focus_magic_interval = 1.5_s;
-    double focus_magic_stddev = 0.1;
+    double focus_magic_relstddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
-    double arcane_missiles_chain_stddev = 0.1;
+    double arcane_missiles_chain_relstddev = 0.1;
   } options;
 
   // Pets
@@ -2992,7 +2992,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
       timespan_t chain_remains = tick_remains - std::min( tick_remains - 1_ms, std::max( 0_ms,
-        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
+        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev ) ) );
       // If tick_remains == 0_ms, this would subtract 1 from ticks.
       // This is not implemented in simc, but this actually appears
       // to happen in game, which can result in missing ticks if
@@ -4863,56 +4863,64 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     return ignite_state->tick_amount * ignite->ticks_left();
   }
 
+  void spread_ignite( player_t* primary )
+  {
+    auto source = primary->get_dot( "ignite", player );
+    if ( source->is_ticking() )
+    {
+      std::vector<dot_t*> ignites;
+
+      // Collect the Ignite DoT objects of all targets that are in range.
+      for ( auto t : target_list() )
+        ignites.push_back( t->get_dot( "ignite", player ) );
+
+      // Sort candidate Ignites by descending bank size.
+      // TODO: Double check what targets the Ignite spread prioritizes.
+      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) > ignite_bank( b ); } );
+
+      auto source_bank = ignite_bank( source );
+      auto targets_remaining = max_spread_targets;
+      for ( auto destination : ignites )
+      {
+        // The original spread source doesn't count towards the spread target limit.
+        if ( source == destination )
+          continue;
+
+        // Target cap was reached, stop.
+        if ( targets_remaining-- <= 0 )
+          break;
+
+        // Source Ignite cannot spread to targets with higher Ignite bank. It will
+        // still count towards the spread target cap, though.
+        if ( ignite_bank( destination ) >= source_bank )
+          continue;
+
+        if ( destination->is_ticking() )
+          p()->procs.ignite_overwrite->occur();
+        else
+          p()->procs.ignite_new_spread->occur();
+
+        // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
+        // sometimes have partial ticks, but the conditions for this are not known.
+        destination->cancel();
+        source->copy( destination->target, DOT_COPY_CLONE );
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
+    fire_mage_spell_t::impact( s );
+
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      auto source = s->target->get_dot( "ignite", player );
-      if ( source->is_ticking() )
-      {
-        std::vector<dot_t*> ignites;
-
-        // Collect the Ignite DoT objects of all targets that are in range.
-        for ( auto t : target_list() )
-          ignites.push_back( t->get_dot( "ignite", player ) );
-
-        // Sort candidate Ignites by descending bank size.
-        // TODO: Double check what targets the Ignite spread prioritizes.
-        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
-        { return ignite_bank( a ) > ignite_bank( b ); } );
-
-        auto source_bank = ignite_bank( source );
-        auto targets_remaining = max_spread_targets;
-        for ( auto destination : ignites )
-        {
-          // The original spread source doesn't count towards the spread target limit.
-          if ( source == destination )
-            continue;
-
-          // Target cap was reached, stop.
-          if ( targets_remaining-- <= 0 )
-            break;
-
-          // Source Ignite cannot spread to targets with higher Ignite bank. It will
-          // still count towards the spread target cap, though.
-          if ( ignite_bank( destination ) >= source_bank )
-            continue;
-
-          if ( destination->is_ticking() )
-            p()->procs.ignite_overwrite->occur();
-          else
-            p()->procs.ignite_new_spread->occur();
-
-          // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
-          // sometimes have partial ticks, but the conditions for this are not known.
-          destination->cancel();
-          source->copy( destination->target, DOT_COPY_CLONE );
-        }
-      }
+      // Delay sperading Ignite by double the delay of Ignite's residual action
+      // so that it occurs after the Ignite from Phoenix Flames has been applied.
+      timespan_t delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+      make_event( *sim, delay, [ this, t = s->target ] { spread_ignite( t ); } );
     }
-
-    fire_mage_spell_t::impact( s );
   }
 };
 
@@ -5697,7 +5705,7 @@ struct focus_magic_event_t final : public event_t
     if ( mage->options.focus_magic_interval > 0_ms )
     {
       timespan_t period = mage->options.focus_magic_interval;
-      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_stddev ) );
+      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_relstddev ) );
       mage->events.focus_magic = make_event<focus_magic_event_t>( sim(), *mage, period );
     }
   }
@@ -6073,11 +6081,11 @@ void mage_t::create_options()
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "arcane_missiles_chain_stddev", options.arcane_missiles_chain_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
 }
@@ -6311,7 +6319,7 @@ void mage_t::init_spells()
   spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
   spec.fireball_3            = find_specialization_spell( "Fireball", "Rank 3" );
   spec.fire_blast_2          = find_specialization_spell( "Fire Blast", "Rank 2" );
-  spec.fire_blast_3          = find_specialization_spell( 108853 );
+  spec.fire_blast_3          = find_specialization_spell( "Fire Blast" );
   spec.fire_blast_4          = find_specialization_spell( "Fire Blast", "Rank 4" );
   spec.fire_mage             = find_specialization_spell( "Fire Mage" );
   spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
@@ -7030,7 +7038,7 @@ void mage_t::arise()
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
     timespan_t period = options.focus_magic_interval;
-    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_stddev ) );
+    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_relstddev ) );
     events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
   }
 

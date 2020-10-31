@@ -1205,7 +1205,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
     auto_attack_multiplier( 1.0 ),
-    insignia_of_the_grand_army_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
     // Movement & Position
     base_movement_speed( 7.0 ),
@@ -3186,21 +3185,6 @@ void player_t::create_buffs()
 {
   sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
-  struct norgannons_foresight_buff_t : public buff_t
-  {
-    norgannons_foresight_buff_t( player_t* p ) :
-      buff_t( p, "norgannons_foresight", p->find_spell( 234797 ) )
-    {
-      set_chance( 0 );
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-      player->buffs.norgannons_foresight_ready->trigger();
-    }
-  };
-
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
@@ -3267,11 +3251,6 @@ void player_t::create_buffs()
                            ->set_chance( 1 )
                            ->set_default_value( 0.1 );  // Not in spelldata
 
-    buffs.norgannons_foresight_ready =
-        make_buff( this, "norgannons_foresight_ready", find_spell( 236380 ) )->set_chance( 0 );
-
-    buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );
-
     buffs.courageous_primal_diamond_lucidity = make_buff( this, "lucidity", find_spell( 137288 ) );
 
     buffs.body_and_soul = make_buff( this, "body_and_soul", find_spell( 64129 ) )
@@ -3332,13 +3311,6 @@ void player_t::create_buffs()
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );
-
-      // Soulbind buffs required for APL parsing
-      buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
-      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) );
-      buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
-      buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
-        ->modify_max_stack( 1 );
 
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
@@ -3447,14 +3419,6 @@ double player_t::resource_regen_per_second( resource_e r ) const
     }
   }
 
-  if ( r == RESOURCE_ENERGY )
-  {
-    if ( buffs.surge_of_energy && buffs.surge_of_energy->check() )
-    {
-      reg *= 1.0 + buffs.surge_of_energy->data().effectN( 1 ).percent();
-    }
-  }
-
   return reg;
 }
 
@@ -3503,11 +3467,6 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
-
-  if ( buffs.fel_winds && buffs.fel_winds->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.fel_winds->check_value() );
-  }
 
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
@@ -4065,11 +4024,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = 1.0;
 
-  if ( buffs.brute_strength && buffs.brute_strength->check() )
-  {
-    m *= 1.0 + buffs.brute_strength->data().effectN( 1 ).percent();
-  }
-
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
     m *= 1.0 + buffs.legendary_aoe_ring->default_value;
 
@@ -4090,9 +4044,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( school != SCHOOL_PHYSICAL )
     m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
-
-  // 8.0 Legendary Insignia of the Grand Army Effect
-  m *= insignia_of_the_grand_army_multiplier;
 
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
     m *= 1 + buffs.echo_of_eonar->check_value();
@@ -4259,14 +4210,8 @@ double player_t::passive_movement_modifier() const
   {
     passive += find_spell( 292362 )->effectN( 1 ).percent();
   }
+
   passive += racials.quickness->effectN( 2 ).percent();
-  if ( buffs.aggramars_stride )
-  {
-    passive += ( buffs.aggramars_stride->check_value() *
-                 ( ( 1.0 / cache.attack_haste() - 1.0 ) > cache.attack_crit_chance()
-                       ? ( 1.0 / cache.attack_haste() - 1.0 )
-                       : cache.attack_crit_chance() ) );  // Takes the larger of the two values.
-  }
   passive += composite_run_speed();
 
   return passive;
@@ -4716,12 +4661,6 @@ void player_t::combat_begin()
 
   if ( buffs.amplification_2 )
     buffs.amplification_2->trigger();
-
-  if ( buffs.aggramars_stride )
-    buffs.aggramars_stride->trigger();
-
-  if ( buffs.norgannons_foresight_ready )
-    buffs.norgannons_foresight_ready->trigger();
 
   if ( buffs.tyrants_decree_driver )
   {  // Assume actor has stacked the buff to max stack precombat.
@@ -5774,18 +5713,11 @@ void player_t::stun()
 
 void player_t::moving()
 {
-  if ( !buffs.norgannons_foresight_ready || !buffs.norgannons_foresight_ready->check() )
-  {
-    halt();
-  }
+  halt();
 }
 
 void player_t::finish_moving()
 {
-  if ( buffs.norgannons_foresight )
-  {
-    buffs.norgannons_foresight->trigger();
-  }
 }
 
 void player_t::clear_debuffs()
@@ -8255,7 +8187,7 @@ struct use_item_t : public action_t
       return false;
     }
 
-    if ( action && !action->ready() )
+    if ( action && ( !action->ready() || !action->cooldown->up() ) )
     {
       return false;
     }
@@ -8405,7 +8337,7 @@ struct use_items_t : public action_t
     // Check all use_item actions, if at least one of them is ready, this use_items action is ready
     for ( const auto action : use_actions )
     {
-      if ( action->ready() )
+      if ( action->ready() && action->cooldown->up() )
       {
         return true;
       }
@@ -12159,15 +12091,15 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost[ i ].add( p.iteration_resource_lost[ i ] );
-  }  
+  }
   for ( size_t i = 0, end = resource_gained.size(); i < end; ++i )
   {
     resource_gained[ i ].add( p.iteration_resource_gained[ i ] );
-  }  
+  }
   for ( size_t i = 0, end = resource_overflowed.size(); i < end; ++i )
   {
     resource_overflowed[ i ].add( p.iteration_resource_overflowed[ i ] );
-  }  
+  }
 
   for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
   {

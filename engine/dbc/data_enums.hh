@@ -769,7 +769,7 @@ enum effect_type_t : unsigned {
     E_171 = 171,
     E_172 = 172,
     E_173 = 173,
-    E_174 = 174,
+    E_APPLY_AURA_PET = 174,
     E_175 = 175,
     E_176 = 176,
     E_179 = 179,

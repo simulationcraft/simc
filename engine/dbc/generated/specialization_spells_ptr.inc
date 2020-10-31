@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.36200
-static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.36372
+static const std::array<specialization_spell_entry_t, 925> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -172,7 +172,6 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   {  3,  253,  19577,      0, "Intimidation"                      , 0 },
   {  3,  253,  34026,      0, "Kill Command"                      , 0 },
   {  3,  253,  53270,      0, "Exotic Beasts"                     , 0 },
-  {  3,  253,  53351,      0, "Kill Shot"                         , 0 },
   {  3,  253,  56315,      0, "Kindred Spirits"                   , 0 },
   {  3,  253,  76657,      0, "Mastery: Master of Beasts"         , 0 },
   {  3,  253, 115939,      0, "Beast Cleave"                      , 0 },
@@ -190,7 +189,6 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   {  3,  253, 321023,      0, "Concussive Shot"                   , 0 },
   {  3,  254,   5116, 195645, "Concussive Shot"                   , 0 },
   {  3,  254,  19434,      0, "Aimed Shot"                        , 0 },
-  {  3,  254,  53351,      0, "Kill Shot"                         , 0 },
   {  3,  254, 109248,      0, "Binding Shot"                      , 0 },
   {  3,  254, 137016,      0, "Marksmanship Hunter"               , 0 },
   {  3,  254, 147362,      0, "Counter Shot"                      , 0 },
@@ -226,7 +224,7 @@ static const std::array<specialization_spell_entry_t, 927> __ptr_specialization_
   {  3,  255, 263186,      0, "Kill Command"                      , "Rank 2" },
   {  3,  255, 266779,      0, "Coordinated Assault"               , 0 },
   {  3,  255, 294029,      0, "Carve"                             , "Rank 2" },
-  {  3,  255, 320976,      0, "Kill Shot"                         , 0 },
+  {  3,  255, 320976,  53351, "Kill Shot"                         , 0 },
   {  3,  255, 321026,      0, "Wing Clip"                         , "Rank 2" },
   {  3,  255, 321290,      0, "Wildfire Bombs"                    , "Rank 2" },
   {  4,  259,    703,      0, "Garrote"                           , 0 },
