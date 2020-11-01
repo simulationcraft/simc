@@ -1371,7 +1371,6 @@ public:
 
     p()->trigger_stormbringer( state );
     p()->trigger_ancestral_resonance( state );
-    p()->trigger_elemental_equilibrium( state );
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
