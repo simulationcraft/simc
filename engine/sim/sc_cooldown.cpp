@@ -261,6 +261,11 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       ready += amount;
       last_charged += amount;
     }
+
+    if ( sim.debug )
+      sim.out_debug.printf( "%s cooldown %s adjustment=%.3f, remains=%.3f, ready=%.3f",
+        player ? player->name() : "sim", name_str.c_str(), amount.total_seconds(),
+        ( ready - sim.current_time() ).total_seconds(), ready.total_seconds() );
   }
   // Charge-based cooldown
   else if ( current_charge < charges )

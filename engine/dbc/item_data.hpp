@@ -62,13 +62,12 @@ struct dbc_item_data_t {
   bool mythic() const
   { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
-  static const dbc_item_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<dbc_item_data_t>( id, ptr, &dbc_item_data_t::id ); }
+  static const dbc_item_data_t& find( unsigned id, bool ptr );
 
   static const dbc_item_data_t& nil()
   { return dbc::nil<dbc_item_data_t>; }
 
-  static util::span<const dbc_item_data_t> data( bool ptr );
+  static util::span<const util::span<const dbc_item_data_t>> data( bool ptr );
 };
 
 #endif /* ITEM_HPP */

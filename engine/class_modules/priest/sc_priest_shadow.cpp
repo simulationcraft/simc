@@ -29,8 +29,6 @@ private:
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   bool only_cwc;
-  cooldown_t* dark_thought_dummy_cooldown;
-  cooldown_t* action_cooldown;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -48,9 +46,7 @@ public:
                                    .resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
       mind_sear_spell( player.find_class_spell( "Mind Sear" ) ),
-      only_cwc( false ),
-      dark_thought_dummy_cooldown( player.get_cooldown( "dark_thought_dummy_cooldown" ) ),
-      action_cooldown( player.get_cooldown( "mind_blast" ) )
+      only_cwc( false )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );
     parse_options( options_str );
@@ -77,29 +73,13 @@ public:
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
-  // Returns either mind blasts action cooldown, or when dark thoughts is up a dummy cooldown
-  cooldown_t* active_cooldown() const
+  void reset() override
   {
-    if ( priest().buffs.dark_thought->check() )
-    {
-      return dark_thought_dummy_cooldown;
-    }
-    return action_cooldown;
-  }
+    priest_spell_t::reset();
 
-  bool action_ready() override
-  {
-    cooldown   = active_cooldown();
-    auto ready = priest_spell_t::action_ready();
-    cooldown   = action_cooldown;
-    return ready;
-  }
-
-  void execute() override
-  {
-    cooldown = active_cooldown();
-    priest_spell_t::execute();
-    cooldown = action_cooldown;
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
+    cooldown->charges = data().charges();
   }
 
   bool ready() override
@@ -202,7 +182,8 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
-
+    // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
+    // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.dark_thought->up() )
       priest().buffs.dark_thought->decrement();
     else
@@ -1291,9 +1272,6 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
-    priest().cooldowns.mind_blast->charges = 2;
-    priest().cooldowns.mind_blast->reset( true, 2 );
-    priest().cooldowns.void_bolt->reset( true );
   }
 
   void consume_resource() override
@@ -1361,9 +1339,6 @@ struct surrender_to_madness_t final : public priest_spell_t
     if ( !priest().buffs.voidform->check() )
     {
       priest().buffs.voidform->trigger();
-      priest().cooldowns.mind_blast->charges = 2;
-      priest().cooldowns.mind_blast->reset( true, 2 );
-      priest().cooldowns.void_bolt->reset( true );
     }
   }
 
@@ -1413,12 +1388,10 @@ struct psychic_horror_t final : public priest_spell_t
 struct void_torrent_t final : public priest_spell_t
 {
   double insanity_gain;
-  propagate_const<devouring_plague_t*> child_dp;
 
   void_torrent_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_torrent", p, p.talents.void_torrent ),
-      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-      child_dp( new devouring_plague_t( priest(), false ) )
+      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -1433,24 +1406,12 @@ struct void_torrent_t final : public priest_spell_t
     energize_type     = action_energize::PER_TICK;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
-
-    child_dp->background = true;
   }
 
+  // DoT duration is fixed at 3s
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return timespan_t::from_seconds( 4.0 );
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    timespan_t t = base_tick_time;
-
-    double h = priest().composite_spell_haste();
-
-    t *= h;
-
-    return t;
+    return dot_duration;
   }
 
   void last_tick( dot_t* d ) override
@@ -1462,22 +1423,9 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
-    child_dp->set_target( target );
-    child_dp->execute();
-
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest_td_t& td = get_td( s->target );
-
-    td.dots.shadow_word_pain->refresh_duration();
-    td.dots.vampiric_touch->refresh_duration();
   }
 };
 
@@ -1679,6 +1627,20 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+    // Use a stack change callback to trigger voidform effects.
+    set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+      if ( cur )
+      {
+        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, 1 );
+        priest().cooldowns.mind_blast->reset( true, -1 );
+        priest().cooldowns.void_bolt->reset( true );
+      }
+      else
+      {
+        adjust_cooldown_max_charges( priest().cooldowns.mind_blast, -1 );
+      }
+    } );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -1697,19 +1659,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    /// TODO: Verify if functionality is properly matching how it works in game.
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
-                        priest().cooldowns.mind_blast->charges_fractional() );
-    }
-    // Call new generic function to adjust charges.
-    adjust_max_charges( priest().cooldowns.mind_blast, 1 );
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
-                        priest().cooldowns.mind_blast->charges_fractional() );
-    }
     if ( priest().buffs.shadowform_state->check() )
     {
       priest().buffs.shadowform->trigger();
@@ -1760,6 +1709,11 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
   {
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
+
+    // Create a stack change callback to adjust the number of mindblast charges.
+    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      adjust_cooldown_max_charges( priest().cooldowns.mind_blast, cur - old );
+    } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1771,6 +1725,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
         priest().procs.dark_thoughts_missed->occur();
       }
     }
+
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -2276,7 +2231,7 @@ void priest_t::generate_apl_shadow()
                     "if=dot.vampiric_touch.ticking&((talent.searing_nightmare.enabled&spell_targets.mind_sear>("
                     "variable.mind_sear_cutoff+1))|dot.shadow_word_pain.ticking)" );
   main->add_talent( this, "Void Torrent",
-                    "target_if=variable.dots_up&target.time_to_die>4&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
+                    "target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
                     "talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
   main->add_action(
@@ -2304,8 +2259,10 @@ void priest_t::generate_apl_shadow()
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Blast",
-                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
-                    "TODO Verify target cap" );
+                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&(spell_targets.mind_sear<4|!talent."
+                    "searing_nightmare.enabled)",
+                    "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
+                    "Nightmare talented." );
   main->add_action( this, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );

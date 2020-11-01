@@ -493,11 +493,11 @@ public:
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
     timespan_t focus_magic_interval = 1.5_s;
-    double focus_magic_stddev = 0.1;
+    double focus_magic_relstddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
-    double arcane_missiles_chain_stddev = 0.1;
+    double arcane_missiles_chain_relstddev = 0.1;
   } options;
 
   // Pets
@@ -607,6 +607,8 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
+    int inactive_frozen_orbs;
+    int active_frozen_orbs;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
   } state;
@@ -859,10 +861,11 @@ namespace pets {
 
 struct mage_pet_t : public pet_t
 {
-  mage_pet_t( sim_t* sim, mage_t* owner, util::string_view pet_name,
-              bool guardian = false, bool dynamic = false ) :
+  mage_pet_t( sim_t* sim, mage_t* owner, util::string_view pet_name, bool guardian = false, bool dynamic = false ) :
     pet_t( sim, owner, pet_name, guardian, dynamic )
-  { }
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
 
   const mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
@@ -1016,17 +1019,10 @@ namespace buffs {
 
 struct touch_of_the_magi_t final : public buff_t
 {
-  double accumulated_damage;
-
   touch_of_the_magi_t( mage_td_t* td ) :
-    buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) ),
-    accumulated_damage()
-  { }
-
-  void reset() override
+    buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
-    buff_t::reset();
-    accumulated_damage = 0.0;
+    set_default_value( 0.0 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1042,20 +1038,8 @@ struct touch_of_the_magi_t final : public buff_t
     // Verify whether we need a floor operation here to trim those values down to integers,
     // which sometimes happens when Blizzard uses floating point numbers like this.
     damage_fraction += p->conduits.magis_brand.percent();
-    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * accumulated_damage;
+    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * current_value;
     explosion->execute();
-
-    accumulated_damage = 0.0;
-  }
-
-  void accumulate_damage( const action_state_t* s )
-  {
-    sim->print_debug(
-      "{}'s {} accumulates {} additional damage: {} -> {}",
-      player->name(), name(), s->result_total,
-      accumulated_damage, accumulated_damage + s->result_total );
-
-    accumulated_damage += s->result_total;
   }
 };
 
@@ -1752,10 +1736,10 @@ public:
         }
       }
 
-      auto totm = debug_cast<buffs::touch_of_the_magi_t*>( td->debuffs.touch_of_the_magi );
+      auto totm = td->debuffs.touch_of_the_magi;
       if ( totm->check() )
       {
-        totm->accumulate_damage( s );
+        totm->current_value += s->result_total;
 
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
@@ -2665,7 +2649,9 @@ struct arcane_intellect_t final : public mage_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
-    background = sim->overrides.arcane_intellect != 0;
+
+    if ( sim->overrides.arcane_intellect )
+      background = true;
   }
 
   void execute() override
@@ -2816,7 +2802,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
       timespan_t chain_remains = tick_remains - std::min( tick_remains - 1_ms, std::max( 0_ms,
-        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_stddev ) ) );
+        rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev ) ) );
       // If tick_remains == 0_ms, this would subtract 1 from ticks.
       // This is not implemented in simc, but this actually appears
       // to happen in game, which can result in missing ticks if
@@ -2936,7 +2922,8 @@ struct blink_t final : public mage_spell_t
     movement_directionality = movement_direction_type::OMNI;
     cooldown->duration += p->conduits.flow_of_time.time_value();
 
-    background = p->talents.shimmer->ok();
+    if ( p->talents.shimmer->ok() )
+      background = true;
   }
 };
 
@@ -3179,7 +3166,9 @@ struct use_mana_gem_t final : public action_t
     parse_options( options_str );
     harmful = callbacks = may_crit = may_miss = false;
     target = player;
-    background = p->specialization() != MAGE_ARCANE;
+
+    if ( p->specialization() != MAGE_ARCANE )
+      background = true;
   }
 
   bool ready() override
@@ -3664,6 +3653,15 @@ struct frostbolt_t final : public frost_mage_spell_t
     return t;
   }
 
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
@@ -3799,9 +3797,22 @@ struct frozen_orb_t final : public frost_mage_spell_t
     return t;
   }
 
+  void adjust_orb_count( timespan_t duration, int& counter )
+  {
+    counter++;
+    make_event( *sim, duration, [ this, &counter ]
+    {
+      counter--;
+      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 )
+        p()->buffs.freezing_winds->expire();
+    } );
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
+
+    adjust_orb_count( travel_time(), p()->state.inactive_frozen_orbs );
 
     if ( background )
       return;
@@ -3818,18 +3829,16 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
-    p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
+    timespan_t duration = ( pulse_count - 1 ) * pulse_time;
+    p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
+
+    adjust_orb_count( duration, p()->state.active_frozen_orbs );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulse_count )
-      .action( frozen_orb_bolt )
-      .expiration_callback( [ this ]
-        {
-          if ( p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] <= sim->current_time() )
-            p()->buffs.freezing_winds->expire();
-        } ), true );
+      .action( frozen_orb_bolt ), true );
   }
 };
 
@@ -4521,56 +4530,64 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     return ignite_state->tick_amount * ignite->ticks_left();
   }
 
+  void spread_ignite( player_t* primary )
+  {
+    auto source = primary->get_dot( "ignite", player );
+    if ( source->is_ticking() )
+    {
+      std::vector<dot_t*> ignites;
+
+      // Collect the Ignite DoT objects of all targets that are in range.
+      for ( auto t : target_list() )
+        ignites.push_back( t->get_dot( "ignite", player ) );
+
+      // Sort candidate Ignites by descending bank size.
+      // TODO: Double check what targets the Ignite spread prioritizes.
+      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) > ignite_bank( b ); } );
+
+      auto source_bank = ignite_bank( source );
+      auto targets_remaining = max_spread_targets;
+      for ( auto destination : ignites )
+      {
+        // The original spread source doesn't count towards the spread target limit.
+        if ( source == destination )
+          continue;
+
+        // Target cap was reached, stop.
+        if ( targets_remaining-- <= 0 )
+          break;
+
+        // Source Ignite cannot spread to targets with higher Ignite bank. It will
+        // still count towards the spread target cap, though.
+        if ( ignite_bank( destination ) >= source_bank )
+          continue;
+
+        if ( destination->is_ticking() )
+          p()->procs.ignite_overwrite->occur();
+        else
+          p()->procs.ignite_new_spread->occur();
+
+        // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
+        // sometimes have partial ticks, but the conditions for this are not known.
+        destination->cancel();
+        source->copy( destination->target, DOT_COPY_CLONE );
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
+    fire_mage_spell_t::impact( s );
+
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      auto source = s->target->get_dot( "ignite", player );
-      if ( source->is_ticking() )
-      {
-        std::vector<dot_t*> ignites;
-
-        // Collect the Ignite DoT objects of all targets that are in range.
-        for ( auto t : target_list() )
-          ignites.push_back( t->get_dot( "ignite", player ) );
-
-        // Sort candidate Ignites by descending bank size.
-        // TODO: Double check what targets the Ignite spread prioritizes.
-        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
-        { return ignite_bank( a ) > ignite_bank( b ); } );
-
-        auto source_bank = ignite_bank( source );
-        auto targets_remaining = max_spread_targets;
-        for ( auto destination : ignites )
-        {
-          // The original spread source doesn't count towards the spread target limit.
-          if ( source == destination )
-            continue;
-
-          // Target cap was reached, stop.
-          if ( targets_remaining-- <= 0 )
-            break;
-
-          // Source Ignite cannot spread to targets with higher Ignite bank. It will
-          // still count towards the spread target cap, though.
-          if ( ignite_bank( destination ) >= source_bank )
-            continue;
-
-          if ( destination->is_ticking() )
-            p()->procs.ignite_overwrite->occur();
-          else
-            p()->procs.ignite_new_spread->occur();
-
-          // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
-          // sometimes have partial ticks, but the conditions for this are not known.
-          destination->cancel();
-          source->copy( destination->target, DOT_COPY_CLONE );
-        }
-      }
+      // Delay sperading Ignite by double the delay of Ignite's residual action
+      // so that it occurs after the Ignite from Phoenix Flames has been applied.
+      timespan_t delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+      make_event( *sim, delay, [ this, t = s->target ] { spread_ignite( t ); } );
     }
-
-    fire_mage_spell_t::impact( s );
   }
 };
 
@@ -4861,7 +4878,9 @@ struct summon_water_elemental_t final : public frost_mage_spell_t
     parse_options( options_str );
     harmful = track_cd_waste = false;
     ignore_false_positive = true;
-    background = p->talents.lonely_winter->ok();
+
+    if ( p->talents.lonely_winter->ok() )
+      background = true;
   }
 
   void execute() override
@@ -4888,7 +4907,9 @@ struct time_warp_t final : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    background = sim->overrides.bloodlust != 0 && !p->runeforge.temporal_warp.ok();
+
+    if ( sim->overrides.bloodlust && !p->runeforge.temporal_warp.ok() )
+      background = true;
   }
 
   void execute() override
@@ -5248,7 +5269,9 @@ struct freeze_t final : public action_t
     parse_options( options_str );
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-    background = p->talents.lonely_winter->ok();
+
+    if ( p->talents.lonely_winter->ok() )
+      background = true;
   }
 
   void execute() override
@@ -5325,7 +5348,7 @@ struct focus_magic_event_t final : public event_t
     if ( mage->options.focus_magic_interval > 0_ms )
     {
       timespan_t period = mage->options.focus_magic_interval;
-      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_stddev ) );
+      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_relstddev ) );
       mage->events.focus_magic = make_event<focus_magic_event_t>( sim(), *mage, period );
     }
   }
@@ -5687,11 +5710,11 @@ void mage_t::create_options()
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "arcane_missiles_chain_stddev", options.arcane_missiles_chain_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
 }
@@ -5925,7 +5948,7 @@ void mage_t::init_spells()
   spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
   spec.fireball_3            = find_specialization_spell( "Fireball", "Rank 3" );
   spec.fire_blast_2          = find_specialization_spell( "Fire Blast", "Rank 2" );
-  spec.fire_blast_3          = find_specialization_spell( 108853 );
+  spec.fire_blast_3          = find_specialization_spell( "Fire Blast" );
   spec.fire_blast_4          = find_specialization_spell( "Fire Blast", "Rank 4" );
   spec.fire_mage             = find_specialization_spell( "Fire Mage" );
   spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
@@ -6548,7 +6571,7 @@ void mage_t::arise()
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
     timespan_t period = options.focus_magic_interval;
-    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_stddev ) );
+    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_relstddev ) );
     events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
   }
 
@@ -6879,8 +6902,7 @@ void mage_t::update_from_the_ashes()
   state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * cooldowns.phoenix_flames->charges_fractional();
   invalidate_cache( CACHE_MASTERY );
 
-  if ( sim->debug )
-    sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, cache.mastery() );
+  sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, state.from_the_ashes_mastery );
 }
 
 action_t* mage_t::get_icicle()
@@ -7312,12 +7334,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
-
-    hotfix::register_effect( "Mage", "2020-10-22", "Arcane Pummeling nerf on live servers.", 720338 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.5 )
-      .verification_value( 2.355828 );
   }
 
   bool valid() const override { return true; }

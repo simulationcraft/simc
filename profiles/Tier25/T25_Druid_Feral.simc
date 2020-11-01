@@ -10,16 +10,18 @@ talents=2331122
 azerite_essences=32:3/4:3/27:3/35:3/300573/300575/300576/300577
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=superior_battle_potion_of_agility
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Feral APL can also be found at https://gist.github.com/Xanzara/6896c8996f5afce5ce115daa3a08daff
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
@@ -42,14 +44,19 @@ actions.precombat+=/cat_form
 actions.precombat+=/prowl
 
 # Executed every time the actor is available.
+# Balance weaving investigation
 actions=cat_form,if=buff.cat_form.down
+# Prowl whenever possible
 actions+=/prowl
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/variable,name=reaping_delay,value=target.time_to_die,if=variable.reaping_delay=0
 actions+=/cycling_variable,name=reaping_delay,op=min,value=target.time_to_die
+# One shot stealth
+actions+=/run_action_list,name=stealth,if=buff.shadowmeld.up|buff.prowl.up
 actions+=/call_action_list,name=cooldown
 actions+=/run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)
-actions+=/run_action_list,name=stealth,if=buff.berserk_cat.up|buff.incarnation.up|buff.shadowmeld.up|buff.sudden_ambush.up|buff.prowl.up
+# Multi-gcd stealth
+actions+=/run_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up
 # The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)
 actions+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))>=(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
 actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&(buff.bloodtalons.down|active_bt_triggers=2)
@@ -60,7 +67,7 @@ actions+=/thrash_cat,if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>var
 actions+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))&(spell_targets.brutal_slash*action.brutal_slash.damage%action.brutal_slash.cost)>(action.shred.damage%action.shred.cost)
 actions+=/swipe_cat,if=spell_targets.swipe_cat>2
 actions+=/shred,if=buff.clearcasting.up
-actions+=/call_action_list,name=filler,if=energy.time_to_max<1
+actions+=/call_action_list,name=filler
 
 actions.bloodtalons=rake,target_if=(!ticking|(refreshable&persistent_multiplier>dot.rake.pmultiplier))&buff.bt_rake.down&druid.rake.ticks_gained_on_refresh>=2
 actions.bloodtalons+=/lunar_inspiration,target_if=refreshable&buff.bt_moonfire.down
@@ -71,13 +78,14 @@ actions.bloodtalons+=/shred,if=buff.bt_shred.down
 actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down
 actions.bloodtalons+=/thrash_cat,if=buff.bt_thrash.down
 
-actions.cooldown=berserk,if=buff.prowl.down
-actions.cooldown+=/incarnation,if=buff.prowl.down
-# Try and not waste TF energy, but also go for zerk and carn
-actions.cooldown+=/tigers_fury,if=energy.deficit>55|buff.berserk_cat.remains<13|buff.incarnation_king_of_the_jungle.remains<13
-actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.berserk_cat.down&buff.incarnation_king_of_the_jungle.down&buff.prowl.down&combo_points<4&dot.rake.pmultiplier<1.6&energy>40
-actions.cooldown+=/berserking,if=buff.tigers_fury.up|buff.berserk_cat.up|buff.incarnation_king_of_the_jungle.up
-actions.cooldown+=/potion,if=buff.berserk_cat.up|buff.incarnation_king_of_the_jungle.up
+actions.cooldown=berserk
+actions.cooldown+=/incarnation
+# Try and not waste TF energy, but also just use it for zerk and incarns
+actions.cooldown+=/tigers_fury,if=energy.deficit>55|(buff.bs_inc.up&buff.bs_inc.remains<13)
+# Might be wrong to use Smeld on Rake in very very niche situations, but very rarely
+actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&dot.rake.pmultiplier<1.6&energy>40
+actions.cooldown+=/berserking,if=buff.tigers_fury.up|buff.bs_inc.up
+actions.cooldown+=/potion,if=buff.bs_inc.up
 actions.cooldown+=/call_action_list,name=essence
 actions.cooldown+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.time_to_pct_30<1.5|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=25-10*debuff.blood_of_the_enemy.up|target.time_to_die<40)&buff.tigers_fury.remains>10
 actions.cooldown+=/use_items,if=buff.tigers_fury.up|target.time_to_die<20
@@ -100,7 +108,7 @@ actions.filler+=/lunar_inspiration,if=variable.filler=3
 actions.filler+=/swipe,if=variable.filler=4
 actions.filler+=/shred
 
-actions.finisher=savage_roar,if=refreshable
+actions.finisher=savage_roar,if=buff.savage_roar.down|buff.savage_roar.remains<(combo_points*5+1)*0.3
 # Make sure to zero the variable so some old value don't end up lingering
 actions.finisher+=/variable,name=best_rip,value=0,if=talent.primal_wrath.enabled
 actions.finisher+=/cycling_variable,name=best_rip,op=max,value=druid.rip.ticks_gained_on_refresh,if=talent.primal_wrath.enabled
@@ -109,6 +117,7 @@ actions.finisher+=/rip,target_if=(!ticking|(remains+combo_points*talent.sabertoo
 actions.finisher+=/maim,if=buff.iron_jaws.up
 actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:time_to_die
 
+# Rake needs roughly 50% of its length at a minimum to surpass shreds dpe
 actions.stealth=run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down
 actions.stealth+=/rake,target_if=dot.rake.pmultiplier<1.6&druid.rake.ticks_gained_on_refresh>2
 actions.stealth+=/shred

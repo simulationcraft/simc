@@ -7,6 +7,7 @@
 
 #include "sim/sc_sim.hpp"
 
+#include "sim/sc_cooldown.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
@@ -440,18 +441,19 @@ void cabalists_hymnal( special_effect_t& effect )
   {
     auto mul =
         1.0 + effect.driver()->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.crimson_choir_in_party;
+    timespan_t duration = effect.trigger()->duration() * effect.trigger()->max_stacks();
 
     buff = make_buff<stat_buff_t>( effect.player, "crimson_chorus", effect.trigger(), effect.item )
       ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * mul )
       ->set_period( effect.trigger()->duration() )
-      ->set_duration( effect.trigger()->duration() * effect.trigger()->max_stacks() );
+      ->set_duration( duration )
+      ->set_cooldown( effect.player->find_spell( 344820 )->duration() + duration );
   }
 
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, 1_min, [ buff ]() {
-      buff->trigger();
-    } );
-  } );
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void dreadfire_vessel( special_effect_t& effect )
@@ -488,28 +490,173 @@ void macabre_sheet_music( special_effect_t& effect )
 
 void glyph_of_assimilation( special_effect_t& effect )
 {
+  struct glyph_of_assimilation_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    glyph_of_assimilation_t( const special_effect_t& e, buff_t* b ) : proc_spell_t( e ), buff( b ) {}
+
+    void last_tick( dot_t* d ) override
+    {
+      buff->trigger( 2.0 * composite_dot_duration( d->state ) );
+      proc_spell_t::last_tick( d );
+    }
+  };
+
   auto p    = effect.player;
   auto buff = make_buff<stat_buff_t>( p, "glyph_of_assimilation", p->find_spell( 345500 ) );
   buff->add_stat( STAT_MASTERY_RATING, buff->data().effectN( 1 ).average( effect.item ) );
 
-  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
-    if ( !t->is_enemy() )
-      return;
-
-    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
-      if ( p->sim->event_mgr.canceled )
+  // TODO: This trinket actually always gives the full duration buff to the player when
+  // the DoT expires regardless of the remaining duration and whether or not the target
+  // dies. Test this again later to make sure it still behaves this way.
+  if ( p->bugs )
+  {
+    effect.execute_action = create_proc_action<glyph_of_assimilation_t>( "glyph_of_assimilation", effect, buff );
+  }
+  else
+  {
+    range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
+      if ( !t->is_enemy() )
         return;
 
-      auto d = t->get_dot( "glyph_of_assimilation", p );
-      if ( d->remains() > 0_ms )
-        buff->trigger( d->remains() * 2.0 );
+      t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
+        if ( p->sim->event_mgr.canceled )
+          return;
+
+        auto d = t->get_dot( "glyph_of_assimilation", p );
+        if ( d->remains() > 0_ms )
+          buff->trigger( d->remains() * 2.0 );
+      } );
     } );
-  } );
+  }
 }
 
+/**Soul Igniter
+ * id=345251 driver with 500 ms cooldown
+ * id=345211 buff and max scaling targets
+ * id=345215 damage effect and category cooldown of second action
+ * id=345214 damage coefficients and multipliers
+ *           effect #1: base damage (effect #2) + buff time bonus (effect #3)
+ *                      incorrectly listed as the self damage in the tooltip
+ *           effect #2: base damage
+ *           effect #3: max bonus damage (40%) from buff time
+ *           effect #4: multiplier based on buff elapsed duration (maybe only used for the tooltip)
+ *           effect #5: self damage per 1-second buff tick (NYI)
+ */
 void soul_igniter( special_effect_t& effect )
 {
+  struct blazing_surge_t : public proc_spell_t
+  {
+    double buff_fraction_elapsed;
+    double max_time_multiplier;
+    unsigned max_scaling_targets;
 
+    blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
+    {
+      split_aoe_damage = true;
+      base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
+      base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
+      max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
+    }
+
+    double action_multiplier() const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      // This may actually be added as flat damage using the coefficients,
+      // but for a trinket like this it is difficult to verify this.
+      m *= 1.0 + buff_fraction_elapsed * max_time_multiplier;
+
+      return m;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      // The extra damage for each target appears to be a 15%
+      // multiplier that is not listed in spell data anywhere.
+      // TODO: this has been tested on 6 targets, verify that
+      // it does not continue scaling higher at 7 targets.
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
+
+      return m;
+    }
+  };
+
+  struct soul_ignition_t : public proc_spell_t
+  {
+    buff_t* buff;
+    const spell_data_t* second_action;
+
+    soul_ignition_t( const special_effect_t& e ) :
+      proc_spell_t( "soul_ignition", e.player, e.driver() ),
+      second_action( e.player->find_spell( 345215 ) )
+    {}
+
+    void init_finished() override
+    {
+      buff = buff_t::find( player, "soul_ignition" );
+    }
+
+    bool ready() override
+    {
+      if ( buff->check() && sim->shadowlands_opts.disable_soul_igniter_second_use )
+        return false;
+
+      return proc_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Need to trigger the category cooldown that this trinket does not have on other trinkets.
+      auto cd_group = player->get_cooldown( "item_cd_" + util::to_string( second_action->category() ) );
+      if ( cd_group )
+        cd_group->start( second_action->category_cooldown() );
+
+      if ( buff->check() )
+        buff->expire();
+      else
+        buff->trigger();
+    }
+  };
+
+  struct soul_ignition_buff_t : public buff_t
+  {
+    special_effect_t& effect;
+    blazing_surge_t* damage_action;
+
+    soul_ignition_buff_t( special_effect_t& e, action_t* d ) :
+      buff_t( e.player, "soul_ignition", e.player->find_spell( 345211 ) ),
+      effect( e ),
+      damage_action( debug_cast<blazing_surge_t*>( d ) )
+    {}
+
+    void expire_override( int stacks, timespan_t remaining_duration )
+    {
+      buff_t::expire_override( stacks, remaining_duration );
+
+      damage_action->buff_fraction_elapsed = ( buff_duration() - remaining_duration ) / buff_duration();
+      damage_action->set_target( source->target );
+      damage_action->execute();
+      // the 60 second cooldown associated with the damage effect trigger
+      // does not appear in spell data anywhere and is just in the tooltip.
+      effect.execute_action->cooldown->start( effect.execute_action, 60_s );
+      auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
+      if ( cd_group )
+        cd_group->start( effect.cooldown_group_duration() );
+    }
+  };
+
+  auto damage_action = create_proc_action<blazing_surge_t>( "blazing_surge", effect );
+  effect.execute_action = new soul_ignition_t( effect );
+  auto buff = buff_t::find( effect.player, "soul_ignition" );
+  if ( !buff )
+    buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
 void skulkers_wing( special_effect_t& effect )
@@ -571,7 +718,7 @@ void echo_of_eonar( special_effect_t& effect )
   if ( !effect.player->buffs.echo_of_eonar )
   {
     effect.player->buffs.echo_of_eonar =
-      make_buff( effect.player, "echo_of_eonar", effect.driver() )
+      make_buff( effect.player, "echo_of_eonar", effect.driver()->effectN( 2 ).trigger() )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         ->set_chance( 1 );
@@ -700,34 +847,19 @@ void vitality_sacrifice( special_effect_t& effect )
 
 }
 
-void overflowing_anima_prison( special_effect_t& effect )
+void overflowing_anima_cage( special_effect_t& effect )
 {
-  auto val  = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
-  auto buff = debug_cast<stat_buff_t*>( effect.player->buffs.overflowing_anima_prison );
-  buff->add_stat( STAT_CRIT_RATING, val )->set_cooldown( 0_ms );
+  auto buff = buff_t::find( effect.player, "anima_infusion" );
+  if ( !buff )
+  {
+    auto val = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
+    // The actual buff is Anima Infusion (id=343386), but the spell data there is not needed.
+    buff = make_buff<stat_buff_t>( effect.player, "anima_infusion", effect.player->find_spell( 343385 ) )
+             ->add_stat( STAT_CRIT_RATING, val )
+             ->set_cooldown( 0_ms );
+  }
 
   effect.custom_buff = buff;
-
-  // create callback for covenant ability cast
-  struct overflowing_anima_cov_cb_t : public covenant::covenant_cb_base_t
-  {
-    buff_t* buff;
-
-    overflowing_anima_cov_cb_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
-
-    void trigger( action_t*, action_state_t* ) override
-    {
-      // TODO: confirm this is flat 10s extension
-      buff->extend_duration( buff->player, 10_s );
-    }
-  };
-
-  auto callback = covenant::get_covenant_callback( effect.player );
-  if ( callback )
-  {
-    auto cb_entry = new overflowing_anima_cov_cb_t( buff );
-    callback->cb_list.push_back( cb_entry );
-  }
 }
 
 void sunblood_amethyst( special_effect_t& effect )
@@ -818,7 +950,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
     unique_gear::register_special_effect( 344063, items::gluttonous_spike );
     unique_gear::register_special_effect( 345357, items::hateful_chain );
-    unique_gear::register_special_effect( 343385, items::overflowing_anima_prison );
+    unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
 

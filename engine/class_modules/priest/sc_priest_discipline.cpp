@@ -119,7 +119,6 @@ struct penance_t final : public priest_spell_t
       // Add 1 extra millisecond, so we only get 4 ticks instead of an extra tiny 5th tick.
       base_tick_time = timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
     }
-    dot_duration += priest().sets->set( PRIEST_DISCIPLINE, T17, B2 )->effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
     tick_action         = penance_tick_action;

@@ -299,6 +299,7 @@ public:
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
+    buff_t* faeline_stomp_brm;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -636,6 +637,7 @@ public:
     const spell_data_t* bonedust_brew_chi;
     const spell_data_t* faeline_stomp_damage;
     const spell_data_t* faeline_stomp_ww_damage;
+    const spell_data_t* faeline_stomp_brm;
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
@@ -740,7 +742,7 @@ public:
     // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
     azerite_power_t dance_of_chiji;
 
-	azerite_essence_t vision_of_perfection; 
+	azerite_essence_t vision_of_perfection;
     azerite_essence_t memory_of_lucid_dreams;
     azerite_essence_t conflict_and_strife;
   } azerite;
@@ -756,7 +758,7 @@ public:
   // Covenant
   struct covenant_t
   {
-    // Kyrian: 
+    // Kyrian:
     // Weapons of Order - Increases your Mastery by X% and your
     // Windwalker - Rising Sun Kick reduces the cost of your Chi Abilities by 1 for 5 sec
     // Mistweaver - Essence Font heals nearby allies for (30% of Spell power) health on channel start and end
@@ -2322,7 +2324,7 @@ private:
       dot_duration        = p->o()->spec.invoke_xuen->duration();
       hasted_ticks        = true;
       may_miss            = false;
-      dynamic_tick_action = true;  
+      dynamic_tick_action = true;
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
       cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();              // we're done after 25 seconds
@@ -2834,7 +2836,7 @@ public:
   void init_action_list() override
   {
     action_list_str = "auto_attack";
-    
+
     pet_t::init_action_list();
   }
 
@@ -2903,7 +2905,7 @@ private:
   struct melee_t : public melee_attack_t
   {
     monk_t* owner;
-    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) : 
+    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) :
         melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
@@ -3027,7 +3029,7 @@ public:
     buff_t* hit_combo_fm_ww     = nullptr;
   } buff;
 
-  fallen_monk_ww_pet_t( monk_t* owner ) : 
+  fallen_monk_ww_pet_t( monk_t* owner ) :
       pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     npc_id                      = 168033;
@@ -4891,8 +4893,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery                    = true;
     may_combo_strike              = true;
     trigger_chiji                 = true;
-    if ( !p->bugs )
-      sef_ability                   = SEF_TIGER_PALM;
+    sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
@@ -5251,7 +5252,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, 
+        p()->gain.serenity->add( RESOURCE_CHI,
             base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
@@ -5394,7 +5395,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   flaming_kicks_t* flaming_kicks;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "blackout_kick", p, 
+    : monk_melee_attack_t( "blackout_kick", p,
         ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
         flaming_kicks( new flaming_kicks_t( p ) )
   {
@@ -5816,7 +5817,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   chi_explosion_t* chi_x;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "spinning_crane_kick", p, 
+    : monk_melee_attack_t( "spinning_crane_kick", p,
         ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
       chi_x( nullptr )
   {
@@ -5852,7 +5853,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.dance_of_chiji->up() )
       c += p()->buff.dance_of_chiji->value();  // saved as -2
-    
+
     if ( p()->buff.dance_of_chiji_azerite->up() )
       c += p()->buff.dance_of_chiji_azerite->value();  // saved as -2
 
@@ -5920,7 +5921,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->covenant.necrolord->ok() )
       if ( p()->specialization() == MONK_WINDWALKER && td( execute_state->target )->debuff.bonedust_brew->up() )
         p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
-    
+
   }
 
   void last_tick( dot_t* dot ) override
@@ -7190,7 +7191,7 @@ struct special_delivery_t : public monk_spell_t
 
 struct fortifying_ingredients_t : public monk_absorb_t
 {
-  fortifying_ingredients_t( monk_t& p ) : 
+  fortifying_ingredients_t( monk_t& p ) :
       monk_absorb_t( "fortifying_ingredients", p, p.passives.fortifying_ingredients )
   {
     harmful = may_crit = false;
@@ -7203,7 +7204,7 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "fortifying_brew", &p, 
+    : monk_spell_t( "fortifying_brew", &p,
         ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
       fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
@@ -7284,7 +7285,7 @@ struct exploding_keg_t : public monk_spell_t
 
     return monk_spell_t::target_ready( candidate_target );
   }
-};  
+};
 
 // ==========================================================================
 // Stagger Damage
@@ -7522,7 +7523,7 @@ struct purifying_brew_t : public monk_spell_t
     parse_options( options_str );
 
     harmful     = false;
-    
+
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent(); // -20
 
@@ -7817,6 +7818,7 @@ struct weapons_of_order_t : public monk_spell_t
     : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7839,6 +7841,7 @@ struct bonedust_brew_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew", &p, p.covenant.necrolord )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7862,6 +7865,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
+    ww_mastery = true;
   }
 
   double action_multiplier() const override
@@ -7890,7 +7894,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
 
 struct bonedust_brew_heal_t : public monk_heal_t
 {
-  bonedust_brew_heal_t( monk_t& p ) : 
+  bonedust_brew_heal_t( monk_t& p ) :
       monk_heal_t( "bonedust_brew_heal", p, p.passives.bonedust_brew_heal )
   {
     background = true;
@@ -7922,10 +7926,11 @@ struct bonedust_brew_heal_t : public monk_heal_t
 
 struct faeline_stomp_ww_damage_t : public monk_spell_t
 {
-  faeline_stomp_ww_damage_t( monk_t& p ) : 
+  faeline_stomp_ww_damage_t( monk_t& p ) :
       monk_spell_t( "faeline_stomp_ww_dmg", &p, p.passives.faeline_stomp_ww_damage )
   {
     background = true;
+    ww_mastery = true;
   }
 };
 
@@ -7935,6 +7940,7 @@ struct faeline_stomp_damage_t : public monk_spell_t
     : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage )
   {
     background = true;
+    ww_mastery = true;
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -7965,11 +7971,12 @@ struct faeline_stomp_t : public monk_spell_t
   faeline_stomp_damage_t* damage;
   faeline_stomp_ww_damage_t* ww_damage;
   faeline_stomp_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ), 
+    : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ),
       damage( new faeline_stomp_damage_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     aoe = 5; // Currently hard-coded
   }
 
@@ -7994,6 +8001,8 @@ struct faeline_stomp_t : public monk_spell_t
       {
         p()->active_actions.breath_of_fire->target = s->target;
         p()->active_actions.breath_of_fire->execute();
+
+        p()->buff.faeline_stomp_brm->trigger();
         break;
       }
       default:
@@ -9147,7 +9156,7 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
     set_duration( s->duration() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    set_stack_change_callback( [ this ]( buff_t*, int, int ) { 
+    set_stack_change_callback( [ this ]( buff_t*, int, int ) {
         range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
     } );
   }
@@ -9374,7 +9383,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
-  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 337340 ) )
+  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 344021 ) )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -10081,6 +10090,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi                    = find_spell( 328296 );
   passives.faeline_stomp_damage                 = find_spell( 327264 );
   passives.faeline_stomp_ww_damage              = find_spell( 345727 );
+  passives.faeline_stomp_brm                    = find_spell( 347480 );
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
@@ -10244,7 +10254,7 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_default_value_from_effect( 1 );
 
-  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", 
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew",
       ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : spec.fortifying_brew_mw_ww ) );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", talent.rushing_jade_wind );
@@ -10440,9 +10450,9 @@ void monk_t::create_buffs()
 
   // Covenant Abilities
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
+                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() +
                             ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity.value() : 0 ) )
-                        ->set_duration( find_spell( 310454 )->duration() + ( 
+                        ->set_duration( find_spell( 310454 )->duration() + (
                             conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
                         ->add_invalidate( CACHE_MASTERY );
 
@@ -10451,6 +10461,9 @@ void monk_t::create_buffs()
 
   buff.faeline_stomp = make_buff( this, "faeline_stomp", covenant.night_fae )
                            ->set_default_value_from_effect( 2 );
+
+  buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
+                               ->set_default_value_from_effect( 1 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
@@ -11850,23 +11863,23 @@ void monk_t::apl_combat_windwalker()
   // AoE
   aoe->add_talent( this, "Whirling Dragon Punch", "if=buff.whirling_dragon_punch.up",
       "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
-  aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3|chi.max-chi>=4&(energy.time_to_max>2|!prev_gcd.1.tiger_palm)" );
+  aoe->add_talent( this, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>2|chi.max-chi>=4" );
   aoe->add_action( this, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|buff.dance_of_chiji_azerite.up)" );
-  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>execute_time-1|buff.storm_earth_and_fire.remains" );
+  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains" );
   aoe->add_action( this, "Rising Sun Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+3)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
       "if=combo_strike&((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2)|energy.time_to_max<=3)" );
   aoe->add_action( this, "Expel Harm", "if=chi.max-chi>=1+essence.conflict_and_strife.major" );
-  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=1" );
   aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
+  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=2" );
   aoe->add_action( this, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|combo_strike)" );
   aoe->add_talent( this, "Chi Wave", "if=combo_strike" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&(chi.max-chi>=1&energy.time_to_50<1|chi=2&cooldown.fists_of_fury.remains<3))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi=2&cooldown.fists_of_fury.remains<3|chi.max-chi<=1&prev_gcd.1.spinning_crane_kick)" );
 
   // Serenity Cooldowns
   cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|fight_remains<20", "Serenity Cooldowns" );
@@ -11917,7 +11930,7 @@ void monk_t::apl_combat_windwalker()
   cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
   cd_serenity->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<2|fight_remains<15" );
   cd_serenity->add_action( "bag_of_tricks" );
-  
+
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25", "Storm, Earth, and Fire Cooldowns" );
 
@@ -11928,7 +11941,7 @@ void monk_t::apl_combat_windwalker()
       cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1", "Use Arcane Torrent if you are missing at least 1 Chi" );
   }
 
-  cd_sef->add_action( this, "Touch of Death", "if=target.health.pct <= 15&buff.storm_earth_and_fire.down" );
+  cd_sef->add_action( this, "Touch of Death", "if=target.health.pct<=15&buff.storm_earth_and_fire.down" );
 
   // TODO: Remove in 9.0.2
   cd_sef->add_action( "blood_of_the_enemy,if=cooldown.fists_of_fury.remains<2|fight_remains<12" );
@@ -11942,7 +11955,7 @@ void monk_t::apl_combat_windwalker()
   cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
   cd_sef->add_action( "ripple_in_space" );
   cd_sef->add_action( this, "Storm, Earth, and Fire", "if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|buff.seething_rage.up|(cooldown.blood_of_the_enemy.remains+1>cooldown.storm_earth_and_fire.full_recharge_time|!essence.blood_of_the_enemy.major)&cooldown.fists_of_fury.remains<10&chi>=2&cooldown.whirling_dragon_punch.remains<12" );
-  
+
   // Storm, Earth, and Fire on-use trinkets
   for ( size_t i = 0; i < items.size(); i++ )
   {
@@ -11961,7 +11974,7 @@ void monk_t::apl_combat_windwalker()
       if ( racial_actions[ i ] == "ancestral_call" )
         cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>185|buff.storm_earth_and_fire.up|fight_remains<20" );
       else if ( racial_actions[ i ] == "blood_fury" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>125|buff.storm_earth_and_fire.up|fight_remains<20", 
+        cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>125|buff.storm_earth_and_fire.up|fight_remains<20",
             "Use Blood Fury if Touch of Death's cooldown is greater than 30 (this includes while ToD is currently active), or off cooldown when you are holding onto ToD, or when the target is about to die" );
       else if ( racial_actions[ i ] == "fireblood" )
         cd_sef->add_action( racial_actions[ i ] + ",if=fight_remains>125|buff.storm_earth_and_fire.up|fight_remains<20" );
@@ -11998,12 +12011,12 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&buff.storm_earth_and_fire.down", "Use TP if you are 4 or more chi away from max and ToD and SEF are both not up" );
   st->add_action( this, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies&combo_strike&buff.storm_earth_and_fire.down&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_energy.stack>10&fight_remains<7" );
   st->add_action( this, "Blackout Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(talent.serenity.enabled&cooldown.serenity.remains<3|cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>3|chi>5|buff.bok_proc.up)", 
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(talent.serenity.enabled&cooldown.serenity.remains<3|cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>3|chi>5|buff.bok_proc.up)",
                   "Use BoK if both FoF and RSK are not close, or RSK is close and FoF is not close and you have more than 2 chi, or FoF is close RSK is not close and you have more than 3 chi, or you have more than 5 chi, or if you get a proc" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   st->add_action( this, "Flying Serpent Kick", "interrupt=1", "Use FSK and interrupt it straight away" );
   st->add_action( this, "Blackout Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&chi=2&prev_gcd.1.tiger_palm&energy.time_to_50<1", 
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&chi=2&prev_gcd.1.tiger_palm&energy.time_to_50<1",
                   "Use BoK if FoF is close and you have 2 chi and your last global was TP, or if you are about to cap energy and either your last gcd was TP or if you are less than 2 chi away from capping" );
   st->add_action( this, "Blackout Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<2&(chi.max-chi<=1|prev_gcd.1.tiger_palm)" );
@@ -12138,19 +12151,18 @@ double monk_t::stagger_base_value()
     stagger_base = agility() * spec.stagger->effectN( 1 ).percent();
 
     if ( talent.high_tolerance->ok() )
-    {
       stagger_base *= 1 + talent.high_tolerance->effectN( 5 ).percent();
-    }
 
     if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
-    {
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
-    }
+
+    if ( bugs )
+      // Hard coding the 125% multiplier until Blizzard fixes this
+      if ( buff.faeline_stomp_brm->up() )
+        stagger_base *= 1.0 + 0.25;
 
     if ( buff.shuffle->check() )
-    {
       stagger_base *= 1.0 + passives.shuffle->effectN( 1 ).percent();
-    }
   }
 
   return stagger_base;
@@ -12167,6 +12179,12 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
 
   double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
+
+  // Bug: This is right now hard-coding the 5% instead of the estimated 125% multiplier to stagger_base
+  if (!bugs)
+    if ( buff.faeline_stomp_brm->up() )
+      stagger += buff.faeline_stomp_brm->value();
+
   return std::min( stagger, 0.99 );
 }
 

@@ -4429,8 +4429,11 @@ struct primal_wrath_t : public cat_attack_t
     special = true;
     aoe     = -1;
 
-    rip = p->get_secondary_action<rip_t>( "Rip", p->find_spell( 1079 ), "" );
+    rip = p->get_secondary_action<rip_t>( "rip", p->find_spell( 1079 ), "" );
     rip->stats = stats;
+
+    // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
+    snapshots.bloodtalons = true;
 
     if ( p->legendary.circle_of_life_and_death->ok() )
       base_dur *= 1.0 + p->query_aura_effect( p->legendary.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, s )->percent();
@@ -4465,8 +4468,6 @@ struct primal_wrath_t : public cat_attack_t
     auto b_state    = rip->get_state();
     b_state->target = s->target;
     rip->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
-    // Copy persistent multipliers from the direct attack.
-    b_state->persistent_multiplier = s->persistent_multiplier;
 
     auto target_rip = td( s->target )->dots.rip;
 
@@ -6496,6 +6497,11 @@ struct sunfire_t : public druid_spell_t
     else
       energize_type = action_energize::NONE;
 
+    if ( p->specialization() == DRUID_FERAL || p->specialization() == DRUID_GUARDIAN )
+    {
+      form_mask = MOONKIN_FORM;  // not in spell data for affinity version (id=197630)
+      base_costs[ RESOURCE_MANA ] = 0.0;   // so we don't need to enable mana regen
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -9153,9 +9159,9 @@ void druid_t::apl_balance()
 
   boat->add_action( "ravenous_frenzy,if=buff.ca_inc.up" );
   boat->add_action( "variable,name=critnotup,value=!buff.balance_of_all_things_nature.up&!buff.balance_of_all_things_arcane.up" );
+  boat->add_action( "adaptive_swarm,target_if=buff.balance_of_all_things_nature.stack_value<40&buff.balance_of_all_things_arcane.stack_value<40&(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   boat->add_action( "cancel_buff,name=starlord,if=(buff.balance_of_all_things_nature.remains>4.5|buff.balance_of_all_things_arcane.remains>4.5)&astral_power>=90&(cooldown.ca_inc.remains>7|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))" );
   boat->add_action( "starsurge,if=!variable.critnotup&((!cooldown.convoke_the_spirits.up|!variable.convoke_condition|!covenant.night_fae)&(covenant.night_fae|(cooldown.ca_inc.remains>7|(cooldown.empower_bond.remains>7&!buff.kindred_empowerment_energize.up&covenant.kyrian))))|(cooldown.convoke_the_spirits.up&cooldown.ca_inc.ready&covenant.night_fae)" );
-  boat->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
   boat->add_action( "sunfire,target_if=refreshable&target.time_to_die>16,if=ap_check&(variable.critnotup|(astral_power<30&!buff.ca_inc.up)|cooldown.ca_inc.ready)" );
   boat->add_action( "moonfire,target_if=refreshable&target.time_to_die>13.5,if=ap_check&(variable.critnotup|(astral_power<30&!buff.ca_inc.up)|cooldown.ca_inc.ready)&!buff.kindred_empowerment_energize.up" );
   boat->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16+remains,if=ap_check&(variable.critnotup|astral_power<30|cooldown.ca_inc.ready)" );
@@ -10686,6 +10692,7 @@ const affinity_spells_t affinity_spells[] =
     { "Starfire", 197628, DRUID_BALANCE },
     { "Starsurge", 197626, DRUID_BALANCE },
     { "Wrath", 5176, SPEC_NONE },
+    { "Sunfire", 197630, DRUID_BALANCE },
     { "Frenzied Regeneration", 22842, DRUID_GUARDIAN },
     { "Thrash", 77758, DRUID_GUARDIAN },
     { "Rake", 1822, DRUID_FERAL },

@@ -381,8 +381,6 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
-  // Prepatch Insignia of the Grand Army flat dmg multiplier
-  double insignia_of_the_grand_army_multiplier;
 
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
@@ -449,22 +447,12 @@ struct player_t : public actor_t
     buff_t* legendary_aoe_ring; // Legendary ring buff.
     buff_t* legendary_tank_buff;
 
-    // T17 LFR stuff
-    buff_t* surge_of_energy;
-    buff_t* natures_fury;
-    buff_t* brute_strength;
-
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
-    // 7.0 Legendaries
-    buff_t* aggramars_stride;
-
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
-    buff_t* norgannons_foresight; //Legendary item that allows movement for 5 seconds if you stand still for 8.
-    buff_t* norgannons_foresight_ready;
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
 
@@ -473,7 +461,6 @@ struct player_t : public actor_t
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
-    buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
     // Darkmoon Faire versatility food
@@ -517,19 +504,12 @@ struct player_t : public actor_t
     buff_t* power_infusion; // Priest spell
 
     // 9.0 Soulbinds
-    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
-    buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
-    buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
-    buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
+    buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
-
-    // 9.0 Trinkets
-    buff_t* overflowing_anima_prison;  // needed to allow usage of buff expr even when not equipped
   } buffs;
 
   struct debuffs_t

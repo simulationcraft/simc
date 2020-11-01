@@ -9,10 +9,10 @@ talents=3302023
 azerite_essences=14:3/5:3/32:3/35:3
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3&!equipped.169314
 actions.precombat+=/haunt
@@ -39,14 +38,18 @@ actions+=/vile_taint,if=soul_shard>1
 actions+=/siphon_life,if=refreshable
 actions+=/agony,if=refreshable
 actions+=/unstable_affliction,if=refreshable
+actions+=/unstable_affliction,if=azerite.cascading_calamity.enabled&buff.cascading_calamity.remains<3
 actions+=/corruption,if=refreshable
 actions+=/haunt
 actions+=/call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)
 actions+=/dark_soul,if=cooldown.summon_darkglare.remains>time_to_die
 actions+=/call_action_list,name=cooldowns
+actions+=/use_items
 actions+=/malefic_rapture,if=dot.vile_taint.ticking
-actions+=/malefic_rapture,if=!talent.vile_taint.enabled
+actions+=/malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)
+actions+=/malefic_rapture,if=talent.sow_the_seeds.enabled
 actions+=/drain_life,if=buff.inevitable_demise.stack>30
+actions+=/drain_life,if=buff.inevitable_demise_az.stack>30
 actions+=/drain_soul
 actions+=/shadow_bolt
 
@@ -64,7 +67,6 @@ actions.cooldowns+=/the_unbound_force,if=buff.reckless_force.remains
 actions.darkglare_prep=vile_taint
 actions.darkglare_prep+=/dark_soul
 actions.darkglare_prep+=/potion
-actions.darkglare_prep+=/use_items
 actions.darkglare_prep+=/fireblood
 actions.darkglare_prep+=/blood_fury
 actions.darkglare_prep+=/berserking

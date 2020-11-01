@@ -96,7 +96,7 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
   avengers_shield_dt_t( paladin_t* p ) :
     avengers_shield_base_t( "avengers_shield_divine_toll", p, p -> find_specialization_spell( "Avenger's Shield" ), "" )
   {
-    background=true;
+    background = true;
   }
 };
 
@@ -111,16 +111,39 @@ struct avengers_shield_t : public avengers_shield_base_t
   void execute() override
   {
     avengers_shield_base_t::execute();
-    if( p() -> buffs.moment_of_glory -> up() )
+
+    bool wasted_reset = false;
+
+    // Moment of Glory (MoG) will be consumed regardless of Holy Avengers Engraved Sigil (HAES) proc
+    // If they happen at the same time, HAES proc will be considered wasted over MoG as its cost is higher
+    // Assuming Legendary > Talents > Baseline
+    // Feel free to swap around these parts if the stance on the above changes
+    if ( p() -> buffs.moment_of_glory -> up() )
     {
-      p() -> cooldowns.avengers_shield -> reset( false );
+      if ( ! wasted_reset )
+      {
+        p() -> cooldowns.avengers_shield -> reset( false );
+        p() -> procs.as_moment_of_glory -> occur();
+        wasted_reset = true;
+      }
+      else
+        p() -> procs.as_moment_of_glory_wasted -> occur();
+
       p() -> buffs.moment_of_glory -> decrement( 1 );
     }
+
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
       rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
     {
-      p() -> cooldowns.avengers_shield -> reset( false );
-      p() -> procs.holy_avengers_engraved_sigil -> occur();
+      if ( ! wasted_reset )
+      {
+        // With 35% chance to proc, the average skill player can expect a proc to happen
+        p() -> cooldowns.avengers_shield -> reset( false );
+        p() -> procs.as_engraved_sigil -> occur();
+        wasted_reset = true;
+      }
+      else
+        p() -> procs.as_engraved_sigil_wasted -> occur();
     }
   }
 
@@ -151,8 +174,15 @@ struct moment_of_glory_t : public paladin_spell_t
     // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
     // then when you use the last stack you get another (4th) AS without a cooldown
     // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
+    if ( ! p() -> cooldowns.avengers_shield -> is_ready() )
+    {
+      p() -> procs.as_moment_of_glory -> occur();
+      p() -> cooldowns.avengers_shield -> reset( false );
+    }
+    else
+      p() -> procs.as_moment_of_glory_wasted -> occur();
+
     p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
-    p() -> cooldowns.avengers_shield -> reset( false );
   }
 };
 
@@ -626,7 +656,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   // Divine Bulwark and consecration reduction
-  if ( standing_in_consecration() )
+  if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
   {
     s -> result_amount *= 1.0 + spec.consecration_2 -> effectN( 1 ).percent()
       + cache.mastery() * mastery.divine_bulwark_2 -> effectN( 1 ).mastery_value();
@@ -719,8 +749,14 @@ void paladin_t::trigger_grand_crusader()
   if ( ! success )
     return;
 
-  // reset AS cooldown
-  cooldowns.avengers_shield -> reset( true );
+  // reset AS cooldown and count procs
+  if ( ! cooldowns.avengers_shield -> is_ready() )
+  {
+    procs.as_grand_crusader -> occur();
+    cooldowns.avengers_shield -> reset( true );
+  }
+  else
+    procs.as_grand_crusader_wasted -> occur();
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
@@ -731,8 +767,6 @@ void paladin_t::trigger_grand_crusader()
   {
     buffs.inspiring_vanguard -> trigger();
   }
-
-  procs.grand_crusader -> occur();
 }
 
 void paladin_t::trigger_holy_shield( action_state_t* s )
@@ -917,31 +951,42 @@ void paladin_t::generate_action_prio_list_prot()
 
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* std = get_action_priority_list( "standard" );
 
   def -> add_action( "auto_attack" );
 
   def -> add_action( "call_action_list,name=cooldowns" );
+  def -> add_action( "call_action_list,name=standard" );
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
-  cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
-  cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
+  cds -> add_talent( this, "Seraphim" );
+  cds -> add_action( this, "Avenging Wrath" );
+  cds -> add_talent( this, "Holy Avenger", "if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
-
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
+  cds -> add_talent( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
+  cds -> add_action( "heart_essence" );
 
-  def -> add_action( this, "Shield of the Righteous" );
-  def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );
-  def -> add_action( this, "Consecration", "if=!consecration.up" );
-
-  def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled" );
-  def -> add_action( this, "Avenger's Shield", "if=cooldown_react" );
-  def -> add_action( this, "Judgment","if=cooldown_react|!talent.crusaders_judgment.enabled" );
-  def -> add_action( "concentrated_flame,if=(!talent.seraphim.enabled|buff.seraphim.up)&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3" );
-  def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
-  def -> add_action( "Hammer of Wrath" );
-  def -> add_talent( this, "Blessed Hammer", "strikes=3" );
-  def -> add_action( this, "Hammer of the Righteous" );
-  def -> add_action( this, "Consecration" );
+  std -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up&(debuff.vengeful_shock.up|!conduit.vengeful_shock.enabled)" );
+  std -> add_action( this, "Shield of the Righteous" , "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );
+  std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
+  std -> add_action( this, "Avenger's Shield", "if=debuff.vengeful_shock.down&conduit.vengeful_shock.enabled" );
+  std -> add_action( this, "Hammer of Wrath" );
+  std -> add_action( this, "Avenger's Shield" );
+  std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains" );
+  std -> add_action( "vanquishers_hammer" );
+  std -> add_action( this, "Consecration", "if=!consecration.up" );
+  std -> add_action( "divine_toll" );
+  std -> add_talent( this, "Blessed Hammer", "strikes=2.4,if=charges=3" );
+  std -> add_action( "ashen_hallow" );
+  std -> add_action( this, "Hammer of the Righteous", "if=charges=2" );
+  std -> add_action( this, "Word of Glory", "if=buff.vanquishers_hammer.up" );
+  std -> add_talent( this, "Blessed Hammer", "strikes=2.4" );
+  std -> add_action( this, "Hammer of the Righteous" );
+  std -> add_action( "lights_judgment" );
+  std -> add_action( "arcane_torrent" );
+  std -> add_action( this, "Consecration" );
+  std -> add_action( this, "Word of Glory", "if=buff.shining_light_free.up&!covenant.necrolord" );
 
 }
 }
