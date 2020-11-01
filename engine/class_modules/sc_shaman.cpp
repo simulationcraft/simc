@@ -912,6 +912,24 @@ public:
     return td;
   }
 
+
+  // Secondary Action Tracking
+  std::vector<action_t*> background_actions;
+  template <typename T, typename... Ts>
+  T* get_background_action( util::string_view n, Ts&&... args )
+  {
+    auto it = range::find( background_actions, n, &action_t::name_str );
+    if ( it != background_actions.cend() )
+    {
+      return dynamic_cast<T*>( *it );
+    }
+
+    auto action        = new T( n, this, std::forward<Ts>( args )... );
+    action->background = true;
+    background_actions.push_back( action );
+    return action;
+  }
+
   // Helper to trigger a secondary ability through action scheduling (i.e., schedule_execute()),
   // without breaking targeting information. Note, causes overhead as an extra action_state_t object
   // is needed to carry the information.
@@ -3817,8 +3835,8 @@ struct earthquake_damage_t : public shaman_spell_t
 {
   double kb_chance;
 
-  earthquake_damage_t( shaman_t* player )
-    : shaman_spell_t( "earthquake_", player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
+  earthquake_damage_t( util::string_view name, shaman_t* player )
+    : shaman_spell_t( name, player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
   {
     aoe        = -1;
     ground_aoe = background = true;
@@ -3851,33 +3869,14 @@ struct earthquake_damage_t : public shaman_spell_t
   }
 };
 
-struct earthquake_deeptremor_damage_t : public shaman_spell_t
-{
-  double kb_chance;
-
-  earthquake_deeptremor_damage_t( shaman_t* player )
-    : shaman_spell_t( "earthquake_deeptremor", player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
-  {
-    aoe        = -1;
-    ground_aoe = background = true;
-    school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.2875;  // still cool to hardcode the SP% into tooltip
-  }
-
-  double composite_target_armor( player_t* ) const override
-  {
-    return 0;
-  }
-};
-
 struct earthquake_t : public shaman_spell_t
 {
   earthquake_damage_t* rumble;
 
   earthquake_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ), options_str ),
-      rumble( new earthquake_damage_t( player ) )
+    : shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ), options_str )
   {
+    rumble       = player->get_background_action<earthquake_damage_t>( "earthquake_" );
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
   }
@@ -3907,12 +3906,12 @@ struct earthquake_t : public shaman_spell_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-  earthquake_deeptremor_damage_t* rumble;
+  earthquake_damage_t* rumble;
 
   earth_elemental_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str ),
-      rumble( new earthquake_deeptremor_damage_t( player ) )
+    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str )
   {
+    rumble  = player->get_background_action<earthquake_damage_t>( "earthquake_deeptremor" );
     harmful = may_crit = false;
     cooldown->duration =
         player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
