@@ -3809,7 +3809,9 @@ struct flurry_t final : public frost_mage_spell_t
 
     if ( brain_freeze )
     {
-      p()->remaining_winters_chill = 2;
+      if ( p()->spec.brain_freeze_2->ok() )
+        p()->remaining_winters_chill = 2;
+
       p()->procs.brain_freeze_used->occur();
     }
 
