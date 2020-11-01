@@ -1970,11 +1970,11 @@ void action_t::schedule_execute( action_state_t* execute_state )
         player->off_hand_attack->execute_event->reschedule( time_to_next_hit );
       }
     }
-  }
 
-  if ( player->resource_regeneration == regen_type::DYNAMIC )
-  {
-    player->do_dynamic_regen( true );
+    if ( player->resource_regeneration == regen_type::DYNAMIC )
+    {
+      player->do_dynamic_regen( true );
+    }
   }
 }
 
