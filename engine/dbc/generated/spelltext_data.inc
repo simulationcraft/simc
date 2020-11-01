@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15000> __spelltext_data { {
+static const std::array<spelltext_data_t, 15001> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14877,6 +14877,7 @@ static const std::array<spelltext_data_t, 15000> __spelltext_data { {
   { 344802, "Increases a mortals Agility by $s1 for $d.", "Agility increase by $w1.", 0 },
   { 344803, "$@spelldesc344806", "Critical Strike increased by $w1.", 0 },
   { 344806, "Join the Crimson Chorus. Every minute, your Critical Strike swells by ${$s1*3} over ${$344803d*3} sec. before returning to normal. This effect is increased by $s2% for each member of the Crimson Chorus in your party.", 0, 0 },
+  { 344820, "$@spelldesc344806", 0, 0 },
   { 344859, "$@spelldesc162243", 0, 0 },
   { 344862, "$@spelldesc162794", 0, 0 },
   { 344865, "$@spelldesc195072", 0, 0 },
