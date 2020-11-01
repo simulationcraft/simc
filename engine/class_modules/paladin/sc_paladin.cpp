@@ -1063,6 +1063,7 @@ struct divine_toll_t : public paladin_spell_t
 
 struct hallowed_discernment_tick_t : public paladin_spell_t
 {
+  double aoe_multiplier;
   // This should be using 340203 but I don't have its spell data.
   hallowed_discernment_tick_t( paladin_t* p ) :
     paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 317221 ) )
@@ -1070,6 +1071,14 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
       dual = true;
+      aoe_multiplier = 1.0; //This gets overwritten
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_spell_t::action_multiplier();
+      am *= aoe_multiplier;
+      return am;
     }
 };
 
@@ -1132,8 +1141,13 @@ struct ashen_hallow_tick_t : public paladin_spell_t
         }
       );
       hallowed_discernment_tick -> set_target( lowest_hp_target );
-      // Damage is calculated independently of Ashen Hallow.
+
+      paladin_spell_t::execute();
+
+      // Damage is calculated independently of Ashen Hallow. ie. they crit separately
+      hallowed_discernment_tick -> aoe_multiplier = composite_aoe_multiplier( execute_state );
       hallowed_discernment_tick -> execute();
+      return;
     }
 
     // To Do: Check if the initial tick affects the target picked, if so then move this up
