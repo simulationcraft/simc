@@ -592,15 +592,12 @@ struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
-      double aoe_spell_coeff;
-
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) : 
-          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) ),
-          aoe_spell_coeff( spc )
+          affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
         background = true;
-        spell_power_mod.direct = aoe_spell_coeff;
+        spell_power_mod.direct = spc;
         callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
 
         p->spells.malefic_rapture_aoe = this;
