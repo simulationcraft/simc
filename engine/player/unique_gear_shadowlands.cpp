@@ -441,18 +441,19 @@ void cabalists_hymnal( special_effect_t& effect )
   {
     auto mul =
         1.0 + effect.driver()->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.crimson_choir_in_party;
+    timespan_t duration = effect.trigger()->duration() * effect.trigger()->max_stacks();
 
     buff = make_buff<stat_buff_t>( effect.player, "crimson_chorus", effect.trigger(), effect.item )
       ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * mul )
       ->set_period( effect.trigger()->duration() )
-      ->set_duration( effect.trigger()->duration() * effect.trigger()->max_stacks() );
+      ->set_duration( duration )
+      ->set_cooldown( effect.player->find_spell( 344820 )->duration() + duration );
   }
 
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, 1_min, [ buff ]() {
-      buff->trigger();
-    } );
-  } );
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void dreadfire_vessel( special_effect_t& effect )
