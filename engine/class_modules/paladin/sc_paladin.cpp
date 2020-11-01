@@ -1910,7 +1910,7 @@ void paladin_t::init_spells()
   conduit.ringing_clarity = find_conduit_spell( "Ringing Clarity" );
   conduit.vengeful_shock = find_conduit_spell( "Vengeful Shock" );
   conduit.focused_light = find_conduit_spell( "Focused Light" );
-  conduit.lights_reach = find_conduit_spell( "Light's Reach" );
+  conduit.expurgation = find_conduit_spell( "Expurgation" );
   conduit.templars_vindication = find_conduit_spell( "Templar's Vindication" );
   conduit.the_long_summer = find_conduit_spell( "The Long Summer" ); // TODO: implement
   conduit.truths_wake = find_conduit_spell( "Truth's Wake" );

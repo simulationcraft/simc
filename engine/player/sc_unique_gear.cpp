@@ -117,20 +117,6 @@ namespace gem
 
 namespace set_bonus
 {
-  void t17_lfr_4pc_agimelee( special_effect_t& );
-  void t17_lfr_4pc_clothcaster( special_effect_t& );
-  void t17_lfr_4pc_leamelee( special_effect_t& );
-  void t17_lfr_4pc_leacaster( special_effect_t& );
-  void t17_lfr_4pc_mailcaster( special_effect_t& );
-  void t17_lfr_4pc_platemelee( special_effect_t& );
-
-  void t18_lfr_4pc_clothcaster( special_effect_t& );
-  void t18_lfr_4pc_platemelee( special_effect_t& );
-  void t18_lfr_4pc_leathercaster( special_effect_t& );
-  void t18_lfr_4pc_mail_agility( special_effect_t& );
-  void t18_lfr_4pc_mail_caster( special_effect_t& );
-  void t18_lfr_4pc_leather_melee( special_effect_t& );
-
   // Generic passive stat aura adder for set bonuses
   void passive_stat_aura( special_effect_t& );
 }
@@ -970,367 +956,6 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
   double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
 
   effect.player -> passive.add_stat( stat, amount );
-}
-
-void set_bonus::t17_lfr_4pc_agimelee( special_effect_t& effect )
-{
-  struct t17_lfr_4pc_agi_melee_nuke_t : public melee_attack_t
-  {
-    t17_lfr_4pc_agi_melee_nuke_t( player_t* p ) :
-      melee_attack_t( "converging_spikes", p, p -> find_spell( 179132 ) )
-    {
-      background = proc = may_crit = true;
-      callbacks = false;
-    }
-  };
-
-  action_t* a = effect.player -> create_proc_action( "converging_spikes", effect );
-  if ( ! a )
-  {
-    a = new t17_lfr_4pc_agi_melee_nuke_t( effect.player );
-  }
-
-  effect.execute_action = a;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t17_lfr_4pc_leamelee( special_effect_t& effect )
-{
-  effect.player -> buffs.surge_of_energy = make_buff( effect.player, "surge_of_energy", effect.player -> find_spell( 179116 ) )
-                                           ->set_affects_regen( true );
-  effect.custom_buff = effect.player -> buffs.surge_of_energy;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t17_lfr_4pc_leacaster( special_effect_t& effect )
-{
-  struct natures_fury_t : public residual_action::residual_periodic_action_t< spell_t >
-  {
-    natures_fury_t( player_t* p ) :
-      residual_action_t( "natures_fury", p, p -> find_spell( 179120 ) )
-    { background = true; callbacks = false; }
-  };
-
-  struct natures_fury_cb_t : public dbc_proc_callback_t
-  {
-    const spell_data_t* cbdata;
-    natures_fury_t* dot;
-
-    natures_fury_cb_t( const special_effect_t& data ) :
-      dbc_proc_callback_t( data.player, data ),
-      cbdata( data.player -> find_spell( 179119 ) ),
-      dot( new natures_fury_t( data.player ) )
-    { }
-
-    void reset() override
-    {
-      dbc_proc_callback_t::reset();
-
-      deactivate();
-    }
-
-    void execute( action_t* /* a */, action_state_t* state ) override
-    {
-      if ( state -> result_amount == 0 )
-      {
-        return;
-      }
-
-      double value = state -> result_amount * cbdata -> effectN( 1 ).percent();
-      residual_action::trigger( dot, state -> target, value );
-    }
-  };
-
-  struct natures_fury_buff_t : public buff_t
-  {
-    natures_fury_cb_t* callback;
-
-    natures_fury_buff_t( player_t* player, natures_fury_cb_t* cb ) :
-      buff_t(  player, "natures_fury", player -> find_spell( 179119 ) ),
-      callback( cb )
-    { }
-
-    void start( int stacks, double value, timespan_t duration ) override
-    {
-      buff_t::start( stacks, value, duration );
-
-      callback -> activate();
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-
-      callback -> deactivate();
-    }
-  };
-
-  special_effect_t* damage_effect = new special_effect_t( effect.player );
-  damage_effect -> spell_id = 179119;
-  damage_effect -> name_str = "natures_fury_damage_driver";
-  damage_effect -> proc_flags2_ = PF2_ALL_HIT; // Shift proccing to impact, so we can trigger with aoe spells properly
-  effect.player -> special_effects.push_back( damage_effect );
-
-  natures_fury_cb_t* cb = new natures_fury_cb_t( *damage_effect );
-
-  effect.player -> buffs.natures_fury = new natures_fury_buff_t( effect.player, cb );
-  effect.custom_buff = effect.player -> buffs.natures_fury;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
-{
-  struct electric_orb_aoe_t : public spell_t
-  {
-    electric_orb_aoe_t( player_t* player ) :
-      spell_t( "electric_orb", player, player -> find_spell( 179136 ) )
-    {
-      proc = background = may_crit = true;
-      callbacks = false;
-
-      aoe = -1;
-
-    }
-  };
-
-  struct electric_orb_event_t : public event_t
-  {
-    electric_orb_aoe_t* aoe;
-    player_t* target;
-    unsigned pulse_id;
-
-    electric_orb_event_t( sim_t& sim, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
-      event_t( sim, timespan_t::from_seconds( 2.0 ) ),
-      aoe( a ), target( t ), pulse_id( pulse )
-    {
-    }
-    const char* name() const override
-    { return "electric_orb_event"; }
-    void execute() override
-    {
-      aoe -> target = target;
-      aoe -> execute();
-
-      if ( ++pulse_id < 5 )
-      {
-        make_event<electric_orb_event_t>( sim(), sim(), aoe, target, pulse_id );
-      }
-    }
-  };
-
-  struct electric_orb_cb_t : public dbc_proc_callback_t
-  {
-    electric_orb_aoe_t* aoe;
-
-    electric_orb_cb_t( const special_effect_t& data ) :
-      dbc_proc_callback_t( data.player, data ),
-      aoe( new electric_orb_aoe_t( data.player ) )
-    { }
-
-    void execute( action_t* /* a */, action_state_t* state ) override
-    {
-      make_event<electric_orb_event_t>(*listener -> sim, *listener -> sim, aoe, state -> target, 0 );
-    }
-  };
-
-  effect.proc_flags2_ = PF2_ALL_HIT; // Proc on impact so we can proc on multiple targets
-
-  new electric_orb_cb_t( effect );
-}
-
-void set_bonus::t17_lfr_4pc_platemelee( special_effect_t& effect )
-{
-  const spell_data_t* driver = effect.player -> find_spell( effect.spell_id );
-  effect.player -> buffs.brute_strength = make_buff( effect.player, "brute_strength", driver -> effectN( 1 ).trigger() )
-                                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  effect.custom_buff = effect.player -> buffs.brute_strength;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
-{
-  const spell_data_t* spell = spell_data_t::nil();
-
-  switch ( effect.player -> specialization() )
-  {
-    case MAGE_ARCANE:
-      spell = effect.player -> find_spell( 179157 );
-      break;
-    case MAGE_FIRE:
-      spell = effect.player -> find_spell( 179154 );
-      break;
-    case MAGE_FROST:
-      spell = effect.player -> find_spell( 179156 );
-      break;
-    case PRIEST_SHADOW:
-    case WARLOCK_AFFLICTION:
-    case WARLOCK_DEMONOLOGY:
-    case WARLOCK_DESTRUCTION:
-      spell = effect.player -> find_spell( 179155 );
-      break;
-    default:
-      break;
-  }
-
-  if ( spell -> id() == 0 )
-  {
-    effect.type = SPECIAL_EFFECT_NONE;
-    return;
-  }
-
-  effect.proc_flags2_ = PF2_CAST_DAMAGE;
-
-  auto spell_name = util::tokenize_fn( spell -> name_cstr() );
-
-  struct eruption_t : public spell_t
-  {
-    eruption_t( const std::string& name, player_t* player, const spell_data_t* s ) :
-      spell_t( name, player, s )
-    {
-      background = proc = may_crit = true;
-      callbacks = false;
-    }
-  };
-
-  effect.execute_action = new eruption_t( spell_name, effect.player, spell );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
-{
-  effect.proc_flags2_ = PF2_CAST_DAMAGE;
-
-  action_t* spell = effect.player -> find_action( "fel_meteor" );
-  if ( ! spell )
-  {
-    spell = effect.player -> create_proc_action( "fel_meteor", effect );
-  }
-
-  if ( ! spell )
-  {
-    spell = new lfr_harmful_spell_t( "fel_meteor", effect, effect.trigger() );
-    // Meteor, so split damage
-    spell -> aoe = -1;
-    spell -> split_aoe_damage = true;
-  }
-
-  effect.execute_action = spell;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void fel_winds_callback( buff_t* buff, int ct, timespan_t )
-{
-  double old_mas = buff -> player -> cache.attack_speed();
-  // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
-  buff -> player -> invalidate_cache( CACHE_ATTACK_SPEED );
-  // Hardcoding this value for now, the spell data does not really make sense.
-  buff -> current_value = buff -> default_value - 0.1 * ct;
-  if ( buff -> sim -> debug )
-  {
-    buff -> sim -> out_debug.printf( "%s %s effect decreases, current_value=%.f",
-        buff -> player -> name(), buff -> name(), buff -> current_value );
-  }
-
-  if ( buff -> current_value > 0 )
-  {
-    if ( buff -> player -> main_hand_attack )
-      buff -> player -> main_hand_attack -> reschedule_auto_attack( old_mas );
-    if ( buff -> player -> off_hand_attack )
-      buff -> player -> off_hand_attack -> reschedule_auto_attack( old_mas );
-  }
-}
-
-void set_bonus::t18_lfr_4pc_platemelee( special_effect_t& effect )
-{
-  if ( ! effect.player -> buffs.fel_winds )
-  {
-    effect.player -> buffs.fel_winds = make_buff( effect.player, "fel_winds", effect.trigger() );
-    effect.player -> buffs.fel_winds->set_default_value( effect.trigger() -> effectN( 1 ).percent() )
-      ->set_tick_callback( fel_winds_callback )
-      ->add_invalidate(CACHE_ATTACK_SPEED);
-  }
-
-  effect.custom_buff = effect.player -> buffs.fel_winds;
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t18_lfr_4pc_leathercaster( special_effect_t& effect )
-{
-  // Direct damage spells have a chance to .. the target.
-  effect.proc_flags2_ = PF2_ALL_HIT;
-
-  action_t* spell = effect.player -> find_action( "fel_chaos" );
-  if ( ! spell )
-  {
-    spell = effect.player -> create_proc_action( "fel_chaos", effect );
-  }
-
-  if ( ! spell )
-  {
-    spell = new lfr_harmful_spell_t( "fel_chaos", effect, effect.trigger() );
-  }
-
-  spell -> hasted_ticks = false;
-
-  effect.execute_action = spell;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t18_lfr_4pc_mail_agility( special_effect_t& effect )
-{
-  action_t* spell = effect.player -> find_action( "fel_explosion" );
-  if ( ! spell )
-  {
-    spell = effect.player -> create_proc_action( "fel_explosion", effect );
-  }
-
-  if ( ! spell )
-  {
-    spell = new lfr_harmful_spell_t( "fel_explosion", effect, effect.trigger() );
-  }
-
-  spell -> aoe = -1;
-
-  effect.execute_action = spell;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t18_lfr_4pc_mail_caster( special_effect_t& effect )
-{
-  action_t* spell = effect.player -> find_action( "chaotic_flame" );
-  if ( ! spell )
-  {
-    spell = effect.player -> create_proc_action( "chaotic_flame", effect );
-  }
-
-  if ( ! spell )
-  {
-    spell = new lfr_harmful_spell_t( "chaotic_flame", effect, effect.player -> find_spell( 187773 ) );
-  }
-
-  spell -> aoe = -1;
-
-  // Procs on all targets?
-  effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.execute_action = spell;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void set_bonus::t18_lfr_4pc_leather_melee( special_effect_t& effect )
-{
-  player_t* p = effect.player;
-
-  p -> resources.base[ RESOURCE_ENERGY ] += effect.driver() -> effectN( 1 ).base_value();
-  p -> resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + effect.driver() -> effectN( 2 ).percent();
 }
 
 // Items ====================================================================
@@ -4558,14 +4183,14 @@ void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
     __fallback_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned           spell_id,
-                                           custom_cb_t init_callback )
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback )
 {
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
   dbitem.cb_obj = new wrapper_callback_t( std::move(init_callback) );
+  dbitem.fallback = fallback;
 
-  __special_effect_db.push_back( dbitem );
+  add_effect( dbitem );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
@@ -4575,6 +4200,20 @@ void unique_gear::register_special_effect( unsigned spell_id, const char* encode
   dbitem.encoded_options = encoded_str;
 
   __special_effect_db.push_back( dbitem );
+}
+
+bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names )
+{
+  if ( effect.source != SPECIAL_EFFECT_SOURCE_FALLBACK )
+    return false;
+
+  for ( auto name : names )
+  {
+    if ( !buff_t::find( effect.player, name ) )
+      make_buff( effect.player, name )->set_chance( 0.0 );
+  }
+
+  return true;
 }
 
 /**
@@ -4814,47 +4453,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 137248, gem::courageous_primal               ); /* Healer Legendary Gem */
 
   /* Generic special effects begin here */
-
-  /* T17 LFR set bonuses */
-  register_special_effect( 179108, set_bonus::passive_stat_aura     ); /* 2P Cloth DPS */
-  register_special_effect( 179107, set_bonus::t17_lfr_4pc_clothcaster   );
-  register_special_effect( 179110, set_bonus::passive_stat_aura     ); /* 2P Cloth Healer */
-  register_special_effect( 179114, set_bonus::passive_stat_aura     ); /* 2P Leather Melee */
-  register_special_effect( 179115, set_bonus::t17_lfr_4pc_leamelee      );
-  register_special_effect( 179117, set_bonus::passive_stat_aura     ); /* 2P Leather Caster */
-  register_special_effect( 179118, set_bonus::t17_lfr_4pc_leacaster     );
-  register_special_effect( 179121, set_bonus::passive_stat_aura     ); /* 2P Leather Healer */
-  register_special_effect( 179127, set_bonus::passive_stat_aura     ); /* 2P Leather Tank */
-  register_special_effect( 179130, set_bonus::passive_stat_aura     ); /* 2P Mail Agility */
-  register_special_effect( 179131, set_bonus::t17_lfr_4pc_agimelee      );
-  register_special_effect( 179133, set_bonus::passive_stat_aura     ); /* 2P Mail Caster */
-  register_special_effect( 179134, set_bonus::t17_lfr_4pc_mailcaster    );
-  register_special_effect( 179137, set_bonus::passive_stat_aura     ); /* 2P Mail Healer */
-  register_special_effect( 179139, set_bonus::passive_stat_aura     ); /* 2P Plate Melee */
-  register_special_effect( 179140, set_bonus::t17_lfr_4pc_platemelee    );
-  register_special_effect( 179142, set_bonus::passive_stat_aura     ); /* 2P Plate Tank */
-  register_special_effect( 179145, set_bonus::passive_stat_aura     ); /* 2P Plate Healer */
-
-  /* T18 LFR set bonuses */
-  register_special_effect( 187075, set_bonus::passive_stat_aura     ); /* 2P Cloth DPS */
-  register_special_effect( 187132, set_bonus::passive_stat_aura     ); /* 2P Cloth Healer */
-  register_special_effect( 187133, set_bonus::passive_stat_aura     ); /* 2P Leather Caster */
-  register_special_effect( 187134, set_bonus::passive_stat_aura     ); /* 2P Leather Healer */
-  register_special_effect( 187135, set_bonus::passive_stat_aura     ); /* 2P Leather Melee */
-  register_special_effect( 187136, set_bonus::passive_stat_aura     ); /* 2P Leather Tank */
-  register_special_effect( 187137, set_bonus::passive_stat_aura     ); /* 2P Mail Agility */
-  register_special_effect( 187138, set_bonus::passive_stat_aura     ); /* 2P Mail Caster */
-  register_special_effect( 187139, set_bonus::passive_stat_aura     ); /* 2P Mail Healer */
-  register_special_effect( 187140, set_bonus::passive_stat_aura     ); /* 2P Plate Healer */
-  register_special_effect( 187141, set_bonus::passive_stat_aura     ); /* 2P Plate Melee */
-  register_special_effect( 187142, set_bonus::passive_stat_aura     ); /* 2P Plate Tank */
-
-  register_special_effect( 187079, set_bonus::t18_lfr_4pc_clothcaster   );
-  register_special_effect( 187151, set_bonus::t18_lfr_4pc_platemelee    );
-  register_special_effect( 187435, set_bonus::t18_lfr_4pc_leathercaster );
-  register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
-  register_special_effect( 187778, set_bonus::t18_lfr_4pc_mail_caster   );
-  register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
 
   /* Racial special effects */
   register_special_effect( 5227,   racial::touch_of_the_grave );

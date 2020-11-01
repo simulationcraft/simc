@@ -325,7 +325,7 @@ public:
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }
 
-  util::span<const dbc_item_data_t> items() const
+  util::span<const util::span<const dbc_item_data_t>> items() const
   { return dbc_item_data_t::data( ptr ); }
 
   // Gametables removed in Legion
