@@ -1103,25 +1103,12 @@ struct ashen_hallow_tick_t : public paladin_spell_t
   {
     double cam = paladin_spell_t::composite_aoe_multiplier( state );
 
-    // Thanks Melekus & pao for this formula
-    // There's gotta be a cleaner way to do this
-    // TODO: confirm this
+    // Formula courtesy of Mythie
     if ( state -> n_targets <= 5 )
-    {
       return cam;
-    }
-    else if ( state -> n_targets <= 10 )
-    {
-      return cam * (20.0 - state -> n_targets) / 15.0;
-    }
-    else if ( state -> n_targets <= 12 )
-    {
-      return cam * 2.0 / 3;
-    }
-    else // if ( state -> n_targets > 12 )
-    {
-      return cam * ( 8.0 / state -> n_targets );
-    }
+    else
+      return cam * 7.8 * std::log( 0.112 * state -> n_targets + 1.346 ) / state -> n_targets;
+    // Post 20 is managed by action_t::calculate_direct_amount
   }
 
   void execute() override
