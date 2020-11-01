@@ -2804,7 +2804,9 @@ struct arcane_intellect_t final : public mage_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
-    background = sim->overrides.arcane_intellect != 0;
+
+    if ( sim->overrides.arcane_intellect )
+      background = true;
   }
 
   void execute() override
@@ -3095,7 +3097,8 @@ struct blink_t final : public mage_spell_t
     movement_directionality = movement_direction_type::OMNI;
     cooldown->duration += p->conduits.flow_of_time.time_value();
 
-    background = p->talents.shimmer->ok();
+    if ( p->talents.shimmer->ok() )
+      background = true;
   }
 };
 
@@ -3340,7 +3343,9 @@ struct use_mana_gem_t final : public action_t
     parse_options( options_str );
     harmful = callbacks = may_crit = may_miss = false;
     target = player;
-    background = p->specialization() != MAGE_ARCANE;
+
+    if ( p->specialization() != MAGE_ARCANE )
+      background = true;
   }
 
   bool ready() override
@@ -5223,7 +5228,9 @@ struct summon_water_elemental_t final : public frost_mage_spell_t
     parse_options( options_str );
     harmful = track_cd_waste = false;
     ignore_false_positive = true;
-    background = p->talents.lonely_winter->ok();
+
+    if ( p->talents.lonely_winter->ok() )
+      background = true;
   }
 
   void execute() override
@@ -5250,7 +5257,9 @@ struct time_warp_t final : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    background = sim->overrides.bloodlust != 0 && !p->runeforge.temporal_warp.ok();
+
+    if ( sim->overrides.bloodlust && !p->runeforge.temporal_warp.ok() )
+      background = true;
   }
 
   void execute() override
@@ -5610,7 +5619,9 @@ struct freeze_t final : public action_t
     parse_options( options_str );
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-    background = p->talents.lonely_winter->ok();
+
+    if ( p->talents.lonely_winter->ok() )
+      background = true;
   }
 
   void execute() override
