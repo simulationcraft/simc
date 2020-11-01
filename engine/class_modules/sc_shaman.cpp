@@ -934,7 +934,7 @@ public:
   // Secondary Action Tracking
   std::vector<action_t*> background_actions;
   template <typename T, typename... Ts>
-  T* get_background_action( util::string_view n, Ts&&... args )
+  T* get_background_action( const std::string& n, Ts&&... args )
   {
     auto it = range::find( background_actions, n, &action_t::name_str );
     if ( it != background_actions.cend() )
@@ -3903,7 +3903,7 @@ struct earthquake_damage_t : public shaman_spell_t
 {
   double kb_chance;
 
-  earthquake_damage_t( util::string_view name, shaman_t* player )
+  earthquake_damage_t( const std::string& name, shaman_t* player )
     : shaman_spell_t( name, player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
   {
     aoe        = -1;
