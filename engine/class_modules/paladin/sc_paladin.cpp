@@ -271,7 +271,7 @@ struct consecration_tick_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p() -> conduit.golden_path -> ok() & p() -> standing_in_consecration() )
+    if ( p() -> conduit.golden_path -> ok() && p() -> standing_in_consecration() )
       heal_tick -> execute();
   }
 };
