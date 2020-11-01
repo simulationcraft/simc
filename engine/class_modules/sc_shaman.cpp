@@ -859,6 +859,7 @@ public:
   void create_options() override;
   void init_gains() override;
   void init_procs() override;
+  void init_assessors() override;
   std::string create_profile( save_e ) override;
 
   // APL releated methods
@@ -7893,12 +7894,9 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
 
 void shaman_t::trigger_elemental_equilibrium( const action_state_t* state )
 {
-  if ( !legendary.elemental_equilibrium.ok() )
-  {
-    return;
-  }
-
-  if ( state->result_type != result_amount_type::DMG_DIRECT || state->result_amount <= 0 )
+  // Apparently Flametongue cannot proc Elemental Equilibrium, but pretty much everything
+  // else (including consumables and trinkets) can.
+  if ( state->action->id == 10444 )
   {
     return;
   }
@@ -8507,6 +8505,25 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
   proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
   proc.stormflurry       = get_proc( "Stormflurry" );
+}
+
+// shaman_t::init_assessors =================================================
+
+void shaman_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( legendary.elemental_equilibrium.ok() )
+  {
+    assessor_out_damage.add( assessor::LEECH + 1,
+      [ this ]( result_amount_type type, action_state_t* state ) {
+        if ( type == result_amount_type::DMG_DIRECT && state->result_amount > 0 )
+        {
+          trigger_elemental_equilibrium( state );
+        }
+        return assessor::CONTINUE;
+      } );
+  }
 }
 
 // shaman_t::init_rng =======================================================
