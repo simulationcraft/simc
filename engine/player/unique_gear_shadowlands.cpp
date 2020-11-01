@@ -653,7 +653,7 @@ void soul_igniter( special_effect_t& effect )
   };
 
   auto damage_action = create_proc_action<blazing_surge_t>( "blazing_surge", effect );
-  effect.execute_action = new soul_ignition_t( effect );
+  effect.execute_action = create_proc_action<soul_ignition_t>( "soul_ignition", effect );
   auto buff = buff_t::find( effect.player, "soul_ignition" );
   if ( !buff )
     buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
@@ -709,6 +709,93 @@ void bottled_chimera_toxin( special_effect_t& effect )
 
   auto callback = new dbc_proc_callback_t( effect.item, *secondary );
   callback->initialize();
+}
+
+/**Empyreal Ordnance
+ * id=345539 driver
+ * id=345540 projectiles and DoT
+ * id=345542 DoT damage
+ * id=345541 buff
+ * id=345543 buff value
+ */
+void empyreal_ordnance( special_effect_t& effect )
+{
+  struct empyreal_ordnance_bolt_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double buff_travel_speed;
+
+    empyreal_ordnance_bolt_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "empyreal_ordnance_bolt", e.player, e.player->find_spell( 345540 ) ),
+      buff( b )
+    {
+      base_td = e.player->find_spell( 345542 )->effectN( 1 ).average( e.item );
+      buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+    {
+      return duration;
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      double distance = player->get_player_distance( *d->target );
+      // TODO: This travel time seems slightly wrong at long range (about 500 ms too fast).
+      timespan_t buff_travel_time = timespan_t::from_seconds( buff_travel_speed ? distance / buff_travel_speed : 0 );
+      int stack = d->current_stack();
+      make_event( *sim, buff_travel_time, [ this, stack ] { buff->trigger( stack ); } );
+      proc_spell_t::last_tick( d );
+    }
+  };
+
+  struct empyreal_ordnance_t : public proc_spell_t
+  {
+    action_t* empyreal_ordnance_bolt;
+    size_t num_bolts;
+
+    empyreal_ordnance_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "empyreal_ordnance", e.player, e.driver() )
+    {
+      num_bolts = as<size_t>( e.driver()->effectN( 1 ).base_value() );
+      aoe = as<int>( e.driver()->effectN( 2 ).base_value() );
+      // Spell data for this trinket has a cast time of 500 ms even though it is instant and can be used while moving.
+      base_execute_time = 0_ms;
+      empyreal_ordnance_bolt = create_proc_action<empyreal_ordnance_bolt_t>( "empyreal_ordnance_bolt", e, b );
+      add_child( empyreal_ordnance_bolt );
+    }
+
+    timespan_t travel_time() const override
+    {
+      return data().cast_time();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      size_t n = num_bolts / s->n_targets + ( s->chain_target < num_bolts % s->n_targets ? 1 : 0 );
+      player_t* t = s->target;
+      for ( size_t i = 0; i < n; i++ )
+      {
+        // The bolts don't seem to all hit the target
+        // at exactly the same time, which creates a
+        // small partial tick at the end of the DoT.
+        make_event( *sim, i * 50_ms, [ this, t ]
+          {
+            empyreal_ordnance_bolt->set_target( t );
+            empyreal_ordnance_bolt->execute();
+          } );
+      }
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "empyreal_surge" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "empyreal_surge", effect.player->find_spell( 345541 ) )
+             ->add_stat( STAT_INTELLECT, effect.player->find_spell( 345543 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.execute_action = create_proc_action<empyreal_ordnance_t>( "empyreal_ordnance", effect, buff );
 }
 
 // Runecarves
@@ -953,6 +1040,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
+    unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
