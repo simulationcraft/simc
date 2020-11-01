@@ -847,34 +847,19 @@ void vitality_sacrifice( special_effect_t& effect )
 
 }
 
-void overflowing_anima_prison( special_effect_t& effect )
+void overflowing_anima_cage( special_effect_t& effect )
 {
-  auto val  = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
-  auto buff = debug_cast<stat_buff_t*>( effect.player->buffs.overflowing_anima_prison );
-  buff->add_stat( STAT_CRIT_RATING, val )->set_cooldown( 0_ms );
+  auto buff = buff_t::find( effect.player, "anima_infusion" );
+  if ( !buff )
+  {
+    auto val = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
+    // The actual buff is Anima Infusion (id=343386), but the spell data there is not needed.
+    buff = make_buff<stat_buff_t>( effect.player, "anima_infusion", effect.player->find_spell( 343385 ) )
+             ->add_stat( STAT_CRIT_RATING, val )
+             ->set_cooldown( 0_ms );
+  }
 
   effect.custom_buff = buff;
-
-  // create callback for covenant ability cast
-  struct overflowing_anima_cov_cb_t : public covenant::covenant_cb_base_t
-  {
-    buff_t* buff;
-
-    overflowing_anima_cov_cb_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
-
-    void trigger( action_t*, action_state_t* ) override
-    {
-      // TODO: confirm this is flat 10s extension
-      buff->extend_duration( buff->player, 10_s );
-    }
-  };
-
-  auto callback = covenant::get_covenant_callback( effect.player );
-  if ( callback )
-  {
-    auto cb_entry = new overflowing_anima_cov_cb_t( buff );
-    callback->cb_list.push_back( cb_entry );
-  }
 }
 
 void sunblood_amethyst( special_effect_t& effect )
@@ -965,7 +950,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
     unique_gear::register_special_effect( 344063, items::gluttonous_spike );
     unique_gear::register_special_effect( 345357, items::hateful_chain );
-    unique_gear::register_special_effect( 343385, items::overflowing_anima_prison );
+    unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
 
