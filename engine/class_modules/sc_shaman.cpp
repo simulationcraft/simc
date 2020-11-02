@@ -8375,7 +8375,7 @@ void shaman_t::create_buffs()
   {
     auto legendary_spell = find_spell( 336741 );
     auto buff            = buffs.bloodlust;
-    buff->modify_duration( timespan_t::from_millis(legendary_spell->effectN( 1 ).base_value()) );
+    buff->modify_duration( legendary_spell->effectN( 1 ).time_value() );
     buff->modify_default_value( legendary_spell->effectN( 2 ).percent() );
   }
 
@@ -9911,8 +9911,10 @@ struct shaman_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.bloodlust =
-        make_buff( p, "bloodlust", p->find_spell( 2825 ) )->set_max_stack( 1 )->add_invalidate( CACHE_HASTE );
+    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+          ->set_max_stack( 1 )
+          ->set_default_value_from_effect_type( A_HASTE_ALL )
+          ->add_invalidate( CACHE_HASTE );
 
     p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
   }

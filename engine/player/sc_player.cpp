@@ -3434,7 +3434,7 @@ double player_t::composite_melee_haste() const
       h /= 1.0 + b->check_stack_value();
 
     if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
     if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
@@ -3780,7 +3780,7 @@ double player_t::composite_spell_haste() const
       h /= 1.0 + b->check_stack_value();
 
     if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
