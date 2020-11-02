@@ -3329,10 +3329,10 @@ void player_t::create_buffs()
 
     // BfA Raid Damage Modifier Debuffs
     debuffs.chaos_brand = make_buff( this, "chaos_brand", find_spell( 1490 ) )
-        ->set_default_value( find_spell( 1490 )->effectN( 1 ).percent() )
+        ->set_default_value_from_effect( 1 )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
     debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
-        ->set_default_value( find_spell( 113746 )->effectN( 1 ).percent() )
+        ->set_default_value_from_effect( 1 )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
   }
 
@@ -4421,11 +4421,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )
     m *= 1.0 + debuffs.damage_taken->current_stack * 0.01;
 
-  if ( debuffs.mystic_touch &&
-       debuffs.mystic_touch->data().effectN( 1 ).has_common_school( school ) )
+  if ( debuffs.mystic_touch && debuffs.mystic_touch->has_common_school( school ) )
     m *= 1.0 + debuffs.mystic_touch->check_value();
 
-  if ( debuffs.chaos_brand && debuffs.chaos_brand->data().effectN( 1 ).has_common_school( school ) )
+  if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->check_value();
 
   return m;

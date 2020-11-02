@@ -497,6 +497,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
+    schools( 0u ),
     activated( true ),
     reactable( false ),
     reverse(),
@@ -903,6 +904,28 @@ buff_t* buff_t::add_invalidate( cache_e c )
   return this;
 }
 
+buff_t* buff_t::set_schools( unsigned schools_ )
+{
+  schools = schools_;
+  return this;
+}
+
+buff_t* buff_t::set_schools_from_effect( size_t effect_idx )
+{
+  if ( !s_data->ok() )
+    return this;
+
+  assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
+  set_schools( s_data->effectN( effect_idx ).affected_schools() );
+  return this;
+}
+
+buff_t* buff_t::add_school( school_e school )
+{
+  schools |= dbc::get_school_mask( school );
+  return this;
+}
+
 buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
 {
   if ( !player || type == STAT_PCT_BUFF_MAX )
@@ -939,6 +962,7 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
     multiplier = s_data->effectN( effect_idx ).default_multiplier();
 
   set_default_value( s_data->effectN( effect_idx ).base_value() * multiplier, effect_idx );
+  set_schools( s_data->effectN( effect_idx ).affected_schools() );
   default_value_effect_multiplier = multiplier;
   return this;
 }
@@ -962,6 +986,7 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     }
 
     set_default_value( eff.base_value() * multiplier, idx );
+    set_schools( eff.affected_schools() );
     default_value_effect_multiplier = multiplier;
     return this;  // return out after matching the first effect
   }
@@ -1592,6 +1617,11 @@ bool buff_t::remains_lt( timespan_t time ) const
     return false;
 
   return ( time_remaining < time );
+}
+
+bool buff_t::has_common_school( school_e school ) const
+{
+  return ( schools & dbc::get_school_mask( school ) ) != 0;
 }
 
 int buff_t::_resolve_stacks( int stacks )
