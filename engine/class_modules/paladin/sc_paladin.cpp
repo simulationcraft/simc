@@ -2003,6 +2003,7 @@ void paladin_t::init_spells()
   conduit.resolute_defender = find_conduit_spell( "Resolute Defender");
   conduit.shielding_words = find_conduit_spell( "Shielding Words" );
   conduit.golden_path = find_conduit_spell( "Golden Path" );
+  conduit.royal_decree = find_conduit_spell( "Royal Decree" );
 }
 
 // paladin_t::primary_role ==================================================

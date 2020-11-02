@@ -306,6 +306,9 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = 0_ms;
     cooldown = p -> cooldowns.guardian_of_ancient_kings;
+
+    if ( p -> conduit.royal_decree -> ok() )
+      cooldown -> duration += timespan_t::from_millis( p -> conduit.royal_decree.value() );
   }
 
   void execute() override
@@ -431,6 +434,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   {
     parse_options( options_str );
     target = p;
+    is_wog = true;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -465,13 +469,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
   void execute() override
   {
-    // Divine purpose is expired in parent execute, so catch it before then:
-    bool dp_up = p() -> buffs.divine_purpose -> up();
     holy_power_consumer_t::execute();
-
-    // Divine purpose is consumed before shining light.
-    if ( p() -> buffs.shining_light_free -> up() && ! dp_up )
-      p() -> buffs.shining_light_free -> expire();
 
     if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
     {
@@ -480,12 +478,13 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     }
   }
 
-  double cost() const override
+  double action_multiplier() const override
   {
-    double c = holy_power_consumer_t::cost();
-    if ( p() -> buffs.shining_light_free -> up() )
-      c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
-    return c;
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p() -> buffs.shining_light_free -> up() && p() -> buffs.divine_purpose -> up() )
+    // Shining Light does not benefit from divine purpose
+      am /= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+    return am;
   }
 };
 
@@ -841,7 +840,12 @@ void paladin_t::create_buffs_protection()
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-        -> set_cooldown( 0_ms );
+        -> set_cooldown( 0_ms )
+        -> set_stack_change_callback( [ this ] ( buff_t*, int old, int curr )
+        {
+          if ( curr == 1 && conduit.royal_decree -> ok() )
+            this -> buffs.royal_decree -> trigger();
+        } );
 
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
@@ -866,6 +870,8 @@ void paladin_t::create_buffs_protection()
         -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) );
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
+
+  buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )

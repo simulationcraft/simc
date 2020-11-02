@@ -175,6 +175,7 @@ public:
     buff_t* shielding_words;
     buff_t* shining_light_stacks;
     buff_t* shining_light_free;
+    buff_t* royal_decree;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -452,6 +453,7 @@ public:
     conduit_data_t resolute_defender;
     conduit_data_t shielding_words;
     conduit_data_t golden_path;
+    conduit_data_t royal_decree;
   } conduit;
 
   struct convenants_t {
@@ -1093,6 +1095,7 @@ struct holy_power_consumer_t : public Base
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
   bool is_vanq_hammer;
+  bool is_wog;
   holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
@@ -1114,6 +1117,12 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
+    if ( is_wog && ab::p() -> specialization() == PALADIN_PROTECTION )
+    {
+      if ( ab::p() -> buffs.shining_light_free -> check() || ab::p() -> buffs.royal_decree -> check() )
+        return 0.0;
+    }
+
     double c = ab::cost();
 
     if ( ab::p() -> buffs.fires_of_justice -> check() )
@@ -1122,7 +1131,7 @@ struct holy_power_consumer_t : public Base
     }
 
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
-      c += ab::p() -> buffs.the_magistrates_judgment -> value();
+      c += ab::p() -> buffs.the_magistrates_judgment -> stack_value();
 
     return c;
   }
@@ -1161,12 +1170,14 @@ struct holy_power_consumer_t : public Base
         // Why is this in deciseconds?
          -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
        );
-      if ( p -> buffs.divine_purpose -> up() ) // DP grants full value to RP
-        reduction *= ab::base_costs[ RESOURCE_HOLY_POWER ];
-      else
-        reduction *= hp_used; // All other hopo reductions reduce their contribution to RP
-      p -> cooldowns.avenging_wrath -> adjust( reduction );
-      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+      // Royal Decree doesn't proc RP 2020-11-01
+      if ( !is_wog || !p -> buffs.royal_decree -> up() ||
+        p -> buffs.divine_purpose -> up() || p -> buffs.shining_light_free -> up() )
+      {
+        reduction *= num_stacks;
+        p -> cooldowns.avenging_wrath -> adjust( reduction );
+        p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+      }
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
@@ -1200,16 +1211,38 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // We should only have should_continue false in the event that we're a divine storm
-    // assert-check here for safety
-    assert( is_divine_storm || should_continue );
+    // 2020-11-01 Royal Decree always expires, even when other holy power reductions are up
+    if ( is_wog && p -> buffs.royal_decree -> up() )
+      p -> buffs.royal_decree -> expire();
 
-    // WARNING: This is correct for prot (as of 2020-09-10), ret may work
-    // differently so be wary. Shining light and magistrate get consumed at the same time.
+    // For prot (2020-11-01). Magistrate's does not get consumed when DP is up.
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
     if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
-      p -> buffs.the_magistrates_judgment -> expire();
+    {
+      if ( p -> bugs )
+        p -> buffs.the_magistrates_judgment -> decrement( 1 );
+      else
+        p -> buffs.the_magistrates_judgment -> expire();
+    }
+
+    if ( is_wog && p -> buffs.shining_light_free -> up() )
+    {
+      // Shining Light is now consumed before Divine Purpose 2020-11-01
+      p -> buffs.shining_light_free -> expire();
+      should_continue = false;
+    }
+    else if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
+      ( ab::background || ( is_wog && p -> buffs.vanquishers_hammer -> up () ) ) )
+    {
+      // Vanquisher's Hammer's auto-sotr is not consuming divine purpose.
+      // Vanquisher's Hammer's wog is not consuming divine purpose for some reason.
+      should_continue = false;
+    }
+
+    // We should only have should_continue false in the event that we're a divine storm
+    // assert-check here for safety
+    assert( is_divine_storm || should_continue || p -> specialization() != PALADIN_RETRIBUTION );
 
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
