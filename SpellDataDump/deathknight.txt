@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -720,7 +720,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Mechanic: Interrupt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Mechanic: Interrupt | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=40864)    : Apply Aura (6) | Unknown(267)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -2345,7 +2346,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=68132)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 Description      : When you deal damage with Death Strike while in Blood Presence, you gain a percentage of your health gained as a physical absorption shield.
 Tooltip          : Absorbs $w1 Physical damage.
 
@@ -3249,9 +3251,11 @@ Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 105 | Scaled Value: 105 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #2 (id=128724)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Affected School(s): Physical
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #4 (id=138807)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #5 (id=140824)   : Apply Aura (6) | Dummy (4)
@@ -5484,7 +5488,8 @@ Effects          :
 #3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffec | Target: Self (1)
+                   Affected School(s): All
 Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadow damage to all enemies over $d.
 
 While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Strike] will hit ${$55090s4-1} enemies near the target$?a315442|a331119[ and inflict Death's Due for $324164d.
@@ -7019,7 +7024,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306100)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Affected School(s): All
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
@@ -8062,7 +8068,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=327551)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=327553)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 #3 (id=327573)   : Dummy (3)
@@ -12225,7 +12232,8 @@ Effects          :
 #1 (id=793659)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=793695)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=793985)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=797443)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -13120,7 +13128,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=810066)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 16 | Misc Value 2: 0x40 | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x10 | Misc Value 2: 0x40 | Target: Self (1)
+                   Affected School(s): Frost
 Description      : Embrace the ice in your veins, reducing the Runic Power cost of your abilities by $s1% for $d. Does not trigger the global cooldown.
 Tooltip          : The Runic Power cost of your abilities is reduced by $s1%.
 
@@ -13261,7 +13270,8 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Always hits (114), Disable weapon procs (151)
 Effects          :
 #1 (id=813578)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #2 (id=828523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=828541)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13506,7 +13516,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=818082)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : $@spelldesc326864
 
 Tooltip          : Absorbs $w1 magic damage.

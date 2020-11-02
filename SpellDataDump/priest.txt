@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -23,7 +23,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Affected School(s): All
 Description      : Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
@@ -2599,7 +2600,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=128455)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Affected School(s): All
 Description      : $@spelldesc109964
 Tooltip          : Absorbing $w1 damage.
 
@@ -5170,7 +5172,8 @@ Effects          :
 #5 (id=320865)   : Apply Aura (6) | Unknown(93)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=320866)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Misc Value 2: 0x1 | Target: Self (1)
+                   Affected School(s): Holy
 #7 (id=320867)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=320869)   : Apply Aura (6) | Unknown(176)
@@ -5180,7 +5183,8 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #13 (id=868726)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
@@ -9185,7 +9189,8 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : Hidden (7), Don't display in aura bar (60), Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=812814)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
+                   Affected School(s): All
 Description      : $@spelldesc323673
 
 Name             : Mindgames (id=323705) [Spell Family (6), Hidden] 

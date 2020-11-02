@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -2659,7 +2659,8 @@ Attributes       : .......x ........ ........ ...x...x   .....x.. ........ .....
                  : Hidden (7), Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x8 | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc108209
 Tooltip          : Energy cost of abilities reduced by $w1%.
 
