@@ -5079,18 +5079,6 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
-};
-
-struct epidemic_damage_aoe_t : public death_knight_spell_t
-{
-  epidemic_damage_aoe_t( death_knight_t* p ) :
-    death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
-  {
-    background = true;
-    // Since we set epidemic_damage_main_t's impact action to be the impact action from this spell, we end up using
-    // the aoe value from that spell, instead of this one
-    aoe = 0;
-  }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
@@ -5103,6 +5091,18 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
     }
 
     return tl.size();
+  }
+};
+
+struct epidemic_damage_aoe_t : public death_knight_spell_t
+{
+  epidemic_damage_aoe_t( death_knight_t* p ) :
+    death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
+  {
+    background = true;
+    // Since we set epidemic_damage_main_t's impact action to be the impact action from this spell, we end up using
+    // the aoe value from that spell, instead of this one
+    aoe = 0;
   }
 };
 
