@@ -540,6 +540,7 @@ public:
     conduit_data_t essential_extraction;  // Night Fae
     conduit_data_t lavish_harvest;        // Venthyr
     conduit_data_t tumbling_waves;        // Necrolord
+    conduit_data_t elysian_dirge;
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -6731,10 +6732,72 @@ struct chain_harvest_t : public chained_base_t
 
 struct vesper_totem_damage_t : public shaman_spell_t
 {
+  // Cache closest target so we don't need to compute it for all hit targets
+  player_t* closest_target;
+
   vesper_totem_damage_t( shaman_t* player )
     : shaman_spell_t( "vesper_totem_damage", player, player->find_spell( 324520 ) )
   {
     background = true;
+  }
+
+  void find_closest_target()
+  {
+    if ( sim->distance_targeting_enabled == 0 )
+    {
+      closest_target = target_list().front();
+    }
+    else
+    {
+      closest_target = nullptr;
+      auto min_distance = std::numeric_limits<double>::max();
+
+      range::for_each( target_list(), [this, &min_distance] ( player_t* t ) {
+        if ( sim->debug )
+        {
+          sim->print_debug( "{} {} candidate={} (x={}, y={}, distance={}",
+            player->name(), name(), t->name(), t->x_position, t->y_position,
+            player->get_player_distance( *t ) );
+
+        }
+
+        double dt = p()->get_player_distance( *t );
+        if ( dt < min_distance )
+        {
+          dt = min_distance;
+          closest_target = t;
+        }
+      } );
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} closest_target={} (x={}, y={}, distance={})",
+          player->name(), name(), closest_target ? closest_target->name() : "none",
+          closest_target ? closest_target->x_position : 0.0,
+          closest_target ? closest_target->y_position : 0.0,
+          closest_target ? player->get_player_distance( *closest_target ) : 0.0 );
+
+    }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( closest_target && target == closest_target )
+    {
+      m *= 1.0 + p()->conduit.elysian_dirge.percent();
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    find_closest_target();
+
+    shaman_spell_t::execute();
   }
 };
 
@@ -7533,6 +7596,7 @@ void shaman_t::init_spells()
   conduit.essential_extraction = find_conduit_spell( "Essential Extraction" );
   conduit.lavish_harvest       = find_conduit_spell( "Lavish Harvest" );
   conduit.tumbling_waves       = find_conduit_spell( "Tumbling Waves" );
+  conduit.elysian_dirge        = find_conduit_spell( "Elysian Dirge" );
 
   // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
