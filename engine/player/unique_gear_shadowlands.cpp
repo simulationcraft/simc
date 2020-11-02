@@ -574,7 +574,7 @@ void soul_igniter( special_effect_t& effect )
 
     double composite_aoe_multiplier( const action_state_t* s ) const override
     {
-      double m = proc_spell_t::action_multiplier();
+      double m = proc_spell_t::composite_aoe_multiplier( s );
 
       // The extra damage for each target appears to be a 15%
       // multiplier that is not listed in spell data anywhere.
@@ -853,7 +853,7 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
 
     double composite_aoe_multiplier( const action_state_t* s ) const override
     {
-      double m = proc_spell_t::action_multiplier();
+      double m = proc_spell_t::composite_aoe_multiplier( s );
 
       // The extra damage for each target appears to be a 15%
       // multiplier that is not listed in spell data anywhere.
