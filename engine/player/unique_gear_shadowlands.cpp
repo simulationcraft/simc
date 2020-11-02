@@ -733,7 +733,7 @@ void empyreal_ordnance( special_effect_t& effect )
       buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
     }
 
-    timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
     {
       return duration;
     }
@@ -796,6 +796,44 @@ void empyreal_ordnance( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<empyreal_ordnance_t>( "empyreal_ordnance", effect, buff );
+}
+
+// The slow debuff on the target and the heal when gaining the crit buff are not implemented.
+void soulletting_ruby( special_effect_t& effect )
+{
+  struct soulletting_ruby_t : public proc_spell_t
+  {
+    stat_buff_t* buff;
+    double base_crit_value;
+    double max_crit_bonus;
+
+    soulletting_ruby_t( const special_effect_t& e, stat_buff_t* b ) :
+      proc_spell_t( "soulletting_ruby", e.player, e.player->find_spell( 345802 ) ),
+      buff( b ),
+      base_crit_value( e.player->find_spell( 345807 )->effectN( 1 ).average( e.item ) ),
+      max_crit_bonus( e.player->find_spell( 345807 )->effectN( 2 ).average( e.item ) )
+    {}
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      double value = base_crit_value + max_crit_bonus * ( 1.0 - target->health_percentage() * 0.01 );
+      make_event( *sim, travel_time(), [ this, value ]
+        {
+          buff->stats.back().amount = value;
+          buff->trigger();
+        } );
+    }
+  };
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "soul_infusion" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "soul_infusion", effect.player->find_spell( 345805 ) )
+             ->add_stat( STAT_CRIT_RATING, 0 );
+  }
+
+  effect.execute_action = create_proc_action<soulletting_ruby_t>( "soulletting_ruby", effect, buff );
 }
 
 // Runecarves
@@ -1041,6 +1079,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
     unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
+    unique_gear::register_special_effect( 345801, items::soulletting_ruby );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
