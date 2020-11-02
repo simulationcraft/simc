@@ -836,6 +836,49 @@ void soulletting_ruby( special_effect_t& effect )
   effect.execute_action = create_proc_action<soulletting_ruby_t>( "soulletting_ruby", effect, buff );
 }
 
+void satchel_of_misbegotten_minions( special_effect_t& effect )
+{
+  struct abomiblast_t : public proc_spell_t
+  {
+    unsigned max_scaling_targets;
+
+    abomiblast_t( const special_effect_t& e ) :
+      proc_spell_t( "abomiblast", e.player, e.player->find_spell( 345638 ) )
+    {
+      split_aoe_damage = true;
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      // The extra damage for each target appears to be a 15%
+      // multiplier that is not listed in spell data anywhere.
+      // TODO: this has been tested above 2 target, verify the target cap.
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
+
+      return m;
+    }
+  };
+
+  struct misbegotten_minion_t : public proc_spell_t
+  {
+    misbegotten_minion_t( const special_effect_t& e ) :
+      proc_spell_t( "misbegotten_minion", e.player, e.player->find_spell( 346032 ) )
+    {
+      quiet = true;
+      impact_action = create_proc_action<abomiblast_t>( "abomiblast", e );
+    }
+  };
+
+  effect.execute_action = create_proc_action<misbegotten_minion_t>( "misbegotten_minion", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1080,6 +1123,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
     unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
+    unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
