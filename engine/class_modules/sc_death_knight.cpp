@@ -9327,7 +9327,7 @@ void death_knight_t::create_buffs()
 
   // Unholy
   buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
-        -> set_duration( spec.dark_transformation->duration() + conduits.eternal_hunger.time_value() )
+        -> set_duration( spec.dark_transformation->duration() + conduits.eternal_hunger -> effectN( 2 ).time_value() )
         -> set_cooldown( 0_ms ); // Handled by the ability
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
@@ -9813,6 +9813,11 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   if ( mastery.dreadblade -> ok() )
   {
     m *= 1.0 + cache.mastery_value();
+  }
+
+  if ( conduits.eternal_hunger.ok() )
+  {
+    m *= 1.0 + conduits.eternal_hunger.percent();
   }
 
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
