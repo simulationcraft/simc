@@ -5070,14 +5070,21 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     death_knight_spell_t( "epidemic_main", p, p -> find_spell( 212739 ) )
   {
     background = true;
-    // "Max targets" is '7' in spelldata, but that probably accounts for the main enemy that triggers the aoe
-    // In-game testing shows that it doesn't hit more than 6 enemies
-    // This value is what is used for epidemic_damage_aoe_t, as the impact action for epidemic_damage_main_t
-    // is set to the impact action from epidemic_damage_aoe_t
-    // Number of targets for hit for this spell is controlled by epidemic_t spell_data
-    aoe = aoe - 1;
+    // Ignore spelldata for max targets for the main spell, as it is single target only
+    aoe = 0;
     // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+  }
+};
+
+struct epidemic_damage_aoe_t : public death_knight_spell_t
+{
+  epidemic_damage_aoe_t( death_knight_t* p ) :
+    death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
+  {
+    background = true;
+    // Main is one target, aoe is the other targets, so we take 1 off the max targets
+    aoe = aoe - 1;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5091,18 +5098,6 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     }
 
     return tl.size();
-  }
-};
-
-struct epidemic_damage_aoe_t : public death_knight_spell_t
-{
-  epidemic_damage_aoe_t( death_knight_t* p ) :
-    death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
-  {
-    background = true;
-    // Since we set epidemic_damage_main_t's impact action to be the impact action from this spell, we end up using
-    // the aoe value from that spell, instead of this one
-    aoe = 0;
   }
 };
 
