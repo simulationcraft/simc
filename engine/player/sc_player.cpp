@@ -3480,7 +3480,9 @@ double player_t::composite_melee_attack_power() const
 
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
-  ap += std::floor( current.attack_power_per_spell_power * cache.spell_power( SCHOOL_MAX ) );
+
+  if ( current.attack_power_per_spell_power > 0 )
+    ap += std::floor( current.attack_power_per_spell_power * cache.spell_power( SCHOOL_MAX ) );
 
   return ap;
 }
@@ -3832,7 +3834,9 @@ double player_t::composite_spell_power( school_e /* school */ ) const
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
-  sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
+
+  if ( current.spell_power_per_attack_power > 0 )
+    sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
 
   return sp;
 }
