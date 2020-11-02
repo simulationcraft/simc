@@ -1224,6 +1224,9 @@ struct umbral_glaives_driver_t : public proc_spell_t
       .duration( data().duration() )
       .action( storm )
       .expiration_callback( [ this ]() {
+        if ( ! storm -> execute_state )
+          return;
+
         shatter -> set_target( storm -> target );
         // Need to copy coordinates from the ground aoe event's last execute
         auto state = shatter -> get_state();
