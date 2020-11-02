@@ -3832,7 +3832,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
-  sp += std::floor( current.spell_power_per_attack_power * cache.agility() );
+  sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
 
   return sp;
 }
@@ -4468,14 +4468,20 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
-      if ( current.spell_power_per_attack_power > 0 )
-      {
-        invalidate_cache( CACHE_SPELL_POWER );
-        invalidate_cache( CACHE_ATTACK_POWER );
-      }
+      if ( current.attack_crit_per_agility > 0 )
+        invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
+        invalidate_cache( CACHE_SPELL_POWER );
+      if ( current.spell_crit_per_intellect > 0 )
+        invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
+      break;
+    case CACHE_SPELL_POWER:
+      if ( current.attack_power_per_spell_power > 0 )
+        invalidate_cache( CACHE_ATTACK_POWER );
+    case CACHE_ATTACK_POWER:
+      if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
     case CACHE_ATTACK_HASTE:
