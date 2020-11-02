@@ -6613,7 +6613,8 @@ struct fae_transfusion_t : public shaman_spell_t
     channeled   = true;
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
 
-    base_tick_time *= 1.0 + p()->conduit.essential_extraction.percent();
+    base_tick_time *= 1.0 - p()->conduit.essential_extraction.percent();
+    dot_duration *= 1.0 - p()->conduit.essential_extraction.percent();
   }
 };
 
