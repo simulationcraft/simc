@@ -5852,7 +5852,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   // Runeforge Legendaries
   debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
-                            ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
+                            ->set_default_value_from_effect( 3 )
                             ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
@@ -6660,6 +6660,7 @@ void mage_t::create_buffs()
                              ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buffs.infernal_cascade = make_buff( this, "infernal_cascade", find_spell( 336832 ) )
                              ->set_default_value( conduits.infernal_cascade.percent() )
+                             ->set_schools_from_effect( 1 )
                              ->set_chance( conduits.infernal_cascade.ok() )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6896,8 +6897,12 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  m *= 1.0 + buffs.fevered_incantation->check_stack_value();
-  m *= 1.0 + buffs.disciplinary_command->check_value();
+  school_e school = s->action->get_school();
+
+  if ( buffs.fevered_incantation->has_common_school( school ) )
+    m *= 1.0 + buffs.fevered_incantation->check_stack_value();
+  if ( buffs.disciplinary_command->has_common_school( school ) )
+    m *= 1.0 + buffs.disciplinary_command->check_value();
 
   return m;
 }
@@ -6906,10 +6911,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+  if ( buffs.enlightened_damage->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened_damage->check_value();
-
-  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  if ( buffs.infernal_cascade->has_common_school( school ) )
     m *= 1.0 + buffs.infernal_cascade->check_stack_value();
 
   return m;
@@ -6936,7 +6940,7 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( auto td = find_target_data( target ) )
   {
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) )
+    if ( td->debuffs.grisly_icicle->has_common_school( school ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
   }
 
