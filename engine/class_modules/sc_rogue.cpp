@@ -6548,13 +6548,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.flagellation = make_buff( *this, "flagellation", source->covenant.flagellation )
     ->set_initial_stack( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_stack_change_callback( [ source ]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 )
-      {
-        source->cooldowns.flagellation->start( source->covenant.flagellation->cooldown() );
-      }
-    } );
+    ->set_cooldown( timespan_t::zero() );
 
   if ( source->legendary.akaaris_soul_fragment.ok() )
   {
@@ -6892,7 +6886,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "flagellation" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -7014,7 +7008,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all" );
     cds->add_action( "flagellation" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
     cds->add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -7108,7 +7102,7 @@ void rogue_t::init_action_list()
     cds->add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle" );
-    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30" );
+    cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped&combo_points.deficit<=3|runeforge.deathly_shadows.equipped&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "call_action_list,name=essences,if=!stealthed.all&variable.snd_condition|essence.breath_of_the_dying.major&time>=2" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
