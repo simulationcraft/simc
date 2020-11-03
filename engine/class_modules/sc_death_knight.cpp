@@ -38,7 +38,7 @@ namespace pets {
   struct ghoul_pet_t;
   struct magus_pet_t;
   struct reanimated_shambler_pet_t;
-  }
+}
 
 namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
@@ -57,12 +57,12 @@ namespace runeforge {
 // Death Knight Runes
 // ==========================================================================
 
-enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE = 4 };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
 enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
 
 const double RUNIC_POWER_REFUND = 0.9;
+const double RUNIC_POWER_DECAY_RATE = 1.0;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
@@ -419,8 +419,9 @@ struct death_knight_td_t : public actor_target_data_t {
 struct death_knight_t : public player_t {
 public:
   // Active
-  double runic_power_decay_rate;
   ground_aoe_event_t* active_dnd;
+
+  // Expressions
   bool deprecated_dnd_expression;
   bool runeforge_expression_warning;
 
@@ -429,8 +430,6 @@ public:
   bool triggered_frozen_tempest;
   bool triggered_biting_cold;
   unsigned int km_proc_attempts;
-
-  // Enemies affected by festering wounds
   unsigned int festering_wounds_target_count;
 
   // Special azerite data
@@ -446,6 +445,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    buff_t* unholy_strength;
 
     // Blood
     buff_t* bone_shield;
@@ -503,7 +503,7 @@ public:
   } buffs;
 
   struct runeforge_t {
-    buff_t* rune_of_the_fallen_crusader;
+    bool rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_hysteria;
     heal_t* rune_of_sanguination;
@@ -542,6 +542,7 @@ public:
     action_t* razorice_oh;
     action_t* runeforge_pestilence;
     action_t* sacrificial_pact_damage;
+    action_t* unholy_strength;
 
     // Blood
     spell_t* blood_plague;
@@ -767,7 +768,6 @@ public:
   struct spells_t {
     // Shared
     const spell_data_t* dnd_buff;
-    const spell_data_t* fallen_crusader;
     const spell_data_t* razorice_debuff;
     const spell_data_t* sacrificial_pact_damage;
 
@@ -993,7 +993,6 @@ public:
 
   death_knight_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
-    runic_power_decay_rate(),
     active_dnd( nullptr ),
     deprecated_dnd_expression( false ),
     runeforge_expression_warning( false ),
@@ -3550,7 +3549,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       p() -> cooldown.army_of_the_dead -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
       // Simulate RP decay for X seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_time, nullptr, nullptr );
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * precombat_time, nullptr, nullptr );
 
       // Simulate rune regeneration for X seconds
       p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_time ) );
@@ -7089,14 +7088,13 @@ void runeforge::fallen_crusader( special_effect_t& effect )
     return;
   }
 
-  // Fallen Crusader buff is shared between mh/oh
-  buff_t* b = buff_t::find( effect.item -> player, "unholy_strength" );
-  if ( ! b )
-    return;
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
 
-  action_t* heal = effect.item -> player -> find_action( "unholy_strength" );
-  if ( ! heal )
+  // Create unholy strength heal if necessary, buff is always created for APL support
+  if ( ! p -> runeforge.rune_of_the_fallen_crusader )
   {
+    p -> runeforge.rune_of_the_fallen_crusader = true;
+
     struct fallen_crusader_heal_t : public death_knight_heal_t
     {
       fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
@@ -7107,24 +7105,14 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         callbacks = may_crit = false;
         base_pct_heal = data -> effectN( 2 ).percent();
       }
-
-      // Procs by default target the target of the action that procced them.
-      void execute() override
-      {
-        target = player;
-
-        death_knight_heal_t::execute();
-      }
     };
 
-    heal = new fallen_crusader_heal_t( debug_cast< death_knight_t* >( effect.item -> player ), &b -> data() );
+    p -> active_spells.unholy_strength = new fallen_crusader_heal_t( p, p -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() );
   }
 
-  const death_knight_t* dk = debug_cast<const death_knight_t*>( effect.item -> player );
 
-  effect.ppm_ = -1.0 * dk -> spell.fallen_crusader -> real_ppm();
-  effect.custom_buff = b;
-  effect.execute_action = heal;
+  effect.custom_buff = p -> buffs.unholy_strength;
+  effect.execute_action = p -> active_spells.unholy_strength;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -8556,7 +8544,6 @@ void death_knight_t::init_spells()
   // Generic spells
   // Shared
   spell.dnd_buff        = find_spell( 188290 );
-  spell.fallen_crusader = find_spell( 166441 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.sacrificial_pact_damage = find_spell( 327611 );
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -8922,8 +8909,8 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
-  
-    // Hearth of Azeroth Essences
+
+  // Hearth of Azeroth Essences
   essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<10&(buff.breath_of_sindragosa.up|talent.obliteration.enabled|talent.icecap.enabled&!azerite.icy_citadel.enabled)|buff.icy_citadel.up&talent.icecap.enabled)" );
   essences -> add_action( "guardian_of_azeroth,if=!talent.icecap.enabled|talent.icecap.enabled&azerite.icy_citadel.enabled&buff.pillar_of_frost.remains<6&buff.pillar_of_frost.up|talent.icecap.enabled&!azerite.icy_citadel.enabled" );
   essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5&buff.pillar_of_frost.up|target.1.time_to_die<5" );
@@ -8965,7 +8952,6 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_talent( this, "Hypothermic Presence", "if=talent.breath_of_sindragosa.enabled&runic_power.deficit>40&rune>=3&buff.pillar_of_frost.up|!talent.breath_of_sindragosa.enabled&runic_power.deficit>=25" );
   cooldowns -> add_action( this, "Raise Dead", "if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
-  cooldowns -> add_action( "heart_essence" );
 
   // Cold Heart
   cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration.enabled", "Cold Heart Conditions" );
@@ -9047,7 +9033,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* aoe_burst   = get_action_priority_list( "aoe_burst" );
   action_priority_list_t* generic_aoe = get_action_priority_list( "generic_aoe" );
   action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* essences     = get_action_priority_list( "essences" );
+  action_priority_list_t* essences    = get_action_priority_list( "essences" );
   // action_priority_list_t* covenants    = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
@@ -9097,7 +9083,7 @@ void death_knight_t::default_apl_unholy()
   essences -> add_action( "worldvein_resonance,if=!death_and_decay.ticking&buff.unholy_strength.up&!essence.vision_of_perfection.minor&!talent.army_of_the_damned.enabled|target.time_to_die<cooldown.apocalypse.remains" );
   essences -> add_action( "ripple_in_space,if=!death_and_decay.ticking" );
   essences -> add_action( "reaping_flames" );
-  
+
   // Potions and Other on use
   cooldowns -> add_action( "use_items", "Potions and other on use" );
   cooldowns -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned.enabled&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)" );
@@ -9117,7 +9103,6 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready" );
-  cooldowns -> add_action( "heart_essence" );
 
   // General Single Target Priority
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
@@ -9228,8 +9213,9 @@ void death_knight_t::create_buffs()
         -> set_duration( spec.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
 
-  runeforge.rune_of_the_fallen_crusader = make_buff( this, "unholy_strength", spell.fallen_crusader -> effectN( 1 ).trigger() )
-            -> add_invalidate( CACHE_STRENGTH );
+  buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
+        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
   runeforge.rune_of_the_stoneskin_gargoyle = make_buff( this, "stoneskin_gargoyle", find_spell( 62157 ) )
             -> add_invalidate( CACHE_ARMOR )
@@ -9543,7 +9529,6 @@ void death_knight_t::reset()
 {
   player_t::reset();
 
-  runic_power_decay_rate = 1; // 1 RP per second decay
   _runes.reset();
   active_dnd = nullptr;
   eternal_rune_weapon_counter = 0;
@@ -9693,11 +9678,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( runeforge.rune_of_the_fallen_crusader -> up() )
-    {
-      m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> data().effectN( 1 ).percent();
-    }
-
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     {
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
