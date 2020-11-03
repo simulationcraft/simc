@@ -996,11 +996,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
   {
-    if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER )
+    if ( e -> affected_schools() != 0u )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
@@ -1067,13 +1063,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   s << std::endl;
 
   if ( e -> type() == E_APPLY_AURA &&
-       ( e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER ) &&
-       e -> misc_value1() != 0 )
+       e -> affected_schools() != 0u )
   {
     s << "                   Affected School(s): ";
-    if ( e -> misc_value1() == 0x7f )
+    if ( e -> affected_schools() == 0x7f )
     {
       s << "All";
     }
@@ -1082,7 +1075,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       std::vector<std::string> schools;
       for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
       {
-        if ( e -> misc_value1() & dbc::get_school_mask( school ) )
+        if ( e -> affected_schools() & dbc::get_school_mask( school ) )
           schools.emplace_back( util::inverse_tokenize( util::school_type_string( school ) ) );
       }
 

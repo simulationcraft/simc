@@ -359,8 +359,6 @@ public:
     action_t* molten_weapon_dot;
     action_t* lightning_bolt_pw;
     action_t* lava_burst_pw;
-    action_t* lava_burst_ascendance;
-    action_t* lava_burst_dre; // Deeply Rooted Elements
 
     // Azerite
     spell_t* lightning_conduit;
@@ -542,6 +540,7 @@ public:
     conduit_data_t essential_extraction;  // Night Fae
     conduit_data_t lavish_harvest;        // Venthyr
     conduit_data_t tumbling_waves;        // Necrolord
+    conduit_data_t elysian_dirge;
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -844,6 +843,7 @@ public:
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
   void trigger_elemental_equilibrium( const action_state_t* state );
+  void trigger_deeply_rooted_elements( const action_state_t* state );
 
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
@@ -1371,7 +1371,6 @@ public:
 
     p()->trigger_stormbringer( state );
     p()->trigger_ancestral_resonance( state );
-    p()->trigger_elemental_equilibrium( state );
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
@@ -1723,7 +1722,7 @@ public:
   // Azerite
   bool may_proc_strength_of_earth = false;
 
-  shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
+  shaman_spell_t( const std::string& token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
     : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ),
       may_proc_echoing_shock( false ),
@@ -3623,6 +3622,8 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->proc.maelstrom_weapon_ea->occur();
     }
 
+    p()->trigger_deeply_rooted_elements( execute_state );
+
     p()->buff.legacy_of_the_frost_witch->expire();
   }
 
@@ -4421,19 +4422,13 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
 
-  static const char* action_name( lava_burst_type t )
+  static const std::string action_name( const std::string& suffix )
   {
-    switch ( t )
-    {
-      case lava_burst_type::ASCENDANCE: return "lava_burst_overload_ascendance";
-      case lava_burst_type::DRE_ASCENDANCE: return "lava_burst_overload_dre";
-      case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_overload_pw";
-      default: return "lava_burst_overload";
-    }
+    return !suffix.empty() ? "lava_burst_overload_" + suffix : "lava_burst_overload";
   }
 
-  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_, lava_burst_type pt )
-    : elemental_overload_spell_t( player, action_name( pt ), player->find_spell( 77451 ), parent_ ),
+  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_, const std::string& suffix )
+    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 77451 ), parent_ ),
       impact_flags()
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
@@ -4680,19 +4675,14 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_type type;
   unsigned impact_flags;
 
-  static util::string_view action_name( lava_burst_type t )
+  static std::string action_name( const std::string& suffix )
   {
-    switch ( t )
-    {
-      case lava_burst_type::ASCENDANCE: return "lava_burst_ascendance";
-      case lava_burst_type::DRE_ASCENDANCE: return "lava_burst_dre";
-      case lava_burst_type::PRIMORDIAL_WAVE: return "lava_burst_pw";
-      default: return "lava_burst";
-    }
+    return !suffix.empty() ? "lava_burst_" + suffix : "lava_burst";
   }
 
-  lava_burst_t( shaman_t* player, lava_burst_type type_, const std::string& options_str = std::string() )
-    : shaman_spell_t( action_name( type_ ), player,
+  lava_burst_t( shaman_t* player, lava_burst_type type_, const std::string& suffix,
+                const std::string& options_str = std::string() )
+    : shaman_spell_t( action_name( suffix ), player,
                       player->find_specialization_spell( "Lava Burst" ), options_str ),
       type( type_ ), impact_flags()
   {
@@ -4705,8 +4695,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_burst_overload_t( player, this, type );
-      //add_child( overload );
+      overload = new lava_burst_overload_t( player, this, suffix );
     }
 
     if ( p()->specialization() == SHAMAN_RESTORATION )
@@ -4769,7 +4758,6 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::available_targets( tl );
 
-    // Foreground Lava Bursts will retain the primary target even if it has no Lava Burst
     p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
@@ -4915,14 +4903,10 @@ struct lava_burst_t : public shaman_spell_t
       p()->action.lava_burst_pw->schedule_execute();
     }
 
-    if (
-      type == lava_burst_type::NORMAL &&
-      p()->legendary.deeply_rooted_elements->ok() &&
-      rng().roll( p()->legendary.deeply_rooted_elements->proc_chance() )
-    ) {
-      p()->action.dre_ascendance->execute();
+    if ( type == lava_burst_type::NORMAL )
+    {
+      p()->trigger_deeply_rooted_elements( execute_state );
     }
-
   }
 
   timespan_t execute_time() const override
@@ -5787,8 +5771,8 @@ struct wind_shear_t : public shaman_spell_t
 
 struct ascendance_damage_t : public shaman_spell_t
 {
-  ascendance_damage_t( shaman_t* player )
-    : shaman_spell_t( "ascendance_damage", player, player->find_spell( 344548 ) )
+  ascendance_damage_t( shaman_t* player, const std::string& name_str )
+    : shaman_spell_t( name_str, player, player->find_spell( 344548 ) )
   {
     aoe = -1;
     background = true;
@@ -5801,57 +5785,73 @@ struct ascendance_t : public shaman_spell_t
 {
   flame_shock_t* fs;
   ascendance_damage_t* ascendance_damage;
-  bool legendary;
+  lava_burst_t* lvb;
 
-  ascendance_t( shaman_t* player, const std::string& options_str, bool legendary_ = false )
-    : shaman_spell_t( legendary_ ? "dre_ascendance" : "ascendance", player, legendary_ ? player->find_spell( 114050 ) : player->talent.ascendance, options_str ),
+  ascendance_t( shaman_t* player, const std::string& name_str, const std::string& options_str = std::string() )
+    : shaman_spell_t( name_str, player,
+        player->find_talent_spell( "Ascendance", player->specialization(), false, false ), options_str ),
       fs( player->specialization() == SHAMAN_ELEMENTAL ? new flame_shock_t( player, "" ) : nullptr ),
-      ascendance_damage( player->specialization() == SHAMAN_ENHANCEMENT ? new ascendance_damage_t( player )
-                                                                        : nullptr )
+      ascendance_damage( nullptr ), lvb( nullptr )
   {
     harmful = false;
+
     if ( ascendance_damage )
     {
       add_child( ascendance_damage );
     }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
-    legendary = legendary_;
-    if (legendary) {
-      background = true;
-      cooldown->duration = timespan_t::zero();
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      if ( auto trigger_spell = p()->find_action( "lava_burst_ascendance" ) )
+      {
+        lvb = debug_cast<lava_burst_t*>( trigger_spell );
+      }
+      else
+      {
+        lvb = new lava_burst_t( p(), lava_burst_type::ASCENDANCE, "ascendance" );
+        add_child( lvb );
+      }
+    }
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      if ( auto trigger_spell = p()->find_action( "ascendance_damage" ) )
+      {
+        ascendance_damage = debug_cast<ascendance_damage_t*>( trigger_spell );
+      }
+      else
+      {
+        ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage" );
+        add_child( ascendance_damage );
+      }
     }
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
+
+    p()->cooldown.strike->reset( false );
+
+    p()->buff.ascendance->extend_duration_or_trigger( timespan_t::from_seconds( 6 ), player );
+
+    if ( lvb )
+    {
+      lvb->set_target( player->target );
+      lvb->execute();
+    }
+
     if ( ascendance_damage )
     {
       ascendance_damage->set_target( target );
       ascendance_damage->execute();
-    }
-
-    p()->cooldown.strike->reset( false );
-    if (legendary) {
-      sim->print_debug("Triggering dre_ascendance buff");
-      p()->buff.ascendance->trigger( p()->legendary.deeply_rooted_elements->effectN(1).time_value() );
-    } else {
-      p()->buff.ascendance->trigger();
-    }
-
-    if ( !legendary &&
-         p()->action.lava_burst_ascendance &&
-         p()->action.lava_burst_ascendance->target_list().size() > 0 )
-    {
-      p()->action.lava_burst_ascendance->set_target( player->target );
-      p()->action.lava_burst_ascendance->execute();
-    } else if ( legendary &&
-                p()->action.lava_burst_dre &&
-                p()->action.lava_burst_dre->target_list().size() > 0 )
-    {
-      p()->action.lava_burst_dre->set_target( player->target );
-      p()->action.lava_burst_dre->execute();
     }
 
     // Refresh Flame Shock to max duration
@@ -5870,6 +5870,58 @@ struct ascendance_t : public shaman_spell_t
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.ascendance->ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
+};
+
+struct ascendance_dre_t : public ascendance_t
+{
+  ascendance_dre_t( shaman_t* player ) : ascendance_t( player, "ascendance_dre" )
+  {
+    background = true;
+    cooldown->duration = 0_s;
+  }
+
+  // Note, bypasses calling ascendance_t::init() to not bother initializing the ascendance
+  // version fo the lava burst
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      if ( auto trigger_spell = p()->find_action( "lava_burst_dre" ) )
+      {
+        lvb = debug_cast<lava_burst_t*>( trigger_spell );
+      }
+      else
+      {
+        lvb = new lava_burst_t( p(), lava_burst_type::ASCENDANCE, "dre" );
+        add_child( lvb );
+      }
+    }
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      if ( auto trigger_spell = p()->find_action( "ascendance_damage_dre" ) )
+      {
+        ascendance_damage = debug_cast<ascendance_damage_t*>( trigger_spell );
+      }
+      else
+      {
+        ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage_dre" );
+        add_child( ascendance_damage );
+      }
     }
   }
 };
@@ -6524,7 +6576,7 @@ struct thundercharge_t : public shaman_spell_t
 
 struct fae_transfusion_tick_t : public shaman_spell_t
 {
-  fae_transfusion_tick_t( util::string_view n, shaman_t* player )
+  fae_transfusion_tick_t( const std::string& n, shaman_t* player )
     : shaman_spell_t( n, player, player->find_spell( 328928 ) )
   {
     affected_by_master_of_the_elements = false;
@@ -6562,7 +6614,8 @@ struct fae_transfusion_t : public shaman_spell_t
     channeled   = true;
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
 
-    base_tick_time *= 1.0 + p()->conduit.essential_extraction.percent();
+    base_tick_time *= 1.0 - p()->conduit.essential_extraction.percent();
+    dot_duration *= 1.0 - p()->conduit.essential_extraction.percent();
   }
 };
 
@@ -6679,10 +6732,72 @@ struct chain_harvest_t : public chained_base_t
 
 struct vesper_totem_damage_t : public shaman_spell_t
 {
+  // Cache closest target so we don't need to compute it for all hit targets
+  player_t* closest_target;
+
   vesper_totem_damage_t( shaman_t* player )
     : shaman_spell_t( "vesper_totem_damage", player, player->find_spell( 324520 ) )
   {
     background = true;
+  }
+
+  void find_closest_target()
+  {
+    if ( sim->distance_targeting_enabled == 0 )
+    {
+      closest_target = target_list().front();
+    }
+    else
+    {
+      closest_target = nullptr;
+      auto min_distance = std::numeric_limits<double>::max();
+
+      range::for_each( target_list(), [this, &min_distance] ( player_t* t ) {
+        if ( sim->debug )
+        {
+          sim->print_debug( "{} {} candidate={} (x={}, y={}, distance={}",
+            player->name(), name(), t->name(), t->x_position, t->y_position,
+            player->get_player_distance( *t ) );
+
+        }
+
+        double dt = p()->get_player_distance( *t );
+        if ( dt < min_distance )
+        {
+          dt = min_distance;
+          closest_target = t;
+        }
+      } );
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} closest_target={} (x={}, y={}, distance={})",
+          player->name(), name(), closest_target ? closest_target->name() : "none",
+          closest_target ? closest_target->x_position : 0.0,
+          closest_target ? closest_target->y_position : 0.0,
+          closest_target ? player->get_player_distance( *closest_target ) : 0.0 );
+
+    }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( closest_target && target == closest_target )
+    {
+      m *= 1.0 + p()->conduit.elysian_dirge.percent();
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    find_closest_target();
+
+    shaman_spell_t::execute();
   }
 };
 
@@ -6907,7 +7022,7 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
 {
   // shared
   if ( name == "ascendance" )
-    return new ascendance_t( this, options_str );
+    return new ascendance_t( this, "ascendance", options_str );
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
   if ( name == "bloodlust" )
@@ -6962,7 +7077,7 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
   if ( name == "lava_beam" )
     return new lava_beam_t( this, options_str );
   if ( name == "lava_burst" )
-    return new lava_burst_t( this, lava_burst_type::NORMAL, options_str );
+    return new lava_burst_t( this, lava_burst_type::NORMAL, "", options_str );
   if ( name == "liquid_magma_totem" )
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
@@ -7299,19 +7414,18 @@ void shaman_t::create_actions()
   {
     if ( covenant.necrolord->ok() )
     {
-      action.lava_burst_pw = new lava_burst_t( this, lava_burst_type::PRIMORDIAL_WAVE );
+      action.lava_burst_pw = new lava_burst_t( this, lava_burst_type::PRIMORDIAL_WAVE, "pw" );
     }
 
     if ( talent.ascendance->ok())
     {
-      action.lava_burst_ascendance = new lava_burst_t( this, lava_burst_type::ASCENDANCE );
     }
   }
 
   // Legendaries
-  if ( legendary.deeply_rooted_elements.ok() ) {
-    action.lava_burst_dre = new lava_burst_t( this, lava_burst_type::DRE_ASCENDANCE );
-    action.dre_ascendance = new ascendance_t( this, "", true );
+  if ( legendary.deeply_rooted_elements.ok() )
+  {
+    action.dre_ascendance = new ascendance_dre_t( this );
   }
 }
 
@@ -7482,6 +7596,7 @@ void shaman_t::init_spells()
   conduit.essential_extraction = find_conduit_spell( "Essential Extraction" );
   conduit.lavish_harvest       = find_conduit_spell( "Lavish Harvest" );
   conduit.tumbling_waves       = find_conduit_spell( "Tumbling Waves" );
+  conduit.elysian_dirge        = find_conduit_spell( "Elysian Dirge" );
 
   // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
@@ -7942,6 +8057,50 @@ void shaman_t::trigger_elemental_equilibrium( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
+{
+  if ( !legendary.deeply_rooted_elements.ok() )
+  {
+    return;
+  }
+
+  double proc_chance = 0.0;
+
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    auto lvb = debug_cast<lava_burst_t*>( state->action );
+    if ( lvb->type != lava_burst_type::NORMAL )
+    {
+      return;
+    }
+
+    proc_chance = legendary.deeply_rooted_elements->effectN( 2 ).percent();
+  }
+  else if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    auto sb = debug_cast<stormstrike_base_t*>( state->action );
+    if ( sb->stormflurry )
+    {
+      return;
+    }
+
+    proc_chance = legendary.deeply_rooted_elements->effectN( 3 ).percent();
+  }
+  // No resto support for now
+  else
+  {
+    return;
+  }
+
+  if ( !rng().roll( proc_chance ) )
+  {
+    return;
+  }
+
+  action.dre_ascendance->set_target( state->target );
+  action.dre_ascendance->execute();
+}
+
 void shaman_t::trigger_primal_primer( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
@@ -8280,7 +8439,7 @@ void shaman_t::create_buffs()
   {
     auto legendary_spell = find_spell( 336741 );
     auto buff            = buffs.bloodlust;
-    buff->modify_duration( timespan_t::from_millis(legendary_spell->effectN( 1 ).base_value()) );
+    buff->modify_duration( legendary_spell->effectN( 1 ).time_value() );
     buff->modify_default_value( legendary_spell->effectN( 2 ).percent() );
   }
 
@@ -9816,8 +9975,10 @@ struct shaman_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.bloodlust =
-        make_buff( p, "bloodlust", p->find_spell( 2825 ) )->set_max_stack( 1 )->add_invalidate( CACHE_HASTE );
+    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+          ->set_max_stack( 1 )
+          ->set_default_value_from_effect_type( A_HASTE_ALL )
+          ->add_invalidate( CACHE_HASTE );
 
     p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
   }

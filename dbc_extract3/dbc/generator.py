@@ -1247,6 +1247,10 @@ class SpellDataGenerator(DataGenerator):
          323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
          # Cabalists Hymnal
          344820,
+         # Empyreal Ordnance
+         345544,
+         # Satchel of Misbegotten Minions
+         345638,
         ),
 
         # Warrior:

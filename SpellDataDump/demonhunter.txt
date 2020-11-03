@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-01/36401, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1307,7 +1307,8 @@ Attributes       : .......x x....... ........ .....x..   ........ ..x..... .....
                  : Hidden (7), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=296804)   : Apply Aura (6) | School Immunity (39)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=298926)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
@@ -2726,7 +2727,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=307322)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #2 (id=707093)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894)
@@ -2773,7 +2775,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=307364)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #2 (id=370871)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894)
@@ -2961,7 +2964,8 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
                  : Cannot cancel aura (31), Does not break stealth (37), Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xffffffd8 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffd8 | Target: Unknown(25)
+                   Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
 Description      : $@spelldesc196718
@@ -4691,7 +4695,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=706547)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
@@ -5156,7 +5161,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=715332)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : $@spelldesc268175
 Tooltip          : Dealing $s1% less damage to the Demon Hunter.
 
@@ -8121,7 +8127,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=818077)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Elysian Decree (desc=Kyrian) (id=327839) [Spell Family (107)] 
@@ -8222,7 +8229,8 @@ Attributes       : ........ ........ ..x....x ...x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=824753)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : A pool of demon blood reduces the damage done to the victiorious Demon Hunter by $s1%.
 Tooltip          : Damage to the victiorious Demon Hunter reduced by $s1%.
 
@@ -9329,7 +9337,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=844533)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc343010
 Tooltip          : Absorbs $w1 damage.
 

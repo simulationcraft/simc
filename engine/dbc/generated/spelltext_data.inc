@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36401
-static const std::array<spelltext_data_t, 15001> __spelltext_data { {
+static const std::array<spelltext_data_t, 15002> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14934,6 +14934,7 @@ static const std::array<spelltext_data_t, 15001> __spelltext_data { {
   { 345569, "$@spelldesc323654", "Haste increased by ${$s1/10}.1%.", "Venthyr" },
   { 345594, "Earth Shock has a |cFFFFFFFF${$s1}.1%|r chance to extend the duration of your Flame Shock on the enemy by ${$s2/1000} sec.", 0, 0 },
   { 345595, "Spew out a Slimey Morsel for every stack of Gluttonous. The Morsels immediately attempt to return to you, each healing you for $334512s1.", 0, 0 },
+  { 345638, "$@spelldesc345567", 0, 0 },
   { 345675, "Reduce the effectiveness of crowd controlling effects by $s2%. Successfully applying a loss of control effect to an enemy, interrupting an enemy, or dispelling any target will increase all your secondary stats by $339463s1 for $339463d. This effect cannot occur more than once every 30 seconds.", 0, 0 },
   { 345695, "Bind a spectral essence to an enemy for $d, causing allied attacks to heal for $s2% of damage dealt, up to $s1 total healing.\r\n\r\nWhen the essence expires or is removed early, the remaining healing bursts, healing up to $s3 allies within $345704a1 yds.", "Attacks heal for $s2% of damage dealt, with $w1 healing remaining.\r\n\r\nIf the essence expires or is removed early, the remaining healing is split between $s3 allies within $345704a1 yds.", 0 },
   { 345697, "$@spelldesc345698", 0, 0 },

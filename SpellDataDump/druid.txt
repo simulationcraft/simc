@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-01/36401, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1502,7 +1502,8 @@ Effects          :
 #1 (id=23666)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Banish | Target: Enemy (6)
 #2 (id=23667)    : Apply Aura (6) | School Immunity (39)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Banish | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Mechanic: Banish | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=23668)    : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Banish | Target: Enemy (6)
 Description      : Tosses the enemy target into the air, disorienting them but making them invulnerable for up to $d.  Only one target can be affected by your Cyclone at a time.
@@ -2536,7 +2537,8 @@ Effects          :
 #1 (id=68522)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96931 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=68523)    : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=327035)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A devastating blow that consumes $s3 stacks of your Thrash on the target to deal $s1 Physical damage and reduce the damage they deal to you by $s2% for $d.
@@ -4176,7 +4178,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=177104)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Enemy (6)
+                   Affected School(s): Physical
 Description      : $@spelldesc135288
 Tooltip          : Dealing $w1% reduced damage to $@auracaster.
 
@@ -5488,7 +5491,8 @@ Effects          :
 #3 (id=301093)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=805968)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -6148,7 +6152,8 @@ Effects          :
 #1 (id=295761)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=297120)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1e+08 | Scaled Value: 1e+08 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 1e+08 | Scaled Value: 1e+08 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=297121)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
 #4 (id=297122)   : Apply Aura (6) | Modify Leech% (443)
@@ -6730,7 +6735,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Disable player procs (112)
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xffffffd8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffd8 | Target: Self (1)
+                   Affected School(s): All
 Description      : Sharp brambles protect you, absorbing and reflecting up to $<shield> damage from each attack.
 
 While Barkskin is active, the brambles also deal $213709s1 Nature damage to all nearby enemies every $22812t3 sec.
@@ -6877,7 +6883,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=300992)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffec | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc203974
 Tooltip          : Damage of the next autoattack you take will be reduced by $203974s1~%.
 
@@ -11962,7 +11969,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=818328)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Trigger Spell: 338411 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Trigger Spell: 338411 | Target: Friend (21)
+                   Affected School(s): All
 #2 (id=837056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Energize your bonded partner, granting them $327139s1% of your damage as additional Arcane damage, healing, or absorption.
@@ -11991,7 +11999,8 @@ Effects          :
 #1 (id=818347)   : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 40 | Scaled Value: 40 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #2 (id=818424)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xa | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xa | Target: Self (1)
+                   Affected School(s): All
 #3 (id=818425)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Protect your bonded partner, redirecting $s1% of damage they take to you, unless you fall below $s3% health.
@@ -13830,7 +13839,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=869930)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc339056
 Tooltip          : Absorbing $w1 damage.
 

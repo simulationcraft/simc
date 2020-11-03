@@ -763,6 +763,7 @@ public:
   void init_benefits() override;
   void init_uptimes() override;
   void init_rng() override;
+  void init_assessors() override;
   void init_finished() override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
@@ -1425,7 +1426,6 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
 
-    bool fevered_incantation = true; // TODO: Need to verify what exactly triggers Fevered Incantation.
     bool icy_propulsion = true;
     bool radiant_spark = false;
   } triggers;
@@ -1698,14 +1698,6 @@ public:
 
     if ( s->result_total <= 0.0 )
       return;
-
-    if ( triggers.fevered_incantation )
-    {
-      if ( s->result == RESULT_CRIT )
-        p()->buffs.fevered_incantation->trigger();
-      else
-        p()->buffs.fevered_incantation->expire();
-    }
 
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
@@ -2936,9 +2928,9 @@ struct blizzard_shard_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = triggers.bone_chilling = true;
+    triggers.icy_propulsion = false;
     base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
-    triggers.icy_propulsion = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3585,7 +3577,9 @@ struct flurry_t final : public frost_mage_spell_t
 
     if ( brain_freeze )
     {
-      p()->remaining_winters_chill = 2;
+      if ( p()->spec.brain_freeze_2->ok() )
+        p()->remaining_winters_chill = 2;
+
       p()->procs.brain_freeze_used->occur();
     }
 
@@ -4513,12 +4507,10 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
+    callbacks = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-    // TODO: Phoenix Flames currently does not trigger fevered incantation
-    // on the beta. Verify whether this is fixed closer to shadowlands release.
-    triggers.fevered_incantation = !p->bugs;
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -5006,8 +4998,7 @@ struct arcane_echo_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
   {
     background = true;
-    callbacks = false;
-    affected_by.radiant_spark = false;
+    callbacks = affected_by.radiant_spark = false;
     aoe = as<int>( p->talents.arcane_echo->effectN( 1 ).base_value() );
   }
 };
@@ -5128,7 +5119,6 @@ struct shifting_power_pulse_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 325130 ) )
   {
     background = true;
-    callbacks = false;
     aoe = -1;
   }
 };
@@ -5500,7 +5490,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   // Runeforge Legendaries
   debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
-                            ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
+                            ->set_default_value_from_effect( 3 )
                             ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
@@ -6226,6 +6216,7 @@ void mage_t::create_buffs()
                              ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buffs.infernal_cascade = make_buff( this, "infernal_cascade", find_spell( 336832 ) )
                              ->set_default_value( conduits.infernal_cascade.percent() )
+                             ->set_schools_from_effect( 1 )
                              ->set_chance( conduits.infernal_cascade.ok() )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6338,6 +6329,34 @@ void mage_t::init_rng()
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
 }
 
+void mage_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( runeforge.fevered_incantation->ok() )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ this ] ( result_amount_type, action_state_t* s )
+    {
+      // Check action state's result type to catch spells that execute directly
+      // but aren't counted as direct damage, such as Blizzard.
+      if ( s->result_type == result_amount_type::DMG_DIRECT
+        && s->result_total > 0.0
+        && s->action->callbacks )
+      {
+        make_event( *sim, [ this, r = s->result ]
+        {
+          if ( r == RESULT_CRIT )
+            buffs.fevered_incantation->trigger();
+          else
+            buffs.fevered_incantation->expire();
+        } );
+      }
+
+      return assessor::CONTINUE;
+    } );
+  }
+}
+
 void mage_t::init_finished()
 {
   player_t::init_finished();
@@ -6435,8 +6454,12 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  m *= 1.0 + buffs.fevered_incantation->check_stack_value();
-  m *= 1.0 + buffs.disciplinary_command->check_value();
+  school_e school = s->action->get_school();
+
+  if ( buffs.fevered_incantation->has_common_school( school ) )
+    m *= 1.0 + buffs.fevered_incantation->check_stack_value();
+  if ( buffs.disciplinary_command->has_common_school( school ) )
+    m *= 1.0 + buffs.disciplinary_command->check_value();
 
   return m;
 }
@@ -6445,10 +6468,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+  if ( buffs.enlightened_damage->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened_damage->check_value();
-
-  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  if ( buffs.infernal_cascade->has_common_school( school ) )
     m *= 1.0 + buffs.infernal_cascade->check_stack_value();
 
   return m;
@@ -6475,7 +6497,7 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( auto td = find_target_data( target ) )
   {
-    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) )
+    if ( td->debuffs.grisly_icicle->has_common_school( school ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
   }
 
