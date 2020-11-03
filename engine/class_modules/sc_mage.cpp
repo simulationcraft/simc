@@ -3111,9 +3111,9 @@ struct blizzard_shard_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = triggers.bone_chilling = true;
+    triggers.icy_propulsion = false;
     base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
-    triggers.icy_propulsion = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -4835,12 +4835,10 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
+    callbacks = triggers.fevered_incantation = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-    // TODO: Phoenix Flames currently does not trigger fevered incantation
-    // on the beta. Verify whether this is fixed closer to shadowlands release.
-    triggers.fevered_incantation = !p->bugs;
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -5358,8 +5356,7 @@ struct arcane_echo_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
   {
     background = true;
-    callbacks = false;
-    affected_by.radiant_spark = false;
+    callbacks = affected_by.radiant_spark = false;
     aoe = as<int>( p->talents.arcane_echo->effectN( 1 ).base_value() );
   }
 };
@@ -5480,7 +5477,6 @@ struct shifting_power_pulse_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 325130 ) )
   {
     background = true;
-    callbacks = false;
     aoe = -1;
   }
 };
