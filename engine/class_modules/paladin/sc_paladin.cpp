@@ -1978,6 +1978,7 @@ void paladin_t::init_spells()
   legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
   legendary.relentless_inquisitor = find_runeforge_legendary( "Relentless Inquisitor" );
   legendary.tempest_of_the_lightbringer = find_runeforge_legendary( "Tempest of the Lightbringer" );
+  legendary.reign_of_endless_kings = find_runeforge_legendary( "Reign of Endless Kings" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
@@ -2507,6 +2508,18 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
     )
   {
     buffs.blessing_of_dusk -> trigger();
+  }
+
+  if (
+      resource_type == RESOURCE_HEALTH &&
+      legendary.reign_of_endless_kings -> ok() &&
+      ! buffs.reign_of_ancient_kings -> up() &&
+      health_percentage()/100 < legendary.reign_of_endless_kings -> effectN( 2 ).percent() &&
+      health_percentage()/100 + amount / max_health() >= legendary.reign_of_endless_kings -> effectN( 2 ).percent()
+    )
+  {
+    buffs.guardian_of_ancient_kings -> trigger( legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> duration() );
+    buffs.reign_of_ancient_kings -> trigger();
   }
   return result;
 }

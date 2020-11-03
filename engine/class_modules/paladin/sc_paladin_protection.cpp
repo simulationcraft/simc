@@ -872,6 +872,8 @@ void paladin_t::create_buffs_protection()
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
 
   buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
+  buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
+    legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )

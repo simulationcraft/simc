@@ -204,6 +204,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
+    buff_t* reign_of_ancient_kings;
   } buffs;
 
   // Gains
@@ -474,6 +475,7 @@ public:
     item_runeforge_t the_ardent_protectors_sanctum;
     item_runeforge_t relentless_inquisitor;
     item_runeforge_t tempest_of_the_lightbringer;
+    item_runeforge_t reign_of_endless_kings;
   } legendary;
 
   // Paladin options
