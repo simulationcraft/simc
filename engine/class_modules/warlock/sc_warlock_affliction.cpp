@@ -281,7 +281,7 @@ struct corruption_t : public affliction_spell_t
 {
   bool pandemic_invocation_usable;
 
-  corruption_t( warlock_t* p, util::string_view options_str )
+  corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
     : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
   {
     auto otherSP = p->find_spell( 146739 );
@@ -291,7 +291,7 @@ struct corruption_t : public affliction_spell_t
     pandemic_invocation_usable = false;  // BFA - Azerite
 
     
-    if ( !p->spec.corruption_3->ok() )
+    if ( !p->spec.corruption_3->ok() || seed_action )
     {
       spell_power_mod.direct = 0; //Rank 3 is required for direct damage
     }
@@ -477,7 +477,7 @@ struct seed_of_corruption_t : public affliction_spell_t
 
     seed_of_corruption_aoe_t( warlock_t* p )
       : affliction_spell_t( "seed_of_corruption_aoe", p, p->find_spell( 27285 ) ),
-        corruption( new corruption_t( p, "" ) )
+        corruption( new corruption_t( p, "", true ) )
     {
       aoe                              = -1;
       background                       = true;
@@ -885,7 +885,7 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, co
   if ( action_name == "shadow_bolt" )
     return new shadow_bolt_t( this, options_str );
   if ( action_name == "corruption" )
-    return new corruption_t( this, options_str );
+    return new corruption_t( this, options_str, false );
   if ( action_name == "agony" )
     return new agony_t( this, options_str );
   if ( action_name == "unstable_affliction" )
