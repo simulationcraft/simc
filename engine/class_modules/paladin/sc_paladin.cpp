@@ -1102,11 +1102,11 @@ struct ashen_hallow_tick_t : public paladin_spell_t
   {
     double cam = paladin_spell_t::composite_aoe_multiplier( state );
 
-    // Formula courtesy of Mythie
+    // Formula courtesy of Mythie. This is a regression line based off of experiment.
     if ( state -> n_targets <= 5 )
       return cam;
     else
-      return cam * 7.8 * std::log( 0.112 * state -> n_targets + 1.346 ) / state -> n_targets;
+      return cam * 9.53 * std::log( 0.077 * state -> n_targets + 1.32 ) / state -> n_targets;
     // Post 20 is managed by action_t::calculate_direct_amount
   }
 
