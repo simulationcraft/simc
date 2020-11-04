@@ -983,7 +983,7 @@ struct hand_of_reckoning_t: public paladin_melee_attack_t
 struct righteous_might_t : public heal_t
 {
   righteous_might_t( paladin_t* p ) :
-    heal_t( "righteous_might", p, p -> conduit.righteous_might )
+    heal_t( "righteous_might", p, p -> find_spell( 340193 ) )
     {
       background = true;
       callbacks = may_crit = may_miss = false;
@@ -1070,7 +1070,6 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
     {
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
-      dual = true;
       aoe_multiplier = 1.0; //This gets overwritten
     }
 
@@ -1116,9 +1115,13 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     if ( p() -> conduit.hallowed_discernment -> ok() )
     {
       std::vector<player_t*> targets = target_list();
+      // Hallowed Discernment selects the lowest health target to impact. In this
+      // sim if all targets have a set hp then use that to select the target,
+      // otherwise select based on % hp.
       bool use_actual_hp = std::all_of( targets.begin(), targets.end(),
         [] ( player_t * t ) { return t -> max_health() > 0; }
       );
+      // Find the lowest health target
       player_t* lowest_hp_target = *std::min_element(
         targets.begin(), targets.end(), [ use_actual_hp ] ( player_t* lhs, player_t* rhs )
         {
@@ -1129,15 +1132,16 @@ struct ashen_hallow_tick_t : public paladin_spell_t
       );
       hallowed_discernment_tick -> set_target( lowest_hp_target );
 
+      // To Do: Check if the initial tick affects the target picked, if so then move this up
       paladin_spell_t::execute();
 
       // Damage is calculated independently of Ashen Hallow. ie. they crit separately
+      // Hitting more targets with Ashen Hallow reduces the damage of Hallowed Discernment
       hallowed_discernment_tick -> aoe_multiplier = composite_aoe_multiplier( execute_state );
       hallowed_discernment_tick -> execute();
       return;
     }
 
-    // To Do: Check if the initial tick affects the target picked, if so then move this up
     paladin_spell_t::execute();
   }
 };

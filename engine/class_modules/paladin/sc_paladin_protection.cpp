@@ -308,7 +308,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     cooldown = p -> cooldowns.guardian_of_ancient_kings;
 
     if ( p -> conduit.royal_decree -> ok() )
-      cooldown -> duration += timespan_t::from_millis( p -> conduit.royal_decree.value() );
+      cooldown -> duration += p -> conduit.royal_decree.time_value();
   }
 
   void execute() override
@@ -485,6 +485,18 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     // Shining Light does not benefit from divine purpose
       am /= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
     return am;
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+
+    if ( p() -> buffs.shining_light_free -> check() )
+      c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.royal_decree -> check() )
+      c *= 1.0 + p() -> buffs.royal_decree -> data().effectN( 1 ).percent();
+
+    return c;
   }
 };
 

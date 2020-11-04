@@ -1114,15 +1114,9 @@ struct holy_power_consumer_t : public Base
     }
 
     if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
-         ( ab::p() -> buffs.divine_purpose -> check() && !is_vanq_hammer ) )
+         ( ab::affected_by.divine_purpose && ab::p() -> buffs.divine_purpose -> check() ) )
     {
       return 0.0;
-    }
-
-    if ( is_wog && ab::p() -> specialization() == PALADIN_PROTECTION )
-    {
-      if ( ab::p() -> buffs.shining_light_free -> check() || ab::p() -> buffs.royal_decree -> check() )
-        return 0.0;
     }
 
     double c = ab::cost();
@@ -1135,7 +1129,7 @@ struct holy_power_consumer_t : public Base
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
       c += ab::p() -> buffs.the_magistrates_judgment -> stack_value();
 
-    return c;
+    return std::max( c, 0.0 );
   }
 
   void execute() override
