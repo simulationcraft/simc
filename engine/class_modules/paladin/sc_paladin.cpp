@@ -583,33 +583,44 @@ struct blinding_light_t : public paladin_spell_t
   }
 };
 
-// Devotion Aura ===============================================
+// Auras ===============================================
 
-struct devotion_aura_t : public paladin_spell_t
+struct paladin_aura_base_t : public paladin_spell_t
 {
-  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+  buff_t* aura_buff;
+  paladin_aura_base_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
+    paladin_spell_t( n, p, s )
   {
-    parse_options( options_str );
     harmful = false;
+    aura_buff = nullptr;
   }
 
   void execute() override
   {
     paladin_spell_t::execute();
-    // If Devotion Aura is up, cancel it. Otherwise replace the current aura.
+    // If this aura is up, cancel it. Otherwise replace the current aura.
     if ( p() -> active_aura != nullptr )
     {
       p() -> active_aura -> expire();
-      if ( p() -> active_aura == p() -> buffs.devotion_aura )
+      if ( p() -> active_aura == aura_buff )
         p() -> active_aura = nullptr;
       else
-        p() -> active_aura = p() -> buffs.devotion_aura;
+        p() -> active_aura = aura_buff;
     }
     else
-      p() -> active_aura = p() -> buffs.devotion_aura;
+      p() -> active_aura = aura_buff;
     if ( p() -> active_aura != nullptr)
       p() -> active_aura -> trigger();
+  }
+};
+
+struct devotion_aura_t : public paladin_aura_base_t
+{
+  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
+    paladin_aura_base_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+  {
+    parse_options( options_str );
+    aura_buff = p -> buffs.devotion_aura;
   }
 };
 
