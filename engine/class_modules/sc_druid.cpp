@@ -3917,9 +3917,47 @@ struct brutal_slash_t : public cat_attack_t
 
 //==== Feral Frenzy ==============================================
 
-//Currently incorrect TODO(Xanzara)
+// TODO: check stats snapshot behavior in-game and adjust flags as necessary
 struct feral_frenzy_driver_t : public cat_attack_t
 {
+  struct feral_frenzy_state_t : public druid_action_state_t
+  {
+    double tick_power;
+
+    feral_frenzy_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ), tick_power( 0.0 ) {}
+
+    double composite_attack_power() const override
+    {
+      if ( !debug_cast<feral_frenzy_dot_t*>( action )->is_direct_damage )
+        return tick_power;
+      else
+        return druid_action_state_t::composite_attack_power();
+    }
+
+    void initialize() override
+    {
+      druid_action_state_t::initialize();
+
+      tick_power = 0.0;
+    }
+
+    void copy_state( const action_state_t* state ) override
+    {
+      druid_action_state_t::copy_state( state );
+
+      tick_power = debug_cast<const feral_frenzy_state_t*>( state )->tick_power;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      druid_action_state_t::debug_str( s );
+
+      s << " tick_power=" << tick_power << " attack_power=" << attack_power;
+
+      return s;
+    }
+  };
+
   struct feral_frenzy_dot_t : public cat_attack_t
   {
     bool is_direct_damage;
@@ -3929,8 +3967,43 @@ struct feral_frenzy_driver_t : public cat_attack_t
       background = dual = true;
       is_direct_damage  = false;
       direct_bleed      = false;
-      dot_max_stack     = 5;
+      dot_max_stack     = as<int>( p->talent.feral_frenzy->effectN( 2 ).base_value() );
       // dot_behavior = DOT_CLIP;
+    }
+
+    action_state_t* new_state() override { return new feral_frenzy_state_t( this, target ); }
+
+    void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
+    {
+      cat_attack_t::snapshot_internal( s, fl, rt );
+
+      if ( fl & STATE_AP )
+      {
+        debug_cast<feral_frenzy_state_t*>( s )->tick_power =
+          p()->composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON ) *
+          p()->composite_attack_power_multiplier();
+      }
+    }
+
+    void init_finished() override
+    {
+      cat_attack_t::init_finished();
+
+      // remove mastery tick damage multiplier, since we need to hack it
+      ta_multiplier_buffeffects.erase( std::remove_if( ta_multiplier_buffeffects.begin(),
+                                                       ta_multiplier_buffeffects.end(),
+                                                       []( buff_effect_t e ) { return e.mastery; } ),
+                                       ta_multiplier_buffeffects.end() );
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double ta = cat_attack_t::composite_ta_multiplier( s );
+
+      // for dot damage calculations, the first 7 points of mastery are ignored
+      ta *= 1.0 + ( p()->cache.mastery() - 7 ) * p()->mastery_coefficient();
+
+      return ta;
     }
 
     // Refreshes, but doesn't pandemic
@@ -3955,12 +4028,8 @@ struct feral_frenzy_driver_t : public cat_attack_t
       is_direct_damage = false;
     }
 
-    void impact( action_state_t* s ) override { cat_attack_t::impact( s ); }
-
     void trigger_primal_fury() override {}
   };
-
-  double tick_ap_ratio;
 
   feral_frenzy_driver_t( druid_t* p, util::string_view opt ) : feral_frenzy_driver_t( p, p->talent.feral_frenzy, opt )
   {}
@@ -3971,7 +4040,6 @@ struct feral_frenzy_driver_t : public cat_attack_t
     tick_action = p->get_secondary_action<feral_frenzy_dot_t>( "feral_frenzy_tick" );
     tick_action->stats = stats;
     dynamic_tick_action = true;
-    tick_ap_ratio = p->find_spell( 274838 )->effectN( 3 ).ap_coeff();
   }
 };
 
