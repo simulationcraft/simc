@@ -31,6 +31,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
 {
   active_consecration = nullptr;
   active_hallow = nullptr;
+  active_aura = nullptr;
 
   cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
@@ -596,8 +597,19 @@ struct devotion_aura_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-
-    p() -> buffs.devotion_aura -> trigger();
+    // If Devotion Aura is up, cancel it. Otherwise replace the current aura.
+    if ( p() -> active_aura != nullptr )
+    {
+      p() -> active_aura -> expire();
+      if ( p() -> active_aura == p() -> buffs.devotion_aura )
+        p() -> active_aura = nullptr;
+      else
+        p() -> active_aura = p() -> buffs.devotion_aura;
+    }
+    else
+      p() -> active_aura = p() -> buffs.devotion_aura;
+    if ( p() -> active_aura != nullptr)
+      p() -> active_aura -> trigger();
   }
 };
 
@@ -1592,6 +1604,7 @@ void paladin_t::reset()
 
   active_consecration = nullptr;
   active_hallow = nullptr;
+  active_aura = nullptr;
 }
 
 // paladin_t::init_gains ====================================================

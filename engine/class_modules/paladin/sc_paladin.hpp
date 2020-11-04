@@ -567,6 +567,7 @@ public:
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_hallow;
+  buff_t* active_aura;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
