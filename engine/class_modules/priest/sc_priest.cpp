@@ -1069,7 +1069,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "mind_sear_tick", &p, s ),
-      void_lasher_insanity( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+      void_lasher_insanity( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
     dual       = true;
@@ -1094,13 +1094,8 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
-    // Currently bugged to only give insanity on the main target
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/687
-    if ( s->target == target || !p().o().bugs )
-    {
-      p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                                 s->action );
-    }
+    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                               s->action );
   }
 };
 
