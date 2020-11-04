@@ -598,6 +598,7 @@ struct paladin_aura_base_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
+    assert( aura_buff != nullptr && "Paladin auras must have aura_buff set to their appropriate buff" );
     // If this aura is up, cancel it. Otherwise replace the current aura.
     if ( p() -> active_aura != nullptr )
     {
