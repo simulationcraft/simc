@@ -3928,7 +3928,7 @@ struct feral_frenzy_driver_t : public cat_attack_t
 
     double composite_attack_power() const override
     {
-      if ( !debug_cast<feral_frenzy_dot_t*>( action )->is_direct_damage )
+      if ( !debug_cast<feral_frenzy_dot_t*>( action )->is_direct_damage && action->player->bugs )
         return tick_power;
       else
         return druid_action_state_t::composite_attack_power();
@@ -3989,19 +3989,25 @@ struct feral_frenzy_driver_t : public cat_attack_t
     {
       cat_attack_t::init_finished();
 
-      // remove mastery tick damage multiplier, since we need to hack it
-      ta_multiplier_buffeffects.erase( std::remove_if( ta_multiplier_buffeffects.begin(),
-                                                       ta_multiplier_buffeffects.end(),
-                                                       []( buff_effect_t e ) { return e.mastery; } ),
-                                       ta_multiplier_buffeffects.end() );
+      if ( p()->bugs )
+      {
+        // remove mastery tick damage multiplier, since we need to hack it
+        ta_multiplier_buffeffects.erase( std::remove_if( ta_multiplier_buffeffects.begin(),
+                                                         ta_multiplier_buffeffects.end(),
+                                                         []( buff_effect_t e ) { return e.mastery; } ),
+                                         ta_multiplier_buffeffects.end() );
+      }
     }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
       double ta = cat_attack_t::composite_ta_multiplier( s );
 
-      // for dot damage calculations, the first 7 points of mastery are ignored
-      ta *= 1.0 + ( p()->cache.mastery() - 7 ) * p()->mastery_coefficient();
+      if ( p()->bugs )
+      {
+        // for dot damage calculations, the first 7 points of mastery are ignored
+        ta *= 1.0 + ( p()->cache.mastery() - 7 ) * p()->mastery_coefficient();
+      }
 
       return ta;
     }
