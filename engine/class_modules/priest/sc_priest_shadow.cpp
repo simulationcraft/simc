@@ -572,6 +572,12 @@ struct silence_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
 
+    auto rank2 = p.find_rank_spell( "Silence", "Rank 2" );
+    if ( rank2->ok() )
+    {
+      range += rank2->effectN( 1 ).base_value();
+    }
+
     if ( priest().talents.last_word->ok() )
     {
       // Spell data has a negative value
