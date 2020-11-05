@@ -886,23 +886,16 @@ void echo_of_eonar( special_effect_t& effect )
   if ( !effect.player->buffs.echo_of_eonar )
   {
     effect.player->buffs.echo_of_eonar =
-      make_buff( effect.player, "echo_of_eonar", effect.driver()->effectN( 2 ).trigger() )
+      make_buff( effect.player, "echo_of_eonar", effect.player->find_spell( 347458 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_chance( 1 );
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  // TODO: allies proc buff
-  // Need to either wire up a dbc_callback to proc it or simulate it being procced from friendlies
-  // Or both
+  // TODO: buff to allies? (id=338489)
 
-  // Disable everything just to be safe
-  effect.disable_action();
-  effect.disable_buff();
+  effect.custom_buff = effect.player->buffs.echo_of_eonar;
 
-  effect.player->register_combat_begin( []( player_t* p ) {
-      p->buffs.echo_of_eonar->trigger();
-    } );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void judgment_of_the_arbiter( special_effect_t& effect )
