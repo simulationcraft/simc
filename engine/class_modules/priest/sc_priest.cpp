@@ -416,6 +416,8 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
 // ==========================================================================
 struct unholy_transfusion_t final : public priest_spell_t
 {
+  double parent_targets = 1;
+
   unholy_transfusion_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
@@ -432,11 +434,16 @@ struct unholy_transfusion_t final : public priest_spell_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double action_ta_multiplier() const override
   {
-    double d = priest_spell_t::composite_da_multiplier( state );
+    double m = priest_spell_t::action_ta_multiplier();
 
-    return d / std::sqrt( state->n_targets );
+    double scaled_m = m / std::sqrt( parent_targets );
+
+    sim->print_debug( "{} {} updates ta multiplier: Before: {} After: {} with {} targets from the parent spell.",
+                      *player, *this, m, scaled_m, parent_targets );
+
+    return scaled_m;
   }
 };
 
@@ -466,8 +473,9 @@ struct unholy_nova_t final : public priest_spell_t
     // Pass in parent state to the DoT so we know how to scale the damage of the DoT
     if ( child_unholy_transfusion )
     {
-      child_unholy_transfusion->target = s->target;
-      child_unholy_transfusion->schedule_execute( s );
+      child_unholy_transfusion->target         = s->target;
+      child_unholy_transfusion->parent_targets = s->n_targets;
+      child_unholy_transfusion->execute();
     }
 
     priest_spell_t::impact( s );
