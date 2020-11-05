@@ -614,6 +614,9 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
+    // Semi-random actions, needed *ONLY* for properly attributing focus gains
+    action_t* aspect_of_the_wild = nullptr;
+    action_t* barbed_shot = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1024,16 +1027,13 @@ public:
         total_energize *= 1 + p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
     }
 
-    if ( p() -> buffs.nesingwarys_apparatus -> check() )
+    if ( p() -> buffs.nesingwarys_apparatus -> check() &&
+         execute_time < p() -> buffs.nesingwarys_apparatus -> remains() )
     {
-      const double mul = p() -> buffs.nesingwarys_apparatus -> check_value();
-      const timespan_t remains = p() -> buffs.nesingwarys_apparatus -> remains();
-      total_regen += regen * std::min( cast_time, remains ).total_seconds() * mul;
-      if ( execute_time < remains )
-        total_energize *= 1 + mul;
+      total_energize *= 1 + p() -> buffs.nesingwarys_apparatus -> check_value();
     }
 
-    return total_regen + total_energize;
+    return total_regen + floor( total_energize );
   }
 
   // action list expressions
@@ -3162,6 +3162,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
+
+    p -> actions.barbed_shot = this;
   }
 
   void init_finished() override
@@ -5081,6 +5083,8 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+
+    p -> actions.aspect_of_the_wild = this;
   }
 
   void execute() override
@@ -6290,7 +6294,7 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
-          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild, actions.aspect_of_the_wild );
           if ( auto pet = pets.main )
             pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
         } );
@@ -6318,7 +6322,7 @@ void hunter_t::create_buffs()
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
         -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
+            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
           } );
   }
 
@@ -7527,21 +7531,21 @@ void hunter_t::regen( timespan_t periodicity )
 
 // hunter_t::resource_gain =================================================
 
-double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, action_t* a )
+double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, action_t* action )
 {
-  double actual_amount = player_t::resource_gain( type, amount, g, a );
+  double actual_amount = player_t::resource_gain( type, amount, g, action );
 
   if ( type == RESOURCE_FOCUS && amount > 0 && player_t::buffs.memory_of_lucid_dreams -> check() )
   {
     actual_amount += player_t::resource_gain( RESOURCE_FOCUS,
                                               amount * azerite_essence.memory_of_lucid_dreams_major_mult,
-                                              gains.memory_of_lucid_dreams_major, a );
+                                              gains.memory_of_lucid_dreams_major, action );
   }
 
-  if ( type == RESOURCE_FOCUS && amount > 0 && buffs.nesingwarys_apparatus -> check() )
+  if ( action && type == RESOURCE_FOCUS && amount > 0 && buffs.nesingwarys_apparatus -> check() )
   {
     const double mul = buffs.nesingwarys_apparatus -> check_value();
-    actual_amount += player_t::resource_gain( type, amount * mul, gains.nesingwarys_apparatus_buff, a );
+    actual_amount += player_t::resource_gain( type, amount * mul, gains.nesingwarys_apparatus_buff, action );
   }
 
   return actual_amount;
