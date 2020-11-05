@@ -2349,7 +2349,7 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, const std::string& name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
-    owner_coeff.ap_from_ap = 0.6;
+    owner_coeff.ap_from_ap = 1.5;
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -7917,6 +7917,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   if ( buff.hot_hand->trigger() )
   {
     attack->proc_hh->occur();
+    cooldown.lava_lash->reset(true);
   }
 }
 
