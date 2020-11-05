@@ -1705,6 +1705,8 @@ class SpellDataGenerator(DataGenerator):
           ( 343250, 0 ), # Escape from Reality
           ( 343539, 0 ), # Escape from Reality Mana Refund
           ( 343543, 0 ), # Escape from Reality Energy Refund
+          ( 347687, 1 ), # Charred Passions
+          ( 347688, 1 ), # Charred Passions
         ),
 
         # Druid:
