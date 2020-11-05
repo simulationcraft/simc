@@ -924,6 +924,13 @@
       { "data_type": "f", "field": "spell_mod" }
     ]
   },
+  "SoulbindConduitRankProperties": {
+    "fields": [
+      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "item_level" },
+      { "data_type": "i", "field": "unk_1" }
+    ]
+  },
   "SpecializationSpells": {
     "parent": "ChrSpecialization",
     "fields": [
