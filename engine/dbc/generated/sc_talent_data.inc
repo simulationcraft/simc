@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.2.36401
+// 636 talents, wow build 9.0.2.36512
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -166,7 +166,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Psychic Voice"                     , 21750, 0x00, 0x0010, 257,   0,   3,  196704,       0,  0 },
   { "Psychic Horror"                    , 21752, 0x00, 0x0010, 258,   2,   3,   64044,       0,  0 },
   { "Prayer Circle"                     , 21754, 0x00, 0x0010, 257,   2,   4,  321377,       0,  0 },
-  { "Shadow Crash"                      , 21755, 0x00, 0x0010, 258,   2,   4,  342834,       0,  0 },
+  { "Shadow Crash"                      , 21755, 0x00, 0x0010, 258,   2,   4,  205385,       0,  0 },
   { "Mighty Bash"                       , 21778, 0x00, 0x0400,   0,   0,   3,    5211,  175682,  0 },
   { "Blinding Light"                    , 21811, 0x00, 0x0002,   0,   2,   2,  115750,       0,  0 },
   { "Blind Fury"                        , 21854, 0x00, 0x0800, 577,   0,   0,  203550,       0,  0 },

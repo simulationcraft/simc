@@ -1,4 +1,4 @@
-// Rank class spells, wow build 9.0.2.36401
+// Rank class spells, wow build 9.0.2.36512
 static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -244,7 +244,6 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 10,   0, 328669,      0, "Roll"                              , "Rank 2" },
   {  6, 250, 316616,      0, "Rune Tap"                          , "Rank 2" },
   {  6, 252, 317234,      0, "Scourge Strike"                    , "Rank 2" },
-  {  5, 258, 342991,      0, "Shadow Mend"                       , "Rank 2" },
   {  5,   0, 322107,      0, "Shadow Word: Death"                , "Rank 2" },
   {  5,   0, 327820,      0, "Shadow Word: Pain"                 , "Rank 2" },
   {  5, 256, 343726,      0, "Shadowfiend"                       , "Rank 2" },
@@ -263,6 +262,7 @@ static const std::array<rank_class_spell_t, 336> __rank_spells_data { {
   { 12, 581, 320794,      0, "Sigil of Flame"                    , "Rank 2" },
   { 12, 581, 320418,      0, "Sigil of Misery"                   , "Rank 2" },
   { 12, 581, 320417,      0, "Sigil of Silence"                  , "Rank 2" },
+  {  5, 258, 342991,      0, "Silence"                           , "Rank 2" },
   {  4, 259, 279877,      0, "Sinister Strike"                   , "Rank 2" },
   {  4, 260, 279876,      0, "Sinister Strike"                   , "Rank 2" },
   {  1,  71, 261901,      0, "Slam"                              , "Rank 2" },
