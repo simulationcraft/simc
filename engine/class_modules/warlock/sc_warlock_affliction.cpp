@@ -1084,9 +1084,4 @@ void warlock_t::create_apl_affliction()
   cds->add_action("concentrated_flame");
   cds->add_action("the_unbound_force,if=buff.reckless_force.remains");
 }
-
-std::unique_ptr<expr_t> warlock_t::create_aff_expression( util::string_view name_str )
-{
-  return player_t::create_expression( name_str );
-}
 }  // namespace warlock
