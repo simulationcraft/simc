@@ -3308,16 +3308,6 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  struct serpent_sting_sst_t final : public hunter_ranged_attack_t
-  {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
-    {
-      dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-    }
-  };
-
   struct {
     /* This is required *only* for Double Tap
      * In-game the second Aimed Shot is performed with a slight delay, which means it can get
@@ -3338,9 +3328,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
-  struct {
-    hunter_ranged_attack_t* action = nullptr;
-  } serpentstalkers_trickery;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot )
@@ -3357,25 +3344,11 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
-
-    if ( p -> legendary.serpentstalkers_trickery.ok() )
-      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
   }
 
   bool trick_shots_up() const
   {
     return trick_shots.up || p() -> buffs.trick_shots -> check();
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( serpentstalkers_trickery.action )
-    {
-      serpentstalkers_trickery.action -> set_target( target );
-      serpentstalkers_trickery.action -> execute();
-    }
   }
 
   int n_targets() const override
@@ -3445,11 +3418,24 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
+  struct serpent_sting_sst_t final : public hunter_ranged_attack_t
+  {
+    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
   bool lock_and_loaded = false;
   struct {
     double_tap_t* action = nullptr;
     proc_t* proc;
   } double_tap;
+  struct {
+    serpent_sting_sst_t* action = nullptr;
+  } serpentstalkers_trickery;
   struct {
     double chance = 0;
     proc_t* proc;
@@ -3466,6 +3452,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       add_child( double_tap.action );
       double_tap.proc = p -> get_proc( "double_tap_aimed" );
     }
+
+    if ( p -> legendary.serpentstalkers_trickery.ok() )
+      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
 
     if ( p -> legendary.surging_shots.ok() )
     {
@@ -3511,6 +3500,12 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.action -> schedule_execute();
       p() -> buffs.double_tap -> decrement();
       double_tap.proc -> occur();
+    }
+
+    if ( serpentstalkers_trickery.action )
+    {
+      serpentstalkers_trickery.action -> set_target( target );
+      serpentstalkers_trickery.action -> execute();
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
