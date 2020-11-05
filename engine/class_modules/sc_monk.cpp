@@ -8083,9 +8083,7 @@ struct fallen_order_t : public monk_spell_t
 
     specialization_e spec       = p()->specialization();
     timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
-//    timespan_t primary_duration = p()->passives.fallen_monk_spec_duration->duration();
-    timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
+    timespan_t primary_duration = p()->passives.fallen_monk_spec_duration->duration();
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
