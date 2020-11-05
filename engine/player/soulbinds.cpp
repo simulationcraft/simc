@@ -24,14 +24,17 @@ namespace
 struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
+  int stacks;
 
-  covenant_cb_buff_t( buff_t* b, bool on_class = true, bool on_base = false )
-    : covenant_cb_base_t( on_class, on_base ), buff( b )
-  {
-  }
+  covenant_cb_buff_t( buff_t* b, int s ) : covenant_cb_buff_t( b, true, false, s ) {}
+
+  covenant_cb_buff_t( buff_t* b, bool on_class = true, bool on_base = false, int s = -1 )
+    : covenant_cb_base_t( on_class, on_base ), buff( b ), stacks( s )
+  {}
+
   void trigger( action_t*, action_state_t* ) override
   {
-    buff->trigger();
+    buff->trigger( stacks );
   }
 };
 
@@ -42,8 +45,8 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 
   covenant_cb_action_t( action_t* a, bool self = false, bool on_class = true, bool on_base = false )
     : covenant_cb_base_t( on_class, on_base ), action( a ), self_target( self )
-  {
-  }
+  {}
+
   void trigger( action_t*, action_state_t* state ) override
   {
     auto t = self_target || !state->target ? action->player : state->target;
@@ -231,49 +234,25 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 void grove_invigoration( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima", "redirected_anima_stacks" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  struct redirected_anima_buff_t : public stat_buff_t
+  effect.custom_buff = buff_t::find( effect.player, "redirected_anima" );
+  if ( !effect.custom_buff )
   {
-    buff_t* counter;
-
-    redirected_anima_buff_t( player_t* p, buff_t* counter_ ) :
-      stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ),
-      counter( counter_ )
-    {
-      // TODO: The max stacks in spell data are wrong
-      set_max_stack( 10 );
-    }
-
-    bool trigger( int, double v, double c, timespan_t d ) override
-    {
-      // TODO: does this convert ALL stacks or only up to 4 stacks, as per max_stack of the mastery buff
-      int anima_stacks = counter->check();
-
-      if ( !anima_stacks )
-        return false;
-
-      anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
-      counter->decrement( anima_stacks );
-
-      return stat_buff_t::trigger( anima_stacks, v, c, d );
-    }
-  };
-
-  auto counter_buff = buff_t::find( effect.player, "redirected_anima_stacks" );
-  if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "redirected_anima_stacks", effect.player->find_spell( 342802 ) );
-
-  effect.custom_buff = counter_buff;
+    effect.custom_buff =
+      make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  auto buff = buff_t::find( effect.player, "redirected_anima" );
-  if ( !buff )
-    buff = make_buff<redirected_anima_buff_t>( effect.player, counter_buff );
+  double stack_mod = class_value_from_desc_vars( effect, "mod" );
+  effect.player->sim->print_debug( "class-specific properties for grove_invigoration: stack_mod={}", stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
+  int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
+
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.custom_buff, stacks );
 }
 
 void field_of_blossoms( special_effect_t& effect )
