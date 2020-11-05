@@ -3715,18 +3715,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    if ( p()->state.brain_freeze_active )
-    {
-      auto wc = get_td( s->target )->debuffs.winters_chill;
-      wc->trigger( wc->max_stack() );
-      for ( int i = 0; i < wc->max_stack(); i++ )
-        p()->procs.winters_chill_applied->occur();
-    }
-
-    if ( rng().roll( glacial_assault_chance ) )
+    if ( result_is_hit( s->result ) && rng().roll( glacial_assault_chance ) )
     {
       // Delay is around 1 s, but the impact seems to always happen in
       // the Winter's Chill window. So here we just subtract 1 ms to make
@@ -3737,8 +3726,6 @@ struct flurry_bolt_t final : public frost_mage_spell_t
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
     }
-
-    trigger_cold_front();
   }
 
   double action_multiplier() const override
@@ -3805,21 +3792,33 @@ struct flurry_t final : public frost_mage_spell_t
 
       p()->procs.brain_freeze_used->occur();
     }
-
-    consume_cold_front( target );
   }
 
   void impact( action_state_t* s ) override
   {
+    // TODO: Can this spell miss?
     frost_mage_spell_t::impact( s );
 
-    timespan_t pulse_time = s->haste * 0.4_s;
+    flurry_bolt->set_target( s->target );
+    flurry_bolt->execute();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time )
-      .target( s->target )
-      .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
-      .action( flurry_bolt ), true );
+    if ( p()->state.brain_freeze_active )
+    {
+      auto wc = get_td( s->target )->debuffs.winters_chill;
+      wc->trigger( wc->max_stack() );
+      for ( int i = 0; i < wc->max_stack(); i++ )
+        p()->procs.winters_chill_applied->occur();
+    }
+
+    timespan_t pulse_time = s->haste * 0.4_s;
+    make_repeating_event( *sim, pulse_time, [ this, t = s->target ]
+    {
+      flurry_bolt->set_target( t );
+      flurry_bolt->execute();
+    }, 2 );
+
+    consume_cold_front( s->target );
+    trigger_cold_front();
   }
 };
 
@@ -3832,7 +3831,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
+    triggers.bone_chilling = calculate_on_impact = track_shatter = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.frostbolt_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
@@ -3896,8 +3895,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
-    consume_cold_front( target );
-
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
   }
@@ -3909,6 +3906,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.tunnel_of_ice->trigger();
+      consume_cold_front( s->target );
       trigger_cold_front();
     }
   }
