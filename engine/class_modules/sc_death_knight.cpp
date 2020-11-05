@@ -500,6 +500,9 @@ public:
 
     // Legendaries
     buff_t* frenzied_monstrosity;
+
+    // Covenants
+    buff_t* swarming_mist;
   } buffs;
 
   struct runeforge_t {
@@ -599,6 +602,9 @@ public:
     // Unholy
     gain_t* apocalypse;
     gain_t* festering_wound;
+
+    // Shadowlands / Covenants
+    gain_t* swarming_mist;
   } gains;
 
   // Specialization
@@ -916,7 +922,7 @@ public:
   { // Commented out = NYI           // ID
     // Shared - Covenant ability conduits
     // conduit_data_t brutal_grasp; // Necrolord, 127
-    // conduit_data_t impenetrable_glomm; // Venthyr, 126
+    conduit_data_t impenetrable_gloom; // Venthyr, 126
     // conduit_data_t proliferation; // Kyrian, 128
     // conduit_data_t withering_ground; // Night Fae, 250
 
@@ -949,6 +955,15 @@ public:
     // conduit_data_t reinforced_shell; // 74
     // conduit_data_t unending_grip; // 106
   } conduits;
+
+  struct covenant_t
+  {
+    // const spell_data_t* abomination_limb; // Necrolord
+    // const spell_data_t* deaths_due; // Night Fae
+    // const spell_data_t* shackle_the_unworthy; // Kyrian
+    const spell_data_t* swarming_mist; // Venthyr
+    const spell_data_t* swarming_mist_energize; // Venthyr, Runic power gain
+  } covenant;
 
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
@@ -1053,6 +1068,7 @@ public:
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_parry_rating() const override;
   double    composite_parry() const override;
+  double    composite_dodge() const override;
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
   // double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -6649,6 +6665,88 @@ struct summon_gargoyle_t : public death_knight_spell_t
   }
 };
 
+// Swarming Mist ============================================================
+
+struct swarming_mist_damage_t : public death_knight_spell_t
+{
+  int swarming_mist_energize_target_cap;
+  int swarming_mist_energize_tick;
+
+  swarming_mist_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "swarming_mist_damage", p, p -> covenant.swarming_mist -> effectN( 1 ).trigger() ),
+    swarming_mist_energize_target_cap( p -> covenant.swarming_mist -> effectN( 3 ).base_value() ),
+    swarming_mist_energize_tick( 0 )
+  {
+    background = true;
+    aoe = -1;
+    base_multiplier *= 1.0 + p -> conduits.impenetrable_gloom.percent();
+  }
+
+  void execute() override
+  {
+    swarming_mist_energize_tick = 0;
+    death_knight_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    if ( swarming_mist_energize_tick < swarming_mist_energize_target_cap )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                 p() -> covenant.swarming_mist_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                 p() -> gains.swarming_mist );
+      swarming_mist_energize_tick++;
+    }
+  }
+};
+
+struct swarming_mist_buff_t : public buff_t
+{
+  swarming_mist_damage_t* damage; // (AOE) damage that ticks every second
+
+  swarming_mist_buff_t( death_knight_t* p ) :
+    buff_t( p, "swarming_mist", p -> covenant.swarming_mist ),
+    damage( new swarming_mist_damage_t( p ) )
+  {
+    cooldown -> duration = 0_ms; // Controlled by the action
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+    {
+      damage -> execute();
+    } );
+    set_partial_tick( true );
+
+    add_invalidate( CACHE_DODGE );
+  }
+};
+
+struct swarming_mist_t : public death_knight_spell_t
+{
+  swarming_mist_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "swarming_mist", p, p -> covenant.swarming_mist )
+  {
+    may_crit = may_miss = may_dodge = may_parry = false;
+
+    parse_options( options_str );
+
+    // Periodic behavior handled by the buff
+    dot_duration = base_tick_time = 0_ms;
+
+    if ( action_t* swarming_mist_damage = p -> find_action( "swarming_mist_damage" ) )
+    {
+      add_child( swarming_mist_damage );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.swarming_mist -> trigger();
+  }
+};
+
 // Tombstone ================================================================
 // Not with Defensive Abilities because of the reliable RP generation
 
@@ -8066,6 +8164,9 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
 
+  // Covenant Actions
+  if ( name == "swarming_mist"            ) return new swarming_mist_t            ( this, options_str );
+
   // Dynamic actions
   // any_dnd and dnd_any return defile if talented, or death and decay otherwise
   if ( name == "any_dnd" || name == "dnd_any" )
@@ -8646,11 +8747,15 @@ void death_knight_t::init_spells()
 
   // Shadowlands specific - Commented out = NYI
 
+  // Covenants
+  covenant.swarming_mist = find_covenant_spell( "Swarming Mist" );
+  covenant.swarming_mist_energize = covenant.swarming_mist->ok() ? find_spell( 312546 ) : spell_data_t::not_found();
+
   // Conduits
 
   // Shared - Covenant ability conduits
   // conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
-  // conduits.impenetrable_glomm = find_conduit_spell( "Impenetrable Gloom" );
+  conduits.impenetrable_gloom = find_conduit_spell( "Impenetrable Gloom" );
   // conduits.proliferation = find_conduit_spell( "Proliferation" );
   // conduits.withering_ground = find_conduit_spell( "Withering Ground" );
 
@@ -9384,6 +9489,9 @@ void death_knight_t::create_buffs()
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // Covenants
+  buffs.swarming_mist = new swarming_mist_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9427,6 +9535,9 @@ void death_knight_t::init_gains()
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
+
+  // Shadowlands / Covenants
+  gains.swarming_mist                    = get_gain( "swarming_mist" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -9775,6 +9886,23 @@ double death_knight_t::composite_parry() const
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
 
   return parry;
+}
+
+// death_knight_t::composite_dodge ============================================
+
+double death_knight_t::composite_dodge() const
+{
+  double dodge = player_t::composite_dodge();
+
+  if ( buffs.swarming_mist -> up() )
+  {
+    dodge += buffs.swarming_mist -> data().effectN( 2 ).percent();
+
+    if ( conduits.impenetrable_gloom.ok() )
+      dodge += conduits.impenetrable_gloom -> effectN( 2 ).percent();
+  }
+
+  return dodge;
 }
 
 double death_knight_t::composite_player_multiplier( school_e school ) const
