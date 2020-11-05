@@ -2609,8 +2609,6 @@ struct single_target_t final : base_t
     max_hit_number( p -> covenants.death_chakram -> effectN( 1 ).chain_target() )
   {
     dual = true;
-    // XXX 2020-09-28: Single Target damage does not proc Master Marksman
-    triggers_master_marksman = false;
   }
 
   double action_multiplier() const override
