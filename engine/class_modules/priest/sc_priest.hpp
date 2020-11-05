@@ -81,7 +81,6 @@ public:
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> surrender_to_madness_debuff;
-    propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
     propagate_const<buff_t*> hungering_void;
