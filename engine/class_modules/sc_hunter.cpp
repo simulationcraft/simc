@@ -966,7 +966,7 @@ public:
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> buffs.eagletalons_true_focus -> check_value();
 
-    return c;
+    return ceil( c );
   }
 
   void update_ready( timespan_t cd ) override
