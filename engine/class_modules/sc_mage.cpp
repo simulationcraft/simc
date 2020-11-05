@@ -439,8 +439,7 @@ public:
     // Shared
     buff_t* incanters_flow;
     buff_t* rune_of_power;
-    buff_t* focus_magic_crit;
-    buff_t* focus_magic_int;
+    buff_t* focus_magic;
 
 
     // Azerite
@@ -5680,10 +5679,7 @@ struct focus_magic_event_t final : public event_t
     mage->events.focus_magic = nullptr;
 
     if ( rng().roll( mage->options.focus_magic_crit_chance ) )
-    {
-      mage->buffs.focus_magic_crit->trigger();
-      mage->buffs.focus_magic_int->trigger();
-    }
+      mage->buffs.focus_magic->trigger();
 
     if ( mage->options.focus_magic_interval > 0_ms )
     {
@@ -6539,14 +6535,12 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.incanters_flow   = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power    = make_buff<buffs::rune_of_power_t>( this );
-  buffs.focus_magic_crit = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-  buffs.focus_magic_int  = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
+  buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
+  buffs.focus_magic    = make_buff( this, "focus_magic_proc", find_spell( 321363 ) )
+                           ->set_default_value_from_effect( 2 )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                           ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
@@ -6986,7 +6980,7 @@ double mage_t::composite_spell_crit_chance() const
   double c = player_t::composite_spell_crit_chance();
 
   c += spec.critical_mass->effectN( 1 ).percent();
-  c += buffs.focus_magic_crit->check_value();
+  c += buffs.focus_magic->check() * buffs.focus_magic->data().effectN( 1 ).percent();
 
   return c;
 }
