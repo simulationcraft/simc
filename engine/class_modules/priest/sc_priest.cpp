@@ -416,8 +416,10 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
 // ==========================================================================
 struct unholy_transfusion_t final : public priest_spell_t
 {
+  double parent_targets = 1;
+
   unholy_transfusion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_transfusion", p, p.find_spell( 325203 ) )
+    : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
     parse_options( options_str );
     background    = true;
@@ -431,6 +433,18 @@ struct unholy_transfusion_t final : public priest_spell_t
       base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
+
+  double action_ta_multiplier() const override
+  {
+    double m = priest_spell_t::action_ta_multiplier();
+
+    double scaled_m = m / std::sqrt( parent_targets );
+
+    sim->print_debug( "{} {} updates ta multiplier: Before: {} After: {} with {} targets from the parent spell.",
+                      *player, *this, m, scaled_m, parent_targets );
+
+    return scaled_m;
+  }
 };
 
 struct unholy_nova_t final : public priest_spell_t
@@ -438,19 +452,33 @@ struct unholy_nova_t final : public priest_spell_t
   propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
 
   unholy_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
-      child_unholy_transfusion( new unholy_transfusion_t( priest(), options_str ) )
+    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ), child_unholy_transfusion( nullptr )
   {
     parse_options( options_str );
-    aoe           = -1;
-    impact_action = new unholy_transfusion_t( p, options_str );
+    aoe      = -1;
+    may_crit = false;
 
     // Radius for damage spell is stored in the DoT's spell radius
-    radius = p.find_spell( 325203 )->effectN( 1 ).radius_max();
+    radius = data().effectN( 2 ).trigger()->effectN( 1 ).radius_max();
 
-    add_child( impact_action );
+    child_unholy_transfusion = new unholy_transfusion_t( p, options_str );
+    add_child( child_unholy_transfusion );
+
     // Unholy Nova itself does NOT do damage, just the DoT
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // Pass in parent state to the DoT so we know how to scale the damage of the DoT
+    if ( child_unholy_transfusion )
+    {
+      child_unholy_transfusion->target         = s->target;
+      child_unholy_transfusion->parent_targets = s->n_targets;
+      child_unholy_transfusion->execute();
+    }
+
+    priest_spell_t::impact( s );
   }
 };
 
