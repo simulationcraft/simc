@@ -445,6 +445,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    buff_t* stoneskin_gargoyle;
     buff_t* unholy_strength;
 
     // Blood
@@ -504,7 +505,7 @@ public:
 
   struct runeforge_t {
     bool rune_of_the_fallen_crusader;
-    buff_t* rune_of_the_stoneskin_gargoyle;
+    bool rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_hysteria;
     heal_t* rune_of_sanguination;
     double rune_of_spellwarding;
@@ -7126,7 +7127,19 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   }
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
+
+  p -> runeforge.rune_of_the_stoneskin_gargoyle = true;
+
+  p -> buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", p -> find_spell( effect.spell_id ) )
+    -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+    -> set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+    // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
+    -> set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+    -> set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+
+  // The buff isn't shown ingame, leave it visible in the sim
+  // p -> quiet = true;
 }
 
 void runeforge::apocalypse( special_effect_t& effect )
@@ -8077,7 +8090,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   return player_t::create_action( name, options_str );
 }
 
-// death_knight_t::create_expression ========================================
+// death_knight_t::S ========================================
 
 std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util::string_view expr_str )
 {
@@ -8137,13 +8150,13 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   // Fallen Crusader, looks for the unholy strength healing action
   if ( util::str_compare_ci( name_str, "fallen_crusader" ) )
     return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
-      return find_action( "unholy_strength" ) != nullptr;
+      return runeforge.rune_of_the_fallen_crusader;
     } );
 
   // Stoneskin Gargoyle
   if ( util::str_compare_ci( name_str, "stoneskin_gargoyle" ) )
     return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_stoneskin_gargoyle -> default_chance;
+      return runeforge.rune_of_the_stoneskin_gargoyle;
     } );
 
   // Apocalypse
@@ -9217,12 +9230,6 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  runeforge.rune_of_the_stoneskin_gargoyle = make_buff( this, "stoneskin_gargoyle", find_spell( 62157 ) )
-            -> add_invalidate( CACHE_ARMOR )
-            -> add_invalidate( CACHE_STAMINA )
-            -> add_invalidate( CACHE_STRENGTH )
-            -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
-
   runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) )
             -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
 
@@ -9650,8 +9657,8 @@ double death_knight_t::composite_armor_multiplier() const
 {
   double am = player_t::composite_armor_multiplier();
 
-  if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    am *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
+  if ( runeforge.rune_of_the_stoneskin_gargoyle )
+    am *= 1.0 + buffs.stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
   return am;
 }
@@ -9678,11 +9685,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    {
-      m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
-    }
-
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
@@ -9695,11 +9697,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent()
       + spec.veteran_of_the_third_war_2 -> effectN( 1 ).percent()
       + spec.blood_death_knight -> effectN( 13 ).percent();
-
-    if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    {
-      m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
-    }
   }
 
   return m;
@@ -9859,10 +9856,6 @@ double death_knight_t::composite_crit_avoidance() const
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
-
-  start_inexorable_assault();
-  start_cold_heart();
-
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
   if ( rp_overflow > 0 )
   {
@@ -9982,7 +9975,10 @@ inline double death_knight_t::rune_regen_coefficient() const
 void death_knight_t::arise()
 {
   player_t::arise();
-  runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
+  if( runeforge.rune_of_the_stoneskin_gargoyle )
+    buffs.stoneskin_gargoyle -> trigger();
+  start_inexorable_assault();
+  start_cold_heart();
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
