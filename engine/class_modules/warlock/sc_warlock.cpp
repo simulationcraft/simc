@@ -1549,7 +1549,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     std::vector<action_t*> soc_list;
     for ( auto a : action_list )
     {
-      if ( a->name() == "Seed of Corruption" )
+      if ( a->name_str == "seed_of_corruption" )
         soc_list.push_back( a );
     }
 
