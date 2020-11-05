@@ -645,6 +645,7 @@ public:
     const spell_data_t* fallen_monk_fists_of_fury_tick;
     const spell_data_t* fallen_monk_keg_smash;
     const spell_data_t* fallen_monk_soothing_mist;
+    const spell_data_t* fallen_monk_spec_duration;
     const spell_data_t* fallen_monk_spinning_crane_kick;
     const spell_data_t* fallen_monk_spinning_crane_kick_tick;
     const spell_data_t* fallen_monk_tiger_palm;
@@ -8082,6 +8083,7 @@ struct fallen_order_t : public monk_spell_t
 
     specialization_e spec       = p()->specialization();
     timespan_t summon_duration  = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
+//    timespan_t primary_duration = p()->passives.fallen_monk_spec_duration->duration();
     timespan_t primary_duration =
         summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
@@ -10098,6 +10100,7 @@ void monk_t::init_spells()
   passives.fallen_monk_fists_of_fury_tick       = find_spell( 345714 );
   passives.fallen_monk_keg_smash                = find_spell( 330911 );
   passives.fallen_monk_soothing_mist            = find_spell( 328283 );
+  passives.fallen_monk_spec_duration            = find_spell( 347826 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
   passives.fallen_monk_tiger_palm               = find_spell( 346602 );
