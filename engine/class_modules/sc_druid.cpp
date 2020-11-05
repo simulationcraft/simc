@@ -8999,10 +8999,8 @@ void druid_t::create_actions()
 
 std::string druid_t::default_flask() const
 {
-  if ( true_level >= 60 )
-    return "spectral_flask_of_power";
-  else if ( true_level < 40 )
-    return "disabled";
+  if      ( true_level >= 60 ) return "spectral_flask_of_power";
+  else if ( true_level < 40 )  return "disabled";
 
   switch ( specialization() )
   {
@@ -9023,16 +9021,12 @@ std::string druid_t::default_potion() const
   {
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
-      if ( true_level >= 60 )
-        return "spectral_intellect";
-      else if ( true_level >= 40 )
-        return "superior_battle_potion_of_intellect";
+      if      ( true_level >= 60 ) return "spectral_intellect";
+      else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
-      if ( true_level >= 60 )
-        return "spectral_agility";
-      else if ( true_level >= 40 )
-        return "superior_battle_potion_of_agility";
+      if      ( true_level >= 60 ) return "spectral_agility";
+      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
     default:
       return "disabled";
   }
@@ -9040,24 +9034,18 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-  if ( true_level >= 60 )
-    return "feast_of_gluttonous_hedonism";
-  else if ( true_level >= 55 )
-    return "surprisingly_palatable_feast";
-  else if ( true_level >= 45 )
-    return "famine_evaluator_and_snack_table";
-  else
-    return "disabled";
+  if      ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
+  else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
+  else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
+  else return "disabled";
 }
 
 std::string druid_t::default_rune() const
 {
-  if ( true_level >= 50 )
-    return "battle_scarred";
-  else if ( true_level >= 45 )
-    return "defiled";
-  else
-    return "disabled";
+  if      ( true_level >= 60 ) return "veiled";
+  else if ( true_level >= 50 ) return "battle_scarred";
+  else if ( true_level >= 45 ) return "defiled";
+  else return "disabled";
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
