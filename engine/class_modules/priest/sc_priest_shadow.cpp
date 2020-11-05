@@ -1468,25 +1468,6 @@ struct shadow_crash_damage_t final : public priest_spell_t
     background                 = true;
     affected_by_shadow_weaving = true;
   }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = action_t::composite_target_da_multiplier( t );
-
-    const priest_td_t* td = find_td( t );
-
-    if ( td && td->buffs.shadow_crash_debuff->check() )
-    {
-      int stack             = td->buffs.shadow_crash_debuff->check();
-      double increase       = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
-      double stack_increase = increase * stack;
-      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}",
-                                t->name_str, stack, stack_increase );
-      tdm *= 1 + stack_increase;
-    }
-
-    return tdm;
-  }
 };
 
 struct shadow_crash_t final : public priest_spell_t
@@ -1499,24 +1480,18 @@ struct shadow_crash_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    aoe              = -1;
-    radius           = data().effectN( 1 ).radius();
-    range            = data().max_range();
-    cooldown->hasted = true;
+    aoe    = -1;
+    radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
   }
 
-  void impact( action_state_t* state ) override
+  // Shadow Crash has fixed travel time
+  timespan_t travel_time() const override
   {
-    priest_spell_t::impact( state );
-
-    if ( state->n_targets == 1 )
-    {
-      priest_td_t& td = get_td( state->target );
-      td.buffs.shadow_crash_debuff->trigger();
-    }
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -2244,13 +2219,7 @@ void priest_t::generate_apl_shadow()
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
       "duration+gcd)",
       "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back" );
-  main->add_talent(
-      this, "Shadow Crash",
-      "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
-      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event."
-      "adds.in>30",
-      "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
-  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
+  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
