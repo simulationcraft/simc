@@ -248,6 +248,7 @@ struct eclipse_handler_t
   void cast_starsurge();
 
   void advance_eclipse();
+  void snapshot_eclipse();
 
   void trigger_both( timespan_t );
   void extend_both( timespan_t );
@@ -302,6 +303,7 @@ public:
   double thorns_hit_chance;
   int initial_moon_stage;
   int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
+  double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool catweave_bear;
   bool owlweave_bear;
 
@@ -877,6 +879,7 @@ public:
       thorns_hit_chance( 0.75 ),
       initial_moon_stage( NEW_MOON ),
       lively_spirit_stacks( 9 ),  // set a usually fitting default value
+      eclipse_snapshot_period( 2.0 ),
       catweave_bear( false ),
       owlweave_bear( false ),
       affinity_resources( false ),
@@ -1051,137 +1054,6 @@ private:
 druid_t::~druid_t()
 {
   range::dispose( counters );
-}
-
-// eclipse handler function definitions
-void eclipse_handler_t::cast_wrath()
-{
-  if ( !enabled() ) return;
-
-  if ( state == ANY_NEXT || state == LUNAR_NEXT )
-  {
-    wrath_counter--;
-    advance_eclipse();
-  }
-}
-
-void eclipse_handler_t::cast_starfire()
-{
-  if ( !enabled() ) return;
-
-  if ( state == ANY_NEXT || state == SOLAR_NEXT )
-  {
-    starfire_counter--;
-    advance_eclipse();
-  }
-}
-
-void eclipse_handler_t::cast_starsurge()
-{
-  if ( !enabled() ) return;
-
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-  p->buff.starsurge->trigger();
-
-  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
-    p->buff.starsurge->trigger();
-}
-
-void eclipse_handler_t::advance_eclipse()
-{
-  if ( !starfire_counter && state != IN_SOLAR )
-  {
-    p->buff.eclipse_solar->trigger();
-
-    if ( p->talent.solstice->ok() )
-      p->buff.solstice->trigger();
-
-    if ( p->legendary.balance_of_all_things->ok() )
-      p->buff.balance_of_all_things_nature->trigger();
-
-    state = IN_SOLAR;
-    reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
-
-    return;
-  }
-
-  if ( !wrath_counter && state != IN_LUNAR )
-  {
-    p->buff.eclipse_lunar->trigger();
-
-    if ( p->talent.solstice->ok() )
-      p->buff.solstice->trigger();
-
-    if ( p->legendary.balance_of_all_things->ok() )
-      p->buff.balance_of_all_things_arcane->trigger();
-
-    state = IN_LUNAR;
-    reset_stacks();
-
-    p->uptime.eclipse->update( true, p->sim->current_time() );
-
-    return;
-  }
-
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-    p->uptime.eclipse->update( false, p->sim->current_time() );
-
-  if ( state == IN_SOLAR )
-    state = LUNAR_NEXT;
-
-  if ( state == IN_LUNAR )
-    state = SOLAR_NEXT;
-
-  if ( state == IN_BOTH )
-    state = ANY_NEXT;
-}
-
-void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
-{
-  state = IN_BOTH;
-  reset_stacks();
-
-  if ( p->legendary.balance_of_all_things->ok() )
-  {
-    p->buff.balance_of_all_things_arcane->trigger();
-    p->buff.balance_of_all_things_nature->trigger();
-  }
-
-  if ( p->talent.solstice->ok() )
-    p->buff.solstice->trigger();
-
-  p->buff.starsurge->expire();
-  p->buff.eclipse_lunar->trigger( d );
-  p->buff.eclipse_solar->trigger( d );
-
-  p->uptime.eclipse->update( true, p->sim->current_time() );
-}
-
-void eclipse_handler_t::extend_both( timespan_t d )
-{
-  p->buff.eclipse_solar->extend_duration( p, d );
-  p->buff.eclipse_lunar->extend_duration( p, d );
-}
-
-void eclipse_handler_t::expire_both()
-{
-  p->buff.eclipse_solar->expire();
-  p->buff.eclipse_lunar->expire();
-
-  p->uptime.eclipse->update( false, p->sim->current_time() );
-}
-
-void eclipse_handler_t::reset_stacks()
-{
-  wrath_counter    = 2;
-  starfire_counter = 2;
-}
-
-void eclipse_handler_t::reset_state()
-{
-  state = ANY_NEXT;
 }
 
 snapshot_counter_t::snapshot_counter_t( druid_t* player, buff_t* buff )
@@ -2926,11 +2798,13 @@ private:
   using ab = druid_spell_base_t<spell_t>;
 
 public:
-  druid_spell_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 util::string_view options = std::string() )
-    : base_t( token, p, s )
+  bool update_eclipse;
+
+  druid_spell_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+                 util::string_view opt = std::string() )
+    : base_t( n, p, s ), update_eclipse( false )
   {
-    parse_options( options );
+    parse_options( opt );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -2969,7 +2843,7 @@ public:
          data().affected_by( p()->spec.stellar_drift->effectN( 1 ) ) )
       return true;
 
-    return spell_t::usable_moving();
+    return ab::usable_moving();
   }
 
   void proc_shooting_stars( player_t* t )
@@ -2988,6 +2862,14 @@ public:
       p()->active.shooting_stars->set_target( t );
       p()->active.shooting_stars->execute();
     }
+  }
+
+  void execute() override
+  {
+    if ( update_eclipse )
+      p()->eclipse_handler.snapshot_eclipse();
+
+    ab::execute();
   }
 
   virtual void trigger_astral_power_consumption_effects()
@@ -6004,6 +5886,8 @@ struct full_moon_t : public moon_base_t
     stage              = moon_stage_e::FULL_MOON;
     streaking          = streaking_stars_e::SS_FULL_MOON;
 
+    update_eclipse = true;
+
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
@@ -6876,6 +6760,8 @@ struct starfall_t : public druid_spell_t
       aoe        = -1;
       // TODO: pull hardcoded id out of here and into spec.X
       radius     = p->find_spell( 50286 )->effectN( 1 ).radius();
+
+      update_eclipse = true;
     }
 
     timespan_t travel_time() const override
@@ -6976,6 +6862,8 @@ struct starsurge_t : public druid_spell_t
 
   starsurge_t( druid_t* p, const spell_data_t* s, util::string_view opt ) : druid_spell_t( "starsurge", p, s, opt )
   {
+    update_eclipse = true;
+
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
   }
@@ -10480,6 +10368,7 @@ void druid_t::create_options()
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int( "lively_spirit_stacks", lively_spirit_stacks ) );
+  add_option( opt_float( "eclipse_snapshot_period", eclipse_snapshot_period ) );
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
@@ -10875,6 +10764,146 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
   return &spelleffect_data_t::nil();
 }
 
+// eclipse handler function definitions
+void eclipse_handler_t::cast_wrath()
+{
+  if ( !enabled() ) return;
+
+  if ( state == ANY_NEXT || state == LUNAR_NEXT )
+  {
+    wrath_counter--;
+    advance_eclipse();
+  }
+}
+
+void eclipse_handler_t::cast_starfire()
+{
+  if ( !enabled() ) return;
+
+  if ( state == ANY_NEXT || state == SOLAR_NEXT )
+  {
+    starfire_counter--;
+    advance_eclipse();
+  }
+}
+
+void eclipse_handler_t::cast_starsurge()
+{
+  if ( !enabled() ) return;
+
+  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
+  p->buff.starsurge->trigger();
+
+  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+    p->buff.starsurge->trigger();
+}
+
+void eclipse_handler_t::advance_eclipse()
+{
+  if ( !starfire_counter && state != IN_SOLAR )
+  {
+    p->buff.eclipse_solar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
+    if ( p->legendary.balance_of_all_things->ok() )
+      p->buff.balance_of_all_things_nature->trigger();
+
+    state = IN_SOLAR;
+    reset_stacks();
+
+    p->uptime.eclipse->update( true, p->sim->current_time() );
+
+    return;
+  }
+
+  if ( !wrath_counter && state != IN_LUNAR )
+  {
+    p->buff.eclipse_lunar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
+    if ( p->legendary.balance_of_all_things->ok() )
+      p->buff.balance_of_all_things_arcane->trigger();
+
+    state = IN_LUNAR;
+    reset_stacks();
+
+    p->uptime.eclipse->update( true, p->sim->current_time() );
+
+    return;
+  }
+
+  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
+    p->uptime.eclipse->update( false, p->sim->current_time() );
+
+  if ( state == IN_SOLAR )
+    state = LUNAR_NEXT;
+
+  if ( state == IN_LUNAR )
+    state = SOLAR_NEXT;
+
+  if ( state == IN_BOTH )
+    state = ANY_NEXT;
+}
+
+void eclipse_handler_t::snapshot_eclipse()
+{
+  if ( p->buff.eclipse_lunar->check() )
+    debug_cast<buffs::eclipse_buff_t*>( p->buff.eclipse_lunar )->snapshot_mastery();
+
+  if ( p->buff.eclipse_solar->check() )
+    debug_cast<buffs::eclipse_buff_t*>( p->buff.eclipse_solar )->snapshot_mastery();
+}
+
+void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
+{
+  state = IN_BOTH;
+  reset_stacks();
+
+  if ( p->legendary.balance_of_all_things->ok() )
+  {
+    p->buff.balance_of_all_things_arcane->trigger();
+    p->buff.balance_of_all_things_nature->trigger();
+  }
+
+  if ( p->talent.solstice->ok() )
+    p->buff.solstice->trigger();
+
+  p->buff.starsurge->expire();
+  p->buff.eclipse_lunar->trigger( d );
+  p->buff.eclipse_solar->trigger( d );
+
+  p->uptime.eclipse->update( true, p->sim->current_time() );
+}
+
+void eclipse_handler_t::extend_both( timespan_t d )
+{
+  p->buff.eclipse_solar->extend_duration( p, d );
+  p->buff.eclipse_lunar->extend_duration( p, d );
+}
+
+void eclipse_handler_t::expire_both()
+{
+  p->buff.eclipse_solar->expire();
+  p->buff.eclipse_lunar->expire();
+
+  p->uptime.eclipse->update( false, p->sim->current_time() );
+}
+
+void eclipse_handler_t::reset_stacks()
+{
+  wrath_counter    = 2;
+  starfire_counter = 2;
+}
+
+void eclipse_handler_t::reset_state()
+{
+  state = ANY_NEXT;
+}
+
 void druid_t::vision_of_perfection_proc()
 {
   buff_t* vp_buff;
@@ -10972,6 +11001,7 @@ void druid_t::copy_from( player_t* source )
   initial_astral_power         = p->initial_astral_power;
   initial_moon_stage           = p->initial_moon_stage;
   lively_spirit_stacks         = p->lively_spirit_stacks;
+  eclipse_snapshot_period      = p->eclipse_snapshot_period;
   affinity_resources           = p->affinity_resources;
   owlweave_bear                = p->owlweave_bear;
   catweave_bear                = p->catweave_bear;
