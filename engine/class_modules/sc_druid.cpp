@@ -353,7 +353,7 @@ public:
   double equipped_weapon_dps;
 
   // Druid Events
-  std::vector<event_t*> persistent_buff_delay;
+  std::vector<event_t*> persistent_event_delay;
 
   // Azerite
   struct azerite_t
@@ -879,7 +879,7 @@ public:
       thorns_hit_chance( 0.75 ),
       initial_moon_stage( NEW_MOON ),
       lively_spirit_stacks( 9 ),  // set a usually fitting default value
-      eclipse_snapshot_period( 2.0 ),
+      eclipse_snapshot_period( 3.0 ),
       catweave_bear( false ),
       owlweave_bear( false ),
       affinity_resources( false ),
@@ -7817,23 +7817,25 @@ double earthwarden_handler( const action_state_t* s )
   return absorb;
 }
 
-// Persistent Buff Delay Event ==============================================
-
-struct persistent_buff_delay_event_t : public event_t
+// Persistent Delay Event ===================================================
+// Delay triggering the event a random amount. This prevents fixed-period drivers from ticking at the exact same times
+// on every iteration. Buffs that use the event to activate should implement tick_zero-like behavior.
+struct persistent_delay_event_t : public event_t
 {
-  buff_t* buff;
+  std::function<void()> exec_fn;
 
-  persistent_buff_delay_event_t( druid_t* p, buff_t* b ) : event_t( *p ), buff( b )
+  persistent_delay_event_t( druid_t* p, buff_t* b )
+    : persistent_delay_event_t( p, [ b ]() { b->execute(); }, b->buff_period )
+  {}
+
+  persistent_delay_event_t( druid_t* p, std::function<void()> fn, timespan_t d ) : event_t( *p ), exec_fn( fn )
   {
-    // Delay triggering the buff a random amount between 0 and buff_period. This prevents fixed-period driver buffs from
-    // ticking at the exact same times on every iteration. Buffs that use the event to activate should implement
-    // tick_zero-like behavior.
-    schedule( rng().real() * b->buff_period );
+    schedule( rng().real() * d );
   }
 
-  const char* name() const override { return "persistent_buff_delay"; }
+  const char* name() const override { return "persistent_event_delay"; }
 
-  void execute() override { buff->trigger(); }
+  void execute() override { exec_fn(); }
 };
 
 struct lycaras_fleeting_glimpse_t : public action_t
@@ -9558,7 +9560,7 @@ void druid_t::reset()
   main_hand_weapon = caster_form_weapon;
 
   // Reset any custom events to be safe.
-  persistent_buff_delay.clear();
+  persistent_event_delay.clear();
 
   if ( mastery.natures_guardian->ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
@@ -9632,21 +9634,30 @@ void druid_t::arise()
 {
   player_t::arise();
 
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
-    eclipse_handler.enabled_ = true;
-
   if ( talent.earthwarden->ok() )
     buff.earthwarden->trigger( buff.earthwarden->max_stack() );
 
   if ( talent.natures_balance->ok() )
     buff.natures_balance->trigger();
 
-  // Trigger persistent buffs
+  // Trigger persistent events
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+  {
+    eclipse_handler.enabled_ = true;
+
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+        eclipse_handler.snapshot_eclipse();
+        make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
+          eclipse_handler.snapshot_eclipse();
+        } );
+      }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+  }
+
   if ( buff.yseras_gift )
-    persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.yseras_gift ) );
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
 
   if ( talent.earthwarden->ok() )
-    persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
 
   // Conflict major rank 3 buff to double the minor vers buff
   if ( azerite.conflict_and_strife.is_major() && azerite.conflict_and_strife.rank() >= 3 )
