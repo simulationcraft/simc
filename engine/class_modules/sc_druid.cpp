@@ -2225,7 +2225,7 @@ public:
 
       if ( i.mastery )
       {
-        if ( p()->specialization() == DRUID_BALANCE )
+        if ( p()->specialization() == DRUID_BALANCE && p()->bugs )
           eff_val += debug_cast<buffs::eclipse_buff_t*>( i.buff )->mastery_value;
         else
           eff_val += p()->cache.mastery_value();
