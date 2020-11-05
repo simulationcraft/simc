@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (git build shadowlands eccd619, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1316,7 +1316,7 @@ Name             : Provoke (id=115546) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 14
+Spell Level      : 9
 Range            : 30 yards
 Cooldown         : 8 seconds
 Affecting spells : Provoke (328670 effect#1)
@@ -1734,7 +1734,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #14, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
 Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2744,7 +2744,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), High Tolerance (196737 effect#3)
+Affecting spells : High Tolerance (196737 effect#3)
 Family Flags     : 91
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -3095,7 +3095,7 @@ Name             : Zen Flight (id=125883) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 37
+Spell Level      : 30
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Attributes       : ........ .......x x....... ....x...   ........ ........ .x...... ........ 
@@ -3461,8 +3461,8 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Chi Burst (123986), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
-                   Family Flags: 1, 2, 4, 5, 9, 10, 17, 18, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 91, 99, 100
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Crackling Jade Lightning (117952), Leg Sweep (119381), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
+                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 99, 100
 #15 (id=260846)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -3744,7 +3744,7 @@ Name             : Rushing Jade Wind (id=148187) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #14, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -8972,7 +8972,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+                   Base Value: 150000 | Scaled Value: 150000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 152.3015 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
@@ -9588,7 +9588,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Xuen strikes your enemies with Empowered Tiger Lightning every $s1 sec, dealing $s2% of the damage you have dealt to those targets in the last $s1 sec.
 
-Name             : Clash (id=324312) 
+Name             : Clash (id=324312) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : Magic
@@ -9941,7 +9941,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -10042,7 +10042,7 @@ Category         : 1910
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Family Flags     : 14
-Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ...x.... 
+Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10168,7 +10168,7 @@ Name             : Roll (desc=Rank 2) (id=328669) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Spell Level      : 9
+Spell Level      : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10903,7 +10903,7 @@ Description      : $@spelldesc337225
 Name             : Strike with Clarity (id=337286) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 59 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
+Conduit Id       : 59 (values=1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10918,7 +10918,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835229)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Weapons of Order's duration is increased by ${$s2/1000}.1 sec, it increases your Mastery by an additional |cFFFFFFFF$<mastery>%|r.
+Description      : Weapons of Order's duration is increased by ${$s2/1000}.1 sec, and it increases your Mastery by an additional |cFFFFFFFF$<mastery>%|r.
 Variables        : $mastery=$?c1[${$117906bc1*$s1}.1]?c2[${$117907bc1*$s1}.1][${$115636bc1*$s1}.1]
 
 Name             : Stormstout's Last Keg (id=337288) [Spell Family (53), Passive] 
@@ -11402,6 +11402,8 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
+Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Triggered by     : Charred Passions (338138)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -11409,7 +11411,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :

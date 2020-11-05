@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (git build shadowlands eccd619, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -54,7 +54,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=75)       : Trigger Missiles (32)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Trigger Spell: 228597 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 228597 | Target: Enemy (6)
 Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 
 Name             : Cone of Cold (id=120) [Spell Family (3)] 
@@ -534,7 +534,7 @@ Class            : Frost Mage
 School           : Frost
 Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=414)
-Spell Level      : 21
+Spell Level      : 11
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
@@ -2703,6 +2703,7 @@ Name             : Illusion (id=131784)
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Spell Level      : 10
 Cooldown         : 600 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -3294,7 +3295,7 @@ Effects          :
 #2 (id=835139)   : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc157642
-Tooltip          : Increases critical strike chance of Fireball by $s1%$?a337224[ and your Mastery by $337224s1%][].
+Tooltip          : Increases critical strike chance of Fireball by $s1%$?a337224[ and your Mastery by ${$s2}.1%][].
 
 Name             : Unstable Magic (id=157976) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4521,7 +4522,7 @@ Name             : Arcane Linguist (id=210086) [Spell Family (3), Passive]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
-Spell Level      : 24
+Spell Level      : 10
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5053,7 +5054,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #5, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
 Triggered by     : Frostbolt (116)
 Family Flags     : 3, 5
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
@@ -5406,7 +5407,7 @@ Class            : Fire Mage
 School           : Fire
 Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=11752)
-Spell Level      : 21
+Spell Level      : 11
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
@@ -5489,7 +5490,7 @@ Class            : Arcane Mage
 School           : Arcane
 Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=11754)
-Spell Level      : 21
+Spell Level      : 11
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
@@ -8879,7 +8880,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+                   Base Value: 150000 | Scaled Value: 150000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 152.3015 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
@@ -9279,7 +9280,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=809005)   : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Increases the target's chance to critically hit with spells by $s1% for $d. When the target critically hits your chance to critically hit with spells is increased by $321363s1% for $321363d. Cannot be cast on self. Limit 1 target.
+Description      : Increases the target's chance to critically hit with spells by $s1% for $d. When the target critically hits your Intellect and chance to critically hit with spells is increased by $321363s1% for $321363d. Cannot be cast on self. Limit 1 target.
 Tooltip          : $@auracaster has focused their magic on you, increasing your spell critical strike chance by $w1%.
 
 Name             : Focus Magic (id=321363) [Spell Family (3)] 
@@ -9302,8 +9303,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=809011)   : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#2 (id=875454)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Friend (21)
 Description      : $@spelldesc321358
-Tooltip          : Spell critical strike chance increased by $w1% and Intellect increased by $334180w1%.
+Tooltip          : Intellect and spell critical strike chance increased by $w1%.
 
 Name             : Enlightened (id=321387) [Spell Family (3), Passive] 
 Class            : Mage
@@ -9815,8 +9818,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=819670)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Frostbolt (228597)
-                   Family Flags: 5
+                   Affected Spells: Frostbolt (116)
+                   Family Flags: 57
 #6 (id=843414)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19912 | Target: Self (1)
 #7 (id=844223)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -10140,7 +10143,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819011)   : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Trigger Spell: 327511 | Target: Self (1)
-Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and its damage by $327509s2%, stacking up to $327509u times.
+Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.
 
 Name             : Slick Ice (id=327511) [Spell Family (3), Hidden] 
 School           : Physical
@@ -10181,7 +10184,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=827567)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=827578)   : Apply Aura (6) | Proc Trigger Spell (42): Arcane Harmony
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 332777 | Target: Self (1)
 Description      : Each time Arcane Missiles hits an enemy, the damage of your next Arcane Barrage is increased by $332777s1%. This effect stacks up to $332777u times.
@@ -10190,7 +10193,7 @@ Name             : Arcane Harmony (id=332777) [Spell Family (3)]
 School           : Arcane
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 30 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -10205,7 +10208,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=827577)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
 Description      : $@spelldesc332769
@@ -10332,7 +10335,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=828203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts calls down a Meteor on your target. Hitting an enemy player counts as double.
+Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts causes your next Fireball to call down a Meteor on your target. Hitting an enemy player counts as double.
 
 Name             : Molten Skyfall (id=333170) [Spell Family (3)] 
 Class            : Mage
@@ -10487,30 +10490,6 @@ Effects          :
 #2 (id=828529)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Your Fire and Arcane damage against enemies affected by Frost Nova is increased by $s2%, and your spells no longer break it.
-
-Name             : Focus Magic (id=334180) [Spell Family (3), Hidden] 
-Class            : Mage
-School           : Arcane
-Spell Type       : None
-Range            : 40 yards
-Max Targets      : 1
-Duration         : 10 seconds
-Stacks           : 8 maximum
-Proc Chance      : 101%
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Hidden (7), Don't display in aura bar (60)
-Effects          :
-#1 (id=829955)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Friend (21)
-Description      : $@spelldesc321358
-Tooltip          : Intellect increased by $w1%.
 
 Name             : Alexstrasza's Fury (id=334277) [Spell Family (3)] 
 Class            : Mage
@@ -10765,7 +10744,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=834571)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by |cFFFFFFFF$s1%|r.
 
 Name             : Nether Precision (id=336889) [Spell Family (3)] 
@@ -10970,7 +10949,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=835130)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Fireball (157642), Fireball (157644)
                    Family Flags: 35
 Description      : Fireball grants |cFFFFFFFF${$s1}.1%|r Mastery when it fails to critically strike.
@@ -11302,7 +11281,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : None
 Resource         : 3% Base Mana (0) (id=215325)
-Spell Level      : 11
+Spell Level      : 21
 Cast Time        : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

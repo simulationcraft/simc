@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (git build shadowlands eccd619, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -1662,7 +1662,7 @@ Name             : Aspect of the Chameleon (id=61648) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 19
+Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
@@ -2575,7 +2575,7 @@ Name             : Fetch (id=125050) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 47
+Spell Level      : 10
 Range            : 50 yards
 Cast Time        : 0.1 seconds
 GCD              : 1.5 seconds
@@ -2597,7 +2597,7 @@ Name             : Fireworks (id=127933) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 19
+Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -4932,7 +4932,7 @@ Name             : Play Dead (id=209997) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 19
+Spell Level      : 10
 Range            : 100 yards
 Duration         : 360 seconds
 Cooldown         : 30 seconds
@@ -5566,9 +5566,7 @@ Effects          :
 Description      : Apply Hunter's Mark to the target, causing the target to always be seen and tracked by the Hunter.
 
 Only one Hunter's Mark can be applied at a time.
-Tooltip          : Can always be seen and tracked by the Hunter.$?a339264[
-
-Damage dealt to $@auracaster is reduced by $339264s1%.][]
+Tooltip          : Can always be seen and tracked by the Hunter.
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -10712,8 +10710,16 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
-Description      : Reduces the cooldown of your Aimed Shot and Rapid Fire by ${$m1/4}%, and causes Aimed Shot to cast $s4% faster for $d.
-Tooltip          : The cooldown of Aimed Shot and Rapid Fire is reduced by ${$m1/4}%, and Aimed Shot casts $s4% faster.
+#5 (id=875553)   : Apply Aura (6) | Modify Resource Generation% (329)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+#6 (id=875554)   : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+Description      : Reduces the cooldown of your Aimed Shot and Rapid Fire by ${$m1/4}%, and causes Aimed Shot to cast $s4% faster for $d.
+
+While Trueshot is active, you generate $s5% additional Focus.
+Tooltip          : The cooldown of Aimed Shot and Rapid Fire is reduced by ${$m1/4}%, and Aimed Shot casts $s4% faster.
+
+All Focus generation is increased by $s5%.
 
 Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10867,7 +10873,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+                   Base Value: 150000 | Scaled Value: 150000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 152.3015 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
@@ -12219,7 +12225,6 @@ Effects          :
 Description      : Death Chakram generates an additional $s2 Focus and the damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Markman's Advantage (id=339264) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -12228,14 +12233,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=838464)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Hunter's Mark decreases the damage the target deals to you by|cFFFFFFFF ${$s1*-1}.1%|r.
 
 Name             : Harmony of the Tortollan (id=339377) [Spell Family (9), Passive, Hidden] 
@@ -12452,14 +12457,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=839479)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=839652)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Your auto attacks have a $s2% chance to cause your next Rapid Fire to deal|cFFFFFFFF ${$s1}.1%|r increased damage for each shot.
@@ -12482,7 +12487,7 @@ Effects          :
 #1 (id=839483)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc339924
-Tooltip          : Your next Rapid Fire deals ${$339924s1}.1% increased damage per shot.
+Tooltip          : Your next Rapid Fire deals ${$339924w1}.1% increased damage per shot.
 
 Name             : Brutal Projectiles (id=339929) [Spell Family (9)] 
 Class            : Hunter
@@ -12506,7 +12511,7 @@ Effects          :
                    Family Flags: 3
 Description      : $@spelldesc339924
 
-Tooltip          : Rapid Fire is dealing $339924s1% increased damage per shot.
+Tooltip          : Your next Rapid Fire deals ${$339924w1}.1% increased damage per shot.
 
 Name             : Deadly Chain (id=339973) [Spell Family (9), Passive, Hidden] 
 School           : Physical
