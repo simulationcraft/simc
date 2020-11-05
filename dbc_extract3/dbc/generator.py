@@ -1455,6 +1455,7 @@ class SpellDataGenerator(DataGenerator):
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
           ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
+          ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
 
         ),
 
