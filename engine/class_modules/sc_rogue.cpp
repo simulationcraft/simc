@@ -1466,19 +1466,15 @@ public:
     for ( auto damage_buff : periodic_damage_buffs )
       m *= damage_buff->stack_value_periodic();
 
-    // Mastery
+    // Masteries for Assassination and Subtlety have periodic damage in a separate effect. Just to be sure, use that instead of direct mastery_value.
     if ( affected_by.mastery_executioner.periodic )
     {
-      // 08/17/2018 - Mastery: Executioner has a different coefficient for periodic
-      if ( p()->bugs )
-        m *= 1.0 + p()->cache.mastery() * p()->mastery.executioner->effectN( 2 ).mastery_value();
-      else
-        m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->cache.mastery() * p()->mastery.executioner->effectN( 2 ).mastery_value();
     }
 
     if ( affected_by.mastery_potent_assassin.periodic )
     {
-      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
     return m;
