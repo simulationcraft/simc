@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36512
-static const std::array<spelltext_data_t, 15032> __spelltext_data { {
+static const std::array<spelltext_data_t, 15034> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15029,6 +15029,8 @@ static const std::array<spelltext_data_t, 15032> __spelltext_data { {
   { 347625, "$@spelldesc325326", 0, 0 },
   { 347649, "Reduces the rate at which you incur the Eye of the Jailer in the Maw.", 0, 0 },
   { 347684, "$@spelldesc323916", "Feared.", 0 },
+  { 347687, "$@spelldesc338138", 0, 0 },
+  { 347688, "$@spelldesc338138", 0, 0 },
   { 347760, "The cooldown of your Covenant Signature Ability is reduced by $s1%.", 0, 0 },
   { 347788, "$@spelldesc324724", 0, "Necrolord" },
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
