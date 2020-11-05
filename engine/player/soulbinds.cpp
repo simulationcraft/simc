@@ -514,12 +514,12 @@ void let_go_of_the_past( special_effect_t& effect )
 
     let_go_of_the_past_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), prev_id( 0 ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( !a->id || a->background || a->id == prev_id )
+      if ( !a->id || a->id == prev_id || a->background || a->trigger_gcd == 0_ms )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::trigger( a, s );
       prev_id = a->id;
     }
 
