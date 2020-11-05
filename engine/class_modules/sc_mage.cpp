@@ -3737,8 +3737,6 @@ struct flurry_bolt_t final : public frost_mage_spell_t
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
     }
-
-    trigger_cold_front();
   }
 
   double action_multiplier() const override
@@ -3805,8 +3803,6 @@ struct flurry_t final : public frost_mage_spell_t
 
       p()->procs.brain_freeze_used->occur();
     }
-
-    consume_cold_front( target );
   }
 
   void impact( action_state_t* s ) override
@@ -3820,6 +3816,9 @@ struct flurry_t final : public frost_mage_spell_t
       .target( s->target )
       .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
       .action( flurry_bolt ), true );
+
+    consume_cold_front( s->target );
+    trigger_cold_front();
   }
 };
 
@@ -3896,8 +3895,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
-    consume_cold_front( target );
-
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
   }
@@ -3909,6 +3906,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.tunnel_of_ice->trigger();
+      consume_cold_front( s->target );
       trigger_cold_front();
     }
   }
