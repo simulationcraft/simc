@@ -27,6 +27,7 @@ std::string rune( const player_t* p )
                              : "disabled";
 }
 
+//arcane_apl_start
 void arcane( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
@@ -243,7 +244,9 @@ void arcane( player_t* p )
   movement->add_action( "arcane_orb" );
   movement->add_action( "fire_blast" );
 }
+//arcane_apl_end
 
+//fire_apl_start
 void fire( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
@@ -377,7 +380,9 @@ void fire( player_t* p )
   standard_rotation->add_action( "fireball" );
   standard_rotation->add_action( "scorch" );
 }
+//fire_apl_end
 
+//frost_apl_start
 void frost( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
@@ -471,5 +476,6 @@ void frost( player_t* p )
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );
   st->add_action( "frostbolt" );
 }
+//frost_apl_end
 
 }  // namespace mage_apl
