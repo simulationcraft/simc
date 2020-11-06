@@ -1128,7 +1128,7 @@ struct holy_power_consumer_t : public Base
     }
 
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
-      c += ab::p() -> buffs.the_magistrates_judgment -> stack_value();
+      c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
     return std::max( c, 0.0 );
   }
@@ -1216,12 +1216,7 @@ struct holy_power_consumer_t : public Base
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
     if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
-    {
-      if ( p -> bugs )
-        p -> buffs.the_magistrates_judgment -> decrement( 1 );
-      else
-        p -> buffs.the_magistrates_judgment -> expire();
-    }
+      p -> buffs.the_magistrates_judgment -> decrement( 1 );
 
     if ( is_wog && p -> buffs.shining_light_free -> up() )
     {
