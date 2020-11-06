@@ -480,6 +480,7 @@ public:
     gain_t* nesingwarys_apparatus_buff;
     gain_t* reversal_of_fortune;
     gain_t* terms_of_engagement;
+    gain_t* trueshot;
   } gains;
 
   // Procs
@@ -1016,6 +1017,16 @@ public:
 
     double total_regen = regen * cast_time.total_seconds();
     double total_energize = energize_cast_regen( s );
+
+    if ( p() -> buffs.trueshot -> check() && p() -> true_level > 50 ) // XXX: SL - remove true_level check
+    {
+      const timespan_t remains = p() -> buffs.trueshot -> remains();
+
+      total_regen += regen * std::min( cast_time, remains ).total_seconds() *
+                     p() -> specs.trueshot -> effectN( 6 ).percent();
+      if ( execute_time < remains )
+        total_energize *= 1 + p() -> specs.trueshot -> effectN( 5 ).percent();
+    }
 
     if ( ab::player -> buffs.memory_of_lucid_dreams -> check() )
     {
@@ -3852,7 +3863,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   double energize_cast_regen( const action_state_t* s ) const override
   {
-    // XXX: Not exactly true for Nesingwary's because the buff can fall off mid-channel. Meh
+    // XXX: Not exactly true for Nesingwary's / Trueshot because the buff can fall off mid-channel. Meh
     return num_ticks( s ) * damage -> composite_energize_amount( nullptr );
   }
 
@@ -6373,6 +6384,7 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value_from_effect( 4 )
+      -> set_affects_regen( true )
       -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
@@ -6575,6 +6587,7 @@ void hunter_t::init_gains()
   gains.nesingwarys_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
   gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
+  gains.trueshot               = get_gain( "Trueshot" );
 }
 
 // hunter_t::init_position ==================================================
@@ -7517,6 +7530,21 @@ void hunter_t::regen( timespan_t periodicity )
   if ( resources.is_infinite( RESOURCE_FOCUS ) )
     return;
 
+  double total_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_FOCUS );
+  if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+  {
+    double regen = total_regen * specs.trueshot -> effectN( 6 ).percent();
+    resource_gain( RESOURCE_FOCUS, regen, gains.trueshot );
+    total_regen += regen;
+  }
+
+  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+  {
+    double regen = total_regen * azerite_essence.memory_of_lucid_dreams_major_mult;
+    resource_gain( RESOURCE_FOCUS, regen, gains.memory_of_lucid_dreams_major );
+    total_regen += regen;
+  }
+
   if ( buffs.terms_of_engagement -> check() )
     resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
 }
@@ -7527,17 +7555,49 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
 {
   double actual_amount = player_t::resource_gain( type, amount, g, action );
 
-  if ( type == RESOURCE_FOCUS && amount > 0 && player_t::buffs.memory_of_lucid_dreams -> check() )
+  if ( action && type == RESOURCE_FOCUS && amount > 0 )
   {
-    actual_amount += player_t::resource_gain( RESOURCE_FOCUS,
-                                              amount * azerite_essence.memory_of_lucid_dreams_major_mult,
-                                              gains.memory_of_lucid_dreams_major, action );
-  }
+    /**
+     * If the gain event has an action specified we treat it as an "energize" effect.
+     * Focus energize effects are a bit special in that they can grant only integral amounts
+     * of focus flooring the total calculated amount.
+     * That means we can't just simply multiply stuff and trigger gains in the presence of non-integral
+     * mutipliers. Which Trueshot is, at 50%. We have to calculate the fully multiplied value, floor
+     * that and distribute the amounts & gains accordingly.
+     * To keep gains attribution "fair" we distribute the additional gain to all of the present
+     * multipliers according to their "weight".
+     */
 
-  if ( action && type == RESOURCE_FOCUS && amount > 0 && buffs.nesingwarys_apparatus -> check() )
-  {
-    const double mul = buffs.nesingwarys_apparatus -> check_value();
-    actual_amount += player_t::resource_gain( type, amount * mul, gains.nesingwarys_apparatus_buff, action );
+    assert( g != player_t::gains.resource_regen[ type ] );
+
+    std::array<std::pair<double, gain_t*>, 3> mul_gains;
+    size_t mul_gains_count = 0;
+    double mul_sum = 0;
+
+    const double initial_amount = floor( amount );
+    amount = initial_amount;
+
+    auto add_gain = [&]( double mul, gain_t* gain ) {
+      mul_sum += mul;
+      amount *= 1.0 + mul;
+      mul_gains[ mul_gains_count++ ] = { mul, gain };
+    };
+
+    if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+      add_gain( specs.trueshot -> effectN( 5 ).percent(), gains.trueshot );
+
+    if ( buffs.nesingwarys_apparatus -> check() )
+      add_gain( buffs.nesingwarys_apparatus -> check_value(), gains.nesingwarys_apparatus_buff );
+
+    if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+      add_gain( azerite_essence.memory_of_lucid_dreams_major_mult, gains.memory_of_lucid_dreams_major );
+
+    const double additional_amount = floor( amount ) - initial_amount;
+    if ( additional_amount > 0 )
+    {
+      for ( const auto& data : util::make_span( mul_gains ).subspan( 0, mul_gains_count ) )
+        actual_amount += player_t::resource_gain( RESOURCE_FOCUS, additional_amount * ( data.first / mul_sum ), data.second, action );
+    }
   }
 
   return actual_amount;
