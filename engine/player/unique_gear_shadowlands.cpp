@@ -490,46 +490,23 @@ void macabre_sheet_music( special_effect_t& effect )
 
 void glyph_of_assimilation( special_effect_t& effect )
 {
-  struct glyph_of_assimilation_t : public proc_spell_t
-  {
-    buff_t* buff;
-
-    glyph_of_assimilation_t( const special_effect_t& e, buff_t* b ) : proc_spell_t( e ), buff( b ) {}
-
-    void last_tick( dot_t* d ) override
-    {
-      buff->trigger( 2.0 * composite_dot_duration( d->state ) );
-      proc_spell_t::last_tick( d );
-    }
-  };
-
   auto p    = effect.player;
   auto buff = make_buff<stat_buff_t>( p, "glyph_of_assimilation", p->find_spell( 345500 ) );
   buff->add_stat( STAT_MASTERY_RATING, buff->data().effectN( 1 ).average( effect.item ) );
 
-  // TODO: This trinket actually always gives the full duration buff to the player when
-  // the DoT expires regardless of the remaining duration and whether or not the target
-  // dies. Test this again later to make sure it still behaves this way.
-  if ( p->bugs )
-  {
-    effect.execute_action = create_proc_action<glyph_of_assimilation_t>( "glyph_of_assimilation", effect, buff );
-  }
-  else
-  {
-    range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
-      if ( !t->is_enemy() )
+  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
         return;
 
-      t->register_on_demise_callback( p, [ p, buff ]( player_t* t ) {
-        if ( p->sim->event_mgr.canceled )
-          return;
-
-        auto d = t->get_dot( "glyph_of_assimilation", p );
-        if ( d->remains() > 0_ms )
-          buff->trigger( d->remains() * 2.0 );
-      } );
+      auto d = t->get_dot( "glyph_of_assimilation", p );
+      if ( d->remains() > 0_ms )
+        buff->trigger( d->remains() * 2.0 );
     } );
-  }
+  } );
 }
 
 /**Soul Igniter
