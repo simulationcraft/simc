@@ -6498,8 +6498,7 @@ void hunter_t::create_buffs()
   buffs.nesingwarys_apparatus =
     make_buff( this, "nesingwarys_trapping_apparatus", find_spell( 336744 ) )
       -> set_default_value_from_effect( 2 )
-      -> set_chance( legendary.nesingwarys_apparatus.ok() )
-      -> set_affects_regen( true );
+      -> set_chance( legendary.nesingwarys_apparatus.ok() );
 
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
