@@ -570,15 +570,14 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
     }
 
-    // Current functionality in-game (and here) as of 2020-10-16 is that
-    // Resolute Defender only provides its cdr while AD is active. However the
-    // tooltip says otherwise.
-    if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
+    // As of 2020-11-07 Resolute Defender now always provides its CDR.
+    if ( p() -> conduit.resolute_defender -> ok() )
     {
-      p() -> buffs.ardent_defender -> extend_duration( p(),
-        p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
-      );
       p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
+      if ( p() -> buffs.ardent_defender -> up() )
+        p() -> buffs.ardent_defender -> extend_duration( p(),
+          p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
+        );
     }
 
     if ( !background )
