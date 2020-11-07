@@ -3090,7 +3090,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
         {
           // Random target
-          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( unafflicted.size() ) ) );
+          auto i = rng().range( unafflicted.size() );
 
           tl.push_back( unafflicted[ i ] );
           unafflicted.erase( unafflicted.begin() + i );
@@ -3100,7 +3100,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
         {
           // Random target
-          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( afflicted.size() ) ) );
+          auto i = rng().range( afflicted.size() );
 
           tl.push_back( afflicted[ i ] );
           afflicted.erase( afflicted.begin() + i );
@@ -7352,16 +7352,12 @@ struct convoke_the_spirits_t : public druid_spell_t
     cast_list.clear();
 
     // hard coded 3-5 heals for now. re-evaluate when multiple specs are implemented and consolidate as an option if possible
-    int num_heal = static_cast<int>( rng().range( 3, 6 ) );
-    cast_list.insert( cast_list.end(), num_heal, CAST_HEAL );
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_HEAL );
     cast_list.push_back( CAST_WRATH );
     cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
 
     if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-    {
-      size_t ult_cast = static_cast<size_t>( rng().range( 0, as<double>( cast_list.size() ) ) );
-      cast_list.at( ult_cast ) = CAST_ULTIMATE;
-    }
+      cast_list.at( rng().range( cast_list.size() ) ) = CAST_ULTIMATE;
   }
 
   void tick( dot_t* d ) override
@@ -7382,8 +7378,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     action_t* conv_cast = nullptr;
     player_t* conv_tar  = nullptr;
 
-    size_t num = static_cast<size_t>( rng().range( 0, as<double>( cast_list.size() ) ) );
-    auto it = cast_list.begin() + num;
+    auto it   = cast_list.begin() + rng().range( cast_list.size() );
     auto type = *it;
     cast_list.erase( it );
 
@@ -7412,17 +7407,17 @@ struct convoke_the_spirits_t : public druid_spell_t
           if ( mf_tl.size() )
             damage_spell.push_back( conv_mf );
 
-          conv_cast = damage_spell.at( static_cast<size_t>( rng().range( 0, as<double>( damage_spell.size() ) ) ) );
+          conv_cast = damage_spell.at( rng().range( damage_spell.size() ) );
 
           if ( conv_cast == conv_mf )  // use moonfire's separate list for mf
-            conv_tar = mf_tl.at( static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) );
+            conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
         }
         break;
       default: return;
     }
 
     if ( conv_cast && !conv_tar )  // pick random target if we haven't picked one already (for mf)
-      conv_tar = tl.at( static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) );
+      conv_tar = tl.at( rng().range( tl.size() ) );
 
     assert( conv_cast && conv_tar );  // one last sanity check
     execute_convoke_action( conv_cast, conv_tar );
@@ -7573,10 +7568,10 @@ struct adaptive_swarm_t : public druid_spell_t
         }
       }
 
-      if      ( tl_1.size() ) tar = tl_1[ static_cast<size_t>( rng().range( 0, as<double>( tl_1.size() ) ) ) ];
-      else if ( tl_2.size() ) tar = tl_2[ static_cast<size_t>( rng().range( 0, as<double>( tl_2.size() ) ) ) ];
-      else if ( tl_3.size() ) tar = tl_3[ static_cast<size_t>( rng().range( 0, as<double>( tl_3.size() ) ) ) ];
-      else if ( tl_4.size() ) tar = tl_4[ static_cast<size_t>( rng().range( 0, as<double>( tl_4.size() ) ) ) ];
+      if      ( tl_1.size() ) tar = tl_1.at( rng().range( tl_1.size() ) );
+      else if ( tl_2.size() ) tar = tl_2.at( rng().range( tl_2.size() ) );
+      else if ( tl_3.size() ) tar = tl_3.at( rng().range( tl_3.size() ) );
+      else if ( tl_4.size() ) tar = tl_4.at( rng().range( tl_4.size() ) );
 
       return tar;
     }
