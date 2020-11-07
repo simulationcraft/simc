@@ -3941,10 +3941,8 @@ struct frost_nova_t final : public mage_spell_t
     timespan_t duration = timespan_t::min();
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
-      // The damage taken debuff is triggered even on targets that cannot be rooted.
-      auto debuff = get_td( s->target )->debuffs.grisly_icicle;
-      duration = debuff->buff_duration();
-      debuff->trigger();
+      get_td( s->target )->debuffs.grisly_icicle->trigger();
+      duration = data().duration() + p()->spec.frost_nova_2->effectN( 1 ).time_value();
     }
     p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
@@ -5833,9 +5831,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
 
   // Runeforge Legendaries
-  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
-                            ->set_default_value_from_effect( 3 )
-                            ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
+  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 348007 ) )
+                            ->set_default_value_from_effect( 1 )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
   // Covenant Abilities
