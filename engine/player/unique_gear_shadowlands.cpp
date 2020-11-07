@@ -856,6 +856,60 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Unbound Changeling
+ * id=330747 coefficients for stat amounts, and also the special effect on the base item
+ * id=330767 given by bonus_id=6915
+ * id=330739 given by bonus_id=6916
+ * id=330740 given by bonus_id=6917
+ * id=330741 given by bonus_id=6918
+ * id=330765 driver #1 (crit, haste, and mastery)
+ * id=330080 driver #2 (crit)
+ * id=330733 driver #3 (haste)
+ * id=330734 driver #4 (mastery)
+ * id=330764 buff #1 (crit, haste, and mastery)
+ * id=330730 buff #2 (crit)
+ * id=330131 buff #3 (haste)
+ * id=330729 buff #4 (mastery)
+ */
+void unbound_changeling( special_effect_t& effect )
+{
+  auto stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
+  if ( stat_type == "all" )
+    effect.spell_id = 330765;
+  else if ( stat_type == "crit" )
+    effect.spell_id = 330080;
+  else if ( stat_type == "haste" )
+    effect.spell_id = 330733;
+  else if ( stat_type == "mastery" )
+    effect.spell_id = 330734;
+  else
+    effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "unbound_changeling" ) );
+  if ( effect.spell_id > 0 && !buff )
+  {
+    int buff_spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+    // driver #1 is currently bugged and applies buff #4 in game.
+    if ( !effect.player->bugs && effect.spell_id == 330765 )
+      buff_spell_id = 330764;
+
+    buff = make_buff<stat_buff_t>( effect.player, "unbound_changeling", effect.player->find_spell( buff_spell_id ) );
+    // The stat buffs all seem to give amounts from Effect #2 even though the item tooltip for the
+    // single stat buffs points to Effect #1. Because buff 330764 is bugged and does not proc, it
+    // is not clear what amount of secondary stats it actually gives, but the tooltip says that it
+    // gets its amount from Effect #2.
+    double amount = effect.player->find_spell( 330747 )->effectN( 2 ).average( effect.item );
+    if ( !effect.player->bugs && buff_spell_id != 330764 )
+      amount = effect.player->find_spell( 330747 )->effectN( 1 ).average( effect.item );
+
+    for ( auto& s : buff->stats )
+      s.amount = amount;
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1094,6 +1148,11 @@ void register_special_effects()
     unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
     unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
+    unique_gear::register_special_effect( 330747, items::unbound_changeling );
+    unique_gear::register_special_effect( 330767, items::unbound_changeling );
+    unique_gear::register_special_effect( 330739, items::unbound_changeling );
+    unique_gear::register_special_effect( 330740, items::unbound_changeling );
+    unique_gear::register_special_effect( 330741, items::unbound_changeling );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

@@ -362,6 +362,11 @@ struct sim_t : private sc_thread_t
     // AoE early. This results in the highest possible damage and the
     // player can alternatively trigger it early by canceling the buff.
     bool disable_soul_igniter_second_use = true;
+    // Overrides the Unbound Changeling trinket to the given version.
+    // The versions are given by the "all", "crit", "haste", and "mastery"
+    // strings. Anything else will result in the item's bonus IDs being
+    // used to determine which version the player is currently using.
+    std::string unbound_changeling_stat_type = "default";
   } shadowlands_opts;
 
   // Auras and De-Buffs
