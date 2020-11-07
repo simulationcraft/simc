@@ -500,6 +500,9 @@ public:
 
     // Legendaries
     buff_t* frenzied_monstrosity;
+
+    // Covenants
+    buff_t* deaths_due;
   } buffs;
 
   struct runeforge_t {
@@ -918,7 +921,7 @@ public:
     // conduit_data_t brutal_grasp; // Necrolord, 127
     // conduit_data_t impenetrable_glomm; // Venthyr, 126
     // conduit_data_t proliferation; // Kyrian, 128
-    // conduit_data_t withering_ground; // Night Fae, 250
+    conduit_data_t withering_ground; // Night Fae, 250
 
     // Shared - other throughput
     // conduit_data_t spirit_drain; Finesse trait, 70
@@ -949,6 +952,15 @@ public:
     // conduit_data_t reinforced_shell; // 74
     // conduit_data_t unending_grip; // 106
   } conduits;
+
+  struct covenant_t
+  {
+    // const spell_data_t* abomination_limb; // Necrolord
+    const spell_data_t* deaths_due; // Night Fae
+    // const spell_data_t* shackle_the_unworthy; // Kyrian
+    // const spell_data_t* swarming_mist; // Venthyr
+    // const spell_data_t* swarming_mist_energize; // Venthyr, Runic power gain
+  } covenant;
 
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
@@ -4293,10 +4305,19 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
   int pestilence_procs_per_cast;
 
   death_and_decay_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_base_t( "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
+    death_and_decay_damage_base_t( p -> covenant.deaths_due -> ok() ? "deaths_due_damage" : "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
   { }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> conduits.withering_ground.percent();
+
+    return m;
+  }
 
   void execute() override
   {
@@ -4329,7 +4350,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   const double defile_tick_multiplier;
 
   defile_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_base_t( "defile_damage", p, p -> find_spell( 156000 ) ),
+    death_and_decay_damage_base_t( p -> covenant.deaths_due -> ok() ? "deaths_due_damage" : "defile_damage", p, p -> find_spell( 156000 ) ),
     active_defile_multiplier( 1.0 ),
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
@@ -4524,7 +4545,7 @@ private:
 struct death_and_decay_t : public death_and_decay_base_t
 {
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
-    death_and_decay_base_t( p, "death_and_decay", p -> spec.death_and_decay )
+    death_and_decay_base_t( p, p -> covenant.deaths_due -> ok() ? "deaths_due" : "death_and_decay", p -> spec.death_and_decay )
   {
     damage = new death_and_decay_damage_t( p );
 
@@ -4552,7 +4573,7 @@ struct death_and_decay_t : public death_and_decay_base_t
 struct defile_t : public death_and_decay_base_t
 {
   defile_t( death_knight_t* p, const std::string& options_str ) :
-    death_and_decay_base_t( p, "defile", p -> talent.defile )
+    death_and_decay_base_t( p, p -> covenant.deaths_due -> ok() ? "deaths_due" : "defile", p -> talent.defile )
   {
     damage = new defile_damage_t( p );
 
@@ -5592,6 +5613,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER, heartbreaker_rp_gen, p() -> gains.heartbreaker, this );
     }
+
+    if ( p() -> covenant.deaths_due && p() -> in_death_and_decay() )
+    {
+      p() -> buffs.deaths_due->trigger();
+    }
   }
 };
 
@@ -5924,6 +5950,17 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
   }
 
+  int n_targets() const override
+  {
+    // Unable to find the # of targets in spell data for death's due, but it does cause each obliterate hit to cleave. 2020-Nov-6
+    int num_targets = 0;
+    if ( p() -> covenant.deaths_due -> ok() )
+    {
+      num_targets = p() -> in_death_and_decay() ? 2 : 0;
+    }
+    return num_targets;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
@@ -5957,6 +5994,15 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     cc += p() -> buffs.killing_machine -> value();
 
     return cc;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+    if ( p() -> covenant.deaths_due && p() -> in_death_and_decay() )
+    {
+      p() -> buffs.deaths_due->trigger();
+    }
   }
 
   void execute() override
@@ -6524,6 +6570,11 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       p() -> burst_festering_wound( state, 1 );
+    }
+
+    if ( p() -> covenant.deaths_due && p() -> in_death_and_decay() )
+    {
+      p() -> buffs.deaths_due->trigger();
     }
   }
 };
@@ -8646,13 +8697,16 @@ void death_knight_t::init_spells()
 
   // Shadowlands specific - Commented out = NYI
 
+  // Covenants
+  covenant.deaths_due = find_covenant_spell( "Death's Due" );
+
   // Conduits
 
   // Shared - Covenant ability conduits
   // conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
   // conduits.impenetrable_glomm = find_conduit_spell( "Impenetrable Gloom" );
   // conduits.proliferation = find_conduit_spell( "Proliferation" );
-  // conduits.withering_ground = find_conduit_spell( "Withering Ground" );
+  conduits.withering_ground = find_conduit_spell( "Withering Ground" );
 
   // Shared - other throughput
   // conduits.spirit_drain = find_conduit_spell( "Spirit Drain" );
@@ -9012,6 +9066,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
+  aoe -> add_action( this, "Death and Decay", "if=covenant.night_fae&spell_targets.death_and_decay>=2");
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
@@ -9384,6 +9439,11 @@ void death_knight_t::create_buffs()
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // Covenants
+  buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
+      -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 }
 
 // death_knight_t::init_gains ===============================================
