@@ -7323,8 +7323,8 @@ static const std::array<item_effect_t, 7484> __item_effect_data { {
   { 126116, 336182, 175732,   0,   0,    0,      -1,      -1 }, // Growing Despair
   { 126207, 336866, 175733,   0,   0,    0,      -1,      -1 }, // Ember Focus
   { 135863, 343538, 175733,   1,   1,    0,      -1,      -1 }, // Ember Blast
-  { 136018, 345228, 175884,   0,   0, 1141,  120000,   20000 }, // Gladiator's Badge
-  { 136015, 345228, 175921,   0,   0, 1141,   60000,   20000 }, // Gladiator's Badge
+  { 136018, 345228, 175884,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 136015, 345228, 175921,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
   { 116983, 188026, 175941,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone
   { 116984,  17619, 175941,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
   { 116985, 188026, 175942,   0,   1,    0,      -1,      -1 }, // Infernal Alchemist Stone

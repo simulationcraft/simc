@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (git build shadowlands 3d6aed4, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-07/36532, git build shadowlands 01fc0a1, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -11111,6 +11111,7 @@ Description      : $@spelldesc210805
 Tooltip          : Haste increased by $w1%.
 
 Name             : Alter Time (id=342245) [Spell Family (3)] 
+Hotfixed         : Cooldown (1000 -> 0), Category Cooldown (1000 -> 0), Category (1388 -> 0)
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : Magic
@@ -11118,9 +11119,7 @@ Resource         : 1% Base Mana (0) (id=215285)
 Spell Level      : 19
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Category         : 1388
 Labels           : 892: Master of Time (342249 effect#1)
-Category Cooldown: 1 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 

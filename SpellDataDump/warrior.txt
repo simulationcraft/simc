@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (git build shadowlands 3d6aed4, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-07/36532, git build shadowlands 01fc0a1, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -10636,6 +10636,7 @@ Description      : Spell Reflection lasts $s1% longer and applies to your neares
 Tooltip          : Spell Reflection lasts $s1% longer and applies to your nearest ally.
 
 Name             : Spell Reflection (id=335255) [Spell Family (4)] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Targets      : 1
@@ -10650,13 +10651,13 @@ Proc Flags       : .....x.x .x...x.. .x...... ........
 Affecting spells : Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Misshapen Mirror (335253 effect#1)
 Triggered by     : Misshapen Mirror (335253)
 Family Flags     : 33
-Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ...x.... ........ 
+Attributes       : ....x... ........ x.x..... ...x....   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=831740)   : Apply Aura (6) | Spell Reflection (28)
@@ -10974,9 +10975,9 @@ Effects          :
 Description      : If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $?c1[${100+$s3}]?c2[${100+$s4}]?c3[${100+$335759s3}][100]% damage.
 
 Name             : Indelible Victory (id=336191) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Internal Cooldown (1000 -> 0)
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Conduit Id       : 27 (values=200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480)
 Proc Flags       : ....x... ........ ........ ........ 

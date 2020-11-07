@@ -13305,8 +13305,8 @@ static const std::array<spelltext_data_t, 15036> __spelltext_data { {
   { 323999, "Xuen strikes your enemies with Empowered Tiger Lightning every $s1 sec, dealing $s2% of the damage you have dealt to those targets in the last $s1 sec.", 0, "Rank 2" },
   { 324029, "Set out a codex, allowing nearby players to adjust their talents.", 0, 0 },
   { 324031, "Open a wormhole that allows the user to quickly travel to one of several fixed points within the Shadowlands.", 0, 0 },
-  { 324064, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", 0, 0 },
-  { 324068, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", 0, 0 },
+  { 324064, "Increase the stamina of an item worn on the chest by $ec for 2 hrs.", 0, 0 },
+  { 324068, "Increase the stamina of an item worn on the chest by $ec for 2 hrs.", 0, 0 },
   { 324073, "$@spelldesc328547", "Bleeding for $w1 every $t1 sec.", "Necrolord" },
   { 324074, "Embed a bone spike in the target, dealing $s1 Physical damage every $t2 sec until they die.\r\n\r\nAttacking with Serrated Bone Spike causes all of your active bone spikes to fracture and strike your current target, increasing initial damage by $s3% per spike.", "Bleeding for $w2 every $t sec.", "Necrolord" },
   { 324128, "Corrupts the targeted ground, causing ${$341340m1*11} Shadow damage over $d to targets within the area.$?!c2[\r\n\r\nWhile you remain within the area, your ][]$?s223829&!c2[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets and inflict Death's Due for $324164d.]?s207311&!c2[Clawing Shadows will hit up to ${$55090s4-1} enemies near the target and inflict Death's Due for $324164d.]?!c2[Scourge Strike will hit up to ${$55090s4-1} enemies near the target and inflict Death's Due for $324164d.][\r\n\r\nWhile you remain within the area, your Obliterate will hit up to $315442s2 additional target and inflict Death's Due for $324164d.]\r\n\r\nDeath's Due reduces damage enemies deal to you by $324164s1%, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.", 0, "Night Fae" },
@@ -13716,7 +13716,7 @@ static const std::array<spelltext_data_t, 15036> __spelltext_data { {
   { 331850, "$@spelldesc13877", 0, 0 },
   { 331851, "Blade Flurry now instantly strikes up to nearby $331850i targets for $331850s1 Physical damage.", 0, "Rank 2" },
   { 331868, "$@spelldesc331577", "Movement speed increased by $w1%.", 0 },
-  { 331934, "$@spelldesc331584", "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", 0 },
+  { 331934, "$@spelldesc331584", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them.", 0 },
   { 331937, "$@spelldesc331586", "Filled with the thrill of battle, increasing Haste by $w1%.", 0 },
   { 331939, "$@spelldesc331586", "At $u stacks, you will gain Euphoria.", 0 },
   { 331974, "Restores $s1 health.", 0, 0 },
@@ -15012,7 +15012,7 @@ static const std::array<spelltext_data_t, 15036> __spelltext_data { {
   { 347231, "Launch an exploding Mawrat at your target, dealing ${$mhp/$s3} Shadowflame damage to all enemies within $s2 yd and killing the Mawrat. Can only be used in Torghast.", 0, 0 },
   { 347232, "Surround yourself in sickly miasma, dealing ${$mhp/$s1} damage to any Mawrats within $s2 yds every $t1 sec for $d. Can only be used in Torghast.", "Dealing damage to nearby Mawrats.", 0 },
   { 347233, "Consume $s1 Phantasma, using the energy created by the substance to empower yourself for $347234d.", 0, 0 },
-  { 347234, "$@spelldesc347233", "$pri increased by $s1.", 0 },
+  { 347234, "$@spelldesc347233", "$pri increased by $w1.", 0 },
   { 347241, "Bind the segment of chain to your own will, allowing you to direct it to some nearby locations.", 0, 0 },
   { 347348, "$@spelldesc336730", "Damage dealt increased by $s1%.", 0 },
   { 347349, "$@spelldesc336730", "Unable to gain Elemental Equilibrium effects.", 0 },
@@ -15039,7 +15039,11 @@ static const std::array<spelltext_data_t, 15036> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
+  {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
+  {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
+  {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
 // Spell description variables, wow build 9.0.2.36532
