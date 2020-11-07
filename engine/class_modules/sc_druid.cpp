@@ -311,7 +311,6 @@ public:
   double kindred_spirits_partner_dps;
   bool kindred_spirits_hide_partner;
   double kindred_spirits_absorbed;
-  double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
 
@@ -886,8 +885,7 @@ public:
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
       kindred_spirits_absorbed( 0.15 ),
-      convoke_the_spirits_heals( 3.5 ),
-      convoke_the_spirits_ultimate( 0.2 ),
+      convoke_the_spirits_ultimate( 0.15 ),
       adaptive_swarm_jump_distance( 5.0 ),
       active( active_actions_t() ),
       force_of_nature(),
@@ -7267,27 +7265,26 @@ struct kindred_spirits_t : public druid_spell_t
 
 struct convoke_the_spirits_t : public druid_spell_t
 {
-  shuffled_rng_t* deck;
-  bool heal_cast;
-  double heal_chance;
-  int max_ticks;
-  int ultimate_tick;
+  enum convoke_cast_e
+  {
+    CAST_ULTIMATE,
+    CAST_OFFSPEC,
+    CAST_SPEC,
+    CAST_HEAL,
+    CAST_WRATH,
+  };
 
-  // Balance
+  int max_ticks;
+
+  // Moonkin Form
   action_t* conv_fm;
   action_t* conv_ss;
   action_t* conv_wr;
   action_t* conv_sf;
   action_t* conv_mf;
-  bool mf_cast;
-  int mf_count;
-  int ss_count;
-  bool wr_cast;
-  int wr_count;
-
-  // Feral
-  // Guardian
-  // Restoration
+  std::vector<convoke_cast_e> cast_list;
+  // Cat Form
+  // Bear Form
 
   convoke_the_spirits_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
@@ -7299,26 +7296,11 @@ struct convoke_the_spirits_t : public druid_spell_t
     harmful = channeled = true;
     may_miss = may_crit = false;
 
-    int heals_int = as<int>( util::ceil( p->convoke_the_spirits_heals ) );
-    heal_chance = heals_int - p->convoke_the_spirits_heals;
-
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
-    deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, max_ticks );
 
-    // Balance
+    // Call form-specific initialization to create necessary actions & setup variables
     if ( p->find_action( "moonkin_form" ) )
-    {
-      conv_wr = get_convoke_action<wrath_t>( "wrath", options_str );
-      conv_mf = get_convoke_action<moonfire_t>( "moonfire", options_str );
-      conv_fm = get_convoke_action<full_moon_t>( "full_moon", p->find_spell( 274283 ), options_str );
-      conv_sf = get_convoke_action<starfall_t>( "starfall", p->find_spell( 191034 ), options_str );
-      conv_ss = get_convoke_action<starsurge_t>( "starsurge",
-                                                 p->find_spell( p->talent.balance_affinity->ok() ? 197626 : 78674 ),
-                                                 options_str );
-    }
-    // Feral
-    // Guardian
-    // Restoration
+      _init_moonkin();
   }
 
   template <typename T, typename... Ts>
@@ -7344,129 +7326,105 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   double composite_haste() const override { return 1.0; }
 
+  void _init_moonkin()
+  {
+    conv_wr = get_convoke_action<wrath_t>( "wrath", "" );
+    conv_mf = get_convoke_action<moonfire_t>( "moonfire", "" );
+    conv_fm = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
+    conv_sf = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_ss = get_convoke_action<starsurge_t>( "starsurge", p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+  }
+
   void execute() override
   {
+    // Generic routine
     druid_spell_t::execute();
     p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
-
     p()->buff.convoke_the_spirits->trigger();
 
-    deck->reset();
+    // Do form-specific execute
+    if ( p()->buff.moonkin_form->check() )
+      _execute_moonkin();
+  }
 
-    heal_cast = false;
+  void _execute_moonkin()
+  {
+    cast_list.clear();
 
-    // Balance
-    mf_cast  = false;
-    mf_count = 0;
-    ss_count = 0;
-    wr_cast  = false;
-    wr_count = 0;
+    // hard coded 3-5 heals for now. re-evaluate when multiple specs are implemented and consolidate as an option if possible
+    int num_heal = static_cast<int>( rng().range( 3, 6 ) );
+    cast_list.insert( cast_list.end(), num_heal, CAST_HEAL );
+    cast_list.push_back( CAST_WRATH );
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
 
     if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      ultimate_tick = rng().range( max_ticks );
-    else
-      ultimate_tick = 0;
-
-    // Feral
-    // Guardian
-    // Restoration
+    {
+      size_t ult_cast = static_cast<size_t>( rng().range( 0, as<double>( cast_list.size() ) ) );
+      cast_list.at( ult_cast ) = CAST_ULTIMATE;
+    }
   }
 
   void tick( dot_t* d ) override
   {
-    action_t* conv_cast = nullptr;
-    player_t* conv_tar  = nullptr;
-
     druid_spell_t::tick( d );
 
+    // The last partial tick does nothing
     if ( d->time_to_tick() < base_tick_time )
       return;
 
-    if ( d->current_tick == ultimate_tick )
-    {
-      if ( p()->buff.moonkin_form->check() )
-      {
-        conv_cast = conv_fm;
-        debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
-      }
-    }
+    // Do form-specific tick
+    if ( p()->buff.moonkin_form->check() )
+      _tick_moonkin();
+  }
 
-    if ( deck->trigger() && !conv_cast )  // success == HEAL cast
-    {
-      if ( heal_cast )
-        return;
+  void _tick_moonkin()
+  {
+    action_t* conv_cast = nullptr;
+    player_t* conv_tar  = nullptr;
 
-      heal_cast = true;
+    size_t num = static_cast<size_t>( rng().range( 0, as<double>( cast_list.size() ) ) );
+    auto it = cast_list.begin() + num;
+    auto type = *it;
+    cast_list.erase( it );
 
-      if ( !rng().roll( heal_chance ) )
-        return;
-    }
+    if ( type == CAST_OFFSPEC || type == CAST_HEAL )
+      return;
 
     std::vector<player_t*> tl = target_list();
     if ( !tl.size() )
       return;
 
-    conv_tar = tl[ static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) ];
-
-    if ( !conv_cast && p()->buff.moonkin_form->check() )
+    switch ( type )
     {
-      if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-        conv_cast = conv_sf;
-      else  // randomly decide on damage spell
-      {
-        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-        for ( auto i : tl )
+      case CAST_ULTIMATE: conv_cast = conv_fm; break;
+      case CAST_WRATH: conv_cast = conv_wr; break;
+      case CAST_SPEC:
+        if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
+          conv_cast = conv_sf;
+        else  // randomly decide on damage spell
         {
-          if ( !td( i )->dots.moonfire->is_ticking() ) mf_tl.push_back( i );
+          std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+          for ( auto t : tl )
+            if ( !td( t )->dots.moonfire->is_ticking() )
+              mf_tl.push_back( t );
+
+          std::vector<action_t*> damage_spell = { conv_wr, conv_ss };
+          if ( mf_tl.size() )
+            damage_spell.push_back( conv_mf );
+
+          conv_cast = damage_spell.at( static_cast<size_t>( rng().range( 0, as<double>( damage_spell.size() ) ) ) );
+
+          if ( conv_cast == conv_mf )  // use moonfire's separate list for mf
+            conv_tar = mf_tl.at( static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) );
         }
-
-        player_t* mf_tar = nullptr;
-        if ( mf_tl.size() ) mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
-
-        if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
-        {
-          conv_cast = conv_mf;
-          mf_cast   = true;
-        }
-        else if ( !wr_cast )  // always one wrath
-        {
-          conv_cast = conv_wr;
-          wr_cast   = true;
-        }
-        else  // try to keep spell count balanced within 3 casts of each other
-        {
-          std::vector<action_t*> dam;
-
-          if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
-            dam.push_back( conv_mf );
-
-          if ( ss_count <= wr_count + 2 )  // balance ss only against wr
-            dam.push_back( conv_ss );
-
-          if ( wr_count <= ss_count + 2 )  // balance wr only against ss
-            dam.push_back( conv_wr );
-
-          if ( !dam.size() )  // sanity check
-            return;
-
-          conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
-
-          if ( conv_cast == conv_mf )
-            mf_count++;
-          else if ( conv_cast == conv_ss )
-            ss_count++;
-          else if ( conv_cast == conv_wr )
-            wr_count++;
-        }
-
-        if ( conv_cast == conv_mf )
-          conv_tar = mf_tar;
-      }
+        break;
+      default: return;
     }
 
-    if ( !conv_cast || !conv_tar )
-      return;
+    if ( conv_cast && !conv_tar )  // pick random target if we haven't picked one already (for mf)
+      conv_tar = tl.at( static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) );
 
+    assert( conv_cast && conv_tar );  // one last sanity check
     execute_convoke_action( conv_cast, conv_tar );
   }
 
@@ -10387,7 +10345,6 @@ void druid_t::create_options()
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
-  add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
 }
@@ -11018,7 +10975,6 @@ void druid_t::copy_from( player_t* source )
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
-  convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
   thorns_attack_period         = p->thorns_attack_period;
