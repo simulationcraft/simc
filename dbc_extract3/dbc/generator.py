@@ -1251,6 +1251,8 @@ class SpellDataGenerator(DataGenerator):
          345544,
          # Satchel of Misbegotten Minions
          345638,
+         # Unbound Changeling
+         330764,
         ),
 
         # Warrior:

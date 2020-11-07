@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15036> __spelltext_data { {
+static const std::array<spelltext_data_t, 15037> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13668,6 +13668,7 @@ static const std::array<spelltext_data_t, 15036> __spelltext_data { {
   { 330744, "Destabilizes gravity around a target location, hindering nearby enemies' movement for $339672d, launching them in random directions, or throwing them up in the air.\r\n\r\n... Unless it backfires.", 0, 0 },
   { 330749, "$@spelldesc329777", "Healing for $s1% of your maximum health every $t1 sec.", 0 },
   { 330752, "$@spelldesc329776", "Immune to Curse, Disease, Poison, and Bleed effects.", 0 },
+  { 330764, 0, "Critical Strike, Haste, and Mastery increased by $w1.", 0 },
   { 330765, "Your abilities have a chance to grant you $330747s2 Critical Strike, Haste, and Mastery for $330131d.", 0, 0 },
   { 330767, "$@spelldesc330765", 0, 0 },
   { 330859, "$@spelldesc329781", "Healing for $w1 every $t sec.", 0 },
