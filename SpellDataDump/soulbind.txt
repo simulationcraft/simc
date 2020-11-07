@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (hotfix 2020-11-05/36512, git build shadowlands fa18139, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (git build shadowlands 3d6aed4, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -233,7 +233,7 @@ Effects          :
 Description      : $?a137005[Swarming Mist]?a212611[Sinful Brand]?a137009[Ravenous Frenzy]?a137014[Flayed Shot]?a137018[Mirrors of Torment]?a137022[Fallen Order]?a137026[Ashen Hallow]?a137030[Mindgames]?a137034[Flagellation]?a137038[Chain Harvest]?a137042[Impending Catastrophe]?a137047[Condemn][Activating your Venthyr class ability] signals the start of tea time, granting $333218s1% Versatility to you and $333251s1% Versatility to up to $333251i nearby allies. Lasts ${$333218d*$<mod>} sec.$?a137047|a137034[
 
 You may only serve tea every $333221d.][]
-Variables        : $mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.0}]?a137038[${1.5}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]
+Variables        : $mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]
 
 Name             : Stay on the Move (id=320658) [Passive, Hidden] 
 Covenant         : Night Fae

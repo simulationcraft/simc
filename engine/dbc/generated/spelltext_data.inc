@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.36512
-static const std::array<spelltext_data_t, 15034> __spelltext_data { {
+// Spell text, wow build 9.0.2.36532
+static const std::array<spelltext_data_t, 15036> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12,7 +12,7 @@ static const std::array<spelltext_data_t, 15034> __spelltext_data { {
   {    107, "Gives a chance to block enemy melee and ranged attacks.", 0, "Passive" },
   {    116, "Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.", 0, 0 },
   {    120, "Targets in a cone in front of you take $s1 Frost damage and have movement slowed by $212792m1% for $212792d.", "Movement slowed by $s1%.", 0 },
-  {    122, "Blasts enemies within $A2 yds of you for $s2 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.", "Frozen in place$?a333393[ and damage taken from $@auracaster's Arcane and Fire spells increased by $333393s2%][].", 0 },
+  {    122, "Blasts enemies within $A2 yds of you for $s2 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.", "Frozen in place.", 0 },
   {    126, "Summons an Eye of Kilrogg and binds your vision to it. The eye is stealthed and moves quickly but is very fragile.", "Controlling Eye of Kilrogg.\r\nDetecting Invisibility.", 0 },
   {    133, "Throws a fiery ball that causes $s1 Fire damage.$?a157642[\r\n\r\nEach time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]", 0, 0 },
   {    136, "Heals your pet for $<total>% of its total health over $d.", "Heals $w1% of the pet's health every $t1 sec.", 0 },
@@ -13314,13 +13314,14 @@ static const std::array<spelltext_data_t, 15034> __spelltext_data { {
   { 324149, "Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be free and usable on any target, regardless of their current health.", "Bleeding for $s1 Shadow damage every $t1 sec.", "Venthyr" },
   { 324156, "$@spelldesc324149", "Kill Shot can be used on any target, regardless of their current health, and will not consume any Focus.", 0 },
   { 324164, "$@spelldesc324128", "Weakened by Death's Due, damage dealt to $@auracaster reduced by $s1%.$?a333388[\r\n\r\nToxins accumulate, increasing Death's Due damage by $s3%.][]", 0 },
+  { 324165, "$@spelldesc324128", "Strength increased by $s1%.", 0 },
   { 324183, "$@spelldesc324184", 0, 0 },
   { 324184, "Sends out a wave of force dealing $<points> Shadow damage to each target hit.", 0, 0 },
   { 324200, "$@spelldesc309621", 0, 0 },
   { 324202, "Heals allies for $<points> split evenly amongst all targets.", 0, 0 },
   { 324220, "Transform into a powerful skeletal mage for $d. \r\n\r\nWhile in the form of a skeletal mage, your Frostbolt, Fireball, and Arcane Blast hit up to $s4 enemies near your target and your spell damage is increased by $s2%.", "Transformed into a powerful skeletal mage, greatly enhancing your Frostbolt, Fireball, and Arcane Blast and increasing your spell damage by $s2%.", "Necrolord" },
   { 324224, "$@spelldesc309622", 0, 0 },
-  { 324226, "Increase your healing taken by $s1.", "Increase your healing taken by $w1.", 0 },
+  { 324226, "Increase your healing taken by $s1.", "Increase your healing taken by $w1%.", 0 },
   { 324242, "$@spelldesc323919", "Haste increased by $w%.", 0 },
   { 324250, "$@spelldesc309623", 0, 0 },
   { 324260, 0, "Increase damage taken by $w1% from aura caster.", 0 },
@@ -13786,7 +13787,7 @@ static const std::array<spelltext_data_t, 15034> __spelltext_data { {
   { 333373, "Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier. Each absorb shield has $s1% effectiveness.", "Casting any Barrier spell grants the effects of Blazing Barrier, Ice Barrier, and Prismatic Barrier.", 0 },
   { 333388, "Enemies damaged by Death's Due take $s1% increased damage from Death's Due, stacking up to $324164u times.", "Enemies damaged by Death's Due take $s1% increased damage from Death's Due, stacking up to $324164u times.", 0 },
   { 333389, "Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.", 0, 0 },
-  { 333393, "Your Fire and Arcane damage against enemies affected by Frost Nova is increased by $s2%, and your spells no longer break it.", 0, 0 },
+  { 333393, "Your spells no longer break Frost Nova, and enemies damaged by Frost Nova take $348007s1% increased damage from your Fire and Arcane spells for $348007d. ", 0, 0 },
   { 333526, "$@spelldesc320659", "Movement speed reduced by $w1%. Suffering $w2 Nature damage every $t2 sec.", 0 },
   { 333721, "Periodically shuffle the deck while in combat.", "Darkmoon Deck: Repose is usable.\r\n\r\nTotal Healing value:", 0 },
   { 333734, "Project a web of healing energy $r yards forward containing $311474s1 to $311481s2 total healing. Allies are healed for up to 30% of the amount stored. The total healing depends on the topmost card in the deck.", 0, 0 },
@@ -15034,13 +15035,14 @@ static const std::array<spelltext_data_t, 15034> __spelltext_data { {
   { 347760, "The cooldown of your Covenant Signature Ability is reduced by $s1%.", 0, 0 },
   { 347788, "$@spelldesc324724", 0, "Necrolord" },
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
+  { 348007, "$@spelldesc333393", "Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36512
+// spelltext hotfix entries, wow build 9.0.2.36532
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.2.36512
+// Spell description variables, wow build 9.0.2.36532
 static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15286,7 +15288,7 @@ static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
   {  319217, "$points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}" },
   {  319778, "$coeff=${0.0264}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
-  {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.0}]?a137038[${1.5}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
+  {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}" },
   {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
@@ -15337,7 +15339,7 @@ static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36512
+// spelldesc_vars hotfix entries, wow build 9.0.2.36532
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
