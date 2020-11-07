@@ -4742,8 +4742,6 @@ struct death_coil_t : public death_knight_spell_t
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
     p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    // p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
-    //   p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
     {
@@ -4999,8 +4997,6 @@ struct death_strike_t : public death_knight_melee_attack_t
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
     p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    // p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
-    //   p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> buffs.hemostasis -> expire();
   }
