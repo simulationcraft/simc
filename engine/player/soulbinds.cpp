@@ -560,16 +560,13 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      triggered_times = 0;
       ext_dur = duration_mod * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        if ( this->triggered_times++ < 3 && rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
+        if ( current_tick <= 3 && rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
           extend_duration( player, ext_dur );
       } );
-
-      set_stack_change_callback( [ this ]( buff_t*, int, int ) { triggered_times = 0; } );
     }
   };
 
