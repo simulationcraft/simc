@@ -8529,7 +8529,8 @@ void shaman_t::create_buffs()
   buff.echoing_shock = make_buff( this, "echoing_shock", talent.echoing_shock );
 
   buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
+                            ->apply_affecting_conduit( conduit.call_of_flame );
 
   //
   // Enhancement
