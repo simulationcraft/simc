@@ -1034,6 +1034,135 @@ void infinitely_divisible_ooze( special_effect_t& effect )
   new infinitely_divisible_ooze_cb_t( effect );
 }
 
+/**Inscrutable Quantum Device
+ * id=330323 driver
+ * id=330363 remove CC from self (NYI)
+ * id=330364 heal spell (NYI)
+ * id=330372 illusion and threat drop (NYI)
+ * id=347940 illusion helper spell, taunt (NYI)
+ * id=347941 illusion helper aura (NYI)
+ * id=330373 execute damage on target
+ * id=330376 restore mana to healer (NYI)
+ * id=330366 crit buff
+ * id=330368 haste buff
+ * id=330380 mastery buff
+ * id=330367 vers buff
+ * When this trinket is used, it triggers one of the effects listed above, following the priority list below.
+ * - remove CC from self: Always triggers if you are under a hard CC mechanic, does not trigger if the CC mechanic
+ *                        does not prevent the player from acting (e.g., it won't trigger while rooted).
+ * - heal spell: triggers on self or a nearby target with less than 30% health remaining
+ * - illusion: ??? (not tested yet, priority unknown)
+ * - execute damage: trigger on an enemy with less than 20% health remaining (the 20% is not in spell data)
+ * - healer mana: triggers on a nearby healer with less than 20% mana??? (not tested yet, priority unknown)
+ * - secondary stat buffs:
+ *   - If a Bloodlust buff is up, the stat buff will last 30 seconds instead of the default 20 seconds.
+ *     TODO: Look for other buffs that also cause this bonus duration to occur.
+ *   - The secondary stat granted appears to be randomly selected from stat from the player's two highest
+ *     secondary stats in terms of rating. When selecting the largest stats, the priority of secondary stats
+ *     seems to be Vers > Mastery > Haste > Crit. There is a bug where the second stat selected must have a
+ *     lower rating than the first stat that was selected. If this is not possible, then the second stat will
+ *     be empty and the trinket will have a chance to do nothing when used.
+ */
+void inscrutable_quantum_device ( special_effect_t& effect )
+{
+  struct inscrutable_quantum_device_execute_t : public proc_spell_t
+  {
+    inscrutable_quantum_device_execute_t( const special_effect_t& e ) :
+      proc_spell_t( "inscrutable_quantum_device_execute", e.player, e.player->find_spell( 330373 ) )
+    {
+      cooldown->duration = 0_ms;
+      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
+      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
+      // and update when the trinket is fixed.
+      base_dd_min = e.player->bugs ? 8.0 : data().effectN( 1 ).min( e.item );
+      base_dd_max = e.player->bugs ? 8.0 : data().effectN( 1 ).max( e.item );
+    }
+  };
+
+  struct inscrutable_quantum_device_buff_t : public stat_buff_t
+  {
+    inscrutable_quantum_device_buff_t( const special_effect_t& e, int s, util::string_view n ) :
+      stat_buff_t( e.player, n, e.player->find_spell( s ) )
+    {
+      set_cooldown( 0_ms );
+      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
+      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
+      // and update when the trinket is fixed.
+      stats[ 0 ].amount = e.player->bugs ? 74 : data().effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct inscrutable_quantum_device_t : public proc_spell_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::vector<buff_t*> bonus_buffs;
+    action_t* execute_damage;
+
+    inscrutable_quantum_device_t( const special_effect_t& e ) :
+      proc_spell_t( "inscrutable_quantum_device", e.player, e.player->find_spell( 330323 ) )
+    {
+      buffs[STAT_NONE] = nullptr;
+      buffs[STAT_CRIT_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330366, "inscrutable_quantum_device_crit" );
+      buffs[STAT_HASTE_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330368, "inscrutable_quantum_device_haste" );
+      buffs[STAT_MASTERY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330380, "inscrutable_quantum_device_mastery" );
+      buffs[STAT_VERSATILITY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330367, "inscrutable_quantum_device_vers" );
+      execute_damage = create_proc_action<inscrutable_quantum_device_execute_t>( "inscrutable_quantum_device_execute", e );
+    }
+
+    void init_finished() override
+    {
+      proc_spell_t::init_finished();
+
+      bonus_buffs.clear();
+
+      bonus_buffs.push_back( player->buffs.bloodlust );
+
+      if ( player->type == MAGE )
+      {
+        if ( buff_t* b = buff_t::find( player, "temporal_warp" ) )
+          bonus_buffs.push_back( b );
+        if ( buff_t* b = buff_t::find( player, "time_warp" ) )
+          bonus_buffs.push_back( b );
+      }
+    }
+
+    bool is_buff_extended()
+    {
+      return range::any_of( bonus_buffs, [] ( buff_t* b ) { return b->check(); } );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( target->health_percentage() <= 20 )
+      {
+        execute_damage->set_target( target );
+        execute_damage->execute();
+      }
+      else
+      {
+        static constexpr stat_e ratings[] = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+        stat_e s1 = STAT_NONE;
+        stat_e s2 = STAT_NONE;
+        s1 = util::highest_stat( player, ratings );
+        for ( auto s : ratings )
+        {
+          auto v = player->get_stat_value( s );
+          if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) && ( player->bugs && v < player->get_stat_value( s1 ) || !player->bugs && s != s1 ) )
+            s2 = s;
+        }
+
+        buff_t* buff = rng().roll( 0.5 ) ? buffs[s1] : buffs[s2];
+        if ( buff )
+          buff->trigger( buff->buff_duration() - ( is_buff_extended() ? 0_s : 10_s ) );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<inscrutable_quantum_device_t>( "inscrutable_quantum_device", effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1278,6 +1407,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 330740, items::unbound_changeling );
     unique_gear::register_special_effect( 330741, items::unbound_changeling );
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
+    unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
