@@ -6612,7 +6612,7 @@ struct fae_transfusion_t : public shaman_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    shaman_spell_t::tick( d );
+    shaman_spell_t::last_tick( d );
 
     if ( d->current_tick == d->num_ticks() )
     {
