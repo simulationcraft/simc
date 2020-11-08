@@ -8,6 +8,9 @@
 #include "sim/sc_sim.hpp"
 
 #include "sim/sc_cooldown.hpp"
+#include "player/action_priority_list.hpp"
+#include "player/pet.hpp"
+#include "player/pet_spawner.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
@@ -910,6 +913,109 @@ void unbound_changeling( special_effect_t& effect )
   }
 }
 
+/**Infinitely Divisible Ooze
+ * id=345490 driver and coefficient
+ * id=345489 summon spell
+ * id=345495 pet cast (noxious bolt)
+ */
+void infinitely_divisible_ooze( special_effect_t& effect )
+{
+  struct noxious_bolt_t : public spell_t
+  {
+    noxious_bolt_t( pet_t* p, const special_effect_t& e ) : spell_t( "noxious_bolt", p, p->find_spell( 345495 ) )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "frothing_pustule" );
+      if ( ta && ta->find_action( "noxious_bolt" ) )
+        stats = ta->find_action( "noxious_bolt" )->stats;
+
+      may_crit = false;
+      base_dd_min = p->find_spell( 345490 )->effectN( 1 ).min( e.item );
+      base_dd_max = p->find_spell( 345490 )->effectN( 1 ).max( e.item );
+    }
+
+    double composite_haste() const override
+    {
+      return 1.0;
+    }
+
+    double composite_versatility( const action_state_t* ) const
+    {
+      return 1.0;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      if ( player->resources.current[ RESOURCE_ENERGY ] <= 0 )
+      {
+        make_event( *sim, 0_ms, [ this ] { player->cast_pet()->dismiss(); } );
+      }
+    }
+  };
+
+  struct frothing_pustule_pet_t : public pet_t
+  {
+    const special_effect_t& effect;
+
+    frothing_pustule_pet_t( const special_effect_t& e ) :
+      pet_t( e.player->sim, e.player, "frothing_pustule", true, true ),
+      effect( e )
+    {}
+
+    void init_base_stats() override
+    {
+      pet_t::init_base_stats();
+
+      resources.base[ RESOURCE_ENERGY ] = 100;
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_ENERGY;
+    }
+
+    action_t* create_action( util::string_view name, const std::string& options ) override
+    {
+      if ( name == "noxious_bolt" )
+      {
+        return new noxious_bolt_t( this, effect );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "noxious_bolt" );
+    }
+  };
+
+  struct infinitely_divisible_ooze_cb_t : public dbc_proc_callback_t
+  {
+    spawner::pet_spawner_t<frothing_pustule_pet_t> spawner;
+
+    infinitely_divisible_ooze_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      spawner( "infinitely_divisible_ooze", e.player, [ &e, this ]( player_t* )
+        { return new frothing_pustule_pet_t( e ); } )
+    {
+      spawner.set_default_duration( e.player->find_spell( 345489 )->duration() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      spawner.spawn();
+    }
+  };
+
+  new infinitely_divisible_ooze_cb_t( effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1153,6 +1259,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 330739, items::unbound_changeling );
     unique_gear::register_special_effect( 330740, items::unbound_changeling );
     unique_gear::register_special_effect( 330741, items::unbound_changeling );
+    unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
