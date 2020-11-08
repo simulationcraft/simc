@@ -171,13 +171,13 @@ void niyas_tools_burrs( special_effect_t& effect )
                           value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
     {}
 
-    void impact( action_state_t* s ) override
+    result_e calculate_result( action_state_t* s ) const override
     {
       // If the target is slow-immune (most bosses) everything gets immuned including dot application
       if ( s->target->is_boss() )
-        s->result = result_e::RESULT_MISS;
+        return result_e::RESULT_MISS;
 
-      niyas_tools_proc_t::impact( s );
+      return niyas_tools_proc_t::calculate_result( s );
     }
   };
 
