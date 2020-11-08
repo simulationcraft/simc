@@ -5005,14 +5005,13 @@ struct lightning_bolt_t : public shaman_spell_t
     return shaman_spell_t::consume_maelstrom_weapon();
   }
 
-  // TODO: once bug is fixed, uncomment this
-  // double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
-  // {
-  //   double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-  //   if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
-  //     coeff *= 2.0;
-  //   return coeff;
-  // }
+  double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
+  {
+    double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
+    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
+      coeff *= 2.0;
+    return coeff;
+  }
 
   double overload_chance( const action_state_t* s ) const override
   {
@@ -5108,12 +5107,6 @@ struct lightning_bolt_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    // TODO: remove this when the high voltage bug is fixed and it properly generates double instead of 5
-    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
-    {
-      p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
-    }
 
     p()->buff.surge_of_power->decrement();
 
