@@ -3832,16 +3832,6 @@ struct crash_lightning_t : public shaman_attack_t
     }
   }
 
-  // Crash Lightning does sqrt( num targets ) damage to each target
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_attack_t::composite_aoe_multiplier( state );
-
-    m *= std::sqrt( state->n_targets ) / as<double>( state->n_targets );
-
-    return m;
-  }
-
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
