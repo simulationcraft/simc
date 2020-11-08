@@ -2580,11 +2580,44 @@ struct primal_elemental_t : public shaman_pet_t
 
 struct earth_elemental_t : public primal_elemental_t
 {
+  action_t* deeptremor_eq; // Deeptremor Stone Earthquake damage
+  buff_t* deeptremor_stone;
+
   earth_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
+    : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian ),
+    deeptremor_eq( nullptr ), deeptremor_stone( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
+  }
+
+  // Defined later
+  void create_actions() override;
+
+  void create_buffs() override
+  {
+    primal_elemental_t::create_buffs();
+
+    if ( o()->legendary.deeptremor_stone.ok() )
+    {
+      deeptremor_stone = make_buff<buff_t>( this, "deeptremor_stone", o()->legendary.deeptremor_stone )
+        ->set_period( 1_s )
+        ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+          deeptremor_eq->set_target( target );
+          deeptremor_eq->execute();
+        } );
+    }
+  }
+
+  void arise() override
+  {
+    primal_elemental_t::arise();
+
+    if ( deeptremor_stone )
+    {
+      deeptremor_stone->trigger();
+    }
   }
 };
 
@@ -3971,12 +4004,6 @@ struct earth_elemental_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( p()->legendary.deeptremor_stone->ok() )
-    {
-      make_event<ground_aoe_event_t>(
-          *sim, p(),
-          ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
-    }
 
     if ( p()->talent.primal_elementalist->ok() )
     {
@@ -9647,6 +9674,21 @@ inline void echoing_shock_event_t::execute()
   spell->time_to_execute = orig_tte;
   spell->cooldown->duration = orig_cd;
   spell->set_target( orig_target );
+}
+
+void pet::earth_elemental_t::create_actions()
+{
+  primal_elemental_t::create_actions();
+
+  if ( o()->legendary.deeptremor_stone.ok() )
+  {
+    deeptremor_eq = new earthquake_damage_t( o() );
+    // Create a separate stats object bound to the Earth Elemental instead of the shaman
+    // for this
+    deeptremor_eq->stats = get_stats( "earthquake_rumble", deeptremor_eq );
+    deeptremor_eq->stats->school = deeptremor_eq->get_school();
+    deeptremor_eq->init();
+  }
 }
 
 /* Report Extension Class
