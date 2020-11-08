@@ -4447,15 +4447,17 @@ struct lava_beam_t : public chained_base_t
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
+  lava_burst_type type;
 
   static const std::string action_name( const std::string& suffix )
   {
     return !suffix.empty() ? "lava_burst_overload_" + suffix : "lava_burst_overload";
   }
 
-  lava_burst_overload_t( shaman_t* player, shaman_spell_t* parent_, const std::string& suffix )
+  lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, const std::string& suffix )
     : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 77451 ), parent_ ),
-      impact_flags()
+      impact_flags(),
+      type(type)
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
@@ -4503,6 +4505,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
+
+    if ( type == lava_burst_type::PRIMORDIAL_WAVE )
+    {
+      m *= p()->covenant.necrolord->effectN( 3 ).percent();
+    }
 
     if ( p()->buff.ascendance->up() )
     {
@@ -4721,7 +4728,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_burst_overload_t( player, this, suffix );
+      overload = new lava_burst_overload_t( player, type, this, suffix );
     }
 
     if ( p()->specialization() == SHAMAN_RESTORATION )
@@ -4840,6 +4847,11 @@ struct lava_burst_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
+
+        if ( type == lava_burst_type::PRIMORDIAL_WAVE )
+    {
+      m *= p()->covenant.necrolord->effectN( 3 ).percent();
+    }
 
     if ( p()->buff.ascendance->up() )
     {
