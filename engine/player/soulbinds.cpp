@@ -553,7 +553,6 @@ void combat_meditation( special_effect_t& effect )
   struct combat_meditation_buff_t : public stat_buff_t
   {
     timespan_t ext_dur;
-    int triggered_times;
     combat_meditation_buff_t( player_t* p, double duration_mod, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
       set_cooldown( icd_enabled ? data().effectN( 3 ).trigger()->duration() : 0_ms );
