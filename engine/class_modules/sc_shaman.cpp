@@ -1781,14 +1781,17 @@ public:
   // a spell to spell level
   virtual bool consume_maelstrom_weapon() const
   {
-    return affected_by_maelstrom_weapon &&
-      p()->buff.maelstrom_weapon->up() &&
-      !background;
+    return benefit_from_maelstrom_weapon() && !background;
+  }
+
+  virtual bool benefit_from_maelstrom_weapon() const
+  {
+    return affected_by_maelstrom_weapon &p()->buff.maelstrom_weapon->up();
   }
 
   unsigned maelstrom_weapon_stacks() const
   {
-    if ( !affected_by_maelstrom_weapon || !p()->buff.maelstrom_weapon->check() )
+    if ( !benefit_from_maelstrom_weapon() )
     {
       return 0;
     }
@@ -4266,14 +4269,14 @@ struct chain_lightning_t : public chained_base_t
 
   // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
   // Chain Lightning, but the spell still benefits from the damage increase.
-  bool consume_maelstrom_weapon() const override
+  bool benefit_from_maelstrom_weapon() const override
   {
     if ( p()->buff.stormkeeper->check() )
     {
       return false;
     }
 
-    return shaman_spell_t::consume_maelstrom_weapon();
+    return shaman_spell_t::benefit_from_maelstrom_weapon();
   }
 
   double action_multiplier() const override
@@ -4995,14 +4998,14 @@ struct lightning_bolt_t : public shaman_spell_t
 
   // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
   // Chain Lightning, but the spell still benefits from the damage increase.
-  bool consume_maelstrom_weapon() const override
+  bool benefit_from_maelstrom_weapon() const override
   {
     if ( p()->buff.stormkeeper->check() )
     {
       return false;
     }
 
-    return shaman_spell_t::consume_maelstrom_weapon();
+    return shaman_spell_t::benefit_from_maelstrom_weapon();
   }
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
@@ -5106,6 +5109,16 @@ struct lightning_bolt_t : public shaman_spell_t
 
   void execute() override
   {
+    // PW needs to execute before the primary spell executes so we can retain proper
+    // Maelstrom Weapon stacks for the AoE Lightning Bolt
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
+         type == lightning_bolt_type::NORMAL && p()->buff.primordial_wave->up() )
+    {
+      p()->buff.primordial_wave->expire();
+      p()->action.lightning_bolt_pw->set_target( target );
+      p()->action.lightning_bolt_pw->execute();
+    }
+
     shaman_spell_t::execute();
 
     p()->buff.surge_of_power->decrement();
@@ -5123,14 +5136,6 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->buff.wind_gust->trigger();
       }
-    }
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
-         type == lightning_bolt_type::NORMAL && p()->buff.primordial_wave->up() )
-    {
-      p()->buff.primordial_wave->expire();
-      p()->action.lightning_bolt_pw->set_target( execute_state->target );
-      p()->action.lightning_bolt_pw->schedule_execute();
     }
 
     if ( type == lightning_bolt_type::NORMAL )
