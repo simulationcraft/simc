@@ -4848,7 +4848,9 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-        if ( type == lava_burst_type::PRIMORDIAL_WAVE )
+    // Note, only Elemental Shaman gets the primordial_wave state set, so don't need
+    // separate specialization checks here
+    if ( type == lava_burst_type::PRIMORDIAL_WAVE )
     {
       m *= p()->covenant.necrolord->effectN( 3 ).percent();
     }
@@ -4868,13 +4870,6 @@ struct lava_burst_t : public shaman_spell_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
-
-    // Note, only Elemental Shaman gets the primordial_wave state set, so don't need
-    // separate specialization checks here
-    if ( !p()->bugs && type == lava_burst_type::PRIMORDIAL_WAVE )
-    {
-      m *= p()->covenant.necrolord->effectN( 3 ).percent();
-    }
 
     return m;
   }
