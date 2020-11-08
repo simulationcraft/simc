@@ -347,6 +347,12 @@ public:
   // Flame Shocks change
   std::vector<action_t*> flame_shock_dependants;
 
+  struct
+  {
+    /// Number of allies hit by Chain Harvest heals, range 0..5
+    int chain_harvest_allies = 5;
+  } opt_sl; // Shadowlands Shaman-specific options
+
   // Cached actions
   struct actions_t
   {
@@ -6674,56 +6680,55 @@ struct primordial_wave_t : public shaman_spell_t
 // Chain Harvest - Venthyr Covenant
 // ==========================================================================
 
-struct chain_harvest_t : public chained_base_t
+struct chain_harvest_t : public shaman_spell_t
 {
   int critical_hits = 0;
 
   chain_harvest_t( shaman_t* player, const std::string& options_str )
-    : chained_base_t( player, "chain_harvest", player->covenant.venthyr, 0, options_str )
+    : shaman_spell_t( "chain_harvest", player, player->covenant.venthyr, options_str )
   {
-    if ( !player->covenant.venthyr->ok() )
-      return;
-
-    aoe                    = 5;
+    aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
+
+    base_crit += p()->conduit.lavish_harvest.percent();
   }
 
-  double composite_crit_chance() const override
+  void schedule_travel( action_state_t* s ) override
   {
-    double c = chained_base_t::composite_crit_chance();
-
-    if ( p()->conduit.lavish_harvest->ok() )
-    {
-      c += p()->conduit.lavish_harvest.percent();
-    }
-
-    return c;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    chained_base_t::impact( s );
-
     if ( s->result == RESULT_CRIT )
     {
       critical_hits++;
     }
+
+    shaman_spell_t::schedule_travel( s );
   }
 
   void update_ready( timespan_t ) override
   {
     auto cd = cooldown_duration();
+
+    for ( int i = 0; i < p()->opt_sl.chain_harvest_allies; ++i )
+    {
+      critical_hits += as<int>( rng().roll( composite_crit_chance() ) );
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} n_crit={}, cooldown={}",
+        player->name(), name(), critical_hits,
+        cd - critical_hits * timespan_t::from_seconds( 5 ) );
+    }
+
     cd -= critical_hits * timespan_t::from_seconds( 5 );
 
-    critical_hits = 0;
+    shaman_spell_t::update_ready( cd );
 
-    chained_base_t::update_ready( cd );
+    critical_hits = 0;
   }
 
-  void execute() override
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
-    // do not consume stormkeeper, as happens in chained_base_t
-    shaman_spell_t::execute();
+    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -7446,6 +7451,7 @@ void shaman_t::create_options()
       return false;
     return true;
   } ) );
+  add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
 }
 
 // shaman_t::create_profile ================================================
