@@ -602,6 +602,7 @@ public:
     proc_t* maelstrom_weapon_fs;
     proc_t* maelstrom_weapon_ea;
     proc_t* maelstrom_weapon_cttc;
+    proc_t* maelstrom_weapon_ft;
     proc_t* stormflurry;
     proc_t* windfury_uw;
   } proc;
@@ -2892,7 +2893,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     weapon     = &( p->main_hand_weapon );
     background = true;
     aoe        = -1;
-    base_multiplier *= 1.0;
     may_proc_ability_procs = false;
   }
 
@@ -6603,6 +6603,21 @@ struct fae_transfusion_t : public shaman_spell_t
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
     cooldown->duration += p()->conduit.essential_extraction.time_value();
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    shaman_spell_t::tick( d );
+
+    if ( d->current_tick == d->num_ticks() )
+    {
+      p()->buff.maelstrom_weapon->trigger(
+          p()->covenant.night_fae->effectN( 4 ).base_value() );
+      for ( int i = 0; i < p()->covenant.night_fae->effectN( 4 ).base_value(); ++i )
+      {
+        p()->proc.maelstrom_weapon_ft->occur();
+      }
+    }
+  }
 };
 
 // ==========================================================================
@@ -8650,6 +8665,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
   proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
+  proc.maelstrom_weapon_ft = get_proc( "Maelstrom Weapon: Fae Transfusion" );
   proc.stormflurry       = get_proc( "Stormflurry" );
 }
 
