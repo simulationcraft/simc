@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15037> __spelltext_data { {
+static const std::array<spelltext_data_t, 15038> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14937,6 +14937,7 @@ static const std::array<spelltext_data_t, 15037> __spelltext_data { {
   { 345466, "$@spelldesc345465", "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 345474, "Your healing spells have a low chance to create $s2 Fragments of Life near your location for $345496d. Allies who collect a Fragment of Life are healed for $s1, and grant $345502s1 Versatility to your party for $345499d.", 0, 0 },
   { 345490, "Your damaging abilities have a chance to conjure a Frothing Pustule to fight by your side, dealing ${$s1*5} Nature damage to your target.", 0, 0 },
+  { 345495, "Lob a Noxious Bolt at your target, dealing Nature damage.", 0, 0 },
   { 345496, "$@spelldesc345474", 0, 0 },
   { 345499, "$@spelldesc345474", "Versatility increased by $w1.", 0 },
   { 345530, "Gain $s1 Haste and $s2 Speed for $d.", "Haste increased by $w1.\r\nSpeed increased by $w2.", 0 },

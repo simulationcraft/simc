@@ -1253,6 +1253,8 @@ class SpellDataGenerator(DataGenerator):
          345638,
          # Unbound Changeling
          330764,
+         # Infinitely Divisible Ooze
+         345495,
         ),
 
         # Warrior:
