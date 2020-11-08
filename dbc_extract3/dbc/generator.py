@@ -1312,6 +1312,7 @@ class SpellDataGenerator(DataGenerator):
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
             ( 337228, 0 ),          # Final verdict buff
+            ( 326011, 0 ),          # Divine Toll buff to judgment damage
         ),
 
         # Hunter:
