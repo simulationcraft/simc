@@ -5824,7 +5824,6 @@ double player_t::get_stat_value(stat_e stat)
 {
   switch (stat)
   {
-
   case STAT_STRENGTH:
     return cache.strength();
   case STAT_AGILITY:
@@ -5835,6 +5834,10 @@ double player_t::get_stat_value(stat_e stat)
     return cache.spell_power(SCHOOL_NONE);
   case STAT_ATTACK_POWER:
     return cache.attack_power();
+  case STAT_CRIT_RATING:
+    return composite_melee_crit_rating();
+  case STAT_HASTE_RATING:
+    return composite_melee_haste_rating();
   case STAT_MASTERY_RATING:
     return composite_mastery_rating();
   case STAT_VERSATILITY_RATING:
