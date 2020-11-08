@@ -5541,7 +5541,6 @@ struct flame_shock_t : public shaman_spell_t
       skybreakers_effect( player->find_spell( 336734 ) )
   {
     tick_may_crit      = true;
-    track_cd_waste     = false;
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       cooldown           = p()->cooldown.shock;
@@ -5707,6 +5706,7 @@ struct frost_shock_t : public shaman_spell_t
       cooldown           = p()->cooldown.shock;
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
+      track_cd_waste = true;
     }
   }
 
