@@ -7276,19 +7276,28 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   int max_ticks;
 
+  // Multi-spec
+  action_t* conv_wrath;
+  action_t* conv_moonfire;
+  action_t* conv_rake;
+  action_t* conv_thrash_bear;
   // Moonkin Form
-  action_t* conv_fm;
-  action_t* conv_ss;
-  action_t* conv_wr;
-  action_t* conv_sf;
-  action_t* conv_mf;
+  action_t* conv_full_moon;
+  action_t* conv_starsurge;
+  action_t* conv_starfall;
   std::vector<convoke_cast_e> cast_list;
   // Cat Form
   // Bear Form
 
-  convoke_the_spirits_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
-      conv_fm( nullptr ), conv_ss( nullptr ), conv_wr( nullptr ), conv_sf( nullptr ), conv_mf( nullptr )
+  convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
+    druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
+    conv_wrath( nullptr ),  // multi-spec
+    conv_moonfire( nullptr ),
+    conv_rake( nullptr ),
+    conv_thrash_bear( nullptr ),
+    conv_full_moon( nullptr ),  // moonkin
+    conv_starsurge( nullptr ),
+    conv_starfall( nullptr )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
@@ -7297,6 +7306,12 @@ struct convoke_the_spirits_t : public druid_spell_t
     may_miss = may_crit = false;
 
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
+
+    // Create actions used by all specs
+    conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
+    conv_moonfire    = get_convoke_action<moonfire_t>( "moonfire", "" );
+    conv_rake        = get_convoke_action<cat_attacks::rake_t>( "rake", p->find_spell( 1822 ), "" );
+    conv_thrash_bear = get_convoke_action<bear_attacks::thrash_bear_t>( "thrash_bear", p->find_spell( 77758 ), "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
     if ( p->find_action( "moonkin_form" ) )
@@ -7328,11 +7343,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _init_moonkin()
   {
-    conv_wr = get_convoke_action<wrath_t>( "wrath", "" );
-    conv_mf = get_convoke_action<moonfire_t>( "moonfire", "" );
-    conv_fm = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
-    conv_sf = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
-    conv_ss = get_convoke_action<starsurge_t>( "starsurge", p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+    conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
+    conv_starfall = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge", p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
   }
 
   void execute() override
@@ -7391,11 +7404,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     switch ( type )
     {
-      case CAST_ULTIMATE: conv_cast = conv_fm; break;
-      case CAST_WRATH: conv_cast = conv_wr; break;
+      case CAST_ULTIMATE: conv_cast = conv_full_moon; break;
+      case CAST_WRATH: conv_cast = conv_wrath; break;
       case CAST_SPEC:
         if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-          conv_cast = conv_sf;
+          conv_cast = conv_starfall;
         else  // randomly decide on damage spell
         {
           std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
@@ -7403,13 +7416,13 @@ struct convoke_the_spirits_t : public druid_spell_t
             if ( !td( t )->dots.moonfire->is_ticking() )
               mf_tl.push_back( t );
 
-          std::vector<action_t*> damage_spell = { conv_wr, conv_ss };
+          std::vector<action_t*> damage_spell = { conv_wrath, conv_starsurge };
           if ( mf_tl.size() )
-            damage_spell.push_back( conv_mf );
+            damage_spell.push_back( conv_moonfire );
 
           conv_cast = damage_spell.at( rng().range( damage_spell.size() ) );
 
-          if ( conv_cast == conv_mf )  // use moonfire's separate list for mf
+          if ( conv_cast == conv_moonfire )  // use moonfire's separate list for mf
             conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
         }
         break;
