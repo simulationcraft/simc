@@ -72,7 +72,7 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   }
 }
 
-double value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
+double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
 {
   double value = 0;
 
@@ -93,7 +93,7 @@ double value_from_desc_vars( special_effect_t& e, util::string_view var, util::s
 // by a spell ID belonging to the target class and the floating point number represents the duration modifier.
 // This can be changed to any regex such that the first capture group gives the class spell ID and second
 // capture group gives the value to return.
-double class_value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
+double class_value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
 {
   double value = 0;
 
@@ -164,11 +164,26 @@ struct niyas_tools_proc_t : public unique_gear::proc_spell_t
 
 void niyas_tools_burrs( special_effect_t& effect )
 {
-  auto action = effect.player->find_action( "spiked_burrs" );
-  if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), value_from_desc_vars( effect, "points", "\\$SP\\*" ), false );
+  struct spiked_burrs_t : public niyas_tools_proc_t
+  {
+    spiked_burrs_t( const special_effect_t& e ) :
+      niyas_tools_proc_t( "spiked_burrs", e.player, e.player->find_spell( 333526 ),
+                          value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
+    {}
 
-  effect.execute_action = action;
+    void impact( action_state_t* s ) override
+    {
+      // If the target is slow-immune (most bosses) everything gets immuned including dot application
+      if ( s->target->is_boss() )
+        s->result = result_e::RESULT_MISS;
+
+      niyas_tools_proc_t::impact( s );
+    }
+  };
+
+  effect.execute_action = effect.player->find_action( "spiked_burrs" );
+  if ( !effect.execute_action )
+    effect.execute_action = new spiked_burrs_t( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
