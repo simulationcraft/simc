@@ -794,6 +794,8 @@ void empyreal_ordnance( special_effect_t& effect )
 }
 
 // The slow debuff on the target and the heal when gaining the crit buff are not implemented.
+// id=345807: crit value coefficients
+// id=345806: heal amoutn coefficient
 void soulletting_ruby( special_effect_t& effect )
 {
   struct soulletting_ruby_t : public proc_spell_t
@@ -812,12 +814,13 @@ void soulletting_ruby( special_effect_t& effect )
     void execute() override
     {
       proc_spell_t::execute();
-      double value = base_crit_value + max_crit_bonus * ( 1.0 - target->health_percentage() * 0.01 );
-      make_event( *sim, travel_time(), [ this, value ]
-        {
-          buff->stats.back().amount = value;
-          buff->trigger();
-        } );
+
+      make_event( *sim, travel_time(), [ this, t = execute_state->target ] {
+        double bonus_mul = 1.0 - ( t->is_active() ? t->health_percentage() * 0.01 : 0.0 );
+
+        buff->stats.back().amount = base_crit_value + max_crit_bonus * bonus_mul;
+        buff->trigger();
+      } );
     }
   };
 
