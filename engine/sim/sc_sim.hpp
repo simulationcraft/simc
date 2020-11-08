@@ -343,7 +343,7 @@ struct sim_t : private sc_thread_t
   {
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
-    double combat_meditation_extend_chance = 1;
+    double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
     /// Number of nearby allies when you proc lead by example
