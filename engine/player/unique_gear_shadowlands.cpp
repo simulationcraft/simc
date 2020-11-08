@@ -264,14 +264,29 @@ void celestial_guidance( special_effect_t& effect )
 
 void lightless_force( special_effect_t& effect )
 {
+  struct lightless_force_proc_t : public SL_proc_spell_t
+  {
+    lightless_force_proc_t( const special_effect_t& e ) : SL_proc_spell_t( e )
+    {
+      // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd
+      // range, the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
+      // TODO: confirm maximum effective range & radius
+      aoe    = 5;
+      radius = 5.0;
+      range  = 30.0;
+
+      // hardcoded as a dummy effect
+      spell_power_mod.direct = data().effectN( 2 ).percent();
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+    }
+  };
+
   effect.trigger_spell_id = 324184;
-  effect.execute_action   = create_proc_action<SL_proc_spell_t>( "lightless_force", effect );
-  // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd range,
-  // the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
-  // TODO: confirm maximum effective range & radius
-  effect.execute_action->aoe    = 5;
-  effect.execute_action->radius = 5.0;
-  effect.execute_action->range  = 30.0;
+  effect.execute_action   = create_proc_action<lightless_force_proc_t>( "lightless_force", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
