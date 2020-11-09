@@ -286,7 +286,6 @@ void fire( player_t* p )
   default_->add_action( "radiant_spark,if=(buff.combustion.down&buff.rune_of_power.down&(cooldown.combustion.remains<execute_time|cooldown.combustion.remains>cooldown.radiant_spark.duration))|(buff.rune_of_power.up&cooldown.combustion.remains>30)" );
   default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains<execute_time" );
   default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down" );
-  default_->add_action( "variable,name=time_to_combustion,op=print" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay" );
   default_->add_action( "use_item,name=soul_igniter" );
