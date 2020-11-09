@@ -7301,7 +7301,6 @@ struct convoke_the_spirits_t : public druid_spell_t
   std::vector<convoke_cast_e> cast_list;
   std::vector<convoke_cast_e> offspec_list;
   std::vector<std::pair<convoke_cast_e, double>> chances;
-  double moonfire_chance;
   // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
@@ -7387,7 +7386,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       case CAST_PULVERIZE: return conv_pulverize;
       case CAST_IRONFUR: return conv_ironfur;
       case CAST_MANGLE: return conv_mangle;
-      default: return nullptr;
+      default: return nullptr;  // heals will fall through and return as null
     }
   }
 
@@ -7408,17 +7407,17 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _init_moonkin()
   {
-    conv_full_moon  = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
-    conv_starfall   = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
-    conv_starsurge  = get_convoke_action<starsurge_t>( "starsurge",
+    conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
+    conv_starfall  = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge",
                        p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
   }
 
   void _init_bear()
   {
-    conv_ironfur    = get_convoke_action<ironfur_t>( "ironfur", "" );
-    conv_mangle     = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
-    conv_pulverize  = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
+    conv_ironfur   = get_convoke_action<ironfur_t>( "ironfur", "" );
+    conv_mangle    = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
+    conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
   }
 
   void execute() override
@@ -7428,7 +7427,19 @@ struct convoke_the_spirits_t : public druid_spell_t
     p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
     p()->buff.convoke_the_spirits->trigger();
 
-    // Do form-specific execute
+    // form-agnostic
+    cast_list.clear();
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // form-based ultimate
+    {
+      if ( p()->buff.bear_form->check() )
+        cast_list.push_back( CAST_PULVERIZE );
+      else if ( p()->buff.moonkin_form->check() )
+        cast_list.push_back( CAST_FULL_MOON );
+    }
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
+
+    // form-specific distribution list
     if ( p()->buff.bear_form->check() )
       _execute_bear();
     else if ( p()->buff.moonkin_form->check() )
@@ -7437,34 +7448,17 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _execute_bear()
   {
-    cast_list.clear();
-
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      cast_list.push_back( CAST_PULVERIZE );
-    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
-
-    offspec_list    = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances         = { { CAST_THRASH_BEAR, 0.3 },
-                        { CAST_IRONFUR,     0.35 },
-                        { CAST_MANGLE,      0.35 } };
-    moonfire_chance = 0.2;
-
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
+    chances    = { { CAST_THRASH_BEAR, 0.3 },
+                   { CAST_IRONFUR,     0.35 },
+                   { CAST_MANGLE,      0.35 } };
   }
 
   void _execute_moonkin()
   {
-    cast_list.clear();
-
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      cast_list.push_back( CAST_FULL_MOON );
-    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
-
-    offspec_list    = { CAST_HEAL };
-    chances         = { { CAST_WRATH,     0.4 },
-                        { CAST_STARSURGE, 0.3 } };
-    moonfire_chance = 0.3;
+    offspec_list = { CAST_HEAL };
+    chances    = { { CAST_WRATH,     0.4 },
+                   { CAST_STARSURGE, 0.3 } };
   }
 
   void tick( dot_t* d ) override
@@ -7475,15 +7469,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( d->time_to_tick() < base_tick_time )
       return;
 
-    // Do form-specific tick
-    if ( p()->buff.moonkin_form->check() )
-      _tick_moonkin();
-    else if ( p()->buff.bear_form->check() )
-      _tick_bear();
-  }
-
-  void _tick_bear()
-  {
+    // form-agnostic
     action_t* conv_cast = nullptr;
     player_t* conv_tar  = nullptr;
 
@@ -7495,82 +7481,70 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( !tl.size() )
       return;
 
-    // First figure out which offspec/spec spell to cast
+    // Figure out which offspec/spec spell to cast
     if ( type == CAST_OFFSPEC )
       type = offspec_list.at( rng().range( offspec_list.size() ) );
     else if ( type == CAST_SPEC )
     {
-      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto t : tl )
-        if ( !td( t )->dots.moonfire->is_ticking() )
-          mf_tl.push_back( t );
-
-      auto dist = chances;
-      if ( mf_tl.size() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, moonfire_chance ) );
-
-      type = get_cast_from_dist( dist );
-
-      if ( type == CAST_MOONFIRE )
-        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+      // Do form-specific spell selection
+      if ( p()->buff.moonkin_form->check() )
+        type = _tick_moonkin( tl, conv_tar );
+      else if ( p()->buff.bear_form->check() )
+        type = _tick_bear( tl, conv_tar );
     }
 
     conv_cast = convoke_action_from_type( type );
     if ( !conv_cast )
       return;
 
-    if ( !conv_tar )  // pick random target if we haven't picked one already (for mf)
+    // pick random target if we haven't picked one already
+    if ( !conv_tar )
       conv_tar = tl.at( rng().range( tl.size() ) );
 
-    execute_convoke_action( conv_cast, conv_tar );
+   execute_convoke_action( conv_cast, conv_tar );
   }
 
-  void _tick_moonkin()
+  convoke_cast_e _tick_bear( const std::vector<player_t*>& tl, player_t*& conv_tar )
   {
-    action_t* conv_cast = nullptr;
-    player_t* conv_tar  = nullptr;
+    auto dist = chances;  // local copy of distribution
 
-    auto it   = cast_list.begin() + rng().range( cast_list.size() );
-    auto type = *it;
-    cast_list.erase( it );
+    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+    for ( auto t : tl )
+      if ( !td( t )->dots.moonfire->is_ticking() )
+        mf_tl.push_back( t );
 
-    std::vector<player_t*> tl = target_list();
-    if ( !tl.size() )
-      return;
+    if ( mf_tl.size() )
+      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
 
-    // First figure out which offspec/spec spell to cast
-    if ( type == CAST_OFFSPEC )
-      type = offspec_list.at( rng().range( offspec_list.size() ) );
-    else if ( type == CAST_SPEC )
-    {
-      if ( !p()->buff.starfall->check() )
-        type = CAST_STARFALL;
-      else
-      {
-        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-        for ( auto t : tl )
-          if ( !td( t )->dots.moonfire->is_ticking() )
-            mf_tl.push_back( t );
+    auto type = get_cast_from_dist( dist );
 
-        auto dist = chances;
-        if ( mf_tl.size() )
-          dist.emplace_back( std::make_pair( CAST_MOONFIRE, moonfire_chance ) );
+    if ( type == CAST_MOONFIRE )
+      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
 
-        type = get_cast_from_dist( dist );
+    return type;
+  }
 
-        if ( type == CAST_MOONFIRE )
-          conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
-      }
-    }
+  convoke_cast_e _tick_moonkin( const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    auto dist = chances;  // local copy of distribution
 
-    conv_cast = convoke_action_from_type( type );
-    if ( !conv_cast )
-      return;
+    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+    for ( auto t : tl )
+      if ( !td( t )->dots.moonfire->is_ticking() )
+        mf_tl.push_back( t );
 
-    if ( !conv_tar )  // pick random target if we haven't picked one already (for mf)
-      conv_tar = tl.at( rng().range( tl.size() ) );
+    if ( mf_tl.size() )
+      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.3 ) );  // mf if undotted
 
-    execute_convoke_action( conv_cast, conv_tar );
+    if ( !p()->buff.starfall->check() )
+      dist.emplace_back( std::make_pair( CAST_STARFALL, 1.0 ) );  // starfall if it isn't up
+
+    auto type = get_cast_from_dist( dist );
+
+    if ( type == CAST_MOONFIRE )
+      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+
+    return type;
   }
 
   void last_tick( dot_t* d ) override
