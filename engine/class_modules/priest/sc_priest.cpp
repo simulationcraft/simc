@@ -422,10 +422,11 @@ struct unholy_transfusion_t final : public priest_spell_t
     : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
     parse_options( options_str );
-    background    = true;
-    hasted_ticks  = true;
-    tick_may_crit = true;
-    tick_zero     = false;
+    background                 = true;
+    hasted_ticks               = true;
+    tick_may_crit              = true;
+    tick_zero                  = false;
+    affected_by_shadow_weaving = true;
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
