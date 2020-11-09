@@ -1043,6 +1043,7 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* cds   = get_action_priority_list( "cooldowns" );
   action_priority_list_t* se    = get_action_priority_list( "se" );
   action_priority_list_t* aoe   = get_action_priority_list( "aoe" );
+  action_priority_list_t* item  = get_action_priority_list( "item" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   def->add_action( "phantom_singularity" );
@@ -1063,7 +1064,7 @@ void warlock_t::create_apl_affliction()
   def->add_action( "call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   def->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
   def->add_action( "call_action_list,name=cooldowns" );
-  def->add_action( "use_items" );
+  def->add_action( "call_action_list,name=item" );
 
   def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(3-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3" );
   def->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
@@ -1108,12 +1109,15 @@ void warlock_t::create_apl_affliction()
   aoe->add_action( "vile_taint,if=soul_shard>1" );
   aoe->add_action( "call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.ready&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   aoe->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
-  aoe->add_action( "use_items" );
+  aoe->add_action( "call_action_list,name=cooldowns" );
+  aoe->add_action( "call_action_list,name=item" );
   aoe->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
   aoe->add_action( "malefic_rapture,if=!talent.vile_taint.enabled" );
   aoe->add_action( "siphon_life,cycle_targets=1,if=active_dot.siphon_life<=3,target_if=!dot.siphon_life.ticking" );
   aoe->add_action( "drain_life,if=buff.inevitable_demise.stack>=50|buff.inevitable_demise.up&time_to_die<5" );
   aoe->add_action( "drain_soul" );
   aoe->add_action( "shadow_bolt" );
+
+  item->add_action( "use_items" );
 }
 }  // namespace warlock
