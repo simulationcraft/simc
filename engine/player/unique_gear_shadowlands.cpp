@@ -8,6 +8,9 @@
 #include "sim/sc_sim.hpp"
 
 #include "sim/sc_cooldown.hpp"
+#include "player/action_priority_list.hpp"
+#include "player/pet.hpp"
+#include "player/pet_spawner.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
@@ -261,14 +264,29 @@ void celestial_guidance( special_effect_t& effect )
 
 void lightless_force( special_effect_t& effect )
 {
+  struct lightless_force_proc_t : public SL_proc_spell_t
+  {
+    lightless_force_proc_t( const special_effect_t& e ) : SL_proc_spell_t( e )
+    {
+      // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd
+      // range, the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
+      // TODO: confirm maximum effective range & radius
+      aoe    = 5;
+      radius = 5.0;
+      range  = 30.0;
+
+      // hardcoded as a dummy effect
+      spell_power_mod.direct = data().effectN( 2 ).percent();
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+    }
+  };
+
   effect.trigger_spell_id = 324184;
-  effect.execute_action   = create_proc_action<SL_proc_spell_t>( "lightless_force", effect );
-  // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd range,
-  // the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
-  // TODO: confirm maximum effective range & radius
-  effect.execute_action->aoe    = 5;
-  effect.execute_action->radius = 5.0;
-  effect.execute_action->range  = 30.0;
+  effect.execute_action   = create_proc_action<lightless_force_proc_t>( "lightless_force", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -384,8 +402,8 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
       SL_darkmoon_deck_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
-      // Crit debuff value uses player level scaling, not item scaling
-      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).average( player ) * 0.0001 );
+      // Crit debuff value is hard coded into each card
+      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).base_value() * 0.0001 );
     }
   };
 
@@ -441,18 +459,19 @@ void cabalists_hymnal( special_effect_t& effect )
   {
     auto mul =
         1.0 + effect.driver()->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.crimson_choir_in_party;
+    timespan_t duration = effect.trigger()->duration() * effect.trigger()->max_stacks();
 
     buff = make_buff<stat_buff_t>( effect.player, "crimson_chorus", effect.trigger(), effect.item )
       ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * mul )
       ->set_period( effect.trigger()->duration() )
-      ->set_duration( effect.trigger()->duration() * effect.trigger()->max_stacks() );
+      ->set_duration( duration )
+      ->set_cooldown( effect.player->find_spell( 344820 )->duration() + duration );
   }
 
-  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
-    make_repeating_event( *p->sim, 1_min, [ buff ]() {
-      buff->trigger();
-    } );
-  } );
+  effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void dreadfire_vessel( special_effect_t& effect )
@@ -510,7 +529,7 @@ void glyph_of_assimilation( special_effect_t& effect )
 
 /**Soul Igniter
  * id=345251 driver with 500 ms cooldown
- * id=345211 buff
+ * id=345211 buff and max scaling targets
  * id=345215 damage effect and category cooldown of second action
  * id=345214 damage coefficients and multipliers
  *           effect #1: base damage (effect #2) + buff time bonus (effect #3)
@@ -526,6 +545,7 @@ void soul_igniter( special_effect_t& effect )
   {
     double buff_fraction_elapsed;
     double max_time_multiplier;
+    unsigned max_scaling_targets;
 
     blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
     {
@@ -533,6 +553,7 @@ void soul_igniter( special_effect_t& effect )
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
     }
 
     double action_multiplier() const override
@@ -548,13 +569,13 @@ void soul_igniter( special_effect_t& effect )
 
     double composite_aoe_multiplier( const action_state_t* s ) const override
     {
-      double m = proc_spell_t::action_multiplier();
+      double m = proc_spell_t::composite_aoe_multiplier( s );
 
       // The extra damage for each target appears to be a 15%
       // multiplier that is not listed in spell data anywhere.
       // TODO: this has been tested on 6 targets, verify that
       // it does not continue scaling higher at 7 targets.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, 5u );
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
 
       return m;
     }
@@ -566,8 +587,9 @@ void soul_igniter( special_effect_t& effect )
     const spell_data_t* second_action;
 
     soul_ignition_t( const special_effect_t& e ) :
-    proc_spell_t( "soul_ignition", e.player, e.driver() ),
-    second_action( e.player->find_spell( 345215 ) ) {}
+      proc_spell_t( "soul_ignition", e.player, e.driver() ),
+      second_action( e.player->find_spell( 345215 ) )
+    {}
 
     void init_finished() override
     {
@@ -581,7 +603,6 @@ void soul_igniter( special_effect_t& effect )
 
       return proc_spell_t::ready();
     }
-
 
     void execute() override
     {
@@ -618,7 +639,7 @@ void soul_igniter( special_effect_t& effect )
       damage_action->set_target( source->target );
       damage_action->execute();
       // the 60 second cooldown associated with the damage effect trigger
-      // does not appear in spell data anywhere and is just inthe tooltip.
+      // does not appear in spell data anywhere and is just in the tooltip.
       effect.execute_action->cooldown->start( effect.execute_action, 60_s );
       auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
       if ( cd_group )
@@ -627,7 +648,7 @@ void soul_igniter( special_effect_t& effect )
   };
 
   auto damage_action = create_proc_action<blazing_surge_t>( "blazing_surge", effect );
-  effect.execute_action = new soul_ignition_t( effect );
+  effect.execute_action = create_proc_action<soul_ignition_t>( "soul_ignition", effect );
   auto buff = buff_t::find( effect.player, "soul_ignition" );
   if ( !buff )
     buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
@@ -685,6 +706,463 @@ void bottled_chimera_toxin( special_effect_t& effect )
   callback->initialize();
 }
 
+/**Empyreal Ordnance
+ * id=345539 driver
+ * id=345540 projectiles and DoT
+ * id=345542 DoT damage
+ * id=345541 buff
+ * id=345543 buff value
+ */
+void empyreal_ordnance( special_effect_t& effect )
+{
+  struct empyreal_ordnance_bolt_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double buff_travel_speed;
+
+    empyreal_ordnance_bolt_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "empyreal_ordnance_bolt", e.player, e.player->find_spell( 345540 ) ),
+      buff( b )
+    {
+      base_td = e.player->find_spell( 345542 )->effectN( 1 ).average( e.item );
+      buff_travel_speed = e.player->find_spell( 345544 )->missile_speed();
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
+    {
+      return duration;
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      double distance = player->get_player_distance( *d->target );
+      // TODO: This travel time seems slightly wrong at long range (about 500 ms too fast).
+      timespan_t buff_travel_time = timespan_t::from_seconds( buff_travel_speed ? distance / buff_travel_speed : 0 );
+      int stack = d->current_stack();
+      make_event( *sim, buff_travel_time, [ this, stack ] { buff->trigger( stack ); } );
+      proc_spell_t::last_tick( d );
+    }
+  };
+
+  struct empyreal_ordnance_t : public proc_spell_t
+  {
+    action_t* empyreal_ordnance_bolt;
+    size_t num_bolts;
+
+    empyreal_ordnance_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "empyreal_ordnance", e.player, e.driver() )
+    {
+      num_bolts = as<size_t>( e.driver()->effectN( 1 ).base_value() );
+      aoe = as<int>( e.driver()->effectN( 2 ).base_value() );
+      // Spell data for this trinket has a cast time of 500 ms even though it is instant and can be used while moving.
+      base_execute_time = 0_ms;
+      empyreal_ordnance_bolt = create_proc_action<empyreal_ordnance_bolt_t>( "empyreal_ordnance_bolt", e, b );
+      add_child( empyreal_ordnance_bolt );
+    }
+
+    timespan_t travel_time() const override
+    {
+      return data().cast_time();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      size_t n = num_bolts / s->n_targets + ( s->chain_target < num_bolts % s->n_targets ? 1 : 0 );
+      player_t* t = s->target;
+      for ( size_t i = 0; i < n; i++ )
+      {
+        // The bolts don't seem to all hit the target
+        // at exactly the same time, which creates a
+        // small partial tick at the end of the DoT.
+        make_event( *sim, i * 50_ms, [ this, t ]
+          {
+            empyreal_ordnance_bolt->set_target( t );
+            empyreal_ordnance_bolt->execute();
+          } );
+      }
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "empyreal_surge" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "empyreal_surge", effect.player->find_spell( 345541 ) )
+             ->add_stat( STAT_INTELLECT, effect.player->find_spell( 345543 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.execute_action = create_proc_action<empyreal_ordnance_t>( "empyreal_ordnance", effect, buff );
+}
+
+// The slow debuff on the target and the heal when gaining the crit buff are not implemented.
+// id=345807: crit value coefficients
+// id=345806: heal amoutn coefficient
+void soulletting_ruby( special_effect_t& effect )
+{
+  struct soulletting_ruby_t : public proc_spell_t
+  {
+    stat_buff_t* buff;
+    double base_crit_value;
+    double max_crit_bonus;
+
+    soulletting_ruby_t( const special_effect_t& e, stat_buff_t* b ) :
+      proc_spell_t( "soulletting_ruby", e.player, e.player->find_spell( 345802 ) ),
+      buff( b ),
+      base_crit_value( e.player->find_spell( 345807 )->effectN( 1 ).average( e.item ) ),
+      max_crit_bonus( e.player->find_spell( 345807 )->effectN( 2 ).average( e.item ) )
+    {}
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      make_event( *sim, travel_time(), [ this, t = execute_state->target ] {
+        double bonus_mul = 1.0 - ( t->is_active() ? t->health_percentage() * 0.01 : 0.0 );
+
+        buff->stats.back().amount = base_crit_value + max_crit_bonus * bonus_mul;
+        buff->trigger();
+      } );
+    }
+  };
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "soul_infusion" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "soul_infusion", effect.player->find_spell( 345805 ) )
+             ->add_stat( STAT_CRIT_RATING, 0 );
+  }
+
+  effect.execute_action = create_proc_action<soulletting_ruby_t>( "soulletting_ruby", effect, buff );
+}
+
+void satchel_of_misbegotten_minions( special_effect_t& effect )
+{
+  struct abomiblast_t : public proc_spell_t
+  {
+    unsigned max_scaling_targets;
+
+    abomiblast_t( const special_effect_t& e ) :
+      proc_spell_t( "abomiblast", e.player, e.player->find_spell( 345638 ) )
+    {
+      split_aoe_damage = true;
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_aoe_multiplier( s );
+
+      // The extra damage for each target appears to be a 15%
+      // multiplier that is not listed in spell data anywhere.
+      // TODO: this has been tested above 2 target, verify the target cap.
+      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
+
+      return m;
+    }
+  };
+
+  struct misbegotten_minion_t : public proc_spell_t
+  {
+    misbegotten_minion_t( const special_effect_t& e ) :
+      proc_spell_t( "misbegotten_minion", e.player, e.player->find_spell( 346032 ) )
+    {
+      quiet = true;
+      impact_action = create_proc_action<abomiblast_t>( "abomiblast", e );
+    }
+  };
+
+  effect.execute_action = create_proc_action<misbegotten_minion_t>( "misbegotten_minion", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+/**Unbound Changeling
+ * id=330747 coefficients for stat amounts, and also the special effect on the base item
+ * id=330767 given by bonus_id=6915
+ * id=330739 given by bonus_id=6916
+ * id=330740 given by bonus_id=6917
+ * id=330741 given by bonus_id=6918
+ * id=330765 driver #1 (crit, haste, and mastery)
+ * id=330080 driver #2 (crit)
+ * id=330733 driver #3 (haste)
+ * id=330734 driver #4 (mastery)
+ * id=330764 buff #1 (crit, haste, and mastery)
+ * id=330730 buff #2 (crit)
+ * id=330131 buff #3 (haste)
+ * id=330729 buff #4 (mastery)
+ */
+void unbound_changeling( special_effect_t& effect )
+{
+  auto stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
+  if ( stat_type == "all" )
+    effect.spell_id = 330765;
+  else if ( stat_type == "crit" )
+    effect.spell_id = 330080;
+  else if ( stat_type == "haste" )
+    effect.spell_id = 330733;
+  else if ( stat_type == "mastery" )
+    effect.spell_id = 330734;
+  else
+    effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "unbound_changeling" ) );
+  if ( effect.spell_id > 0 && !buff )
+  {
+    int buff_spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+    // driver #1 is currently bugged and applies buff #4 in game.
+    if ( !effect.player->bugs && effect.spell_id == 330765 )
+      buff_spell_id = 330764;
+
+    buff = make_buff<stat_buff_t>( effect.player, "unbound_changeling", effect.player->find_spell( buff_spell_id ) );
+    // The stat buffs all seem to give amounts from Effect #2 even though the item tooltip for the
+    // single stat buffs points to Effect #1. Because buff 330764 is bugged and does not proc, it
+    // is not clear what amount of secondary stats it actually gives, but the tooltip says that it
+    // gets its amount from Effect #2.
+    double amount = effect.player->find_spell( 330747 )->effectN( 2 ).average( effect.item );
+    if ( !effect.player->bugs && buff_spell_id != 330764 )
+      amount = effect.player->find_spell( 330747 )->effectN( 1 ).average( effect.item );
+
+    for ( auto& s : buff->stats )
+      s.amount = amount;
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
+/**Infinitely Divisible Ooze
+ * id=345490 driver and coefficient
+ * id=345489 summon spell
+ * id=345495 pet cast (noxious bolt)
+ */
+void infinitely_divisible_ooze( special_effect_t& effect )
+{
+  struct noxious_bolt_t : public spell_t
+  {
+    noxious_bolt_t( pet_t* p, const special_effect_t& e ) : spell_t( "noxious_bolt", p, p->find_spell( 345495 ) )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "frothing_pustule" );
+      if ( ta && ta->find_action( "noxious_bolt" ) )
+        stats = ta->find_action( "noxious_bolt" )->stats;
+
+      may_crit = false;
+      base_dd_min = p->find_spell( 345490 )->effectN( 1 ).min( e.item );
+      base_dd_max = p->find_spell( 345490 )->effectN( 1 ).max( e.item );
+    }
+
+    double composite_haste() const override
+    {
+      return 1.0;
+    }
+
+    double composite_versatility( const action_state_t* ) const
+    {
+      return 1.0;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      if ( player->resources.current[ RESOURCE_ENERGY ] <= 0 )
+      {
+        make_event( *sim, 0_ms, [ this ] { player->cast_pet()->dismiss(); } );
+      }
+    }
+  };
+
+  struct frothing_pustule_pet_t : public pet_t
+  {
+    const special_effect_t& effect;
+
+    frothing_pustule_pet_t( const special_effect_t& e ) :
+      pet_t( e.player->sim, e.player, "frothing_pustule", true, true ),
+      effect( e )
+    {}
+
+    void init_base_stats() override
+    {
+      pet_t::init_base_stats();
+
+      resources.base[ RESOURCE_ENERGY ] = 100;
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_ENERGY;
+    }
+
+    action_t* create_action( util::string_view name, const std::string& options ) override
+    {
+      if ( name == "noxious_bolt" )
+      {
+        return new noxious_bolt_t( this, effect );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "noxious_bolt" );
+    }
+  };
+
+  struct infinitely_divisible_ooze_cb_t : public dbc_proc_callback_t
+  {
+    spawner::pet_spawner_t<frothing_pustule_pet_t> spawner;
+
+    infinitely_divisible_ooze_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      spawner( "infinitely_divisible_ooze", e.player, [ &e, this ]( player_t* )
+        { return new frothing_pustule_pet_t( e ); } )
+    {
+      spawner.set_default_duration( e.player->find_spell( 345489 )->duration() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      spawner.spawn();
+    }
+  };
+
+  new infinitely_divisible_ooze_cb_t( effect );
+}
+
+/**Inscrutable Quantum Device
+ * id=330323 driver
+ * id=330363 remove CC from self (NYI)
+ * id=330364 heal spell (NYI)
+ * id=330372 illusion and threat drop (NYI)
+ * id=347940 illusion helper spell, taunt (NYI)
+ * id=347941 illusion helper aura (NYI)
+ * id=330373 execute damage on target
+ * id=330376 restore mana to healer (NYI)
+ * id=330366 crit buff
+ * id=330368 haste buff
+ * id=330380 mastery buff
+ * id=330367 vers buff
+ * When this trinket is used, it triggers one of the effects listed above, following the priority list below.
+ * - remove CC from self: Always triggers if you are under a hard CC mechanic, does not trigger if the CC mechanic
+ *                        does not prevent the player from acting (e.g., it won't trigger while rooted).
+ * - heal spell: triggers on self or a nearby target with less than 30% health remaining
+ * - illusion: ??? (not tested yet, priority unknown)
+ * - execute damage: trigger on an enemy with less than 20% health remaining (the 20% is not in spell data)
+ * - healer mana: triggers on a nearby healer with less than 20% mana??? (not tested yet, priority unknown)
+ * - secondary stat buffs:
+ *   - If a Bloodlust buff is up, the stat buff will last 30 seconds instead of the default 20 seconds.
+ *     TODO: Look for other buffs that also cause this bonus duration to occur.
+ *   - The secondary stat granted appears to be randomly selected from stat from the player's two highest
+ *     secondary stats in terms of rating. When selecting the largest stats, the priority of secondary stats
+ *     seems to be Vers > Mastery > Haste > Crit. There is a bug where the second stat selected must have a
+ *     lower rating than the first stat that was selected. If this is not possible, then the second stat will
+ *     be empty and the trinket will have a chance to do nothing when used.
+ */
+void inscrutable_quantum_device ( special_effect_t& effect )
+{
+  struct inscrutable_quantum_device_execute_t : public proc_spell_t
+  {
+    inscrutable_quantum_device_execute_t( const special_effect_t& e ) :
+      proc_spell_t( "inscrutable_quantum_device_execute", e.player, e.player->find_spell( 330373 ) )
+    {
+      cooldown->duration = 0_ms;
+      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
+      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
+      // and update when the trinket is fixed.
+      base_dd_min = e.player->bugs ? 8.0 : data().effectN( 1 ).min( e.item );
+      base_dd_max = e.player->bugs ? 8.0 : data().effectN( 1 ).max( e.item );
+    }
+  };
+
+  struct inscrutable_quantum_device_buff_t : public stat_buff_t
+  {
+    inscrutable_quantum_device_buff_t( const special_effect_t& e, int s, util::string_view n ) :
+      stat_buff_t( e.player, n, e.player->find_spell( s ) )
+    {
+      set_cooldown( 0_ms );
+      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
+      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
+      // and update when the trinket is fixed.
+      stats[ 0 ].amount = e.player->bugs ? 74 : data().effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct inscrutable_quantum_device_t : public proc_spell_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::vector<buff_t*> bonus_buffs;
+    action_t* execute_damage;
+
+    inscrutable_quantum_device_t( const special_effect_t& e ) :
+      proc_spell_t( "inscrutable_quantum_device", e.player, e.player->find_spell( 330323 ) )
+    {
+      buffs[STAT_NONE] = nullptr;
+      buffs[STAT_CRIT_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330366, "inscrutable_quantum_device_crit" );
+      buffs[STAT_HASTE_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330368, "inscrutable_quantum_device_haste" );
+      buffs[STAT_MASTERY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330380, "inscrutable_quantum_device_mastery" );
+      buffs[STAT_VERSATILITY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330367, "inscrutable_quantum_device_vers" );
+      execute_damage = create_proc_action<inscrutable_quantum_device_execute_t>( "inscrutable_quantum_device_execute", e );
+    }
+
+    void init_finished() override
+    {
+      proc_spell_t::init_finished();
+
+      bonus_buffs.clear();
+
+      bonus_buffs.push_back( player->buffs.bloodlust );
+
+      if ( player->type == MAGE )
+      {
+        if ( buff_t* b = buff_t::find( player, "temporal_warp" ) )
+          bonus_buffs.push_back( b );
+        if ( buff_t* b = buff_t::find( player, "time_warp" ) )
+          bonus_buffs.push_back( b );
+      }
+    }
+
+    bool is_buff_extended()
+    {
+      return range::any_of( bonus_buffs, [] ( buff_t* b ) { return b->check(); } );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( target->health_percentage() <= 20 )
+      {
+        execute_damage->set_target( target );
+        execute_damage->execute();
+      }
+      else
+      {
+        static constexpr stat_e ratings[] = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+        stat_e s1 = STAT_NONE;
+        stat_e s2 = STAT_NONE;
+        s1 = util::highest_stat( player, ratings );
+        for ( auto s : ratings )
+        {
+          auto v = player->get_stat_value( s );
+          if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) && ( player->bugs && v < player->get_stat_value( s1 ) || !player->bugs && s != s1 ) )
+            s2 = s;
+        }
+
+        buff_t* buff = rng().roll( 0.5 ) ? buffs[s1] : buffs[s2];
+        if ( buff )
+          buff->trigger( buff->buff_duration() - ( is_buff_extended() ? 0_s : 10_s ) );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<inscrutable_quantum_device_t>( "inscrutable_quantum_device", effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -692,23 +1170,16 @@ void echo_of_eonar( special_effect_t& effect )
   if ( !effect.player->buffs.echo_of_eonar )
   {
     effect.player->buffs.echo_of_eonar =
-      make_buff( effect.player, "echo_of_eonar", effect.driver()->effectN( 2 ).trigger() )
+      make_buff( effect.player, "echo_of_eonar", effect.player->find_spell( 347458 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_chance( 1 );
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  // TODO: allies proc buff
-  // Need to either wire up a dbc_callback to proc it or simulate it being procced from friendlies
-  // Or both
+  // TODO: buff to allies? (id=338489)
 
-  // Disable everything just to be safe
-  effect.disable_action();
-  effect.disable_buff();
+  effect.custom_buff = effect.player->buffs.echo_of_eonar;
 
-  effect.player->register_combat_begin( []( player_t* p ) {
-      p->buffs.echo_of_eonar->trigger();
-    } );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void judgment_of_the_arbiter( special_effect_t& effect )
@@ -821,34 +1292,19 @@ void vitality_sacrifice( special_effect_t& effect )
 
 }
 
-void overflowing_anima_prison( special_effect_t& effect )
+void overflowing_anima_cage( special_effect_t& effect )
 {
-  auto val  = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
-  auto buff = debug_cast<stat_buff_t*>( effect.player->buffs.overflowing_anima_prison );
-  buff->add_stat( STAT_CRIT_RATING, val )->set_cooldown( 0_ms );
+  auto buff = buff_t::find( effect.player, "anima_infusion" );
+  if ( !buff )
+  {
+    auto val = effect.player->find_spell( 343387 )->effectN( 1 ).average( effect.item );
+    // The actual buff is Anima Infusion (id=343386), but the spell data there is not needed.
+    buff = make_buff<stat_buff_t>( effect.player, "anima_infusion", effect.player->find_spell( 343385 ) )
+             ->add_stat( STAT_CRIT_RATING, val )
+             ->set_cooldown( 0_ms );
+  }
 
   effect.custom_buff = buff;
-
-  // create callback for covenant ability cast
-  struct overflowing_anima_cov_cb_t : public covenant::covenant_cb_base_t
-  {
-    buff_t* buff;
-
-    overflowing_anima_cov_cb_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
-
-    void trigger( action_t*, action_state_t* ) override
-    {
-      // TODO: confirm this is flat 10s extension
-      buff->extend_duration( buff->player, 10_s );
-    }
-  };
-
-  auto callback = covenant::get_covenant_callback( effect.player );
-  if ( callback )
-  {
-    auto cb_entry = new overflowing_anima_cov_cb_t( buff );
-    callback->cb_list.push_back( cb_entry );
-  }
 }
 
 void sunblood_amethyst( special_effect_t& effect )
@@ -939,9 +1395,19 @@ void register_special_effects()
     unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
     unique_gear::register_special_effect( 344063, items::gluttonous_spike );
     unique_gear::register_special_effect( 345357, items::hateful_chain );
-    unique_gear::register_special_effect( 343385, items::overflowing_anima_prison );
+    unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
     unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
+    unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
+    unique_gear::register_special_effect( 345801, items::soulletting_ruby );
+    unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
+    unique_gear::register_special_effect( 330747, items::unbound_changeling );
+    unique_gear::register_special_effect( 330767, items::unbound_changeling );
+    unique_gear::register_special_effect( 330739, items::unbound_changeling );
+    unique_gear::register_special_effect( 330740, items::unbound_changeling );
+    unique_gear::register_special_effect( 330741, items::unbound_changeling );
+    unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
+    unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

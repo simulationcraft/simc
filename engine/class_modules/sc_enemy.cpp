@@ -1322,17 +1322,26 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 {
   std::string als                 = "";
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
-  //                               NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
-  int aa_damage[ numTankDummies ]           = { 0, 10000, 20000, 25000, 40000, 50000 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ] = { 0, 250000, 50000, 62500, 100000, 142500 };  // Base melee nuke damage
-  int background_spell_damage[ numTankDummies ] = { 0, 400, 800, 10000, 1600, 2000 };  // Base background dot damage
+  //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
+  //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
+  // Level 60 Values
+  // Raid values using Sludgefist as a baseline
+//  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35239, 48255, 79858 };     // Base auto attack damage
+//  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105717, 144765, 144765 };  // Base melee nuke damage
+//  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1410, 1930, 3195 };  // Base background dot damage
+  // Level 50 values
+  // Raid values using Raden as a baseline
+  int aa_damage[ numTankDummies ]               = { 0, 1445, 4450, 6321, 8693, 13000 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 4335, 13350, 18963, 26079, 39000 };  // Base melee nuke damage
+  int background_spell_damage[ numTankDummies ] = { 0, 58, 178, 253, 348, 520 };  // Base background dot damage
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
-  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + ",attack_speed=1.5,aoe_tanks=1";
+  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + 
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.1 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",attack_speed=2,cooldown=25,aoe_tanks=1";
+         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.1 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
-         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
+         ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
 
   return als;
 }

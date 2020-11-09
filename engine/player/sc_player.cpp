@@ -3315,9 +3315,6 @@ void player_t::create_buffs()
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
-
-      // Trinkets
-      buffs.overflowing_anima_prison = make_buff<stat_buff_t>( this, "overflowing_anima_prison", find_spell( 343385 ) );
     }
   }
   // .. for enemies
@@ -3332,10 +3329,10 @@ void player_t::create_buffs()
 
     // BfA Raid Damage Modifier Debuffs
     debuffs.chaos_brand = make_buff( this, "chaos_brand", find_spell( 1490 ) )
-        ->set_default_value( find_spell( 1490 )->effectN( 1 ).percent() )
+        ->set_default_value_from_effect( 1 )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
     debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
-        ->set_default_value( find_spell( 113746 )->effectN( 1 ).percent() )
+        ->set_default_value_from_effect( 1 )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
   }
 
@@ -3437,7 +3434,7 @@ double player_t::composite_melee_haste() const
       h /= 1.0 + b->check_stack_value();
 
     if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
     if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
@@ -3483,7 +3480,9 @@ double player_t::composite_melee_attack_power() const
 
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
-  ap += std::floor( current.attack_power_per_spell_power * cache.intellect() );
+
+  if ( current.attack_power_per_spell_power > 0 )
+    ap += std::floor( current.attack_power_per_spell_power * cache.spell_power( SCHOOL_MAX ) );
 
   return ap;
 }
@@ -3781,7 +3780,7 @@ double player_t::composite_spell_haste() const
       h /= 1.0 + b->check_stack_value();
 
     if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
@@ -3835,7 +3834,9 @@ double player_t::composite_spell_power( school_e /* school */ ) const
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
-  sp += std::floor( current.spell_power_per_attack_power * cache.agility() );
+
+  if ( current.spell_power_per_attack_power > 0 )
+    sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
 
   return sp;
 }
@@ -4420,11 +4421,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )
     m *= 1.0 + debuffs.damage_taken->current_stack * 0.01;
 
-  if ( debuffs.mystic_touch &&
-       debuffs.mystic_touch->data().effectN( 1 ).has_common_school( school ) )
+  if ( debuffs.mystic_touch && debuffs.mystic_touch->has_common_school( school ) )
     m *= 1.0 + debuffs.mystic_touch->check_value();
 
-  if ( debuffs.chaos_brand && debuffs.chaos_brand->data().effectN( 1 ).has_common_school( school ) )
+  if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->check_value();
 
   return m;
@@ -4471,14 +4471,21 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
-      if ( current.spell_power_per_attack_power > 0 )
-      {
-        invalidate_cache( CACHE_SPELL_POWER );
-        invalidate_cache( CACHE_ATTACK_POWER );
-      }
+      if ( current.attack_crit_per_agility > 0 )
+        invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
+        invalidate_cache( CACHE_SPELL_POWER );
+      if ( current.spell_crit_per_intellect > 0 )
+        invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
+      break;
+    case CACHE_SPELL_POWER:
+      if ( current.attack_power_per_spell_power > 0 )
+        invalidate_cache( CACHE_ATTACK_POWER );
+      break;
+    case CACHE_ATTACK_POWER:
+      if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
     case CACHE_ATTACK_HASTE:
@@ -5817,7 +5824,6 @@ double player_t::get_stat_value(stat_e stat)
 {
   switch (stat)
   {
-
   case STAT_STRENGTH:
     return cache.strength();
   case STAT_AGILITY:
@@ -5828,6 +5834,10 @@ double player_t::get_stat_value(stat_e stat)
     return cache.spell_power(SCHOOL_NONE);
   case STAT_ATTACK_POWER:
     return cache.attack_power();
+  case STAT_CRIT_RATING:
+    return composite_melee_crit_rating();
+  case STAT_HASTE_RATING:
+    return composite_melee_haste_rating();
   case STAT_MASTERY_RATING:
     return composite_mastery_rating();
   case STAT_VERSATILITY_RATING:

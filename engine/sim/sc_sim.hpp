@@ -343,11 +343,11 @@ struct sim_t : private sc_thread_t
   {
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
-    double combat_meditation_extend_chance = 0.5;
+    double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
     /// Number of nearby allies when you proc lead by example
-    unsigned lead_by_example_nearby = 3;
+    unsigned lead_by_example_nearby = 2;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
@@ -362,6 +362,11 @@ struct sim_t : private sc_thread_t
     // AoE early. This results in the highest possible damage and the
     // player can alternatively trigger it early by canceling the buff.
     bool disable_soul_igniter_second_use = true;
+    // Overrides the Unbound Changeling trinket to the given version.
+    // The versions are given by the "all", "crit", "haste", and "mastery"
+    // strings. Anything else will result in the item's bonus IDs being
+    // used to determine which version the player is currently using.
+    std::string unbound_changeling_stat_type = "default";
   } shadowlands_opts;
 
   // Auras and De-Buffs

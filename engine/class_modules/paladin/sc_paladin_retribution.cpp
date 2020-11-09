@@ -312,8 +312,47 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 };
 
+struct echoed_spell_event_t : public event_t
+{
+  paladin_melee_attack_t* echo;
+  paladin_t* paladin;
+  player_t* target;
+
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt )
+  {
+  }
+
+  const char* name() const override
+  { return "echoed_spell_delay"; }
+
+  void execute() override
+  {
+    echo -> set_target( target );
+    echo -> schedule_execute();
+  }
+};
+
 struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  struct echoed_templars_verdict_t : public paladin_melee_attack_t
+  {
+    echoed_templars_verdict_t( paladin_t *p ) :
+      paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 339538 ) )
+    {
+      base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
+      background = true;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_melee_attack_t::action_multiplier();
+      if ( p() -> buffs.righteous_verdict -> check() )
+        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+      return am;
+    }
+  };
+
   // Templar's Verdict damage is stored in a different spell
   struct templars_verdict_damage_t : public paladin_melee_attack_t
   {
@@ -332,14 +371,22 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
   };
 
+  echoed_templars_verdict_t* echo;
+
   templars_verdict_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) )
+    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) ),
+    echo( nullptr )
   {
     parse_options( options_str );
 
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
+
+    if ( p -> conduit.templars_vindication -> ok() )
+    {
+      echo = new echoed_templars_verdict_t( p );
+    }
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -380,6 +427,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p() -> cooldowns.hammer_of_wrath -> reset( true );
         p() -> buffs.final_verdict -> trigger();
+      }
+    }
+
+    if ( p() -> conduit.templars_vindication -> ok() )
+    {
+      if ( rng().roll( p() -> conduit.templars_vindication -> effectN( 1 ).percent() ) )
+      {
+        // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+        make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ) );
       }
     }
   }
@@ -441,7 +497,12 @@ struct judgment_ret_t : public judgment_t
     judgment_t( p ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
+    // This is for Divine Toll's background judgments
     background = true;
+
+    // according to skeletor this is given the bonus of 326011
+    // TODO(mserrano) - fix this once spell data has been re-extracted
+    base_multiplier *= 1.0 + 1.0; // p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override

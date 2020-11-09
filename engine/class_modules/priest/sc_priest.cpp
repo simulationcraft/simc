@@ -416,8 +416,10 @@ struct wrathful_faerie_fermata_t final : public priest_spell_t
 // ==========================================================================
 struct unholy_transfusion_t final : public priest_spell_t
 {
+  double parent_targets = 1;
+
   unholy_transfusion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_transfusion", p, p.find_spell( 325203 ) )
+    : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
     parse_options( options_str );
     background    = true;
@@ -431,6 +433,18 @@ struct unholy_transfusion_t final : public priest_spell_t
       base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
+
+  double action_ta_multiplier() const override
+  {
+    double m = priest_spell_t::action_ta_multiplier();
+
+    double scaled_m = m / std::sqrt( parent_targets );
+
+    sim->print_debug( "{} {} updates ta multiplier: Before: {} After: {} with {} targets from the parent spell.",
+                      *player, *this, m, scaled_m, parent_targets );
+
+    return scaled_m;
+  }
 };
 
 struct unholy_nova_t final : public priest_spell_t
@@ -438,19 +452,33 @@ struct unholy_nova_t final : public priest_spell_t
   propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
 
   unholy_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
-      child_unholy_transfusion( new unholy_transfusion_t( priest(), options_str ) )
+    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ), child_unholy_transfusion( nullptr )
   {
     parse_options( options_str );
-    aoe           = -1;
-    impact_action = new unholy_transfusion_t( p, options_str );
+    aoe      = -1;
+    may_crit = false;
 
     // Radius for damage spell is stored in the DoT's spell radius
-    radius = p.find_spell( 325203 )->effectN( 1 ).radius_max();
+    radius = data().effectN( 2 ).trigger()->effectN( 1 ).radius_max();
 
-    add_child( impact_action );
+    child_unholy_transfusion = new unholy_transfusion_t( p, options_str );
+    add_child( child_unholy_transfusion );
+
     // Unholy Nova itself does NOT do damage, just the DoT
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // Pass in parent state to the DoT so we know how to scale the damage of the DoT
+    if ( child_unholy_transfusion )
+    {
+      child_unholy_transfusion->target         = s->target;
+      child_unholy_transfusion->parent_targets = s->n_targets;
+      child_unholy_transfusion->execute();
+    }
+
+    priest_spell_t::impact( s );
   }
 };
 
@@ -1069,7 +1097,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "mind_sear_tick", &p, s ),
-      void_lasher_insanity( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+      void_lasher_insanity( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
     dual       = true;
@@ -1094,13 +1122,8 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
-    // Currently bugged to only give insanity on the main target
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/687
-    if ( s->target == target || !p().o().bugs )
-    {
-      p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                                 s->action );
-    }
+    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                               s->action );
   }
 };
 
@@ -1163,9 +1186,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.schism                      = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
-  buffs.shadow_crash_debuff = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
-  buffs.wrathful_faerie     = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
-  buffs.wrathful_faerie_fermata = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
+  buffs.wrathful_faerie             = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
+  buffs.wrathful_faerie_fermata     = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
@@ -2011,7 +2033,7 @@ std::string priest_t::default_food() const
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "disabled" : "battle_scarred";
+  return ( true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
 }
 
 /** NO Spec Combat Action Priority List */

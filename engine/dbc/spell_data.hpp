@@ -344,6 +344,7 @@ struct spelleffect_data_t
   // Fetch value dynamically based on the spell effect type/subtype
   double default_value() const
   { return base_value() * default_multiplier(); }
+  unsigned affected_schools() const;
 
   static const spelleffect_data_t& nil();
   static const spelleffect_data_t* find( unsigned, bool ptr = false );

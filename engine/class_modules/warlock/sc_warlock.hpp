@@ -669,7 +669,6 @@ public:
   void init_procs_affliction();
   void create_options_affliction();
   void create_apl_affliction();
-  std::unique_ptr<expr_t> create_aff_expression( util::string_view name_str );
 
   // sc_warlock_demonology
   action_t* create_action_demonology( util::string_view action_name, const std::string& options_str );

@@ -1245,6 +1245,16 @@ class SpellDataGenerator(DataGenerator):
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
          323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
+         # Cabalists Hymnal
+         344820,
+         # Empyreal Ordnance
+         345544,
+         # Satchel of Misbegotten Minions
+         345638,
+         # Unbound Changeling
+         330764,
+         # Infinitely Divisible Ooze
+         345495,
         ),
 
         # Warrior:
@@ -1302,6 +1312,7 @@ class SpellDataGenerator(DataGenerator):
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
             ( 337228, 0 ),          # Final verdict buff
+            ( 326011, 0 ),          # Divine Toll buff to judgment damage
             ( 340203, 0 ),          # Hallowed Discernment damage
             ( 340214, 0 ),          # Hallowed Discernment heal
         ),
@@ -1450,7 +1461,8 @@ class SpellDataGenerator(DataGenerator):
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
-          ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
+          ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
+          ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
 
         ),
 
@@ -1497,6 +1509,7 @@ class SpellDataGenerator(DataGenerator):
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
+          ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
         ),
 
         # Mage:
@@ -1688,6 +1701,7 @@ class SpellDataGenerator(DataGenerator):
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
+          ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
@@ -1699,6 +1713,8 @@ class SpellDataGenerator(DataGenerator):
           ( 343250, 0 ), # Escape from Reality
           ( 343539, 0 ), # Escape from Reality Mana Refund
           ( 343543, 0 ), # Escape from Reality Energy Refund
+          ( 347687, 1 ), # Charred Passions
+          ( 347688, 1 ), # Charred Passions
         ),
 
         # Druid:

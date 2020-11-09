@@ -510,9 +510,6 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
-
-    // 9.0 Trinkets
-    buff_t* overflowing_anima_prison;  // needed to allow usage of buff expr even when not equipped
   } buffs;
 
   struct debuffs_t
