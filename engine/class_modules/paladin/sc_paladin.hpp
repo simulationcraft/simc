@@ -1148,10 +1148,20 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    // ... and in fact magistrate's causes *extra* stacks?
+    // Royal Decree doesn't proc RP 2020-11-01
+    if ( is_wog && p -> buffs.royal_decree -> up() &&
+        !p -> buffs.divine_purpose -> up() && !p -> buffs.shining_light_free -> up() )
+      num_stacks = hp_used;
+
+    // as of 2020-11-08 magistrate's causes *extra* stacks?
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
     {
-      num_stacks += 1;
+      if ( p -> specialization() == PALADIN_RETRIBUTION )
+        num_stacks += 1;
+      else if ( p -> specialization() == PALADIN_PROTECTION &&
+          is_wog && !p -> buffs.divine_purpose -> up() &&
+          ( p -> buffs.shining_light_free -> up() || p -> buffs.royal_decree -> up() ) )
+        num_stacks += 1;
     }
 
     if ( p -> azerite.relentless_inquisitor.ok() )
@@ -1172,14 +1182,10 @@ struct holy_power_consumer_t : public Base
         // Why is this in deciseconds?
          -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
        );
-      // Royal Decree doesn't proc RP 2020-11-01
-      if ( !is_wog || !p -> buffs.royal_decree -> up() ||
-        p -> buffs.divine_purpose -> up() || p -> buffs.shining_light_free -> up() )
-      {
-        reduction *= num_stacks;
-        p -> cooldowns.avenging_wrath -> adjust( reduction );
-        p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
-      }
+      reduction *= num_stacks;
+      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_stacks );
+      p -> cooldowns.avenging_wrath -> adjust( reduction );
+      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
