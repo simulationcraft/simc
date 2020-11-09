@@ -4066,6 +4066,9 @@ public:
 
     if ( p()->cooldown.black_ox_brew->down() )
       p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p()->covenant.necrolord->ok() && p()->cooldown.bonedust_brew->down() )
+      p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
   void trigger_shuffle( double time_extension )
