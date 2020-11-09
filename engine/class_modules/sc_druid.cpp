@@ -4180,6 +4180,8 @@ struct rake_t : public cat_attack_t
     {
       background = dual = hasted_ticks = true;
       may_miss = may_parry = may_dodge = may_crit = false;
+      // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
+      form_mask = 0;
     }
 
     double action_multiplier() const override
@@ -4275,6 +4277,12 @@ struct rake_t : public cat_attack_t
     bleed->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
+
+    if ( free_cast )
+      bleed->stats = get_free_cast_stats( free_cast );
+    else
+      bleed->stats = orig_stats;
+
     bleed->schedule_execute( b_state );
   }
 
@@ -7267,16 +7275,24 @@ struct convoke_the_spirits_t : public druid_spell_t
 {
   enum convoke_cast_e
   {
+    CAST_NONE = 0,
     CAST_ULTIMATE,
     CAST_OFFSPEC,
     CAST_SPEC,
     CAST_HEAL,
     CAST_WRATH,
+    CAST_MOONFIRE,
+    CAST_RAKE,
+    CAST_THRASH_BEAR,
+    CAST_IRONFUR,
+    CAST_MANGLE,
   };
 
   int max_ticks;
 
   // Multi-spec
+  std::vector<convoke_cast_e> cast_list;
+  std::vector<convoke_cast_e> offspec_list;
   action_t* conv_wrath;
   action_t* conv_moonfire;
   action_t* conv_rake;
@@ -7285,9 +7301,11 @@ struct convoke_the_spirits_t : public druid_spell_t
   action_t* conv_full_moon;
   action_t* conv_starsurge;
   action_t* conv_starfall;
-  std::vector<convoke_cast_e> cast_list;
-  // Cat Form
   // Bear Form
+  action_t* conv_ironfur;
+  action_t* conv_mangle;
+  action_t* conv_pulverize;
+  // Cat Form
 
   convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
@@ -7297,7 +7315,10 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_thrash_bear( nullptr ),
     conv_full_moon( nullptr ),  // moonkin
     conv_starsurge( nullptr ),
-    conv_starfall( nullptr )
+    conv_starfall( nullptr ),
+    conv_ironfur( nullptr ),  // bear
+    conv_mangle( nullptr ),
+    conv_pulverize( nullptr )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
@@ -7316,6 +7337,9 @@ struct convoke_the_spirits_t : public druid_spell_t
     // Call form-specific initialization to create necessary actions & setup variables
     if ( p->find_action( "moonkin_form" ) )
       _init_moonkin();
+
+    if ( p->find_action( "bear_form" ) )
+      _init_bear();
   }
 
   template <typename T, typename... Ts>
@@ -7344,8 +7368,17 @@ struct convoke_the_spirits_t : public druid_spell_t
   void _init_moonkin()
   {
     conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
-    conv_starfall = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
-    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge", p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+    conv_starfall  = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge",
+                       p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+  }
+
+  void _init_bear()
+  {
+    conv_ironfur   = get_convoke_action<ironfur_t>( "ironfur", "" );
+    conv_mangle    = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
+    conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
   }
 
   void execute() override
@@ -7358,6 +7391,8 @@ struct convoke_the_spirits_t : public druid_spell_t
     // Do form-specific execute
     if ( p()->buff.moonkin_form->check() )
       _execute_moonkin();
+    else if ( p()->buff.bear_form->check() )
+      _execute_bear();
   }
 
   void _execute_moonkin()
@@ -7373,6 +7408,16 @@ struct convoke_the_spirits_t : public druid_spell_t
       cast_list.at( rng().range( cast_list.size() ) ) = CAST_ULTIMATE;
   }
 
+  void _execute_bear()
+  {
+    cast_list.clear();
+
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_ULTIMATE );
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
+  }
+
   void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
@@ -7384,6 +7429,76 @@ struct convoke_the_spirits_t : public druid_spell_t
     // Do form-specific tick
     if ( p()->buff.moonkin_form->check() )
       _tick_moonkin();
+    else if ( p()->buff.bear_form->check() )
+      _tick_bear();
+  }
+
+  void _tick_bear()
+  {
+    action_t* conv_cast = nullptr;
+    player_t* conv_tar = nullptr;
+
+    auto it   = cast_list.begin() + rng().range( cast_list.size() );
+    auto type = *it;
+    cast_list.erase( it );
+
+    std::vector<player_t*> tl = target_list();
+    if ( !tl.size() )
+      return;
+
+    // First figure out which offspec/spec spell to cast
+    if ( type == CAST_OFFSPEC )
+      type = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( type == CAST_SPEC )
+    {
+      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+      for ( auto t : tl )
+        if ( !td( t )->dots.moonfire->is_ticking() )
+          mf_tl.push_back( t );
+
+      using conv_dist = std::vector<std::pair<convoke_cast_e, double>>;
+
+      conv_dist dist = { { CAST_THRASH_BEAR, 0.3 },
+                         { CAST_IRONFUR,     0.35 },
+                         { CAST_MANGLE,      0.35 } };
+
+      if ( mf_tl.size() )
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );
+
+      auto _sum = []( double a, conv_dist::value_type b ) { return a + b.second; };
+
+      auto roll = rng().range( 0.0, std::accumulate( dist.begin(), dist.end(), 0.0, _sum ) );
+      for ( auto it = dist.begin(); it != dist.end(); it++ )
+      {
+        if ( roll < std::accumulate( dist.begin(), it + 1, 0.0, _sum ) )
+        {
+          type = it->first;
+          break;
+        }
+      }
+
+      if ( type == CAST_MOONFIRE )
+        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+    }
+
+    // Now assign the action
+    switch ( type )
+    {
+      case CAST_ULTIMATE: conv_cast = conv_pulverize; break;
+      case CAST_WRATH: conv_cast = conv_wrath; break;
+      case CAST_MOONFIRE: conv_cast = conv_moonfire; break;
+      case CAST_RAKE: conv_cast = conv_rake; break;
+      case CAST_THRASH_BEAR: conv_cast = conv_thrash_bear; break;
+      case CAST_IRONFUR: conv_cast = conv_ironfur; break;
+      case CAST_MANGLE: conv_cast = conv_mangle; break;
+      default: return;  // includes CAST_HEAL
+    }
+
+    if ( conv_cast && !conv_tar )  // pick random target if we haven't picked one already (for mf)
+      conv_tar = tl.at( rng().range( tl.size() ) );
+
+    assert( conv_cast && conv_tar );  // one last sanity check
+    execute_convoke_action( conv_cast, conv_tar );
   }
 
   void _tick_moonkin()
