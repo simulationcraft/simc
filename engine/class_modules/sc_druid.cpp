@@ -7281,7 +7281,6 @@ struct convoke_the_spirits_t : public druid_spell_t
   enum convoke_cast_e
   {
     CAST_NONE = 0,
-    CAST_ULTIMATE,
     CAST_OFFSPEC,
     CAST_SPEC,
     CAST_HEAL,
@@ -7289,15 +7288,21 @@ struct convoke_the_spirits_t : public druid_spell_t
     CAST_MOONFIRE,
     CAST_RAKE,
     CAST_THRASH_BEAR,
+    CAST_FULL_MOON,
+    CAST_STARSURGE,
+    CAST_STARFALL,
+    CAST_PULVERIZE,
     CAST_IRONFUR,
     CAST_MANGLE,
   };
 
   int max_ticks;
 
-  // Multi-spec
   std::vector<convoke_cast_e> cast_list;
   std::vector<convoke_cast_e> offspec_list;
+  std::vector<std::pair<convoke_cast_e, double>> chances;
+  double moonfire_chance;
+  // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
   action_t* conv_rake;
@@ -7368,22 +7373,52 @@ struct convoke_the_spirits_t : public druid_spell_t
     action->execute();
   }
 
+  action_t* convoke_action_from_type( convoke_cast_e type )
+  {
+    switch ( type )
+    {
+      case CAST_WRATH: return conv_wrath;
+      case CAST_MOONFIRE: return conv_moonfire;
+      case CAST_RAKE: return conv_rake;
+      case CAST_THRASH_BEAR: return conv_thrash_bear;
+      case CAST_FULL_MOON: return conv_full_moon;
+      case CAST_STARSURGE: return conv_starsurge;
+      case CAST_STARFALL: return conv_starfall;
+      case CAST_PULVERIZE: return conv_pulverize;
+      case CAST_IRONFUR: return conv_ironfur;
+      case CAST_MANGLE: return conv_mangle;
+      default: return nullptr;
+    }
+  }
+
+  convoke_cast_e get_cast_from_dist( std::vector<std::pair<convoke_cast_e, double>> chances )
+  {
+    auto _sum = []( double a, std::pair<convoke_cast_e, double> b ) { return a + b.second; };
+
+    auto roll = rng().range( 0.0, std::accumulate( chances.begin(), chances.end(), 0.0, _sum ) );
+
+    for ( auto it = chances.begin(); it != chances.end(); it++ )
+      if ( roll < std::accumulate( chances.begin(), it + 1, 0.0, _sum ) )
+        return it->first;
+
+    return CAST_NONE;
+  }
+
   double composite_haste() const override { return 1.0; }
 
   void _init_moonkin()
   {
-    conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
-    conv_starfall  = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
-    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge",
+    conv_full_moon  = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
+    conv_starfall   = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_starsurge  = get_convoke_action<starsurge_t>( "starsurge",
                        p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
   }
 
   void _init_bear()
   {
-    conv_ironfur   = get_convoke_action<ironfur_t>( "ironfur", "" );
-    conv_mangle    = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
-    conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
-    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
+    conv_ironfur    = get_convoke_action<ironfur_t>( "ironfur", "" );
+    conv_mangle     = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
+    conv_pulverize  = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
   }
 
   void execute() override
@@ -7394,23 +7429,10 @@ struct convoke_the_spirits_t : public druid_spell_t
     p()->buff.convoke_the_spirits->trigger();
 
     // Do form-specific execute
-    if ( p()->buff.moonkin_form->check() )
-      _execute_moonkin();
-    else if ( p()->buff.bear_form->check() )
+    if ( p()->buff.bear_form->check() )
       _execute_bear();
-  }
-
-  void _execute_moonkin()
-  {
-    cast_list.clear();
-
-    // hard coded 3-5 heals for now. re-evaluate when multiple specs are implemented and consolidate as an option if possible
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_HEAL );
-    cast_list.push_back( CAST_WRATH );
-    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
-
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      cast_list.at( rng().range( cast_list.size() ) ) = CAST_ULTIMATE;
+    else if ( p()->buff.moonkin_form->check() )
+      _execute_moonkin();
   }
 
   void _execute_bear()
@@ -7419,8 +7441,30 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
     if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      cast_list.push_back( CAST_ULTIMATE );
+      cast_list.push_back( CAST_PULVERIZE );
     cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
+
+    offspec_list    = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
+    chances         = { { CAST_THRASH_BEAR, 0.3 },
+                        { CAST_IRONFUR,     0.35 },
+                        { CAST_MANGLE,      0.35 } };
+    moonfire_chance = 0.2;
+
+  }
+
+  void _execute_moonkin()
+  {
+    cast_list.clear();
+
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_FULL_MOON );
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
+
+    offspec_list    = { CAST_HEAL };
+    chances         = { { CAST_WRATH,     0.4 },
+                        { CAST_STARSURGE, 0.3 } };
+    moonfire_chance = 0.3;
   }
 
   void tick( dot_t* d ) override
@@ -7441,7 +7485,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   void _tick_bear()
   {
     action_t* conv_cast = nullptr;
-    player_t* conv_tar = nullptr;
+    player_t* conv_tar  = nullptr;
 
     auto it   = cast_list.begin() + rng().range( cast_list.size() );
     auto type = *it;
@@ -7461,48 +7505,23 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
-      using conv_dist = std::vector<std::pair<convoke_cast_e, double>>;
-
-      conv_dist dist = { { CAST_THRASH_BEAR, 0.3 },
-                         { CAST_IRONFUR,     0.35 },
-                         { CAST_MANGLE,      0.35 } };
-
+      auto dist = chances;
       if ( mf_tl.size() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, moonfire_chance ) );
 
-      auto _sum = []( double a, conv_dist::value_type b ) { return a + b.second; };
-
-      auto roll = rng().range( 0.0, std::accumulate( dist.begin(), dist.end(), 0.0, _sum ) );
-      for ( auto it = dist.begin(); it != dist.end(); it++ )
-      {
-        if ( roll < std::accumulate( dist.begin(), it + 1, 0.0, _sum ) )
-        {
-          type = it->first;
-          break;
-        }
-      }
+      type = get_cast_from_dist( dist );
 
       if ( type == CAST_MOONFIRE )
         conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
     }
 
-    // Now assign the action
-    switch ( type )
-    {
-      case CAST_ULTIMATE: conv_cast = conv_pulverize; break;
-      case CAST_WRATH: conv_cast = conv_wrath; break;
-      case CAST_MOONFIRE: conv_cast = conv_moonfire; break;
-      case CAST_RAKE: conv_cast = conv_rake; break;
-      case CAST_THRASH_BEAR: conv_cast = conv_thrash_bear; break;
-      case CAST_IRONFUR: conv_cast = conv_ironfur; break;
-      case CAST_MANGLE: conv_cast = conv_mangle; break;
-      default: return;  // includes CAST_HEAL
-    }
+    conv_cast = convoke_action_from_type( type );
+    if ( !conv_cast )
+      return;
 
-    if ( conv_cast && !conv_tar )  // pick random target if we haven't picked one already (for mf)
+    if ( !conv_tar )  // pick random target if we haven't picked one already (for mf)
       conv_tar = tl.at( rng().range( tl.size() ) );
 
-    assert( conv_cast && conv_tar );  // one last sanity check
     execute_convoke_action( conv_cast, conv_tar );
   }
 
@@ -7515,44 +7534,42 @@ struct convoke_the_spirits_t : public druid_spell_t
     auto type = *it;
     cast_list.erase( it );
 
-    if ( type == CAST_OFFSPEC || type == CAST_HEAL )
-      return;
-
     std::vector<player_t*> tl = target_list();
     if ( !tl.size() )
       return;
 
-    switch ( type )
+    // First figure out which offspec/spec spell to cast
+    if ( type == CAST_OFFSPEC )
+      type = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( type == CAST_SPEC )
     {
-      case CAST_ULTIMATE: conv_cast = conv_full_moon; break;
-      case CAST_WRATH: conv_cast = conv_wrath; break;
-      case CAST_SPEC:
-        if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-          conv_cast = conv_starfall;
-        else  // randomly decide on damage spell
-        {
-          std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-          for ( auto t : tl )
-            if ( !td( t )->dots.moonfire->is_ticking() )
-              mf_tl.push_back( t );
+      if ( !p()->buff.starfall->check() )
+        type = CAST_STARFALL;
+      else
+      {
+        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+        for ( auto t : tl )
+          if ( !td( t )->dots.moonfire->is_ticking() )
+            mf_tl.push_back( t );
 
-          std::vector<action_t*> damage_spell = { conv_wrath, conv_starsurge };
-          if ( mf_tl.size() )
-            damage_spell.push_back( conv_moonfire );
+        auto dist = chances;
+        if ( mf_tl.size() )
+          dist.emplace_back( std::make_pair( CAST_MOONFIRE, moonfire_chance ) );
 
-          conv_cast = damage_spell.at( rng().range( damage_spell.size() ) );
+        type = get_cast_from_dist( dist );
 
-          if ( conv_cast == conv_moonfire )  // use moonfire's separate list for mf
-            conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
-        }
-        break;
-      default: return;
+        if ( type == CAST_MOONFIRE )
+          conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+      }
     }
 
-    if ( conv_cast && !conv_tar )  // pick random target if we haven't picked one already (for mf)
+    conv_cast = convoke_action_from_type( type );
+    if ( !conv_cast )
+      return;
+
+    if ( !conv_tar )  // pick random target if we haven't picked one already (for mf)
       conv_tar = tl.at( rng().range( tl.size() ) );
 
-    assert( conv_cast && conv_tar );  // one last sanity check
     execute_convoke_action( conv_cast, conv_tar );
   }
 
