@@ -5079,6 +5079,11 @@ struct thrash_bear_t : public bear_attack_t
 
   void execute() override
   {
+    if ( free_cast )
+      dot->stats = get_free_cast_stats( free_cast );
+    else
+      dot->stats = orig_stats;
+
     bear_attack_t::execute();
 
     dot->target = execute_state->target;
