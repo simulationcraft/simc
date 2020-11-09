@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15038> __spelltext_data { {
+static const std::array<spelltext_data_t, 15040> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12567,7 +12567,7 @@ static const std::array<spelltext_data_t, 15038> __spelltext_data { {
   { 310607, "Every $310603t1 sec, store ${$s1*(1+$@versadmg)*(1+$310605m1/100)} healing, up to a maximum of ${$MHP*0.1}. When you dodge or parry an attack, heal for all stored healing.\r\n\r\n|cFFFFFFFFUnique:|r|cFFffd000  Corruption Resistance increased by $310603s5.|r", 0, "Azerite Essence" },
   { 310608, "Every $310603t1 sec, store ${$s1*(1+$@versadmg)*(1+$310605m1/100)} healing, up to a maximum of ${$MHP*0.1}. When you dodge or parry an attack, heal for all stored healing.\r\n\r\nThe maximum health of all Tank specialization players in your party or raid is increased by $310606s1%, stacking.\r\n\r\n|cFFFFFFFFUnique:|r|cFFffd000  Corruption Resistance increased by $310603s5.|r", 0, "Azerite Essence" },
   { 310609, 0, 0, "Azerite Essence" },
-  { 310674, "Increases your chance to bait while fishing in the Shadowlands.", 0, 0 },
+  { 310674, "Increases your chance to find bait while fishing in the Shadowlands.", 0, 0 },
   { 310690, "Burn your target with a bolt of Azerite, dealing $310712s3 Fire damage. If the target has less than $s2% health$?a310705[ or more than $310705s1% health][], the cooldown is reduced by $s3 sec.$?a310710[\r\n\r\nIf Reaping Flames kills an enemy, its cooldown is lowered to $310710s2 sec and it will deal $310710s1% increased damage on its next use.][]", 0, "Azerite Essence" },
   { 310705, "Reaping Flames now also has a reduced cooldown if the target is above $s1% health.", 0, "Azerite Essence" },
   { 310710, "If Reaping Flames kills an enemy, its cooldown is lowered to $s2 sec and it will deal $s1% increased damage on the next cast.", 0, "Azerite Essence" },
@@ -13410,6 +13410,7 @@ static const std::array<spelltext_data_t, 15038> __spelltext_data { {
   { 325966, "Holy Shock leaves a Glimmer of Light on the target for $287280d.  When you Holy Shock, all targets with Glimmer of Light are damaged for $325984s1 or healed for $325983s1.\r\n\r\nYou may have Glimmer of Light on up to $287269s1 targets.", 0, 0 },
   { 325983, "$@spelldesc325966", 0, 0 },
   { 325984, "$@spelldesc325966", 0, 0 },
+  { 326011, "$@spelldesc304971", 0, 0 },
   { 326059, "Blast your target with a Primordial Wave, dealing $327162s1 Shadow damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $327163s1 and apply Riptide to them][heal an ally for $327163s1].\r\n\r\nYour next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].", 0, "Necrolord" },
   { 326062, "$@spelldesc325886", "Stunned.", 0 },
   { 326076, "$@spelldesc325886", 0, 0 },
@@ -13629,7 +13630,7 @@ static const std::array<spelltext_data_t, 15038> __spelltext_data { {
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After $330921d out of combat, gain a shield for $330927s2% of your maximum health.", 0, 0 },
   { 329786, "Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.", 0, 0 },
-  { 329791, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", 0, 0 },
+  { 329791, "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", 0, 0 },
   { 329831, "Deploy a power crystal which beams arcane energy into you, inflicting $o1 Arcane damage over $d and granting you $s2 Critical Strike for the duration.", "Critical Strike increased by $w2.", 0 },
   { 329840, "Inflict $s1 Shadow damage split between all nearby enemies, and form a Blood Barrier on yourself. The Blood Barrier absorbs ${$329852s1*(1+$@versadmg)} damage for $329849d.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 329849, "$@spelldesc329840", "Absorbs $w1 damage.", 0 },
@@ -15038,12 +15039,15 @@ static const std::array<spelltext_data_t, 15038> __spelltext_data { {
   { 347788, "$@spelldesc324724", 0, "Necrolord" },
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 348007, "$@spelldesc333393", "Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%", 0 },
+  { 348065, "$@spelldesc347232", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
+  {  310674,  0, "Increases your chance to bait while fishing in the Shadowlands.", "Increases your chance to find bait while fishing in the Shadowlands." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
+  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
