@@ -2544,10 +2544,17 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
       legendary.reign_of_endless_kings -> ok() &&
       ! buffs.reign_of_ancient_kings -> up() &&
       health_percentage()/100 < legendary.reign_of_endless_kings -> effectN( 2 ).percent() &&
+      // Won't trigger if you're below the threshhold when the debuff expires. You have to be healed back over it for it to be able to proc again.
       health_percentage()/100 + amount / max_health() >= legendary.reign_of_endless_kings -> effectN( 2 ).percent()
     )
   {
-    buffs.guardian_of_ancient_kings -> trigger( legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> duration() );
+    timespan_t reign_proc_duration = legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> duration();
+    // If Reign procs during GoAK, the buff will be set to 12 sec. Meaning up to
+    // a 16sec total duration. Uncertain if that's a bug. If you cast GoAK while
+    // the reign goak is up, it simply overwrites the buff.
+    if ( buffs.guardian_of_ancient_kings -> up() )
+      reign_proc_duration += buffs.guardian_of_ancient_kings -> buff_duration();
+    buffs.guardian_of_ancient_kings -> trigger( reign_proc_duration );
     buffs.reign_of_ancient_kings -> trigger();
   }
   return result;
