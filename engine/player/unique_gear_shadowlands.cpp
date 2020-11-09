@@ -402,8 +402,8 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
       SL_darkmoon_deck_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
-      // Crit debuff value uses player level scaling, not item scaling
-      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).average( player ) * 0.0001 );
+      // Crit debuff value is hard coded into each card
+      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).base_value() * 0.0001 );
     }
   };
 
