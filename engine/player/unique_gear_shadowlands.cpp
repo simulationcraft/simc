@@ -371,18 +371,6 @@ struct SL_darkmoon_deck_proc_t : public proc_spell_t
   }
 
   ~SL_darkmoon_deck_proc_t() { delete deck; }
-
-  // Shadowlands Darkmoon Decks utilize spells which are flagged to scale with item level, but instead return a value as
-  // if scaled to item level = max scaling level. As darkmoon decks so far are all item level 200, whether there is any
-  // actual item level scaling is unknown atm.
-  double get_effect_value( const spell_data_t* spell = nullptr, int index = 1 )
-  {
-    if ( !spell )
-      spell = s_data;
-
-    return spell->effectN( index ).m_coefficient() *
-           player->dbc->random_property( spell->max_scaling_level() ).damage_secondary;
-  }
 };
 
 void darkmoon_deck_putrescence( special_effect_t& effect )
@@ -394,7 +382,6 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
                                  {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
     {
       split_aoe_damage = true;
-      base_dd_max = base_dd_min = get_effect_value();
     }
 
     void impact( action_state_t* s ) override
@@ -431,7 +418,7 @@ void darkmoon_deck_voracity( special_effect_t& effect )
     {
       SL_darkmoon_deck_proc_t::execute();
 
-      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( player );
+      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( item );
       buff->trigger();
     }
   };
