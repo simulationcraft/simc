@@ -10408,9 +10408,7 @@ void monk_t::create_buffs()
   // Brewmaster
   buff.straight_no_chaser = make_buff<stat_buff_t>( this, "straight_no_chaser", find_spell( 285959 ) )
                                 ->add_stat( STAT_ARMOR, azerite.straight_no_chaser.value() );
-//                                ->set_duration_multiplier( 3 )
-//                                 ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-  ;
+
   buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
                           ->set_reverse( true );
@@ -10458,8 +10456,7 @@ void monk_t::create_buffs()
                                   ->set_reverse_stack_count( 5 );
 
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() +
-                            ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity.value() : 0 ) )
+                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
                         ->set_duration( find_spell( 310454 )->duration() + (
                             conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
                         ->add_invalidate( CACHE_MASTERY );
@@ -11058,21 +11055,25 @@ double monk_t::composite_mastery() const
 
   if ( buff.weapons_of_order->up() )
   {
+    double buff_mastery = buff.weapons_of_order->value();
+    if ( conduit.strike_with_clarity->ok() )
+      buff_mastery += conduit.strike_with_clarity.value();
+
     switch ( specialization() )
     {
       case MONK_BREWMASTER:
       {
-        m += mastery.elusive_brawler->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        m += mastery.elusive_brawler->effectN( 1 ).mastery_value() * buff_mastery;
         break;
       }
       case MONK_MISTWEAVER:
       {
-        m += mastery.gust_of_mists->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        m += mastery.gust_of_mists->effectN( 1 ).mastery_value() * buff_mastery;
         break;
       }
       case MONK_WINDWALKER:
       {
-        m += mastery.combo_strikes->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        m += mastery.combo_strikes->effectN( 1 ).mastery_value() * buff_mastery;
         break;
       }
       default:
