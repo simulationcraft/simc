@@ -6736,6 +6736,9 @@ struct unholy_blight_dot_t : public death_knight_spell_t
 
     td( state->target ) -> debuff.unholy_blight -> trigger();
 
+    p() -> active_spells.virulent_plague -> set_target( state -> target );
+    p() -> active_spells.virulent_plague -> execute();
+
     if ( p() -> legendary.superstrain -> ok() )
     {
       p() -> active_spells.frost_fever -> set_target( state -> target );
@@ -6749,18 +6752,15 @@ struct unholy_blight_dot_t : public death_knight_spell_t
 struct unholy_blight_buff_t : public buff_t
 {
   unholy_blight_dot_t* dot;
-  virulent_plague_t* vp;
 
   unholy_blight_buff_t( death_knight_t* p ) :
     buff_t( p, "unholy_blight", p -> talent.unholy_blight ),
-    dot( new unholy_blight_dot_t( p ) ),
-    vp( new virulent_plague_t( p ) )
+    dot( new unholy_blight_dot_t( p ) )
   {
     cooldown -> duration = 0_ms;
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
     {
       dot -> execute();
-      vp -> execute();
     } );
   }
 };
