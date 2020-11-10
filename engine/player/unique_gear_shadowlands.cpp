@@ -1034,48 +1034,35 @@ void infinitely_divisible_ooze( special_effect_t& effect )
  * id=330368 haste buff
  * id=330380 mastery buff
  * id=330367 vers buff
+ * id=348098 unknown spell
  * When this trinket is used, it triggers one of the effects listed above, following the priority list below.
  * - remove CC from self: Always triggers if you are under a hard CC mechanic, does not trigger if the CC mechanic
  *                        does not prevent the player from acting (e.g., it won't trigger while rooted).
- * - heal spell: triggers on self or a nearby target with less than 30% health remaining
+ * - heal spell: Triggers on self or a nearby target with less than 30% health remaining.
  * - illusion: ??? (not tested yet, priority unknown)
- * - execute damage: trigger on an enemy with less than 20% health remaining (the 20% is not in spell data)
+ * - execute damage: Deal damage to the target if it is an enemy with less than 20% health remaining (the 20% is not in spell data).
  * - healer mana: triggers on a nearby healer with less than 20% mana??? (not tested yet, priority unknown)
  * - secondary stat buffs:
- *   - If a Bloodlust buff is up, the stat buff will last 30 seconds instead of the default 20 seconds.
- *     TODO: Look for other buffs that also cause this bonus duration to occur.
+ *   - If a Bloodlust buff is up, the stat buff will last 25 seconds instead of the default 20 seconds.
+ *     TODO: Look for other buffs that also cause this bonus duration to occur. The spell data still lists
+ *     a 30 second buff duration, so it is possible that there are other conditions that give 30 seconds.
  *   - The secondary stat granted appears to be randomly selected from stat from the player's two highest
- *     secondary stats in terms of rating. When selecting the largest stats, the priority of secondary stats
- *     seems to be Vers > Mastery > Haste > Crit. There is a bug where the second stat selected must have a
- *     lower rating than the first stat that was selected. If this is not possible, then the second stat will
- *     be empty and the trinket will have a chance to do nothing when used.
+ *     secondary stats in terms of rating. When selecting the largest stats, the priority of equal secondary
+ *     stats seems to be Vers > Mastery > Haste > Crit. There is a bug where the second stat selected must
+ *     have a lower rating than the first stat that was selected. If this is not possible, then the second
+ *     stat will be empty and the trinket will have a chance to do nothing when used.
  */
 void inscrutable_quantum_device ( special_effect_t& effect )
 {
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+  static constexpr std::array<int, 4> buff_ids = { 330367, 330380, 330368, 330366 };
+
   struct inscrutable_quantum_device_execute_t : public proc_spell_t
   {
     inscrutable_quantum_device_execute_t( const special_effect_t& e ) :
-      proc_spell_t( "inscrutable_quantum_device_execute", e.player, e.player->find_spell( 330373 ) )
+      proc_spell_t( "inscrutable_quantum_device_execute", e.player, e.player->find_spell( 330373 ), e.item )
     {
       cooldown->duration = 0_ms;
-      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
-      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
-      // and update when the trinket is fixed.
-      base_dd_min = e.player->bugs ? 8.0 : data().effectN( 1 ).min( e.item );
-      base_dd_max = e.player->bugs ? 8.0 : data().effectN( 1 ).max( e.item );
-    }
-  };
-
-  struct inscrutable_quantum_device_buff_t : public stat_buff_t
-  {
-    inscrutable_quantum_device_buff_t( const special_effect_t& e, int s, util::string_view n ) :
-      stat_buff_t( e.player, n, e.player->find_spell( s ) )
-    {
-      set_cooldown( 0_ms );
-      // TODO: This trinket is bugged and currently has very numbers for its effects that do not seem to match
-      // up with the spell data. For now, hard code the extremely low values at ilvl 226 and player level 60
-      // and update when the trinket is fixed.
-      stats[ 0 ].amount = e.player->bugs ? 74 : data().effectN( 1 ).average( e.item );
     }
   };
 
@@ -1088,11 +1075,18 @@ void inscrutable_quantum_device ( special_effect_t& effect )
     inscrutable_quantum_device_t( const special_effect_t& e ) :
       proc_spell_t( "inscrutable_quantum_device", e.player, e.player->find_spell( 330323 ) )
     {
-      buffs[STAT_NONE] = nullptr;
-      buffs[STAT_CRIT_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330366, "inscrutable_quantum_device_crit" );
-      buffs[STAT_HASTE_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330368, "inscrutable_quantum_device_haste" );
-      buffs[STAT_MASTERY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330380, "inscrutable_quantum_device_mastery" );
-      buffs[STAT_VERSATILITY_RATING] = make_buff<inscrutable_quantum_device_buff_t>( e, 330367, "inscrutable_quantum_device_vers" );
+      buffs[ STAT_NONE ] = nullptr;
+      for ( int i = 0; i < ratings.size(); i++ )
+      {
+        util::string_view name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( ratings[ i ] );
+        stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, name ) );
+        if ( !buff )
+        {
+          buff = make_buff<stat_buff_t>( e.player, name, e.player->find_spell( buff_ids[ i ] ), e.item );
+          buff->set_cooldown( 0_ms );
+        }
+        buffs[ ratings[ i ] ] = buff;
+      }
       execute_damage = create_proc_action<inscrutable_quantum_device_execute_t>( "inscrutable_quantum_device_execute", e );
     }
 
@@ -1129,7 +1123,6 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       }
       else
       {
-        static constexpr stat_e ratings[] = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
         stat_e s1 = STAT_NONE;
         stat_e s2 = STAT_NONE;
         s1 = util::highest_stat( player, ratings );
@@ -1140,9 +1133,9 @@ void inscrutable_quantum_device ( special_effect_t& effect )
             s2 = s;
         }
 
-        buff_t* buff = rng().roll( 0.5 ) ? buffs[s1] : buffs[s2];
+        buff_t* buff = rng().roll( 0.5 ) ? buffs[ s1 ] : buffs[ s2 ];
         if ( buff )
-          buff->trigger( buff->buff_duration() - ( is_buff_extended() ? 0_s : 10_s ) );
+          buff->trigger( buff->buff_duration() - ( is_buff_extended() ? 5_s : 10_s ) );
       }
     }
   };
