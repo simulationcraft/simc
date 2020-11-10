@@ -2218,6 +2218,8 @@ struct bloodshed_t : hunter_main_pet_attack_t
     hunter_main_pet_attack_t::impact( s );
 
     o() -> trigger_wild_spirits( s );
+
+    (void) td( s -> target ); // force target_data creation for damage amp handling
   }
 };
 
