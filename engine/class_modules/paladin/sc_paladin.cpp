@@ -1748,7 +1748,7 @@ void paladin_t::create_buffs()
   // Legendaries
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() );
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() )
-        -> set_default_value( legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+        -> set_default_value_from_effect( 1 );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
         -> set_default_value( find_spell( 337315 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_HASTE );
