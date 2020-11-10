@@ -9537,7 +9537,7 @@ void death_knight_t::init_gains()
   gains.festering_wound                  = get_gain( "Festering Wound" );
 
   // Shadowlands / Covenants
-  gains.swarming_mist                    = get_gain( "swarming_mist" );
+  gains.swarming_mist                    = get_gain( "Swarming Mist" );
 }
 
 // death_knight_t::init_procs ===============================================
