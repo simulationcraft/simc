@@ -7483,7 +7483,10 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // Figure out which offspec/spec spell to cast
     if ( type == CAST_OFFSPEC )
-      type = offspec_list.at( rng().range( offspec_list.size() ) );
+    {
+      if ( offspec_list.size() )
+        type = offspec_list.at( rng().range( offspec_list.size() ) );
+    }
     else if ( type == CAST_SPEC )
     {
       // Do form-specific spell selection
