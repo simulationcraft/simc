@@ -6962,8 +6962,8 @@ void hunter_t::apl_mm()
     trickshots -> add_action( "flare,if=tar_trap.up" );
     trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "wild_spirits" );
-    trickshots -> add_action( "volley" );
     trickshots -> add_action( "resonating_arrow" );
+    trickshots -> add_action( "volley" );
     trickshots -> add_action( "barrage" );
     trickshots -> add_action( "trueshot,if=cooldown.rapid_fire.remains|focus+action.rapid_fire.cast_regen>focus.max|target.time_to_die<15" );
     trickshots -> add_action( "aimed_shot,if=(buff.trick_shots.remains>=execute_time)&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
