@@ -1151,7 +1151,7 @@ struct holy_power_consumer_t : public Base
     // Royal Decree doesn't proc RP 2020-11-01
     if ( is_wog && p -> buffs.royal_decree -> up() &&
         !p -> buffs.divine_purpose -> up() && !p -> buffs.shining_light_free -> up() )
-      num_stacks = hp_used;
+      num_stacks = as<int>( hp_used );
 
     // as of 2020-11-08 magistrate's causes *extra* stacks?
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
