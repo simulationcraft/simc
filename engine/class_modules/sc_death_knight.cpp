@@ -3591,7 +3591,7 @@ struct blood_plague_t : public death_knight_spell_t
 
     base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
 
-    if ( p -> legendary.superstrain -> ok() && (p -> specialization() == DEATH_KNIGHT_FROST || p -> specialization() == DEATH_KNIGHT_UNHOLY) )
+    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_BLOOD )
     {
       // the "reduced effectiveness" from the tooltip is handled server side
       // we calculated the current value but it is subject to changing without us knowing
@@ -5656,7 +5656,7 @@ struct frost_fever_t : public death_knight_spell_t
       base_multiplier *= 0.98;
     }
 
-    if ( p -> legendary.superstrain -> ok() && ( p -> specialization() == DEATH_KNIGHT_BLOOD || p -> specialization() == DEATH_KNIGHT_UNHOLY ) )
+    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_FROST )
     {
       // the "reduced effectiveness" from the tooltip is handled server side
       // we calculated the current value but it is subject to changing without us knowing
@@ -6147,7 +6147,7 @@ struct virulent_plague_t : public death_knight_spell_t
     may_miss = may_crit = hasted_ticks = false;
 
     // when taking superstrain out, set the spell data back to spec.outbreak -> effectN( 2 ).trigger()
-    if ( p -> legendary.superstrain -> ok() && (p -> specialization() == DEATH_KNIGHT_FROST || p -> specialization() == DEATH_KNIGHT_BLOOD) )
+    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_UNHOLY )
     {
       // the "reduced effectiveness" from the tooltip is handled server side
       // we calculated the current value but it is subject to changing without us knowing
