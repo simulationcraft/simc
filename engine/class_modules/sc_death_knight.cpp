@@ -6710,7 +6710,6 @@ struct swarming_mist_buff_t : public buff_t
     damage( new swarming_mist_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
-    set_refresh_behavior( buff_refresh_behavior::DURATION );
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
     {
       damage -> execute();
