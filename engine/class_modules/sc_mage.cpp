@@ -4254,7 +4254,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      // Hardcoded in the talent description.
+      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent() - 0.15;
     }
 
     if ( p->runeforge.glacial_fragments.ok() )
@@ -7893,6 +7894,30 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_effect( "Mage", "2020-11-10", "Arcane Explosion hotfix", 281175 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.50232 )
+      .verification_value( 0.546 );
+
+    hotfix::register_effect( "Mage", "2020-11-10", "Comet Storm hotfix", 212872 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.42 )
+      .verification_value( 0.4 );
+
+    hotfix::register_effect( "Mage", "2020-11-10", "Ice Lance hotfix", 344285 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.378 )
+      .verification_value( 0.42 );
+
+    hotfix::register_effect( "Mage", "2020-11-10", "Freezing Rain hotfix", 719017 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 60.0 )
+      .verification_value( 50.0 );
   }
 
   bool valid() const override { return true; }
