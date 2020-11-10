@@ -3982,14 +3982,10 @@ struct internal_bleeding_t
 
   void trigger( const action_state_t* s )
   {
-    if ( action )
+    if ( action && action -> td( s -> target ) -> dots.shrapnel_bomb -> is_ticking() )
     {
-      auto td = action -> find_td( s -> target );
-      if ( td && td -> dots.shrapnel_bomb -> is_ticking() )
-      {
-        action -> set_target( s -> target );
-        action -> execute();
-      }
+      action -> set_target( s -> target );
+      action -> execute();
     }
   }
 };
@@ -4963,11 +4959,12 @@ struct kill_command_t: public hunter_spell_t
     auto splits = util::string_split<util::string_view>( expression_str, "." );
     if ( splits.size() == 2 && splits[ 0 ] == "bloodseeker" && splits[ 1 ] == "remains" )
     {
+      if ( ! p() -> talents.bloodseeker.ok() )
+        return expr_t::create_constant( expression_str, 0_ms );
+
       return make_fn_expr( expression_str, [ this ] () {
-          if ( auto pet = p() -> pets.main ) {
-            if ( auto td = pet -> find_target_data( target ) )
-              return td -> dots.bloodseeker -> remains();
-          }
+          if ( auto pet = p() -> pets.main )
+            return pet -> get_target_data( target ) -> dots.bloodseeker -> remains();
           return 0_ms;
         } );
     }
