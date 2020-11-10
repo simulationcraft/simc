@@ -1109,8 +1109,9 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
   hallowed_discernment_tick_t* hallowed_discernment_tick;
-  ashen_hallow_tick_t( paladin_t* p ) :
-    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
+  ashen_hallow_tick_t( paladin_t* p, hallowed_discernment_tick_t* hallowed_discernment ) :
+    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) ),
+    hallowed_discernment_tick( hallowed_discernment )
   {
     aoe = -1;
     dual = true;
@@ -1118,8 +1119,6 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     background = true;
     may_crit = true;
     ground_aoe = true;
-    if ( p -> conduit.hallowed_discernment -> ok () )
-      hallowed_discernment_tick = new hallowed_discernment_tick_t( p );
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -1174,18 +1173,22 @@ struct ashen_hallow_t : public paladin_spell_t
 {
   ashen_hallow_tick_t* damage_tick;
   ground_aoe_params_t hallow_params;
+  hallowed_discernment_tick_t* hallowed_discernment;
 
   ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr ),
-    damage_tick( new ashen_hallow_tick_t( p ) )
+    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr )
   {
     parse_options( options_str );
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
     may_miss = false;
 
+    hallowed_discernment = new hallowed_discernment_tick_t( p );
+    damage_tick = new ashen_hallow_tick_t( p, hallowed_discernment );
+
     add_child( damage_tick );
-    add_child( new hallowed_discernment_tick_t( p ) );
+    if ( p -> conduit.hallowed_discernment -> ok() )
+      add_child( hallowed_discernment );
   }
 
   void execute() override
