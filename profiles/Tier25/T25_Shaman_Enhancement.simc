@@ -57,23 +57,26 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
 actions.aoe=frost_shock,if=buff.hailstorm.up
+actions.aoe+=/windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
+actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord
+actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
-actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|covenant.necrolord
-actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!talent.stormkeeper.enabled|buff.stormkeeper.up)
 actions.aoe+=/vesper_totem
-actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5
+actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)
+actions.aoe+=/crash_lightning,if=talent.crashing_storm.enabled|buff.crash_lightning.down
+actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
 actions.aoe+=/crash_lightning
-actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 actions.aoe+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5
-actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&active_enemies!=3
+actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled
 actions.aoe+=/sundering
+actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6
 actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1
-actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&active_enemies=3
 actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock
 actions.aoe+=/ice_strike
@@ -84,17 +87,18 @@ actions.aoe+=/earth_elemental
 actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 # Single target action priority list
-actions.single=primordial_wave,if=!buff.primordial_wave.up&(!talent.stormkeeper.enabled|buff.stormkeeper.up)
+actions.single=primordial_wave,if=!buff.primordial_wave.up
+actions.single+=/windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/vesper_totem
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
 actions.single+=/fae_transfusion
-actions.single+=/lightning_bolt,if=buff.stormkeeper.up&buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=buff.stormkeeper.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
-actions.single+=/lava_lash,if=buff.hot_hand.up
+actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lava_lash
