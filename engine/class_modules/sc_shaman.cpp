@@ -5157,7 +5157,10 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lightning_bolt_pw->set_target( target );
-      p()->action.lightning_bolt_pw->execute();
+      if ( p()->action.lightning_bolt_pw->target_list().size() )
+      {
+        p()->action.lightning_bolt_pw->execute();
+      }
     }
 
     shaman_spell_t::execute();
