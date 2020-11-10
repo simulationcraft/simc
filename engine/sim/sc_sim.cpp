@@ -3795,9 +3795,7 @@ void sim_t::create_options()
     shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
   add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
     shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "shadowlands.volatile_solvent_crit", shadowlands_opts.volatile_solvent_crit ) );
-  add_option( opt_bool( "shadowlands.volatile_solvent_primary", shadowlands_opts.volatile_solvent_primary ) );
-  add_option( opt_bool( "shadowlands.volatile_solvent_mastery", shadowlands_opts.volatile_solvent_mastery ) );
+  add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
   add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
   add_option( opt_string( "unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
 }

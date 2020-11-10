@@ -354,10 +354,10 @@ struct sim_t : private sc_thread_t
     unsigned crimson_choir_in_party = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
-    /// Whether Volatile Solvent has Mastery buff
-    bool volatile_solvent_crit = false;
-    bool volatile_solvent_primary = false;
-    bool volatile_solvent_mastery = false;
+    /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
+    /// Corpse type: "humanoid", "beast", "dragonkin", "elemental", "giant"
+    /// Buff type: "mastery", "primary", "crit", "magic", "physical"
+    std::string volatile_solvent_type = "none";
     // Prevents Soul Ignite from being used a second time to trigger the
     // AoE early. This results in the highest possible damage and the
     // player can alternatively trigger it early by canceling the buff.

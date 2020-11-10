@@ -4049,6 +4049,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
     m *= 1 + buffs.echo_of_eonar->check_value();
 
+  if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
+    m *= 1.0 + buffs.volatile_solvent_damage->check_value();
+
   return m;
 }
 
