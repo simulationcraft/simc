@@ -987,6 +987,9 @@ void gnashing_chompers( special_effect_t& effect )
 
 void lead_by_example( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "lead_by_example" } ) )
+    return;
+
   auto buff = buff_t::find( effect.player, "lead_by_example" );
   if ( !buff )
   {
@@ -1087,7 +1090,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  register_soulbind_special_effect( 342156, soulbinds::lead_by_example );
+  register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }
