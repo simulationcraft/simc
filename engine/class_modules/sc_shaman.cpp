@@ -4933,12 +4933,14 @@ struct lava_burst_t : public shaman_spell_t
 
     // Trigger primordial wave if there's targets to trigger it on
     if ( p()->specialization() == SHAMAN_ELEMENTAL && type == lava_burst_type::NORMAL &&
-         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw &&
-         p()->action.lava_burst_pw->target_list().size() )
+         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
     {
       p()->buff.primordial_wave->expire();
       p()->action.lava_burst_pw->set_target( execute_state->target );
-      p()->action.lava_burst_pw->schedule_execute();
+      if ( p()->action.lava_burst_pw->target_list().size() )
+      {
+        p()->action.lava_burst_pw->schedule_execute();
+      }
     }
 
     if ( type == lava_burst_type::NORMAL )
@@ -5878,7 +5880,10 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
-      lvb->execute();
+      if ( lvb->target_list().size() )
+      {
+        lvb->execute();
+      }
     }
 
     if ( ascendance_damage )
