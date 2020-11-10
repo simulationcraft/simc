@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15040> __spelltext_data { {
+static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14203,7 +14203,7 @@ static const std::array<spelltext_data_t, 15040> __spelltext_data { {
   { 337539, "You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.", "You automatically trigger Darkness when you fall below $s1% health. This effect can only occur once every $331497d.", 0 },
   { 337541, "Your Fiery Brand now heals you for $s1% of its initial damage done, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.", 0, 0 },
   { 337542, "$@spelldesc235524", "Increases the damage of your next Fiery Brand by $s1%.", 0 },
-  { 337544, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", 0, 0 },
+  { 337544, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][].", 0, 0 },
   { 337545, "You take $217741s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 337547, "Each Soul Fragment consumed by Soul Cleave reduces the cooldown of Fiery Brand by $s1 sec.", "Each Soul Fragment consumed by Soul Cleave reduces the cooldown of Fiery Brand by $s sec.", 0 },
   { 337548, "Chaos Strike has a chance to unleash your inner demon, causing it to crash into your target and deal $337550s1 Chaos damage to all nearby enemies.", 0, 0 },
@@ -14966,6 +14966,9 @@ static const std::array<spelltext_data_t, 15040> __spelltext_data { {
   { 345714, "$@spelldesc330898", 0, 0 },
   { 345727, "$@spelldesc327104", 0, "Night Fae" },
   { 345739, "Conjure a Spectral Scythe, dealing $345877s1 Shadow damage to your target and $345877s2 Shadow damage in a $345963A1 yd cone to enemies behind your target.", 0, 0 },
+  { 345753, "Deploy a stretcher to carry a wounded ally in comfort.", 0, 0 },
+  { 345780, "Peer into the glass.", 0, 0 },
+  { 345799, "Place a Soothing Vesper at the desired location.", 0, 0 },
   { 345801, "Draw out a piece of the target's soul, decreasing their movement speed by $s1% until the soul reaches you. The soul instantly heals you for $345806s1, and grants you up to ${$345807s1+$345807s2} Critical Strike for $345805d. You gain more Critical Strike from lower health targets.", "Movement speed reduced by $s1%.", 0 },
   { 345804, "$@spelldesc345801", 0, 0 },
   { 345805, "$@spelldesc345801", "Critical Strike increased by $w1.", 0 },
@@ -15036,6 +15039,7 @@ static const std::array<spelltext_data_t, 15040> __spelltext_data { {
   { 347687, "$@spelldesc338138", 0, 0 },
   { 347688, "$@spelldesc338138", 0, 0 },
   { 347760, "The cooldown of your Covenant Signature Ability is reduced by $s1%.", 0, 0 },
+  { 347765, "$@spelldesc163063", "Dealing $w1% increased damage.", 0 },
   { 347788, "$@spelldesc324724", 0, "Necrolord" },
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 348007, "$@spelldesc333393", "Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%", 0 },
@@ -15043,12 +15047,13 @@ static const std::array<spelltext_data_t, 15040> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
   {  310674,  0, "Increases your chance to bait while fishing in the Shadowlands.", "Increases your chance to find bait while fishing in the Shadowlands." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
+  {  337544,  0, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][]." },
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
