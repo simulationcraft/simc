@@ -773,6 +773,7 @@ public:
     const spell_data_t* dnd_buff;
     const spell_data_t* razorice_debuff;
     const spell_data_t* sacrificial_pact_damage;
+    const spell_data_t* deaths_due;
 
     // Blood
     const spell_data_t* blood_plague;
@@ -5952,7 +5953,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     int num_targets = 0;
     if ( p() -> covenant.deaths_due -> ok() )
     {
-      num_targets = p() -> in_death_and_decay() ? 2 : 0;
+      num_targets = p() -> in_death_and_decay() ? ( as<int>(p() -> spell.deaths_due -> effectN( 2 ).base_value()) + s_data -> effectN ( 1 ).chain_target()): 0;
     }
     return num_targets;
   }
@@ -8593,6 +8594,7 @@ void death_knight_t::init_spells()
   spell.dnd_buff        = find_spell( 188290 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.sacrificial_pact_damage = find_spell( 327611 );
+  spell.deaths_due      = find_spell( 315442 );
   // Raise Dead abilities, used for both rank 1 and rank 2
   spell.pet_ghoul_claw         = find_spell( 91776 );
   spell.pet_gnaw               = find_spell( 91800 );
