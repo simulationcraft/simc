@@ -2202,7 +2202,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
-                    "dot.shadow_word_pain.ticking&!cooldown.mindbender.up",
+                    "dot.shadow_word_pain.ticking&pet.fiend.down",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
