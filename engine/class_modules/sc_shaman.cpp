@@ -4742,6 +4742,7 @@ struct lava_burst_t : public shaman_spell_t
       aoe = -1;
       background = true;
       base_execute_time = 0_s;
+      cooldown->duration = 0_s;
       switch ( type )
       {
         case lava_burst_type::PRIMORDIAL_WAVE:
