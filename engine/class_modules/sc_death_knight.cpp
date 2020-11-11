@@ -7590,11 +7590,6 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
     return;
   }
 
-  if ( ! spec.outbreak -> ok() )
-  {
-    return;
-  }
-
   death_knight_td_t* td = get_target_data( target );
 
   if ( ! td -> dot.virulent_plague -> is_ticking() )
@@ -8059,6 +8054,7 @@ void death_knight_t::create_actions()
     if ( spell.virulent_plague -> ok() )
     {
       active_spells.virulent_plague = new virulent_plague_t( this );
+      active_spells.virulent_eruption = new virulent_eruption_t( this );
     }
 
     if ( spell.blood_plague -> ok() )
@@ -9585,6 +9581,14 @@ void death_knight_t::activate()
       if ( spec.outbreak->ok() )
       {
         target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_virulent_plague_death( t ); } );
+      }
+    }
+
+    else
+    {
+      if ( legendary.superstrain -> ok() )
+      {
+        target -> register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
       }
     }
   } );
