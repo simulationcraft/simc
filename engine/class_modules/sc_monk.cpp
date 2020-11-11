@@ -202,6 +202,9 @@ public:
     // Azerite Traits
     action_t* fit_to_burst;
 
+    // Conduit
+    heal_t* evasive_stride;
+
     // Covenant
     action_t* bonedust_brew_dmg;
     action_t* bonedust_brew_heal;
@@ -653,6 +656,7 @@ public:
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
+    const spell_data_t* evasive_stride;
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
@@ -8945,6 +8949,20 @@ struct fit_to_burst_t : public monk_heal_t
   }
 };
 
+// ==========================================================================
+// Evasive Stride Conduit
+// ==========================================================================
+
+struct evasive_stride_t : public monk_heal_t
+{
+  evasive_stride_t( monk_t& p ) : monk_heal_t( "evasive_stride", p, p.find_spell( 343764 ) )
+  {
+    background  = true;
+    proc        = true;
+    target      = player;
+  }
+};
+
 }  // end namespace heals
 
 namespace absorbs
@@ -10105,6 +10123,7 @@ void monk_t::init_spells()
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );
+  passives.evasive_stride             = find_spell( 343764 );
 
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
@@ -10134,15 +10153,18 @@ void monk_t::init_spells()
   active_actions.stagger_self_damage    = new actions::stagger_self_damage_t( this );
 
   // Windwalker
-  active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
-  windwalking_aura                 = new actions::windwalking_aura_t( this );
+  active_actions.sunrise_technique      = new actions::sunrise_technique_t( this );
+  windwalking_aura                      = new actions::windwalking_aura_t( this );
 
   // Azerite Traits
-  active_actions.fit_to_burst = new actions::heals::fit_to_burst_t( *this );
+  active_actions.fit_to_burst           = new actions::heals::fit_to_burst_t( *this );
+
+  // Conduit
+  active_actions.evasive_stride         = new actions::heals::evasive_stride_t( *this );
 
   // Covenant
-  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
-  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
+  active_actions.bonedust_brew_dmg      = new actions::spells::bonedust_brew_damage_t( *this );
+  active_actions.bonedust_brew_heal     = new actions::spells::bonedust_brew_heal_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -12211,7 +12233,12 @@ double monk_t::current_stagger_tick_dmg()
   if ( conduit.evasive_stride->ok() )
   {
     if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.percent() ) )
-      dmg = 0;
+    {
+        active_actions.evasive_stride->base_dd_min = dmg;
+        active_actions.evasive_stride->base_dd_max = dmg;
+        active_actions.evasive_stride->execute();
+        dmg = 0;
+    }
   }
   return dmg;
 }
