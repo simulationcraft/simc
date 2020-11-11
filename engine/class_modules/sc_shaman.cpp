@@ -3994,16 +3994,12 @@ struct earthquake_t : public shaman_spell_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-  earthquake_damage_t* rumble;
-
   earth_elemental_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str ),
-      rumble( new earthquake_damage_t( player ) )
+    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str )
   {
     harmful = may_crit = false;
     cooldown->duration =
         player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
-    add_child( rumble );
   }
 
   void execute() override
