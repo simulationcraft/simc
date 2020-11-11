@@ -1369,8 +1369,8 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
           }
           else if ( splits[ 2 ] == "down" )
           {
-            bool down = get_cooldown( pet->name_str )->down();
-            return make_fn_expr( expression_str, [ pet, down ] { return down; } );
+            cooldown_t* cd = get_cooldown( pet->name_str );
+            return make_fn_expr( expression_str, [ cd ] { return cd->down(); } );
           }
 
           // build player/pet expression from the tail of the expression string.
