@@ -8035,6 +8035,7 @@ void death_knight_t::create_actions()
 
     if ( spec.outbreak -> ok() )
     {
+      active_spells.virulent_plague = new virulent_plague_t(this);
       active_spells.virulent_eruption = new virulent_eruption_t( this );
     }
   }
