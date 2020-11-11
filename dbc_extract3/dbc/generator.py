@@ -1703,6 +1703,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
+          ( 343764, 1 ), # Evasive Stride Heal
 
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
