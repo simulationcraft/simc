@@ -5800,16 +5800,19 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
 
   apl_default->add_action( "auto_attack" );
+  apl_default->add_action( "variable,name=brand_build,value=talent.agonizing_flames.enabled&talent.burning_alive.enabled&talent.charred_flesh.enabled" );
+  apl_default->add_action( this, "Disrupt" );
   // Only triggers if there is something to steal
   apl_default->add_action( this, "Consume Magic" );
-  apl_default->add_action( "call_action_list,name=brand" );
+  apl_default->add_action( this, "Throw Glaive", "if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)" );
+  apl_default->add_action( "call_action_list,name=brand,if=variable.brand_build" );
   apl_default->add_action( "call_action_list,name=defensives" );
   apl_default->add_action( "call_action_list,name=cooldowns" );
   apl_default->add_action( "call_action_list,name=normal" );
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  apl_defensives->add_action( this, "Metamorphosis" );
+  apl_defensives->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
@@ -5821,26 +5824,23 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down" );
   cooldowns->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
+  cooldowns->add_action( "sinful_brand,if=!sinful_brand.ticking" );
+  cooldowns->add_action( "the_hunt" );
+  cooldowns->add_action( "fodder_to_the_flame" );
+  cooldowns->add_action( "elysian_decree" );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&cooldown.fiery_brand.remains<2" );
-  apl_brand->add_action( this, "Infernal Strike", "if=cooldown.fiery_brand.remains=0" );
   apl_brand->add_action( this, "Fiery Brand" );
   apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_talent( this, "Fel Devastation", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Infernal Strike", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
-  apl_normal->add_action( "elysian_decree" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
   apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
-  apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
-  apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
-  apl_normal->add_talent( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Immolation Aura", "if=fury<=90" );
-  apl_normal->add_talent( this, "Felblade", "if=fury<=70" );
+  apl_normal->add_action( this, "Fel Devastation" );
+  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&(fury>=80|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70))))" );
+  apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
+  apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
   apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
   apl_normal->add_action( this, "Shear" );
