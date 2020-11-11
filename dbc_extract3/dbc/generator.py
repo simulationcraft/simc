@@ -1255,6 +1255,9 @@ class SpellDataGenerator(DataGenerator):
          330764,
          # Infinitely Divisible Ooze
          345495,
+         # Echo Of Eonar Legendary
+         347660, 347660, # Healing bonuses
+         347662, 347665, # Damage Reduction bonuses
         ),
 
         # Warrior:
