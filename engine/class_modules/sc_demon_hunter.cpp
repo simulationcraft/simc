@@ -5824,7 +5824,7 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down" );
   cooldowns->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
-  cooldowns->add_action( "sinful_brand,if=!sinful_brand.ticking" );
+  cooldowns->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   cooldowns->add_action( "the_hunt" );
   cooldowns->add_action( "fodder_to_the_flame" );
   cooldowns->add_action( "elysian_decree" );
