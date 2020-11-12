@@ -429,7 +429,8 @@ public:
     buff_t* starlord;  // talent
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
-    buff_t* starsurge;  // stacking eclipse empowerment
+    buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
+    buff_t* starsurge_lunar;  
     buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
@@ -1450,8 +1451,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
   double empowerment;
   double mastery_value;
+  unsigned eclipse_id;
 
-  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 )
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 ), eclipse_id( s->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
@@ -1460,9 +1462,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     // value, but parse them separately in case this changes in the future, as it was different in the past.
     auto ss = p.find_spell( 78674 );
 
-    if ( s->id() == p.spec.eclipse_solar->id() )
+    if ( eclipse_id == p.spec.eclipse_solar->id() )
       empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
-    else if ( s->id() == p.spec.eclipse_lunar->id() )
+    else if ( eclipse_id == p.spec.eclipse_lunar->id() )
       empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
   }
 
@@ -1487,7 +1489,11 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   {
     double v = base_t::value();
 
-    v += empowerment * p().buff.starsurge->stack();
+    if ( eclipse_id == p().spec.eclipse_solar->id() )
+      v += empowerment * p().buff.starsurge_solar->stack();
+
+    if ( eclipse_id == p().spec.eclipse_lunar->id() )
+      v += empowerment * p().buff.starsurge_lunar->stack();
 
     return v;
   }
@@ -1497,7 +1503,8 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.advance_eclipse();
-    p().buff.starsurge->expire();
+    p().buff.starsurge_solar->expire();
+    p().buff.starsurge_lunar->expire();
   }
 };
 
@@ -8674,7 +8681,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
+  buff.starsurge_solar = make_buff( this, "starsurge_empowerment_solar", find_affinity_spell( "Starsurge" ) )
+    ->set_cooldown( 0_ms )
+    ->set_duration( 0_ms )
+    ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
+
+  buff.starsurge_lunar = make_buff( this, "starsurge_empowerment_lunar", find_affinity_spell( "Starsurge" ) )
     ->set_cooldown( 0_ms )
     ->set_duration( 0_ms )
     ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
@@ -9341,7 +9353,7 @@ void druid_t::apl_guardian()
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( this, "Starfire",
-                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment.up)" );
+                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
   owlweave->add_action( this, "Wrath" );
 }
 
@@ -10876,11 +10888,17 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-  p->buff.starsurge->trigger();
+  if ( p->buff.eclipse_solar->up() ) {
+    p->buff.starsurge_solar->trigger();
+    if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+      p->buff.starsurge_solar->trigger();
+  }
 
-  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
-    p->buff.starsurge->trigger();
+  if ( p->buff.eclipse_lunar->up() ) {
+    p->buff.starsurge_lunar->trigger();
+    if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+      p->buff.starsurge_lunar->trigger();
+  }
 }
 
 void eclipse_handler_t::advance_eclipse()
