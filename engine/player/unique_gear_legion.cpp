@@ -4168,14 +4168,15 @@ struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    assert( active_target );
-
+    // If the debuff expires while a callback execute event it scheduled,
+    // the active_target will be set to nullptr just before execute is called.
+    // If that happens, just bail out.
+    if ( !active_target )
+      return;
     if ( trigger_state -> target == active_target )
       return;
     if ( trigger_state -> result_amount <= 0 )
       return;
-
-    assert( player -> get_target_data( active_target ) -> debuff.taint_of_the_sea -> check() );
 
     damage -> target = active_target;
     damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
