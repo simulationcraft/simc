@@ -8599,7 +8599,7 @@ void shaman_t::create_buffs()
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+    ->set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
   buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
     ->set_trigger_spell( talent.hot_hand )
     ->set_default_value_from_effect( 2 )
