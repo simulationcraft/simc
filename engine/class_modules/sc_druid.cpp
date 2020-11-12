@@ -279,11 +279,6 @@ public:
 
   // Azerite
   streaking_stars_e previous_streaking_stars;
-  double lucid_dreams_proc_chance_balance;
-  double lucid_dreams_proc_chance_feral;
-  double lucid_dreams_proc_chance_guardian;
-  double vision_of_perfection_dur;
-  double vision_of_perfection_cdr;
 
   // RPPM objects
   struct rppms_t
@@ -299,8 +294,6 @@ public:
   // Options
   double predator_rppm_rate;
   double initial_astral_power;
-  double thorns_attack_period;
-  double thorns_hit_chance;
   int initial_moon_stage;
   int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
@@ -382,13 +375,7 @@ public:
     azerite_power_t masterful_instincts;
     azerite_power_t twisted_claws;
     azerite_power_t burst_of_savagery;
-
-    // essences
-    azerite_essence_t conflict_and_strife;
   } azerite;
-
-  // azerite essence
-  const spell_data_t* lucid_dreams; // Memory of Lucid Dreams R1 MINOR BASE
 
   // Buffs
   struct buffs_t
@@ -404,7 +391,6 @@ public:
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
     buff_t* innervate;
-    buff_t* thorns;
     buff_t* heart_of_the_wild;
     // General Legendaries
     buff_t* oath_of_the_elder_druid;
@@ -494,7 +480,6 @@ public:
     buff_t* raking_ferocity;
     buff_t* arcanic_pulsar;
     buff_t* jungle_fury;
-    buff_t* strife_doubled;
   } buff;
 
   // Cooldowns
@@ -522,7 +507,6 @@ public:
     // Multiple Specs / Forms
     gain_t* clearcasting;        // Feral & Restoration
     gain_t* soul_of_the_forest;  // Feral & Guardian
-    gain_t* lucid_dreams;
 
     // Balance
     gain_t* natures_balance;  // talent
@@ -539,7 +523,6 @@ public:
     gain_t* incarnation;
     gain_t* primordial_arcanic_pulsar;
     gain_t* arcanic_pulsar;
-    gain_t* vision_of_perfection;
 
     // Feral (Cat)
     gain_t* brutal_slash;
@@ -583,9 +566,6 @@ public:
   // Procs
   struct procs_t
   {
-    // General
-    proc_t* vision_of_perfection;
-
     // Feral & Resto
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
@@ -831,7 +811,6 @@ public:
   struct uptimes_t
   {
     uptime_t* arcanic_pulsar;
-    uptime_t* vision_of_perfection;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse;
   } uptime;
@@ -869,13 +848,8 @@ public:
       eclipse_handler( this ),
       spec_override( spec_override_t() ),
       previous_streaking_stars( SS_NONE ),
-      lucid_dreams_proc_chance_balance( 0.15 ),
-      lucid_dreams_proc_chance_feral( 0.15 ),
-      lucid_dreams_proc_chance_guardian( 0.15 ),
       predator_rppm_rate( 0.0 ),
       initial_astral_power( 0 ),
-      thorns_attack_period( 2.0 ),
-      thorns_hit_chance( 0.75 ),
       initial_moon_stage( NEW_MOON ),
       lively_spirit_stacks( 9 ),  // set a usually fitting default value
       eclipse_snapshot_period( 3.0 ),
@@ -893,7 +867,6 @@ public:
       caster_melee_attack( nullptr ),
       cat_melee_attack( nullptr ),
       bear_melee_attack( nullptr ),
-      lucid_dreams( spell_data_t::not_found() ),
       buff( buffs_t() ),
       cooldown( cooldowns_t() ),
       gain( gains_t() ),
@@ -995,7 +968,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double resource_regen_per_second( resource_e ) const override;
-  double resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
+  //double resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
@@ -1020,7 +993,6 @@ public:
                                                int misc_value                     = P_GENERIC,
                                                const spell_data_t* affected_spell = spell_data_t::nil(),
                                                effect_type_t type                 = E_APPLY_AURA ) const;
-  void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
 
   // secondary actions
@@ -1781,7 +1753,6 @@ public:
   using base_t = druid_action_t<Base>;
 
   bool triggers_galactic_guardian;
-  double lucid_dreams_multiplier;
   bool is_auto_attack;
 
   free_cast_e free_cast;
@@ -1803,7 +1774,6 @@ public:
       may_autounshift( true ),
       autoshift( 0 ),
       triggers_galactic_guardian( true ),
-      lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
       is_auto_attack( false ),
       free_cast( free_cast_e::NONE ),
       free_cast_stats(),
@@ -2343,61 +2313,6 @@ public:
     return ab::ready();
   }
 
-  void trigger_lucid_dreams()
-  {
-    if ( !p()->lucid_dreams->ok() )
-      return;
-
-    if ( ab::last_resource_cost <= 0.0 )
-      return;
-
-    double proc_chance = 0.0;
-
-    switch ( p()->specialization() )
-    {
-      case DRUID_BALANCE:
-        proc_chance = p()->lucid_dreams_proc_chance_balance;
-        break;
-      case DRUID_FERAL:
-        proc_chance = p()->lucid_dreams_proc_chance_feral;
-        break;
-      case DRUID_GUARDIAN:
-        proc_chance = p()->lucid_dreams_proc_chance_guardian;
-        break;
-      default:
-        break;
-    }
-
-    if ( ab::rng().roll( proc_chance ) )
-    {
-      switch ( p()->specialization() )
-      {
-        case DRUID_BALANCE:
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, lucid_dreams_multiplier * ab::last_resource_cost,
-                              p()->gain.lucid_dreams );
-          break;
-        case DRUID_FERAL:
-          p()->resource_gain( RESOURCE_ENERGY, lucid_dreams_multiplier * ab::last_resource_cost,
-                              p()->gain.lucid_dreams );
-          break;
-        case DRUID_GUARDIAN:
-          p()->resource_gain( RESOURCE_RAGE, lucid_dreams_multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
-          break;
-        default:
-          break;
-      }
-
-      p()->player_t::buffs.lucid_dreams->trigger();
-    }
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    trigger_lucid_dreams();
-  }
-
   void trigger_gore()  // need this here instead of bear_attack_t because of moonfire
   {
     if ( !p()->spec.gore->ok() )
@@ -2803,19 +2718,6 @@ public:
     : base_t( n, p, s ), update_eclipse( false )
   {
     parse_options( opt );
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double e = ab::composite_energize_amount( s );
-
-    if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
-    {
-      if ( p()->buffs.memory_of_lucid_dreams->up() )
-        e *= 1.0 + p()->buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-    }
-
-    return e;
   }
 
   void consume_resource() override
@@ -3737,7 +3639,6 @@ struct berserk_cat_t : public cat_attack_t
     : cat_attack_t( "berserk", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
   }
 
   void execute() override
@@ -4937,12 +4838,6 @@ struct maul_t : public bear_attack_t
       p()->buff.guardians_wrath->up();  // benefit tracking
       p()->buff.guardians_wrath->trigger();
     }
-
-    if ( p()->azerite.conflict_and_strife.is_major() && p()->talent.sharpened_claws->ok() )
-    {
-      p()->buff.sharpened_claws->up();  // benefit tracking
-      p()->buff.sharpened_claws->trigger();
-    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -5646,7 +5541,6 @@ struct celestial_alignment_t : public druid_spell_t
     : druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str )
   {
     harmful = false;
-    cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
   }
 
   void execute() override
@@ -5655,7 +5549,6 @@ struct celestial_alignment_t : public druid_spell_t
 
     p()->buff.celestial_alignment->trigger();
     p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
-    p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
     // Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
@@ -6169,11 +6062,9 @@ struct incarnation_t : public druid_spell_t
     {
       case DRUID_BALANCE:
         spec_buff = p->buff.incarnation_moonkin;
-        cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
         break;
       case DRUID_FERAL:
         spec_buff = p->buff.incarnation_cat;
-        cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
         break;
       case DRUID_GUARDIAN:
         spec_buff = p->buff.incarnation_bear;
@@ -6197,7 +6088,6 @@ struct incarnation_t : public druid_spell_t
     if ( p()->buff.incarnation_moonkin->check() )
     {
       p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
-      p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
     }
@@ -6238,14 +6128,6 @@ struct entangling_roots_t : public druid_spell_t
       return true;
 
     return druid_spell_t::check_form_restriction();
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( p()->buff.strife_doubled )  // Check for essence happens in arise(). If null here means we don't have it.
-      p()->buff.strife_doubled->trigger();
   }
 };
 
@@ -7014,10 +6896,6 @@ struct survival_instincts_t : public druid_spell_t
   {
     harmful     = false;
     use_off_gcd = true;
-
-    // Because vision of perfection does exist, but does not affect this spell for feral.
-    if ( player->specialization() == DRUID_GUARDIAN )
-      cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
   }
 
   void execute() override
@@ -7025,104 +6903,6 @@ struct survival_instincts_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.survival_instincts->trigger();
-  }
-};
-
-// Thorns ===================================================================
-
-struct thorns_t : public druid_spell_t
-{
-  struct thorns_proc_t : public druid_spell_t
-  {
-    thorns_proc_t( druid_t* player ) : druid_spell_t( "thorns_hit", player, player->find_spell( 305496 ) )
-    {
-      background = true;
-      if ( p()->specialization() == DRUID_FERAL )
-      {  // a little gnarly, TODO(xan): clean this up
-        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, A_366 )->percent();
-        spell_power_mod.direct  = 0;
-      }
-    }
-  };
-
-  struct thorns_attack_event_t : public event_t
-  {
-    action_t* thorns;
-    player_t* target_actor;
-    timespan_t attack_period;
-    druid_t* source;
-    bool randomize_first;
-    double hit_chance;
-
-    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false )
-      : event_t( *player ),
-        thorns( thorns_proc ),
-        target_actor( source ),
-        attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ),
-        source( player ),
-        randomize_first( randomize ),
-        hit_chance( player->thorns_hit_chance )
-    {
-      // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
-      if ( randomize_first )
-        schedule( rng().real() * attack_period );
-      else
-        schedule( attack_period );
-    }
-
-    const char* name() const override { return "Thorns auto attack event"; }
-
-    void execute() override
-    {
-      // Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
-
-      if ( target_actor->is_sleeping() )
-        return;
-
-      thorns->target = target_actor;
-      if ( thorns->ready() && thorns->cooldown->up() && rng().roll( hit_chance ) )
-        thorns->execute();
-
-      if ( source->buff.thorns->remains() >= attack_period )
-        make_event<thorns_attack_event_t>( *source->sim, source, thorns, target_actor, false );
-    }
-  };
-
-  bool available             = false;
-  thorns_proc_t* thorns_proc = nullptr;
-
-  thorns_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "thorns", player, player->find_spell( 305497 ), options_str )
-  {
-    available = p()->azerite.conflict_and_strife.is_major();
-    // workaround so that we do not need to enable mana regen
-    base_costs[ RESOURCE_MANA ] = 0.0;
-
-    if ( !thorns_proc )
-    {
-      thorns_proc        = new thorns_proc_t( player );
-      thorns_proc->stats = stats;
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !available )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    p()->buff.thorns->trigger();
-
-    for ( player_t* target : p()->sim->target_non_sleeping_list )
-    {
-      make_event<thorns_attack_event_t>( *sim, p(), thorns_proc, target, true );
-    }
-
-    druid_spell_t::execute();
   }
 };
 
@@ -8128,7 +7908,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
-  if ( name == "thorns"                 ) return new                 thorns_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
 
@@ -8450,16 +8229,6 @@ void druid_t::init_spells()
   azerite.twisted_claws = find_azerite_spell("Twisted Claws");
   azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
-  //Azerite essences
-  auto essence_vop = find_azerite_essence("Vision of Perfection");
-  vision_of_perfection_cdr = azerite::vision_of_perfection_cdr(essence_vop);
-  vision_of_perfection_dur = essence_vop.spell(1u, essence_type::MAJOR)->effectN(1).percent()
-    + essence_vop.spell(2u, essence_spell::UPGRADE, essence_type::MAJOR)->effectN(1).percent();
-
-  lucid_dreams = find_azerite_essence("Memory of Lucid Dreams").spell(1u, essence_type::MINOR);
-
-  azerite.conflict_and_strife = find_azerite_essence("Conflict and Strife");
-
   // Affinities =============================================================
 
   spec.feline_swiftness = check_data( specialization() == DRUID_FERAL || talent.feral_affinity->ok(),
@@ -8601,8 +8370,6 @@ void druid_t::create_buffs()
   buff.innervate = make_buff<innervate_buff_t>( *this );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
-
-  buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
 
   buff.wild_charge_movement = make_buff( this, "wild_charge_movement" );
 
@@ -8892,8 +8659,6 @@ void druid_t::create_buffs()
 
   buff.burst_of_savagery = make_buff<stat_buff_t>( this, "burst_of_savagery", find_spell( 289315 ) )
                                ->add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
-
-  player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
 }
 
 void druid_t::create_actions()
@@ -9444,9 +9209,6 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  // General
-  gain.lucid_dreams = get_gain( "lucid_dreams" );
-
   if ( specialization() == DRUID_BALANCE )
   {
     gain.natures_balance           = get_gain( "natures_balance" );
@@ -9462,7 +9224,6 @@ void druid_t::init_gains()
     gain.incarnation               = get_gain( "incarnation" );
     gain.primordial_arcanic_pulsar = get_gain( "primordial_arcanic_pulsar" );
     gain.arcanic_pulsar            = get_gain( "arcanic_pulsar" );
-    gain.vision_of_perfection      = get_gain( "vision_of_perfection" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
@@ -9507,9 +9268,6 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  // General
-  proc.vision_of_perfection  = get_proc( "Vision of Perfection" );  //->collect_count()->collect_interval();
-
   // Balance
   proc.power_of_the_moon     = get_proc( "Power of the Moon" );     //->collect_count();
   proc.arcanic_pulsar        = get_proc( "Arcanic Pulsar Proc" );   //->collect_interval();
@@ -9540,13 +9298,11 @@ void druid_t::init_uptimes()
   if ( talent.incarnation_moonkin->ok() )
   {
     uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
-    uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" );//->collect_uptime();
     uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
   }
   else
   {
     uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" );//->collect_uptime();
     uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
   }
 }
@@ -9673,22 +9429,9 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   {
     if ( buff.savage_roar->check() )
       reg *= 1.0 + spec.savage_roar->effectN( 3 ).percent();
-
-    if ( player_t::buffs.memory_of_lucid_dreams->check() )
-      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
 
   return reg;
-}
-
-// druid_t::resource_gain ===================================================
-
-double druid_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  if ( resource_type == RESOURCE_RAGE && player_t::buffs.memory_of_lucid_dreams->up() )
-    amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-
-  return player_t::resource_gain( resource_type, amount, source, action );
 }
 
 // druid_t::available =======================================================
@@ -9737,10 +9480,6 @@ void druid_t::arise()
 
   if ( talent.earthwarden->ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
-
-  // Conflict major rank 3 buff to double the minor vers buff
-  if ( azerite.conflict_and_strife.is_major() && azerite.conflict_and_strife.rank() >= 3 )
-    buff.strife_doubled = buff_t::find( this, "conflict_vers" );
 }
 
 void druid_t::combat_begin()
@@ -10462,8 +10201,6 @@ void druid_t::create_options()
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
-  add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
-  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
@@ -10993,59 +10730,6 @@ void eclipse_handler_t::reset_state()
   state = ANY_NEXT;
 }
 
-void druid_t::vision_of_perfection_proc()
-{
-  buff_t* vp_buff;
-  timespan_t vp_dur;
-
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-      if ( talent.incarnation_moonkin->ok() )
-        vp_buff = buff.incarnation_moonkin;
-      else
-        vp_buff = buff.celestial_alignment;
-
-      resource_gain( RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection );
-
-      if ( azerite.streaking_stars.ok() )
-        previous_streaking_stars = SS_CELESTIAL_ALIGNMENT;
-      break;
-
-    case DRUID_GUARDIAN:
-      vp_buff = buff.incarnation_bear;
-      cooldown.mangle->reset( false );
-      cooldown.thrash_bear->reset( false );
-      cooldown.growl->reset( false );
-      cooldown.maul->reset( false );
-      break;
-
-    case DRUID_FERAL:
-      if ( talent.incarnation_cat->ok() )
-        vp_buff = buff.incarnation_cat;
-      else
-        vp_buff = buff.berserk_cat;
-      break;
-
-    default:
-      return;
-  }
-
-  vp_dur = vp_buff->data().duration() * vision_of_perfection_dur;
-
-  vp_buff->extend_duration_or_trigger( vp_dur, this );
-
-  proc.vision_of_perfection->occur();
-
-  if ( specialization() == DRUID_BALANCE )
-  {
-    uptime.vision_of_perfection->update( true, sim->current_time() );
-    make_event( *sim, vp_dur, [this]() {
-      uptime.vision_of_perfection->update( false, sim->current_time() );
-    } );
-  }
-}
-
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() )
 {
@@ -11099,8 +10783,6 @@ void druid_t::copy_from( player_t* source )
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
-  thorns_attack_period         = p->thorns_attack_period;
-  thorns_hit_chance            = p->thorns_hit_chance;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
