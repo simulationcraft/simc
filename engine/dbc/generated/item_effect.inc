@@ -1,5 +1,5 @@
 // Item effects, wow build 9.0.2.36532
-static const std::array<item_effect_t, 7485> __item_effect_data { {
+static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7378,7 +7378,7 @@ static const std::array<item_effect_t, 7485> __item_effect_data { {
   { 117971, 329840, 179331,   0,   0,    0,      -1,      -1 }, // Blood Barrier
   { 117972, 329852, 179331,   1,   1,    0,      -1,      -1 }, // Blood Barrier
   { 117970, 329831, 179342,   0,   0,    0,      -1,      -1 }, // Power Overwhelming
-  { 118008, 330323, 179350,   0,   0,    0,  180000,      -1 }, // Inscrutable Quantum Device
+  { 118008, 330323, 179350,   0,   0,    0,      -1,      -1 }, // Inscrutable Quantum Device
   { 136360, 348098, 179350,   1,   1,    0,      -1,      -1 }, // Inscrutable Quantum Device
   { 117969, 331523, 179356,   0,   0,    0,      -1,      -1 }, // Shadowgrasp Totem
   { 117973, 329878, 179356,   1,   1,    0,      -1,      -1 }, // Shadowgrasp Totem
@@ -7485,9 +7485,15 @@ static const std::array<item_effect_t, 7485> __item_effect_data { {
   { 135984,  42292, 184269,   0,   0, 1182,  120000,  120000 }, // PvP Trinket
   { 136257, 347455, 184682,   0,   0,   11,       0,    1000 }, // Extra Lemony Herb Filet
   { 136359, 347760, 184807,   0,   1,    0,      -1,      -1 }, // Relic of the First Ones
+  { 136361, 344117, 184839,   0,   1,    0,      -1,      -1 }, // Synaptic Feedback
+  { 136362, 348135, 184840,   0,   1,    0,      -1,      -1 }, // Hymnal of the Path
+  { 136363, 348137, 184841,   0,   1,    0,      -1,      -1 }, // Lyre of Sacred Purpose
+  { 136364, 348136, 184841,   1,   0,    0,      -1,      -1 }, // Lyre of Sacred Purpose
+  { 136365, 348138, 184842,   0,   1,    0,      -1,      -1 }, // Instructor's Divine Bell
+  { 136366, 348139, 184842,   1,   0,    0,      -1,      -1 }, // Instructor's Divine Bell
 } };
 
-static const std::array<uint16_t, 7485> __item_effect_id_index { {
+static const std::array<uint16_t, 7491> __item_effect_id_index { {
     293,   294,   295,   296,   297,   298,   299,   302,
     303,   304,   305,   306,   307,   308,   309,   310,
     311,   312,   313,   314,   317,   318,   319,   320,
@@ -8423,6 +8429,7 @@ static const std::array<uint16_t, 7485> __item_effect_id_index { {
    7395,  7389,  7393,  7390,  7391,  7392,  7346,  7347,
    7348,  7356,  7357,  7355,  7353,  7358,  7362,  7363,
    7359,  7360,  7361,  7364,  7403,   224,   225,  7426,
-   7414,  7483,  7437,  7484,  7379,
+   7414,  7483,  7437,  7484,  7379,  7485,  7486,  7487,
+   7488,  7489,  7490,
 } };
 

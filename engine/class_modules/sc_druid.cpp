@@ -10371,29 +10371,7 @@ struct druid_module_t : public module_t
       ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
   }
   void static_init() const override {}
-  void register_hotfixes() const override
-  {
-    hotfix::register_effect( "Druid", "Nov 10", "Feral Druid Aura (Direct)", 179694 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 29 )
-      .verification_value( 20 );
-    hotfix::register_effect( "Druid", "Nov 10", "Feral Druid Aura (Periodic)", 191154 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 29 )
-      .verification_value( 20 );
-    hotfix::register_effect( "Druid", "Nov 10", "Restoration Druid Damage Aura (Direct)", 191153 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 25 )
-      .verification_value( 31 );
-    hotfix::register_effect( "Druid", "Nov 10", "Restoration Druid Damage Aura (Periodic)", 260747 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 25 )
-      .verification_value( 31 );
-  }
+  void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
