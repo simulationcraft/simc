@@ -10888,15 +10888,20 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
+  bool stellar_inspiration_proc = false;
+
+  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+    stellar_inspiration_proc = true;
+
   if ( p->buff.eclipse_solar->up() ) {
     p->buff.starsurge_solar->trigger();
-    if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+    if ( stellar_inspiration_proc )
       p->buff.starsurge_solar->trigger();
   }
 
   if ( p->buff.eclipse_lunar->up() ) {
     p->buff.starsurge_lunar->trigger();
-    if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
+    if ( stellar_inspiration_proc )
       p->buff.starsurge_lunar->trigger();
   }
 }
