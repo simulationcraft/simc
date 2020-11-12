@@ -1127,13 +1127,23 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
     }
 };
 
-// TODO: fix AoE scaling once the formula is found, implement healing as well
+struct hallowed_discernment_heal_tick_t : public paladin_heal_t
+{
+  // This should be using 340214 but I don't have its spell data.
+  hallowed_discernment_heal_tick_t( paladin_t* p ) :
+    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 317221 ) )
+    {
+      base_multiplier *= p -> conduit.hallowed_discernment.percent();
+      background = true;
+    }
+};
+
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
-  hallowed_discernment_tick_t* hallowed_discernment_tick;
+  hallowed_discernment_tick_t* hd_damage_tick;
   ashen_hallow_tick_t( paladin_t* p, hallowed_discernment_tick_t* hallowed_discernment ) :
     paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) ),
-    hallowed_discernment_tick( hallowed_discernment )
+    hd_damage_tick( hallowed_discernment )
   {
     aoe = -1;
     dual = true;
@@ -1157,6 +1167,9 @@ struct ashen_hallow_tick_t : public paladin_spell_t
 
   void execute() override
   {
+    // To Do: Check if the initial tick affects the target picked, if not then move this down
+    paladin_spell_t::execute();
+
     if ( p() -> conduit.hallowed_discernment -> ok() )
     {
       std::vector<player_t*> targets = target_list();
@@ -1175,27 +1188,46 @@ struct ashen_hallow_tick_t : public paladin_spell_t
           return lhs -> health_percentage() < rhs -> health_percentage();
         }
       );
-      hallowed_discernment_tick -> set_target( lowest_hp_target );
-
-      // To Do: Check if the initial tick affects the target picked, if so then move this up
-      paladin_spell_t::execute();
-
+      hd_damage_tick -> set_target( lowest_hp_target );
       // Damage is calculated independently of Ashen Hallow. ie. they crit separately
       // Hitting more targets with Ashen Hallow reduces the damage of Hallowed Discernment
-      hallowed_discernment_tick -> aoe_multiplier = composite_aoe_multiplier( execute_state );
-      hallowed_discernment_tick -> execute();
-      return;
+      hd_damage_tick -> aoe_multiplier = composite_aoe_multiplier( execute_state );
+      hd_damage_tick -> execute();
     }
+  }
+};
 
-    paladin_spell_t::execute();
+// Heal aoe cap not implemented. Hallowed Discernment target selection not implemented.
+struct ashen_hallow_heal_tick_t : public paladin_heal_t
+{
+  hallowed_discernment_heal_tick_t* hd_heal_tick;
+  ashen_hallow_heal_tick_t( paladin_t* p ) :
+    paladin_heal_t( "ashen_hallow_heal_tick", p, p -> find_spell( 317223 ) ),
+    hd_heal_tick( new hallowed_discernment_heal_tick_t( p ) )
+  {
+    aoe = -1;
+    dual = true;
+    direct_tick = true;
+    background = true;
+    ground_aoe = true;
+  }
+
+  void execute() override
+  {
+    paladin_heal_t::execute();
+    if ( p() -> conduit.hallowed_discernment -> ok() )
+    {
+      hd_heal_tick -> execute();
+    }
   }
 };
 
 struct ashen_hallow_t : public paladin_spell_t
 {
   ashen_hallow_tick_t* damage_tick;
+  ashen_hallow_heal_tick_t* heal_tick;
   ground_aoe_params_t hallow_params;
-  hallowed_discernment_tick_t* hallowed_discernment;
+  hallowed_discernment_tick_t* hd_damage;
 
   ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr )
@@ -1205,12 +1237,15 @@ struct ashen_hallow_t : public paladin_spell_t
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
     may_miss = false;
 
-    hallowed_discernment = new hallowed_discernment_tick_t( p );
-    damage_tick = new ashen_hallow_tick_t( p, hallowed_discernment );
+    hd_damage = new hallowed_discernment_tick_t( p );
+    damage_tick = new ashen_hallow_tick_t( p, hd_damage );
+    heal_tick = new ashen_hallow_heal_tick_t( p );
 
     add_child( damage_tick );
     if ( p -> conduit.hallowed_discernment -> ok() )
-      add_child( hallowed_discernment );
+    {
+      add_child( hd_damage );
+    }
   }
 
   void execute() override
@@ -1218,14 +1253,16 @@ struct ashen_hallow_t : public paladin_spell_t
     paladin_spell_t::execute();
     timespan_t tick_time = data().effectN( 2 ).period();
 
+    hallow_params = ground_aoe_params_t()
+      .duration( data().duration() - tick_time - 100_ms )
+      .pulse_time( tick_time )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .start_time( sim -> current_time() + tick_time )
+      .x( execute_state -> target -> x_position )
+      .y( execute_state -> target -> y_position );
+
     make_event<ground_aoe_event_t>( *sim, p(),
-      ground_aoe_params_t()
-        .target( execute_state -> target )
-        .duration( data().duration() - tick_time - 100_ms )
-        .pulse_time( tick_time )
-        .hasted( ground_aoe_params_t::SPELL_HASTE )
-        .action( damage_tick )
-        .start_time( sim -> current_time() + tick_time )
+      hallow_params.action( damage_tick )
         .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
@@ -1237,8 +1274,14 @@ struct ashen_hallow_t : public paladin_spell_t
           break;
         default:
           break;
-        } } ),
+        } } )
+        .target( execute_state -> target ),
       true );
+
+    make_event<ground_aoe_event_t>( *sim, p() ,
+      hallow_params.action( heal_tick )
+      .target( p() ), true
+    );
   }
 };
 
