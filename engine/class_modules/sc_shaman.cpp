@@ -8922,7 +8922,11 @@ void shaman_t::init_action_list_elemental()
         "target_if=refreshable&(spell_targets.chain_lightning<5|!pet.storm_elemental.active"
         "|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
         "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
-        "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
+                     "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
+    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
+    aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.up&buff.echoing_shock.up" );
+    aoe->add_action( this, "Earthquake",
+                     "if=buff.echoing_shock.up&cooldown.stormkeeper.remains>buff.echoing_shock.remains+2*gcd" );
     aoe->add_talent(
         this, "Ascendance",
         "if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
@@ -9015,6 +9019,7 @@ void shaman_t::init_action_list_elemental()
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
     single_target->add_action( "chain_harvest" );
+    single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet."
                                "fire_elemental.active)&!talent.storm_elemental.enabled|!pet.storm_elemental."
