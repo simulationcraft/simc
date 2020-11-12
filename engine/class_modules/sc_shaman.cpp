@@ -8939,18 +8939,17 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack",
                      "Make sure you don't lose a Stormkeeper buff." );
     aoe->add_action( this, "Lava Burst",
-                     "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.up)&dot.flame_shock.ticking",
+                     "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking",
                      "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
     aoe->add_talent( this, "Icefury", "if=spell_targets.chain_lightning<4&!buff.ascendance.up" );
     aoe->add_action( this, "Frost Shock", "if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up" );
     aoe->add_talent(
         this, "Elemental Blast",
-        "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|"
-        "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30))",
+        "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)",
         "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
     aoe->add_action( this, "Lava Beam", "if=talent.ascendance.enabled" );
     aoe->add_action( this, "Chain Lightning" );
-    aoe->add_action( this, "Lava Burst", "moving=1,if=talent.ascendance.enabled" );
+    aoe->add_action( this, "Lava Burst", "moving=1,if=buff.lava_surge.up&cooldown_react" );
     aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     aoe->add_action( this, "Frost Shock", "moving=1" );
 
@@ -9020,7 +9019,6 @@ void shaman_t::init_action_list_elemental()
                                "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet."
                                "fire_elemental.active)&!talent.storm_elemental.enabled|!pet.storm_elemental."
                                "active&talent.storm_elemental.enabled" );
-    single_target->add_action( this, "Chain Lightning", "if=!buff.stormkeeper.up&spell_targets.chain_lightning>1" );
     single_target->add_action( this, "Lightning Bolt", "" );
     single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
