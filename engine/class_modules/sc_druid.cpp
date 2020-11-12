@@ -39,27 +39,6 @@ enum moon_stage_e
   MAX_MOON,
 };
 
-// Azerite Trait
-enum streaking_stars_e
-{
-  SS_NONE,
-  // Spells
-  SS_STARFIRE,
-  SS_WRATH,
-  SS_MOONFIRE,
-  SS_SUNFIRE,
-  SS_STARSURGE,
-  SS_STELLAR_FLARE,
-  SS_NEW_MOON,
-  SS_HALF_MOON,
-  SS_FULL_MOON,
-  // These target the last hit enemy in game
-  SS_STARFALL,
-  SS_FORCE_OF_NATURE,
-  SS_FURY_OF_ELUNE,
-  SS_CELESTIAL_ALIGNMENT,
-};
-
 enum eclipse_state_e
 {
   ANY_NEXT,
@@ -277,9 +256,6 @@ public:
     double spell_power;
   } spec_override;
 
-  // Azerite
-  streaking_stars_e previous_streaking_stars;
-
   // RPPM objects
   struct rppms_t
   {
@@ -287,15 +263,12 @@ public:
     real_ppm_t* predator;    // Optional RPPM approximation
     real_ppm_t* blood_mist;  // Azerite trait
 
-    // Balance
-    real_ppm_t* power_of_the_moon;
   } rppm;
 
   // Options
   double predator_rppm_rate;
   double initial_astral_power;
   int initial_moon_stage;
-  int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool catweave_bear;
   bool owlweave_bear;
@@ -316,10 +289,6 @@ public:
     action_t* natures_guardian;
     spell_t* shooting_stars;
     action_t* yseras_gift;
-
-    // Azerite
-    spell_t* lunar_shrapnel;
-    spell_t* streaking_stars;
 
     // Covenant
     spell_t* kindred_empowerment;
@@ -350,14 +319,6 @@ public:
   // Azerite
   struct azerite_t
   {
-    // Balance
-    azerite_power_t lively_spirit;
-    azerite_power_t dawning_sun;
-    azerite_power_t lunar_shrapnel;
-    azerite_power_t power_of_the_moon;
-    azerite_power_t high_noon;
-    azerite_power_t streaking_stars;
-    azerite_power_t arcanic_pulsar;
     // Feral
     azerite_power_t blood_mist;           // check spelldata
     azerite_power_t gushing_lacerations;  // check spelldata
@@ -473,12 +434,9 @@ public:
     buff_t* harmony;  // NYI
 
     // Azerite
-    buff_t* dawning_sun;
-    buff_t* lively_spirit;
     buff_t* shredding_fury;
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
-    buff_t* arcanic_pulsar;
     buff_t* jungle_fury;
   } buff;
 
@@ -522,7 +480,6 @@ public:
     gain_t* celestial_alignment;
     gain_t* incarnation;
     gain_t* primordial_arcanic_pulsar;
-    gain_t* arcanic_pulsar;
 
     // Feral (Cat)
     gain_t* brutal_slash;
@@ -576,12 +533,6 @@ public:
     proc_t* primal_fury;
     proc_t* blood_mist;
     proc_t* gushing_lacerations;
-
-    // Balance
-    proc_t* power_of_the_moon;
-    proc_t* streaking_star;
-    proc_t* wasted_streaking_star;
-    proc_t* arcanic_pulsar;
 
     // Guardian
     proc_t* gore;
@@ -810,7 +761,6 @@ public:
 
   struct uptimes_t
   {
-    uptime_t* arcanic_pulsar;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse;
   } uptime;
@@ -847,11 +797,9 @@ public:
       form( NO_FORM ),
       eclipse_handler( this ),
       spec_override( spec_override_t() ),
-      previous_streaking_stars( SS_NONE ),
       predator_rppm_rate( 0.0 ),
       initial_astral_power( 0 ),
       initial_moon_stage( NEW_MOON ),
-      lively_spirit_stacks( 9 ),  // set a usually fitting default value
       eclipse_snapshot_period( 3.0 ),
       catweave_bear( false ),
       owlweave_bear( false ),
@@ -1321,18 +1269,6 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
 struct innervate_buff_t : public druid_buff_t<buff_t>
 {
   innervate_buff_t( druid_t& p ) : base_t( p, "innervate", p.spec.innervate ) {}
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    druid_t* p = debug_cast<druid_t*>( player );
-
-    if ( p->azerite.lively_spirit.enabled() )
-    {
-      p->buff.lively_spirit->trigger( p->lively_spirit_stacks );
-    }
-  }
 };
 
 // Ursine Vigor =============================================================
@@ -2338,38 +2274,6 @@ public:
     }
   }
 
-  virtual bool compare_previous_streaking_stars( streaking_stars_e new_ability )
-  {
-    if ( p()->previous_streaking_stars == new_ability )
-    {
-      p()->proc.wasted_streaking_star->occur();
-      return true;
-    }
-    return new_ability == SS_CELESTIAL_ALIGNMENT;
-  }
-
-  virtual void streaking_stars_trigger( streaking_stars_e new_ability, action_state_t* s )
-  {
-    if ( p()->azerite.streaking_stars.ok() &&
-         ( p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check() ) )
-    {
-      if ( !compare_previous_streaking_stars( new_ability ) )
-      {
-        action_state_t* ss_s = p()->active.streaking_stars->get_state();
-
-        if ( s != nullptr )
-          ss_s->target = s->target;
-        else
-          ss_s->target = ab::target;
-
-        p()->active.streaking_stars->snapshot_state( ss_s, result_amount_type::DMG_DIRECT );
-        p()->active.streaking_stars->schedule_execute( ss_s );
-        p()->proc.streaking_star->occur();
-      }
-      p()->previous_streaking_stars = new_ability;
-    }
-  }
-
   bool verify_actor_spec() const override
   {
     if ( p()->find_affinity_spell( ab::name() )->found() || range::contains( p()->secondary_action_list, this ) )
@@ -2903,15 +2807,6 @@ struct moonfire_t : public druid_spell_t
       return am;
     }
 
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double ta = druid_spell_t::bonus_ta( s );
-
-      ta += p()->azerite.power_of_the_moon.value( 2 );
-
-      return ta;
-    }
-
     dot_t* get_dot( player_t* t ) override
     {
       if ( !t ) t = target;
@@ -2948,14 +2843,6 @@ struct moonfire_t : public druid_spell_t
       druid_spell_t::tick( d );
 
       proc_shooting_stars( d->target );
-
-      if ( !p()->azerite.power_of_the_moon.ok() )
-        return;
-
-      if ( !p()->rppm.power_of_the_moon->trigger() )
-        return;
-
-      p()->proc.power_of_the_moon->occur();
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -3048,13 +2935,6 @@ struct moonfire_t : public druid_spell_t
 
     if ( p->active.galactic_guardian )
       stats->add_child( p->active.galactic_guardian->stats );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( SS_MOONFIRE, s );
   }
 
   void execute() override
@@ -4005,15 +3885,6 @@ struct lunar_inspiration_t : public cat_attack_t
 
     energize_type = action_energize::ON_HIT;
     gcd_type      = gcd_haste_type::ATTACK_HASTE;
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double ta = cat_attack_t::bonus_ta( s );
-
-    ta += p()->azerite.power_of_the_moon.value( 2 );
-
-    return ta;
   }
 
   void execute() override
@@ -5548,10 +5419,6 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.celestial_alignment->trigger();
-    p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
-
-    // Trigger after triggering the buff so the cast procs the spell
-    streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
   }
 
   bool ready() override
@@ -5560,24 +5427,6 @@ struct celestial_alignment_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
-  }
-};
-
-// Streaking Stars =======================================================
-
-struct streaking_stars_t : public druid_spell_t
-{
-  streaking_stars_t( druid_t* p ) : druid_spell_t( "streaking_star", p, p->find_spell( 272873 ) )
-  {
-    background  = true;
-    base_dd_min = base_dd_max = p->azerite.streaking_stars.value( 1 );
-
-    if ( p->talent.incarnation_moonkin->ok() )
-    {
-      // This spell deals less damage when incarnation is talented which is not found in the spelldata 8/10/18
-      base_dd_min *= 0.6667;
-      base_dd_max *= 0.6667;
-    }
   }
 };
 
@@ -5618,8 +5467,6 @@ struct fury_of_elune_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-
-    streaking_stars_trigger( SS_FURY_OF_ELUNE, nullptr );
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -5701,10 +5548,9 @@ struct tiger_dash_t : public druid_spell_t
 struct moon_base_t : public druid_spell_t
 {
   moon_stage_e stage;
-  streaking_stars_e streaking;
 
   moon_base_t( util::string_view n, druid_t* p, const spell_data_t* s, util::string_view opt )
-    : druid_spell_t( n, p, s, opt ), stage( moon_stage_e::NEW_MOON ), streaking( streaking_stars_e::SS_NEW_MOON )
+    : druid_spell_t( n, p, s, opt ), stage( moon_stage_e::NEW_MOON )
   {
     cooldown = p->cooldown.moon_cd;
 
@@ -5746,13 +5592,6 @@ struct moon_base_t : public druid_spell_t
     if ( p()->moon_stage == moon_stage_e::MAX_MOON )
       p()->moon_stage = moon_stage_e::NEW_MOON;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( streaking, s );  // proc munching shenanigans, munch tracking NYI
-  }
 };
 
 // New Moon Spell ===========================================================
@@ -5762,7 +5601,6 @@ struct new_moon_t : public moon_base_t
   new_moon_t( druid_t* p, util::string_view opt ) : moon_base_t( "new_moon", p, p->talent.new_moon, opt )
   {
     stage     = moon_stage_e::NEW_MOON;
-    streaking = streaking_stars_e::SS_NEW_MOON;
   }
 };
 
@@ -5773,7 +5611,6 @@ struct half_moon_t : public moon_base_t
   half_moon_t( druid_t* p, util::string_view opt ) : moon_base_t( "half_moon", p, p->spec.half_moon, opt )
   {
     stage     = moon_stage_e::HALF_MOON;
-    streaking = streaking_stars_e::SS_HALF_MOON;
   }
 };
 
@@ -5788,7 +5625,6 @@ struct full_moon_t : public moon_base_t
     aoe                = -1;
     reduced_aoe_damage = true;
     stage              = moon_stage_e::FULL_MOON;
-    streaking          = streaking_stars_e::SS_FULL_MOON;
 
     update_eclipse = true;
 
@@ -6084,13 +5920,6 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     spec_buff->trigger();
-
-    if ( p()->buff.incarnation_moonkin->check() )
-    {
-      p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
-
-      streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
-    }
   }
 };
 
@@ -6234,12 +6063,6 @@ struct starfire_t : public druid_spell_t
     return e;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    streaking_stars_trigger( SS_STARFIRE, s );
-  }
-
   void execute() override
   {
     druid_spell_t::execute();
@@ -6259,9 +6082,6 @@ struct starfire_t : public druid_spell_t
       p()->buff.warrior_of_elune->decrement();
 
     p()->eclipse_handler.cast_starfire();
-
-    if ( p()->azerite.dawning_sun.ok() )
-      p()->buff.dawning_sun->trigger( 1, p()->azerite.dawning_sun.value() );
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -6300,9 +6120,6 @@ struct sunfire_t : public druid_spell_t
       aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
       radius              = data().effectN( 2 ).radius();
-
-      if ( p->azerite.high_noon.ok() )
-        radius += p->azerite.high_noon.value();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -6318,15 +6135,6 @@ struct sunfire_t : public druid_spell_t
       druid_spell_t::tick( d );
 
       proc_shooting_stars( d->target );
-    }
-
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double ta = druid_spell_t::bonus_ta( s );
-
-      ta += p()->azerite.high_noon.value( 2 );
-
-      return ta;
     }
   };
 
@@ -6353,13 +6161,6 @@ struct sunfire_t : public druid_spell_t
       form_mask = MOONKIN_FORM;  // not in spell data for affinity version (id=197630)
       base_costs[ RESOURCE_MANA ] = 0.0;   // so we don't need to enable mana regen
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( SS_SUNFIRE, s );
   }
 
   void execute() override
@@ -6572,19 +6373,8 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    streaking_stars_trigger( SS_WRATH, execute_state );
-
     if ( !free_cast )
       p()->eclipse_handler.cast_wrath();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = druid_spell_t::bonus_da( s );
-
-    da += p()->buff.dawning_sun->value();
-
-    return da;
   }
 };
 
@@ -6633,16 +6423,6 @@ struct stampeding_roar_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
-struct lunar_shrapnel_t : public druid_spell_t
-{
-  lunar_shrapnel_t( druid_t* p ) : druid_spell_t( "lunar_shrapnel", p, p->find_spell( 279641 ) )
-  {
-    background  = true;
-    aoe         = -1;
-    base_dd_min = base_dd_max = p->azerite.lunar_shrapnel.value( 1 );
-  }
-};
-
 struct starfall_t : public druid_spell_t
 {
   struct starfall_damage_t : public druid_spell_t
@@ -6662,16 +6442,6 @@ struct starfall_t : public druid_spell_t
       // seems to have a random travel time between 1x - 2x missile speed
       return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
     }
-
-    void impact( action_state_t* s ) override
-    {
-      druid_spell_t::impact( s );
-      if ( p()->azerite.lunar_shrapnel.ok() && td( s->target )->dots.moonfire->is_ticking() )
-      {
-        p()->active.lunar_shrapnel->set_target( s->target );
-        p()->active.lunar_shrapnel->execute();
-      }
-    }
   };
 
   action_t* damage;
@@ -6687,9 +6457,6 @@ struct starfall_t : public druid_spell_t
     p->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       damage->schedule_execute();
     } );
-
-    if ( p->azerite.lunar_shrapnel.ok() )
-      add_child( p->active.lunar_shrapnel );
 
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
@@ -6724,8 +6491,6 @@ struct starfall_t : public druid_spell_t
     }
 
     druid_spell_t::execute();
-
-    streaking_stars_trigger( SS_STARFALL, nullptr );
 
     p()->buff.starfall->trigger();
 
@@ -6827,47 +6592,6 @@ struct starsurge_t : public druid_spell_t
     if ( p()->legendary.oneths_clear_vision->ok() )
       p()->buff.oneths_free_starfall->trigger();
   }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = druid_spell_t::bonus_da( s );
-
-    if ( p()->azerite.arcanic_pulsar.ok() )
-      da += p()->azerite.arcanic_pulsar.value( 2 );
-
-    return da;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    if ( p()->azerite.arcanic_pulsar.ok() )
-    {
-      p()->buff.arcanic_pulsar->trigger();
-
-      if ( p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() )
-      {
-        timespan_t pulsar_dur =
-            timespan_t::from_seconds( p()->azerite.arcanic_pulsar.spell()->effectN( 3 ).base_value() );
-        buff_t* proc_buff =
-            p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
-
-        proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
-
-        // hardcoded 12AP because 6s / 20s * 40AP = 12AP
-        p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
-        p()->buff.arcanic_pulsar->expire();
-        p()->proc.arcanic_pulsar->occur();
-        p()->uptime.arcanic_pulsar->update( true, sim->current_time() );
-        make_event( *sim, pulsar_dur, [this]() { p()->uptime.arcanic_pulsar->update( false, sim->current_time() ); } );
-
-        streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
-      }
-    }
-
-    streaking_stars_trigger( SS_STARSURGE, s );
-  }
 };
 
 // Stellar Flare ============================================================
@@ -6877,13 +6601,6 @@ struct stellar_flare_t : public druid_spell_t
   stellar_flare_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "stellar_flare", p, p->talent.stellar_flare, options_str )
   {}
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    streaking_stars_trigger( SS_STELLAR_FLARE, s );
-  }
 };
 
 // Survival Instincts =======================================================
@@ -8202,15 +7919,6 @@ void druid_t::init_spells()
   spec.restoration             = find_specialization_spell( "Restoration Druid" );
 
   // Azerite ================================================================
-  // Balance
-  azerite.dawning_sun = find_azerite_spell("Dawning Sun");
-  azerite.high_noon = find_azerite_spell("High Noon");
-  azerite.lively_spirit = find_azerite_spell("Lively Spirit");
-  azerite.lunar_shrapnel = find_azerite_spell("Lunar Shrapnel");
-  azerite.power_of_the_moon = find_azerite_spell("Power of the Moon");
-  azerite.streaking_stars = find_azerite_spell("Streaking Stars");
-  azerite.arcanic_pulsar = find_azerite_spell("Arcanic Pulsar");
-
   // Feral
   azerite.blood_mist = find_azerite_spell("Blood Mist");
   azerite.gushing_lacerations = find_azerite_spell("Gushing Lacerations");
@@ -8637,15 +8345,6 @@ void druid_t::create_buffs()
 
   buff.raking_ferocity = make_buff( this, "raking_ferocity", find_spell( 273340 ) );
 
-  buff.dawning_sun =
-      make_buff( this, "dawning_sun", azerite.dawning_sun.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
-
-  buff.lively_spirit = make_buff<stat_buff_t>( this, "lively_spirit", find_spell( 279648 ) )
-                           ->add_stat( STAT_INTELLECT, azerite.lively_spirit.value() );
-
-  buff.arcanic_pulsar = make_buff( this, "arcanic_pulsar",
-                                   azerite.arcanic_pulsar.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
-
   buff.guardians_wrath = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
                              ->set_default_value( find_spell( 279541 )->effectN( 1 ).resource( RESOURCE_RAGE ) );
 
@@ -8683,12 +8382,6 @@ void druid_t::create_actions()
   }
 
   // Balance
-  if ( azerite.lunar_shrapnel.ok() )
-    active.lunar_shrapnel = get_secondary_action<lunar_shrapnel_t>( "lunar_shrapnel" );
-
-  if ( azerite.streaking_stars.ok() )
-    active.streaking_stars = get_secondary_action<streaking_stars_t>( "streaking_star" );
-
   if ( legendary.oneths_clear_vision->ok() )
     active.oneths_clear_vision =
         new action_t( action_e::ACTION_OTHER, "oneths_clear_vision", this, legendary.oneths_clear_vision );
@@ -8861,15 +8554,10 @@ void druid_t::apl_balance()
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
   def->add_action( "potion,if=buff.ca_inc.up" );
   def->add_action( "use_items" );
-  def->add_action( "heart_essence,if=level=50" );
   def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
   def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
   def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
-  def->add_action( "run_action_list,name=st,if=level>50" );
-  def->add_action( "variable,name=prev_wrath,value=prev.wrath" );
-  def->add_action( "variable,name=prev_starfire,value=prev.starfire" );
-  def->add_action( "variable,name=prev_starsurge,value=prev.starsurge" );
-  def->add_action( "run_action_list,name=prepatch_st" );
+  def->add_action( "run_action_list,name=st" );
 
   st->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
   st->add_action( "convoke_the_spirits,if=(variable.convoke_desync&interpolated_fight_remains>130&!cooldown.ca_inc.ready|buff.ca_inc.up)&astral_power<50&(buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)|fight_remains<10" );
@@ -8977,26 +8665,6 @@ void druid_t::apl_balance()
   boat->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&eclipse.in_lunar|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
   boat->add_action( "wrath" );
   boat->add_action( "run_action_list,name=fallthru" );
-
-  prepatch_st->add_action( "moonfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "sunfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "force_of_nature,if=ap_check" );
-  prepatch_st->add_action( "celestial_alignment,if=(astral_power>90|buff.bloodlust.up&buff.bloodlust.remains<26)&!buff.ca_inc.up" );
-  prepatch_st->add_action( "incarnation,if=(astral_power>90|buff.bloodlust.up&buff.bloodlust.remains<36)&!buff.ca_inc.up" );
-  prepatch_st->add_action( "variable,name=save_for_ca_inc,value=!cooldown.ca_inc.ready" );
-  prepatch_st->add_action( "fury_of_elune,if=eclipse.in_any&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<6&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&astral_power>90" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&(buff.ca_inc.up|astral_power>90&eclipse.in_any)" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&talent.starlord.enabled&(buff.starlord.up|astral_power>90)&buff.starlord.stack<3&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&cooldown.ca_inc.remains>7" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&buff.eclipse_solar.remains>7&eclipse.in_solar&!talent.starlord.enabled&cooldown.ca_inc.remains>7" );
-  prepatch_st->add_action( "new_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "half_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "full_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "warrior_of_elune" );
-  prepatch_st->add_action( "starfire,if=(azerite.streaking_stars.rank&buff.ca_inc.remains>execute_time&variable.prev_wrath)|(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starfire)&(eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&buff.eclipse_lunar.up|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up))|(azerite.dawning_sun.rank>2&buff.eclipse_solar.remains>5&!buff.dawning_sun.remains>action.wrath.execute_time)" );
-  prepatch_st->add_action( "wrath" );
-  prepatch_st->add_action( "run_action_list,name=fallthru" );
 
   fallthru->add_action( "starsurge,if=!runeforge.balance_of_all_things.equipped" );
   fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains" );
@@ -9223,7 +8891,6 @@ void druid_t::init_gains()
     gain.celestial_alignment       = get_gain( "celestial_alignment" );
     gain.incarnation               = get_gain( "incarnation" );
     gain.primordial_arcanic_pulsar = get_gain( "primordial_arcanic_pulsar" );
-    gain.arcanic_pulsar            = get_gain( "arcanic_pulsar" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
@@ -9268,12 +8935,6 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  // Balance
-  proc.power_of_the_moon     = get_proc( "Power of the Moon" );     //->collect_count();
-  proc.arcanic_pulsar        = get_proc( "Arcanic Pulsar Proc" );   //->collect_interval();
-  proc.streaking_star        = get_proc( "Streaking Stars" );       //->collect_count();
-  proc.wasted_streaking_star = get_proc( "Wasted Streaking Stars" );
-
   // Feral
   proc.predator              = get_proc( "predator" );
   proc.predator_wasted       = get_proc( "predator_wasted" );
@@ -9296,15 +8957,9 @@ void druid_t::init_uptimes()
   uptime.eclipse = get_uptime( "Eclipse" );
 
   if ( talent.incarnation_moonkin->ok() )
-  {
-    uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
-  }
   else
-  {
-    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
-  }
 }
 
 // druid_t::init_resources ==================================================
@@ -9330,8 +8985,6 @@ void druid_t::init_rng()
   rppm.predator = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
   rppm.blood_mist =
       get_rppm( "blood_mist", find_spell( azerite.blood_mist.spell()->effectN( 1 ).trigger_spell_id() )->real_ppm() );
-  rppm.power_of_the_moon =
-      get_rppm( "power_of_the_moon", azerite.power_of_the_moon.spell()->effectN( 1 ).trigger()->real_ppm() );
 
   player_t::init_rng();
 }
@@ -9384,7 +9037,6 @@ void druid_t::reset()
   // Reset druid_t variables to their original state.
   form                     = NO_FORM;
   moon_stage               = (moon_stage_e)initial_moon_stage;
-  previous_streaking_stars = SS_NONE;
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
 
@@ -10196,7 +9848,6 @@ void druid_t::create_options()
   add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_int( "lively_spirit_stacks", lively_spirit_stacks ) );
   add_option( opt_float( "eclipse_snapshot_period", eclipse_snapshot_period ) );
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
@@ -10773,7 +10424,6 @@ void druid_t::copy_from( player_t* source )
   predator_rppm_rate           = p->predator_rppm_rate;
   initial_astral_power         = p->initial_astral_power;
   initial_moon_stage           = p->initial_moon_stage;
-  lively_spirit_stacks         = p->lively_spirit_stacks;
   eclipse_snapshot_period      = p->eclipse_snapshot_period;
   affinity_resources           = p->affinity_resources;
   owlweave_bear                = p->owlweave_bear;
