@@ -8907,7 +8907,6 @@ void shaman_t::init_action_list_elemental()
     def->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
-    def->add_action( "chain_harvest,if=covenant.venthyr" );
     def->add_action( "fae_transfusion,if=covenant.night_fae" );
 
     // Pick APL to run
@@ -8916,29 +8915,40 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
 
     // Aoe APL
+    aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action(
         this, "Flame Shock",
-        "target_if=refreshable&(spell_targets.chain_lightning<(5-!talent.totem_mastery.enabled)|!talent.storm_"
-        "elemental."
-        "enabled&(cooldown.fire_elemental.remains>(cooldown.storm_elemental.duration-30+14*spell_haste)|cooldown.fire_"
-        "elemental.remains<(24-14*spell_haste)))&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<("
-        "cooldown.storm_elemental.duration-30)|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
+        "target_if=refreshable&(spell_targets.chain_lightning<5|!pet.storm_elemental.active"
+        "|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
         "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
         "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
+    aoe->add_talent(
+        this, "Ascendance",
+        "if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+    aoe->add_action( this, "Earth Shock",
+                     "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up&(talent."
+                     "master_of_the_elements.enabled|buff.master_of_the_elements.up|spell_targets.chain_lightning>3)" );
     aoe->add_action(
         this, "Earthquake",
-        "if=(!runeforge.echoes_of_great_sundering.equipped)&((!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)"
+        "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)"
         "|"
-        "buff.master_of_the_elements.up|spell_targets.chain_lightning>3))",
+        "buff.master_of_the_elements.up|spell_targets.chain_lightning>3",
         "Try to game Earthquake with Master of the Elements buff when fighting 3 targets. Don't overcap Maelstrom!" );
-    aoe->add_action( this, "Earth Shock",
-                     "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
-    aoe->add_action( this, "Earthquake",
-                     "if=runeforge.echoes_of_great_sundering.equipped&buff.echoes_of_great_sundering.up" );
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack",
                      "Make sure you don't lose a Stormkeeper buff." );
+    aoe->add_action( this, "Lava Burst",
+                     "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.up)&dot.flame_shock.ticking",
+                     "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
+    aoe->add_talent( this, "Icefury", "if=spell_targets.chain_lightning<4&!buff.ascendance.up" );
+    aoe->add_action( this, "Frost Shock", "if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up" );
+    aoe->add_talent(
+        this, "Elemental Blast",
+        "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|"
+        "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30))",
+        "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
+    aoe->add_action( this, "Lava Beam", "if=talent.ascendance.enabled" );
     aoe->add_action( this, "Chain Lightning" );
     aoe->add_action( this, "Lava Burst", "moving=1,if=talent.ascendance.enabled" );
     aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
@@ -9005,6 +9015,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Frost Shock",
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
+    single_target->add_action( "chain_harvest" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet."
                                "fire_elemental.active)&!talent.storm_elemental.enabled|!pet.storm_elemental."
