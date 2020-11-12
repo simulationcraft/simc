@@ -3719,6 +3719,15 @@ struct rapid_fire_t: public hunter_spell_t
 
       p() -> buffs.trick_shots -> up(); // benefit tracking
 
+      /* This is not mentioned anywhere but testing shows that Rapid Fire inside
+       * Trueshot has a 50% chance of energizing twice. Presumably to account for the
+       * fact that focus is integral and 1 * 1.5 = 1. It's still affected be the
+       * generic focus gen increase from Trueshot as each energize gives 3 focus when
+       * combined with Nesingwary's Trapping Apparatus buff.
+       */
+      if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
+        p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
+
       if ( p() -> options.brutal_projectiles_on_execute )
         trigger_brutal_projectiles();
 

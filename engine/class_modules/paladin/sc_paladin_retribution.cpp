@@ -95,6 +95,8 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
+
+    tick_may_crit = may_crit = false;
   }
 
   void impact( action_state_t* s) override
@@ -257,6 +259,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
         expurgation -> execute();
       }
     }
+
+    if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+    {
+      action_t* vc = p() -> active.virtuous_command;
+      vc -> base_dd_min = vc -> base_dd_max = state -> result_amount * p() -> conduit.virtuous_command.percent();
+      vc -> set_target( state -> target );
+      vc -> schedule_execute();
+    }
   }
 };
 
@@ -342,6 +352,9 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
       background = true;
+
+      // spell data please
+      aoe = 0;
     }
 
     double action_multiplier() const override
@@ -360,6 +373,22 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
     {
       dual = background = true;
+
+      // spell data please?
+      aoe = 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_melee_attack_t::impact( s );
+
+      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      {
+        action_t* vc = p() -> active.virtuous_command;
+        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
+        vc -> set_target( s -> target );
+        vc -> schedule_execute();
+      }
     }
 
     double action_multiplier() const override
@@ -378,6 +407,9 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     echo( nullptr )
   {
     parse_options( options_str );
+
+    // wtf is happening in spell data?
+    aoe = 0;
 
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
@@ -416,8 +448,8 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
+      p() -> active.necrolord_divine_storm -> schedule_execute();
       p() -> buffs.vanquishers_hammer -> expire();
-      p() -> active.necrolord_divine_storm -> execute();
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
@@ -502,7 +534,7 @@ struct judgment_ret_t : public judgment_t
 
     // according to skeletor this is given the bonus of 326011
     // TODO(mserrano) - fix this once spell data has been re-extracted
-    base_multiplier *= 1.0 + 1.0; // p -> find_spell( 326011 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
