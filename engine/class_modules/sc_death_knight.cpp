@@ -445,6 +445,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    buff_t* stoneskin_gargoyle;
     buff_t* unholy_strength;
 
     // Blood
@@ -504,7 +505,7 @@ public:
 
   struct runeforge_t {
     bool rune_of_the_fallen_crusader;
-    buff_t* rune_of_the_stoneskin_gargoyle;
+    bool rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_hysteria;
     heal_t* rune_of_sanguination;
     double rune_of_spellwarding;
@@ -1113,8 +1114,7 @@ public:
 
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
-  std::unique_ptr<expr_t>   create_death_and_decay_expression( util::string_view expr_str );
-  std::unique_ptr<expr_t>   create_runeforge_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t>   create_runeforge_expression( util::string_view expr_str, bool warning );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -2995,17 +2995,6 @@ struct death_knight_action_t : public Base
     }
 
     return base_gcd;
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
-  {
-    auto dnd_expr = p() -> create_death_and_decay_expression( name_str );
-    if ( dnd_expr )
-    {
-      return dnd_expr;
-    }
-
-    return action_base_t::create_expression( name_str );
   }
 };
 
@@ -7126,7 +7115,19 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   }
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
+
+  p -> runeforge.rune_of_the_stoneskin_gargoyle = true;
+
+  p -> buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", p -> find_spell( effect.spell_id ) )
+    -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+    -> set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+    // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
+    -> set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+    -> set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+
+  // The buff isn't shown ingame, leave it visible in the sim
+  // p -> quiet = true;
 }
 
 void runeforge::apocalypse( special_effect_t& effect )
@@ -8079,103 +8080,71 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
 
 // death_knight_t::create_expression ========================================
 
-std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util::string_view expr_str )
-{
-  auto expr = util::string_split<util::string_view>( expr_str, "." );
-  if ( expr.size() < 2 || ( expr.size() == 3 && ! util::str_compare_ci( expr[ 0 ], "dot" ) ) )
-  {
-    return nullptr;
-  }
-
-  auto spell_offset = expr.size() == 3u ? 1u : 0u;
-
-  if ( ! util::str_compare_ci( expr[ spell_offset ], "death_and_decay" ) &&
-       ! util::str_compare_ci( expr[ spell_offset ], "defile" ) )
-  {
-    return nullptr;
-  }
-
-  // "dot.death_and_decay|defile.X fallback warning"
-  if ( expr.size() == 3 )
-  {
-    deprecated_dnd_expression = true;
-  }
-
-  if ( util::str_compare_ci( expr[ spell_offset + 1u ], "ticking" ) ||
-       util::str_compare_ci( expr[ spell_offset + 1u ], "up" ) )
-  {
-    return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnd ? 1 : 0; } );
-  }
-  else if ( util::str_compare_ci( expr[ spell_offset + 1u ], "remains" ) )
-  {
-    return make_fn_expr( "dnd_remains", [ this ]() {
-      return active_dnd ? active_dnd -> remaining_time().total_seconds() : 0;
-    } );
-  }
-
-  return nullptr;
-}
-
-std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::string_view name_str )
+// Equipped death knight runeforge expressions
+std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::string_view name, bool warning = false )
 {
   // Razorice, looks for the damage procs related to MH and OH
-  if ( util::str_compare_ci( name_str, "razorice" ) )
+  if ( util::str_compare_ci( name, "razorice" ) )
     return make_fn_expr( "razorice_runforge_expression", [ this ]() {
       return active_spells.razorice_mh || active_spells.razorice_oh;
     } );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
-  if ( util::str_compare_ci( name_str, "razorice_mh" ) )
+  if ( util::str_compare_ci( name, "razorice_mh" ) )
     return make_fn_expr( "razorice_mh_runforge_expression", [ this ]() {
       return active_spells.razorice_mh != nullptr;
     } );
-  if ( util::str_compare_ci( name_str, "razorice_oh" ) )
+  if ( util::str_compare_ci( name, "razorice_oh" ) )
     return make_fn_expr( "razorice_oh_runforge_expression", [ this ]() {
       return active_spells.razorice_oh != nullptr;
     } );
 
   // Fallen Crusader, looks for the unholy strength healing action
-  if ( util::str_compare_ci( name_str, "fallen_crusader" ) )
+  if ( util::str_compare_ci( name, "fallen_crusader" ) )
     return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
-      return find_action( "unholy_strength" ) != nullptr;
+      return runeforge.rune_of_the_fallen_crusader;
     } );
 
   // Stoneskin Gargoyle
-  if ( util::str_compare_ci( name_str, "stoneskin_gargoyle" ) )
+  if ( util::str_compare_ci( name, "stoneskin_gargoyle" ) )
     return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
-      return runeforge.rune_of_the_stoneskin_gargoyle -> default_chance;
+      return runeforge.rune_of_the_stoneskin_gargoyle;
     } );
 
   // Apocalypse
-  if ( util::str_compare_ci( name_str, "apocalypse" ) )
+  if ( util::str_compare_ci( name, "apocalypse" ) )
     return make_fn_expr( "apocalypse_runforge_expression", [ this ]() {
       return runeforge.rune_of_apocalypse;
     } );
 
   // Hysteria
-  if ( util::str_compare_ci( name_str, "hysteria" ) )
+  if ( util::str_compare_ci( name, "hysteria" ) )
     return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
       return runeforge.rune_of_hysteria -> default_chance;
     } );
 
   // Sanguination
-  if ( util::str_compare_ci( name_str, "sanguination" ) )
+  if ( util::str_compare_ci( name, "sanguination" ) )
     return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
       return runeforge.rune_of_sanguination != nullptr;
     } );
 
   // Spellwarding
-  if ( util::str_compare_ci( name_str, "spellwarding" ) )
+  if ( util::str_compare_ci( name, "spellwarding" ) )
     return make_fn_expr( "spellwarding_runeforge_expression", [ this ]() {
       return runeforge.rune_of_spellwarding != 0;
     } );
 
   // Unending Thirst, effect NYI
-  if ( util::str_compare_ci( name_str, "unending_thirst" ) )
+  if ( util::str_compare_ci( name, "unending_thirst" ) )
     return make_fn_expr( "unending_thirst_runeforge_expression", [ this ]() {
       return runeforge.rune_of_unending_thirst;
     } );
 
+  // Only throw an error with death_knight.runeforge expressions
+  // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
+  if ( !warning )
+    throw std::invalid_argument( fmt::format( "Unknown Death Knight runeforge name '{}'", name ) );
   return nullptr;
 }
 
@@ -8185,15 +8154,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) && splits.size() > 1 )
   {
+    // rune.time_to_x returns the number of seconds before X runes will be ready at the current generation rate
     if ( util::str_in_str_ci( splits[ 1 ], "time_to_" ) )
     {
       auto n_char = splits[ 1 ][ splits[ 1 ].size() - 1 ];
       auto n = n_char - '0';
       if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
-      {
-        sim -> error( "{} invalid expression '{}'.", name(), name_str );
-        return player_t::create_expression( name_str );
-      }
+        throw std::invalid_argument( fmt::format( "Error in rune.time_to expression, please enter a valid amount of runes" ) );
 
       return make_fn_expr( "rune_time_to_x", [ this, n ]() {
         return _runes.time_to_regen( static_cast<unsigned>( n ) );
@@ -8201,36 +8168,76 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
     }
   }
 
-  auto dnd_expr = create_death_and_decay_expression( name_str );
-  if ( dnd_expr )
-  {
-    return dnd_expr;
-  }
-
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
+    // Returns the value of the disable_aotd option
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
       return make_fn_expr( "disable_aotd_expression", [ this ]() {
         return this -> options.disable_aotd;
       } );
 
+    // Returns the number of targets currently affected by the festering wound debuff
     if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
       return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
         return this -> festering_wounds_target_count;
       } );
 
+    // Returns if the given death knight runeforge is equipped or not
     if ( util::str_compare_ci( splits[ 1 ], "runeforge" ) && splits.size() == 3 )
     {
       auto runeforge_expr = create_runeforge_expression( splits[ 2 ] );
       if ( runeforge_expr )
         return runeforge_expr;
     }
+
+    throw std::invalid_argument( fmt::format( "Unknown death_knight expression '{}'", splits[ 1 ] ) );
+  }
+
+  // Death and Decay/Defile expressions
+  if ( ( util::str_compare_ci( splits[ 0 ], "defile" ) ||
+         util::str_compare_ci( splits[ 0 ], "death_and_decay" ) ) && splits.size() == 2 )
+  {
+    // Returns true if there's an active dnd
+    if ( util::str_compare_ci( splits[ 1 ], "ticking" ) ||
+         util::str_compare_ci( splits[ 1 ], "up" ) )
+    {
+      return make_fn_expr( "dnd_ticking", [ this ]()
+      { return active_dnd ? 1 : 0; } );
+    }
+
+    // Returns the remaining value on the active dnd, or 0 if there's no dnd
+    if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+    {
+      return make_fn_expr( "dnd_remains", [ this ]()
+      {
+        return active_dnd ? active_dnd -> remaining_time().total_seconds() : 0;
+      } );
+    }
+
+    // Returns true if there's an active dnd AND the player is inside it
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
+    {
+      return make_fn_expr( "dnd_ticking", [ this ]()
+      { return in_death_and_decay() ? 1 : 0; } );
+    }
+
+    // Returns the remaining value on the active dnd if the player is inside it, or 0 otherwise
+    if ( util::str_compare_ci( splits[ 1 ], "active_remains" ) )
+    {
+      return make_fn_expr( "dnd_remains", [ this ]() {
+        return in_death_and_decay() ? active_dnd -> remaining_time().total_seconds() : 0;
+      } );
+    }
+
+    throw std::invalid_argument( fmt::format( "Unknown dnd expression '{}'", splits[ 1 ] ) );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )
   {
-    auto runeforge_expr = create_runeforge_expression( splits[ 1 ] );
+    auto runeforge_expr = create_runeforge_expression( splits[ 1 ], true );
+    // Properly handle dk runeforge expressions using runeforge.name
+    // instead of death_knight.runeforge.name, but warn the user
     if ( runeforge_expr )
     {
       runeforge_expression_warning = true;
@@ -9217,12 +9224,6 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  runeforge.rune_of_the_stoneskin_gargoyle = make_buff( this, "stoneskin_gargoyle", find_spell( 62157 ) )
-            -> add_invalidate( CACHE_ARMOR )
-            -> add_invalidate( CACHE_STAMINA )
-            -> add_invalidate( CACHE_STRENGTH )
-            -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
-
   runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) )
             -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
 
@@ -9650,8 +9651,8 @@ double death_knight_t::composite_armor_multiplier() const
 {
   double am = player_t::composite_armor_multiplier();
 
-  if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    am *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
+  if ( runeforge.rune_of_the_stoneskin_gargoyle )
+    am *= 1.0 + buffs.stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
   return am;
 }
@@ -9678,11 +9679,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    {
-      m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
-    }
-
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
@@ -9695,11 +9691,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent()
       + spec.veteran_of_the_third_war_2 -> effectN( 1 ).percent()
       + spec.blood_death_knight -> effectN( 13 ).percent();
-
-    if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    {
-      m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
-    }
   }
 
   return m;
@@ -9859,10 +9850,6 @@ double death_knight_t::composite_crit_avoidance() const
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
-
-  start_inexorable_assault();
-  start_cold_heart();
-
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
   if ( rp_overflow > 0 )
   {
@@ -9982,7 +9969,10 @@ inline double death_knight_t::rune_regen_coefficient() const
 void death_knight_t::arise()
 {
   player_t::arise();
-  runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
+  if( runeforge.rune_of_the_stoneskin_gargoyle )
+    buffs.stoneskin_gargoyle -> trigger();
+  start_inexorable_assault();
+  start_cold_heart();
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()

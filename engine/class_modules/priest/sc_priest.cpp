@@ -422,10 +422,11 @@ struct unholy_transfusion_t final : public priest_spell_t
     : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
     parse_options( options_str );
-    background    = true;
-    hasted_ticks  = true;
-    tick_may_crit = true;
-    tick_zero     = false;
+    background                 = true;
+    hasted_ticks               = true;
+    tick_may_crit              = true;
+    tick_zero                  = false;
+    affected_by_shadow_weaving = true;
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
@@ -733,28 +734,13 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
-  double benevolent_faerie_rate;
-
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) ),
-      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
+    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
   {
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = summon_pet_t::recharge_multiplier( cd );
-
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
-    {
-      m /= 1.0 + benevolent_faerie_rate;
-    }
-
-    return m;
   }
 };
 
@@ -763,28 +749,13 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
-  double benevolent_faerie_rate;
-
   summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) ),
-      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
+    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
   {
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = summon_pet_t::recharge_multiplier( cd );
-
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
-    {
-      m /= 1.0 + benevolent_faerie_rate;
-    }
-
-    return m;
   }
 };
 
@@ -845,24 +816,14 @@ namespace buffs
 // ==========================================================================
 struct fae_guardians_t final : public priest_buff_t<buff_t>
 {
-  propagate_const<cooldown_t*> shadowfiend_cooldown;
-  propagate_const<cooldown_t*> mindbender_cooldown;
+  propagate_const<cooldown_t*> void_eruption_cooldown;
 
   fae_guardians_t( priest_t& p )
     : base_t( p, "fae_guardians", p.covenant.fae_guardians ),
-      shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) ),
-      mindbender_cooldown( p.get_cooldown( "mindbender" ) )
+      void_eruption_cooldown( p.get_cooldown( "void_eruption" ) )
   {
-    set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-      if ( priest().talents.mindbender->ok() )
-      {
-        mindbender_cooldown->adjust_recharge_multiplier();
-      }
-      else
-      {
-        shadowfiend_cooldown->adjust_recharge_multiplier();
-      }
-    } );
+    set_stack_change_callback(
+        [ this ]( buff_t*, int, int ) { void_eruption_cooldown->adjust_recharge_multiplier(); } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1405,6 +1366,11 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
                 return 0.0;
               };
             } );
+          }
+          else if ( splits[ 2 ] == "down" )
+          {
+            cooldown_t* cd = get_cooldown( pet->name_str );
+            return make_fn_expr( expression_str, [ cd ] { return cd->down(); } );
           }
 
           // build player/pet expression from the tail of the expression string.

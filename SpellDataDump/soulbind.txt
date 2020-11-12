@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-08/36532, git build shadowlands 1c90df9, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 60044a7, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1286,7 +1286,7 @@ Effects          :
 Description      : Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.
 
 Name             : Valiant Strikes (id=329791) [Passive, Hidden] 
-Hotfixed         : Attributes
+Hotfixed         : Attributes, Description
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1307,7 +1307,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=875122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.
+Description      : You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.
 
 Name             : Agent of Chaos (id=331576) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -1688,10 +1688,12 @@ Effects          :
 Description      : Damaging a new enemy grants you $333943m% Haste for $333943d, up to $333943u stacks.
 
 Name             : Bron's Call to Action (id=333950) [Passive, Hidden] 
+Hotfixed         : Internal Cooldown (0 -> 10)
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
+Internal Cooldown: 0.01 seconds
 Proc Chance      : 101%
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 

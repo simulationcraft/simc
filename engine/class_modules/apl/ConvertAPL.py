@@ -3,16 +3,27 @@ import getopt
 import os
 import shutil
 
+ignored_comments = [
+    '# This default action priority list is automatically created based on your character.',
+    '# It is a attempt to provide you with a action list that is both simple and practicable,',
+    '# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.',
+    '# Feel free to edit, adapt and improve it to your own needs.',
+    '# SimulationCraft is always looking for updates and improvements to the default action lists.',
+    '# Executed before combat begins. Accepts non-harmful actions only.',
+    '# Executed every time the actor is available.',
+]
+
 # Returns the next SimC string/line in file (defined as a comment line or TCI syntax to next whitespace)
 def read_by_whitespace(fileObj):
     for line in fileObj:
         if line[0] == "#": # Yield whole line if starts with a comment character as comment lines can have whitespace
-            yield line
+            if line.strip() not in ignored_comments:
+                yield line
         else:
-            for token in line.split(): # If it doesn't then just yield until next whitespace as TCI commands count them as line breaks 
+            for token in line.split(): # If it doesn't then just yield until next whitespace as TCI commands count them as line breaks
                 yield token
 
-# Opens the input file and generates C++ syntax apl from the given TCI syntax APL. List of sub-action lists returned in subaplList and list of actions (with comments) returned in aplList. aplList is formatted already. 
+# Opens the input file and generates C++ syntax apl from the given TCI syntax APL. List of sub-action lists returned in subaplList and list of actions (with comments) returned in aplList. aplList is formatted already.
 def read_apl(inputFilePath):
     commentString = ""
     aplList = []
@@ -27,7 +38,7 @@ def read_apl(inputFilePath):
         with inputFile:
             for token in read_by_whitespace(inputFile):
                 sublist = ""
-                if "actions" in token: #Should this whole section be more robust? It should catch any legit comment or action line however will not error gracefully with improper inputs. Consider refactor if others end up using.
+                if "actions" in token and token[0] != '#': #Should this whole section be more robust? It should catch any legit comment or action line however will not error gracefully with improper inputs. Consider refactor if others end up using.
                     action = token.replace("\"", "").split('=',1)
                     if token[7] == ".":
                         if action[0][-1] == "+":
@@ -74,7 +85,11 @@ def write_apl_method (tempFile, specString, subaplList, aplList):
         else:
             tempFile.write(f"  action_priority_list_t* {sublist} = p->get_action_priority_list( \"{sublist}\" );\n")
     tempFile.write("\n")
+    current_list = aplList[0].split('->', 1)[0]
     for action in aplList:
+        if not action.startswith(current_list + '->'):
+            tempFile.write("\n")
+            current_list = action.split('->', 1)[0]
         tempFile.write(action + "\n")
     tempFile.write("}")
 

@@ -1255,6 +1255,9 @@ class SpellDataGenerator(DataGenerator):
          330764,
          # Infinitely Divisible Ooze
          345495,
+         # Echo Of Eonar Legendary
+         347660, 347660, # Healing bonuses
+         347662, 347665, # Damage Reduction bonuses
         ),
 
         # Warrior:
@@ -1705,6 +1708,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
+          ( 343764, 1 ), # Evasive Stride Heal
 
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
@@ -1787,6 +1791,7 @@ class SpellDataGenerator(DataGenerator):
           ( 225102, 0 ), # Fel Eruption damage
           ( 339229, 0 ), # Serrated Glaive conduit debuff
           ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
+          ( 347765, 0 ), # Fodder to the Flame Empowered Demon Soul buff
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate

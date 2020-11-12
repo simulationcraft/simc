@@ -1225,6 +1225,11 @@ public:
       ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 5 ).percent();
     }
 
+    if ( ab::data().affected_by( player->spec.enhancement_shaman->effectN( 12 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 12 ).percent();
+    }
+
     if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 3 ) ) )
     {
       ab::base_dd_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 3 ).percent();
@@ -3989,16 +3994,12 @@ struct earthquake_t : public shaman_spell_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-  earthquake_damage_t* rumble;
-
   earth_elemental_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str ),
-      rumble( new earthquake_damage_t( player ) )
+    : shaman_spell_t( "earth_elemental", player, player->find_spell( 188616 ), options_str )
   {
     harmful = may_crit = false;
     cooldown->duration =
         player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
-    add_child( rumble );
   }
 
   void execute() override
@@ -4741,6 +4742,7 @@ struct lava_burst_t : public shaman_spell_t
       aoe = -1;
       background = true;
       base_execute_time = 0_s;
+      cooldown->duration = 0_s;
       switch ( type )
       {
         case lava_burst_type::PRIMORDIAL_WAVE:
@@ -4928,12 +4930,14 @@ struct lava_burst_t : public shaman_spell_t
 
     // Trigger primordial wave if there's targets to trigger it on
     if ( p()->specialization() == SHAMAN_ELEMENTAL && type == lava_burst_type::NORMAL &&
-         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw &&
-         p()->action.lava_burst_pw->target_list().size() )
+         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
     {
       p()->buff.primordial_wave->expire();
       p()->action.lava_burst_pw->set_target( execute_state->target );
-      p()->action.lava_burst_pw->schedule_execute();
+      if ( p()->action.lava_burst_pw->target_list().size() )
+      {
+        p()->action.lava_burst_pw->schedule_execute();
+      }
     }
 
     if ( type == lava_burst_type::NORMAL )
@@ -5150,7 +5154,10 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lightning_bolt_pw->set_target( target );
-      p()->action.lightning_bolt_pw->execute();
+      if ( p()->action.lightning_bolt_pw->target_list().size() )
+      {
+        p()->action.lightning_bolt_pw->execute();
+      }
     }
 
     shaman_spell_t::execute();
@@ -5873,7 +5880,10 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
-      lvb->execute();
+      if ( lvb->target_list().size() )
+      {
+        lvb->execute();
+      }
     }
 
     if ( ascendance_damage )

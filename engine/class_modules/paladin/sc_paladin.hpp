@@ -142,6 +142,9 @@ public:
     action_t* necrolord_divine_storm;
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
+
+    // Conduit stuff
+    action_t* virtuous_command;
   } active;
 
   // Buffs
@@ -204,6 +207,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
+    buff_t* virtuous_command;
     buff_t* reign_of_ancient_kings;
   } buffs;
 

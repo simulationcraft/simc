@@ -1261,8 +1261,11 @@ struct void_eruption_damage_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
+  double benevolent_faerie_rate;
+
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) )
+    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) ),
+      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -1293,6 +1296,18 @@ struct void_eruption_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = priest_spell_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
+    {
+      m /= 1.0 + benevolent_faerie_rate;
+    }
+
+    return m;
   }
 };
 
@@ -1604,6 +1619,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    // Set cooldown to 0s, cooldown is stored in Void Eruption
+    cooldown->duration = timespan_t::from_seconds( 0 );
 
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -2184,7 +2202,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
-                    "dot.shadow_word_pain.ticking&!cooldown.mindbender.up",
+                    "dot.shadow_word_pain.ticking&pet.fiend.down",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );

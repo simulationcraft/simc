@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-08/36532, git build shadowlands 1c90df9, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 60044a7, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -10002,6 +10002,7 @@ For the next $d, casting Drain Life will cause you to also Drain Life from any e
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Decimating Bolt (desc=Necrolord) (id=327059) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -10011,7 +10012,7 @@ Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Triggered by     : Decimating Bolt (327070), Decimating Bolt (327072)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
