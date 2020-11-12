@@ -261,8 +261,6 @@ public:
   {
     // Feral
     real_ppm_t* predator;    // Optional RPPM approximation
-    real_ppm_t* blood_mist;  // Azerite trait
-
   } rppm;
 
   // Options
@@ -319,17 +317,6 @@ public:
   // Azerite
   struct azerite_t
   {
-    // Feral
-    azerite_power_t blood_mist;           // check spelldata
-    azerite_power_t gushing_lacerations;  // check spelldata
-    azerite_power_t iron_jaws;            //-||-
-    azerite_power_t primordial_rage;      //-||-
-    azerite_power_t raking_ferocity;      //-||-
-    azerite_power_t shredding_fury;       //-||-
-    azerite_power_t wild_fleshrending;    //-||-
-    azerite_power_t jungle_fury;
-    azerite_power_t untamed_ferocity;
-
     // Guardian
     azerite_power_t guardians_wrath;
     azerite_power_t layered_mane;  // TODO: check if second Ironfur benefits from Guardian of Elune
@@ -432,12 +419,6 @@ public:
     buff_t* soul_of_the_forest;  // needs checking
     buff_t* yseras_gift;
     buff_t* harmony;  // NYI
-
-    // Azerite
-    buff_t* shredding_fury;
-    buff_t* iron_jaws;
-    buff_t* raking_ferocity;
-    buff_t* jungle_fury;
   } buff;
 
   // Cooldowns
@@ -1471,39 +1452,6 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
     p().buff.bloodtalons->trigger();
 
     return true;
-  }
-};
-
-// Tiger's Fury =============================================================
-struct tigers_fury_buff_t : public druid_buff_t<buff_t>
-{
-  tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
-  {
-    set_cooldown( 0_ms );
-    apply_affecting_aura( p.talent.predator );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    if ( p().azerite.jungle_fury.enabled() )
-      p().buff.jungle_fury->trigger( duration );
-
-    base_t::start( stacks, value, duration );
-  }
-
-  void refresh( int stacks, double value, timespan_t duration ) override
-  {
-    if ( p().azerite.jungle_fury.enabled() )
-      p().buff.jungle_fury->refresh( 0, DEFAULT_VALUE(), duration );
-
-    base_t::refresh( stacks, value, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    p().buff.jungle_fury->expire();
-
-    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -3116,7 +3064,6 @@ public:
     : base_t( token, p, s ),
       requires_stealth( false ),
       consumes_combo_points( false ),
-      trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
       berserk_cp( 0.0 ),
       snapshots( has_snapshot_t() ),
       bt_counter( nullptr ),
@@ -3135,9 +3082,6 @@ public:
 
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
-
-    if ( trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
-      trigger_untamed_ferocity = false;
 
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
@@ -3295,16 +3239,6 @@ public:
     return pm;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = base_t::bonus_da( s );
-
-    if ( trigger_untamed_ferocity )
-      da += p()->azerite.untamed_ferocity.value( 2 );
-
-    return da;
-  }
-
   void init() override
   {
     base_t::init();
@@ -3379,12 +3313,6 @@ public:
 
       if ( snapshots.tigers_fury )
         tf_counter->count_execute();
-
-      if ( trigger_untamed_ferocity )
-      {
-        p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
-        p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
-      }
     }
 
     if ( !hit_any_target )
@@ -3554,18 +3482,6 @@ struct brutal_slash_t : public cat_attack_t
     c -= p()->buff.scent_of_blood->check_stack_value();
 
     return c;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = cat_attack_t::bonus_da( s );
-
-    if ( td( s->target )->dots.thrash_cat->is_ticking() || td( s->target )->dots.thrash_bear->is_ticking() )
-    {
-      b += p()->azerite.wild_fleshrending.value( 2 );
-    }
-
-    return b;
   }
 
   void execute() override
@@ -3764,21 +3680,6 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t::execute();
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
-
-    p()->buff.iron_jaws->trigger( 1,
-                                  p()->azerite.iron_jaws.value( 1 ) * ( 0.5 + 0.5 / p()->azerite.iron_jaws.n_items() ),
-                                  p()->azerite.iron_jaws.spell()->effectN( 2 ).percent() * combo_points );
-
-    p()->buff.raking_ferocity->expire();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = cat_attack_t::bonus_da( s );
-
-    da += p()->buff.raking_ferocity->value();
-
-    return da;
   }
 
   void impact( action_state_t* s ) override
@@ -3922,24 +3823,6 @@ struct maim_t : public cat_attack_t
 
     return am;
   }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = cat_attack_t::bonus_da( s );
-
-    if ( p()->buff.iron_jaws->up() )
-      da += p()->buff.iron_jaws->check_value();
-
-    return da;
-  }
-
-  void execute() override
-  {
-    cat_attack_t::execute();
-
-    if ( p()->buff.iron_jaws->up() )
-      p()->buff.iron_jaws->expire();
-  }
 };
 
 // Rake =====================================================================
@@ -3972,32 +3855,6 @@ struct rake_t : public cat_attack_t
       if ( !t ) return nullptr;
 
       return td( t )->dots.rake;
-    }
-
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double ta = cat_attack_t::bonus_ta( s );
-
-      ta += p()->azerite.blood_mist.value( 2 );
-
-      return ta;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      cat_attack_t::tick( d );
-
-      if ( !p()->azerite.blood_mist.ok() )
-        return;
-
-      if ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
-        return;
-
-      if ( !p()->rppm.blood_mist->trigger() )
-        return;
-
-      p()->proc.blood_mist->occur();
-      p()->buff.berserk_cat->trigger( 6_s );
     }
   };
 
@@ -4065,9 +3922,6 @@ struct rake_t : public cat_attack_t
     if ( hit_any_target )
       p()->buff.bt_rake->trigger();
 
-    if ( p()->azerite.raking_ferocity.ok() )
-      p()->buff.raking_ferocity->trigger( 1, p()->azerite.raking_ferocity.value() );
-
     // TODO: check if consumed on miss
     if ( p()->buff.sudden_ambush->up() )
       p()->buff.sudden_ambush->decrement();
@@ -4089,9 +3943,6 @@ struct rip_t : public cat_attack_t
     hasted_ticks = true;
 
     combo_point_on_tick_proc_rate = 0.0;
-
-    if ( p->azerite.gushing_lacerations.ok() )
-      combo_point_on_tick_proc_rate = p->find_spell( 279468 )->proc_chance();
   }
 
   action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
@@ -4111,18 +3962,6 @@ struct rip_t : public cat_attack_t
       am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
 
     return am;
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    double ta = cat_attack_t::bonus_ta( s );
-
-    ta += p()->azerite.gushing_lacerations.value( 2 );
-
-    if ( p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() )
-      ta += p()->azerite.primordial_rage.value();
-
-    return ta;
   }
 
   void tick( dot_t* d ) override
@@ -4332,25 +4171,9 @@ struct shred_t : public cat_attack_t
     if ( hit_any_target )
       p()->buff.bt_shred->trigger();
 
-    if ( p()->buff.shredding_fury->up() )
-      p()->buff.shredding_fury->decrement();
-
     // TODO: Check if consumed on miss
     if ( p()->buff.sudden_ambush->up() )
       p()->buff.sudden_ambush->decrement();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = cat_attack_t::bonus_da( s );
-
-    if ( td( s->target )->dots.thrash_cat->is_ticking() || td( s->target )->dots.thrash_bear->is_ticking() )
-      b += p()->azerite.wild_fleshrending.value( 1 );
-
-    if ( p()->buff.shredding_fury->check() )
-      b += p()->buff.shredding_fury->value();
-
-    return b;
   }
 
   double composite_crit_chance_multiplier() const override
@@ -4396,18 +4219,6 @@ struct swipe_cat_t : public cat_attack_t
     return c;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = cat_attack_t::bonus_da( s );
-
-    if ( td( s->target )->dots.thrash_cat->is_ticking() || td( s->target )->dots.thrash_bear->is_ticking() )
-    {
-      b += p()->azerite.wild_fleshrending.value( 2 );
-    }
-
-    return b;
-  }
-
   bool ready() override
   {
     if ( p()->talent.brutal_slash->ok() )
@@ -4441,15 +4252,6 @@ struct tigers_fury_t : public cat_attack_t
 
     if ( p->talent.predator->ok() )
       duration += p->talent.predator->effectN( 1 ).time_value();
-
-    if ( p->azerite.jungle_fury.enabled() )
-    {
-      /*if ( p->talent.predator->ok() )
-        duration = p->azerite.jungle_fury.time_value( 1, azerite_power_t::S );
-      else
-        duration = p->azerite.jungle_fury.time_value( 2, azerite_power_t::S );*/
-      duration += timespan_t::from_millis( 2000 );
-    }
   }
 
   void execute() override
@@ -4485,9 +4287,6 @@ struct thrash_cat_t : public cat_attack_t
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
-
-    if ( p()->azerite.twisted_claws.ok() )
-      p()->buff.twisted_claws->trigger();
 
     if ( p()->talent.scent_of_blood->ok() )
       p()->buff.scent_of_blood->trigger();
@@ -4767,16 +4566,6 @@ struct swipe_bear_t : public bear_attack_t
     // target hit data stored in spec.swipe_cat
     aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
     proc_gore = true;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = bear_attack_t::bonus_da( s );
-
-    if ( td( s->target )->dots.thrash_cat->is_ticking() || td( s->target )->dots.thrash_bear->is_ticking() )
-      b += p()->azerite.wild_fleshrending.value( 2 );
-
-    return b;
   }
 };
 
@@ -7919,17 +7708,6 @@ void druid_t::init_spells()
   spec.restoration             = find_specialization_spell( "Restoration Druid" );
 
   // Azerite ================================================================
-  // Feral
-  azerite.blood_mist = find_azerite_spell("Blood Mist");
-  azerite.gushing_lacerations = find_azerite_spell("Gushing Lacerations");
-  azerite.iron_jaws = find_azerite_spell("Iron Jaws");
-  azerite.primordial_rage = find_azerite_spell("Primordial Rage");
-  azerite.raking_ferocity = find_azerite_spell("Raking Ferocity");
-  azerite.shredding_fury = find_azerite_spell("Shredding Fury");
-  azerite.wild_fleshrending = find_azerite_spell("Wild Fleshrending");
-  azerite.jungle_fury = find_azerite_spell("Jungle Fury");
-  azerite.untamed_ferocity = find_azerite_spell("Untamed Ferocity");
-
   // Guardian
   azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
   azerite.layered_mane = find_azerite_spell("Layered Mane");
@@ -8214,7 +7992,9 @@ void druid_t::create_buffs()
 
   buff.sudden_ambush = make_buff( this, "sudden_ambush", conduit.sudden_ambush->effectN( 1 ).trigger() );
 
-  buff.tigers_fury = make_buff<tigers_fury_buff_t>( *this );
+  buff.tigers_fury = make_buff( this, "tigers_fury", spec.tigers_fury )
+    ->set_cooldown( 0_ms )
+    ->apply_affecting_aura( talent.predator );
 
   // Guardian buffs
   buff.berserk_bear =
@@ -8334,17 +8114,6 @@ void druid_t::create_buffs()
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Azerite
-  buff.shredding_fury =
-      make_buff( this, "shredding_fury", find_spell( 274426 ) )->set_default_value( azerite.shredding_fury.value() );
-
-  buff.jungle_fury = make_buff<stat_buff_t>( this, "jungle_fury", find_spell( 274425 ) )
-                         ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) )
-                         ->set_chance( azerite.jungle_fury.enabled() ? 1.0 : 0.0 );
-
-  buff.iron_jaws = make_buff( this, "iron_jaws", find_spell( 276026 ) );
-
-  buff.raking_ferocity = make_buff( this, "raking_ferocity", find_spell( 273340 ) );
-
   buff.guardians_wrath = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
                              ->set_default_value( find_spell( 279541 )->effectN( 1 ).resource( RESOURCE_RAGE ) );
 
@@ -8983,8 +8752,6 @@ void druid_t::init_rng()
 {
   // RPPM objects
   rppm.predator = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
-  rppm.blood_mist =
-      get_rppm( "blood_mist", find_spell( azerite.blood_mist.spell()->effectN( 1 ).trigger_spell_id() )->real_ppm() );
 
   player_t::init_rng();
 }
