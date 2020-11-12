@@ -10980,9 +10980,6 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   if ( p->talent.solstice->ok() )
     p->buff.solstice->trigger();
 
-  p->buff.starsurge_solar->expire();
-  p->buff.starsurge_lunar->expire();
-
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
