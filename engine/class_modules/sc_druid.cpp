@@ -314,17 +314,6 @@ public:
   // Druid Events
   std::vector<event_t*> persistent_event_delay;
 
-  // Azerite
-  struct azerite_t
-  {
-    // Guardian
-    azerite_power_t guardians_wrath;
-    azerite_power_t layered_mane;  // TODO: check if second Ironfur benefits from Guardian of Elune
-    azerite_power_t masterful_instincts;
-    azerite_power_t twisted_claws;
-    azerite_power_t burst_of_savagery;
-  } azerite;
-
   // Buffs
   struct buffs_t
   {
@@ -407,11 +396,6 @@ public:
     buff_t* tooth_and_claw;
     buff_t* pulverize;
     buff_t* survival_instincts;
-    buff_t* guardians_wrath;
-    buff_t* masterful_instincts;
-    buff_t* twisted_claws;
-    buff_t* burst_of_savagery;
-    buff_t* sharpened_claws;
     buff_t* savage_combatant;
 
     // Restoration
@@ -541,7 +525,6 @@ public:
     const spell_data_t* predatory_swiftness;
     const spell_data_t* primal_fury;
     const spell_data_t* rip;
-    const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
     const spell_data_t* thrash_cat;
     const spell_data_t* berserk_cat;
@@ -671,9 +654,6 @@ public:
     const spell_data_t* rend_and_tear;
     const spell_data_t* tooth_and_claw;
     const spell_data_t* pulverize;
-
-    // PvP Talents
-    const spell_data_t* sharpened_claws;
 
     // Restoration
     const spell_data_t* cenarion_ward;
@@ -866,7 +846,7 @@ public:
   double composite_melee_attack_power() const override;
   double composite_melee_attack_power_by_type( attack_power_type type ) const override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute( attribute_e attr ) const override;
+  //double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_block() const override { return 0; }
   double composite_crit_avoidance() const override;
@@ -1505,25 +1485,6 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Survival Instincts =======================================================
-struct survival_instincts_buff_t : public druid_buff_t<buff_t>
-{
-  survival_instincts_buff_t( druid_t& p )
-    : base_t( p, "survival_instincts", p.find_specialization_spell( "Survival Instincts" ) )
-  {
-    set_cooldown( 0_ms );
-    // Tooltip data redirects to another spell even though the defensive buff in logs is the specialization spell
-    set_default_value( p.find_spell( 50322 )->effectN( 1 ).percent() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    p().buff.masterful_instincts->trigger();
-  }
-};
-
 // Kindred Empowerment ======================================================
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
@@ -2016,7 +1977,6 @@ public:
       parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
-    parse_buff_effects( p()->buff.sharpened_claws );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
     // Feral
@@ -4460,15 +4420,7 @@ struct mangle_t : public bear_attack_t
       return;
 
     if ( p()->buff.gore->up() )
-    {
       p()->buff.gore->expire();
-
-      if ( p()->azerite.burst_of_savagery.ok() )
-      {
-        p()->buff.burst_of_savagery->trigger();
-        trigger_gore();
-      }
-    }
 
     p()->buff.guardian_of_elune->trigger();
 
@@ -4502,22 +4454,6 @@ struct maul_t : public bear_attack_t
 
     if ( p()->buff.savage_combatant->up() )
       p()->buff.savage_combatant->expire();
-
-    if ( p()->azerite.guardians_wrath.ok() )
-    {
-      p()->buff.guardians_wrath->up();  // benefit tracking
-      p()->buff.guardians_wrath->trigger();
-    }
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = bear_attack_t::bonus_da( s );
-
-    if ( p()->azerite.guardians_wrath.ok() )
-      da += p()->azerite.guardians_wrath.value( 2 );
-
-    return da;
   }
 };
 
@@ -4649,14 +4585,6 @@ struct thrash_bear_t : public bear_attack_t
     {
       execute();
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    bear_attack_t::impact( state );
-
-    if ( p()->azerite.twisted_claws.ok() )
-      p()->buff.twisted_claws->trigger();
   }
 };
 
@@ -5786,15 +5714,6 @@ struct ironfur_t : public druid_spell_t
     return bd;
   }
 
-  double cost() const override
-  {
-    double c = druid_spell_t::cost();
-
-    c += p()->buff.guardians_wrath->check_stack_value();
-
-    return c;
-  }
-
   void execute() override
   {
     druid_spell_t::execute();
@@ -5809,12 +5728,6 @@ struct ironfur_t : public druid_spell_t
 
     if ( p()->buff.guardian_of_elune->up() )
       p()->buff.guardian_of_elune->expire();
-
-    if ( p()->buff.guardians_wrath->up() )
-      p()->buff.guardians_wrath->expire();
-
-    if ( p()->azerite.layered_mane.ok() && rng().roll( p()->azerite.layered_mane.spell()->effectN( 2 ).percent() ) )
-      p()->buff.ironfur->trigger( composite_buff_duration() );
   }
 };
 
@@ -7538,8 +7451,6 @@ void druid_t::init_spells()
   talent.tooth_and_claw             = find_talent_spell( "Tooth and Claw" );
   talent.pulverize                  = find_talent_spell( "Pulverize" );
 
-  talent.sharpened_claws            = find_spell( 202110, DRUID_GUARDIAN );
-
   // Restoration
   talent.cenarion_ward              = find_talent_spell( "Cenarion Ward" );
   talent.cultivation                = find_talent_spell( "Cultivation" );
@@ -7677,7 +7588,6 @@ void druid_t::init_spells()
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury             = find_affinity_spell( "Primal Fury" )->effectN( 1 ).trigger();
   spec.rip                     = find_affinity_spell( "Rip" );
-  spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
   spec.thrash_cat              = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
@@ -7706,14 +7616,6 @@ void druid_t::init_spells()
 
   // Restoration
   spec.restoration             = find_specialization_spell( "Restoration Druid" );
-
-  // Azerite ================================================================
-  // Guardian
-  azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
-  azerite.layered_mane = find_azerite_spell("Layered Mane");
-  azerite.masterful_instincts = find_azerite_spell("Masterful Instincts");
-  azerite.twisted_claws = find_azerite_spell("Twisted Claws");
-  azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
   // Affinities =============================================================
 
@@ -8062,10 +7964,10 @@ void druid_t::create_buffs()
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
     ->set_default_value( conduit.savage_combatant.percent() );
 
-  buff.sharpened_claws = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
-    ->set_default_value_from_effect( 1 );
-
-  buff.survival_instincts = make_buff<survival_instincts_buff_t>( *this );
+  // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
+  buff.survival_instincts = make_buff( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
+    ->set_cooldown( 0_ms )
+    ->set_default_value( query_aura_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN )->percent() );
 
   // Restoration buffs
   buff.cenarion_ward = make_buff( this, "cenarion_ward", talent.cenarion_ward );
@@ -8112,21 +8014,6 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
-
-  // Azerite
-  buff.guardians_wrath = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
-                             ->set_default_value( find_spell( 279541 )->effectN( 1 ).resource( RESOURCE_RAGE ) );
-
-  buff.masterful_instincts = make_buff<stat_buff_t>( this, "masterful_instincts", find_spell( 273349 ) )
-                                 ->add_stat( STAT_MASTERY_RATING, azerite.masterful_instincts.value( 1 ) )
-                                 ->add_stat( STAT_ARMOR, azerite.masterful_instincts.value( 2 ) );
-
-  buff.twisted_claws = make_buff<stat_buff_t>( this, "twisted_claws", find_spell( 275909 ) )
-                           ->add_stat( STAT_AGILITY, azerite.twisted_claws.value( 1 ) )
-                           ->set_chance( find_spell( 275908 )->proc_chance() );
-
-  buff.burst_of_savagery = make_buff<stat_buff_t>( this, "burst_of_savagery", find_spell( 289315 ) )
-                               ->add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
 }
 
 void druid_t::create_actions()
@@ -9179,24 +9066,6 @@ double druid_t::composite_spell_power_multiplier() const
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
-}
-
-// druid_t::composite_attribute =============================================
-
-double druid_t::composite_attribute( attribute_e attr ) const
-{
-  double a = player_t::composite_attribute( attr );
-
-  switch ( attr )
-  {
-    case ATTR_AGILITY:
-      if ( buff.ironfur->up() && azerite.layered_mane.ok() )
-        a += azerite.layered_mane.value( 1 ) * buff.ironfur->stack();
-      break;
-    default: break;
-  }
-
-  return a;
 }
 
 // druid_t::composite_attribute_multiplier ==================================
