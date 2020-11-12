@@ -259,6 +259,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
         expurgation -> execute();
       }
     }
+
+    if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+    {
+      action_t* vc = p() -> active.virtuous_command;
+      vc -> base_dd_min = vc -> base_dd_max = state -> result_amount * p() -> conduit.virtuous_command.percent();
+      vc -> set_target( state -> target );
+      vc -> schedule_execute();
+    }
   }
 };
 
@@ -362,6 +370,19 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
     {
       dual = background = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_melee_attack_t::impact( s );
+
+      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      {
+        action_t* vc = p() -> active.virtuous_command;
+        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
+        vc -> set_target( s -> target );
+        vc -> schedule_execute();
+      }
     }
 
     double action_multiplier() const override
@@ -504,7 +525,7 @@ struct judgment_ret_t : public judgment_t
 
     // according to skeletor this is given the bonus of 326011
     // TODO(mserrano) - fix this once spell data has been re-extracted
-    base_multiplier *= 1.0 + 1.0; // p -> find_spell( 326011 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
