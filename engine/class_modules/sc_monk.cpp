@@ -7288,6 +7288,20 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->conduit.evasive_stride->ok() )
+    {
+      // Tooltip shows this as (Value / 10)%; ie: (25 / 10)% = 2.5%.
+      // For roll purpose we need this to go to 0.025 or value / 1000
+      if ( p()->buff.shuffle->up() && p()->buff.heavy_stagger->up() &&
+           rng().roll( p()->conduit.evasive_stride.value() / 1000 ) )
+      {
+        p()->active_actions.evasive_stride->base_dd_min = s->result_amount;
+        p()->active_actions.evasive_stride->base_dd_max = s->result_amount;
+        p()->active_actions.evasive_stride->execute();
+        s->result_amount = 0;
+      }
+    }
+
     base_t::impact( s );
     p()->buff.shuffle->up();  // benefit tracking
     p()->stagger_damage_changed();
@@ -12198,18 +12212,6 @@ double monk_t::current_stagger_tick_dmg()
   if ( buff.invoke_niuzao->up() )
     dmg *= 1 - buff.invoke_niuzao->value(); // Saved as 25%
 
-  if ( conduit.evasive_stride->ok() )
-  {
-    // Tooltip shows this a Value / 10 %; ie: 25 / 10 = 2.5%.
-    // For roll purpose we need this to go to 0.025 or value / 1000
-    if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.value() / 1000 ) )
-    {
-        active_actions.evasive_stride->base_dd_min = dmg;
-        active_actions.evasive_stride->base_dd_max = dmg;
-        active_actions.evasive_stride->execute();
-        dmg = 0;
-    }
-  }
   return dmg;
 }
 
