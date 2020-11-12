@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 01fb4da, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands aae77bb, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -710,6 +710,7 @@ Description      : Commands your pet to intimidate the target, stunning it for $
 Tooltip          : Stuns the target for $24394d.
 
 Name             : Tranquilizing Shot (id=19801) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -720,7 +721,7 @@ Velocity         : 50 yards/sec
 Cooldown         : 10 seconds
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
+Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4982,6 +4983,7 @@ Effects          :
 Description      : Tell your pet to wake up.
 
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -4995,7 +4997,7 @@ Requires weapon  : Two-handed Axe, Bow, Gun, Two-handed Mace, Polearm, Two-hande
 Cooldown         : 30 seconds
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 63, 121
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   .......x ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5922,6 +5924,7 @@ Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)*(1+($137017s1/100))}
 
 
 Name             : Serpent Sting (id=259491) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -5933,7 +5936,7 @@ Velocity         : 60 yards/sec
 Duration         : 12 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (266779 effects: #1, #2), Viper's Venom (268552 effects: #1, #2)
 Family Flags     : 1, 14, 55, 106
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5951,6 +5954,7 @@ Description      : Fire a poison-tipped arrow at an enemy, dealing $s1 Nature da
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.$?a265428[ The Hunter's pet deals $w3% increased damage to you.][]
 
 Name             : Wildfire Bomb (id=259495) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5962,7 +5966,7 @@ Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
-Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6133,6 +6137,7 @@ Description      : $@spelldesc260240
 Tooltip          : Damage of $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot increased by $s1%.
 
 Name             : Volley (id=260243) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6143,7 +6148,7 @@ Duration         : 6 seconds
 Cooldown         : 45 seconds
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 121
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8477,6 +8482,7 @@ Description      : $@spelldesc270323
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
 Name             : Shrapnel Bomb (id=270335) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8487,7 +8493,7 @@ Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
-Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 01fb4da, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands aae77bb, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -55,7 +55,8 @@ Effects          :
 #1 (id=142)      : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=824443)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1 -> 1.5)
 Description      : Roots the target in place for $d. Damage may cancel the effect.$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
@@ -12449,7 +12450,8 @@ Effects          :
 #1 (id=837465)   : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #2 (id=837466)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+Hotfixed         : Base Value (9 -> 12)
 Description      : Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.
 
 Name             : Primordial Arcanic Pulsar (id=338825) [Spell Family (7)] 

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 01fb4da, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands aae77bb, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -9115,7 +9115,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=839433)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.62000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (2.62 -> 3.5)
 Description      : $@spelldesc306830
 
 Name             : Repeat Decree (id=339895) [Spell Family (107), Passive, Hidden] 

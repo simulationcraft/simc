@@ -225,6 +225,7 @@ struct eclipse_handler_t
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
+  void cast_ca_inc();
 
   void advance_eclipse();
   void snapshot_eclipse();
@@ -352,7 +353,8 @@ public:
     buff_t* starlord;  // talent
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
-    buff_t* starsurge;  // stacking eclipse empowerment
+    buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
+    buff_t* starsurge_lunar;  
     buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
@@ -722,6 +724,7 @@ public:
 
   struct uptimes_t
   {
+    uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse;
   } uptime;
@@ -1284,17 +1287,12 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  bool trigger( int s, double v, double c, timespan_t d ) override
+  void start( int s, double v, timespan_t d ) override
   {
-    bool ret = base_t::trigger( s, v, c, d );
+    base_t::start( s, v, d );
 
-    if ( ret )
-    {
-      p().eclipse_handler.trigger_both( buff_duration() );
-      p().uptime.combined_ca_inc->update( true, sim->current_time() );
-    }
-
-    return ret;
+    p().eclipse_handler.trigger_both( buff_duration() );
+    p().uptime.combined_ca_inc->update( true, sim->current_time() );
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
@@ -1309,6 +1307,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.expire_both();
+    p().uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p().uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 
@@ -1319,8 +1318,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
   double empowerment;
   double mastery_value;
+  unsigned eclipse_id;
 
-  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 )
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 ), eclipse_id( s->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
@@ -1329,9 +1329,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     // value, but parse them separately in case this changes in the future, as it was different in the past.
     auto ss = p.find_spell( 78674 );
 
-    if ( s->id() == p.spec.eclipse_solar->id() )
+    if ( eclipse_id == p.spec.eclipse_solar->id() )
       empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
-    else if ( s->id() == p.spec.eclipse_lunar->id() )
+    else if ( eclipse_id == p.spec.eclipse_lunar->id() )
       empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
   }
 
@@ -1356,7 +1356,11 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   {
     double v = base_t::value();
 
-    v += empowerment * p().buff.starsurge->stack();
+    if ( eclipse_id == p().spec.eclipse_solar->id() )
+      v += empowerment * p().buff.starsurge_solar->stack();
+
+    if ( eclipse_id == p().spec.eclipse_lunar->id() )
+      v += empowerment * p().buff.starsurge_lunar->stack();
 
     return v;
   }
@@ -1366,7 +1370,8 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.advance_eclipse();
-    p().buff.starsurge->expire();
+    p().buff.starsurge_solar->expire();
+    p().buff.starsurge_lunar->expire();
   }
 };
 
@@ -2607,9 +2612,10 @@ public:
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
 
-          // Temporary workaround while BFA is still relevant, as VoP/BFA pulsar does not reset empowerments, but SL pulsar does.
-          // TODO: Move into buff_t::celestial_alignment_buff_t::extend_duration() once BFA is no longer relevant.
-          p()->buff.starsurge->expire();
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+          make_event( *sim, pulsar_dur, [ this ]() {
+            p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+          } );
         }
       }
     }
@@ -5136,6 +5142,8 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.celestial_alignment->trigger();
+    p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+    p()->eclipse_handler.cast_ca_inc();
   }
 
   bool ready() override
@@ -5637,6 +5645,12 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     spec_buff->trigger();
+
+    if ( p()->buff.incarnation_moonkin->check() )
+    {
+      p()->eclipse_handler.cast_ca_inc();
+      p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+    }
   }
 };
 
@@ -7833,7 +7847,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
+  buff.starsurge_solar = make_buff( this, "starsurge_empowerment_solar", find_affinity_spell( "Starsurge" ) )
+    ->set_cooldown( 0_ms )
+    ->set_duration( 0_ms )
+    ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
+
+  buff.starsurge_lunar = make_buff( this, "starsurge_empowerment_lunar", find_affinity_spell( "Starsurge" ) )
     ->set_cooldown( 0_ms )
     ->set_duration( 0_ms )
     ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
@@ -8267,7 +8286,7 @@ void druid_t::apl_balance()
   aoe->add_action( "half_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "full_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "warrior_of_elune" );
-  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>4+floor(mastery_value%20)+floor(buff.starsurge_empowerment.stack%4)" );
+  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>4+floor(mastery_value%20)+floor(buff.starsurge_empowerment_solar.stack%4)" );
   aoe->add_action( "wrath,if=eclipse.lunar_next|eclipse.any_next&variable.is_cleave|buff.eclipse_solar.remains<action.starfire.execute_time&buff.eclipse_solar.up|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&!variable.is_cleave&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&spell_haste>0.6&(spell_targets<=3|!talent.soul_of_the_forest.enabled)|!variable.is_cleave&buff.ca_inc.remains>execute_time" );
   aoe->add_action( "starfire" );
   aoe->add_action( "run_action_list,name=fallthru" );
@@ -8434,7 +8453,7 @@ void druid_t::apl_guardian()
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( this, "Starfire",
-                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment.up)" );
+                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
   owlweave->add_action( this, "Wrath" );
 }
 
@@ -8613,9 +8632,15 @@ void druid_t::init_uptimes()
   uptime.eclipse = get_uptime( "Eclipse" );
 
   if ( talent.incarnation_moonkin->ok() )
-    uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
+  {
+    uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
+    uptime.combined_ca_inc = get_uptime( "Incarnation (Total)" );  //->collect_uptime()->collect_duration();
+  }
   else
-    uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
+  {
+    uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
+    uptime.combined_ca_inc = get_uptime( "Celestial Alignment (Total)" );  //->collect_uptime()->collect_duration();
+  }
 }
 
 // druid_t::init_resources ==================================================
@@ -9904,11 +9929,32 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-  p->buff.starsurge->trigger();
+  bool stellar_inspiration_proc = false;
 
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
-    p->buff.starsurge->trigger();
+    stellar_inspiration_proc = true;
+
+  if ( p->buff.eclipse_solar->up() )
+  {
+    p->buff.starsurge_solar->trigger();
+
+    if ( stellar_inspiration_proc )
+      p->buff.starsurge_solar->trigger();
+  }
+
+  if ( p->buff.eclipse_lunar->up() )
+  {
+    p->buff.starsurge_lunar->trigger();
+
+    if ( stellar_inspiration_proc )
+      p->buff.starsurge_lunar->trigger();
+  }
+}
+
+void eclipse_handler_t::cast_ca_inc()
+{
+  p->buff.starsurge_lunar->expire();
+  p->buff.starsurge_solar->expire();
 }
 
 void eclipse_handler_t::advance_eclipse()
@@ -9985,7 +10031,6 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   if ( p->talent.solstice->ok() )
     p->buff.solstice->trigger();
 
-  p->buff.starsurge->expire();
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
