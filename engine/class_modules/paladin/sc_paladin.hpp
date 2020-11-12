@@ -1097,12 +1097,11 @@ struct holy_power_consumer_t : public Base
   public:
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
-  bool is_vanq_hammer;
   bool is_wog;
   holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
-    is_vanq_hammer ( false )
+    is_wog( false )
   { }
 
   double cost() const override
@@ -1167,7 +1166,7 @@ struct holy_power_consumer_t : public Base
     if ( p -> azerite.relentless_inquisitor.ok() )
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
-    if ( p -> legendary.relentless_inquisitor -> ok() && !is_vanq_hammer )
+    if ( p -> legendary.relentless_inquisitor -> ok() )
       p -> buffs.relentless_inquisitor -> trigger();
 
     if ( p -> buffs.crusade -> check() )
@@ -1250,7 +1249,7 @@ struct holy_power_consumer_t : public Base
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() && !is_vanq_hammer )
+      if ( p -> buffs.divine_purpose -> up() )
       {
         p -> buffs.divine_purpose -> expire();
       }
@@ -1263,11 +1262,7 @@ struct holy_power_consumer_t : public Base
 
     // Roll for Divine Purpose
     if ( p -> talents.divine_purpose -> ok() &&
-         this -> rng().roll(
-           // Vanq hammer has a 5% proc chance in testing 2020-10-16
-           p -> talents.divine_purpose -> effectN( 1 ).percent() *
-           ( is_vanq_hammer ? 1/3 : 1.0 )
-         )
+         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() )
       )
     {
       p -> buffs.divine_purpose -> trigger();

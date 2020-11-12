@@ -1015,16 +1015,15 @@ struct righteous_might_t : public heal_t
     }
 };
 
-struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct vanquishers_hammer_t : public paladin_melee_attack_t
 {
   righteous_might_t* r_m_heal;
   vanquishers_hammer_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "vanquishers_hammer", p, p -> covenant.necrolord )
+    paladin_melee_attack_t( "vanquishers_hammer", p, p -> covenant.necrolord )
   {
     parse_options( options_str );
 
     hasted_gcd = true; // also not in spelldata for some reason?
-    is_vanq_hammer = true;
     base_multiplier *= 1.0 + p -> conduit.righteous_might.percent();
 
     if ( p -> specialization() == PALADIN_PROTECTION )
@@ -1037,7 +1036,7 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
 
   void impact( action_state_t* s ) override
   {
-    holy_power_consumer_t::impact( s );
+    paladin_melee_attack_t::impact( s );
 
     p() -> buffs.vanquishers_hammer -> trigger();
 
