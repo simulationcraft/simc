@@ -246,6 +246,7 @@ struct eclipse_handler_t
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
+  void cast_ca_inc();
 
   void advance_eclipse();
   void snapshot_eclipse();
@@ -1416,17 +1417,12 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  bool trigger( int s, double v, double c, timespan_t d ) override
+  void start( int s, double v, timespan_t d ) override
   {
-    bool ret = base_t::trigger( s, v, c, d );
+    base_t::start( s, v, d );
 
-    if ( ret )
-    {
-      p().eclipse_handler.trigger_both( buff_duration() );
-      p().uptime.combined_ca_inc->update( true, sim->current_time() );
-    }
-
-    return ret;
+    p().eclipse_handler.trigger_both( buff_duration() );
+    p().uptime.combined_ca_inc->update( true, sim->current_time() );
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
@@ -5657,6 +5653,8 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.celestial_alignment->trigger();
+    p()->eclipse_handler.cast_ca_inc();
+
     p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
     p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
@@ -6199,6 +6197,8 @@ struct incarnation_t : public druid_spell_t
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
+      p()->eclipse_handler.cast_ca_inc();
+
       p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
@@ -10893,17 +10893,27 @@ void eclipse_handler_t::cast_starsurge()
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
     stellar_inspiration_proc = true;
 
-  if ( p->buff.eclipse_solar->up() ) {
+  if ( p->buff.eclipse_solar->up() )
+  {
     p->buff.starsurge_solar->trigger();
+
     if ( stellar_inspiration_proc )
       p->buff.starsurge_solar->trigger();
   }
 
-  if ( p->buff.eclipse_lunar->up() ) {
+  if ( p->buff.eclipse_lunar->up() )
+  {
     p->buff.starsurge_lunar->trigger();
+
     if ( stellar_inspiration_proc )
       p->buff.starsurge_lunar->trigger();
   }
+}
+
+void eclipse_handler_t::cast_ca_inc()
+{
+  p->buff.starsurge_lunar->expire();
+  p->buff.starsurge_solar->expire();
 }
 
 void eclipse_handler_t::advance_eclipse()
