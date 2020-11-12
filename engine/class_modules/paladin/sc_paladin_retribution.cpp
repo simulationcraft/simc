@@ -95,6 +95,8 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
+
+    tick_may_crit = may_crit = false;
   }
 
   void impact( action_state_t* s) override
