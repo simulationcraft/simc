@@ -11059,30 +11059,9 @@ double monk_t::composite_mastery() const
 
   if ( buff.weapons_of_order->up() )
   {
-    double buff_mastery = buff.weapons_of_order->value();
+    m += buff.weapons_of_order->value();
     if ( conduit.strike_with_clarity->ok() )
-      buff_mastery += conduit.strike_with_clarity.value();
-
-    switch ( specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        m += mastery.elusive_brawler->effectN( 1 ).mastery_value() * buff_mastery;
-        break;
-      }
-      case MONK_MISTWEAVER:
-      {
-        m += mastery.gust_of_mists->effectN( 1 ).mastery_value() * buff_mastery;
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        m += mastery.combo_strikes->effectN( 1 ).mastery_value() * buff_mastery;
-        break;
-      }
-      default:
-        break;
-    }
+      m += conduit.strike_with_clarity.value();
   }
 
   return m;
