@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15044> __spelltext_data { {
+static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -1766,7 +1766,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   {  56285, "$@spelldesc56246", 0, 0 },
   {  56315, "Increases your maximum Focus and your pet's maximum Focus by $s1.", 0, 0 },
   {  56355, "Deals $s1 damage.", "Deals $s1 damage.", 0 },
-  {  56377, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", 0, 0 },
+  {  56377, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", 0, 0 },
   {  56382, "When cast on critters, your Polymorph spells now last 1 day and can be cast on multiple targets.", 0, 0 },
   {  56384, "Your Blink spell teleports you in the direction you are moving instead of the direction you are facing.", 0, 0 },
   {  56599, "$@spelldesc56382", 0, 0 },
@@ -3616,7 +3616,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 117906, "Each time you are hit by a melee attack, or hit with Blackout Kick, you gain stacking ${$s1}.1% increased Dodge chance until your next successful Dodge.\r\n\r\nAlso increases your attack power by ${$s2}.1%.", 0, 0 },
   { 117907, "Renewing Mist, Enveloping Mist,$?s322104[ Expel Harm][] and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.", 0, 0 },
   { 117952, "Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.", "Taking $w1 damage every $t1 sec.", 0 },
-  { 118000, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", 0, 0 },
+  { 118000, "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", 0, 0 },
   { 118038, "Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.", "Parry chance increased by $s1%.\r\nDamage taken reduced by $w2%.", 0 },
   { 118297, "Burns an enemy, then inflicts additional Fire damage every $t1 sec. for $d.", "Fire damage inflicted every $t1 sec.", 0 },
   { 118314, "Protects you with an ancient Mogu protection spell that absorbs $s1 damage.", "Absorbs $w1 damage.", 0 },
@@ -12434,7 +12434,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 306410, "+$s1 Versatility, +$s2 Mastery", 0, 0 },
   { 306474, "Your Logic Loop is recharging.", "Recharging.", 0 },
   { 306506, "Attune yourself to the energies of the targeted Ny'alotha, the Waking City raid boss, increasing your Versatility by $306498s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 306830, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", 0, "Kyrian" },
+  { 306830, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, "Kyrian" },
   { 307026, "$?q59132[Further increase the Corruption resistance of Ashjra'kamas by $s2.][Empower Ashjra'kamas, Shroud of Resolve, increasing its effectiveness in resisting Sanity Drain and Corruption.]", 0, 0 },
   { 307046, "$@spelldesc306830", 0, "Kyrian" },
   { 307159, "Increases your Agility by $s1 for $d.", "Agility increased by $w1.", 0 },
@@ -13217,7 +13217,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 322105, "$@spelldesc314867", "Shadow spells deal $w2% increased damage and healing, but cannot cast Holy spells.", 0 },
   { 322106, "Expel Harm now generates $s1 Chi.", 0, "Rank 2" },
   { 322107, "Shadow Word: Death's cooldown is reduced by ${$m1/-1000} sec.", 0, "Rank 2" },
-  { 322108, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", 0, "Rank 2" },
+  { 322108, "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects.", 0, "Rank 2" },
   { 322109, "You exploit the enemy target's weakest point, instantly killing $?s322113[creatures if they have less health than you.][them.\r\n\r\nOnly usable on creatures that have less health than you]$?s322113[ Deals damage equal to $s3% of your maximum health against players and stronger creatures under $s2% health.][.]$?s325095[\r\n\r\nReduces delayed Stagger damage by $325095s1% of damage dealt.]?s325215[\r\n\r\nSpawns $325215s1 Chi Spheres, granting 1 Chi when you walk through them.]?s344360[\r\n\r\nIncreases the Monk's Physical damage by $344361s1% for $344361d.][]", 0, 0 },
   { 322110, "Vampiric Embrace heals for an additional $s1% of your single-target Shadow spell damage.", 0, "Rank 2" },
   { 322112, "If your Holy Nova deals damage to at least $m1 enemies, a second Holy Nova will be cast a moment later at $m2% effectiveness at the same location.", 0, "Rank 2" },
@@ -13725,8 +13725,6 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 331978, "Restores $s1 mana.", 0, 0 },
   { 331993, "Increase Shadow damage dealt by $s1.", "Increase Shadow damage dealt by $w1.", 0 },
   { 332004, 0, "Damage increased by $w2%, and attack speed increased by $w3%.", 0 },
-  { 332077, "$@spelldesc332299", "Critical Strike increased by $w1.", 0 },
-  { 332078, "$@spelldesc332300", "Haste increased by $w1.", 0 },
   { 332079, "$@spelldesc332299", "Mastery increased by $w1.", 0 },
   { 332121, "Gain a shield for $d that absorbs up to $s1 Holy Damage. Only usable outdoors in the Shadowlands.", "$w1 Holy Absorption remaining. Only usable outdoors in the Shadowlands.", 0 },
   { 332134, "Break apart the stone into Sinstone Fragments.", 0, 0 },
@@ -13822,7 +13820,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 334229, 0, "Darkmoon Deck: Putrescence is not usable.", 0 },
   { 334249, 0, "Darkmoon Deck: Repose is not usable.", 0 },
   { 334255, 0, "Darkmoon Deck: Voracity is not usable.", 0 },
-  { 334271, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing ${$334284s1*5} damage over $334284d. Cannot occur more than once every $proccooldown sec. Only usable outdoors in the Shadowlands.", 0 },
+  { 334271, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing ${$334284s1*5} damage over $334284d. Cannot occur more than once every $proccooldown sec. Only usable outdoors in the Shadowlands.", 0 },
   { 334275, "Reduces the target's movement speed by $s1% for $d.\r\n\r\n|cFF8282FFCurses: A warlock can only have one Curse active per target.|r", "Movement speed slowed by $w1%.", 0 },
   { 334277, "$@spelldesc235870", "Damage done by your next Pyroblast or Flamestrike is increased by $s1%.", 0 },
   { 334284, "$@spelldesc334271", "Taking $w1 Nature damage every $t sec  and Haste is reduced by $334285w1.", 0 },
@@ -13875,7 +13873,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 334667, "When Obtained: Ash envelopes you, making it harder for enemies to detect you for $d. Only usable outdoors in the Shadowlands. ", "Shrouded in ash making it harder for enemies to detect you. Only usable outdoors in the Shadowlands.", 0 },
   { 334670, "Place the trap within $R yards of you. Enemies that walk over it have their movement slowed by $334672s1% and take ${$334672s2*$334672d/$334672t2} Shadow damage over $334672d. Only usable outdoors in the Shadowlands.", 0, 0 },
   { 334672, 0, "Movement speed reduced by $w1%.\r\nTaking $w2 Shadow damage every $t2 sec.", 0 },
-  { 334677, "When Obtained: Gain a shield of flying volumes that will each absorb up to $s1 damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", 0 },
+  { 334677, "When Obtained: Gain a shield of flying volumes that will each absorb up to $s1 damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands.", 0 },
   { 334678, "Remorseless Winter damage is increased by $s2%. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.", 0, 0 },
   { 334680, "$@spelldesc334677", "$@spellaura334677", 0 },
   { 334692, "Frostwyrm's Fury has $s1% reduced cooldown and Freezes all enemies hit for $334693d.", 0, 0 },
@@ -14197,6 +14195,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 337481, "When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.\r\n\r\nRising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000}.1 sec.", 0, 0 },
   { 337482, "$@spelldesc337481", "Rising Sun Kick critical strike chance increased by $w1%.", 0 },
   { 337483, "Whenever you deal damage to a target with Fists of Fury, you gain a stack of Chi Energy up to a maximum of $m2 stacks.\r\n\r\nUsing Spinning Crane Kick will cause the energy to detonate in a Chi Explosion, dealing $337342s1 damage to all enemies within $337342A1 yards. The damage is increased by $337571m1% for each stack of Chi Energy.", 0, 0 },
+  { 337486, "Sing an Orophean Dirge for $d, forcing players within $s1 yards to cry uncontrollably.", 0, 0 },
   { 337504, "Casting $?a212612 [Eye Beam][Fel Devastation] summons an allied $?a212612 [Vengeance][Havoc] Demon Hunter who casts $?a212612 [Fel Devastation][Eye Beam].", "Casting $?a212612 [Eye Beam][Fel Devastation] summons an allied $?a212612 [Vengeance][Havoc] Demon Hunter who casts $?a212612 [Fel Devastation][Eye Beam].", 0 },
   { 337532, "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", "Metamorphosis increases your size, movement speed, and melee range by $326486s1%.", 0 },
   { 337534, "$?a212612[Eye Beam]?a212613[Fel Devastation][] has a $s1% chance to not incur its cooldown.", "$?a212612[Eye Beam]?a212613[Fel Devastation][] has a $s1% chance to not incur its cooldown.", 0 },
@@ -14825,6 +14824,7 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 343744, "Life Cocoon increases all healing over time received by $m1%.", 0, "Rank 2" },
   { 343755, "Apocalypse generates $343758s1 Runes.", 0, "Rank 3" },
   { 343758, "$@spelldesc275699", 0, 0 },
+  { 343764, "$@spelldesc337250", 0, 0 },
   { 343817, "Ensorcell the mind of a Beast found outdoors in the Shadowlands. If affected, your target will assist you for $d.", "Ensorcelled by $@auracaster's Charm of Eternal Winter.", 0 },
   { 343818, "$@spelldesc325197", "Blackout Kick, Rising Sun Kick, or Spinning Crane Kick cause Chi-ji to heal the $s3 nearest allies with a Gust of Mist for $343819s1.\r\n\r\nImmune to movement-impairing effects.", 0 },
   { 343819, "$@spelldesc325197", 0, 0 },
@@ -15035,6 +15035,9 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 347553, "$@spelldesc337172", "Tiger Palm, Blackout Kick, and Rising Sun Kick heal injured ally within $126890A1 yards for $337172s1% of the damage done.", 0 },
   { 347625, "$@spelldesc325326", 0, 0 },
   { 347649, "Reduces the rate at which you incur the Eye of the Jailer in the Maw.", 0, 0 },
+  { 347660, "$@spelldesc338477", "Increases your healing done by $w1%.", 0 },
+  { 347662, "$@spelldesc338477", "Damage taken reduced by $w1%.", 0 },
+  { 347665, "$@spelldesc338477", "Damage taken reduced by $w1%.", 0 },
   { 347684, "$@spelldesc323916", "Feared.", 0 },
   { 347687, "$@spelldesc338138", 0, 0 },
   { 347688, "$@spelldesc338138", 0, 0 },
@@ -15044,22 +15047,31 @@ static const std::array<spelltext_data_t, 15044> __spelltext_data { {
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 348007, "$@spelldesc333393", "Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%", 0 },
   { 348065, "$@spelldesc347232", 0, 0 },
+  { 348135, "Your damaging abilities have a chance to deal $s1 Holy damage to your target while above $s3% health, or heal you for $s2 health while below $s3% health.", 0, 0 },
+  { 348136, "Grant an ally $348137s2 Speed and heal them for ${$348137s1*($d/$t1)} health over $d.", "Healing for $w1 every $T1 sec.\r\nSpeed increased by $348137s2.", 0 },
+  { 348139, "Grants you $348138s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 13> __spelltext_hotfix_data { {
+  {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
+  {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
+  {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
   {  310674,  0, "Increases your chance to bait while fishing in the Shadowlands.", "Increases your chance to find bait while fishing in the Shadowlands." },
+  {  322108,  0, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
+  {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
+  {  334677,  1, "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands." },
   {  337544,  0, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][]." },
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
 // Spell description variables, wow build 9.0.2.36532
-static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
-  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}" },
+static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
+  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15132,6 +15144,7 @@ static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
   {  116849, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s3/100*(1+$@versadmg)}" },
   {  116858, "$masteryMod=${$cond($gt($pl,79),1,0)}" },
   {  117952, "$dmgMult=$?s113656[${12}][${1.0}]\r\n$healMult=$?s115070[${1.2}][${1.0}]\r\n$damage=${4*($m1*$<dmgMult>)}" },
+  {  118000, "$critMult=${3}" },
   {  120360, "$damageSec=${$120361sw2*11}" },
   {  120954, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]" },
   {  121253, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -15355,6 +15368,7 @@ static const std::array<spelldesc_vars_data_t, 293> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
 } };
 
