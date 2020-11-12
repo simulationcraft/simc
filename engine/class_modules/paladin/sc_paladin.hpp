@@ -251,6 +251,7 @@ public:
     cooldown_t* avenging_wrath; // Righteous Protector (prot)
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
+    cooldown_t* the_magistrates_judgment_icd;
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose

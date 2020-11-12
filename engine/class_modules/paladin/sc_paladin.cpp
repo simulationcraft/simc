@@ -36,6 +36,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd   = get_cooldown( "judgment_of_light_icd" );
+  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
 
   cooldowns.holy_shock              = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn           = get_cooldown( "light_of_dawn");
@@ -968,8 +969,11 @@ void judgment_t::execute()
       default:
         magistrate_chance = p() -> legendary.the_magistrates_judgment -> effectN( 3 ).percent();
     }
-    if ( rng().roll( magistrate_chance ))
+    if ( p() -> cooldowns.the_magistrates_judgment_icd -> up() && rng().roll( magistrate_chance ) )
+    {
       p() -> buffs.the_magistrates_judgment -> trigger();
+      p() -> cooldowns.the_magistrates_judgment_icd -> start();
+    }
   }
 
   if ( p() -> conduit.virtuous_command -> ok() )
@@ -1473,6 +1477,9 @@ void paladin_t::create_actions()
   {
     active.virtuous_command = nullptr;
   }
+
+  if ( legendary.the_magistrates_judgment -> ok() )
+    cooldowns.the_magistrates_judgment_icd -> duration = legendary.the_magistrates_judgment -> internal_cooldown();
 
   player_t::create_actions();
 }
