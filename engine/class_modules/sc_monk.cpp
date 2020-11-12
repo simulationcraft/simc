@@ -12200,7 +12200,9 @@ double monk_t::current_stagger_tick_dmg()
 
   if ( conduit.evasive_stride->ok() )
   {
-    if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.percent() ) )
+    // Tooltip shows this a Value / 10 %; ie: 25 / 10 = 2.5%.
+    // For roll purpose we need this to go to 0.025 or value / 1000
+    if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.value() / 1000 ) )
     {
         active_actions.evasive_stride->base_dd_min = dmg;
         active_actions.evasive_stride->base_dd_max = dmg;
