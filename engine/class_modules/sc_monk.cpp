@@ -4929,8 +4929,6 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-//    am *= 1 + p()->spec.mistweaver_monk->effectN( 13 ).percent();
-
     if ( p()->buff.blackout_combo->check() )
       am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
@@ -5225,8 +5223,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    cooldown->duration += p->spec.mistweaver_monk->effectN( 10 ).time_value();
-
     may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
@@ -5340,15 +5336,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return timespan_t::from_millis( 100 );
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
-
-    return am;
-  }
-
   double cost() const override
   {
     return 0;
@@ -5459,23 +5446,6 @@ struct blackout_kick_t : public monk_melee_attack_t
       return 0;
 
     return c;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    switch ( p()->specialization() )
-    {
-      case MONK_MISTWEAVER:
-      {
-        am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
-        break;
-      }
-      default:
-        break;
-    }
-    return am;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -6285,9 +6255,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
-      if ( player->specialization() == MONK_MISTWEAVER )
-        base_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 5 ).percent();
-      else
+      if ( !player->specialization() == MONK_MISTWEAVER )
         base_hit -= 0.19;
     }
   }
@@ -8955,7 +8923,7 @@ struct fit_to_burst_t : public monk_heal_t
 
 struct evasive_stride_t : public monk_heal_t
 {
-  evasive_stride_t( monk_t& p ) : monk_heal_t( "evasive_stride", p, p.find_spell( 343764 ) )
+  evasive_stride_t( monk_t& p ) : monk_heal_t( "evasive_stride", p, p.passives.evasive_stride )
   {
     background  = true;
     proc        = true;
