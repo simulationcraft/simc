@@ -834,6 +834,7 @@ public:
   {
     uptime_t* arcanic_pulsar;
     uptime_t* vision_of_perfection;
+    uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse;
   } uptime;
@@ -1437,6 +1438,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.expire_both();
+    p().uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p().uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 
@@ -2895,6 +2897,11 @@ public:
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
+
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+          make_event( *sim, pulsar_dur, [ this ]() {
+            p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+          } );
         }
       }
     }
@@ -5653,6 +5660,7 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.celestial_alignment->trigger();
+    p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p()->eclipse_handler.cast_ca_inc();
 
     p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
@@ -6198,6 +6206,7 @@ struct incarnation_t : public druid_spell_t
     if ( p()->buff.incarnation_moonkin->check() )
     {
       p()->eclipse_handler.cast_ca_inc();
+      p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
 
       p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
@@ -9547,14 +9556,16 @@ void druid_t::init_uptimes()
 
   if ( talent.incarnation_moonkin->ok() )
   {
-    uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
+    uptime.arcanic_pulsar       = get_uptime( "Incarnation (AP)" );
     uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" );//->collect_uptime();
+    uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
   }
   else
   {
-    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
+    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (AP)" );
     uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" );//->collect_uptime();
+    uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
   }
 }
