@@ -430,6 +430,7 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 void stone_legion_heraldry( special_effect_t& effect )
 {
   double amount   = effect.driver()->effectN( 1 ).average( effect.item );
+  amount = item_database::apply_combat_rating_multiplier( *effect.item, amount );
   unsigned allies = effect.player->sim->shadowlands_opts.stone_legionnaires_in_party;
   double mul      = 1.0 + effect.driver()->effectN( 2 ).percent() * allies;
 
