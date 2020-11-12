@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands aae77bb, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-12/36599, git build shadowlands c681e7c, no-networking)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -10712,12 +10712,10 @@ Effects          :
 Description      : Flamestrike's damage is increased by |cFFFFFFFF${$s1}.1%|r, and its radius is increased by $s2%.
 
 Name             : Arcane Prodigy (id=336873) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
-Conduit Id       : 34 (values=1.5, 1.65, 1.8, 1.95, 2.1, 2.25, 2.4, 2.55, 2.7, 2.85, 3, 3.15, 3.3, 3.45, 3.6)
-Proc Flags       : ........ ....x... x....... ........ 
-                 : Generic Hostile Spell, Magic Hostile Spell
+Conduit Id       : 34 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10729,8 +10727,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=834557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r each time it deals damage.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 0)
+Description      : Each wave of a Clearcast Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r.
 
 Name             : Nether Precision (id=336886) [Spell Family (3), Passive, Hidden] 
 Class            : Mage

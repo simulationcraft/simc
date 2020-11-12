@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.36532
-static const std::array<spelltext_data_t, 15050> __spelltext_data { {
+// Spell text, wow build 9.0.2.36599
+static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14084,7 +14084,7 @@ static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   { 336867, "Rapid Fire deals $s1% additional damage, and Aimed Shot has a $h% chance to reset the cooldown of Rapid Fire.", 0, 0 },
   { 336870, "Aimed Shot also fires a Serpent Sting at the primary target.", 0, 0 },
   { 336872, "Unleashes a powerful weapon strike that deals $224266s1 Holy damage to an enemy target.\r\n\r\nHas a $s2% chance to activate Hammer of Wrath and reset its cooldown.", 0, 0 },
-  { 336873, "Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r each time it deals damage.", 0, 0 },
+  { 336873, "Each wave of a Clearcast Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r.", 0, 0 },
   { 336874, "$@spelldesc336853", "Absorbs $w1 damage.", 0 },
   { 336878, "When you gain the Trick Shots effect, you have a $h% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.", 0, 0 },
   { 336884, "When Paralysis ends, your target's movement speed is reduced by |cFFFFFFFF${$s1/10}.1%|r for $336887d. ", 0, 0 },
@@ -14998,12 +14998,11 @@ static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   { 346665, "Throw a demonic glaive at the target, dealing $s2 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. Generates high threat.", 0, 0 },
   { 346736, "Psychic Scream can withstand $s1% more damage before breaking.", 0, "Rank 2" },
   { 346747, "When a trap is triggered, the cooldown of Disengage is reduced by |cFFFFFFFF${$s1/1000}.1|r sec.", 0, 0 },
-  { 346875, "The Jailer's assassins wither your soul, inflicting Shadow damage every $t2 sec.\r\n\r\nAt $s1 stacks, you succumb to a Soul Collapse.", "Inflicts Shadow damage every $t2 sec.\r\nAt $s1 stacks, you succumb to a Soul Collapse.", 0 },
-  { 346878, "Your withered soul collapses under the constant assault of the Jailer's assassins, killing you.", "Horrified by your own imminent demise.", 0 },
-  { 346879, "$@spelldesc346878", 0, 0 },
-  { 346917, "Don the Talisman of Destined Defiance, giving you the power to overcome the Jailer's winged abductors.", 0, 0 },
+  { 346835, "The Jailer's abductors brand your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe brand also draws the Jailer's attention, increasing your Eye of the Jailer.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec.", 0 },
+  { 346875, "The Jailer's assassins mark your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe mark also draws the Jailer's attention, increasing your Eye of the Jailer.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec.", 0 },
+  { 346917, "Don the Soul-Stabilizing Talisman, gaining permanent immunity to Mawsworn Abductors' $@spellname346835.", 0, 0 },
   { 347008, "The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning and interrupting the target for $89766d.", 0, "Special Ability" },
-  { 347020, "Rub the paste within the sphere onto your skin, permanently reducing the duration of the $@spellname346875 effect when applied by Assassins.", 0, 0 },
+  { 347020, "Stamp the sigil onto your body, gaining permanent immunity to Mawsworn Assassins' $@spellname346875.", 0, 0 },
   { 347037, "$@spelldesc328305", "Allows $328305s6 use of any Stealth ability.", "Night Fae" },
   { 347047, "$@spelldesc334058", 0, 0 },
   { 347080, "Enable transportation via Chaotic Riftstones which can be found in the Maw.", 0, 0 },
@@ -15050,10 +15049,14 @@ static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   { 348135, "Your damaging abilities have a chance to deal $s1 Holy damage to your target while above $s3% health, or heal you for $s2 health while below $s3% health.", 0, 0 },
   { 348136, "Grant an ally $348137s2 Speed and heal them for ${$348137s1*($d/$t1)} health over $d.", "Healing for $w1 every $T1 sec.\r\nSpeed increased by $348137s2.", 0 },
   { 348139, "Grants you $348138s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
+  { 348168, "$@spelldesc346875", 0, 0 },
+  { 348169, "$@spelldesc346875", 0, 0 },
+  { 348177, "$@spelldesc346835", 0, 0 },
+  { 348178, "$@spelldesc346835", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36532
-static constexpr std::array<hotfix::client_hotfix_entry_t, 13> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.2.36599
+static constexpr std::array<hotfix::client_hotfix_entry_t, 20> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
   {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
@@ -15065,11 +15068,18 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 13> __spelltext_hotfi
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
   {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
   {  334677,  1, "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands." },
+  {  336873,  0, "Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r each time it deals damage.", "Each wave of a Clearcast Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r." },
   {  337544,  0, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][]." },
+  {  346835,  0, "Invoke the Talisman of Destined Defiance, swapping your fate for your abductor's.", "The Jailer's abductors brand your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe brand also draws the Jailer's attention, increasing your Eye of the Jailer." },
+  {  346835,  1, "Wielding the Talisman of Destined Defiance.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec." },
+  {  346875,  0, "The Jailer's assassins wither your soul, inflicting Shadow damage every $t2 sec.\r\n\r\nAt $s1 stacks, you succumb to a Soul Collapse.", "The Jailer's assassins mark your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe mark also draws the Jailer's attention, increasing your Eye of the Jailer." },
+  {  346875,  1, "Inflicts Shadow damage every $t2 sec.\r\nAt $s1 stacks, you succumb to a Soul Collapse.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec." },
+  {  346917,  0, "Don the Talisman of Destined Defiance, giving you the power to overcome the Jailer's winged abductors.", "Don the Soul-Stabilizing Talisman, gaining permanent immunity to Mawsworn Abductors' $@spellname346835." },
+  {  347020,  0, "Rub the paste within the sphere onto your skin, permanently reducing the duration of the $@spellname346875 effect when applied by Assassins.", "Stamp the sigil onto your body, gaining permanent immunity to Mawsworn Assassins' $@spellname346875." },
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
-// Spell description variables, wow build 9.0.2.36532
+// Spell description variables, wow build 9.0.2.36599
 static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15367,7 +15377,7 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36532
+// spelldesc_vars hotfix entries, wow build 9.0.2.36599
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
 } };
