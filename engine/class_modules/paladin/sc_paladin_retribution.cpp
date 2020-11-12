@@ -352,6 +352,9 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
       background = true;
+
+      // spell data please
+      aoe = 0;
     }
 
     double action_multiplier() const override
@@ -370,6 +373,9 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
     {
       dual = background = true;
+
+      // spell data please?
+      aoe = 0;
     }
 
     void impact( action_state_t* s ) override
@@ -401,6 +407,9 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     echo( nullptr )
   {
     parse_options( options_str );
+
+    // wtf is happening in spell data?
+    aoe = 0;
 
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
@@ -439,8 +448,8 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
+      p() -> active.necrolord_divine_storm -> schedule_execute();
       p() -> buffs.vanquishers_hammer -> expire();
-      p() -> active.necrolord_divine_storm -> execute();
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
