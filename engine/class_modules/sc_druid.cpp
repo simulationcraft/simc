@@ -2941,12 +2941,6 @@ struct shooting_stars_t : public druid_spell_t
   {
     background = true;
   }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
 };
 
 // Moonfire Spell ===========================================================
@@ -5917,12 +5911,6 @@ struct full_moon_t : public moon_base_t
   {
     return free_cast ? 0_ms : moon_base_t::cooldown_duration();
   }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
 };
 
 struct moon_proxy_t : public druid_spell_t
@@ -6789,8 +6777,8 @@ struct starfall_t : public druid_spell_t
 
     timespan_t travel_time() const override
     {
-      // seems to have a random travel time between 1x - 2x missile speed
-      return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
+      // seems to have a random travel time between 1x - 2x travel delay
+      return timespan_t::from_seconds( travel_delay * rng().range( 1.0, 2.0 ) );
     }
 
     void impact( action_state_t* s ) override
