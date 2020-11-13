@@ -3800,8 +3800,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_windfury = may_proc_flametongue = false;
-    may_proc_hot_hand = p()->talent.hot_hand->ok();
+    may_proc_stormbringer = may_proc_flametongue = false;
   }
 };
 
