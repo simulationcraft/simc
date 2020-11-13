@@ -7607,9 +7607,9 @@ struct lights_judgment_t : public racial_spell_t
   {
     // Reduce the delay before the hit by the player's gcd when used during precombat
     if ( ! player -> in_combat && is_precombat )
-      return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
+      return racial_spell_t::travel_time() - player -> base_gcd;
 
-    return timespan_t::from_seconds( travel_speed );
+    return racial_spell_t::travel_time();
   }
 
   void impact( action_state_t* state ) override
