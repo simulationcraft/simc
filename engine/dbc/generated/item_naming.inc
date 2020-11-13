@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.2.36401
-static const std::array<item_name_description_t, 568> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.2.36599
+static const std::array<item_name_description_t, 575> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -352,7 +352,7 @@ static const std::array<item_name_description_t, 568> __item_name_description_da
   { 13592, "Queen's Conservatory"                        },
   { 13593, "Prestige"                                    },
   { 13594, "Abominable Stitching"                        },
-  { 13595, "Prestige"                                    },
+  { 13595, "Unity"                                       },
   { 13596, "Travel Network"                              },
   { 13597, "Ethereal"                                    },
   { 13599, "Measured Contemplation"                      },
@@ -568,5 +568,12 @@ static const std::array<item_name_description_t, 568> __item_name_description_da
   { 13811, "Permanent Upgrade: Torghast"                 },
   { 13812, "Permanent Upgrade: The Maw"                  },
   { 13813, "Path of Ascension"                           },
+  { 13815, "Rank 1 of 7"                                 },
+  { 13816, "Rank 2 of 7"                                 },
+  { 13817, "Rank 3 of 7"                                 },
+  { 13818, "Rank 4 of 7"                                 },
+  { 13819, "Rank 5 of 7"                                 },
+  { 13820, "Rank 6 of 7"                                 },
+  { 13821, "Rank 7 of 7"                                 },
 } };
 

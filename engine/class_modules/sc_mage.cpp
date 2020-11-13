@@ -421,8 +421,7 @@ public:
     // Shared
     buff_t* incanters_flow;
     buff_t* rune_of_power;
-    buff_t* focus_magic_crit;
-    buff_t* focus_magic_int;
+    buff_t* focus_magic;
 
 
     // Runeforge Legendaries
@@ -2666,16 +2665,21 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     affected_by.savant = triggers.radiant_spark = true;
   }
 
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    if ( p()->buffs.clearcasting_channel->check() )
+      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
+      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
+  }
+
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-    {
       p()->buffs.arcane_harmony->trigger();
-      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
-      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
-    }
   }
 };
 
@@ -3053,22 +3057,16 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
-  timespan_t delay;
   action_t* projectile;
 
   comet_storm_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.comet_storm ),
-    delay( timespan_t::from_seconds( p->find_spell( 228601 )->missile_speed() ) ),
     projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
-  }
-
-  timespan_t travel_time() const override
-  {
-    return delay;
+    travel_delay = p->find_spell( 228601 )->missile_speed();
   }
 
   void execute() override
@@ -3518,8 +3516,6 @@ struct flurry_bolt_t final : public frost_mage_spell_t
       for ( int i = 0; i < wc->max_stack(); i++ )
         p()->procs.winters_chill_applied->occur();
     }
-
-    trigger_cold_front();
   }
 
   double action_multiplier() const override
@@ -3582,8 +3578,6 @@ struct flurry_t final : public frost_mage_spell_t
 
       p()->procs.brain_freeze_used->occur();
     }
-
-    consume_cold_front( target );
   }
 
   void impact( action_state_t* s ) override
@@ -3597,6 +3591,9 @@ struct flurry_t final : public frost_mage_spell_t
       .target( s->target )
       .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
       .action( flurry_bolt ), true );
+
+    consume_cold_front( s->target );
+    trigger_cold_front();
   }
 };
 
@@ -3668,8 +3665,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
-    consume_cold_front( target );
-
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
   }
@@ -3679,7 +3674,10 @@ struct frostbolt_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
+      consume_cold_front( s->target );
       trigger_cold_front();
+    }
   }
 };
 
@@ -3703,10 +3701,8 @@ struct frost_nova_t final : public mage_spell_t
     timespan_t duration = timespan_t::min();
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
-      // The damage taken debuff is triggered even on targets that cannot be rooted.
-      auto debuff = get_td( s->target )->debuffs.grisly_icicle;
-      duration = debuff->buff_duration();
-      debuff->trigger();
+      get_td( s->target )->debuffs.grisly_icicle->trigger();
+      duration = data().duration() + p()->spec.frost_nova_2->effectN( 1 ).time_value();
     }
     p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
@@ -3981,7 +3977,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      // Hardcoded in the talent description.
+      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent() - 0.15;
     }
 
     if ( p->runeforge.glacial_fragments.ok() )
@@ -4330,11 +4327,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     triggers.ignite = triggers.radiant_spark = true;
   }
 
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -4433,11 +4425,6 @@ struct nether_tempest_aoe_t final : public arcane_mage_spell_t
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_OVER_TIME;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -4774,6 +4761,9 @@ struct scorch_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
+    travel_delay = p->options.scorch_delay.total_seconds();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4802,13 +4792,6 @@ struct scorch_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
       p()->buffs.frenetic_speed->trigger();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // There is a tiny delay between Scorch dealing damage and Hot Streak
-    // state being updated. Here we model it as a tiny travel time.
-    return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
   }
 
   bool usable_moving() const override
@@ -5330,10 +5313,7 @@ struct focus_magic_event_t final : public event_t
     mage->events.focus_magic = nullptr;
 
     if ( rng().roll( mage->options.focus_magic_crit_chance ) )
-    {
-      mage->buffs.focus_magic_crit->trigger();
-      mage->buffs.focus_magic_int->trigger();
-    }
+      mage->buffs.focus_magic->trigger();
 
     if ( mage->options.focus_magic_interval > 0_ms )
     {
@@ -5489,9 +5469,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
 
   // Runeforge Legendaries
-  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
-                            ->set_default_value_from_effect( 3 )
-                            ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
+  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 348007 ) )
+                            ->set_default_value_from_effect( 1 )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
   // Covenant Abilities
@@ -6138,14 +6117,12 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.incanters_flow   = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power    = make_buff<buffs::rune_of_power_t>( this );
-  buffs.focus_magic_crit = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-  buffs.focus_magic_int  = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
+  buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
+  buffs.focus_magic    = make_buff( this, "focus_magic_proc", find_spell( 321363 ) )
+                           ->set_default_value_from_effect( 2 )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                           ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
@@ -6527,7 +6504,7 @@ double mage_t::composite_spell_crit_chance() const
   double c = player_t::composite_spell_crit_chance();
 
   c += spec.critical_mass->effectN( 1 ).percent();
-  c += buffs.focus_magic_crit->check_value();
+  c += buffs.focus_magic->check() * buffs.focus_magic->data().effectN( 1 ).percent();
 
   return c;
 }

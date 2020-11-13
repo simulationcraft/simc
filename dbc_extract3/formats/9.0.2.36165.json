@@ -125,14 +125,16 @@
   },
   "ChrClasses": {
     "fields": [
-      { "data_type": "S", "field": "name_lang",               "formats": { } },
-      { "data_type": "S", "field": "filename",                "formats": { } },
-      { "data_type": "S", "field": "name_male_lang",          "formats": { } },
-      { "data_type": "S", "field": "name_female_lang",        "formats": { } },
-      { "data_type": "S", "field": "pet_name_token",          "formats": { } },
-      { "data_type": "S", "field": "desc",                    "formats": { } },
-      { "data_type": "S", "field": "roles_lang",              "formats": { } },
-      { "data_type": "S", "field": "requirements_fail_lang",  "formats": { } },
+      { "data_type": "S", "field": "name_lang",                   "formats": { } },
+      { "data_type": "S", "field": "filename",                    "formats": { } },
+      { "data_type": "S", "field": "name_male_lang",              "formats": { } },
+      { "data_type": "S", "field": "name_female_lang",            "formats": { } },
+      { "data_type": "S", "field": "pet_name_token",              "formats": { } },
+      { "data_type": "S", "field": "desc",                        "formats": { } },
+      { "data_type": "S", "field": "roles_lang",                  "formats": { } },
+      { "data_type": "S", "field": "requirements_fail_lang",      "formats": { } },
+      { "data_type": "S", "field": "hyphenated_name_male_lang",   "formats": { } },
+      { "data_type": "S", "field": "hyphenated_name_female_lang", "formats": { } },
       { "data_type": "i", "field": "id" },
       { "data_type": "I", "field": "create_screen_file_data_id" },
       { "data_type": "I", "field": "select_screen_file_data_id" },
@@ -922,6 +924,13 @@
       { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
       { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
       { "data_type": "f", "field": "spell_mod" }
+    ]
+  },
+  "SoulbindConduitRankProperties": {
+    "fields": [
+      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "item_level" },
+      { "data_type": "i", "field": "unk_1" }
     ]
   },
   "SpecializationSpells": {

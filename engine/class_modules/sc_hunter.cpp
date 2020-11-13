@@ -480,6 +480,7 @@ public:
     gain_t* nesingwarys_apparatus_buff;
     gain_t* reversal_of_fortune;
     gain_t* terms_of_engagement;
+    gain_t* trueshot;
   } gains;
 
   // Procs
@@ -614,6 +615,9 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* wild_spirits = nullptr;
+    // Semi-random actions, needed *ONLY* for properly attributing focus gains
+    action_t* aspect_of_the_wild = nullptr;
+    action_t* barbed_shot = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -963,7 +967,7 @@ public:
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> buffs.eagletalons_true_focus -> check_value();
 
-    return c;
+    return ceil( c );
   }
 
   void update_ready( timespan_t cd ) override
@@ -1014,6 +1018,16 @@ public:
     double total_regen = regen * cast_time.total_seconds();
     double total_energize = energize_cast_regen( s );
 
+    if ( p() -> buffs.trueshot -> check() && p() -> true_level > 50 ) // XXX: SL - remove true_level check
+    {
+      const timespan_t remains = p() -> buffs.trueshot -> remains();
+
+      total_regen += regen * std::min( cast_time, remains ).total_seconds() *
+                     p() -> specs.trueshot -> effectN( 6 ).percent();
+      if ( execute_time < remains )
+        total_energize *= 1 + p() -> specs.trueshot -> effectN( 5 ).percent();
+    }
+
     if ( ab::player -> buffs.memory_of_lucid_dreams -> check() )
     {
       const timespan_t remains = ab::player -> buffs.memory_of_lucid_dreams -> remains();
@@ -1024,16 +1038,13 @@ public:
         total_energize *= 1 + p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
     }
 
-    if ( p() -> buffs.nesingwarys_apparatus -> check() )
+    if ( p() -> buffs.nesingwarys_apparatus -> check() &&
+         execute_time < p() -> buffs.nesingwarys_apparatus -> remains() )
     {
-      const double mul = p() -> buffs.nesingwarys_apparatus -> check_value();
-      const timespan_t remains = p() -> buffs.nesingwarys_apparatus -> remains();
-      total_regen += regen * std::min( cast_time, remains ).total_seconds() * mul;
-      if ( execute_time < remains )
-        total_energize *= 1 + mul;
+      total_energize *= 1 + p() -> buffs.nesingwarys_apparatus -> check_value();
     }
 
-    return total_regen + total_energize;
+    return total_regen + floor( total_energize );
   }
 
   // action list expressions
@@ -2207,6 +2218,8 @@ struct bloodshed_t : hunter_main_pet_attack_t
     hunter_main_pet_attack_t::impact( s );
 
     o() -> trigger_wild_spirits( s );
+
+    (void) td( s -> target ); // force target_data creation for damage amp handling
   }
 };
 
@@ -2609,8 +2622,6 @@ struct single_target_t final : base_t
     max_hit_number( p -> covenants.death_chakram -> effectN( 1 ).chain_target() )
   {
     dual = true;
-    // XXX 2020-09-28: Single Target damage does not proc Master Marksman
-    triggers_master_marksman = false;
   }
 
   double action_multiplier() const override
@@ -3162,6 +3173,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
+
+    p -> actions.barbed_shot = this;
   }
 
   void init_finished() override
@@ -3306,16 +3319,6 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  struct serpent_sting_sst_t final : public hunter_ranged_attack_t
-  {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
-    {
-      dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-    }
-  };
-
   struct {
     /* This is required *only* for Double Tap
      * In-game the second Aimed Shot is performed with a slight delay, which means it can get
@@ -3336,9 +3339,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
-  struct {
-    hunter_ranged_attack_t* action = nullptr;
-  } serpentstalkers_trickery;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot )
@@ -3355,25 +3355,11 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
-
-    if ( p -> legendary.serpentstalkers_trickery.ok() )
-      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
   }
 
   bool trick_shots_up() const
   {
     return trick_shots.up || p() -> buffs.trick_shots -> check();
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( serpentstalkers_trickery.action )
-    {
-      serpentstalkers_trickery.action -> set_target( target );
-      serpentstalkers_trickery.action -> execute();
-    }
   }
 
   int n_targets() const override
@@ -3443,11 +3429,24 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
+  struct serpent_sting_sst_t final : public hunter_ranged_attack_t
+  {
+    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
   bool lock_and_loaded = false;
   struct {
     double_tap_t* action = nullptr;
     proc_t* proc;
   } double_tap;
+  struct {
+    serpent_sting_sst_t* action = nullptr;
+  } serpentstalkers_trickery;
   struct {
     double chance = 0;
     proc_t* proc;
@@ -3464,6 +3463,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       add_child( double_tap.action );
       double_tap.proc = p -> get_proc( "double_tap_aimed" );
     }
+
+    if ( p -> legendary.serpentstalkers_trickery.ok() )
+      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
 
     if ( p -> legendary.surging_shots.ok() )
     {
@@ -3509,6 +3511,12 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.action -> schedule_execute();
       p() -> buffs.double_tap -> decrement();
       double_tap.proc -> occur();
+    }
+
+    if ( serpentstalkers_trickery.action )
+    {
+      serpentstalkers_trickery.action -> set_target( target );
+      serpentstalkers_trickery.action -> execute();
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
@@ -3711,6 +3719,15 @@ struct rapid_fire_t: public hunter_spell_t
 
       p() -> buffs.trick_shots -> up(); // benefit tracking
 
+      /* This is not mentioned anywhere but testing shows that Rapid Fire inside
+       * Trueshot has a 50% chance of energizing twice. Presumably to account for the
+       * fact that focus is integral and 1 * 1.5 = 1. It's still affected be the
+       * generic focus gen increase from Trueshot as each energize gives 3 focus when
+       * combined with Nesingwary's Trapping Apparatus buff.
+       */
+      if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
+        p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
+
       if ( p() -> options.brutal_projectiles_on_execute )
         trigger_brutal_projectiles();
 
@@ -3857,7 +3874,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   double energize_cast_regen( const action_state_t* s ) const override
   {
-    // XXX: Not exactly true for Nesingwary's because the buff can fall off mid-channel. Meh
+    // XXX: Not exactly true for Nesingwary's / Trueshot because the buff can fall off mid-channel. Meh
     return num_ticks( s ) * damage -> composite_energize_amount( nullptr );
   }
 
@@ -3974,14 +3991,10 @@ struct internal_bleeding_t
 
   void trigger( const action_state_t* s )
   {
-    if ( action )
+    if ( action && action -> td( s -> target ) -> dots.shrapnel_bomb -> is_ticking() )
     {
-      auto td = action -> find_td( s -> target );
-      if ( td && td -> dots.shrapnel_bomb -> is_ticking() )
-      {
-        action -> set_target( s -> target );
-        action -> execute();
-      }
+      action -> set_target( s -> target );
+      action -> execute();
     }
   }
 };
@@ -4955,11 +4968,12 @@ struct kill_command_t: public hunter_spell_t
     auto splits = util::string_split<util::string_view>( expression_str, "." );
     if ( splits.size() == 2 && splits[ 0 ] == "bloodseeker" && splits[ 1 ] == "remains" )
     {
+      if ( ! p() -> talents.bloodseeker.ok() )
+        return expr_t::create_constant( expression_str, 0_ms );
+
       return make_fn_expr( expression_str, [ this ] () {
-          if ( auto pet = p() -> pets.main ) {
-            if ( auto td = pet -> find_target_data( target ) )
-              return td -> dots.bloodseeker -> remains();
-          }
+          if ( auto pet = p() -> pets.main )
+            return pet -> get_target_data( target ) -> dots.bloodseeker -> remains();
           return 0_ms;
         } );
     }
@@ -5081,6 +5095,8 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+
+    p -> actions.aspect_of_the_wild = this;
   }
 
   void execute() override
@@ -6290,7 +6306,7 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
-          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild, actions.aspect_of_the_wild );
           if ( auto pet = pets.main )
             pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
         } );
@@ -6318,7 +6334,7 @@ void hunter_t::create_buffs()
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
         -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
+            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
           } );
   }
 
@@ -6376,6 +6392,7 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value_from_effect( 4 )
+      -> set_affects_regen( true )
       -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
@@ -6501,8 +6518,7 @@ void hunter_t::create_buffs()
   buffs.nesingwarys_apparatus =
     make_buff( this, "nesingwarys_trapping_apparatus", find_spell( 336744 ) )
       -> set_default_value_from_effect( 2 )
-      -> set_chance( legendary.nesingwarys_apparatus.ok() )
-      -> set_affects_regen( true );
+      -> set_chance( legendary.nesingwarys_apparatus.ok() );
 
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
@@ -6579,6 +6595,7 @@ void hunter_t::init_gains()
   gains.nesingwarys_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
   gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
+  gains.trueshot               = get_gain( "Trueshot" );
 }
 
 // hunter_t::init_position ==================================================
@@ -7521,27 +7538,74 @@ void hunter_t::regen( timespan_t periodicity )
   if ( resources.is_infinite( RESOURCE_FOCUS ) )
     return;
 
+  double total_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_FOCUS );
+  if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+  {
+    double regen = total_regen * specs.trueshot -> effectN( 6 ).percent();
+    resource_gain( RESOURCE_FOCUS, regen, gains.trueshot );
+    total_regen += regen;
+  }
+
+  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+  {
+    double regen = total_regen * azerite_essence.memory_of_lucid_dreams_major_mult;
+    resource_gain( RESOURCE_FOCUS, regen, gains.memory_of_lucid_dreams_major );
+    total_regen += regen;
+  }
+
   if ( buffs.terms_of_engagement -> check() )
     resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
 }
 
 // hunter_t::resource_gain =================================================
 
-double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, action_t* a )
+double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, action_t* action )
 {
-  double actual_amount = player_t::resource_gain( type, amount, g, a );
+  double actual_amount = player_t::resource_gain( type, amount, g, action );
 
-  if ( type == RESOURCE_FOCUS && amount > 0 && player_t::buffs.memory_of_lucid_dreams -> check() )
+  if ( action && type == RESOURCE_FOCUS && amount > 0 )
   {
-    actual_amount += player_t::resource_gain( RESOURCE_FOCUS,
-                                              amount * azerite_essence.memory_of_lucid_dreams_major_mult,
-                                              gains.memory_of_lucid_dreams_major, a );
-  }
+    /**
+     * If the gain event has an action specified we treat it as an "energize" effect.
+     * Focus energize effects are a bit special in that they can grant only integral amounts
+     * of focus flooring the total calculated amount.
+     * That means we can't just simply multiply stuff and trigger gains in the presence of non-integral
+     * mutipliers. Which Trueshot is, at 50%. We have to calculate the fully multiplied value, floor
+     * that and distribute the amounts & gains accordingly.
+     * To keep gains attribution "fair" we distribute the additional gain to all of the present
+     * multipliers according to their "weight".
+     */
 
-  if ( type == RESOURCE_FOCUS && amount > 0 && buffs.nesingwarys_apparatus -> check() )
-  {
-    const double mul = buffs.nesingwarys_apparatus -> check_value();
-    actual_amount += player_t::resource_gain( type, amount * mul, gains.nesingwarys_apparatus_buff, a );
+    assert( g != player_t::gains.resource_regen[ type ] );
+
+    std::array<std::pair<double, gain_t*>, 3> mul_gains;
+    size_t mul_gains_count = 0;
+    double mul_sum = 0;
+
+    const double initial_amount = floor( amount );
+    amount = initial_amount;
+
+    auto add_gain = [&]( double mul, gain_t* gain ) {
+      mul_sum += mul;
+      amount *= 1.0 + mul;
+      mul_gains[ mul_gains_count++ ] = { mul, gain };
+    };
+
+    if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+      add_gain( specs.trueshot -> effectN( 5 ).percent(), gains.trueshot );
+
+    if ( buffs.nesingwarys_apparatus -> check() )
+      add_gain( buffs.nesingwarys_apparatus -> check_value(), gains.nesingwarys_apparatus_buff );
+
+    if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+      add_gain( azerite_essence.memory_of_lucid_dreams_major_mult, gains.memory_of_lucid_dreams_major );
+
+    const double additional_amount = floor( amount ) - initial_amount;
+    if ( additional_amount > 0 )
+    {
+      for ( const auto& data : util::make_span( mul_gains ).subspan( 0, mul_gains_count ) )
+        actual_amount += player_t::resource_gain( RESOURCE_FOCUS, additional_amount * ( data.first / mul_sum ), data.second, action );
+    }
   }
 
   return actual_amount;

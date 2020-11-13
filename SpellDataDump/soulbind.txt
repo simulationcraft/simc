@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36401 shadowlands-BETA (hotfix 2020-11-02/36401)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 943af14, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -144,6 +144,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=805524)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 320221 | Target: Self (1)
+#2 (id=875308)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you take damage that would kill you, instead rejuvenate within a wildseed, regaining ${$320224d*$320224m3}% of HP over $320224d. If the wildseed takes more than $<points> damage during this time, you die.
 
 This effect may only occur once every $320227d.
@@ -231,7 +233,7 @@ Effects          :
 Description      : $?a137005[Swarming Mist]?a212611[Sinful Brand]?a137009[Ravenous Frenzy]?a137014[Flayed Shot]?a137018[Mirrors of Torment]?a137022[Fallen Order]?a137026[Ashen Hallow]?a137030[Mindgames]?a137034[Flagellation]?a137038[Chain Harvest]?a137042[Impending Catastrophe]?a137047[Condemn][Activating your Venthyr class ability] signals the start of tea time, granting $333218s1% Versatility to you and $333251s1% Versatility to up to $333251i nearby allies. Lasts ${$333218d*$<mod>} sec.$?a137047|a137034[
 
 You may only serve tea every $333221d.][]
-Variables        : $mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.0}]?a137038[${1.5}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]
+Variables        : $mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]
 
 Name             : Stay on the Move (id=320658) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -281,6 +283,7 @@ Description      : Your damaging attacks and spells have a chance to toss Niya's
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
+Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -297,10 +300,11 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=807855)   : Apply Aura (6) | Proc Trigger Spell (42): Paralytic Poison
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Target: Self (1)
+#1 (id=807855)   : Apply Aura Pet (174) | Proc Trigger Spell (42): Paralytic Poison
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 174)
 Description      : Your interrupts apply Niya's Paralytic Poison to your target, dealing ${$<pointsA>*$321519d} Nature damage over $321519d. Targets with Niya's Paralytic Poison take an additional $<pointsB> Nature damage if interrupted once more.
-Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
+Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}
 $pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden] 
@@ -389,8 +393,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=844396)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342937 | Target: Self (1)
-Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima, stacking up to $342802u times. $?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] consumes all Redirected Anima to grant you $342814s1% maximum health and $342814s2 Mastery, per stack, for $342814d.
+#3 (id=875153)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Healing or dealing damage has a chance to grant you a stack of Redirected Anima. Redirected Anima increases your maximum health by $342814s1% and your Mastery by $342814s2 for $342814d, and stacks overlap.
+
+$?(s152280&a137005)[Defile]?(a137005&!s152280)[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] grants you ${$s3*$<mod>} stacks of Redirected Anima.
 Tooltip          : $spelldesc322721
+Variables        : $mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}][${1}]
 
 Name             : Volatile Solvent (id=323074) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -436,7 +445,7 @@ Effects          :
 #4 (id=845724)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=845725)   : Dummy (3)
-                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows opening of locks that require up to $s2 skill, once every $s5 hours.
 
 Each $s4 sec spent channeling Fleshcraft reduces Kevin's Keyring's cooldown by $s3 min.
@@ -666,7 +675,7 @@ Effects          :
 #4 (id=814565)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=814566)   : Dummy (3)
-                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : You may attune your Hearth Kidneystone to any resting location and return to it. $m5 hour cooldown, reduced by $m4 min every killing blow.
 
 Name             : Wild Hunt's Charge (id=325065) [Passive, Hidden] 
@@ -692,6 +701,7 @@ Covenant         : Night Fae
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
+Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -812,7 +822,7 @@ Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -900,13 +910,12 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=817561)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Defeating an enemy restores $326946s1% of your maximum health after $326946d. Stacks to $326946u.
+Description      : Defeating an enemy restores $326946s1% of your maximum health every $326946d for $326946d, stacking up to $326946u times. Adding stacks refreshes duration.
 
 Name             : Heirmir's Arsenal: Gorestompers (id=326511) [Passive, Hidden] 
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
-Internal Cooldown: 0.3 seconds
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -916,7 +925,7 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
@@ -946,7 +955,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=818399)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Mounted movement speed is increased by $s1%. If attacked while mounted, mounted movement speed is increased by an additional $327852s1% for $326939d.
+Description      : Mounted movement speed is increased by $s1%. If attacked while mounted, mounted movement speed is increased by an additional $327852s1% for $327852d.
 
 Name             : Bonesmith's Satchel (id=326513) [Passive] 
 Covenant         : Necrolord
@@ -995,6 +1004,7 @@ Name             : Heirmir's Arsenal: Marrowed Gemstone (id=326572) [Passive, Hi
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
+Range            : 100 yards
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -1009,6 +1019,8 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=817654)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=875215)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.
 
@@ -1276,23 +1288,28 @@ Effects          :
 Description      : Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.
 
 Name             : Valiant Strikes (id=329791) [Passive, Hidden] 
+Hotfixed         : Attributes, Description
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....xx..   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ .x..x... ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Passive (6), Hidden (7), Does not break stealth (37), Cannot crit (93), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=823175)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20603 | Target: Self (1)
-Description      : You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. At $330943u stacks, you heal yourself for ${$330945s*($330944d/$330944t)}% of your maximum health and up to 4 nearby allies for ${$330945s1*($330944d/$330944t)/$330945s2}% of their maximum health over $330944d.
+#2 (id=875121)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=875122)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.
 
 Name             : Agent of Chaos (id=331576) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -1652,6 +1669,7 @@ Name             : Hammer of Genesis (id=333935) [Passive, Hidden]
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
+Range            : 40 yards
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -1667,13 +1685,17 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=829571)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=875213)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging a new enemy grants you $333943m% Haste for $333943d, up to $333943u stacks.
 
 Name             : Bron's Call to Action (id=333950) [Passive, Hidden] 
+Hotfixed         : Internal Cooldown (0 -> 10)
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
+Internal Cooldown: 0.01 seconds
 Proc Chance      : 101%
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 

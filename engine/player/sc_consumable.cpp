@@ -786,6 +786,7 @@ struct augmentation_t : public dbc_consumable_base_t
     else if ( util::str_in_str_ci( consumable_name, "hyper"   ) ) return player->find_spell( 175456 );
     else if ( util::str_in_str_ci( consumable_name, "stout"   ) ) return player->find_spell( 175439 );
     else if ( util::str_in_str_ci( consumable_name, "battle_scarred" ) ) return player->find_spell( 270058 );
+    else if ( util::str_in_str_ci( consumable_name, "veiled" ) ) return player->find_spell( 347901 );
     else return spell_data_t::not_found();
   }
 

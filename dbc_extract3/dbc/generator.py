@@ -1251,6 +1251,13 @@ class SpellDataGenerator(DataGenerator):
          345544,
          # Satchel of Misbegotten Minions
          345638,
+         # Unbound Changeling
+         330764,
+         # Infinitely Divisible Ooze
+         345495,
+         # Echo Of Eonar Legendary
+         347660, 347660, # Healing bonuses
+         347662, 347665, # Damage Reduction bonuses
         ),
 
         # Warrior:
@@ -1308,6 +1315,7 @@ class SpellDataGenerator(DataGenerator):
             ( 339119, 0 ),          # Golden Path
             ( 340193, 0 ),          # Righteous Might heal
             ( 337228, 0 ),          # Final verdict buff
+            ( 326011, 0 ),          # Divine Toll buff to judgment damage
         ),
 
         # Hunter:
@@ -1454,7 +1462,8 @@ class SpellDataGenerator(DataGenerator):
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
-          ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
+          ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
+          ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
 
         ),
 
@@ -1693,9 +1702,11 @@ class SpellDataGenerator(DataGenerator):
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
           ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
           ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
+          ( 347826, 0 ), # Venthyr Fallen Monk Spec Duration
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
+          ( 343764, 1 ), # Evasive Stride Heal
 
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
@@ -1704,6 +1715,8 @@ class SpellDataGenerator(DataGenerator):
           ( 343250, 0 ), # Escape from Reality
           ( 343539, 0 ), # Escape from Reality Mana Refund
           ( 343543, 0 ), # Escape from Reality Energy Refund
+          ( 347687, 1 ), # Charred Passions
+          ( 347688, 1 ), # Charred Passions
         ),
 
         # Druid:
@@ -1776,6 +1789,7 @@ class SpellDataGenerator(DataGenerator):
           ( 225102, 0 ), # Fel Eruption damage
           ( 339229, 0 ), # Serrated Glaive conduit debuff
           ( 337849, 0 ), ( 345604, 0 ), ( 346664, 0 ), # Fel Bombardment legendary spells
+          ( 347765, 0 ), # Fodder to the Flame Empowered Demon Soul buff
 
           # Havoc
           ( 236167, 1 ), # Felblade proc rate

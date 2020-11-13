@@ -24,14 +24,17 @@ namespace
 struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
+  int stacks;
 
-  covenant_cb_buff_t( buff_t* b, bool on_class = true, bool on_base = false )
-    : covenant_cb_base_t( on_class, on_base ), buff( b )
-  {
-  }
+  covenant_cb_buff_t( buff_t* b, int s ) : covenant_cb_buff_t( b, true, false, s ) {}
+
+  covenant_cb_buff_t( buff_t* b, bool on_class = true, bool on_base = false, int s = -1 )
+    : covenant_cb_base_t( on_class, on_base ), buff( b ), stacks( s )
+  {}
+
   void trigger( action_t*, action_state_t* ) override
   {
-    buff->trigger();
+    buff->trigger( stacks );
   }
 };
 
@@ -42,8 +45,8 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 
   covenant_cb_action_t( action_t* a, bool self = false, bool on_class = true, bool on_base = false )
     : covenant_cb_base_t( on_class, on_base ), action( a ), self_target( self )
-  {
-  }
+  {}
+
   void trigger( action_t*, action_state_t* state ) override
   {
     auto t = self_target || !state->target ? action->player : state->target;
@@ -69,7 +72,7 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   }
 }
 
-double value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
+double value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view prefix = "", util::string_view postfix = "" )
 {
   double value = 0;
 
@@ -90,7 +93,7 @@ double value_from_desc_vars( special_effect_t& e, util::string_view var, util::s
 // by a spell ID belonging to the target class and the floating point number represents the duration modifier.
 // This can be changed to any regex such that the first capture group gives the class spell ID and second
 // capture group gives the value to return.
-double class_value_from_desc_vars( special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
+double class_value_from_desc_vars( const special_effect_t& e, util::string_view var, util::string_view regex_string = "\\?a(\\d+)\\[\\$\\{(\\d*\\.?\\d+)" )
 {
   double value = 0;
 
@@ -161,11 +164,26 @@ struct niyas_tools_proc_t : public unique_gear::proc_spell_t
 
 void niyas_tools_burrs( special_effect_t& effect )
 {
-  auto action = effect.player->find_action( "spiked_burrs" );
-  if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), value_from_desc_vars( effect, "points", "\\$SP\\*" ), false );
+  struct spiked_burrs_t : public niyas_tools_proc_t
+  {
+    spiked_burrs_t( const special_effect_t& e ) :
+      niyas_tools_proc_t( "spiked_burrs", e.player, e.player->find_spell( 333526 ),
+                          value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
+    {}
 
-  effect.execute_action = action;
+    result_e calculate_result( action_state_t* s ) const override
+    {
+      // If the target is slow-immune (most bosses) everything gets immuned including dot application
+      if ( s->target->is_boss() )
+        return result_e::RESULT_MISS;
+
+      return niyas_tools_proc_t::calculate_result( s );
+    }
+  };
+
+  effect.execute_action = effect.player->find_action( "spiked_burrs" );
+  if ( !effect.execute_action )
+    effect.execute_action = new spiked_burrs_t( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -231,49 +249,25 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 void grove_invigoration( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima", "redirected_anima_stacks" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "redirected_anima" } ) )
     return;
 
-  struct redirected_anima_buff_t : public stat_buff_t
+  effect.custom_buff = buff_t::find( effect.player, "redirected_anima" );
+  if ( !effect.custom_buff )
   {
-    buff_t* counter;
-
-    redirected_anima_buff_t( player_t* p, buff_t* counter_ ) :
-      stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ),
-      counter( counter_ )
-    {
-      // TODO: The max stacks in spell data are wrong
-      set_max_stack( 10 );
-    }
-
-    bool trigger( int, double v, double c, timespan_t d ) override
-    {
-      // TODO: does this convert ALL stacks or only up to 4 stacks, as per max_stack of the mastery buff
-      int anima_stacks = counter->check();
-
-      if ( !anima_stacks )
-        return false;
-
-      anima_stacks = std::min( anima_stacks, as<int>( max_stack() ) );
-      counter->decrement( anima_stacks );
-
-      return stat_buff_t::trigger( anima_stacks, v, c, d );
-    }
-  };
-
-  auto counter_buff = buff_t::find( effect.player, "redirected_anima_stacks" );
-  if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "redirected_anima_stacks", effect.player->find_spell( 342802 ) );
-
-  effect.custom_buff = counter_buff;
+    effect.custom_buff =
+      make_buff<stat_buff_t>( effect.player, "redirected_anima", effect.player->find_spell( 342814 ) )
+        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  auto buff = buff_t::find( effect.player, "redirected_anima" );
-  if ( !buff )
-    buff = make_buff<redirected_anima_buff_t>( effect.player, counter_buff );
+  double stack_mod = class_value_from_desc_vars( effect, "mod" );
+  effect.player->sim->print_debug( "class-specific properties for grove_invigoration: stack_mod={}", stack_mod );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
+  int stacks = as<int>( effect.driver()->effectN( 3 ).base_value() * stack_mod );
+
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.custom_buff, stacks );
 }
 
 void field_of_blossoms( special_effect_t& effect )
@@ -535,12 +529,12 @@ void let_go_of_the_past( special_effect_t& effect )
 
     let_go_of_the_past_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), prev_id( 0 ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( !a->id || a->background || a->id == prev_id )
+      if ( !a->id || a->id == prev_id || a->background || a->trigger_gcd == 0_ms )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::trigger( a, s );
       prev_id = a->id;
     }
 
@@ -584,7 +578,7 @@ void combat_meditation( special_effect_t& effect )
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
+        if ( current_tick <= 3 && rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
           extend_duration( player, ext_dur );
       } );
     }
@@ -842,44 +836,93 @@ void brons_call_to_action( special_effect_t& effect )
   new brons_call_to_action_cb_t( effect );
 }
 
+// 323491: humanoid (mastery rating)
+// 323498: beast (primary stat)
+// 323502: dragonkin (crit rating)
+// 323504: elemental (magic damage)
+// 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
-    if ( effect.player->sim->shadowlands_opts.volatile_solvent_crit )
-    {
-      const spell_data_t* volatile_solvent_dragonkin = effect.player->find_spell( 323502 );
+  util::string_view type_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
 
-      buff_t* buff_crit = make_buff( effect.player, "volatile_solvent_dragonkin", volatile_solvent_dragonkin )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+  auto race_type = util::parse_race_type( type_str );
+  if ( race_type == RACE_UNKNOWN )
+  {
+    if      ( util::str_compare_ci( type_str, "mastery"  ) ) race_type = RACE_HUMANOID;
+    else if ( util::str_compare_ci( type_str, "primary"  ) ) race_type = RACE_BEAST;
+    else if ( util::str_compare_ci( type_str, "crit"     ) ) race_type = RACE_DRAGONKIN;
+    else if ( util::str_compare_ci( type_str, "magic"    ) ) race_type = RACE_ELEMENTAL;
+    else if ( util::str_compare_ci( type_str, "physical" ) ) race_type = RACE_GIANT;
+  }
 
-      effect.player->register_combat_begin( [ buff_crit ]( player_t* ) { buff_crit->trigger(); } );
-    }
+  if ( race_type == RACE_UNKNOWN )
+  {
+    effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
+    return;
+  }
 
+  buff_t* buff;
 
-    if ( effect.player->sim->shadowlands_opts.volatile_solvent_primary )
-    {
-      const spell_data_t* volatile_solvent_beast = effect.player->find_spell( 323498 );
+  switch ( race_type )
+  {
+    case RACE_HUMANOID:
+      buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+      if ( !buff )
+      {
+        buff =
+          make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+      }
+      break;
 
-      buff_t* buff_primary = make_buff( effect.player, "volatile_solvent_beast", volatile_solvent_beast )
-        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-        ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
-      
-      effect.player->register_combat_begin( [ buff_primary ]( player_t* ) { buff_primary->trigger(); } );
-    }
+    case RACE_BEAST:
+      buff = buff_t::find( effect.player, "volatile_solvent_beast" );
+      if ( !buff )
+      {
+        buff = make_buff( effect.player, "volatile_solvent_beast", effect.player->find_spell( 323498 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                 ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+      }
+      break;
 
+    case RACE_DRAGONKIN:
+      buff = buff_t::find( effect.player, "volatile_solvent_dragonkin" );
+      if ( !buff )
+      {
+        buff = make_buff( effect.player, "volatile_solvent_dragonkin", effect.player->find_spell( 323502 ) )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+      }
+      break;
 
-    if ( effect.player->sim->shadowlands_opts.volatile_solvent_mastery )
-    {
-      const spell_data_t* volatile_solvent_humanoid = effect.player->find_spell( 323491 );
+    case RACE_ELEMENTAL:
+      buff = buff_t::find( effect.player, "volatile_solvent_elemental" );
+      if ( !buff )
+      {
+        buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
+                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                 ->set_schools_from_effect( 1 );
+      }
+      effect.player->buffs.volatile_solvent_damage = buff;
+      break;
 
-      auto buff_mastery = make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", volatile_solvent_humanoid );
+    case RACE_GIANT:
+      buff = buff_t::find( effect.player, "volatile_solvent_giant" );
+      if ( !buff )
+      {
+        buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
+                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                 ->set_schools_from_effect( 2 );
+      }
+      effect.player->buffs.volatile_solvent_damage = buff;
+      break;
 
-      effect.player->register_combat_begin( [ buff_mastery ]( player_t* ) { buff_mastery->trigger(); } );
-    }
+    default: buff = nullptr; break;
+  }
 
-    //Todo: Add the buffs for Magic Damage percent and Physical damage preseont
+  if ( buff )
+    effect.player->register_combat_begin( buff );
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
@@ -944,6 +987,9 @@ void gnashing_chompers( special_effect_t& effect )
 
 void lead_by_example( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "lead_by_example" } ) )
+    return;
+
   auto buff = buff_t::find( effect.player, "lead_by_example" );
   if ( !buff )
   {
@@ -953,7 +999,6 @@ void lead_by_example( special_effect_t& effect )
     // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
     duration *= class_value_from_desc_vars( effect, "mod" );
 
-    // TODO: does 'up to X%' include the base value or refers only to extra per ally?
     buff = make_buff( effect.player, "lead_by_example", s_data )
       ->set_default_value_from_effect( 2 )
       ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
@@ -1045,7 +1090,7 @@ void register_special_effects()
   register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  register_soulbind_special_effect( 342156, soulbinds::lead_by_example );
+  register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
   register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }

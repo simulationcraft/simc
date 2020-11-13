@@ -572,6 +572,12 @@ struct silence_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
 
+    auto rank2 = p.find_rank_spell( "Silence", "Rank 2" );
+    if ( rank2->ok() )
+    {
+      range += rank2->effectN( 1 ).base_value();
+    }
+
     if ( priest().talents.last_word->ok() )
     {
       // Spell data has a negative value
@@ -1255,8 +1261,11 @@ struct void_eruption_damage_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
+  double benevolent_faerie_rate;
+
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) )
+    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) ),
+      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -1287,6 +1296,18 @@ struct void_eruption_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = priest_spell_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
+    {
+      m /= 1.0 + benevolent_faerie_rate;
+    }
+
+    return m;
   }
 };
 
@@ -1462,25 +1483,6 @@ struct shadow_crash_damage_t final : public priest_spell_t
     background                 = true;
     affected_by_shadow_weaving = true;
   }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = action_t::composite_target_da_multiplier( t );
-
-    const priest_td_t* td = find_td( t );
-
-    if ( td && td->buffs.shadow_crash_debuff->check() )
-    {
-      int stack             = td->buffs.shadow_crash_debuff->check();
-      double increase       = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
-      double stack_increase = increase * stack;
-      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}",
-                                t->name_str, stack, stack_increase );
-      tdm *= 1 + stack_increase;
-    }
-
-    return tdm;
-  }
 };
 
 struct shadow_crash_t final : public priest_spell_t
@@ -1493,24 +1495,18 @@ struct shadow_crash_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    aoe              = -1;
-    radius           = data().effectN( 1 ).radius();
-    range            = data().max_range();
-    cooldown->hasted = true;
+    aoe    = -1;
+    radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
   }
 
-  void impact( action_state_t* state ) override
+  // Shadow Crash has fixed travel time
+  timespan_t travel_time() const override
   {
-    priest_spell_t::impact( state );
-
-    if ( state->n_targets == 1 )
-    {
-      priest_td_t& td = get_td( state->target );
-      td.buffs.shadow_crash_debuff->trigger();
-    }
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -1623,6 +1619,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    // Set cooldown to 0s, cooldown is stored in Void Eruption
+    cooldown->duration = timespan_t::from_seconds( 0 );
 
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -2203,7 +2202,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
-                    "dot.shadow_word_pain.ticking&!cooldown.mindbender.up",
+                    "dot.shadow_word_pain.ticking&pet.fiend.down",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
@@ -2238,13 +2237,7 @@ void priest_t::generate_apl_shadow()
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
       "duration+gcd)",
       "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back" );
-  main->add_talent(
-      this, "Shadow Crash",
-      "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
-      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event."
-      "adds.in>30",
-      "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
-  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
+  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>10",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",

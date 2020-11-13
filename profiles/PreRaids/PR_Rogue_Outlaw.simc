@@ -63,7 +63,7 @@ actions.build+=/sinister_strike
 # Cooldowns
 actions.cds=call_action_list,name=essences,if=!stealthed.all
 actions.cds+=/flagellation
-actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2|debuff.flagellation.stack>=30
+actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)
 actions.cds+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
@@ -137,8 +137,8 @@ off_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
 # gear_ilvl=184.38
 # gear_agility=562
 # gear_stamina=862
-# gear_crit_rating=398
-# gear_haste_rating=326
+# gear_crit_rating=401
+# gear_haste_rating=332
 # gear_mastery_rating=444
-# gear_versatility_rating=147
+# gear_versatility_rating=140
 # gear_armor=482
