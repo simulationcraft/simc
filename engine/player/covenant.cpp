@@ -614,12 +614,6 @@ struct fleshcraft_t : public spell_t
   }
 
   double composite_haste() const override { return 1.0; }
-
-  void tick( dot_t* d ) override
-  {
-    // TODO: add shielding
-    spell_t::tick( d );
-  }
 };
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )

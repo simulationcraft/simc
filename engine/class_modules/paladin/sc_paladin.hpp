@@ -142,6 +142,9 @@ public:
     action_t* necrolord_divine_storm;
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
+
+    // Conduit stuff
+    action_t* virtuous_command;
   } active;
 
   // Buffs
@@ -202,6 +205,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
+    buff_t* virtuous_command;
   } buffs;
 
   // Gains
@@ -1137,8 +1141,14 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ / Magistrate's
-    int num_stacks = as<int>( hp_used == 0 ? ab::base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+    // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
+    int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+
+    // ... and in fact magistrate's causes *extra* stacks?
+    if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
+    {
+      num_stacks += 1;
+    }
 
     if ( p -> azerite.relentless_inquisitor.ok() )
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
@@ -1148,8 +1158,7 @@ struct holy_power_consumer_t : public Base
 
     if ( p -> buffs.crusade -> check() )
     {
-      if ( ! p -> bugs || ! is_divine_storm || !( p -> buffs.empyrean_power_azerite -> up() || p -> buffs.empyrean_power -> up() ) )
-        p -> buffs.crusade -> trigger( num_stacks );
+      p -> buffs.crusade -> trigger( num_stacks );
     }
 
     // Free sotr from vanq does not proc RP 2020-09-10

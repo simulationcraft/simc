@@ -246,6 +246,7 @@ struct eclipse_handler_t
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
+  void cast_ca_inc();
 
   void advance_eclipse();
   void snapshot_eclipse();
@@ -311,7 +312,6 @@ public:
   double kindred_spirits_partner_dps;
   bool kindred_spirits_hide_partner;
   double kindred_spirits_absorbed;
-  double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
   double adaptive_swarm_jump_distance;
 
@@ -430,7 +430,8 @@ public:
     buff_t* starlord;  // talent
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
-    buff_t* starsurge;  // stacking eclipse empowerment
+    buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
+    buff_t* starsurge_lunar;  
     buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
@@ -833,6 +834,7 @@ public:
   {
     uptime_t* arcanic_pulsar;
     uptime_t* vision_of_perfection;
+    uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse;
   } uptime;
@@ -886,7 +888,6 @@ public:
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
       kindred_spirits_absorbed( 0.15 ),
-      convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.2 ),
       adaptive_swarm_jump_distance( 5.0 ),
       active( active_actions_t() ),
@@ -1417,17 +1418,12 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     }
   }
 
-  bool trigger( int s, double v, double c, timespan_t d ) override
+  void start( int s, double v, timespan_t d ) override
   {
-    bool ret = base_t::trigger( s, v, c, d );
+    base_t::start( s, v, d );
 
-    if ( ret )
-    {
-      p().eclipse_handler.trigger_both( buff_duration() );
-      p().uptime.combined_ca_inc->update( true, sim->current_time() );
-    }
-
-    return ret;
+    p().eclipse_handler.trigger_both( buff_duration() );
+    p().uptime.combined_ca_inc->update( true, sim->current_time() );
   }
 
   void extend_duration( player_t* player, timespan_t d ) override
@@ -1442,6 +1438,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.expire_both();
+    p().uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p().uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 
@@ -1452,8 +1449,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
   double empowerment;
   double mastery_value;
+  unsigned eclipse_id;
 
-  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 )
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 ), mastery_value( 0.0 ), eclipse_id( s->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
@@ -1462,9 +1460,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     // value, but parse them separately in case this changes in the future, as it was different in the past.
     auto ss = p.find_spell( 78674 );
 
-    if ( s->id() == p.spec.eclipse_solar->id() )
+    if ( eclipse_id == p.spec.eclipse_solar->id() )
       empowerment = ss->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
-    else if ( s->id() == p.spec.eclipse_lunar->id() )
+    else if ( eclipse_id == p.spec.eclipse_lunar->id() )
       empowerment = ss->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
   }
 
@@ -1489,7 +1487,11 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   {
     double v = base_t::value();
 
-    v += empowerment * p().buff.starsurge->stack();
+    if ( eclipse_id == p().spec.eclipse_solar->id() )
+      v += empowerment * p().buff.starsurge_solar->stack();
+
+    if ( eclipse_id == p().spec.eclipse_lunar->id() )
+      v += empowerment * p().buff.starsurge_lunar->stack();
 
     return v;
   }
@@ -1499,7 +1501,8 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.advance_eclipse();
-    p().buff.starsurge->expire();
+    p().buff.starsurge_solar->expire();
+    p().buff.starsurge_lunar->expire();
   }
 };
 
@@ -2895,9 +2898,10 @@ public:
 
           proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
 
-          // Temporary workaround while BFA is still relevant, as VoP/BFA pulsar does not reset empowerments, but SL pulsar does.
-          // TODO: Move into buff_t::celestial_alignment_buff_t::extend_duration() once BFA is no longer relevant.
-          p()->buff.starsurge->expire();
+          p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+          make_event( *sim, pulsar_dur, [ this ]() {
+            p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+          } );
         }
       }
     }
@@ -2936,12 +2940,6 @@ struct shooting_stars_t : public druid_spell_t
   shooting_stars_t( druid_t* player ) : druid_spell_t( "shooting_stars", player, player->spec.shooting_stars_dmg )
   {
     background = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -3092,7 +3090,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
         {
           // Random target
-          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( unafflicted.size() ) ) );
+          auto i = rng().range( unafflicted.size() );
 
           tl.push_back( unafflicted[ i ] );
           unafflicted.erase( unafflicted.begin() + i );
@@ -3102,7 +3100,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
         {
           // Random target
-          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( afflicted.size() ) ) );
+          auto i = rng().range( afflicted.size() );
 
           tl.push_back( afflicted[ i ] );
           afflicted.erase( afflicted.begin() + i );
@@ -4182,6 +4180,8 @@ struct rake_t : public cat_attack_t
     {
       background = dual = hasted_ticks = true;
       may_miss = may_parry = may_dodge = may_crit = false;
+      // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
+      form_mask = 0;
     }
 
     double action_multiplier() const override
@@ -4277,6 +4277,12 @@ struct rake_t : public cat_attack_t
     bleed->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
+
+    if ( free_cast )
+      bleed->stats = get_free_cast_stats( free_cast );
+    else
+      bleed->stats = orig_stats;
+
     bleed->schedule_execute( b_state );
   }
 
@@ -5073,6 +5079,11 @@ struct thrash_bear_t : public bear_attack_t
 
   void execute() override
   {
+    if ( free_cast )
+      dot->stats = get_free_cast_stats( free_cast );
+    else
+      dot->stats = orig_stats;
+
     bear_attack_t::execute();
 
     dot->target = execute_state->target;
@@ -5643,6 +5654,9 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.celestial_alignment->trigger();
+    p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+    p()->eclipse_handler.cast_ca_inc();
+
     p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
     p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
@@ -5896,12 +5910,6 @@ struct full_moon_t : public moon_base_t
   timespan_t cooldown_duration() const override
   {
     return free_cast ? 0_ms : moon_base_t::cooldown_duration();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -6185,6 +6193,9 @@ struct incarnation_t : public druid_spell_t
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
+      p()->eclipse_handler.cast_ca_inc();
+      p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+
       p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
@@ -6766,8 +6777,8 @@ struct starfall_t : public druid_spell_t
 
     timespan_t travel_time() const override
     {
-      // seems to have a random travel time between 1x - 2x missile speed
-      return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
+      // seems to have a random travel time between 1x - 2x travel delay
+      return timespan_t::from_seconds( travel_delay * rng().range( 1.0, 2.0 ) );
     }
 
     void impact( action_state_t* s ) override
@@ -7267,31 +7278,56 @@ struct kindred_spirits_t : public druid_spell_t
 
 struct convoke_the_spirits_t : public druid_spell_t
 {
-  shuffled_rng_t* deck;
-  bool heal_cast;
-  double heal_chance;
+  enum convoke_cast_e
+  {
+    CAST_NONE = 0,
+    CAST_OFFSPEC,
+    CAST_SPEC,
+    CAST_HEAL,
+    CAST_WRATH,
+    CAST_MOONFIRE,
+    CAST_RAKE,
+    CAST_THRASH_BEAR,
+    CAST_FULL_MOON,
+    CAST_STARSURGE,
+    CAST_STARFALL,
+    CAST_PULVERIZE,
+    CAST_IRONFUR,
+    CAST_MANGLE,
+  };
+
   int max_ticks;
-  int ultimate_tick;
 
-  // Balance
-  action_t* conv_fm;
-  action_t* conv_ss;
-  action_t* conv_wr;
-  action_t* conv_sf;
-  action_t* conv_mf;
-  bool mf_cast;
-  int mf_count;
-  int ss_count;
-  bool wr_cast;
-  int wr_count;
+  std::vector<convoke_cast_e> cast_list;
+  std::vector<convoke_cast_e> offspec_list;
+  std::vector<std::pair<convoke_cast_e, double>> chances;
+  // Multi-spec
+  action_t* conv_wrath;
+  action_t* conv_moonfire;
+  action_t* conv_rake;
+  action_t* conv_thrash_bear;
+  // Moonkin Form
+  action_t* conv_full_moon;
+  action_t* conv_starsurge;
+  action_t* conv_starfall;
+  // Bear Form
+  action_t* conv_ironfur;
+  action_t* conv_mangle;
+  action_t* conv_pulverize;
+  // Cat Form
 
-  // Feral
-  // Guardian
-  // Restoration
-
-  convoke_the_spirits_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
-      conv_fm( nullptr ), conv_ss( nullptr ), conv_wr( nullptr ), conv_sf( nullptr ), conv_mf( nullptr )
+  convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
+    druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
+    conv_wrath( nullptr ),  // multi-spec
+    conv_moonfire( nullptr ),
+    conv_rake( nullptr ),
+    conv_thrash_bear( nullptr ),
+    conv_full_moon( nullptr ),  // moonkin
+    conv_starsurge( nullptr ),
+    conv_starfall( nullptr ),
+    conv_ironfur( nullptr ),  // bear
+    conv_mangle( nullptr ),
+    conv_pulverize( nullptr )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
@@ -7299,26 +7335,20 @@ struct convoke_the_spirits_t : public druid_spell_t
     harmful = channeled = true;
     may_miss = may_crit = false;
 
-    int heals_int = as<int>( util::ceil( p->convoke_the_spirits_heals ) );
-    heal_chance = heals_int - p->convoke_the_spirits_heals;
-
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
-    deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, max_ticks );
 
-    // Balance
+    // Create actions used by all specs
+    conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
+    conv_moonfire    = get_convoke_action<moonfire_t>( "moonfire", "" );
+    conv_rake        = get_convoke_action<cat_attacks::rake_t>( "rake", p->find_spell( 1822 ), "" );
+    conv_thrash_bear = get_convoke_action<bear_attacks::thrash_bear_t>( "thrash_bear", p->find_spell( 77758 ), "" );
+
+    // Call form-specific initialization to create necessary actions & setup variables
     if ( p->find_action( "moonkin_form" ) )
-    {
-      conv_wr = get_convoke_action<wrath_t>( "wrath", options_str );
-      conv_mf = get_convoke_action<moonfire_t>( "moonfire", options_str );
-      conv_fm = get_convoke_action<full_moon_t>( "full_moon", p->find_spell( 274283 ), options_str );
-      conv_sf = get_convoke_action<starfall_t>( "starfall", p->find_spell( 191034 ), options_str );
-      conv_ss = get_convoke_action<starsurge_t>( "starsurge",
-                                                 p->find_spell( p->talent.balance_affinity->ok() ? 197626 : 78674 ),
-                                                 options_str );
-    }
-    // Feral
-    // Guardian
-    // Restoration
+      _init_moonkin();
+
+    if ( p->find_action( "bear_form" ) )
+      _init_bear();
   }
 
   template <typename T, typename... Ts>
@@ -7342,132 +7372,182 @@ struct convoke_the_spirits_t : public druid_spell_t
     action->execute();
   }
 
+  action_t* convoke_action_from_type( convoke_cast_e type )
+  {
+    switch ( type )
+    {
+      case CAST_WRATH: return conv_wrath;
+      case CAST_MOONFIRE: return conv_moonfire;
+      case CAST_RAKE: return conv_rake;
+      case CAST_THRASH_BEAR: return conv_thrash_bear;
+      case CAST_FULL_MOON: return conv_full_moon;
+      case CAST_STARSURGE: return conv_starsurge;
+      case CAST_STARFALL: return conv_starfall;
+      case CAST_PULVERIZE: return conv_pulverize;
+      case CAST_IRONFUR: return conv_ironfur;
+      case CAST_MANGLE: return conv_mangle;
+      default: return nullptr;  // heals will fall through and return as null
+    }
+  }
+
+  convoke_cast_e get_cast_from_dist( std::vector<std::pair<convoke_cast_e, double>> chances )
+  {
+    auto _sum = []( double a, std::pair<convoke_cast_e, double> b ) { return a + b.second; };
+
+    auto roll = rng().range( 0.0, std::accumulate( chances.begin(), chances.end(), 0.0, _sum ) );
+
+    for ( auto it = chances.begin(); it != chances.end(); it++ )
+      if ( roll < std::accumulate( chances.begin(), it + 1, 0.0, _sum ) )
+        return it->first;
+
+    return CAST_NONE;
+  }
+
   double composite_haste() const override { return 1.0; }
+
+  void _init_moonkin()
+  {
+    conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
+    conv_starfall  = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
+    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge",
+                       p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+  }
+
+  void _init_bear()
+  {
+    conv_ironfur   = get_convoke_action<ironfur_t>( "ironfur", "" );
+    conv_mangle    = get_convoke_action<bear_attacks::mangle_t>( "mangle", "" );
+    conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
+  }
 
   void execute() override
   {
+    // Generic routine
     druid_spell_t::execute();
     p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
-
     p()->buff.convoke_the_spirits->trigger();
 
-    deck->reset();
+    // form-agnostic
+    cast_list.clear();
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // form-based ultimate
+    {
+      if ( p()->buff.bear_form->check() )
+        cast_list.push_back( CAST_PULVERIZE );
+      else if ( p()->buff.moonkin_form->check() )
+        cast_list.push_back( CAST_FULL_MOON );
+    }
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
 
-    heal_cast = false;
+    // form-specific distribution list
+    if ( p()->buff.bear_form->check() )
+      _execute_bear();
+    else if ( p()->buff.moonkin_form->check() )
+      _execute_moonkin();
+  }
 
-    // Balance
-    mf_cast  = false;
-    mf_count = 0;
-    ss_count = 0;
-    wr_cast  = false;
-    wr_count = 0;
+  void _execute_bear()
+  {
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
+    chances    = { { CAST_THRASH_BEAR, 0.3 },
+                   { CAST_IRONFUR,     0.35 },
+                   { CAST_MANGLE,      0.35 } };
+  }
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      ultimate_tick = rng().range( max_ticks );
-    else
-      ultimate_tick = 0;
-
-    // Feral
-    // Guardian
-    // Restoration
+  void _execute_moonkin()
+  {
+    offspec_list = { CAST_HEAL };
+    chances    = { { CAST_WRATH,     0.4 },
+                   { CAST_STARSURGE, 0.3 } };
   }
 
   void tick( dot_t* d ) override
   {
-    action_t* conv_cast = nullptr;
-    player_t* conv_tar  = nullptr;
-
     druid_spell_t::tick( d );
 
+    // The last partial tick does nothing
     if ( d->time_to_tick() < base_tick_time )
       return;
 
-    if ( d->current_tick == ultimate_tick )
-    {
-      if ( p()->buff.moonkin_form->check() )
-      {
-        conv_cast = conv_fm;
-        debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
-      }
-    }
+    // form-agnostic
+    action_t* conv_cast = nullptr;
+    player_t* conv_tar  = nullptr;
 
-    if ( deck->trigger() && !conv_cast )  // success == HEAL cast
-    {
-      if ( heal_cast )
-        return;
-
-      heal_cast = true;
-
-      if ( !rng().roll( heal_chance ) )
-        return;
-    }
+    auto it   = cast_list.begin() + rng().range( cast_list.size() );
+    auto type = *it;
+    cast_list.erase( it );
 
     std::vector<player_t*> tl = target_list();
     if ( !tl.size() )
       return;
 
-    conv_tar = tl[ static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) ];
-
-    if ( !conv_cast && p()->buff.moonkin_form->check() )
+    // Figure out which offspec/spec spell to cast
+    if ( type == CAST_OFFSPEC )
     {
-      if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-        conv_cast = conv_sf;
-      else  // randomly decide on damage spell
-      {
-        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-        for ( auto i : tl )
-        {
-          if ( !td( i )->dots.moonfire->is_ticking() ) mf_tl.push_back( i );
-        }
-
-        player_t* mf_tar = nullptr;
-        if ( mf_tl.size() ) mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
-
-        if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
-        {
-          conv_cast = conv_mf;
-          mf_cast   = true;
-        }
-        else if ( !wr_cast )  // always one wrath
-        {
-          conv_cast = conv_wr;
-          wr_cast   = true;
-        }
-        else  // try to keep spell count balanced within 3 casts of each other
-        {
-          std::vector<action_t*> dam;
-
-          if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
-            dam.push_back( conv_mf );
-
-          if ( ss_count <= wr_count + 2 )  // balance ss only against wr
-            dam.push_back( conv_ss );
-
-          if ( wr_count <= ss_count + 2 )  // balance wr only against ss
-            dam.push_back( conv_wr );
-
-          if ( !dam.size() )  // sanity check
-            return;
-
-          conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
-
-          if ( conv_cast == conv_mf )
-            mf_count++;
-          else if ( conv_cast == conv_ss )
-            ss_count++;
-          else if ( conv_cast == conv_wr )
-            wr_count++;
-        }
-
-        if ( conv_cast == conv_mf )
-          conv_tar = mf_tar;
-      }
+      if ( offspec_list.size() )
+        type = offspec_list.at( rng().range( offspec_list.size() ) );
+    }
+    else if ( type == CAST_SPEC )
+    {
+      // Do form-specific spell selection
+      if ( p()->buff.moonkin_form->check() )
+        type = _tick_moonkin( tl, conv_tar );
+      else if ( p()->buff.bear_form->check() )
+        type = _tick_bear( tl, conv_tar );
     }
 
-    if ( !conv_cast || !conv_tar )
+    conv_cast = convoke_action_from_type( type );
+    if ( !conv_cast )
       return;
 
-    execute_convoke_action( conv_cast, conv_tar );
+    // pick random target if we haven't picked one already
+    if ( !conv_tar )
+      conv_tar = tl.at( rng().range( tl.size() ) );
+
+   execute_convoke_action( conv_cast, conv_tar );
+  }
+
+  convoke_cast_e _tick_bear( const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    auto dist = chances;  // local copy of distribution
+
+    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+    for ( auto t : tl )
+      if ( !td( t )->dots.moonfire->is_ticking() )
+        mf_tl.push_back( t );
+
+    if ( mf_tl.size() )
+      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
+
+    auto type = get_cast_from_dist( dist );
+
+    if ( type == CAST_MOONFIRE )
+      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+
+    return type;
+  }
+
+  convoke_cast_e _tick_moonkin( const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    auto dist = chances;  // local copy of distribution
+
+    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+    for ( auto t : tl )
+      if ( !td( t )->dots.moonfire->is_ticking() )
+        mf_tl.push_back( t );
+
+    if ( mf_tl.size() )
+      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.3 ) );  // mf if undotted
+
+    if ( !p()->buff.starfall->check() )
+      dist.emplace_back( std::make_pair( CAST_STARFALL, 1.0 ) );  // starfall if it isn't up
+
+    auto type = get_cast_from_dist( dist );
+
+    if ( type == CAST_MOONFIRE )
+      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+
+    return type;
   }
 
   void last_tick( dot_t* d ) override
@@ -7615,10 +7695,10 @@ struct adaptive_swarm_t : public druid_spell_t
         }
       }
 
-      if      ( tl_1.size() ) tar = tl_1[ static_cast<size_t>( rng().range( 0, as<double>( tl_1.size() ) ) ) ];
-      else if ( tl_2.size() ) tar = tl_2[ static_cast<size_t>( rng().range( 0, as<double>( tl_2.size() ) ) ) ];
-      else if ( tl_3.size() ) tar = tl_3[ static_cast<size_t>( rng().range( 0, as<double>( tl_3.size() ) ) ) ];
-      else if ( tl_4.size() ) tar = tl_4[ static_cast<size_t>( rng().range( 0, as<double>( tl_4.size() ) ) ) ];
+      if      ( tl_1.size() ) tar = tl_1.at( rng().range( tl_1.size() ) );
+      else if ( tl_2.size() ) tar = tl_2.at( rng().range( tl_2.size() ) );
+      else if ( tl_3.size() ) tar = tl_3.at( rng().range( tl_3.size() ) );
+      else if ( tl_4.size() ) tar = tl_4.at( rng().range( tl_4.size() ) );
 
       return tar;
     }
@@ -8598,7 +8678,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
+  buff.starsurge_solar = make_buff( this, "starsurge_empowerment_solar", find_affinity_spell( "Starsurge" ) )
+    ->set_cooldown( 0_ms )
+    ->set_duration( 0_ms )
+    ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
+
+  buff.starsurge_lunar = make_buff( this, "starsurge_empowerment_lunar", find_affinity_spell( "Starsurge" ) )
     ->set_cooldown( 0_ms )
     ->set_duration( 0_ms )
     ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
@@ -9078,7 +9163,7 @@ void druid_t::apl_balance()
   aoe->add_action( "half_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "full_moon,if=(eclipse.in_any&cooldown.ca_inc.remains>50|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   aoe->add_action( "warrior_of_elune" );
-  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>4+floor(mastery_value%20)+floor(buff.starsurge_empowerment.stack%4)" );
+  aoe->add_action( "variable,name=starfire_in_solar,value=spell_targets.starfire>4+floor(mastery_value%20)+floor(buff.starsurge_empowerment_solar.stack%4)" );
   aoe->add_action( "wrath,if=eclipse.lunar_next|eclipse.any_next&variable.is_cleave|buff.eclipse_solar.remains<action.starfire.execute_time&buff.eclipse_solar.up|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&!variable.is_cleave&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&spell_haste>0.6&(spell_targets<=3|!talent.soul_of_the_forest.enabled)|!variable.is_cleave&buff.ca_inc.remains>execute_time" );
   aoe->add_action( "starfire" );
   aoe->add_action( "run_action_list,name=fallthru" );
@@ -9265,7 +9350,7 @@ void druid_t::apl_guardian()
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( this, "Starfire",
-                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment.up)" );
+                        "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
   owlweave->add_action( this, "Wrath" );
 }
 
@@ -9459,14 +9544,16 @@ void druid_t::init_uptimes()
 
   if ( talent.incarnation_moonkin->ok() )
   {
-    uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
+    uptime.arcanic_pulsar       = get_uptime( "Incarnation (AP)" );
     uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" );//->collect_uptime();
+    uptime.primordial_arcanic_pulsar = get_uptime( "Incarnation (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
   }
   else
   {
-    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
+    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (AP)" );
     uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" );//->collect_uptime();
+    uptime.primordial_arcanic_pulsar = get_uptime( "Celestial Alignment (Pulsar)" );
     uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
   }
 }
@@ -10387,7 +10474,6 @@ void druid_t::create_options()
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
-  add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
   add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
 }
@@ -10801,11 +10887,32 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
-  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
-  p->buff.starsurge->trigger();
+  bool stellar_inspiration_proc = false;
 
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
-    p->buff.starsurge->trigger();
+    stellar_inspiration_proc = true;
+
+  if ( p->buff.eclipse_solar->up() )
+  {
+    p->buff.starsurge_solar->trigger();
+
+    if ( stellar_inspiration_proc )
+      p->buff.starsurge_solar->trigger();
+  }
+
+  if ( p->buff.eclipse_lunar->up() )
+  {
+    p->buff.starsurge_lunar->trigger();
+
+    if ( stellar_inspiration_proc )
+      p->buff.starsurge_lunar->trigger();
+  }
+}
+
+void eclipse_handler_t::cast_ca_inc()
+{
+  p->buff.starsurge_lunar->expire();
+  p->buff.starsurge_solar->expire();
 }
 
 void eclipse_handler_t::advance_eclipse()
@@ -10882,7 +10989,6 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   if ( p->talent.solstice->ok() )
     p->buff.solstice->trigger();
 
-  p->buff.starsurge->expire();
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
@@ -11018,7 +11124,6 @@ void druid_t::copy_from( player_t* source )
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
-  convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
   thorns_attack_period         = p->thorns_attack_period;

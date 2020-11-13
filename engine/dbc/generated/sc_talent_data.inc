@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.2.36532
+// 636 talents, wow build 9.0.2.36599
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -363,7 +363,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Static Discharge"                  , 22358, 0x00, 0x0040, 262,   2,   0,  342243,       0,  0 },
   { "Ascendance"                        , 22359, 0x00, 0x0040, 264,   2,   6,  114052,       0,  0 },
   { "Sudden Death"                      , 22360, 0x00, 0x0001,  71,   1,   0,   29725,       0,  0 },
-  { "Cleave"                            , 22362, 0x00, 0x0001,  71,   2,   4,     845,  260708,  0 },
+  { "Cleave"                            , 22362, 0x00, 0x0001,  71,   2,   4,     845,       0,  0 },
   { "Predator"                          , 22363, 0x00, 0x0400, 103,   0,   0,  202021,       0,  0 },
   { "Sabertooth"                        , 22364, 0x00, 0x0400, 103,   1,   0,  202031,       0,  0 },
   { "Lunar Inspiration"                 , 22365, 0x00, 0x0400, 103,   2,   0,  155580,       0,  0 },

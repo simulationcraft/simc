@@ -223,6 +223,7 @@ struct impending_catastrophe_t : public warlock_spell_t
   {
     parse_options( options_str );
     travel_speed = 16;
+    aoe = -1;
    
     add_child( impending_catastrophe_impact );
     add_child( impending_catastrophe_dot );
@@ -232,10 +233,10 @@ struct impending_catastrophe_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    impending_catastrophe_dot->set_target( target );
+    impending_catastrophe_dot->set_target( s->target );
     impending_catastrophe_dot->execute();
 
-    impending_catastrophe_impact->set_target( target );
+    impending_catastrophe_impact->set_target( s->target );
     impending_catastrophe_impact->execute();
   }
 };

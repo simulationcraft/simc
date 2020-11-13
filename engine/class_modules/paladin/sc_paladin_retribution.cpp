@@ -95,6 +95,8 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
+
+    tick_may_crit = may_crit = false;
   }
 
   void impact( action_state_t* s) override
@@ -257,6 +259,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
         expurgation -> execute();
       }
     }
+
+    if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+    {
+      action_t* vc = p() -> active.virtuous_command;
+      vc -> base_dd_min = vc -> base_dd_max = state -> result_amount * p() -> conduit.virtuous_command.percent();
+      vc -> set_target( state -> target );
+      vc -> schedule_execute();
+    }
   }
 };
 
@@ -312,15 +322,39 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 };
 
+struct echoed_spell_event_t : public event_t
+{
+  paladin_melee_attack_t* echo;
+  paladin_t* paladin;
+  player_t* target;
+
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt )
+  {
+  }
+
+  const char* name() const override
+  { return "echoed_spell_delay"; }
+
+  void execute() override
+  {
+    echo -> set_target( target );
+    echo -> schedule_execute();
+  }
+};
+
 struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  // Templar's Verdict damage is stored in a different spell
-  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
-    templars_verdict_damage_t( paladin_t *p ) :
-      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    echoed_templars_verdict_t( paladin_t *p ) :
+      paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 339538 ) )
     {
-      dual = background = true;
+      base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
+      background = true;
+
+      // spell data please
+      aoe = 0;
     }
 
     double action_multiplier() const override
@@ -332,14 +366,59 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
   };
 
+  // Templar's Verdict damage is stored in a different spell
+  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  {
+    templars_verdict_damage_t( paladin_t *p ) :
+      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    {
+      dual = background = true;
+
+      // spell data please?
+      aoe = 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_melee_attack_t::impact( s );
+
+      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      {
+        action_t* vc = p() -> active.virtuous_command;
+        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
+        vc -> set_target( s -> target );
+        vc -> schedule_execute();
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_melee_attack_t::action_multiplier();
+      if ( p() -> buffs.righteous_verdict -> check() )
+        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+      return am;
+    }
+  };
+
+  echoed_templars_verdict_t* echo;
+
   templars_verdict_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) )
+    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) ),
+    echo( nullptr )
   {
     parse_options( options_str );
+
+    // wtf is happening in spell data?
+    aoe = 0;
 
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
+
+    if ( p -> conduit.templars_vindication -> ok() )
+    {
+      echo = new echoed_templars_verdict_t( p );
+    }
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -369,8 +448,8 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
+      p() -> active.necrolord_divine_storm -> schedule_execute();
       p() -> buffs.vanquishers_hammer -> expire();
-      p() -> active.necrolord_divine_storm -> execute();
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
@@ -380,6 +459,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p() -> cooldowns.hammer_of_wrath -> reset( true );
         p() -> buffs.final_verdict -> trigger();
+      }
+    }
+
+    if ( p() -> conduit.templars_vindication -> ok() )
+    {
+      if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
+      {
+        // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+        make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ) );
       }
     }
   }
@@ -441,7 +529,12 @@ struct judgment_ret_t : public judgment_t
     judgment_t( p ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
+    // This is for Divine Toll's background judgments
     background = true;
+
+    // according to skeletor this is given the bonus of 326011
+    // TODO(mserrano) - fix this once spell data has been re-extracted
+    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -550,7 +643,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       hasted_ticks = false;
       tick_may_crit = false;
-      base_multiplier *= p -> conduit.truths_wake.percent();
     }
   };
 
@@ -578,6 +670,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
     {
+      double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
+      truths_wake -> base_td = s -> result_raw * truths_wake_mul;
       truths_wake -> set_target( s -> target );
       truths_wake -> execute();
     }
