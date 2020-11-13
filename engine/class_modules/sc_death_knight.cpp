@@ -520,6 +520,7 @@ public:
     // Shared
     cooldown_t* death_and_decay;
     cooldown_t* defile;
+    cooldown_t* deaths_due;
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
@@ -1035,6 +1036,7 @@ public:
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay     = get_cooldown( "death_and_decay" );
+    cooldown.deaths_due          = get_cooldown( "deaths_due" );
     cooldown.defile              = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.koltiras_favor_icd  = get_cooldown( "koltiras_favor_icd" );
@@ -4311,15 +4313,6 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
     pestilence_procs_per_cast( 0 )
   { }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> conduits.withering_ground.percent();
-
-    return m;
-  }
-
   void execute() override
   {
     pestilence_procs_per_tick = 0;
@@ -4375,6 +4368,51 @@ struct defile_damage_t : public death_and_decay_damage_base_t
     if ( result_is_hit( execute_state ->result ) )
     {
       active_defile_multiplier *= defile_tick_multiplier;
+    }
+  }
+};
+
+struct deaths_due_damage_t : public death_and_decay_damage_base_t
+{
+  int pestilence_procs_per_tick;
+  int pestilence_procs_per_cast;
+
+  deaths_due_damage_t( death_knight_t* p ) :
+    death_and_decay_damage_base_t( "deaths_due_damage", p, p -> find_spell( 341340 ) ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
+  { }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> conduits.withering_ground.percent();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    pestilence_procs_per_tick = 0;
+
+    death_and_decay_damage_base_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_and_decay_damage_base_t::impact( s );
+
+    if ( p() -> talent.pestilence -> ok() &&
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+    {
+      if ( rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+        pestilence_procs_per_tick++;
+        pestilence_procs_per_cast++;
+      }
     }
   }
 };
@@ -4590,6 +4628,34 @@ struct defile_t : public death_and_decay_base_t
   }
 };
 
+struct deaths_due_t : public death_and_decay_base_t
+{
+  deaths_due_t( death_knight_t* p, const std::string& options_str ) :
+    death_and_decay_base_t( p, "deaths_due", p -> covenant.deaths_due )
+  {
+    damage = new deaths_due_damage_t( p );
+
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    debug_cast<deaths_due_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
+
+    death_and_decay_base_t::execute();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> talent.defile -> ok() )
+    {
+      return false;
+    }
+
+    return death_and_decay_base_t::ready();
+  }
+};
+
 // Death's Caress ===========================================================
 
 struct deaths_caress_t : public death_knight_spell_t
@@ -4742,6 +4808,8 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
     p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
@@ -4997,6 +5065,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
     p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
+      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
+    p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> buffs.hemostasis -> expire();
@@ -5927,6 +5997,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
+  int deaths_due_cleave_targets;
   obliterate_strike_t( death_knight_t* p, const std::string& name,
                        weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s )
@@ -5934,6 +6005,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+
+    deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) + 
+                                  s_data -> effectN ( 1 ).chain_target() + 
+                                  as<int>(p -> find_spell( 49020 ) -> effectN ( 4 ).base_value());
 
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
     // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
@@ -5949,11 +6024,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   int n_targets() const override
   {
-    // Unable to find the # of targets in spell data for death's due, but it does cause each obliterate hit to cleave. 2020-Nov-6
     int num_targets = 0;
     if ( p() -> covenant.deaths_due -> ok() )
     {
-      num_targets = p() -> in_death_and_decay() ? ( as<int>(p() -> spell.deaths_due -> effectN( 2 ).base_value()) + s_data -> effectN ( 1 ).chain_target()): 0;
+      num_targets = p() -> in_death_and_decay() ? deaths_due_cleave_targets : 0;
     }
     return num_targets;
   }
@@ -8060,6 +8134,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
+  if ( name == "deaths_due"               ) return new deaths_due_t               ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
   if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
@@ -8117,7 +8192,18 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   // Dynamic actions
   // any_dnd and dnd_any return defile if talented, or death and decay otherwise
   if ( name == "any_dnd" || name == "dnd_any" )
-    return create_action( talent.defile -> ok() ? "defile" : "death_and_decay", options_str );
+  {
+    if ( talent.defile -> ok() )
+    {
+      return create_action( "defile", options_str );
+    }
+    else if ( covenant.deaths_due -> ok() )
+    {
+      return create_action( "deaths_due", options_str );
+    }
+    return create_action( "death_and_decay", options_str );
+  }
+
   // wound_spender will return clawing shadows if talented, scourge strike if it's not
   if ( name == "wound_spender" )
     return create_action( talent.clawing_shadows -> ok() ? "clawing_shadows" : "scourge_strike", options_str );
@@ -8138,7 +8224,8 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util:
   auto spell_offset = expr.size() == 3u ? 1u : 0u;
 
   if ( ! util::str_compare_ci( expr[ spell_offset ], "death_and_decay" ) &&
-       ! util::str_compare_ci( expr[ spell_offset ], "defile" ) )
+       ! util::str_compare_ci( expr[ spell_offset ], "defile" ) &&
+       ! util::str_compare_ci( expr[ spell_offset ], "deaths_due" ) )
   {
     return nullptr;
   }
@@ -9064,7 +9151,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  aoe -> add_action( this, "Death and Decay", "if=covenant.night_fae&spell_targets.death_and_decay>=2");
+  aoe -> add_action( "any_dnd,if=covenant.night_fae&spell_targets.death_and_decay>=2");
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
