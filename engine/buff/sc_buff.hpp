@@ -71,12 +71,14 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
+  int _initial_stack;
   const spell_data_t* trigger_data;
 
 public:
   double default_value;
   size_t default_value_effect_idx;
   double default_value_effect_multiplier;
+  unsigned schools;
 
   /**
    * Is buff manually activated or not (eg. a proc).
@@ -142,9 +144,9 @@ public:
 
   virtual ~buff_t() {}
 
-  buff_t(actor_pair_t q, util::string_view name);
+  buff_t( actor_pair_t q, util::string_view name );
   buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
-  buff_t(sim_t* sim, util::string_view name);
+  buff_t( sim_t* sim, util::string_view name );
   buff_t( sim_t* sim, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 protected:
   buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t*, const item_t* item );
@@ -231,28 +233,36 @@ public:
   timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
   timespan_t last_expire_time() const { return last_expire; }
-  bool   remains_gt( timespan_t time ) const;
-  bool   remains_lt( timespan_t time ) const;
-  bool   at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
-  bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  bool   trigger  ( timespan_t duration );
-  bool   trigger  ( int stacks, timespan_t duration );
-  virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void   increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void   decrement( int stacks = 1, double value = DEFAULT_VALUE() );
-  virtual void   extend_duration( player_t* p, timespan_t seconds );
-  virtual void   extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
+  bool remains_gt( timespan_t time ) const;
+  bool remains_lt( timespan_t time ) const;
+  bool has_common_school( school_e ) const;
+  bool at_max_stacks( int mod = 0 ) const { return check() + mod >= max_stack(); }
+  // For trigger()/execute(), default value of stacks is -1, since we want to allow for explicit calls of stacks=1 to
+  // override using buff_t::_initial_stack
+  int _resolve_stacks( int stacks );
+  bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  bool trigger( timespan_t duration );
+  bool trigger( int stacks, timespan_t duration );
+  virtual bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
+  virtual void execute( int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  // For increment()/decrement(), default value of stack is 1, since expectation when calling these with default value
+  // is that the stack count will be adjusted by a single stack, regardless of buff_t::_initial_stack
+  virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void extend_duration( player_t* p, timespan_t seconds );
+  virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
 
-  virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void refresh  ( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void bump     ( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void bump( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void override_buff ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks = 1 );
   virtual int stack_react();
   // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
   // method only if you _REALLY_ know what you are doing.
   virtual void expire( timespan_t delay = timespan_t::zero() );
+  // Completely remove the buff, including any delayed applications and expirations.
+  void cancel();
 
   // Called only if previously active buff expires
   virtual void expire_override( int /* expiration_stacks */, timespan_t /* remaining_duration */ ) {}
@@ -286,15 +296,15 @@ public:
 
   static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
   static buff_t* find( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
-  static buff_t* find(    sim_t*, util::string_view name );
+  static buff_t* find( sim_t*, util::string_view name );
   static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
 
   const char* name() const { return name_str.c_str(); }
   util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
-  const spell_data_t* get_trigger_data() const
-  { return trigger_data; }
+  int initial_stack() const { return _initial_stack; }
+  const spell_data_t* get_trigger_data() const { return trigger_data; }
 
   rng::rng_t& rng();
 
@@ -306,12 +316,20 @@ public:
   buff_t* set_duration_multiplier( double );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
+  buff_t* set_initial_stack( int initial_stack );
+  buff_t* modify_initial_stack( int initial_stack );
   buff_t* set_cooldown( timespan_t duration );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
+  buff_t* set_schools( unsigned );
+  buff_t* set_schools_from_effect( size_t );
+  buff_t* add_school( school_e );
+  // Treat the buff's value as stat % increase and apply it automatically
+  // in the relevant player_t functions.
+  buff_t* set_pct_buff_type( stat_pct_buff_type );
   buff_t* set_default_value( double, size_t = 0 );
   virtual buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   virtual buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
@@ -328,14 +346,10 @@ public:
   buff_t* set_affects_regen( bool state );
   buff_t* set_refresh_behavior( buff_refresh_behavior );
   buff_t* set_refresh_duration_callback( buff_refresh_duration_callback_t );
-  buff_t* set_tick_zero( bool v )
-  { tick_zero = v; return this; }
-  buff_t* set_tick_on_application( bool v )
-  { tick_on_application = v; return this; }
-  buff_t* set_partial_tick( bool v )
-  { partial_tick = v; return this; }
-  buff_t* set_tick_time_behavior( buff_tick_time_behavior b )
-  { tick_time_behavior = b; return this; }
+  buff_t* set_tick_zero( bool v ) { tick_zero = v; return this; }
+  buff_t* set_tick_on_application( bool v ) { tick_on_application = v; return this; }
+  buff_t* set_partial_tick( bool v ) { partial_tick = v; return this; }
+  buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
@@ -490,7 +504,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
-  { return current_stack * value_direct(); }
+  { return 1.0 + current_stack * ( value_direct() - 1.0 ); }
 
   // Get current direct damage buff value + NO benefit tracking.
   double check_value_direct() const
@@ -498,7 +512,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
-  { return current_stack * check_value_direct(); }
+  { return 1.0 + current_stack * ( check_value_direct() - 1.0 ); }
 
   // Get current periodic damage buff value + benefit tracking.
   double value_periodic()
@@ -509,7 +523,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_periodic()
-  { return current_stack * value_periodic(); }
+  { return 1.0 + current_stack * ( value_periodic() - 1.0 ); }
 
   // Get current periodic damage buff value + NO benefit tracking.
   double check_value_periodic() const
@@ -517,7 +531,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
-  { return current_stack * check_value_periodic(); }
+  { return 1.0 + current_stack * ( check_value_periodic() - 1.0 ); }
 
   // Get current AA damage buff value + benefit tracking.
   double value_auto_attack()
@@ -528,7 +542,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff value multiplied by current stacks + benefit tracking.
   double stack_value_auto_attack()
-  { return current_stack * value_auto_attack(); }
+  { return 1.0 + current_stack * ( value_auto_attack() - 1.0 ); }
 
   // Get current AA damage buff value + NO benefit tracking.
   double check_value_auto_attack() const
@@ -536,7 +550,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
-  { return current_stack * check_value_auto_attack(); }
+  { return 1.0 + current_stack * ( check_value_auto_attack() - 1.0 ); }
 
 protected:
   damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );

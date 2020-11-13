@@ -3,11 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -57,6 +57,8 @@ struct penance_t final : public priest_spell_t
       direct_tick = true;
 
       this->stats = stats;
+
+      base_dd_adder += p.azerite.contemptuous_homily.value(2);
     }
 
     double action_da_multiplier() const override
@@ -69,6 +71,18 @@ struct penance_t final : public priest_spell_t
       }
 
       return m;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_spell_t::impact( state );
+
+      auto& td = get_td( state->target );
+      if ( td.dots.shadow_word_pain->is_ticking() )
+      {
+        td.dots.shadow_word_pain->adjust_duration(
+            priest().azerite.contemptuous_homily.spell()->effectN( 1 ).time_value() );
+      }
     }
 
     void execute() override
@@ -105,7 +119,6 @@ struct penance_t final : public priest_spell_t
       // Add 1 extra millisecond, so we only get 4 ticks instead of an extra tiny 5th tick.
       base_tick_time = timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
     }
-    dot_duration += priest().sets->set( PRIEST_DISCIPLINE, T17, B2 )->effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
     tick_action         = penance_tick_action;
@@ -327,7 +340,8 @@ void priest_t::init_spells_discipline()
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 
   // Azerite
-  azerite.death_throes = find_azerite_spell( "Death Throes" );
+  azerite.death_throes        = find_azerite_spell( "Death Throes" );
+  azerite.contemptuous_homily = find_azerite_spell( "Contemptuous Homily" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

@@ -286,8 +286,8 @@ struct player_t : public actor_t
   // Callbacks
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
-  std::vector<std::function<void(player_t*)> > callbacks_on_demise;
-  std::vector<std::function<void(void)>> callbacks_on_arise;
+  std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
+  std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -319,7 +319,7 @@ struct player_t : public actor_t
   timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
-  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
+  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained, iteration_resource_overflowed;
   double rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
@@ -381,8 +381,6 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
-  // Prepatch Insignia of the Grand Army flat dmg multiplier
-  double insignia_of_the_grand_army_multiplier;
 
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
@@ -402,6 +400,7 @@ struct player_t : public actor_t
 
   struct buffs_t
   {
+    std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
     buff_t* angelic_feather;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
@@ -448,22 +447,12 @@ struct player_t : public actor_t
     buff_t* legendary_aoe_ring; // Legendary ring buff.
     buff_t* legendary_tank_buff;
 
-    // T17 LFR stuff
-    buff_t* surge_of_energy;
-    buff_t* natures_fury;
-    buff_t* brute_strength;
-
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
-    // 7.0 Legendaries
-    buff_t* aggramars_stride;
-
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
-    buff_t* norgannons_foresight; //Legendary item that allows movement for 5 seconds if you stand still for 8.
-    buff_t* norgannons_foresight_ready;
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
 
@@ -472,7 +461,6 @@ struct player_t : public actor_t
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
-    buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
     // Darkmoon Faire versatility food
@@ -516,33 +504,13 @@ struct player_t : public actor_t
     buff_t* power_infusion; // Priest spell
 
     // 9.0 Soulbinds
-    buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
-    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
-    buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
-    buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
-    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
-    buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
-    buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
-    buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
-    buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
-    buff_t* superior_tactics;         // venthyr/draven - crit buff on interrupt
-    buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
-    buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
-    buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
-    buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
-    buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
-    buff_t* gnashing_chompers;        // necrolord/emeni - haste on enemy death
-    buff_t* embody_the_construct;     // necrolord/emeni - cast counter
-    buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
-    buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
-
-    // 9.0 Enchants and Consumables
-    buff_t* celestial_guidance;
+    buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
+    buff_t* echo_of_eonar;               // passive self buff
   } buffs;
 
   struct debuffs_t
@@ -719,6 +687,8 @@ public:
   bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
+  /// Is the actor active currently
+  bool is_active() const;
   bool in_gcd() const;
   bool recent_cast() const;
   bool dual_wield() const
@@ -951,6 +921,7 @@ public:
   virtual double composite_player_target_crit_chance( player_t* target ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
+  virtual double composite_player_target_armor( player_t* target ) const;
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double temporary_movement_modifier() const;
   virtual double passive_movement_modifier() const;
@@ -1076,7 +1047,7 @@ public:
                                   cache::behavior_e /* behavior */ = cache::players() )
   {}
 
-  virtual void do_dynamic_regen();
+  virtual void do_dynamic_regen( bool forced = false );
 
   /**
    * Returns owner if available, otherwise the player itself.
@@ -1091,6 +1062,9 @@ public:
   virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
+  virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
+  { return nullptr; }
+
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 
@@ -1197,6 +1171,9 @@ public:
   void register_combat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
+
+  void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
+  void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

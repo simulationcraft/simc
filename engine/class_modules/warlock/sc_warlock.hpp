@@ -8,7 +8,6 @@ namespace warlock
 {
 struct warlock_t;
 
-
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -19,12 +18,15 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
-
 struct warlock_td_t : public actor_target_data_t
 {
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
   propagate_const<dot_t*> dots_drain_life;
+  propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
+  propagate_const<dot_t*> dots_scouring_tithe;
+  propagate_const<dot_t*> dots_impending_catastrophe;
+  propagate_const<dot_t*> dots_soul_rot;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -52,11 +54,14 @@ struct warlock_td_t : public actor_target_data_t
   // SL - Legendary
   propagate_const<buff_t*> debuffs_odr;
 
+  // SL - Conduit
+  propagate_const<buff_t*> debuffs_combusting_engine;
+
   // Demo
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
 
-  propagate_const<buff_t*> debuffs_from_the_shadows; //TODO: Refactor handling for this - see PR 5294
+  propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -80,6 +85,7 @@ public:
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   bool wracking_brilliance;             // BFA - Azerite
   double agony_accumulator;
+  double corruption_accumulator;
   double memory_of_lucid_dreams_accumulator;  // BFA - Essences
   double strive_for_perfection_multiplier;    // BFA - Essences
   double vision_of_perfection_multiplier;     // BFA - Essences
@@ -92,8 +98,8 @@ public:
   // Active Pet
   struct pets_t
   {
-    pets::warlock_pet_t* active;
-    pets::warlock_pet_t* last;
+    warlock_pet_t* active;
+    warlock_pet_t* last;
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
@@ -101,6 +107,8 @@ public:
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         vop_infernals;  // Infernal(s) summoned by Vision of Perfection
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
+        roc_infernals;  // Infernal(s) summoned by Rain of Chaos
 
     //TODO: SL Beta - Vision of Perfection spawns should be removed once SL launches
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
@@ -133,7 +141,6 @@ public:
   //TODO: SL Beta - what is this struct for/should it be renamed for clarity?
   struct active_t
   {
-    action_t* grimoire_of_sacrifice_proc; //TODO: SL Beta - Should Grimoire of Sacrifice be refactored? Regardless, figure out better placement of this
     spell_t* pandemic_invocation;  // BFA - Azerite
     spell_t* corruption; //TODO: SL Beta - This is currently unused, was this meant to be the definition for the primary active ability? Fix this!
     spell_t* roaring_blaze; //TODO: SL Beta - This is currently unused, is there any need to define it or is debuffs_roaring_blaze sufficient?
@@ -204,7 +211,7 @@ public:
     const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
-    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). See PR 5294.
+    const spell_data_t* from_the_shadows;
     const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
     const spell_data_t* summon_vilefiend;
 
@@ -290,16 +297,16 @@ public:
     // Legendaries
     // Cross-spec
     item_runeforge_t claw_of_endereth;
-    item_runeforge_t mark_of_borrowed_power;
+    item_runeforge_t relic_of_demonic_synergy; //TODO: SL Beta - Do pet and warlock procs share a single RPPM?
     item_runeforge_t wilfreds_sigil_of_superior_summoning;
     // Affliction
     item_runeforge_t malefic_wrath;
     item_runeforge_t perpetual_agony_of_azjaqir;
-    item_runeforge_t sacrolashs_dark_strike;
+    item_runeforge_t sacrolashs_dark_strike; //TODO: SL Beta - Check if slow effect (unimplemented atm) can proc anything important
     item_runeforge_t wrath_of_consumption;
     // Demonology
     item_runeforge_t balespiders_burning_core;
-    item_runeforge_t forces_of_horned_nightmare;
+    item_runeforge_t forces_of_the_horned_nightmare;
     item_runeforge_t grim_inquisitors_dread_calling;
     item_runeforge_t implosive_potential;
     // Destruction
@@ -314,8 +321,8 @@ public:
     // Conduits
     // Covenant Abilities
     conduit_data_t catastrophic_origin;   // Venthyr
-    conduit_data_t exhumed_soul;          // Night Fae
-    conduit_data_t prolonged_decimation;  // Necrolord
+    conduit_data_t soul_eater;          // Night Fae
+    conduit_data_t fatal_decimation;  // Necrolord
     conduit_data_t soul_tithe;            // Kyrian
     // Affliction
     conduit_data_t cold_embrace;
@@ -364,6 +371,8 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
+    propagate_const<cooldown_t*> scouring_tithe;
+    propagate_const<cooldown_t*> infernal;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -424,12 +433,13 @@ public:
     propagate_const<buff_t*> active_uas; //TODO: SL Beta - Unstable Affliction behavior has changed in Shadowlands, this is probably outdated and can be removed.
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
+    propagate_const<buff_t*> inevitable_demise;
     propagate_const<buff_t*> dark_soul_misery;
 
     //TODO: SL Beta - Azerite powers that became talents - do we need to consider edge cases during prepatch involving both?
     // BFA - Affliction Azerite
     propagate_const<buff_t*> cascading_calamity;
-    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> id_azerite;
     propagate_const<buff_t*> wracking_brilliance;
 
     // Demonology Buffs
@@ -455,6 +465,7 @@ public:
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
     propagate_const<buff_t*> reverse_entropy;
+    propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> grimoire_of_supremacy_driver; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
     propagate_const<buff_t*> grimoire_of_supremacy; //TODO: SL Beta - GSup is removed in Shadowlands so this should be removed.
     propagate_const<buff_t*> dark_soul_instability;
@@ -468,9 +479,20 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> chaos_shards;
 
+    // SL
+    propagate_const<buff_t*> decimating_bolt;
+    propagate_const<buff_t*> tyrants_soul;
+    propagate_const<buff_t*> soul_tithe; //TODO: Soul Tithe whitelist includes Immolate despite this not being mentioned in tooltip. Investigate. Also check if all demons affected.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
+
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
     propagate_const<buff_t*> balespiders_burning_core;
+    propagate_const<buff_t*> malefic_wrath;
+    propagate_const<buff_t*> wrath_of_consumption;
+    propagate_const<buff_t*> implosive_potential;
+    propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> demonic_synergy;
   } buffs;
 
   //TODO: SL Beta - Some of these gains are unused, should they be pruned?
@@ -478,6 +500,7 @@ public:
   struct gains_t
   {
     gain_t* soul_conduit;
+    gain_t* borrowed_power; // SL - Legendary
 
     gain_t* agony;
     gain_t* drain_soul;
@@ -507,15 +530,22 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
+
+    // SL
+    gain_t* scouring_tithe;
   } gains;
 
   // Procs
   struct procs_t
   {
     proc_t* soul_conduit;
+    proc_t* mark_of_borrowed_power;
+
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer;
+    proc_t* malefic_wrath;
+
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;
@@ -526,8 +556,12 @@ public:
     proc_t* dreadstalker_debug;
     proc_t* summon_random_demon;
     proc_t* portal_summon;
+    proc_t* carnivorous_stalkers; // SL - Conduit
+    proc_t* horned_nightmare; // SL - Legendary
+
     // destro
     proc_t* reverse_entropy;
+    proc_t* rain_of_chaos;
   } procs;
 
   //TODO: SL Beta - Why does this catchall struct exist but is barely used?
@@ -544,6 +578,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   timespan_t shard_react; //Was this planned to be used for RNG soul shard reaction timing? Currently unused
+  shuffled_rng_t* rain_of_chaos_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -557,6 +592,7 @@ public:
   void init_rng() override;
   void init_action_list() override;
   void init_resources( bool force ) override;
+  void init_special_effects() override;
   void reset() override;
   void create_options() override;
   int get_spawning_imp_count();
@@ -609,6 +645,11 @@ public:
 
   target_specific_t<warlock_td_t> target_data;
 
+  const warlock_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
   warlock_td_t* get_target_data( player_t* target ) const override
   {
     warlock_td_t*& td = target_data[ target ];
@@ -628,7 +669,6 @@ public:
   void init_procs_affliction();
   void create_options_affliction();
   void create_apl_affliction();
-  std::unique_ptr<expr_t> create_aff_expression( util::string_view name_str );
 
   // sc_warlock_demonology
   action_t* create_action_demonology( util::string_view action_name, const std::string& options_str );
@@ -664,6 +704,77 @@ private:
 
 namespace actions
 {
+//Event for triggering delayed refunds from Soul Conduit
+//Delay prevents instant reaction time issues for rng refunds
+struct sc_event_t : public player_event_t
+{
+  gain_t* shard_gain;
+  warlock_t* pl;
+  int shards_used;
+
+  sc_event_t( warlock_t* p, int c )
+    : player_event_t( *p, 100_ms ),
+    shard_gain( p->gains.soul_conduit ),
+    pl( p ),
+    shards_used( c )
+  {
+  }
+
+  virtual const char* name() const override
+  {
+    return "soul_conduit_event";
+  }
+
+  virtual void execute() override
+  {
+    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+
+    for ( int i = 0; i < shards_used; i++ )
+    {
+      if ( rng().roll( soul_conduit_rng ) )
+      {
+        pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
+        pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
+        pl->procs.soul_conduit->occur();
+      }
+    }
+  }
+};
+
+//Event for triggering refunds from Mark of Borrowed Power legendary
+//TOCHECK: Currently, this refund can occur independently of Soul Conduit refunds, granting more shards than originally spent
+struct borrowed_power_event_t : public player_event_t
+{
+  gain_t* shard_gain;
+  warlock_t* pl;
+  int shards_used;
+  double refund_chance;
+
+  borrowed_power_event_t( warlock_t* p, int c, double chance )
+    : player_event_t( *p, 100_ms ),
+    shard_gain( p->gains.borrowed_power ),
+    pl( p ),
+    shards_used( c ),
+    refund_chance( chance )
+  {
+  }
+
+  virtual const char* name() const override
+  {
+    return "borrowed_power_event";
+  }
+
+  virtual void execute() override
+  {
+      if ( rng().roll( refund_chance ) )
+      {
+        pl->sim->print_log( "Borrowed power proc occurred for Warlock {}, refunding {} soul shards.", pl->name(), shards_used );
+        pl->resource_gain( RESOURCE_SOUL_SHARD, shards_used, shard_gain );
+        pl->procs.mark_of_borrowed_power->occur();
+      } 
+  }
+};
+
 struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) : heal_t( n, p, p->find_spell( id ) )
@@ -686,6 +797,9 @@ struct warlock_spell_t : public spell_t
 public:
   gain_t* gain;
   bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
+  bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
+  bool affected_by_soul_tithe; // SL - Covenant (Kyrian) checker
+  //TODO: SL Beta - Refactor affected_by stuff to be more streamlined
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -704,6 +818,11 @@ public:
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
     can_havoc         = false;
+
+    //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
+    affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
+
+    affected_by_soul_tithe = data().affected_by( p->find_spell( 340238 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -736,22 +855,6 @@ public:
     return c;
   }
 
-  void execute() override
-  {
-    spell_t::execute();
-
-    if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() &&
-         p()->buffs.grimoire_of_sacrifice->up() )
-    {
-      bool procced = p()->grimoire_of_sacrifice_rppm->trigger();
-      if ( procced )
-      {
-        p()->active.grimoire_of_sacrifice_proc->set_target( execute_state->target );
-        p()->active.grimoire_of_sacrifice_proc->execute();
-      }
-    }
-  }
-
   void consume_resource() override
   {
     spell_t::consume_resource();
@@ -763,41 +866,25 @@ public:
       // lets try making all lock specs not react instantly to shard gen
       if ( p()->talents.soul_conduit->ok() )
       {
-        struct sc_event : public player_event_t
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
+      }
+
+      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+      {
+        switch ( p()->specialization() )
         {
-          gain_t* shard_gain;
-          warlock_t* pl;
-          int shards_used;
-
-          sc_event( warlock_t* p, int c )
-            : player_event_t( *p, timespan_t::from_millis( 100 ) ),
-              shard_gain( p->gains.soul_conduit ),
-              pl( p ),
-              shards_used( c )
-          {
-          }
-
-          virtual const char* name() const override
-          {
-            return "sc_event";
-          }
-
-          virtual void execute() override
-          {
-            double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
-
-            for ( int i = 0; i < shards_used; i++ )
-            {
-              if ( rng().roll( soul_conduit_rng ) )
-              {
-                pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit );
-                pl->procs.soul_conduit->occur();
-              }
-            }
-          }
-        };
-
-        make_event<sc_event>( *p()->sim, p(), as<int>( last_resource_cost ) );
+          case WARLOCK_AFFLICTION:
+            p()->cooldowns.darkglare->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 1 ).time_value(), false );
+            break;
+          case WARLOCK_DEMONOLOGY:
+            p()->cooldowns.demonic_tyrant->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+            break;
+          case WARLOCK_DESTRUCTION:
+            p()->cooldowns.infernal->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 3 ).time_value(), false );
+            break;
+          default:
+            break;
+        }
       }
     }
   }
@@ -817,14 +904,29 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
+    if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
+      pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
+
+    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+
     return pm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_ta_multiplier( s );
+
+    if ( p()->legendary.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && affected_by_woc )
+      m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
+
+    return m;
   }
 
   void extend_dot( dot_t* dot, timespan_t extend_duration )
   {
     if ( dot->is_ticking() )
     {
-      dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
+      dot->adjust_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
     }
   }
 
@@ -888,13 +990,43 @@ public:
   }
 };
 
+struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
+{
+  grimoire_of_sacrifice_damage_t(warlock_t* p)
+    : warlock_spell_t("grimoire_of_sacrifice_damage_proc", p, p->find_spell(196100))
+  {
+    background = true;
+    proc = true;
+  }
+};
+
+struct demonic_synergy_callback_t : public dbc_proc_callback_t
+{
+  warlock_t* owner;
+
+  demonic_synergy_callback_t( warlock_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), owner( p )
+  {
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    if ( owner->warlock_pet_list.active )
+    {
+      auto pet = owner->warlock_pet_list.active;
+      //Always set the pet's buff value using the owner's to ensure specialization value is correct
+      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
+    }
+  }
+};
+
 using residual_action_t = residual_action::residual_periodic_action_t<warlock_spell_t>;
 
 struct summon_pet_t : public warlock_spell_t
 {
   timespan_t summoning_duration;
   std::string pet_name;
-  pets::warlock_pet_t* pet;
+  warlock_pet_t* pet;
 
 private:
   void _init_summon_pet_t()
@@ -936,7 +1068,7 @@ public:
 
   void init_finished() override
   {
-    pet = debug_cast<pets::warlock_pet_t*>( player->find_pet( pet_name ) );
+    pet = debug_cast<warlock_pet_t*>( player->find_pet( pet_name ) );
 
     warlock_spell_t::init_finished();
   }

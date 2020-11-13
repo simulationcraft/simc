@@ -5,8 +5,8 @@ level=50
 race=human
 role=spell
 position=ranged_back
-talents=3111111
-azerite_essences=27:3:1/5:3:0/12:3:0/35:3:0
+talents=1123122
+azerite_essences=14:4/23:4/27:4/12:4
 
 # Default consumables
 potion=unbridled_fury
@@ -30,19 +30,31 @@ actions.precombat+=/potion
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=1
-actions.precombat+=/mind_blast
+actions.precombat+=/vampiric_touch
 
 # Executed every time the actor is available.
 actions=potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
 actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions+=/variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking
-actions+=/variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2
+actions+=/variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3
+# Variable to switch between syncing cooldown usage to Power Infusion or Void Eruption depending whether priest_self_power_infusion is in use or we don't have power infusion learned.
+actions+=/variable,name=pi_or_vf_sync_condition,op=set,value=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess.equipped)&level>=58&cooldown.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_sun_priestess.equipped)&cooldown.void_eruption.up
+actions+=/call_action_list,name=cwc
 actions+=/run_action_list,name=main
 
 
-actions.cds=call_action_list,name=essences
+# Use Silence on CD to proc Sephuz's Proclamation.
+actions.cds=silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
+actions.cds+=/call_action_list,name=essences
 # Default fallback for usable items: Use on cooldown.
 actions.cds+=/use_items
+
+# Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
+actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_or_vf_sync_condition)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
+# Short Circuit Searing Nightmare condition to keep SW:P up in AoE
+actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&spell_targets.mind_sear>2
+# Only_cwc makes the action only usable during channeling and not as a regular action.
+actions.cwc+=/mind_blast,only_cwc=1
 
 actions.essences=memory_of_lucid_dreams
 actions.essences+=/blood_of_the_enemy
@@ -56,75 +68,74 @@ actions.essences+=/worldvein_resonance
 actions.essences+=/the_unbound_force
 
 # Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting.
-actions.main=void_eruption,if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&dot.devouring_plague.ticking))
+actions.main=void_eruption,if=variable.pi_or_vf_sync_condition&insanity>=40
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
-# Only use Void Bolt if Devouring Plague doesn't need refreshed.
-actions.main+=/void_bolt,if=!dot.devouring_plague.refreshable
 actions.main+=/call_action_list,name=cds
+# High Priority Mind Sear action to refresh DoTs with Searing Nightmare
+actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!dot.shadow_word_pain.ticking&!cooldown.mindbender.up
 # Prefer to use Damnation ASAP if any DoT is not up.
 actions.main+=/damnation,target_if=!variable.all_dots_up
-# Use Devouring Plague right before you go into a LotV Voidform.
-actions.main+=/devouring_plague,if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100
+# Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST.
+actions.main+=/void_bolt,if=insanity<=85&((talent.hungering_void.enabled&spell_targets.mind_sear<5)|spell_targets.mind_sear=1)
 # Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets.
-actions.main+=/devouring_plague,target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))
+actions.main+=/devouring_plague,target_if=(refreshable|insanity>75)&!variable.pi_or_vf_sync_condition&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))
+# Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 with conduit).
+actions.main+=/void_bolt,if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85
 # Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with Mindbender or Shadowfiend active.
-actions.main+=/shadow_word_death,target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)
+actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)|(pet.fiend.active&runeforge.shadowflame_prism.equipped)
 # Use Surrender to Madness on a target that is going to die at the right time.
 actions.main+=/surrender_to_madness,target_if=target.time_to_die<25&buff.voidform.down
-actions.main+=/mindbender
-# Use Void Torrent only if all DoTs are active and the target won't die during the channel.
-actions.main+=/void_torrent,target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4
+actions.main+=/mindbender,if=dot.vampiric_touch.ticking&((talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1))|dot.shadow_word_pain.ticking)
+# Use Void Torrent only if SW:P and VT are active and the target won't die during the channel.
+actions.main+=/void_torrent,target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))
 # Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back
 actions.main+=/shadow_word_death,if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)
-# Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die.
-actions.main+=/shadow_crash,if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30
 # Use Shadow Crash on CD unless there are adds incoming.
-actions.main+=/shadow_crash,if=raid_event.adds.in>30&spell_targets.shadow_crash>1
+actions.main+=/shadow_crash,if=raid_event.adds.in>10
 # Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting on AOE unless dark thoughts is about to time out
-actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
+actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thought.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 # Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority than redotting unless dark thoughts is about to time out
-actions.main+=/mind_flay,if=buff.dark_thoughts.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up
-# Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
-actions.main+=/searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
-# TODO change logic on when to use instant blasts
-actions.main+=/mind_blast,use_while_casting=1,if=variable.dots_up
-# TODO Verify target cap
-actions.main+=/mind_blast,if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4
+actions.main+=/mind_flay,if=buff.dark_thought.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up
+# Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing Nightmare talented.
+actions.main+=/mind_blast,if=variable.dots_up&raid_event.movement.in>cast_time+0.5&(spell_targets.mind_sear<4|!talent.searing_nightmare.enabled)
 actions.main+=/vampiric_touch,target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up
 # Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and using Psychic Link and NOT Misery.
 actions.main+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2
 # Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.
-actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))
+actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1))&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))
 actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up
+# Use SW:D as last resort if on the move
+actions.main+=/shadow_word_death
+# Use SW:P as last resort if on the move and SW:D is on CD
 actions.main+=/shadow_word_pain
 
-head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=405/403/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=403/405/18/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=236/405/21/13
-wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517
-hands=emberscale_gloves,id=174125,bonus_id=4824/1517/6465/6476
-waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/6465/6482
-legs=trousers_of_peculiar_potency,id=174121,bonus_id=4824/1517
-feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517
-finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_haste
-finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
-trinket1=psyche_shredder,id=174060,bonus_id=4824/1517/6560
-trinket2=forbidden_obsidian_claw,id=173944,bonus_id=4824/1517/6552
-main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517,enchant=quick_navigation
-off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517
+head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4786/6511/4775,azerite_powers=403/582/31/83/13
+neck=heart_of_azeroth,id=158075,bonus_id=6316/4932/4933/1564,azerite_level=96
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4786/6512/4775,azerite_powers=403/582/18/204/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6603/1472,enchant_id=6088
+chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=5448/1543/4786/6510/4775,azerite_powers=236/403/459/84/13
+wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517/4786/6514/6476/6470
+hands=emberscale_gloves,id=174125,bonus_id=4824/1517/4786/6476/6470/6514
+waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/4786/6476/6470/6514
+legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/6578/6515/1517/4786/6573
+feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/4786/6476/6470/6514
+finger1=logic_loop_of_recursion,id=169158,bonus_id=6536/1514/4786/6476/6470/6514,enchant_id=6108
+finger2=overclocking_bit_band,id=169159,bonus_id=6536/1514/4786/6482/6470/6514,enchant_id=6108
+trinket1=highborne_compendium_of_storms,id=169328
+trinket2=manifesto_of_madness,id=174103,bonus_id=4824/6515/1517/4786
+main_hand=vorzz_yoqal,id=172196,bonus_id=4824/6578/1517/4786/6513/6476/6470,enchant_id=5949
+off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/6578/6579/6481/6462/1517/4786/6514
 
 # Gear Summary
-# gear_ilvl=139.13
-# gear_stamina=842
-# gear_intellect=549
-# gear_crit_rating=274
-# gear_haste_rating=313
-# gear_mastery_rating=169
-# gear_versatility_rating=71
-# gear_corruption=95
-# gear_corruption_resistance=50
-# gear_armor=167
+# gear_ilvl=131.38
+# gear_stamina=701
+# gear_intellect=551
+# gear_crit_rating=220
+# gear_haste_rating=219
+# gear_mastery_rating=164
+# gear_versatility_rating=55
+# gear_corruption=170
+# gear_corruption_resistance=125
+# gear_armor=178

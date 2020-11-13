@@ -16,19 +16,19 @@ real_ppm_t::real_ppm_t( util::string_view name, player_t* p, const spell_data_t*
     freq( data->real_ppm() ),
     modifier( p->dbc->real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
     rppm( freq * modifier ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
+    last_trigger_attempt( 0_ms ),
+    accumulated_blp( 0_ms ),
     scales_with( p->dbc->real_ppm_scale( data->id() ) ),
     blp_state( BLP_ENABLED )
 {
 }
 
 double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_trigger,
-                                timespan_t last_successful_proc, unsigned scales_with, blp blp_state )
+                                timespan_t accumulated_blp, unsigned scales_with, blp blp_state )
 {
   auto sim       = player->sim;
   double coeff   = 1.0;
-  double seconds = std::min( ( sim->current_time() - last_trigger ).total_seconds(), max_interval() );
+  double seconds = std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
 
   if ( scales_with & RPPM_HASTE )
     coeff *= player->cache.rppm_haste_coeff();
@@ -50,8 +50,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
   {
     // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
     // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-    double last_success =
-        std::min( ( sim->current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double last_success = std::min( accumulated_blp, max_bad_luck_prot() ).total_seconds();
     double expected_average_proc_interval = 60.0 / real_ppm;
 
     rppm_chance =
@@ -67,7 +66,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
     sim->out_debug.print(
         "base={:.3f} coeff={:.3f} last_trig={:.3f} last_proc={:.3f}"
         " scales={} blp={} chance={:.5f}%",
-        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+        PPM, coeff, last_trigger.total_seconds(), accumulated_blp.total_seconds(), scales_with,
         blp_state == BLP_ENABLED ? "enabled" : "disabled", rppm_chance * 100.0 );
   }
 
@@ -84,12 +83,16 @@ bool real_ppm_t::trigger()
   if ( last_trigger_attempt == player->sim->current_time() )
     return false;
 
-  double chance = proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with, blp_state );
+  // 2020-10-11: Instead of using the aboslute time to the last successful proc, it appears
+  // that the amount of time that is added on each trigger attempt is capped at max_interval
+  accumulated_blp += std::min( player->sim->current_time() - last_trigger_attempt, max_interval() );
+  double chance = proc_chance( player, rppm, last_trigger_attempt, accumulated_blp, scales_with, blp_state );
   bool success  = player->rng().roll( chance );
 
   last_trigger_attempt = player->sim->current_time();
 
   if ( success )
-    last_successful_trigger = player->sim->current_time();
+    accumulated_blp = 0_ms;
+
   return success;
 }

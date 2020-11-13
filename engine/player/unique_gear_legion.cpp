@@ -154,15 +154,6 @@ namespace item
   // The sim builds it automatically.
   void pharameres_forbidden_grimoire( special_effect_t& );
 
-  // Legendary
-  void aggramars_stride( special_effect_t& );
-  void archimondes_hatred_reborn( special_effect_t& );
-  void kiljadens_burning_wish( special_effect_t& );
-  void norgannons_foresight( special_effect_t& );
-  void insignia_of_the_grand_army( special_effect_t& );
-
-
-
   /* NYI ================================================================
   Nighthold ---------------------------------
 
@@ -593,7 +584,7 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
     {
       may_block = true;
     }
-    double target_armor( player_t* ) const override
+    double composite_target_armor( player_t* ) const override
     { return 0.0; }
   };
 
@@ -1233,6 +1224,9 @@ struct umbral_glaives_driver_t : public proc_spell_t
       .duration( data().duration() )
       .action( storm )
       .expiration_callback( [ this ]() {
+        if ( ! storm -> execute_state )
+          return;
+
         shatter -> set_target( storm -> target );
         // Need to copy coordinates from the ground aoe event's last execute
         auto state = shatter -> get_state();
@@ -1509,7 +1503,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
            ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
   }
 
-  effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
+  effect.player -> register_on_arise_callback( effect.player, [ buff, effect ]() {
     buff -> trigger( buff -> data().max_stacks() );
     if ( buff -> sim -> legion_opts.cradle_of_anguish_resets.size() )
     {
@@ -1915,7 +1909,8 @@ struct shadow_blade_t : public proc_spell_t
   {
     double ctm = proc_spell_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + player -> get_target_data( target ) -> debuff.shadow_blades -> check_stack_value();
+    if ( auto td = player -> find_target_data( target ) )
+      ctm *= 1.0 + td -> debuff.shadow_blades -> check_stack_value();
 
     return ctm;
   }
@@ -2669,7 +2664,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     if ( trigger_state -> result_amount <= 0 )
       return;
 
-    actor_target_data_t* td = effect.player -> get_target_data( trigger_state -> target );
+    const actor_target_data_t* td = effect.player -> find_target_data( trigger_state -> target );
 
     if ( td && td -> debuff.brutal_haymaker -> check() )
       accumulator -> damage += trigger_state -> result_amount * multiplier;
@@ -3000,7 +2995,7 @@ struct ceaseless_toxin_t : public proc_spell_t
         return;
       }
 
-      target -> callbacks_on_demise.emplace_back([ this ]( player_t* actor ) {
+      target -> register_on_demise_callback( player, [ this ]( player_t* actor ) {
         if ( get_dot( actor ) -> is_ticking() )
         {
           cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
@@ -4173,14 +4168,15 @@ struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    assert( active_target );
-
+    // If the debuff expires while a callback execute event it scheduled,
+    // the active_target will be set to nullptr just before execute is called.
+    // If that happens, just bail out.
+    if ( !active_target )
+      return;
     if ( trigger_state -> target == active_target )
       return;
     if ( trigger_state -> result_amount <= 0 )
       return;
-
-    assert( player -> get_target_data( active_target ) -> debuff.taint_of_the_sea -> check() );
 
     damage -> target = active_target;
     damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
@@ -4415,104 +4411,6 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
-
-
-// Kil'jaeden's Burning Wish ================================================
-
-struct kiljaedens_burning_wish_t : public proc_spell_t
-{
-  kiljaedens_burning_wish_t( const special_effect_t& effect ) :
-    proc_spell_t( "kiljaedens_burning_wish", effect.player, dbc::find_spell( effect.player, 235999 ) )
-  {
-    background = may_crit = true;
-    aoe = -1;
-    item = effect.item;
-    school = SCHOOL_FIRE;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
-    // Projectile is very slow, combat log show 8 seconds to travel the maximum 80 yard range of the item
-    travel_speed = 10;
-  }
-
-  void init() override
-  {
-    spell_t::init();
-    // Through testing with Rune of Power, Incanter's Flow, Arcane Power,
-    // and Enhacement multipliers we conclude this ignores all standard %dmg
-    // multipliers. It still gains crit damage multipliers.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-
-  // This always crits.
-  double composite_crit_chance() const override
-  { return 1.0; }
-
-  bool verify_actor_level() const override
-  { return true; }
-};
-
-void item::kiljadens_burning_wish( special_effect_t& effect )
-{
-  effect.execute_action = new kiljaedens_burning_wish_t( effect );
-}
-
-// Archimonde's Hatred Reborn
-
-struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
-{
-  action_t* explosion;
-  special_effect_t& spell_effect;
-
-  archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
-    absorb_buff_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ),
-    explosion( a ),
-    spell_effect( effect )
-  {
-    explosion -> snapshot_flags &= STATE_NO_MULTIPLIER;
-    explosion -> split_aoe_damage = true;
-  }
-
-  void start( int stacks, double /*value*/ = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    // The shield is based on the player's max health
-    double shield_amount = spell_effect.player -> resources.max[ RESOURCE_HEALTH ] * spell_effect.driver() -> effectN( 1 ).percent();
-
-    absorb_buff_t::start( stacks, shield_amount, duration );
-
-    // AHR deals damage based on the amount of damage absorbed by the shield
-    // But the damage taken models for tanking aren't realistic at the moment
-    // It's better to let the user chose how much of the shield is consumed on each use
-    double absorbed_damage_ratio = spell_effect.player -> sim -> legion_opts.archimondes_hatred_reborn_damage;
-    if ( absorbed_damage_ratio < 0 )
-      absorbed_damage_ratio = 0;
-    else if ( absorbed_damage_ratio > 1)
-      absorbed_damage_ratio = 1;
-
-    double explosion_damage = shield_amount * spell_effect.driver() -> effectN( 2 ).percent() * absorbed_damage_ratio;
-
-    explosion -> base_dd_min = explosion -> base_dd_max = explosion_damage;
-  }
-
-  void expire_override( int stacks, timespan_t remaining ) override
-  {
-    absorb_buff_t::expire_override( stacks, remaining );
-
-    explosion -> schedule_execute();
-  }
-};
-
-void item::archimondes_hatred_reborn( special_effect_t& effect )
-{
-  effect.trigger_spell_id = 235188;
-
-  effect.custom_buff = new archimondes_hatred_reborn_shield_t( effect, effect.create_action() );
-
-  // Reset trigger_spell_id so it does not create an execute action.
-  effect.trigger_spell_id = 0;
-}
-
 
 // Nature's Call ============================================================
 
@@ -5004,7 +4902,7 @@ struct spontaneous_appendages_t: public proc_spell_t
       effect.item )
   {}
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -5448,109 +5346,6 @@ void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
     new dbc_proc_callback_t(effect.player, effect);
 }
 
-// Cinidaria, the Symbiote ==================================================
-
-struct cinidaria_the_symbiote_damage_t : public attack_t
-{
-  cinidaria_the_symbiote_damage_t( player_t* p ) :
-    attack_t( "symbiote_strike", p, p -> find_spell( 207694 ) )
-  {
-    callbacks = may_crit = may_miss = false;
-    background = true;
-  }
-
-  // TODO: Any multipliers for this?
-  void init() override
-  {
-    attack_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
-
-struct cinidaria_the_symbiote_t : public class_scoped_callback_t
-{
-  cinidaria_the_symbiote_t() : class_scoped_callback_t( { DEMON_HUNTER, DRUID, MONK, ROGUE } )
-  { }
-
-  // Cinidaria needs special handling on the modeling. Since it is allowed to proc from nearly any
-  // damage, we need to circumvent the normal "special effect" system in Simulationcraft. Instead,
-  // hook Cinidaria into the outgoing damage assessor pipeline, since all outgoing damage resolution
-  // of a source actor is done through it.
-  //
-  // NOTE NOTE NOTE: This also requires that if there is some (direct or periodic) damage that is
-  // not allowed to generate Cinidaria damage, the spell id of such spells is listed below in the
-  // "spell_blacklist" map.
-  //
-  void initialize( special_effect_t& effect ) override
-  {
-    // Vector of blacklisted spell ids that cannot proc Cinidaria.
-    static constexpr auto spell_blacklist = ::util::make_static_set<unsigned>( {
-      207694, // Symbiote Strike (Cinidaria itself)
-      191259, // Mark of the Hidden Satyr
-      191380, // Mark of the Distant Army
-      220893, // Soul Rip (Subtlety Rogue Akaari pet)
-    } );
-
-    // Health percentage threshold and damage multiplier
-    const double threshold = effect.driver() -> effectN( 2 ).base_value();
-    const double multiplier = effect.driver() -> effectN( 1 ).percent();
-
-    // Damage spell
-    const auto spell = new cinidaria_the_symbiote_damage_t( effect.player );
-
-    // Install an outgoing damage assessor that triggers Cinidaria after the target damage has been
-    // resolved. This ensures most of the esoteric mitigation mechanisms that the sim might have are
-    // also resolved, and that state -> result_amount will hold the "final actual damage" of the
-    // ability.
-    effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
-      [ threshold, multiplier, spell ](result_amount_type, action_state_t* state )
-      {
-        const auto source_action = state -> action;
-        const auto target = state -> target;
-
-        // Must be a reasonably valid action (a harmful spell or attack)
-        if ( ! source_action -> harmful ||
-             ( source_action -> type != ACTION_SPELL && source_action -> type != ACTION_ATTACK ) )
-        {
-          return assessor::CONTINUE;
-        }
-
-        // Must do damage
-        if ( state -> result_amount == 0 )
-        {
-          return assessor::CONTINUE;
-        }
-
-        // Target must be equal or above threshold health%
-        if ( target -> health_percentage() < threshold )
-        {
-          return assessor::CONTINUE;
-        }
-
-        // Spell cannot be blacklisted
-        if ( spell_blacklist.find( source_action -> id ) != spell_blacklist.end() )
-        {
-          return assessor::CONTINUE;
-        }
-
-        if ( source_action -> sim -> debug )
-        {
-          source_action -> sim -> out_debug.printf( "%s cinidaria_the_symbiote proc from %s",
-            spell -> player -> name(), source_action -> name() );
-        }
-
-        // All ok, trigger the damage
-        spell -> target = target;
-        spell -> base_dd_min = spell -> base_dd_max = state -> result_amount * multiplier;
-        spell -> execute();
-
-        return assessor::CONTINUE;
-      }
-    );
-  }
-};
-
 // Combined legion potion action ============================================
 
 template <typename T>
@@ -5568,7 +5363,7 @@ struct legion_potion_damage_t : public T
     this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
   }
 
-  double target_armor( player_t* ) const override
+  double composite_target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -6049,32 +5844,6 @@ void item::sixfeather_fan( special_effect_t& effect )
   new wind_bolt_callback_t( effect.item, effect, bolt );
 }
 
-// Aggramars Speed Boots ====================================================
-
-void item::aggramars_stride( special_effect_t& effect )
-{
-  effect.custom_buff = make_buff( effect.player, "aggramars_stride", effect.driver(), effect.item )
-    ->set_default_value( effect.driver() -> effectN( 1 ).percent() );
-
-  effect.player -> buffs.aggramars_stride = effect.custom_buff;
-}
-
-// Aggramars Speed Boots ====================================================
-
-void item::norgannons_foresight( special_effect_t& effect )
-{
-  effect.player -> buffs.norgannons_foresight -> default_chance = 1;
-  effect.player -> buffs.norgannons_foresight_ready -> default_chance = 1;
-}
-
-// Insignia of the Grand Army (Prepatch version) ============================
-
-void item::insignia_of_the_grand_army( special_effect_t& effect )
-{
-  effect.player -> insignia_of_the_grand_army_multiplier = 1.0 + effect.driver() -> effectN( 1 ).percent();
-}
-
-
 // Eyasu's Mulligan =========================================================
 
 struct eyasus_driver_t : public spell_t
@@ -6353,11 +6122,6 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 228398, "228399trigger" );
   register_special_effect( 228400, "228401trigger" );
 
-  /* T19 Generic Order Hall set bonuses */
-  register_special_effect( 221533, set_bonus::passive_stat_aura     );
-  register_special_effect( 221534, set_bonus::passive_stat_aura     );
-  register_special_effect( 221535, set_bonus::passive_stat_aura     );
-
   /* 7.0 Dungeon 2 Set Bonuses */
   register_special_effect( 228445, set_bonus::march_of_the_legion );
   register_special_effect( 228447, set_bonus::journey_through_time );
@@ -6365,14 +6129,6 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 224148, set_bonus::simple_callback );
   register_special_effect( 224150, set_bonus::simple_callback );
   register_special_effect( 228448, set_bonus::simple_callback );
-
-  /* Legendaries */
-  register_special_effect( 207692, cinidaria_the_symbiote_t() );
-  register_special_effect( 207438, item::aggramars_stride );
-  register_special_effect( 235169, item::archimondes_hatred_reborn );
-  register_special_effect( 235991, item::kiljadens_burning_wish );
-  register_special_effect( 236373, item::norgannons_foresight );
-  register_special_effect( 280740, item::insignia_of_the_grand_army );
 
   /* Consumables */
   register_special_effect( 188028, consumables::potion_of_the_old_war );

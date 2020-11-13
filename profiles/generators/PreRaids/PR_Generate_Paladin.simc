@@ -1,54 +1,54 @@
-paladin="PR_Paladin_Protection"
-level=120
-race=lightforged_draenei
-spec=protection
-role=tank
-position=front
-talents=1200003
+# paladin="PR_Paladin_Protection"
+# level=120
+# race=lightforged_draenei
+# spec=protection
+# role=tank
+# position=front
+# talents=1200003
 
 
-head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
-wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
-waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=darkmoon_deck_fathoms,id=159125
-trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=disc_of_Indomitable_will,id=158713,bonus_id=4779/1512/4786
+# head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
+# wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+# hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
+# waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
+# legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+# feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=darkmoon_deck_fathoms,id=159125
+# trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+# main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
+# off_hand=disc_of_Indomitable_will,id=158713,bonus_id=4779/1512/4786
 
-save=PR_Paladin_Protection.simc
+# save=PR_Paladin_Protection.simc
 
 
-paladin="PR_Paladin_Retribution"
-level=120
-race=human
-spec=retribution
-role=attack
-position=back
-talents=2303003
+# paladin="PR_Paladin_Retribution"
+# level=120
+# race=human
+# spec=retribution
+# role=attack
+# position=back
+# talents=2303003
 
-head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4775/4786,azerite_powers=479/462/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4775/4786,azerite_powers=157/22/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4775/4786,azerite_powers=479/21/13
-wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
-waist=sharkbait_harness_girdle,id=158360,bonus_id=4779/1512/4786
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=jes_howler,id=159627,bonus_id=4779/1512/4786
-trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
+# head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4775/4786,azerite_powers=479/462/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4775/4786,azerite_powers=157/22/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4775/4786,azerite_powers=479/21/13
+# wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+# hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
+# waist=sharkbait_harness_girdle,id=158360,bonus_id=4779/1512/4786
+# legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+# feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=jes_howler,id=159627,bonus_id=4779/1512/4786
+# trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+# main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
 
-save=PR_Paladin_Retribution.simc
+# save=PR_Paladin_Retribution.simc

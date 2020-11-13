@@ -5,8 +5,8 @@ level=50
 race=lightforged_draenei
 role=tank
 position=front
-talents=3200003
-azerite_essences=12:3/13:3/32:3/37:3
+talents=2200202
+azerite_essences=22:3/13:3/32:3/12:3
 
 # Default consumables
 potion=disabled
@@ -33,42 +33,43 @@ actions.precombat+=/lights_judgment
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
-actions+=/worldvein_resonance,if=buff.lifeblood.stack<3
-# Dumping SotR charges
-actions+=/shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
-actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
-actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)
-actions+=/lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
-actions+=/consecration,if=!consecration.up
-actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
-actions+=/avengers_shield,if=cooldown_react
-actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
-actions+=/concentrated_flame,if=(!talent.seraphim.enabled|buff.seraphim.up)&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
-actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
-actions+=/anima_of_death
-actions+=/blessed_hammer,strikes=3
-actions+=/hammer_of_the_righteous
-actions+=/consecration
-actions+=/heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)
+actions+=/call_action_list,name=standard
 
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
-actions.cooldowns+=/use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled
-actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=(debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up)|debuff.razor_coral_debuff.stack=0
-actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
-actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
-actions.cooldowns+=/memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up
+actions.cooldowns+=/seraphim
+actions.cooldowns+=/avenging_wrath
+actions.cooldowns+=/holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
-actions.cooldowns+=/use_item,name=grongs_primal_rage,if=cooldown.judgment.full_recharge_time>4&cooldown.avengers_shield.remains>4&(buff.seraphim.up|cooldown.seraphim.remains+4+gcd>expected_combat_length-time)&consecration.up
-actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=cooldown.judgment.full_recharge_time>4*spell_haste&cooldown.avengers_shield.remains>4*spell_haste&(!equipped.grongs_primal_rage|!trinket.grongs_primal_rage.cooldown.up)&consecration.up
-actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
-actions.cooldowns+=/use_item,name=razdunks_big_red_button
+actions.cooldowns+=/moment_of_glory,if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains
+actions.cooldowns+=/heart_essence
 
-head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=395/582/21/13
+actions.standard=shield_of_the_righteous,if=debuff.judgment.up&(debuff.vengeful_shock.up|!conduit.vengeful_shock.enabled)
+actions.standard+=/shield_of_the_righteous,if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled
+actions.standard+=/avengers_shield,if=debuff.vengeful_shock.down&conduit.vengeful_shock.enabled
+actions.standard+=/hammer_of_wrath
+actions.standard+=/avengers_shield
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains
+actions.standard+=/vanquishers_hammer
+actions.standard+=/consecration,if=!consecration.up
+actions.standard+=/divine_toll
+actions.standard+=/blessed_hammer,strikes=2.4,if=charges=3
+actions.standard+=/ashen_hallow
+actions.standard+=/hammer_of_the_righteous,if=charges=2
+actions.standard+=/word_of_glory,if=buff.vanquishers_hammer.up
+actions.standard+=/blessed_hammer,strikes=2.4
+actions.standard+=/hammer_of_the_righteous
+actions.standard+=/lights_judgment
+actions.standard+=/arcane_torrent
+actions.standard+=/consecration
+actions.standard+=/word_of_glory,if=buff.shining_light_free.up&!covenant.necrolord
+
+head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=125/396/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=writhing_spaulders_of_madness,id=174165,bonus_id=4824/1517/4775,azerite_powers=395/582/459/13
+shoulders=writhing_spaulders_of_madness,id=174165,bonus_id=4824/1517/4775,azerite_powers=396/582/459/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=carapace_of_pulsing_vita,id=174168,bonus_id=4824/1517/4775,azerite_powers=395/582/21/13
+chest=carapace_of_pulsing_vita,id=174168,bonus_id=4824/1517/4775,azerite_powers=395/396/21/13
 wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517
 hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517
 waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
@@ -76,7 +77,7 @@ legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6552
 feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517/6554
 finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
 finger2=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_haste
-trinket1=writhing_segment_of_drestagath,id=173946,bonus_id=4824/1517
+trinket1=humming_black_dragonscale,id=174044,bonus_id=4824/1517/4786/6514,gem_id=168639
 trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517
 main_hand=gift_of_the_void,id=172194,bonus_id=4824/1517,enchant=force_multiplier
 off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
@@ -84,8 +85,8 @@ off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 # Gear Summary
 # gear_ilvl=139.75
 # gear_strength=407
-# gear_stamina=849
-# gear_crit_rating=281
+# gear_stamina=747
+# gear_crit_rating=288
 # gear_haste_rating=338
 # gear_mastery_rating=130
 # gear_versatility_rating=122

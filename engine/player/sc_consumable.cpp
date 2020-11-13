@@ -605,13 +605,25 @@ struct potion_t : public dbc_consumable_base_t
 {
   timespan_t pre_pot_time;
   bool dynamic_prepot;
+  double dur_mod_low, dur_mod_high;  // multiplier for Refined Palate soulbind
 
-  potion_t( player_t* p, util::string_view options_str ) :
-    dbc_consumable_base_t( p, "potion" ), pre_pot_time( 2_s ), dynamic_prepot( false )
+  potion_t( player_t* p, util::string_view options_str )
+    : dbc_consumable_base_t( p, "potion" ),
+      pre_pot_time( 2_s ),
+      dynamic_prepot( false ),
+      dur_mod_low( 0.0 ),
+      dur_mod_high( 0.0 )
   {
     add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
     add_option( opt_bool( "dynamic_prepot", dynamic_prepot ) );
     parse_options( options_str );
+
+    auto refined = p->find_soulbind_spell( "Refined Palate" );
+    if ( refined->ok() )
+    {
+      dur_mod_low  = refined->effectN( 1 ).percent();
+      dur_mod_high = refined->effectN( 2 ).percent();
+    }
 
     type = ITEM_SUBCLASS_POTION;
     cooldown = player -> get_cooldown( "potion" );
@@ -651,17 +663,15 @@ struct potion_t : public dbc_consumable_base_t
       }
     }
 
-    if ( cooldown -> duration == timespan_t::zero() )
+    if ( cooldown -> duration == 0_ms )
     {
-      throw std::invalid_argument(
-                fmt::format("No cooldown found for potion '{}'.", item_data -> name));
+      throw std::invalid_argument( fmt::format( "No cooldown found for potion '{}'.", item_data->name ) );
     }
 
     // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
     if ( consumable_buff )
     {
-      pre_pot_time = std::max( timespan_t::zero(),
-                               std::min( pre_pot_time, consumable_buff -> data().duration() ) );
+      pre_pot_time = std::max( 0_ms, std::min( pre_pot_time, consumable_buff->data().duration() ) );
     }
   }
 
@@ -698,8 +708,8 @@ struct potion_t : public dbc_consumable_base_t
       adjust_dynamic_prepot_time();
 
     // adjust for prepot
-    if ( !player -> in_combat )
-      cd_duration = cooldown -> duration - pre_pot_time;
+    if ( !player->in_combat )
+      cd_duration = cooldown->duration - pre_pot_time;
 
     action_t::update_ready( cd_duration );
   }
@@ -711,18 +721,26 @@ struct potion_t : public dbc_consumable_base_t
 
     if ( consumable_action )
     {
-      consumable_action -> execute();
+      consumable_action->execute();
     }
 
     if ( consumable_buff )
     {
-      timespan_t duration = consumable_buff -> buff_duration();
-      if ( ! player -> in_combat )
+      timespan_t duration = consumable_buff->buff_duration();
+
+      // Adjust for Refined Palate soulbind
+      if ( dur_mod_low )
+      {
+        // TODO: is this really a simple uniform distribution?
+        duration *= 1.0 + rng().range( dur_mod_low, dur_mod_high );
+      }
+
+      if ( !player->in_combat )
       {
         duration -= pre_pot_time;
       }
 
-      consumable_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      consumable_buff->trigger( duration );
     }
   }
 };
@@ -768,6 +786,7 @@ struct augmentation_t : public dbc_consumable_base_t
     else if ( util::str_in_str_ci( consumable_name, "hyper"   ) ) return player->find_spell( 175456 );
     else if ( util::str_in_str_ci( consumable_name, "stout"   ) ) return player->find_spell( 175439 );
     else if ( util::str_in_str_ci( consumable_name, "battle_scarred" ) ) return player->find_spell( 270058 );
+    else if ( util::str_in_str_ci( consumable_name, "veiled" ) ) return player->find_spell( 347901 );
     else return spell_data_t::not_found();
   }
 

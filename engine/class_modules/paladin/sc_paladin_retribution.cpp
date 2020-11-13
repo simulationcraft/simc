@@ -82,7 +82,7 @@ struct crusade_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
-struct execution_sentence_t : public holy_power_consumer_t
+struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   execution_sentence_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "execution_sentence", p, p -> talents.execution_sentence )
@@ -95,6 +95,8 @@ struct execution_sentence_t : public holy_power_consumer_t
 
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
+
+    tick_may_crit = may_crit = false;
   }
 
   void impact( action_state_t* s) override
@@ -173,9 +175,9 @@ struct execution_sentence_t : public holy_power_consumer_t
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct expurgation_t : public paladin_spell_t
+  struct azerite_expurgation_t : public paladin_spell_t
   {
-    expurgation_t( paladin_t* p ) :
+    azerite_expurgation_t( paladin_t* p ) :
       paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
     {
       base_td = p -> azerite.expurgation.value();
@@ -184,15 +186,33 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
+  struct expurgation_t : public paladin_spell_t
+  {
+    expurgation_t( paladin_t* p ):
+      paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+    }
+  };
+
+  azerite_expurgation_t* azerite_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, const std::string& options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
+    azerite_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
 
     if ( p -> azerite.expurgation.ok() )
+    {
+      azerite_expurgation = new azerite_expurgation_t( p );
+      add_child( azerite_expurgation );
+    }
+
+    if ( p -> conduit.expurgation -> ok() )
     {
       expurgation = new expurgation_t( p );
       add_child( expurgation );
@@ -203,8 +223,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
-
-    base_multiplier *= 1.0 + p -> conduit.lights_reach.percent();
   }
 
   double action_multiplier() const override
@@ -226,17 +244,35 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( state );
 
-    if ( p() -> azerite.expurgation.ok() && state -> result == RESULT_CRIT )
+    if ( state -> result == RESULT_CRIT )
     {
-      expurgation -> set_target( state -> target );
-      expurgation -> execute();
+      if ( p() -> azerite.expurgation.ok() )
+      {
+        azerite_expurgation -> set_target( state -> target );
+        azerite_expurgation -> execute();
+      }
+
+      if ( p() -> conduit.expurgation -> ok() )
+      {
+        expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
+        expurgation -> set_target( state -> target );
+        expurgation -> execute();
+      }
+    }
+
+    if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+    {
+      action_t* vc = p() -> active.virtuous_command;
+      vc -> base_dd_min = vc -> base_dd_max = state -> result_amount * p() -> conduit.virtuous_command.percent();
+      vc -> set_target( state -> target );
+      vc -> schedule_execute();
     }
   }
 };
 
 // Divine Storm =============================================================
 
-struct divine_storm_t: public holy_power_consumer_t
+struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
@@ -245,6 +281,9 @@ struct divine_storm_t: public holy_power_consumer_t
     is_divine_storm = true;
 
     aoe = data().effectN( 2 ).base_value();
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   divine_storm_t( paladin_t* p, bool is_free, float mul ) :
@@ -255,6 +294,9 @@ struct divine_storm_t: public holy_power_consumer_t
 
     background = is_free;
     base_multiplier *= mul;
+
+    if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -280,15 +322,39 @@ struct divine_storm_t: public holy_power_consumer_t
   }
 };
 
-struct templars_verdict_t : public holy_power_consumer_t
+struct echoed_spell_event_t : public event_t
 {
-  // Templar's Verdict damage is stored in a different spell
-  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  paladin_melee_attack_t* echo;
+  paladin_t* paladin;
+  player_t* target;
+
+  echoed_spell_event_t( paladin_t* p, player_t* tgt, paladin_melee_attack_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), echo( spell ), paladin( p ), target( tgt )
   {
-    templars_verdict_damage_t( paladin_t *p ) :
-      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+  }
+
+  const char* name() const override
+  { return "echoed_spell_delay"; }
+
+  void execute() override
+  {
+    echo -> set_target( target );
+    echo -> schedule_execute();
+  }
+};
+
+struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  struct echoed_templars_verdict_t : public paladin_melee_attack_t
+  {
+    echoed_templars_verdict_t( paladin_t *p ) :
+      paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 339538 ) )
     {
-      dual = background = true;
+      base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
+      background = true;
+
+      // spell data please
+      aoe = 0;
     }
 
     double action_multiplier() const override
@@ -300,14 +366,59 @@ struct templars_verdict_t : public holy_power_consumer_t
     }
   };
 
+  // Templar's Verdict damage is stored in a different spell
+  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  {
+    templars_verdict_damage_t( paladin_t *p ) :
+      paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    {
+      dual = background = true;
+
+      // spell data please?
+      aoe = 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_melee_attack_t::impact( s );
+
+      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      {
+        action_t* vc = p() -> active.virtuous_command;
+        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
+        vc -> set_target( s -> target );
+        vc -> schedule_execute();
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_melee_attack_t::action_multiplier();
+      if ( p() -> buffs.righteous_verdict -> check() )
+        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+      return am;
+    }
+  };
+
+  echoed_templars_verdict_t* echo;
+
   templars_verdict_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) )
+    holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) ),
+    echo( nullptr )
   {
     parse_options( options_str );
+
+    // wtf is happening in spell data?
+    aoe = 0;
 
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
+
+    if ( p -> conduit.templars_vindication -> ok() )
+    {
+      echo = new echoed_templars_verdict_t( p );
+    }
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -337,8 +448,27 @@ struct templars_verdict_t : public holy_power_consumer_t
 
     if ( p() -> buffs.vanquishers_hammer -> up() )
     {
+      p() -> active.necrolord_divine_storm -> schedule_execute();
       p() -> buffs.vanquishers_hammer -> expire();
-      p() -> active.necrolord_divine_storm -> execute();
+    }
+
+    // TODO(mserrano): figure out the actionbar override thing instead of this hack.
+    if ( p() -> legendary.final_verdict -> ok() )
+    {
+      if ( rng().roll( p() -> legendary.final_verdict -> effectN( 2 ).percent() ) )
+      {
+        p() -> cooldowns.hammer_of_wrath -> reset( true );
+        p() -> buffs.final_verdict -> trigger();
+      }
+    }
+
+    if ( p() -> conduit.templars_vindication -> ok() )
+    {
+      if ( rng().roll( p() -> conduit.templars_vindication -> effectN( 1 ).percent() ) )
+      {
+        // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
+        make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ) );
+      }
     }
   }
 };
@@ -399,7 +529,12 @@ struct judgment_ret_t : public judgment_t
     judgment_t( p ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
+    // This is for Divine Toll's background judgments
     background = true;
+
+    // according to skeletor this is given the bonus of 326011
+    // TODO(mserrano) - fix this once spell data has been re-extracted
+    base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -429,7 +564,7 @@ struct judgment_ret_t : public judgment_t
 };
 
 // Justicar's Vengeance
-struct justicars_vengeance_t : public holy_power_consumer_t
+struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
@@ -501,13 +636,44 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 struct wake_of_ashes_t : public paladin_spell_t
 {
+  struct truths_wake_t : public paladin_spell_t
+  {
+    truths_wake_t( paladin_t* p ) :
+      paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+      base_multiplier *= p -> conduit.truths_wake.percent();
+    }
+  };
+
+  truths_wake_t* truths_wake;
+
   wake_of_ashes_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) )
+    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) ),
+    truths_wake( nullptr )
   {
     parse_options( options_str );
 
     may_crit = true;
     aoe = -1;
+
+    if ( p -> conduit.truths_wake -> ok() )
+    {
+      truths_wake = new truths_wake_t( p );
+      add_child( truths_wake );
+    }
+  }
+
+  void impact( action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
+    {
+      truths_wake -> set_target( s -> target );
+      truths_wake -> execute();
+    }
   }
 };
 
@@ -521,11 +687,6 @@ struct zeal_t : public paladin_melee_attack_t
 
 void paladin_t::create_ret_actions()
 {
-  if ( azerite.lights_decree.enabled() )
-  {
-    active.lights_decree = new lights_decree_t( this );
-  }
-
   if ( talents.ret_sanctified_wrath )
   {
     active.sanctified_wrath = new sanctified_wrath_t( this );
@@ -587,7 +748,7 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
-  buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ) )
+  buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
@@ -633,7 +794,6 @@ void paladin_t::init_spells_retribution()
     spec.judgment_4 = find_specialization_spell( 231663 );
 
     spells.judgment_debuff = find_spell( 197277 );
-    spells.divine_purpose_buff = find_spell( 223819 );
   }
 
   passives.boundless_conviction = find_spell( 115675 );
@@ -747,25 +907,139 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( this, "Shield of Vengeance" );
 
   // Items
+  bool has_knot = false;
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
+      if ( items[i].name_str == "knot_of_ancient_fury" )
+      {
+        has_knot = true;
+        continue;
+      }
+
       std::string item_str;
-      if ( items[i].slot != SLOT_WAIST )
+      if ( items[i].name_str == "razdunks_big_red_button" || items[i].name_str == "vial_of_storms" || items[i].name_str == "living_oil_canister" || items[i].name_str =="writhing_segment_of_drestagath" )
+      {
+        item_str = "use_item,name=" + items[i].name_str;
+      }
+      else if ( items[i].name_str == "jes_howler" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10";
+      }
+      else if ( items[i].name_str == "vial_of_animated_blood" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18)|(cooldown.avenging_wrath.remains>30|cooldown.crusade.remains>30)";
+      }
+      else if ( items[i].name_str == "dooms_fury" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18";
+      }
+      else if ( items[i].name_str == "galecallers_beak" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<15";
+      }
+      else if ( items[i].name_str == "bygone_bee_almanac" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up";
+      }
+      else if ( items[i].name_str == "merekthas_fang" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(!raid_event.adds.exists|raid_event.adds.in>15)|spell_targets.divine_storm>=2";
+      }
+      else if ( items[i].name_str == "plunderbeards_flask" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|!buff.crusade.up&cooldown.crusade.remains>45";
+      }
+      else if ( items[i].name_str == "berserkers_juju" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|!buff.crusade.up&cooldown.crusade.remains>45";
+      }
+      else if ( items[i].name_str == "endless_tincture_of_fractional_power" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45";
+      }
+      else if ( items[i].name_str == "pearl_divers_compass" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10";
+      }
+      else if ( items[i].name_str == "first_mates_spyglass" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";
+      }
+      else if ( items[i].name_str == "whirlwings_plumage" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
+      }
+      else if ( items[i].name_str == "dread_gladiators_badge" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
+      }
+      else if ( items[i].name_str == "dread_aspirants_medallion" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
+      }
+      else if ( items[i].name_str == "grongs_primal_rage" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=!(buff.avenging_wrath.up|buff.crusade.up)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)";
+      }
+      else if ( items[i].name_str == "sinister_gladiators_badge" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";
+      }
+      else if ( items[i].name_str == "sinister_gladiators_medallion" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
+      }
+      else if ( items[i].name_str == "azsharas_font_of_power" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=!talent.crusade.enabled&cooldown.avenging_wrath.remains<5|talent.crusade.enabled&cooldown.crusade.remains<5&time>10|holy_power>=3&time<10&talent.wake_of_ashes.enabled";
+      }
+      else if ( items[i].name_str == "vision_of_demise" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|cooldown.avenging_wrath.remains>=30|cooldown.crusade.remains>=30";
+      }
+      else if ( items[i].name_str == "ashvanes_razor_coral" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=debuff.razor_coral_debuff.down|(buff.avenging_wrath.remains>=20|buff.crusade.stack=10&buff.crusade.remains>15)&(cooldown.guardian_of_azeroth.remains>90|target.time_to_die<30|!essence.condensed_lifeforce.major)";
+      }
+      else if ( items[i].name_str == "corrupted_gladiators_badge" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";;
+      }
+      else if ( items[i].name_str == "corrupted_gladiators_medallion" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=25";;
+      }
+      else if ( items[i].slot != SLOT_WAIST )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
+      }
+
+      if ( items[i].slot != SLOT_WAIST )
+      {
         cds -> add_action( item_str );
       }
     }
   }
 
+  if ( has_knot )
+  {
+    cds -> add_action( "use_item,name=knot_of_ancient_fury,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>30|!buff.crusade.up&cooldown.crusade.remains>30" );
+  }
+
   cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
   cds -> add_talent( this, "Crusade", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
-  // cds -> add_action( "ashen_hallow" );
+  cds -> add_action( "ashen_hallow" );
   cds -> add_talent( this, "Holy Avenger" , "if=time_to_hpg=0&((buff.avenging_wrath.up|buff.crusade.up)|(buff.avenging_wrath.down&cooldown.avenging_wrath.remains>40|buff.crusade.down&cooldown.crusade.remains>40))" );
   cds -> add_talent( this, "Final Reckoning", "if=holy_power>=3&cooldown.avenging_wrath.remains>gcd&time_to_hpg=0&(!talent.seraphim.enabled|buff.seraphim.up)" );
+  cds -> add_action( "the_unbound_force,if=time<=2|buff.reckless_force.up" );
+  cds -> add_action( "guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<5&holy_power>=3|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|cooldown.crusade.remains>=45)" );
+  cds -> add_action( "worldvein_resonance,if=cooldown.avenging_wrath.remains<gcd&holy_power>=3|talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|cooldown.avenging_wrath.remains>=45|cooldown.crusade.remains>=45" );
+  cds -> add_action( "focused_azerite_beam,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)&!(buff.avenging_wrath.up|buff.crusade.up)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
+  cds -> add_action( "memory_of_lucid_dreams,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10)&holy_power<=3" );
+  cds -> add_action( "purifying_blast,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)" );
 
   finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down|spell_targets.divine_storm>=2&buff.crusade.up&buff.crusade.stack<10" );
   finishers -> add_talent( this, "Seraphim", "if=((!talent.crusade.enabled&buff.avenging_wrath.up|cooldown.avenging_wrath.remains>25)|(buff.crusade.up|cooldown.crusade.remains>25))&(!talent.final_reckoning.enabled|cooldown.final_reckoning.remains<10)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains<10)&time_to_hpg=0" );

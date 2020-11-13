@@ -1,4 +1,4 @@
-// Gem properties, wow build 9.0.2.36037
+// Gem properties, wow build 9.0.2.36599
 static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -238,7 +238,7 @@ static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   {  715,  3221, 0x00000004 }, // +$k1 Dodge
   {  721,     0, 0x00000001 },
   {  741,  3226, 0x0000000c }, // +$k1 Armor and +$k2 Stamina
-  {  761,  3242, 0x0000000e }, // +$18676s1 Resist All
+  {  761,  4761, 0x0000000e }, // +$13824s1 All Stats
   {  781,  3254, 0x0000000e }, // +$44627s1 All Stats
   {  801,  3261, 0x00000001 }, // +$k1 Critical Strike and $44797s1% Increased Critical Effect
   {  821,  3262, 0x00000008 }, // +$k1 Stamina
@@ -1855,7 +1855,7 @@ static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   { 3821,  6236, 0x0000000e }, // +$k1 Critical Strike
   { 3822,  6237, 0x0000000e }, // +$k1 Mastery
   { 3823,  6238, 0x0000000e }, // +$k1 Haste
-  { 3824,  6239, 0x0000000e }, // Speed increased by $325335s2 for every equipped Shadowlands gem.
-  { 3825,  6240, 0x0000000e }, // Periodically heal $325492s2 health for every Shadowlands gem you have equipped.
+  { 3824,  6239, 0x0000000e }, // Speed increased by $325335s2 for each Shadowlands gem you have socketed.
+  { 3825,  6240, 0x0000000e }, // Restores $325492s2 health every $325492t1 sec for each Shadowlands gem you have socketed.
 } };
 

@@ -273,7 +273,7 @@ T* pet_spawner_t<T, O>::create_pet( create_phase phase )
   pet -> spawner = this;
 
   // Add callbacks to the newly created pet so we can auto-track it's active state
-  pet -> callbacks_on_arise.push_back( [ this ]() {
+  pet -> register_on_arise_callback( pet, [ this ]() {
     m_dirty = true;
     if ( ++m_active == 1u )
     {
@@ -283,7 +283,7 @@ T* pet_spawner_t<T, O>::create_pet( create_phase phase )
     }
   } );
 
-  pet -> callbacks_on_demise.push_back( [ this, pet ]( player_t* /*pet*/ ) {
+  pet -> register_on_demise_callback( pet, [ this, pet ]( player_t* /*pet*/ ) {
     m_dirty = true;
 
     if ( --m_active == 0u )

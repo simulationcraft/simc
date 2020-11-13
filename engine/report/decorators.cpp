@@ -10,6 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
+#include "player/pet.hpp"
 #include "report/color.hpp"
 #include "util/util.hpp"
 
@@ -58,6 +59,12 @@ namespace {
       return {};
     }
 
+    // shown when data can not be decorated
+    virtual std::string undecorated_fallback() const
+    {
+      return fmt::format( "<a href=\"#\">{}</a>", token() );
+    }
+
     std::vector<std::string> params;
   };
 
@@ -69,7 +76,7 @@ namespace {
 
     if (!data.can_decorate())
     {
-      return "<a href=\"#\">" + data.token() + "</a>";
+      return data.undecorated_fallback();
     }
 
     const std::string url_name = data.url_name();
@@ -302,6 +309,51 @@ namespace {
   };
 
 
+  // Generic spell data decorator, supports player and item driven spell data
+  class npc_decorator_t : public decorator_data_t
+  {
+    const sim_t* m_sim;
+    const std::string m_name;
+    const int m_npc_id;
+
+  public:
+    npc_decorator_t(const sim_t* obj, util::string_view name, int npc_id) :
+      m_sim(obj), m_name(name), m_npc_id(npc_id)
+    { }
+
+    npc_decorator_t(const pet_t& pet) :
+      npc_decorator_t(pet.sim, pet.name_str, pet.npc_id)
+    {
+      
+    }
+
+    void base_url(fmt::memory_buffer& buf) const override
+    {
+      fmt::format_to(buf, "<a href=\"https://{}.wowhead.com/npc={}",
+                     report_decorators::decoration_domain(*m_sim), m_npc_id);
+    }
+
+    std::string undecorated_fallback() const override
+    {
+      return token();
+    }
+
+    bool can_decorate() const override
+    {
+      return m_sim->decorated_tooltips && m_npc_id > 0;
+    }
+
+    std::string url_name() const override
+    {
+      return util::encode_html(m_name);
+    }
+    
+    std::string token() const override
+    {
+      return util::encode_html( util::tokenize_fn( m_name ) );
+    }
+  };
+
 } // unnamed namespace
 
 namespace report_decorators {
@@ -405,4 +457,10 @@ namespace report_decorators {
   {
     return decorate(item_decorator_t(&item));
   }
+  
+  std::string decorated_npc(const pet_t& pet)
+  {
+    return decorate(npc_decorator_t(pet));
+  }
+
 } // report_decorators

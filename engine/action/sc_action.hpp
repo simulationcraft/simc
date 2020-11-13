@@ -169,6 +169,9 @@ public:
   /// Whether or not the action is an interrupt (specifically triggers PF2_CAST_INTERRUPT callbacks)
   bool is_interrupt;
 
+  /// Whether the action is used from the precombat action list. Will be set up automatically by action_t::init_finished
+  bool is_precombat;
+
   /// Is the action initialized? (action_t::init ran successfully)
   bool initialized;
 
@@ -657,8 +660,6 @@ public:
 
   virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
 
-  virtual double target_armor(player_t* t) const;
-
   virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
 
@@ -788,6 +789,8 @@ public:
   virtual double composite_attack_power() const;
 
   virtual double composite_spell_power() const;
+
+  virtual double composite_target_armor( player_t* t ) const;
 
   virtual double composite_target_crit_chance( player_t* target ) const;
 

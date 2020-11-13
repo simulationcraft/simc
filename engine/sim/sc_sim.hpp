@@ -227,7 +227,6 @@ struct sim_t : private sc_thread_t
     int                 void_stalkers_contract_targets = -1;
     double              specter_of_betrayal_overlap = 1.0;
     std::vector<double> cradle_of_anguish_resets;
-    double              archimondes_hatred_reborn_damage = 1.0;
   } legion_opts;
 
   struct bfa_opt_t
@@ -344,15 +343,30 @@ struct sim_t : private sc_thread_t
   {
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
-    double combat_meditation_extend_chance = 0.5;
+    double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
+    /// Number of nearby allies when you proc lead by example
+    unsigned lead_by_example_nearby = 2;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
     unsigned crimson_choir_in_party = 0;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
+    /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
+    /// Corpse type: "humanoid", "beast", "dragonkin", "elemental", "giant"
+    /// Buff type: "mastery", "primary", "crit", "magic", "physical"
+    std::string volatile_solvent_type = "none";
+    // Prevents Soul Ignite from being used a second time to trigger the
+    // AoE early. This results in the highest possible damage and the
+    // player can alternatively trigger it early by canceling the buff.
+    bool disable_soul_igniter_second_use = true;
+    // Overrides the Unbound Changeling trinket to the given version.
+    // The versions are given by the "all", "crit", "haste", and "mastery"
+    // strings. Anything else will result in the item's bonus IDs being
+    // used to determine which version the player is currently using.
+    std::string unbound_changeling_stat_type = "default";
   } shadowlands_opts;
 
   // Auras and De-Buffs
@@ -542,6 +556,8 @@ struct sim_t : private sc_thread_t
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
+  // Which actor to use as the base for computing relative difference.
+  std::string relative_difference_base;
   double chart_boxplot_percentile;
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to
@@ -630,7 +646,7 @@ struct sim_t : private sc_thread_t
 
     set_error( fmt::format( format, std::forward<Args>(args)... ) );
   }
-  
+
   void abort();
   void combat();
   void combat_begin();

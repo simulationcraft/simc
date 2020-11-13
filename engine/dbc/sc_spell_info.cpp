@@ -62,7 +62,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   {  6, "Race" },
   {  7, "Scaling Spell" },
   {  8, "Max Scaling Level" },
-  {  9, "Spell Level" },
+  {  9, "Learn Level" },
   { 10, "Max Spell Level" },
   { 11, "Min Range" },
   { 12, "Max Range" },
@@ -90,6 +90,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
   { 48, "Max Targets" },
+  { 49, "Required Level" }
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -326,6 +327,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  34, "Channeled"                         },
   {  37, "Does not break stealth"            },
   {  38, "Channeled"                         },
+  {  60, "Don't display in aura bar"         },
   {  93, "Cannot crit"                       },
   {  95, "Food buff"                         },
   { 105, "Not a proc"                        },
@@ -341,6 +343,8 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
   { 265, "Periodic effect can crit"          },
+  { 273, "Duration affected by haste"        },
+  { 292, "Fixed travel time"                 },
   { 354, "Scales with item level"            }
 } );
 
@@ -468,6 +472,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 156, "Add Socket"               },
   { 157, "Create Item"              },
   { 164, "Cancel Aura"              },
+  { 174, "Apply Aura Pet"           },
   { 202, "Apply Player/Pet Aura"    },
 } );
 
@@ -574,6 +579,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 142, "Modify Base Resistance"                       },
   { 143, "Modify Cooldown Recharge Rate"                },
   { 144, "Reduce Fall Damage"                           },
+  { 148, "Modify Cooldown Recharge Rate% (Category)"    },
   { 149, "Modify Casting Pushback"                      },
   { 150, "Modify Block Effectiveness"                   },
   { 152, "Modify Aggro Distance"                        },
@@ -623,6 +629,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 271, "Modify Damage Taken% from Caster's Spells"    },
   { 275, "Modify Stance Mask"                           },
   { 283, "Modify Healing Taken% from Caster's Spells"   },
+  { 286, "Modify Cooldown Recharge Rate%"               },
   { 290, "Modify Critical Strike%"                      },
   { 291, "Modify Experience Gained from Quests"         },
   { 301, "Absorb Healing"                               },
@@ -672,10 +679,6 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
-} );
-
-static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
-  341, 411, 453, 454, 457
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -993,11 +996,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
   {
-    if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER )
+    if ( e -> affected_schools() != 0u )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
@@ -1064,13 +1063,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   s << std::endl;
 
   if ( e -> type() == E_APPLY_AURA &&
-       ( e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER ) &&
-       e -> misc_value1() != 0 )
+       e -> affected_schools() != 0u )
   {
     s << "                   Affected School(s): ";
-    if ( e -> misc_value1() == 0x7f )
+    if ( e -> affected_schools() == 0x7f )
     {
       s << "All";
     }
@@ -1079,7 +1075,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       std::vector<std::string> schools;
       for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
       {
-        if ( e -> misc_value1() & dbc::get_school_mask( school ) )
+        if ( e -> affected_schools() & dbc::get_school_mask( school ) )
           schools.emplace_back( util::inverse_tokenize( util::school_type_string( school ) ) );
       }
 
@@ -1094,12 +1090,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( affected_spells.size() > 0 )
   {
     s << "                   Affected Spells: ";
-    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-    {
-      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
-      if ( i < end - 1 )
-        s << ", ";
-    }
+    s << concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+          } );
     s << std::endl;
   }
 
@@ -1108,16 +1102,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
     s << "                   Affected Spells (Label): ";
-    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-    {
-      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
-      if ( i < end - 1 )
-        s << ", ";
-    }
+    s << concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
+          } );
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && _category_effect_subtypes.contains( e -> subtype() ) )
+  if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
     if ( affected_spells.size() > 0 )
@@ -1125,7 +1117,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       s << "                   Affected Spells (Category): ";
       s << concatenate( affected_spells,
           []( std::stringstream& s, const spell_data_t* spell ) {
-            s << spell -> name_cstr() << " (" << spell -> id() << ")";
+            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
           } );
       s << std::endl;
     }
@@ -1133,30 +1125,18 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( spell->class_family() > 0 )
   {
-    std::stringstream flags_s;
-
+    std::vector<unsigned> flags;
     for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
     {
       for ( size_t bit = 0; bit < 32; ++bit )
       {
         if ( ( 1 << bit ) & e->_class_flags[ i ] )
-        {
-          if ( flags_s.tellp() )
-          {
-            flags_s << ", ";
-          }
-
-          flags_s << ( i * 32 + bit );
-        }
+          flags.push_back( static_cast<unsigned>( i * 32 + bit ) );
       }
     }
 
-    if ( flags_s.tellp() )
-    {
-      s << "                   Family Flags: ";
-      s << flags_s.str();
-      s << std::endl;
-    }
+    if ( flags.size() )
+      fmt::print( s, "                   Family Flags: {}\n", fmt::join( flags, ", " ) );
   }
 
   const auto hotfixes = spelleffect_data_t::hotfixes( *e, dbc.ptr );
@@ -1255,24 +1235,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> race_mask() )
   {
-    s << "Race             : ";
-
+    std::vector<util::string_view> races;
     for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      uint64_t mask = (uint64_t(1) << i );
-      if ( spell -> race_mask() & mask && _race_map.contains( i ) )
+      uint64_t mask = uint64_t( 1 ) << i;
+      if ( spell -> race_mask() & mask )
       {
         auto it = _race_map.find( i );
         if ( it != _race_map.end() )
-        {
-          fmt::print( s, "{}, ", it -> second );
-        }
+          races.push_back( it -> second );
       }
     }
 
-    s.seekp( -2, std::ios_base::cur );
-    s << " (0x" << std::hex << spell -> race_mask() << std::dec << ")";
-    s << std::endl;
+    fmt::print( s, "Race             : {} (0x{:0x})\n", fmt::join( races, ", " ), spell -> race_mask() );
   }
 
   const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
@@ -1403,7 +1378,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "GCD              : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
-    s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  {
+    if ( spell -> flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+      s << "Travel Time      : " << spell -> missile_speed() << " seconds"  << std::endl;
+    else
+      s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+  }
 
   if ( spell -> duration() != timespan_t::zero() )
   {
@@ -1589,11 +1569,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> stance_mask() > 0 )
   {
-    s << "Stance Mask      : 0x";
-    std::streamsize ss = s.width();
-    s.width( 8 );
-    s << std::hex << std::setfill('0') << spell -> stance_mask() << std::endl << std::dec;
-    s.width( ss );
+    fmt::print( s, "Stance Mask      : 0x{:08x}\n", spell -> stance_mask() );
   }
 
   if ( spell -> mechanic() > 0 )
@@ -1629,7 +1605,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( ranks.size() )
     {
-      s << fmt::format( " (values={})", util::string_join( rank_str, ", " ) );
+      fmt::print( s, " (values={})", fmt::join( rank_str, ", " ) );
     }
 
     s << std::endl;
@@ -1712,30 +1688,18 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->class_family() > 0 )
   {
-    std::stringstream flags_s;
-
+    std::vector<unsigned> flags;
     for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
     {
       for ( size_t bit = 0; bit < 32; ++bit )
       {
         if ( ( 1 << bit ) & spell->_class_flags[ i ] )
-        {
-          if ( flags_s.tellp() )
-          {
-            flags_s << ", ";
-          }
-
-          flags_s << ( i * 32 + bit );
-        }
+          flags.push_back( static_cast<unsigned>( i * 32 + bit ) );
       }
     }
 
-    if ( flags_s.tellp() )
-    {
-      s << "Family Flags     : ";
-      s << flags_s.str();
-      s << std::endl;
-    }
+    if ( flags.size() )
+      fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 
   s << "Attributes       : ";

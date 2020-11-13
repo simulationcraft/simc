@@ -99,6 +99,9 @@ const dbc_item_data_t& find_gem( util::string_view gem, bool ptr, bool tokenized
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
 std::vector<const spell_data_t*> class_passives( const player_t* );
 
+// Retuns a list of all effect subtypes affecting the spell through categories
+util::span<const effect_subtype_t> effect_category_subtypes();
+
 } // namespace dbc
 
 struct custom_dbc_data_t
@@ -322,7 +325,7 @@ public:
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }
 
-  util::span<const dbc_item_data_t> items() const
+  util::span<const util::span<const dbc_item_data_t>> items() const
   { return dbc_item_data_t::data( ptr ); }
 
   // Gametables removed in Legion
@@ -598,6 +601,39 @@ const spell_data_t* find_spell( const T* obj, unsigned spell_id )
 
   return obj -> dbc->spell( spell_id );
 }
+
+template <typename T>
+const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
+{
+  if ( const spelleffect_data_t* override_effect = obj->dbc_override->find_effect( effect_id, obj -> dbc->ptr ) )
+  {
+    return override_effect;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_effect( obj -> dbc->effect( effect_id ), obj -> dbc->ptr );
+  }
+
+  return obj -> dbc->effect( effect_id );
+}
+
+template <typename T>
+const spellpower_data_t* find_power( const T* obj, unsigned power_id )
+{
+  if ( const spellpower_data_t* override_power = obj->dbc_override->find_power( power_id, obj -> dbc->ptr ) )
+  {
+    return override_power;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_power( & obj -> dbc->power( power_id ), obj -> dbc->ptr );
+  }
+
+  return & obj -> dbc->power( power_id );
+}
+
 
 } // dbc namespace ends
 

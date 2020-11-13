@@ -1,81 +1,81 @@
-warrior="PR_Warrior_Fury"
-level=120
-race=human
-spec=fury
-role=attack
-position=back
-talents=2122123
+# warrior="PR_Warrior_Fury"
+# level=120
+# race=human
+# spec=fury
+# role=attack
+# position=back
+# talents=2122123
 
-head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=438/459/13
-back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
-wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
-hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
-waist=girdle_of_pestilent_purification,id=159418,bonus_id=4779/1512/4786
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-finger1=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterful_navigation
+# head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=438/459/13
+# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
+# chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
+# wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
+# hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
+# waist=girdle_of_pestilent_purification,id=159418,bonus_id=4779/1512/4786
+# legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+# feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
+# finger1=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+# trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
+# main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
+# off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
-save=PR_Warrior_Fury.simc
-
-
-warrior="PR_Warrior_Arms"
-level=120
-race=pandaren
-spec=arms
-role=attack
-position=back
-talents=3112211
-
-head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=226/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=435/22/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=226/31/13
-wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
-waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
-
-save=PR_Warrior_Arms.simc
+# save=PR_Warrior_Fury.simc
 
 
-#warrior="PR_Warrior_Protection"
-#level=120
-#race=tauren
-#spec=protection
-#role=tank
-#position=front
-#talents=1222312
-#
-#head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786
-#neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-#shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4775/4786
-#back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-#chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4775/4786
-#wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-#hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
-#waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-#legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-#feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
-#finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-#finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-#trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
-#trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-#main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
-#off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786
-#
-#save=PR_Warrior_Protection.simc
+# warrior="PR_Warrior_Arms"
+# level=120
+# race=pandaren
+# spec=arms
+# role=attack
+# position=back
+# talents=3112211
+
+# head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=226/30/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=435/22/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=226/31/13
+# wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+# hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
+# waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
+# legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+# feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
+# finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+# trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
+# main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
+
+# save=PR_Warrior_Arms.simc
+
+
+# #warrior="PR_Warrior_Protection"
+# #level=120
+# #race=tauren
+# #spec=protection
+# #role=tank
+# #position=front
+# #talents=1222312
+# #
+# #head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786
+# #neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# #shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4775/4786
+# #back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# #chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4775/4786
+# #wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+# #hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+# #waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
+# #legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+# #feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+# #finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# #finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# #trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+# #trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
+# #main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
+# #off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786
+# #
+# #save=PR_Warrior_Protection.simc

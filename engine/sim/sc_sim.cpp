@@ -122,11 +122,11 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
 
 /**
  * Parse json= option.
- * 
+ *
  * General structure is: json=destination[,<option>=<value>]
- * 
+ *
  * destination: path to which the report is written.
- * 
+ *
  * Valid options:
  * - version [string]: Requested report version, which follow semver. This option can be a specific report version, or a semver interval like ">=2.0.0".
  * - full_states [bool]: Collects and reports full action and other states, greatly increasing the report size.
@@ -141,7 +141,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::
   {
     throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
   }
-  
+
   auto destination = splits[0];
   std::string report_version;
   bool fullStates = false;
@@ -356,7 +356,7 @@ bool parse_player( sim_t*             sim,
   else
   {
     sim -> active_player = nullptr;
-    
+
     auto player_type = util::parse_player_type( name );
     if (player_type == PLAYER_NONE)
     {
@@ -1534,6 +1534,7 @@ sim_t::sim_t() :
   pause_mutex( nullptr ),
   paused( false ),
   chart_show_relative_difference( false ),
+  relative_difference_base(),
   chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
@@ -2246,7 +2247,7 @@ void sim_t::init_fight_style()
     auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
     auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
     auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
-    
+
     raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
                                      first_and_duration, cooldown, first_and_duration, last );
   }
@@ -2327,9 +2328,9 @@ void sim_t::init_fight_style()
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
-        "/adds,name=Boss,count=1,cooldown=500,duration=140,type=add_boss,duration_stddev=2"
+        "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
-        "/adds,name=BigAdd,count=2,count_range=1,first=155,cooldown=45,duration=30,duration_stddev=2";
+        "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
   }
   else
   {
@@ -3244,6 +3245,11 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "fight_remains" ) )
     return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
 
+  if ( util::str_compare_ci( name_str, "interpolated_fight_remains" ) )
+    return make_fn_expr( name_str, [ this ] {
+      return max_time * ( 1.0 - event_mgr.current_time / expected_iteration_time );
+    } );
+
   if ( name_str == "channel_lag" )
     return expr_t::create_constant( name_str, channel_lag );
 
@@ -3437,7 +3443,7 @@ void sim_t::create_options()
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
-  
+
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
@@ -3612,6 +3618,7 @@ void sim_t::create_options()
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_string( "relative_difference_base", relative_difference_base ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
@@ -3625,7 +3632,6 @@ void sim_t::create_options()
   add_option( opt_int( "legion.engine_of_eradication_orbs", legion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
-  add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
@@ -3699,9 +3705,9 @@ void sim_t::create_options()
         bfa_opts.covenant_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.incandescent_sliver_chance",
         bfa_opts.incandescent_sliver_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.fight_or_flight_period", 
+  add_option( opt_timespan( "bfa.fight_or_flight_period",
         bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.fight_or_flight_chance", 
+  add_option( opt_float( "bfa.fight_or_flight_chance",
         bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.harbingers_inscrutable_will_silence_chance",
         bfa_opts.harbingers_inscrutable_will_silence_chance, 0.0, 1.0 ) );
@@ -3719,9 +3725,9 @@ void sim_t::create_options()
         bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
   add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration",
         bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration", 
+  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration",
         bfa_opts.trident_of_deep_ocean_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance", 
+  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance",
         bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.loyal_to_the_end_allies",
         bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
@@ -3780,13 +3786,18 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
     shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby",
-    shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
+    shadowlands_opts.pointed_courage_nearby, 0, 8 ) );
+  add_option( opt_uint( "shadowlands.lead_by_example_nearby",
+    shadowlands_opts.lead_by_example_nearby, 0, 2 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",
     shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
   add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance",
     shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
+  add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
+  add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
+  add_option( opt_string( "unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
 }
 
 // sim_t::parse_option ======================================================

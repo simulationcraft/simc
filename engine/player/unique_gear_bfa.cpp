@@ -210,7 +210,6 @@ void anodized_deflectors( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
-void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
 void torment_in_a_jar( special_effect_t& );
 void draconic_empowerment( special_effect_t& );
@@ -251,11 +250,6 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
     else if ( new_ == 0 )
       callback->deactivate();
   };
-}
-
-bool is_adjustable_class_spell( action_t* a )
-{
-  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
 }
 
 }  // namespace util
@@ -1152,18 +1146,12 @@ void items::merekthas_fang( special_effect_t& effect )
     noxious_venom_dot_t( const special_effect_t& effect ) : proc_t( effect, "noxious_venom", 267410 )
     {
       tick_may_crit = hasted_ticks = true;
-      dot_max_stack                = data().max_stacks();
+      dot_max_stack = data().max_stacks();
     }
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
     {
-      // No pandemic, refreshes to base duration on every channel tick
-      return triggered_duration * dot->state->haste;
-    }
-
-    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
-    {
-      return 1.0;
+      return dot->time_to_next_tick() + triggered_duration;
     }
   };
 
@@ -1670,16 +1658,16 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target->callbacks_on_demise.emplace_back( [p, explosion]( player_t* target ) {
+    target->register_on_demise_callback( p, [p, explosion]( player_t* target ) {
       // Don't do anything if the sim is ending
       if ( target->sim->event_mgr.canceled )
       {
         return;
       }
 
-      auto td = p->get_target_data( target );
+      auto td = p->find_target_data( target );
 
-      if ( td->debuff.choking_brine->up() )
+      if ( td && td->debuff.choking_brine->up() )
       {
         target->sim->print_log( "Enemy {} dies while afflicted by Choking Brine, applying debuff on all neaby enemies",
                                 target->name_str );
@@ -2375,7 +2363,7 @@ struct vigor_engaged_t : public special_effect_t
     overload_spell = effect.player->find_spell( 287917 );
     overload_cd    = effect.player->get_cooldown( "oscillating_overload_" + ::util::to_string( overload_spell->id() ) );
 
-    effect.player->callbacks_on_arise.emplace_back( [this]() {
+    effect.player->register_on_arise_callback( effect.player, [this]() {
       reset_oscillation();
 
       if ( !player->sim->bfa_opts.randomize_oscillation )
@@ -4210,8 +4198,6 @@ void items::shiver_venom_lance( special_effect_t& effect )
  * id=303572 damage spell
  * id=303573 crit buff value in effect#1
  * id=304877 damage spell value in effect #1
- *
- * TODO: Determine refresh / stack behavior of the crit buff
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
@@ -4229,12 +4215,26 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
     }
     assert( !td->debuff.razor_coral );
 
-    td->debuff.razor_coral =
-        make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )->set_activated( false );
-    td->debuff.razor_coral->set_stack_change_callback( [td]( buff_t*, int old_, int new_ ) {
-      if ( !new_ )  // buff on expiration, including demise
-        td->source->buffs.razor_coral->trigger( old_ );
-    } );
+    td->debuff.razor_coral = make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )
+      ->set_activated( false )
+      ->set_stack_change_callback( [ td ]( buff_t*, int old_, int new_ ) {
+        // buff on expiration, including demise
+        if ( !new_ )
+        {
+          // Increment the stack tracker buff then multiply the debuff stacks by the player buff stacks
+          // This overwrites any previous crit value, so ensure we expire the existing buff first
+          int buff_stacks = 1;
+          buff_t* stack_tracker_buff = buff_t::find( td->source, "razor_coral_stack_tracker" );
+          if ( stack_tracker_buff )
+          {
+            stack_tracker_buff->trigger();
+            buff_stacks = stack_tracker_buff->check();
+          }
+          td->source->buffs.razor_coral->expire();
+          td->source->buffs.razor_coral->trigger( old_ * buff_stacks );
+        }
+      } );
+    
     td->debuff.razor_coral->reset();
   }
 };
@@ -4333,11 +4333,22 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
     effect.player->buffs.razor_coral =
         make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
             ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) )
-            ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // TODO: determine this behavior
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
             ->set_stack_change_callback( [action]( buff_t*, int, int new_ ) {
               if ( new_ )
                 action->reset_debuff();  // buff also gets applied on demise, so reset the pointer in case this happens
             } );
+  }
+
+  // Special secondary tracking buff to track the somewhat odd in-game stacking behavior 
+  // Currently the in-game system uses the buff "stack" on refreshes, while the Crit value is encoded in the dynamic buff value
+  // As SimC uses the stack for tracking the base crit * stack multiplier instead of a dyanmic value, we use this instead
+  // Reuse the existing buff spell data, but don't create as stat_buff_t since we don't want it to do anything
+  buff_t* stack_tracker_buff = buff_t::find( effect.player, "razor_coral_stack_tracker" );
+  if ( !stack_tracker_buff )
+  {
+    stack_tracker_buff = make_buff<stat_buff_t>( effect.player, "razor_coral_stack_tracker", effect.player->find_spell( 303570 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 }
 
@@ -4416,11 +4427,9 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      auto td = listener->get_target_data( s->target );
-      assert( td );
-      assert( td->debuff.conductive_ink );
+      auto td = listener->find_target_data( s->target );
 
-      if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
+      if ( td && td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
         dbc_proc_callback_t::trigger( a, s );
       }
@@ -4428,11 +4437,11 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      auto td = listener->get_target_data( s->target );
+      auto td = listener->find_target_data( s->target );
 
       // Simultaneous attacks that hit at once can all count as the damage to burst the debuff, triggering the callback
       // multiple times. Ensure the event-scheduled callback execute checks for the debuff so we don't get multiple hits
-      if ( td->debuff.conductive_ink->check() )
+      if ( td && td->debuff.conductive_ink->check() )
       {
         dbc_proc_callback_t::execute( a, s );
       }
@@ -4858,11 +4867,6 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->background )
-      {
-        return;
-      }
-
       // The cast counter does not increase if either of the associated buffs is active
       if ( buff->check() || debuff->check() )
       {
@@ -5667,53 +5671,6 @@ void items::manifesto_of_madness( special_effect_t& effect )
   effect.custom_buff = first_buff;
 }
 
-// Whispering Eldritch Bow
-void items::whispering_eldritch_bow( special_effect_t& effect )
-{
-  struct whispered_truths_callback_t : public dbc_proc_callback_t
-  {
-    std::vector<cooldown_t*> cooldowns;
-    timespan_t amount;
-
-    whispered_truths_callback_t( const special_effect_t& effect )
-      : dbc_proc_callback_t( effect.item, effect ),
-        amount( timespan_t::from_millis( -effect.driver()->effectN( 1 ).base_value() ) )
-    {
-      for ( action_t* a : effect.player->action_list )
-      {
-        if ( util::is_adjustable_class_spell( a ) &&
-             range::find( cooldowns, a->cooldown ) == cooldowns.end() )
-        {
-          cooldowns.push_back( a->cooldown );
-        }
-      }
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      if ( !rng().roll( effect.player->sim->bfa_opts.whispered_truths_offensive_chance ) )
-        return;
-
-      const auto it = range::partition( cooldowns, &cooldown_t::down );
-      auto down_cooldowns = ::util::make_span( cooldowns ).subspan( 0, it - cooldowns.begin() );
-      if ( !down_cooldowns.empty() )
-      {
-        cooldown_t* chosen = down_cooldowns[ rng().range( down_cooldowns.size() ) ];
-        chosen->adjust( amount );
-
-        if ( effect.player->sim->debug )
-        {
-          effect.player->sim->out_debug.print( "{} of {} adjusted cooldown for {}, remains={}", effect.item->name(),
-                                               effect.player->name(), chosen->name(), chosen->remains() );
-        }
-      }
-    }
-  };
-
-  if ( effect.player->type == HUNTER )
-    new whispered_truths_callback_t( effect );
-}
-
 /**Psyche Shredder
  * id=313640 driver and damage from hitting the debuffed target
  * id=313663 debuff and initial damage
@@ -5739,9 +5696,8 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
       return;
     }
 
-    auto td        = a->player->get_target_data( target );
-    buff_t* debuff = td->debuff.psyche_shredder;
-    if ( !debuff->check() )
+    auto td = a->player->find_target_data( target );
+    if ( !td || !td->debuff.psyche_shredder->check() )
       return;
 
     dbc_proc_callback_t::trigger( a, state );
@@ -5815,14 +5771,10 @@ void items::psyche_shredder( special_effect_t& effect )
   // applies the debuff and deals the initial damage
   effect.execute_action = create_proc_action<psyche_shredder_t>( "psyche_shredder", effect );
 
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
   // Create the action for the debuff damage here, before any debuff initialization takes place.
   create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
-
-  // Note that this is not necessarily a bug, we just don't know how the updated RPPM formula
-  // introduced in BfA interacts with ICD/infrequent trigger attempts. Disabling RPPM BLP
-  // makes the simmed ppm roughly match the observed ppm.
-  if ( effect.player->bugs )
-    effect.rppm_blp_ = real_ppm_t::BLP_DISABLED;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -6213,12 +6165,12 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 317290, corruption_effect );
   register_special_effect( 318299, corruption_effect );
   register_special_effect( 316651, corruption_effect );
+  register_special_effect( 316780, corruption_effect );
 
   // 8.3 Special Effects
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
-  register_special_effect( 316780, items::whispering_eldritch_bow );
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
   register_special_effect( 317860, items::draconic_empowerment );
@@ -6245,8 +6197,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 }
 
 void unique_gear::register_hotfixes_bfa()
-{
-}
+{ }
 
 namespace expansion
 {
