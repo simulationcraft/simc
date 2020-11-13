@@ -2167,10 +2167,11 @@ void priest_t::generate_apl_shadow()
                    "Grove Invigoration or Field of Blossoms" );
   cds->add_action( this, covenant.mindgames, "mindgames",
                    "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
-  cds->add_action( this, covenant.unholy_nova, "unholy_nova",
-                   "((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
-                   "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10)",
-                   "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
+  cds->add_action(
+      this, covenant.unholy_nova, "unholy_nova",
+      "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
+      "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10)",
+      "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
                    "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&"
@@ -2244,8 +2245,8 @@ void priest_t::generate_apl_shadow()
                     "spell_targets.vampiric_touch&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
   main->add_talent( this, "Mindbender",
-                    "if=dot.vampiric_touch.ticking&((talent.searing_nightmare.enabled&spell_targets.mind_sear>("
-                    "variable.mind_sear_cutoff+1))|dot.shadow_word_pain.ticking)" );
+                    "if=dot.vampiric_touch.ticking&(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable."
+                    "mind_sear_cutoff|dot.shadow_word_pain.ticking)" );
   main->add_action(
       this, "Shadow Word: Death",
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
