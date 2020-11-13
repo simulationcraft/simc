@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36599
-static const std::array<spelltext_data_t, 15053> __spelltext_data { {
+static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14321,7 +14321,6 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 338507, "The blood worm burrows into your skin, increasing your Leech by $s1%. Only works in the Shadowlands.", "Leech increased by $s1%.", 0 },
   { 338516, "Blood Boil increases the damage enemies take from your Blood Plague by |cFFFFFFFF${$s1}.1%|r for $338523d, stacks up to $338523u times.", 0, 0 },
   { 338523, "$@spelldesc338516", "Damage taken from Blood Plague increased by ${$w1}.1%.", 0 },
-  { 338542, "Collect the weapon enchantment appearance of Sinwrath.", 0, 0 },
   { 338553, "When a Festering Wound bursts the cooldown of Apocalypse is reduced by |cFFFFFFFF${$s1/10}.1 sec|r.", 0, 0 },
   { 338554, "Collect the weapon enchantment appearance of Sinsedge.", 0, 0 },
   { 338566, "Virulent Plague's duration is increased by ${$s2/1000} sec and its damage is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },

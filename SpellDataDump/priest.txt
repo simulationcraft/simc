@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-12/36599, git build shadowlands c681e7c, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 4426c20, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
@@ -10332,9 +10332,10 @@ Effects          :
                    Family Flags: 18
 Hotfixed         : Base Value (10 -> 6)
 #2 (id=836005)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rapture (47536), Spirit Shell (109964)
                    Family Flags: 18, 119
+Hotfixed         : Base Value (2000 -> 1000)
 Description      : $?s109964[Spirit Shell's][Rapture's] duration is increased by ${$s2/1000}.1 sec, and its $?s109964[absorption][Power Word: Shield enhancement] is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Lasting Spirit (id=337811) [Spell Family (6), Passive, Hidden] 
