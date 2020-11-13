@@ -462,22 +462,6 @@ void cabalists_hymnal( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void dreadfire_vessel( special_effect_t& effect )
-{
-  struct dreadfire_vessel_proc_t : public proc_spell_t
-  {
-    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e ) {}
-
-    timespan_t travel_time() const override
-    {
-      // seems to have a set 1.5s travel time
-      return timespan_t::from_seconds( data().missile_speed() );
-    }
-  };
-
-  effect.execute_action = create_proc_action<dreadfire_vessel_proc_t>( "dreadfire_vessel", effect );
-}
-
 void macabre_sheet_music( special_effect_t& effect )
 {
   auto data_spell = effect.player->find_spell( 345431 );
@@ -1368,7 +1352,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
     unique_gear::register_special_effect( 344806, items::cabalists_hymnal );
-    unique_gear::register_special_effect( 344732, items::dreadfire_vessel );
     unique_gear::register_special_effect( 345432, items::macabre_sheet_music );
     unique_gear::register_special_effect( 345319, items::glyph_of_assimilation );
     unique_gear::register_special_effect( 345251, items::soul_igniter );
