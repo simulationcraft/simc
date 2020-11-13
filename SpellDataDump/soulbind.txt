@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 4426c20, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 943af14, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -283,6 +283,7 @@ Description      : Your damaging attacks and spells have a chance to toss Niya's
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
+Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -299,10 +300,11 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=807855)   : Apply Aura (6) | Proc Trigger Spell (42): Paralytic Poison
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Target: Self (1)
+#1 (id=807855)   : Apply Aura Pet (174) | Proc Trigger Spell (42): Paralytic Poison
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 174)
 Description      : Your interrupts apply Niya's Paralytic Poison to your target, dealing ${$<pointsA>*$321519d} Nature damage over $321519d. Targets with Niya's Paralytic Poison take an additional $<pointsB> Nature damage if interrupted once more.
-Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
+Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}
 $pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden] 

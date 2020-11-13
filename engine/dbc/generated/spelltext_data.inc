@@ -15327,7 +15327,7 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}" },
-  {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
+  {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  321538, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
@@ -15377,7 +15377,8 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 9.0.2.36599
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
+  {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
 } };
 
