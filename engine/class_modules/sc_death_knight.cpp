@@ -501,6 +501,7 @@ public:
 
     // Legendaries
     buff_t* frenzied_monstrosity;
+    buff_t* death_turf;
   } buffs;
 
   struct runeforge_t {
@@ -956,7 +957,7 @@ public:
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
     // Shared
-    // item_runeforge_t phearomones; // 6954
+    item_runeforge_t phearomones; // 6954
     item_runeforge_t superstrain; // 6953
 
     // Blood
@@ -1658,6 +1659,30 @@ struct death_knight_pet_t : public pet_t
     }
 
     return m;
+  }
+
+  double composite_melee_haste() const override
+  {
+    double haste = pet_t::composite_melee_haste();
+
+    if (o() -> legendary.phearomones -> ok())
+    {
+      haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
+    }
+
+    return haste;
+  }
+
+  double composite_spell_haste() const override
+  {
+    double haste = pet_t::composite_spell_haste();
+
+    if (o() -> legendary.phearomones -> ok())
+    {
+      haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
+    }
+
+    return haste;
   }
 };
 
@@ -4478,6 +4503,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
     {
       p() -> active_spells.bone_spike_graveyard -> set_target( execute_state ->target );
       p() -> active_spells.bone_spike_graveyard -> execute();
+    }
+
+    if ( p() -> legendary.phearomones -> ok() )
+    {
+      p() -> buffs.death_turf -> trigger();
+      p() -> buffs.death_turf -> set_duration(data().duration() + 500_ms);
     }
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
@@ -8393,6 +8424,11 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.bone_shield -> value();
   }
 
+  if ( legendary.phearomones -> ok() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.death_turf -> check_value() );
+  }
+
   return haste;
 }
 
@@ -8409,6 +8445,11 @@ double death_knight_t::composite_spell_haste() const
   if ( buffs.bone_shield -> up() && spec.marrowrend_2 -> ok() )
   {
     haste *= buffs.bone_shield -> value();
+  }
+
+  if ( legendary.phearomones -> ok() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.death_turf -> check_value() );
   }
 
   return haste;
@@ -8757,7 +8798,7 @@ void death_knight_t::init_spells()
   // Legendary Items
 
   // Shared
-  // legendary.phearomones = find_runeforge_legendary( "Phearomones" );
+  legendary.phearomones = find_runeforge_legendary( "Phearomones" );
   legendary.superstrain = find_runeforge_legendary( "Superstrain" );
 
   // Blood
@@ -9449,6 +9490,10 @@ void death_knight_t::create_buffs()
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
+    -> set_default_value( specialization() == DEATH_KNIGHT_BLOOD ? find_spell( 335180 ) -> effectN(1).percent() / 2 : find_spell( 335180 ) -> effectN(1).percent() )
+    -> add_invalidate( CACHE_HASTE );
 }
 
 // death_knight_t::init_gains ===============================================
