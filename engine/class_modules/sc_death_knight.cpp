@@ -6021,7 +6021,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
 
     deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) + 
-                                  s_data -> effectN ( 1 ).chain_target() + 
+                                  data().effectN ( 1 ).chain_target() + 
                                   as<int>(p -> find_spell( 49020 ) -> effectN ( 4 ).base_value());
 
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
