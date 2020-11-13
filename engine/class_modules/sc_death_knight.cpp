@@ -6022,7 +6022,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) + 
                                   data().effectN ( 1 ).chain_target() + 
-                                  as<int>(p -> find_spell( 49020 ) -> effectN ( 4 ).base_value());
+                                  as<int>(p -> spell.dnd_buff -> effectN ( 4 ).base_value());
 
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
     // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
