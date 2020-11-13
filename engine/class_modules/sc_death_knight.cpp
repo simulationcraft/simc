@@ -8278,6 +8278,7 @@ void death_knight_t::default_apl_blood()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
   action_priority_list_t* essences  = get_action_priority_list( "essences" );
+  // action_priority_list_t* covenants = get_action_priority_list( "covenants" );
   action_priority_list_t* standard  = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
@@ -8312,11 +8313,23 @@ void death_knight_t::default_apl_blood()
   // Cooldowns
   def -> add_action( this, "Vampiric Blood" );
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
-  def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
+  //def -> add_action( "call_action_list,name=covenants" );
   def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=standard" );
-
+  /*
+  // Hardcast Death's Due with no CS proc if there is < 3s on the buff.
+  covenants -> add_action( "deaths_due,if=covenant.night_fae&(!buff.deaths_due.up|buff.deaths_due.remains<5|buff.crimson_scourge.up)" );
+  // Cast HS on the last tick of Death's Due to refresh the buff as late as possible
+  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.remains<3" );
+  // If we're venthyr and we're too high on RP as swarming mist is about to come up, dump some
+  covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3" );
+  // Cast swarming mist if within 3s of DRW
+  covenants -> add_action( "swarming_mist,if=covenant.venthyr&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
+  // Cast abomination limb if available and DRW isn't (to cast it prior to DRW), or DRW is not up.
+  covenants -> add_action( "abomination_limb,if=covenant.necrolord&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
+  // Finally, we cast shackle if available and DRW isn't (to cast it prior to DRW), or DRW is not up. TODO: pool 2 runes prior, modify APL to prioritize spreading on multi-target
+  covenants -> add_action( "shackle_the_unworthy,if=covenant.kyrian&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
+  */
   // Essences
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
   essences -> add_action( "anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
@@ -8325,6 +8338,9 @@ void death_knight_t::default_apl_blood()
   essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
+  standard -> add_action( "blood_tap,if=rune.time_to_4>gcd&charges_fractional>=1.8", "Use blood tap to prevent capping" );
+  standard -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
+  standard -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
@@ -8335,6 +8351,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
   standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
+  standard -> add_action( "blood_tap,if=rune.time_to_3>gcd" );
   standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
   standard -> add_talent( this, "Consumption" );
   standard -> add_action( this, "Blood Boil" );
