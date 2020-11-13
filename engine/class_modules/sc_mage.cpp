@@ -2825,7 +2825,12 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( p()->buffs.clearcasting_channel->check() )
+    {
       p()->buffs.arcane_pummeling->trigger();
+
+      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
+      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2842,13 +2847,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-    {
       p()->buffs.arcane_harmony->trigger();
-
-      if ( p()->buffs.clearcasting_channel->check() )
-        // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
-        p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
-    }
   }
 };
 
