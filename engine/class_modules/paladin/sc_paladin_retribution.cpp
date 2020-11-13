@@ -870,6 +870,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
+  def -> add_action( "blessing_of_seasons" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=generators" );
 

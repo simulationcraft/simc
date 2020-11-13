@@ -1361,6 +1361,7 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_AZERITE: return "azerite";
     case SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE: return "azerite_essence";
     case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
+    case SPECIAL_EFFECT_SOURCE_COVENANT: return "covenant";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     default: return "unknown";
   }
@@ -3312,7 +3313,7 @@ bool is_horde( race_e race )
   }
 }
 
-// Approximation of square root 
+// Approximation of square root
 // Used in calculation of distances instead of std::sqrt as it is significantly
 // faster and also returns similar values
 double approx_sqrt(double number)

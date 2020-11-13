@@ -156,6 +156,8 @@ public:
 
     // Conduit stuff
     action_t* virtuous_command;
+
+    action_t* seasons[NUM_SEASONS];
   } active;
 
   // Buffs

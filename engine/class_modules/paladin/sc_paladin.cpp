@@ -1129,6 +1129,101 @@ struct ashen_hallow_t : public paladin_spell_t
   }
 };
 
+// Blessing of Seasons
+// For now, this just casts on the player itself. TODO: make this an option
+
+struct blessing_of_summer_t : public paladin_spell_t
+{
+  blessing_of_summer_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_summer", p, p -> find_spell( 328620 ) )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    player -> buffs.blessing_of_summer -> trigger();
+  }
+};
+
+struct blessing_of_autumn_t : public paladin_spell_t
+{
+  blessing_of_autumn_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_autumn", p, p -> find_spell( 328622 ) )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    player -> buffs.blessing_of_autumn -> trigger();
+  }
+};
+
+struct blessing_of_spring_t : public paladin_spell_t
+{
+  blessing_of_spring_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_spring", p, p -> find_spell( 328282 ) )
+  {
+    harmful = false;
+  }
+};
+
+struct blessing_of_winter_t : public paladin_spell_t
+{
+  blessing_of_winter_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_winter", p, p -> find_spell( 328281 ) )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    player -> buffs.blessing_of_winter -> trigger();
+  }
+};
+
+struct blessing_of_seasons_t : public paladin_spell_t
+{
+  blessing_of_seasons_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_seasons", p, spell_data_t::nil() )
+  {
+    parse_options( options_str );
+
+    if ( ! ( p -> covenant.night_fae -> ok() ) )
+      background = true;
+
+    trigger_gcd = timespan_t::zero();
+
+    harmful = false;
+  }
+
+  bool ready() override
+  {
+    return paladin_spell_t::ready() && p() -> active.seasons[ p() -> next_season ] -> ready();
+  }
+
+  timespan_t execute_time() const override
+  {
+    return p() -> active.seasons[ p() -> next_season ] -> execute_time();
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> active.seasons[ p() -> next_season ] -> execute();
+    p() -> next_season = season( ( p() -> next_season + 1 ) % NUM_SEASONS );
+
+    for ( int i = 0; i < NUM_SEASONS; i++ )
+      p() -> active.seasons[ i ] -> cooldown -> start();
+  }
+};
 
 // Blessing of Seasons
 // For now, this just casts on the player itself. TODO: make this an option
@@ -1522,6 +1617,14 @@ void paladin_t::create_actions()
   else
   {
     active.virtuous_command = nullptr;
+  }
+
+  if ( covenant.night_fae -> ok() )
+  {
+    active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
+    active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
+    active.seasons[ WINTER ] = new blessing_of_winter_t( this );
+    active.seasons[ SPRING ] = new blessing_of_spring_t( this );
   }
 
   player_t::create_actions();

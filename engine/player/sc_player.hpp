@@ -504,6 +504,12 @@ struct player_t : public actor_t
     buff_t* focus_magic; // Mage talent
     buff_t* power_infusion; // Priest spell
 
+    // 9.0 covenant buffs
+    buff_t* blessing_of_summer;
+    buff_t* blessing_of_autumn;
+    buff_t* blessing_of_winter;
+    buff_t* blessing_of_spring;
+
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
