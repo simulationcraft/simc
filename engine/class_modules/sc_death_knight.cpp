@@ -6119,8 +6119,6 @@ struct virulent_plague_t : public death_knight_spell_t
   virulent_plague_t( death_knight_t* p ) :
     death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague )
   {
-    aoe = -1;
-
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
 
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
@@ -6155,6 +6153,8 @@ struct outbreak_t : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( vp );
+
+    aoe = -1;
   }
 
   void impact( action_state_t* s ) override
