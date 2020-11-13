@@ -4575,7 +4575,7 @@ private:
 struct death_and_decay_t : public death_and_decay_base_t
 {
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
-    death_and_decay_base_t( p, p -> covenant.deaths_due -> ok() ? "deaths_due" : "death_and_decay", p -> spec.death_and_decay )
+    death_and_decay_base_t( p, "death_and_decay", p -> spec.death_and_decay )
   {
     damage = new death_and_decay_damage_t( p );
 
