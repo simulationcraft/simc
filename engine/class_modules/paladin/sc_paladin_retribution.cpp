@@ -464,7 +464,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p() -> conduit.templars_vindication -> ok() )
     {
-      if ( rng().roll( p() -> conduit.templars_vindication -> effectN( 1 ).percent() ) )
+      if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
       {
         // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
         make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo, timespan_t::from_millis( 600 ) );
@@ -643,7 +643,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       hasted_ticks = false;
       tick_may_crit = false;
-      base_multiplier *= p -> conduit.truths_wake.percent();
     }
   };
 
@@ -671,6 +670,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
     {
+      double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
+      truths_wake -> base_td = s -> result_raw * truths_wake_mul;
       truths_wake -> set_target( s -> target );
       truths_wake -> execute();
     }
