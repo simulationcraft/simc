@@ -4299,7 +4299,7 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
   int pestilence_procs_per_cast;
 
   death_and_decay_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_base_t( p -> covenant.deaths_due -> ok() ? "deaths_due_damage" : "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
+    death_and_decay_damage_base_t( "death_and_decay_damage", p, p -> find_spell( 52212 ) ),
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
   { }
