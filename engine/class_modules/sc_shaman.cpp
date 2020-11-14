@@ -8920,24 +8920,24 @@ void shaman_t::init_action_list_elemental()
 
     // Aoe APL
 
-    aoe->add_action( this, "Earthquake",
-                     "if=buff.echoing_shock.up" );
+    aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    aoe->add_action(
-        this, "Flame Shock",
-        "target_if=refreshable&(spell_targets.chain_lightning<5|!pet.storm_elemental.active"
-        "|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
-        "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
-                     "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
+    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3,target_if=refreshable");
+    aoe->add_action( this, "Flame Shock", "if=!active_dot.flame_shock" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>60" );
     aoe->add_talent(
         this, "Ascendance",
         "if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     aoe->add_action( this, "Earth Shock",
-                     "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up&(talent."
-                     "master_of_the_elements.enabled|buff.master_of_the_elements.up|spell_targets.chain_lightning>3)" );
+                     "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
+    aoe->add_action( this, "Earth Elemental",
+                     "if=runeforge.deeptremor_stone.equipped&(!talent.primal_elementalist.enabled|(!pet.storm_elemental."
+                     "active&!pet.fire_elemental.active))" );
+    aoe->add_action( this, "Lava Burst",
+                     "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4|buff.lava_surge.up|(talent.master_of_the_elements."
+                     "enabled&!buff.master_of_the_elements.up&maelstrom>60)" );
     aoe->add_action(
         this, "Earthquake",
         "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)"
