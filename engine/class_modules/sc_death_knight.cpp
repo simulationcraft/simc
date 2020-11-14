@@ -9068,10 +9068,10 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&runic_power.deficit>=15" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
-  standard -> add_action( "any_dnd,if=spell_targets.death_and_decay>=3" );
+  standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
   standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
-  standard -> add_action( "any_dnd,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
+  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
   standard -> add_talent( this, "Consumption" );
   standard -> add_action( this, "Blood Boil" );
   standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
@@ -9224,7 +9224,6 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  aoe -> add_action( "deaths_due,if=spell_targets.death_and_decay>=2");
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
