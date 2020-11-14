@@ -4227,6 +4227,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   heals::soul_cleave_heal_t* heal;
   std::vector<cooldown_t*> sigil_cooldowns;
+  timespan_t sigil_cooldown_adjust;
+  timespan_t decree_cooldown_adjust;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -4246,6 +4248,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p->legendary.razelikhs_defilement->ok() )
     {
       sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree };
+      sigil_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
+      decree_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 2 ).base_value() );
     }
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
@@ -4272,8 +4276,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
       if ( sigils_on_cooldown.size() > 0 )
       {
-        const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
-        sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ]->adjust( adjust_duration );
+        cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
+        if ( sigil_cooldown == p()->cooldown.elysian_decree )
+          sigil_cooldown->adjust( decree_cooldown_adjust );
+        else
+          sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
     }
 
@@ -4958,8 +4965,11 @@ void demon_hunter_t::create_buffs()
 
   // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
   const spell_data_t* fel_bombardment_buff = legendary.fel_bombardment->ok() ? find_spell( 337849 ) : spell_data_t::not_found();
-  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff )
-    ->set_chance( 0.2 );
+  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff );
+  if ( legendary.fel_bombardment->ok() )
+  {
+    buff.fel_bombardment->set_chance( 0.2 );
+  }
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t

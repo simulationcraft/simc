@@ -252,8 +252,8 @@ void fire( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* active_talents = p->get_action_priority_list( "active_talents" );
-  action_priority_list_t* combustion_phase = p->get_action_priority_list( "combustion_phase" );
   action_priority_list_t* combustion_cooldowns = p->get_action_priority_list( "combustion_cooldowns" );
+  action_priority_list_t* combustion_phase = p->get_action_priority_list( "combustion_phase" );
   action_priority_list_t* rop_phase = p->get_action_priority_list( "rop_phase" );
   action_priority_list_t* standard_rotation = p->get_action_priority_list( "standard_rotation" );
 
@@ -270,8 +270,9 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=kindling_reduction,default=0.2,op=reset", "With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling." );
   precombat->add_action( "variable,name=shifting_power_reduction,op=set,value=-action.shifting_power.execute_time%action.shifting_power.new_tick_time*(dbc.effect.815503.base_value%1000+conduit.discipline_of_the_grove.time_value),if=covenant.night_fae.enabled", "The amount of cooldown reduction in seconds given by a full channel of Shifting Power. The dbc.effect.815503.base_value%1000 expression gives the number of seconds removed by each tick normally and conduit.discipline_of_the_grove.time_value gives the additional adjustment from that conduit." );
   precombat->add_action( "variable,name=skb_duration,op=set,value=dbc.effect.828420.base_value", "The duration of a Sun King's Blessing Combustion." );
-  precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
+  precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.macabre_sheet_music|equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
   precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
+  precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use+5*equipped.macabre_sheet_music" );
   precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&!talent.firestarter.enabled&variable.font_of_power_precombat_channel=0", "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified." );
   precombat->add_action( "variable,name=empyreal_ordnance_delay,default=18,op=reset", "How long before Combustion should Empyreal Ordnance be used?" );
   precombat->add_action( "snapshot_stats" );
@@ -288,10 +289,10 @@ void fire( player_t* p )
   default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay" );
-  default_->add_action( "use_item,name=soul_igniter" );
-  default_->add_action( "use_item,name=glyph_of_assimilation" );
+  default_->add_action( "use_item,name=soul_igniter,if=variable.time_to_combustion>=variable.on_use_cutoff" );
+  default_->add_action( "use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=variable.time_to_combustion<=5" );
-  default_->add_action( "use_item,name=dreadfire_vessel" );
+  default_->add_action( "use_item,name=dreadfire_vessel,if=variable.time_to_combustion>=variable.on_use_cutoff" );
   default_->add_action( "use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&variable.time_to_combustion>0&!variable.disable_combustion" );
   default_->add_action( "guardian_of_azeroth,if=(variable.time_to_combustion<10|fight_remains<variable.time_to_combustion)&!variable.disable_combustion" );
   default_->add_action( "concentrated_flame" );
@@ -315,6 +316,15 @@ void fire( player_t* p )
   active_talents->add_action( "living_bomb,if=active_enemies>1&buff.combustion.down&(variable.time_to_combustion>cooldown.living_bomb.duration|variable.time_to_combustion<=0|variable.disable_combustion)" );
   active_talents->add_action( "meteor,if=!variable.disable_combustion&variable.time_to_combustion<=0|(cooldown.meteor.duration<variable.time_to_combustion&!talent.rune_of_power.enabled)|talent.rune_of_power.enabled&buff.rune_of_power.up&variable.time_to_combustion>action.meteor.cooldown|fight_remains<variable.time_to_combustion|variable.disable_combustion" );
   active_talents->add_action( "dragons_breath,if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react)" );
+
+  combustion_cooldowns->add_action( "potion" );
+  combustion_cooldowns->add_action( "blood_fury" );
+  combustion_cooldowns->add_action( "berserking" );
+  combustion_cooldowns->add_action( "fireblood" );
+  combustion_cooldowns->add_action( "ancestral_call" );
+  combustion_cooldowns->add_action( "use_items" );
+  combustion_cooldowns->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=action.meteor.in_flight_remains<=0.5" );
+  combustion_cooldowns->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "variable,name=extended_combustion_remains,op=set,value=buff.combustion.remains+buff.combustion.duration*(cooldown.combustion.remains<buff.combustion.remains)", "Estimate how long Combustion will last thanks to Sun King's Blessing to determine how Fire Blasts should be used." );
@@ -347,15 +357,6 @@ void fire( player_t* p )
   combustion_phase->add_action( "living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1" );
   combustion_phase->add_action( "dragons_breath,if=buff.combustion.remains<gcd.max&buff.combustion.up" );
   combustion_phase->add_action( "scorch,if=target.health.pct<=30&talent.searing_touch.enabled" );
-
-  combustion_cooldowns->add_action( "potion" );
-  combustion_cooldowns->add_action( "blood_fury" );
-  combustion_cooldowns->add_action( "berserking" );
-  combustion_cooldowns->add_action( "fireblood" );
-  combustion_cooldowns->add_action( "ancestral_call" );
-  combustion_cooldowns->add_action( "use_items" );
-  combustion_cooldowns->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=action.meteor.in_flight_remains<=0.5" );
-  combustion_cooldowns->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up" );
 
   rop_phase->add_action( "flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)" );
   rop_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
@@ -479,7 +480,7 @@ void frost( player_t* p )
   st->add_action( "ebonbolt" );
   st->add_action( "radiant_spark,if=(!runeforge.freezing_winds.equipped|active_enemies>=2)&buff.brain_freeze.react" );
   st->add_action( "mirrors_of_torment" );
-  st->add_action( "shifting_power,if=buff.rune_of_power.down&(!cooldown.rune_of_power.ready|soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled|runeforge.freezing_winds.equipped|active_enemies>=2)" );
+  st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled|active_enemies>=2)" );
   st->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&target.level<=level&debuff.frozen.down" );
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );

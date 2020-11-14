@@ -173,9 +173,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Adjust ilevel, value is in 'value_1' field
     case ITEM_BONUS_ILEVEL:
       // Blizzard has currently unknown means to disable adjust ilevel item bonus on
-      // items. Currently "best guess" how this occurs is an empty item bonus with a node
-      // id of 6652.
-      if ( range::find( item.parsed.bonus_id, 6652 ) != item.parsed.bonus_id.end() )
+      // items. Currently "best guess" how this occurs is item bonus 7215 enables it.
+      if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() )
       {
         break;
       }
