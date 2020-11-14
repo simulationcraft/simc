@@ -5303,6 +5303,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     cankerous_wounds_chance( 0 )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
 
     if ( p -> azerite.cankerous_wounds.enabled() )
@@ -5357,6 +5358,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
+    triggers_shackle_the_unworthy = true;
     // The crit multipier is now handled by the apply_affecting_auras( spec.death_knight ) call
   }
 
@@ -5785,6 +5787,7 @@ struct howling_blast_t : public death_knight_spell_t
     frost_fever( new frost_fever_t( p ) )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
 
     aoe = -1;
     reduced_aoe_damage = true;
@@ -6110,6 +6113,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     dual = true;
+    triggers_shackle_the_unworthy = true;
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
@@ -6244,6 +6248,7 @@ struct outbreak_t : public death_knight_spell_t
     vp( new virulent_plague_t( p ) )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
     add_child( vp );
   }
 
@@ -6654,6 +6659,7 @@ struct clawing_shadows_t : public scourge_strike_base_t
     scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
   }
 };
@@ -6689,6 +6695,7 @@ struct scourge_strike_t : public scourge_strike_base_t
     scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
     add_child( scourge_strike_shadow );
   }
@@ -6751,6 +6758,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     parse_options( options_str );
     add_child( soul_reaper_execute );
 
+    triggers_shackle_the_unworthy = true;
     hasted_ticks = false;
   }
 
