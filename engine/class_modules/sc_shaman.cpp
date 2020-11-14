@@ -8894,6 +8894,8 @@ void shaman_t::init_action_list_elemental()
   if ( options.rotation == ROTATION_STANDARD ) {
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
+    action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
+
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
     def->add_action( "use_items" );
@@ -8916,7 +8918,8 @@ void shaman_t::init_action_list_elemental()
     // Pick APL to run
     def->add_action(
         "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
-    def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
+    def->add_action( "run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2" );
+    def->add_action( "run_action_list,name=se_single_target,if=talent.storm_elemental.enabled&active_enemies<=2" );
 
     // Aoe APL
 
@@ -8925,7 +8928,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5,target_if=refreshable");
     aoe->add_action( this, "Flame Shock", "if=!active_dot.flame_shock" );
-    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>60" );
+    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_talent(
         this, "Ascendance",
         "if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
@@ -8937,7 +8940,7 @@ void shaman_t::init_action_list_elemental()
                      "active&!pet.fire_elemental.active))" );
     aoe->add_action( this, "Lava Burst",
                      "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4|buff.lava_surge.up|(talent.master_of_the_elements."
-                     "enabled&!buff.master_of_the_elements.up&maelstrom>60)" );
+                     "enabled&!buff.master_of_the_elements.up&maelstrom>=60)" );
     aoe->add_action(
         this, "Earthquake",
         "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)"
@@ -8949,11 +8952,9 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Lava Burst",
                      "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking",
                      "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
-    aoe->add_talent( this, "Icefury", "if=spell_targets.chain_lightning<4&!buff.ascendance.up" );
-    aoe->add_action( this, "Frost Shock", "if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up" );
     aoe->add_talent(
         this, "Elemental Blast",
-        "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)",
+        "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<5&(!pet.storm_elemental.active)",
         "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
     aoe->add_action( this, "Lava Beam", "if=talent.ascendance.enabled" );
     aoe->add_action( this, "Chain Lightning" );
@@ -8961,22 +8962,59 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     aoe->add_action( this, "Frost Shock", "moving=1" );
 
+    se_single_target->add_action( this, "Flame Shock",
+                                  "target_if=(remains<=gcd)&(buff.lava_surge.up|!buff.bloodlust.up)" );
+    se_single_target->add_action( this, "Ascendance",
+                                  "talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&(cooldown.lava_burst.remains>0)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
+    se_single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+    se_single_target->add_talent(
+        this, "Stormkeeper",
+        "if=talent.stormkeeper.enabled&(maelstrom<44)" );
+    se_single_target->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
+    se_single_target->add_action( this, "Lava Burst", "if=buff.wind_gust.stack<18|buff.lava_surge.up" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up" );
+    se_single_target->add_action( this, "Earthquake", "if=buff.echoes_of_great_sundering.up" );
+    se_single_target->add_action( this, "Earthquake",
+                                  "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)" );
+    se_single_target->add_action(
+        this, "Earth Shock",
+        "if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)" );
+    se_single_target->add_action( this, "Lightning Bolt",
+                               "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff."
+                               "master_of_the_elements.up)" );
+    se_single_target->add_action(
+        this, "Frost Shock",
+                               "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff."
+                               "master_of_the_elements.up" );
+    se_single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
+    se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
+    se_single_target->add_talent( this, "Icefury",
+                               "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
+    se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
+    se_single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
+    se_single_target->add_action( "chain_harvest" );
+    se_single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
+    se_single_target->add_action(
+        this, "Earth Elemental",
+        "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet.storm_elemental.active)" );
+    se_single_target->add_action( this, "Lightning Bolt", "" );
+    se_single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
+    se_single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
+    se_single_target->add_action( this, "Frost Shock", "moving=1" );
+
+
     // Single target APL
     single_target->add_action(
         this, "Flame Shock",
         "target_if=(!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown."
-        "ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|"
-        "talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120))&(buff.wind_gust.stack<14|buff.lava_"
-        "surge.up|!buff.bloodlust.up)" );
+        "ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4)&(buff.lava_surge.up|!buff.bloodlust.up)" );
     single_target->add_talent(
         this, "Ascendance",
-        "if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&(!pet.storm_elemental."
-        "active|!talent.storm_elemental.enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
+        "if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&(cooldown.lava_burst.remains>0)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
     single_target->add_talent(
         this, "Elemental Blast",
         "if=talent.elemental_blast.enabled&(talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up&"
-        "maelstrom<60|!buff.master_of_the_elements.up)|!talent.master_of_the_elements.enabled)&(!(pet.storm_elemental."
-        "active&talent.storm_elemental.enabled)&buff.wind_gust.stack<14)" );
+        "maelstrom<60|!buff.master_of_the_elements.up)|!talent.master_of_the_elements.enabled)" );
     single_target->add_talent(
         this, "Stormkeeper",
         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(maelstrom<44)" );
@@ -8992,15 +9030,12 @@ void shaman_t::init_action_list_elemental()
                                "master_of_the_elements.up)" );
     single_target->add_action(
         this, "Earthquake",
-        "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable|pet.storm_elemental.active)&(!talent."
+        "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)&(!talent."
         "master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
     single_target->add_action(
         this, "Earth Shock",
         "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&"
-        "maelstrom>=92|spell_targets.chain_lightning<2&&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)" );
-    single_target->add_action(
-        this, "Lightning Bolt",
-        "if=pet.storm_elemental.active&talent.storm_elemental.enabled&(!buff.lava_surge.up&buff.bloodlust.up)" );
+        "maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|maelstrom>=60" );
     single_target->add_action( this, "Lightning Bolt",
                                "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff."
                                "master_of_the_elements.up)" );
@@ -9010,8 +9045,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
     single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
     single_target->add_talent( this, "Icefury",
-                               "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)&(!talent."
-                               "storm_elemental.enabled|!pet.storm_elemental.active)" );
+                               "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
     single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
     single_target->add_action(
         this, "Frost Shock",
@@ -9026,8 +9060,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet."
-                               "fire_elemental.active)&!talent.storm_elemental.enabled|!pet.storm_elemental."
-                               "active&talent.storm_elemental.enabled" );
+                               "fire_elemental.active)" );
     single_target->add_action( this, "Lightning Bolt", "" );
     single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
