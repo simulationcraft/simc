@@ -382,6 +382,8 @@ struct runes_t
 struct death_knight_td_t : public actor_target_data_t {
   struct
   {
+    // Shared
+    dot_t* shackle_the_unworthy;
     // Blood
     dot_t* blood_plague;
     // Frost
@@ -518,6 +520,7 @@ public:
     // Shared
     cooldown_t* death_and_decay;
     cooldown_t* defile;
+    cooldown_t* shackle_the_unworthy_icd;
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
@@ -920,7 +923,7 @@ public:
     // Shared - Covenant ability conduits
     // conduit_data_t brutal_grasp; // Necrolord, 127
     // conduit_data_t impenetrable_glomm; // Venthyr, 126
-    // conduit_data_t proliferation; // Kyrian, 128
+    conduit_data_t proliferation; // Kyrian, 128
     // conduit_data_t withering_ground; // Night Fae, 250
 
     // Shared - other throughput
@@ -952,6 +955,15 @@ public:
     // conduit_data_t reinforced_shell; // 74
     // conduit_data_t unending_grip; // 106
   } conduits;
+
+  struct covenant_t
+  {
+    // const spell_data_t* abomination_limb; // Necrolord
+    // const spell_data_t* deaths_due; // Night Fae
+    const spell_data_t* shackle_the_unworthy; // Kyrian
+    // const spell_data_t* swarming_mist; // Venthyr
+    // const spell_data_t* swarming_mist_energize; // Venthyr, Runic power gain
+  } covenant;
 
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
@@ -1027,9 +1039,10 @@ public:
     cooldown.death_and_decay     = get_cooldown( "death_and_decay" );
     cooldown.defile              = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
-    cooldown.koltiras_favor_icd  = get_cooldown( "koltiras_favor_icd" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
+    cooldown.koltiras_favor_icd  = get_cooldown( "koltiras_favor_icd" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
+    cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -1159,6 +1172,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.frost_fever          = target -> get_dot( "frost_fever",          p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
+  dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
 
   debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
                            -> set_cooldown( 0_ms ); // Handled by the action
@@ -2818,6 +2832,8 @@ struct death_knight_action_t : public Base
 
   bool hasted_gcd;
 
+  bool triggers_shackle_the_unworthy;
+
   struct affected_by_t
   {
     // Masteries
@@ -2829,6 +2845,7 @@ struct death_knight_action_t : public Base
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
+    triggers_shackle_the_unworthy( false ),
     affected_by()
   {
     this -> may_crit   = true;
@@ -3004,6 +3021,41 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
+
+  double cost() const override
+  {
+    double c = death_knight_action_t::cost();
+    if ( this -> current_resource() == RESOURCE_RUNE )
+    {
+      // If we spend a rune, we have a chance to spread the dot
+      if ( this->triggers_shackle_the_unworthy && as<int>(c) > 0 && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
+      {
+        if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
+        {
+          death_knight_td_t* source = p() -> get_target_data( p()->target );
+          if ( source -> dot.shackle_the_unworthy -> is_ticking() )
+          {
+            for ( auto destination : target_list() )
+            {
+              death_knight_td_t* destination_td = p() -> get_target_data( destination );
+              if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
+              {
+                continue;
+              }
+              
+              sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
+                      player->name(), this->name(), target->name(), destination->name(), 
+                      source->dot.shackle_the_unworthy->remains().total_seconds() );
+              source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
+              p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
+              return c;
+            }
+          }
+        }
+      }
+    }
+    return c;
+  }
 };
 
 // ==========================================================================
@@ -3016,6 +3068,41 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
                         const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
+
+  double cost() const override
+  {
+    double c = death_knight_action_t::cost();
+    if ( this -> current_resource() == RESOURCE_RUNE )
+    {
+      // If we spend a rune, we have a chance to spread the dot
+      if ( this->triggers_shackle_the_unworthy && as<int>(c) > 0 && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
+      {
+        if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
+        {
+          death_knight_td_t* source = p() -> get_target_data( p()->target );
+          if ( source -> dot.shackle_the_unworthy -> is_ticking() )
+          {
+            for ( auto destination : target_list() )
+            {
+              death_knight_td_t* destination_td = p() -> get_target_data( destination );
+              if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
+              {
+                continue;
+              }
+              
+              sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
+                      player->name(), this->name(), target->name(), destination->name(), 
+                      source->dot.shackle_the_unworthy->remains().total_seconds() );
+              source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
+              p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
+              return c;
+            }
+          }
+        }
+      }
+    }
+    return c;
+  }
 
 };
 
@@ -4567,6 +4654,7 @@ struct deaths_caress_t : public death_knight_spell_t
     death_knight_spell_t( "deaths_caress", p, p -> spec.deaths_caress )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
   }
 
   void execute() override
@@ -5552,6 +5640,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     parse_options( options_str );
+    triggers_shackle_the_unworthy = true;
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
     energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
@@ -5852,6 +5941,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    triggers_shackle_the_unworthy = true;
 
     if ( p -> azerite.bones_of_the_damned.enabled() )
     {
@@ -6622,6 +6712,20 @@ struct scourge_strike_t : public scourge_strike_base_t
     }
 
     return scourge_strike_base_t::ready();
+  }
+};
+
+// Shackle the Unworthy =====================================================
+
+struct shackle_the_unworthy_t : public death_knight_spell_t
+{
+  shackle_the_unworthy_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "shackle_the_unworthy", p, p -> covenant.shackle_the_unworthy )
+  {
+    parse_options( options_str );
+    base_multiplier *= 1.0 + p -> conduits.proliferation.percent();
+    dot_duration += p -> conduits.proliferation -> effectN( 2 ).time_value();
+    base_tick_time = p-> covenant.shackle_the_unworthy -> effectN( 1 ).period();
   }
 };
 
@@ -8081,6 +8185,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "sacrificial_pact"         ) return new sacrificial_pact_t         ( this, options_str );
+  if ( name == "shackle_the_unworthy"     ) return new shackle_the_unworthy_t     ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -8717,12 +8822,15 @@ void death_knight_t::init_spells()
 
   // Shadowlands specific - Commented out = NYI
 
+  // Covenants
+  covenant.shackle_the_unworthy = find_covenant_spell( "Shackle the Unworthy" );
+
   // Conduits
 
   // Shared - Covenant ability conduits
   // conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
   // conduits.impenetrable_glomm = find_conduit_spell( "Impenetrable Gloom" );
-  // conduits.proliferation = find_conduit_spell( "Proliferation" );
+  conduits.proliferation = find_conduit_spell( "Proliferation" );
   // conduits.withering_ground = find_conduit_spell( "Withering Ground" );
 
   // Shared - other throughput
@@ -8843,6 +8951,7 @@ std::string death_knight_t::default_food() const
   {
     case DEATH_KNIGHT_BLOOD: return blood_food;
     case DEATH_KNIGHT_FROST: return frost_food;
+
     default:                 return unholy_food;
   }
 }
@@ -8920,6 +9029,7 @@ void death_knight_t::default_apl_blood()
   essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
+  standard -> add_action( "shackle_the_unworthy" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
@@ -9065,6 +9175,7 @@ void death_knight_t::default_apl_frost()
   obliteration -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
   // Standard rotation
+  standard -> add_action( this, "Shackle the Unworthy" );
   standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.everfrost.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
   standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
@@ -9176,6 +9287,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready" );
 
   // General Single Target Priority
+  generic -> add_action( this, "Shackle the Unworthy" );
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<13&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
