@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.0.2.36599
+// Covenant abilities, wow build 9.0.2.36639
 static const std::array<covenant_ability_entry_t, 64> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -66,7 +66,7 @@ static const std::array<covenant_ability_entry_t, 64> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.0.2.36599
+// Soulbind abilities, wow build 9.0.2.36639
 static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { {
   { 319191, 3, "Field of Blossoms"                  },
   { 319210, 3, "Social Butterfly"                   },
@@ -162,7 +162,7 @@ static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { 
   { 342270, 3, "Run Without Tiring"                 },
 } };
 
-// Conduits, wow build 9.0.2.36599
+// Conduits, wow build 9.0.2.36639
 static const std::array<conduit_entry_t, 274> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -478,7 +478,7 @@ static const std::array<uint16_t, 274> __conduit_spell_id_index { {
     273,     4,
 } };
 
-// Conduit ranks, wow build 9.0.2.36599
+// Conduit ranks, wow build 9.0.2.36639
 static const std::array<conduit_rank_entry_t, 4110> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -690,21 +690,21 @@ static const std::array<conduit_rank_entry_t, 4110> __conduit_rank_data { {
   {  19, 12, 336526, 22.000000 },
   {  19, 13, 336526, 23.000000 },
   {  19, 14, 336526, 24.000000 },
-  {  20,  0, 336522, 9.000000 },
-  {  20,  1, 336522, 9.900000 },
-  {  20,  2, 336522, 10.800000 },
-  {  20,  3, 336522, 11.700000 },
-  {  20,  4, 336522, 12.600000 },
-  {  20,  5, 336522, 13.500000 },
-  {  20,  6, 336522, 14.400000 },
-  {  20,  7, 336522, 15.300000 },
-  {  20,  8, 336522, 16.200001 },
-  {  20,  9, 336522, 17.100000 },
-  {  20, 10, 336522, 18.000000 },
-  {  20, 11, 336522, 18.900000 },
-  {  20, 12, 336522, 19.799999 },
-  {  20, 13, 336522, 20.700001 },
-  {  20, 14, 336522, 21.600000 },
+  {  20,  0, 336522, 7.500000 },
+  {  20,  1, 336522, 8.250000 },
+  {  20,  2, 336522, 9.000000 },
+  {  20,  3, 336522, 9.750000 },
+  {  20,  4, 336522, 10.500000 },
+  {  20,  5, 336522, 11.250000 },
+  {  20,  6, 336522, 12.000000 },
+  {  20,  7, 336522, 12.750000 },
+  {  20,  8, 336522, 13.500000 },
+  {  20,  9, 336522, 14.250000 },
+  {  20, 10, 336522, 15.000000 },
+  {  20, 11, 336522, 15.750000 },
+  {  20, 12, 336522, 16.500000 },
+  {  20, 13, 336522, 17.250000 },
+  {  20, 14, 336522, 18.000000 },
   {  21,  0, 336569, 4.000000 },
   {  21,  1, 336569, 4.400000 },
   {  21,  2, 336569, 4.800000 },

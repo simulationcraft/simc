@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 943af14, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-14/36639)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables

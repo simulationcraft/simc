@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-13/36599, git build shadowlands 943af14, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-14/36639)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -10568,7 +10568,7 @@ Name             : Icy Propulsion (id=336522) [Spell Family (3), Passive, Hidden
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Conduit Id       : 20 (values=9, 9.9, 10.8, 11.7, 12.6, 13.5, 14.4, 15.3, 16.200001, 17.1, 18, 18.9, 19.799999, 20.700001, 21.6)
+Conduit Id       : 20 (values=7.5, 8.25, 9, 9.75, 10.5, 11.25, 12, 12.75, 13.5, 14.25, 15, 15.75, 16.5, 17.25, 18)
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10582,7 +10582,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=834011)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (2.5 -> 0)
 Description      : While Icy Veins is active, your critical hits reduce its cooldown by |cFFFFFFFF${$s1/10}.2 sec|r.
 
 Name             : Ice Bite (id=336569) [Spell Family (3), Passive, Hidden] 

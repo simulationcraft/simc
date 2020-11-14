@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.36599
-static const std::array<spelltext_data_t, 15052> __spelltext_data { {
+// Spell text, wow build 9.0.2.36639
+static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12642,7 +12642,6 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -14159,7 +14158,7 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 337244, "$@spelldesc337240", 0, 0 },
   { 337247, "Replaces Templar's Verdict with Final Verdict, a devastating strike that deals $336872s1 Holy damage. Has a $s2% chance to activate Hammer of Wrath and reset its cooldown.", 0, 0 },
   { 337250, "During Shuffle, Heavy Stagger has a |cFFFFFFFF${$s1/10}.1%|r chance to heal you instead of dealing damage.", 0, 0 },
-  { 337257, "Projects Divine Storm forward $s1 yds, damaging all enemies in its path.\r\n\r\nAlso increases damage dealt by Divine Storm by $s2%.", 0, 0 },
+  { 337257, "Divine Storm projects an additional wave of light, striking all enemies up to $s1 yards in front of you for $s2% of Divine Storm's damage.", 0, 0 },
   { 337264, "Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/-1000}.1 sec, and Niuzao's Stomp deals an additional |cFFFFFFFF${$s1}.1%|r damage. ", 0, 0 },
   { 337267, "$@spelldesc337225", 0, 0 },
   { 337268, "$@spelldesc337225", 0, 0 },
@@ -14606,7 +14605,6 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 341207, "For each damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought. \r\n\r\nDark Thought\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast has no cooldown and can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", "Maximum number of charges of Mind Blast increased by $w1.\r\n\r\nMind Blast no longer has a  cooldown, can be cast instantly, and while channelling Mind Flay or Mind Sear.", 0 },
   { 341222, "When Kill Command's cooldown is reset, gain|cFFFFFFFF ${$s1}.1%|r increased damage for $341223d.", 0, 0 },
   { 341223, "$@spelldesc341222", "Damage done increased by ${$w1}.1%.", 0 },
-  { 341237, 0, "Searching for hidden treasure.", 0 },
   { 341240, "Voidform increases your critical strike chance by $s1% for $194249d, reducing by $s2% every sec.", 0, 0 },
   { 341246, "$?s259387[Mongoose Bite][Raptor Strike]'s damage is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 341264, "Echoing Reprimand's damage is increased by |cFFFFFFFF$s1%|r.", 0, 0 },
@@ -15052,10 +15050,11 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 348169, "$@spelldesc346875", 0, 0 },
   { 348177, "$@spelldesc346835", 0, 0 },
   { 348178, "$@spelldesc346835", 0, 0 },
+  { 348249, "Your melee attacks have a chance to grant you a Mote of Anger.  When you reach $71432u Motes of Anger, they will release, causing you to instantly attack for $71433s2% weapon damage with one of your melee weapons.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36599
-static constexpr std::array<hotfix::client_hotfix_entry_t, 20> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.2.36639
+static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
   {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
@@ -15068,6 +15067,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 20> __spelltext_hotfi
   {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
   {  334677,  1, "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands." },
   {  336873,  0, "Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r each time it deals damage.", "Each wave of a Clearcast Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r." },
+  {  337257,  0, "Projects Divine Storm forward $s1 yds, damaging all enemies in its path.\r\n\r\nAlso increases damage dealt by Divine Storm by $s2%.", "Divine Storm projects an additional wave of light, striking all enemies up to $s1 yards in front of you for $s2% of Divine Storm's damage." },
   {  337544,  0, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][]." },
   {  346835,  0, "Invoke the Talisman of Destined Defiance, swapping your fate for your abductor's.", "The Jailer's abductors brand your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe brand also draws the Jailer's attention, increasing your Eye of the Jailer." },
   {  346835,  1, "Wielding the Talisman of Destined Defiance.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec." },
@@ -15078,7 +15078,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 20> __spelltext_hotfi
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
-// Spell description variables, wow build 9.0.2.36599
+// Spell description variables, wow build 9.0.2.36639
 static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15376,7 +15376,7 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36599
+// spelldesc_vars hotfix entries, wow build 9.0.2.36639
 static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
