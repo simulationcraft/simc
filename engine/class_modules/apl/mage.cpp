@@ -479,7 +479,7 @@ void frost( player_t* p )
   st->add_action( "ebonbolt" );
   st->add_action( "radiant_spark,if=(!runeforge.freezing_winds.equipped|active_enemies>=2)&buff.brain_freeze.react" );
   st->add_action( "mirrors_of_torment" );
-  st->add_action( "shifting_power,if=buff.rune_of_power.down&(!cooldown.rune_of_power.ready|soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled|runeforge.freezing_winds.equipped|active_enemies>=2)" );
+  st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled|active_enemies>=2)" );
   st->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&target.level<=level&debuff.frozen.down" );
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
