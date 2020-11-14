@@ -8923,7 +8923,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3,target_if=refreshable");
+    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5,target_if=refreshable");
     aoe->add_action( this, "Flame Shock", "if=!active_dot.flame_shock" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>60" );
     aoe->add_talent(
