@@ -9732,11 +9732,18 @@ void druid_t::arise()
     eclipse_handler.enabled_ = true;
 
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-        eclipse_handler.snapshot_eclipse();
-        make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
+      eclipse_handler.snapshot_eclipse();
+      make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
           eclipse_handler.snapshot_eclipse();
-        } );
-      }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+      } );
+    }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+  }
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+      buff.lycaras_fleeting_glimpse->trigger();
+    }, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ) ) );
   }
 
   if ( buff.yseras_gift )
