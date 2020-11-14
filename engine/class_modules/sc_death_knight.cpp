@@ -9037,7 +9037,6 @@ void death_knight_t::default_apl_blood()
   essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
-  standard -> add_action( "shackle_the_unworthy" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
@@ -9183,7 +9182,6 @@ void death_knight_t::default_apl_frost()
   obliteration -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
   // Standard rotation
-  standard -> add_action( this, "Shackle the Unworthy" );
   standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|conduit.everfrost.enabled|runeforge.biting_cold.equipped", "Standard single-target rotation" );
   standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
@@ -9295,7 +9293,6 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.up&!cooldown.dark_transformation.ready" );
 
   // General Single Target Priority
-  generic -> add_action( this, "Shackle the Unworthy" );
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<13&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
