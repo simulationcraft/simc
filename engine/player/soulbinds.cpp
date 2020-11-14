@@ -126,6 +126,12 @@ double class_value_from_desc_vars( const special_effect_t& e, util::string_view 
 // By default, look for a new line being added
 bool extra_desc_text_for_class( special_effect_t& e, util::string_view text = "[\r\n]" )
 {
+  // warlock still has an internal cooldown of 1 minute
+  // despite the tooltip not saying it does
+  if ( e.player->type == WARLOCK )
+  {
+    return true;
+  }
   if ( const char* desc = e.player->dbc->spell_text( e.spell_id ).desc() )
   {
     // The relevant part of the description is formatted as a '|' delimited list of the
