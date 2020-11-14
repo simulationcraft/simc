@@ -4639,6 +4639,15 @@ struct deaths_due_t : public death_and_decay_base_t
 
     death_and_decay_base_t::execute();
   }
+
+  bool ready() override
+  {
+    if ( p() -> talent.defile -> ok() )
+    {
+      return false;
+    }
+    return death_and_decay_base_t::ready();
+  }
 };
 
 // Death's Caress ===========================================================
