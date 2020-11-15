@@ -6765,14 +6765,6 @@ struct unholy_blight_dot_t : public death_knight_spell_t
 
     p() -> active_spells.virulent_plague -> set_target( state -> target );
     p() -> active_spells.virulent_plague -> execute();
-
-    if ( p() -> legendary.superstrain -> ok() )
-    {
-      p() -> active_spells.frost_fever -> set_target( state -> target );
-      p() -> active_spells.frost_fever -> execute();
-      p() -> active_spells.blood_plague -> set_target( state -> target );
-      p() -> active_spells.blood_plague -> execute();
-    }
   }
 };
 
