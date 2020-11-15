@@ -153,7 +153,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
-    buff_t* rushing_tiger_palm;
+    buff_t* keefers_skyreach;
     buff_t* recently_rushing_tiger_palm;
   } debuff;
 
@@ -4714,8 +4714,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double c = player->composite_player_target_crit_chance( target );
 
-    if ( td( target )->debuff.rushing_tiger_palm->up() )
-      c += td( target )->debuff.rushing_tiger_palm->value();
+    if ( td( target )->debuff.keefers_skyreach->up() )
+      c += td( target )->debuff.keefers_skyreach->value();
 
     return c;
   }
@@ -5047,7 +5047,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       if ( !td( s->target )->debuff.recently_rushing_tiger_palm->up() )
       {
-        td( s->target )->debuff.rushing_tiger_palm->trigger();
+        td( s->target )->debuff.keefers_skyreach->trigger();
         td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
       }
     }
@@ -7085,6 +7085,8 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
+    aoe = 1;
+
     add_child( p.active_actions.breath_of_fire );
   }
 
@@ -7837,9 +7839,10 @@ struct bonedust_brew_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    harmful     = false;
-    base_dd_min = 0;
-    base_dd_max = 0;
+    harmful          = false;
+    aoe              = -1;
+    base_dd_min      = 0;
+    base_dd_max      = 0;
   }
 
   void execute() override
@@ -9341,6 +9344,7 @@ void init()
 // Monk Character Definition
 // ==========================================================================
 
+// Debuffs ==================================================================
 monk_td_t::monk_td_t( player_t* target, monk_t* p )
   : actor_target_data_t( target, p ), dots( dots_t() ), debuff( buffs_t() ), monk( *p )
 {
@@ -9362,9 +9366,11 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
+                           ->set_cooldown( timespan_t::zero() )
                            ->set_default_value_from_effect( 3 );
 
-    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
+    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg )
+                               ->set_cooldown(timespan_t::zero());
   }
 
   // Azerite
@@ -9372,6 +9378,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew", p->covenant.necrolord )
+                             ->set_cooldown( timespan_t::zero() )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
@@ -9384,7 +9391,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
-  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 344021 ) )
+  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -10455,7 +10462,7 @@ void monk_t::create_buffs()
   // Covenant Abilities
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
-                                  ->set_duration( covenant.necrolord->duration() )
+                                  ->set_duration( timespan_t::from_seconds( 10 ) )
                                   ->set_max_stack( 5 )
                                   ->set_reverse( true )
                                   ->set_reverse_stack_count( 5 );
