@@ -6384,8 +6384,7 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // For more than 5 targets damage is based on a logarithmic function.
-  // This is the closest we can figure out what that function is
+  // For more than 5 targets damage is based on a Sqrt(5/x)
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
@@ -6395,7 +6394,7 @@ struct keg_smash_t : public monk_melee_attack_t
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
       if ( state->target != target )
-        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+        cam *= std::sqrt( 5 / state->n_targets );
 
     return cam;
   }
@@ -7104,7 +7103,7 @@ struct breath_of_fire_t : public monk_spell_t
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-        return cam / std::sqrt( state->n_targets );
+      return cam / std::sqrt( state->n_targets );
 
     return cam;
   }
