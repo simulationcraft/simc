@@ -1665,7 +1665,8 @@ struct death_knight_pet_t : public pet_t
   {
     double haste = pet_t::composite_melee_haste();
 
-    if (o() -> legendary.phearomones -> ok())
+    // pets are currently doubledipping and getting their own haste buff on top of scaling with the owner's haste - 11/14/20
+    if (o() -> legendary.phearomones -> ok() && o() -> bugs)
     {
       haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
     }
@@ -1677,7 +1678,8 @@ struct death_knight_pet_t : public pet_t
   {
     double haste = pet_t::composite_spell_haste();
 
-    if (o() -> legendary.phearomones -> ok())
+    // pets are currently doubledipping and getting their own haste buff on top of scaling with the owner's haste - 11/14/20
+    if (o() -> legendary.phearomones -> ok() && o() -> bugs)
     {
       haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
     }
@@ -6150,6 +6152,8 @@ struct virulent_plague_t : public death_knight_spell_t
   virulent_plague_t( death_knight_t* p ) :
     death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague )
   {
+    aoe = -1;
+
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
 
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
@@ -6172,6 +6176,19 @@ struct virulent_plague_t : public death_knight_spell_t
       base_multiplier *= .375;
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    
+    if ( p() -> legendary.superstrain -> ok() && p() -> specialization() == DEATH_KNIGHT_UNHOLY)
+    {
+      p() -> active_spells.frost_fever -> set_target( state -> target );
+      p() -> active_spells.frost_fever -> execute();
+      p() -> active_spells.blood_plague -> set_target( state -> target );
+      p() -> active_spells.blood_plague -> execute();
+    }
+  }
 };
 
 struct outbreak_t : public death_knight_spell_t
@@ -6184,8 +6201,6 @@ struct outbreak_t : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( vp );
-
-    aoe = -1;
   }
 
   void impact( action_state_t* s ) override
@@ -6196,14 +6211,6 @@ struct outbreak_t : public death_knight_spell_t
     {
       vp -> set_target( s -> target );
       vp -> execute();
-
-      if ( p() -> legendary.superstrain -> ok() )
-      {
-        p() -> active_spells.frost_fever -> set_target( s -> target );
-        p() -> active_spells.frost_fever -> execute();
-        p() -> active_spells.blood_plague -> set_target( s -> target );
-        p() -> active_spells.blood_plague -> execute();
-      }
     }
   }
 };
@@ -8424,11 +8431,6 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.bone_shield -> value();
   }
 
-  if ( legendary.phearomones -> ok() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.death_turf -> check_value() );
-  }
-
   return haste;
 }
 
@@ -8445,11 +8447,6 @@ double death_knight_t::composite_spell_haste() const
   if ( buffs.bone_shield -> up() && spec.marrowrend_2 -> ok() )
   {
     haste *= buffs.bone_shield -> value();
-  }
-
-  if ( legendary.phearomones -> ok() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.death_turf -> check_value() );
   }
 
   return haste;
@@ -9492,8 +9489,11 @@ void death_knight_t::create_buffs()
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
-    -> set_default_value( specialization() == DEATH_KNIGHT_BLOOD ? find_spell( 335180 ) -> effectN(1).percent() / 2 : find_spell( 335180 ) -> effectN(1).percent() )
-    -> add_invalidate( CACHE_HASTE );
+    -> set_default_value_from_effect( 1 )
+    -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  if ( specialization() == DEATH_KNIGHT_BLOOD ) {
+    buffs.death_turf -> default_value /= 2;
+  }
 }
 
 // death_knight_t::init_gains ===============================================
