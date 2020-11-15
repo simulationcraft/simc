@@ -1109,9 +1109,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Reaction
     reaction_offset( timespan_t::from_seconds( 0.1 ) ),
     reaction_max( timespan_t::from_seconds( 1.4 ) ),
-    reaction_mean( timespan_t::from_seconds( 0.3 ) ),
+    reaction_mean( timespan_t::from_seconds( 0.25 ) ),
     reaction_stddev( timespan_t::zero() ),
-    reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+    reaction_nu( timespan_t::from_seconds( 0.15 ) ),
     // Latency
     world_lag( timespan_t::from_seconds( 0.1 ) ),
     world_lag_stddev( timespan_t::min() ),
