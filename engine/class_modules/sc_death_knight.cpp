@@ -9484,7 +9484,9 @@ void death_knight_t::create_buffs()
   buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
     -> set_default_value_from_effect( 1 )
     -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  if ( specialization() == DEATH_KNIGHT_BLOOD ) {
+// According to tooltip data and ingame testing, the buff's value is halved for blood
+  if ( specialization() == DEATH_KNIGHT_BLOOD ) 
+  {
     buffs.death_turf -> default_value /= 2;
   }
 }
