@@ -981,11 +981,6 @@ bool generic_container_type(const player_t* for_actor, int target_statistics_lev
   return true;
 }
 
-bool is_adjustable_class_spell( action_t* a )
-{
-  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
-}
-
 }  // namespace
 
 /**
@@ -3331,61 +3326,6 @@ void player_t::create_buffs()
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );
-
-      // 9.0 covenant buffs
-      buffs.blessing_of_summer = make_buff( this, "blessing_of_summer", find_spell( 328620 ) );
-      // Implement autumn like it's the BfA corruption effect. This is going to need
-      // re-verification
-      buffs.blessing_of_autumn = make_buff( this, "blessing_of_autumn", find_spell( 328622 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-                 double recharge_multiplier = 1.0 / ( 1 + b->default_value );
-                 for ( auto a : this->action_list )
-                 {
-                   // Only class spells have their cooldown reduced.
-                   // TODO: verify if this actually covers everything or if eg. the blessing itself gets its cd reduced
-                   if ( is_adjustable_class_spell( a ) )
-                   {
-                     if ( new_ == 1 )
-                       a->base_recharge_multiplier *= recharge_multiplier;
-                     else
-                       a->base_recharge_multiplier /= recharge_multiplier;
-                     if ( a->cooldown->action == a )
-                       a->cooldown->adjust_recharge_multiplier();
-                     if ( a->internal_cooldown->action == a )
-                       a->internal_cooldown->adjust_recharge_multiplier();
-                   }
-                 }
-               } );
-
-      // TODO(mserrano): does this even make any sense?
-      auto bow_damage_eff = new special_effect_t( this );
-      bow_damage_eff -> spell_id = 328281;
-      bow_damage_eff -> name_str = "blessing_of_winter";
-      bow_damage_eff -> source = SPECIAL_EFFECT_SOURCE_COVENANT;
-      bow_damage_eff -> cooldown_ = timespan_t::zero();
-
-      special_effects.push_back( bow_damage_eff );
-
-      dbc_proc_callback_t* bow_callback = new dbc_proc_callback_t( this, *bow_damage_eff );
-      bow_callback -> initialize();
-      bow_callback -> deactivate();
-
-      buffs.blessing_of_winter = make_buff( this, "blessing_of_winter", find_spell( 328281 ) )
-        ->set_cooldown( timespan_t::zero() )
-        ->set_activated( false )
-        ->set_chance( 1 )
-        ->set_stack_change_callback( [ bow_callback ]( buff_t*, int old, int new_ )
-        {
-          if ( old == 0 ) {
-            assert( ! bow_callback -> active );
-            bow_callback -> activate();
-          } else if ( new_ == 0 ) {
-            bow_callback -> deactivate();
-          }
-        } );
-
-      buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) );
 
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );

@@ -3217,6 +3217,11 @@ private:
   paladin_t& p;
 };
 
+bool is_adjustable_class_spell( action_t* a )
+{
+  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -3242,6 +3247,63 @@ struct paladin_module_t : public module_t
     p -> buffs.beacon_of_light          = make_buff( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
     p -> debuffs.forbearance            = new buffs::forbearance_t( p, "forbearance" );
+
+
+    p -> buffs.blessing_of_summer = make_buff( p, "blessing_of_summer", p -> find_spell( 328620 ) );
+    // Implement autumn like it's the BfA corruption effect. This is going to need
+    // re-verification
+    p -> buffs.blessing_of_autumn = make_buff( p, "blessing_of_autumn", p -> find_spell( 328622 ) )
+        ->set_default_value_from_effect( 1 )
+        ->set_stack_change_callback( [p]( buff_t* b, int, int new_ ) {
+               double recharge_multiplier = 1.0 / ( 1 + b->default_value );
+               for ( auto a : p->action_list )
+               {
+                 // Only class spells have their cooldown reduced.
+                 // TODO: verify if this actually covers everything or if eg. the blessing itself gets its cd reduced
+                 if ( is_adjustable_class_spell( a ) )
+                 {
+                   if ( new_ == 1 )
+                     a->base_recharge_multiplier *= recharge_multiplier;
+                   else
+                     a->base_recharge_multiplier /= recharge_multiplier;
+                   if ( a->cooldown->action == a )
+                     a->cooldown->adjust_recharge_multiplier();
+                   if ( a->internal_cooldown->action == a )
+                     a->internal_cooldown->adjust_recharge_multiplier();
+                 }
+               }
+             } );
+
+
+    // TODO(mserrano): does this even make any sense?
+    /* auto bow_damage_eff = new special_effect_t( p );
+    bow_damage_eff -> spell_id = 328281;
+    bow_damage_eff -> name_str = "blessing_of_winter";
+    bow_damage_eff -> source = SPECIAL_EFFECT_SOURCE_COVENANT;
+    bow_damage_eff -> cooldown_ = timespan_t::zero();
+
+    p -> special_effects.push_back( bow_damage_eff );
+
+    dbc_proc_callback_t* bow_callback = new dbc_proc_callback_t( p, *bow_damage_eff );
+    bow_callback -> initialize();
+    bow_callback -> deactivate(); */
+
+    p -> buffs.blessing_of_winter = make_buff( p, "blessing_of_winter", p -> find_spell( 328281 ) )
+      ->set_cooldown( timespan_t::zero() )
+      ->set_activated( false )
+      ->set_chance( 1 )
+/*      ->set_stack_change_callback( [ bow_callback ]( buff_t*, int old, int new_ )
+      {
+        if ( old == 0 ) {
+          assert( ! bow_callback -> active );
+          bow_callback -> activate();
+        } else if ( new_ == 0 ) {
+          bow_callback -> deactivate();
+        }
+      } ) */;
+
+    p -> buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p -> find_spell( 328282 ) );
+
   }
 
   void register_hotfixes() const override
