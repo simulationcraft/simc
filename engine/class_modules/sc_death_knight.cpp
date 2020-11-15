@@ -9162,6 +9162,7 @@ void death_knight_t::default_apl_unholy()
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
+  def -> add_action( this, "Outbreak", "if=runeforge.superstrain.equipped&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
 
   // Action Lists
   // def -> add_action( "call_action_list,name=covenants" );
