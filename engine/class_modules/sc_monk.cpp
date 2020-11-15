@@ -4911,9 +4911,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
 
-    if ( p->specialization() == MONK_BREWMASTER )
-      base_costs[ RESOURCE_ENERGY ] *= 1 + p->spec.brewmaster_monk->effectN( 17 ).percent();  // -50% for Brewmasters
-
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
     else
