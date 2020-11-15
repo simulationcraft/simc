@@ -1786,6 +1786,11 @@ struct warlock_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11.0 )
+      .verification_value( 43.0 );
   }
 
   bool valid() const override
