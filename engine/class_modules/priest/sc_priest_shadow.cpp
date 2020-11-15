@@ -2157,8 +2157,8 @@ void priest_t::generate_apl_shadow()
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( this, covenant.fae_guardians, "fae_guardians",
-                   "if=!buff.voidform.up&!cooldown.void_torrent.up|buff.voidform.up&(soulbind.grove_invigoration."
-                   "enabled|soulbind.field_of_blossoms.enabled)",
+                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
+                   "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
   cds->add_action( this, covenant.mindgames, "mindgames",
