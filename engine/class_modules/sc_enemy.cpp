@@ -1327,7 +1327,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Level 60 Values
   // Raid values using Sludgefist as a baseline
 //  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35239, 48255, 79858 };     // Base auto attack damage
-//  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105717, 144765, 144765 };  // Base melee nuke damage
+//  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105717, 144765, 239574 };  // Base melee nuke damage
 //  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1410, 1930, 3195 };  // Base background dot damage
   // Level 50 values
   // Raid values using Raden as a baseline
