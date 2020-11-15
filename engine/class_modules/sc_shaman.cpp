@@ -3968,6 +3968,12 @@ struct earthquake_t : public shaman_spell_t
     add_child( rumble );
   }
 
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_echoing_shock = true;
+  }
+
   double cost() const override
   {
     double d = shaman_spell_t::cost();
@@ -3977,7 +3983,6 @@ struct earthquake_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
@@ -8914,6 +8919,9 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
 
     // Aoe APL
+
+    aoe->add_action( this, "Earthquake",
+                     "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action(
@@ -8922,10 +8930,7 @@ void shaman_t::init_action_list_elemental()
         "|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
         "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
                      "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
-    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
-    aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.up&buff.echoing_shock.up" );
-    aoe->add_action( this, "Earthquake",
-                     "if=buff.echoing_shock.up&cooldown.stormkeeper.remains>buff.echoing_shock.remains+2*gcd" );
+    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>60" );
     aoe->add_talent(
         this, "Ascendance",
         "if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
