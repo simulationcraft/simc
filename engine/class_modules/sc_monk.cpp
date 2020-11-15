@@ -310,7 +310,7 @@ public:
 
     // Shadowland Legendary
     buff_t* chi_energy;
-    buff_t* flaming_kicks;
+    buff_t* charred_passions;
     buff_t* invokers_delight;
     buff_t* mighty_pour;
     buff_t* pressure_point;
@@ -661,7 +661,7 @@ public:
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
     const spell_data_t* face_palm;
-    const spell_data_t* flaming_kicks_dmg;
+    const spell_data_t* charred_passions_dmg;
   } passives;
 
   // RPPM objects
@@ -5377,26 +5377,26 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
-// Flaming Kicks ============================================================
-struct flaming_kicks_t : public monk_spell_t
+// Charred Passions ============================================================
+struct charred_passions_t : public monk_spell_t
 {
-  flaming_kicks_t( monk_t* p ) : monk_spell_t( "flaming_kicks", p, p->passives.flaming_kicks_dmg )
+  charred_passions_t( monk_t* p ) : monk_spell_t( "charred_passions", p, p->passives.charred_passions_dmg )
   {
     background = dual             = true;
+    proc                          = true;
   }
 };
-
 
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_totm_proc* bok_totm_proc;
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "blackout_kick", p,
         ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-        flaming_kicks( new flaming_kicks_t( p ) )
+        charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery = true;
 
@@ -5569,12 +5569,12 @@ struct blackout_kick_t : public monk_melee_attack_t
           bok_totm_proc->execute();
       }
 
-      if ( p()->buff.flaming_kicks->up() )
+      if ( p()->buff.charred_passions->up() )
       {
         double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-        flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-        flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-        flaming_kicks->execute();
+        charred_passions->base_dd_min = s->result_amount * dmg_percent;
+        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+        charred_passions->execute();
 
         if ( td( s->target )->dots.breath_of_fire->is_ticking() )
           td( s->target )->dots.breath_of_fire->refresh_duration();
@@ -5675,11 +5675,11 @@ struct chi_explosion_t : public monk_spell_t
 
 struct sck_tick_action_t : public monk_melee_attack_t
 {
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data ),
-      flaming_kicks( new flaming_kicks_t( p ) )
+      charred_passions( new charred_passions_t( p ) )
   {
     affected_by.sunrise_technique = true;
     ww_mastery                    = true;
@@ -5779,12 +5779,12 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->buff.flaming_kicks->up() )
+    if ( p()->buff.charred_passions->up() )
     {
       double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-      flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-      flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-      flaming_kicks->execute();
+      charred_passions->base_dd_min = s->result_amount * dmg_percent;
+      charred_passions->base_dd_max = s->result_amount * dmg_percent;
+      charred_passions->execute();
 
       if ( td( s->target )->dots.breath_of_fire->is_ticking() )
         td( s->target )->dots.breath_of_fire->refresh_duration();
@@ -7121,7 +7121,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->buff.spitfire->expire();
 
     if ( p()->legendary.charred_passions->ok() )
-      p()->buff.flaming_kicks->trigger();
+      p()->buff.charred_passions->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -10110,7 +10110,7 @@ void monk_t::init_spells()
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
   passives.face_palm                  = find_spell( 227679 );
-  passives.flaming_kicks_dmg          = find_spell( 338141 );
+  passives.charred_passions_dmg          = find_spell( 338141 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -10480,7 +10480,7 @@ void monk_t::create_buffs()
 
   // Shadowland Legendaries
   // General
-  buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
+  buff.charred_passions    = make_buff( this, "charred_passions", find_spell( 338140 ) );
   buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
       ->add_invalidate( CACHE_ATTACK_HASTE )
       ->add_invalidate( CACHE_HASTE )
