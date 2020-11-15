@@ -149,6 +149,10 @@ public:
     buff_t* conquerors_frenzy;
     buff_t* glory;
     // Conduits
+    buff_t* ashen_juggernaut;
+    buff_t* merciless_bonegrinder;
+    buff_t* harrowing_punishment;
+    buff_t* veterans_repute;
 
     // Shadowland Legendary
     buff_t* cadence_of_fujieda;
@@ -299,7 +303,6 @@ public:
     const spell_data_t* last_stand;
     const spell_data_t* mortal_strike;
     const spell_data_t* mortal_strike_rank_2;
-    //const spell_data_t* onslaught;
     const spell_data_t* overpower;
     const spell_data_t* overpower_rank_3;
     const spell_data_t* piercing_howl;
@@ -475,6 +478,7 @@ public:
 
   } legendary;
 
+  // Covenant Powers
   struct covenant_t
   {
     const spell_data_t* ancient_aftershock;
@@ -485,6 +489,22 @@ public:
     const spell_data_t* spear_of_bastion;
     double glory_counter = 0.0; // Track Glory rage spent
   } covenant;
+
+  // Conduits
+  struct conduit_t
+  {
+    conduit_data_t ashen_juggernaut;
+    conduit_data_t crash_the_ramparts;
+    conduit_data_t depths_of_insanity;
+    conduit_data_t destructive_reverberations;
+    conduit_data_t hack_and_slash;
+    conduit_data_t harrowing_punishment;
+    conduit_data_t merciless_bonegrinder;
+    conduit_data_t mortal_combo;
+    conduit_data_t piercing_verdict;
+    conduit_data_t veterans_repute;
+    conduit_data_t vicious_contempt;
+  } conduit;
 
   // Azerite traits
   struct
@@ -723,7 +743,8 @@ struct warrior_action_t : public Base
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot, colossus_smash, rend, siegebreaker, glory;
+    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot,
+    colossus_smash, rend, siegebreaker, glory, ashen_juggernaut;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -742,6 +763,7 @@ struct warrior_action_t : public Base
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
+        ashen_juggernaut( false ),
         crushing_assault( false )
     {
     }
@@ -829,7 +851,14 @@ public:
       ab::apply_affecting_aura(p()->spec.colossus_smash_rank_2);
       ab::apply_affecting_aura(p()->spec.sweeping_strikes_rank_2);
     }
+    // Affecting Passive Conduits
+    ab::apply_affecting_conduit( p()->conduit.ashen_juggernaut );
+    ab::apply_affecting_conduit( p()->conduit.crash_the_ramparts );
+    ab::apply_affecting_conduit( p()->conduit.depths_of_insanity );
+    ab::apply_affecting_conduit( p()->conduit.destructive_reverberations );
+    ab::apply_affecting_conduit( p()->conduit.piercing_verdict );
 
+    affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -941,6 +970,18 @@ public:
     }
 
     return ctdm;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = ab::composite_crit_chance();
+
+    if( affected_by.ashen_juggernaut )
+    {
+      c += p()->buff.ashen_juggernaut ->stack_value();
+    }
+
+    return c;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1633,9 +1674,10 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 struct mortal_strike_t : public warrior_attack_t
 {
   double enduring_blow_chance;
+  double mortal_combo_chance;
   mortal_strike_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ),
-      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
+      mortal_combo_chance( p->conduit.mortal_combo->proc_chance() ), enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
   {
     parse_options( options_str );
 
@@ -1660,15 +1702,6 @@ struct mortal_strike_t : public warrior_attack_t
     m *= 1.0 + td( target )->debuffs_exploiter->check_value();
 
     return m;
-  }
-
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
-
-    c += p()->legendary.archavons_heavy_hand->effectN( 1 ).resource( RESOURCE_RAGE );
-
-    return c;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -1953,6 +1986,18 @@ struct bloodthirst_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->conduit.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
+    {
+      am *= 1.0 + ( p()->conduit.vicious_contempt.value() / 100.0 );
+    }
+
+    return am;
   }
 
   double composite_crit_chance() const override
@@ -2580,6 +2625,10 @@ struct execute_arms_t : public warrior_attack_t
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
     }
+    if ( p()->conduit.ashen_juggernaut.ok() )
+    {
+      p()->buff.ashen_juggernaut->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2720,6 +2769,10 @@ struct fury_execute_parent_t : public warrior_attack_t
      {
        p()->cooldown.execute->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
      }
+    if ( p()->conduit.ashen_juggernaut.ok() )
+    {
+      p()->buff.ashen_juggernaut->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -3611,7 +3664,6 @@ struct rampage_attack_t : public warrior_attack_t
 {
   int aoe_targets;
   bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
-  double deathmaker_chance;
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
@@ -3621,7 +3673,6 @@ struct rampage_attack_t : public warrior_attack_t
       first_attack_missed( false ),
       valarjar_berserking( false ),
       simmering_rage( false ),
-      deathmaker_chance( p->legendary.deathmaker->proc_chance() ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
           ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 )
@@ -3662,17 +3713,6 @@ struct rampage_attack_t : public warrior_attack_t
       {
         p() -> cooldown.recklessness -> adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
       }
-      if ( p()->legendary.deathmaker->ok() && ( result_is_hit( s->result ) ) && rng().roll( deathmaker_chance ) )
-      {
-        if ( td( s->target )->debuffs_siegebreaker->up() )
-        {
-          td( s-> target )->debuffs_siegebreaker->extend_duration( p(), timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
-        }
-        else
-        {
-          td( s-> target )->debuffs_siegebreaker->trigger( timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
-        }
-    }
     }
   }
 
@@ -3754,13 +3794,17 @@ struct rampage_event_t : public event_t
 
 struct rampage_parent_t : public warrior_attack_t
 {
+  double deathmaker_chance;
   double unbridled_chance;  // unbridled ferocity azerite trait
   double frothing_berserker_chance;
+  double hack_and_slash_chance;
   double rage_from_frothing_berserker;
   rampage_parent_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "rampage", p, p->spec.rampage ),
+    deathmaker_chance( p->legendary.deathmaker->proc_chance() ),
     unbridled_chance( p->find_spell( 288060 )->proc_chance() ),
     frothing_berserker_chance( p->talents.frothing_berserker->proc_chance() ),
+    hack_and_slash_chance( p->conduit.hack_and_slash.percent() / 10.0 ),
     rage_from_frothing_berserker( p->find_spell( 215572 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
@@ -3797,6 +3841,22 @@ struct rampage_parent_t : public warrior_attack_t
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
       }
+    }
+    if ( p()->legendary.deathmaker->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( deathmaker_chance ) )
+    {
+      if ( td( target )->debuffs_siegebreaker->up() )
+      {
+        td( target )->debuffs_siegebreaker->extend_duration( p(), timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
+      }
+      else
+      {
+        td( target )->debuffs_siegebreaker->trigger( timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
+      }
+    }
+    if ( p()->conduit.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+    {
+      p()->cooldown.raging_blow->reset( true );
+      p()->cooldown.crushing_blow->reset( true );
     }
     p()->enrage();
     p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
@@ -4688,6 +4748,10 @@ struct condemn_arms_t : public warrior_attack_t
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
     }
+    if ( p()->conduit.ashen_juggernaut.ok() )
+    {
+      p()->buff.ashen_juggernaut->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4738,6 +4802,18 @@ struct condemn_main_hand_t : public warrior_attack_t
     }
     return warrior_attack_t::n_targets();
   }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->conduit.harrowing_punishment->ok() )
+    {
+      am *= 1.0 + ( p()->conduit.harrowing_punishment.value() / 100.0 );
+    }
+
+    return am;
+  }
 };
 
 struct condemn_off_hand_t : public warrior_attack_t
@@ -4762,6 +4838,18 @@ struct condemn_off_hand_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->conduit.harrowing_punishment->ok() )
+    {
+      am *= 1.0 + ( p()->conduit.harrowing_punishment.value() / 100.0 );
+    }
+
+    return am;
   }
 };
 
@@ -4824,11 +4912,14 @@ struct fury_condemn_parent_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_execute_rank_3, p()->gain.execute );
     }
-
     if ( p()->talents.massacre->ok() )
      {
        p()->cooldown.condemn->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
      }
+    if ( p()->conduit.ashen_juggernaut.ok() )
+    {
+      p()->buff.ashen_juggernaut->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5854,6 +5945,22 @@ void warrior_t::init_spells()
   covenant.glory                 = find_spell( 325787 );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
+  // Conduits ===============================================================
+
+  conduit.ashen_juggernaut            = find_conduit_spell( "Ashen Juggernaut" );
+  conduit.crash_the_ramparts          = find_conduit_spell( "Crash the Ramparts" );
+  conduit.merciless_bonegrinder       = find_conduit_spell( "Merciless Bonegrinder" );
+  conduit.mortal_combo                = find_conduit_spell( "Mortal Combo");
+
+  conduit.depths_of_insanity          = find_conduit_spell( "Depths of Insanity" );
+  conduit.hack_and_slash              = find_conduit_spell( "Hack and Slash");
+  conduit.vicious_contempt            = find_conduit_spell( "Vicious Contempt" );
+
+  conduit.destructive_reverberations  = find_conduit_spell( "Destructive Reverberations");
+  conduit.harrowing_punishment        = find_conduit_spell( "Harrowing Punishment" );
+  conduit.piercing_verdict            = find_conduit_spell( "Piercing Verdict" );
+  conduit.veterans_repute             = find_conduit_spell( "Veteran's Repute" );
+
 
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
@@ -6793,6 +6900,7 @@ void warrior_t::create_buffs()
 
   buff.recklessness = make_buff( this, "recklessness", spec.recklessness )
     ->set_duration( spec.recklessness->duration() + spec.recklessness_rank_2->effectN(1).time_value() )
+    ->apply_affecting_conduit( conduit.depths_of_insanity )
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
@@ -6913,7 +7021,13 @@ void warrior_t::create_buffs()
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
-  // Covenant Abilities====================================================================================================
+  // Conduits===============================================================================================================
+  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
+    ->set_default_value( conduit.ashen_juggernaut.percent() );
+
+  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) );
+
+  // Runeforged Legendary Powers============================================================================================
 
   buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335558 ) )
                            ->set_default_value( find_spell( 335558 )->effectN( 1 ).percent() )
