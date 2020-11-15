@@ -5846,13 +5846,13 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
+  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)" );
   apl_normal->add_action( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled>=5)|(!talent.fracture.enabled&fury>=20))))" );
+  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
   apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
   apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
-  apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
+  apl_normal->add_talent( this, "Fracture", "if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement.equipped)" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
