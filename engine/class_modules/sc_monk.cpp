@@ -5003,10 +5003,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       }
       case MONK_BREWMASTER:
       {
-        if ( p()->cooldown.blackout_kick->down() )
-          p()->cooldown.blackout_kick->adjust(
-              timespan_t::from_seconds( -1 * p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
-
         if ( p()->talent.spitfire->ok() )
         {
           if ( rng().roll( p()->talent.spitfire->proc_chance() ) )
