@@ -404,7 +404,8 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).base_value() /
+                        10 )  // Spell Data stores this as 100 not 1000 or 10
   {
     parse_options( options_str );
 
@@ -465,11 +466,6 @@ struct shadow_word_death_t final : public priest_spell_t
           dots = swp_ticking + vt_ticking;
         }
 
-        // Right now in-game this is not using the spell data value
-        if ( priest().bugs )
-        {
-          insanity_per_dot = 5;
-        }
         double insanity_gain = dots * insanity_per_dot;
 
         priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
