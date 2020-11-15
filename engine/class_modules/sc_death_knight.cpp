@@ -8872,7 +8872,6 @@ void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
-  action_priority_list_t* essences  = get_action_priority_list( "essences" );
   action_priority_list_t* standard  = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
@@ -8909,15 +8908,7 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
-  def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=standard" );
-
-  // Essences
-  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
-  essences -> add_action( "anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
-  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "worldvein_resonance" );
-  essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
@@ -8951,8 +8942,7 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_pooling  = get_action_priority_list( "bos_pooling" );
   action_priority_list_t* bos_ticking  = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
-  action_priority_list_t* essences     = get_action_priority_list( "essences" );
-  // action_priority_list_t* covenants     = get_action_priority_list( "covenants" );
+  action_priority_list_t* covenants    = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -8971,9 +8961,8 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
 
   // Choose APL
-  // def -> add_action( "call_action_list,name=covenants" );
-  def -> add_action( "call_action_list,name=cooldowns", "Choose Action list to run" );
-  def -> add_action( "call_action_list,name=essences" );
+  def -> add_action( "call_action_list,name=covenants", "Choose Action list to run" );
+  def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&(buff.cold_heart.stack>=10&(debuff.razorice.stack=5|!death_knight.runeforge.razorice)|fight_remains<=gcd)" );
   def -> add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<10)" );
@@ -8981,18 +8970,11 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
 
-  // Hearth of Azeroth Essences
-  essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<10&(buff.breath_of_sindragosa.up|talent.obliteration.enabled|talent.icecap.enabled&!azerite.icy_citadel.enabled)|buff.icy_citadel.up&talent.icecap.enabled)" );
-  essences -> add_action( "guardian_of_azeroth,if=!talent.icecap.enabled|talent.icecap.enabled&azerite.icy_citadel.enabled&buff.pillar_of_frost.remains<6&buff.pillar_of_frost.up|talent.icecap.enabled&!azerite.icy_citadel.enabled" );
-  essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5&buff.pillar_of_frost.up|target.1.time_to_die<5" );
-  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
-  essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
-  essences -> add_action( "purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "worldvein_resonance,if=buff.pillar_of_frost.up|buff.empower_rune_weapon.up|cooldown.breath_of_sindragosa.remains>60+15|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
-  essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
-  essences -> add_action( "reaping_flames" );
+  // Covenant Abilities
+  covenants -> add_action( "deaths_due,if=raid_event.adds.in>15|!raid_event.adds.exists|active_enemies>=2" );
+  covenants -> add_action( "swarming_mist,if=runic_power.deficit>3&cooldown.pillar_of_frost.ready" );
+  covenants -> add_action( "abomination_limb,if=cooldown.pillar_of_frost.ready" );
+  covenants -> add_action( "shackle_the_unworthy,if=cooldown.pillar_of_frost.ready" );
 
   // On-use items
   cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20", "On Use Items, Potion and Racials" );
@@ -9104,8 +9086,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* aoe_burst   = get_action_priority_list( "aoe_burst" );
   action_priority_list_t* generic_aoe = get_action_priority_list( "generic_aoe" );
   action_priority_list_t* cooldowns   = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* essences    = get_action_priority_list( "essences" );
-  // action_priority_list_t* covenants    = get_action_priority_list( "covenants" );
+  action_priority_list_t* covenants   = get_action_priority_list( "covenants" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -9134,26 +9115,17 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
 
   // Action Lists
-  // def -> add_action( "call_action_list,name=covenants" );
-  def -> add_action( "call_action_list,name=cooldowns", "Action Lists" );
-  def -> add_action( "call_action_list,name=essences" );
+  def -> add_action( "call_action_list,name=covenants", "Action Lists" );
+  def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile.enabled|cooldown.defile.remains<10&talent.defile.enabled)&!death_and_decay.ticking" );
   def -> add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
   def -> add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile.enabled|cooldown.defile.remains>10&talent.defile.enabled))" );
   def -> add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  // Heart of Azeroth Essences
-  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "blood_of_the_enemy,if=death_and_decay.ticking|pet.apoc_ghoul.active&active_enemies=1" );
-  essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2" );
-  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
-  essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
-  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
-  essences -> add_action( "purifying_blast,if=!death_and_decay.ticking" );
-  essences -> add_action( "worldvein_resonance,if=talent.army_of_the_damned.enabled&essence.vision_of_perfection.minor&buff.unholy_strength.up|essence.vision_of_perfection.minor&pet.apoc_ghoul.active|talent.army_of_the_damned.enabled&pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>60|talent.army_of_the_damned.enabled&pet.army_ghoul.active" );
-  essences -> add_action( "worldvein_resonance,if=!death_and_decay.ticking&buff.unholy_strength.up&!essence.vision_of_perfection.minor&!talent.army_of_the_damned.enabled|target.time_to_die<cooldown.apocalypse.remains" );
-  essences -> add_action( "ripple_in_space,if=!death_and_decay.ticking" );
-  essences -> add_action( "reaping_flames" );
+  // Covenant Abilities
+  covenants -> add_action( "swarming_mist,if=runic_power.deficit>3&active.enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)|active_enemies>=2&runic_power.deficit>(active_enemies*3)" );
+  covenants -> add_action( "abomination_limb,if=rune.time_to_5>3" );
+  covenants -> add_action( "shackle_the_unworthy" );
 
   // Potions and Other on use
   cooldowns -> add_action( "use_items", "Potions and other on use" );
@@ -9179,6 +9151,7 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active", "Single Target" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<13&!variable.pooling_for_gargoyle" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
+  generic -> add_action( "deaths_due,if=cooldown.apocalypse.remains" );
   generic -> add_action( "wound_spender,if=debuff.festering_wound.stack>4" );
   generic -> add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!talent.unholy_blight.enabled|talent.army_of_the_damned.enabled|conduit.convocation_of_the_dead.enabled|raid_event.adds.exists)" );
   generic -> add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight.enabled&!talent.army_of_the_damned.enabled&!conduit.convocation_of_the_dead.enabled&!raid_event.adds.exists&(cooldown.unholy_blight.remains>5&cooldown.apocalypse.ready&!dot.unholy_blight.remains|!cooldown.apocalypse.ready)" );
@@ -9191,6 +9164,8 @@ void death_knight_t::default_apl_unholy()
   // AoE Setup Actions
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
+  aoe_setup -> add_action( "deaths_due,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11" );
+  aoe_setup -> add_action( "deaths_due,if=death_knight.fwounded_targets>=5" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
