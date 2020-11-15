@@ -5384,6 +5384,7 @@ struct charred_passions_t : public monk_spell_t
   {
     background = dual             = true;
     proc                          = true;
+    may_crit                      = false;
   }
 };
 
