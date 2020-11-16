@@ -4673,6 +4673,13 @@ struct condemn_damage_t : public warrior_attack_t
       am *= 2.0;
     else
       am *= 2.0 * ( std::min( max_rage, cost_rage ) / max_rage );
+
+    if ( p()->conduit.harrowing_punishment->ok() )
+    {
+      size_t num_targets = std::min( p()->sim->target_non_sleeping_list.size(), (size_t) 5);
+      am *= 1.0 + p()->conduit.harrowing_punishment.percent() * num_targets;
+    }
+
     return am;
   }
 };
@@ -4815,7 +4822,8 @@ struct condemn_main_hand_t : public warrior_attack_t
 
     if ( p()->conduit.harrowing_punishment->ok() )
     {
-      am *= 1.0 + ( p()->conduit.harrowing_punishment.value() / 100.0 );
+      size_t num_targets = std::min( p()->sim->target_non_sleeping_list.size(), (size_t) 5);
+      am *= 1.0 + p()->conduit.harrowing_punishment.percent() * num_targets;
     }
 
     return am;
@@ -4852,7 +4860,8 @@ struct condemn_off_hand_t : public warrior_attack_t
 
     if ( p()->conduit.harrowing_punishment->ok() )
     {
-      am *= 1.0 + ( p()->conduit.harrowing_punishment.value() / 100.0 );
+      size_t num_targets = std::min( p()->sim->target_non_sleeping_list.size(), (size_t) 5);
+      am *= 1.0 + p()->conduit.harrowing_punishment.percent() * num_targets;
     }
 
     return am;
