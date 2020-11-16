@@ -1263,16 +1263,15 @@ void warlock_t::create_options_destruction()
 void warlock_t::create_apl_destruction()
 {
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* precombat =get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* cds = get_action_priority_list( "cds" );
   action_priority_list_t* havoc     = get_action_priority_list( "havoc" );
   action_priority_list_t* ess = get_action_priority_list( "essences" );
 
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
-  def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
+  def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
   def->add_action( "call_action_list,name=cds" );
