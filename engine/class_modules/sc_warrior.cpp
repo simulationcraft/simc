@@ -1673,17 +1673,41 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 
 struct mortal_strike_t : public warrior_attack_t
 {
+  mortal_strike_t* mortal_combo_strike;
+  bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
-  mortal_strike_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ),
-      mortal_combo_chance( p->conduit.mortal_combo->proc_chance() ), enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
+  mortal_strike_t( warrior_t* p, const std::string& options_str, bool mortal_combo = false )
+    : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ), 
+      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ), from_mortal_combo( mortal_combo )
   {
     parse_options( options_str );
+
+    if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
+    {
+      mortal_combo_strike                      = new mortal_strike_t( p, options_str, true );
+      mortal_combo_strike->background          = true;
+    }
 
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     impact_action    = p->active.deep_wounds_ARMS;
+  }
+
+  double cost() const override
+  {
+    if ( from_mortal_combo )
+      return 0;
+
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( from_mortal_combo )
+      return 0;
+    return warrior_attack_t::cost();
   }
 
   double action_multiplier() const override
@@ -1720,6 +1744,10 @@ struct mortal_strike_t : public warrior_attack_t
       if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
+      }
+      if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
+      {
+        mortal_combo_strike->execute();
       }
     }
     p()->buff.overpower->expire();
