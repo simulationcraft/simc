@@ -81,7 +81,6 @@ public:
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> surrender_to_madness_debuff;
-    propagate_const<buff_t*> shadow_crash_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
     propagate_const<buff_t*> hungering_void;
@@ -428,8 +427,9 @@ public:
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
 
-    // Ascended Eruption is currently bugged and counts allies as targets for the sqrt damage falloff
-    int priest_ascended_eruption_additional_targets = 10;
+    // Add "bugged" targets to Ascended Eruption for the SQRT calculation
+    // Setting to 0 turns off the bug
+    int priest_ascended_eruption_additional_targets = 0;
   } options;
 
   // Azerite

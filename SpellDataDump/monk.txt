@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (hotfix 2020-11-05/36512, git build shadowlands fa18139, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-14/36639)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3456,7 +3456,8 @@ Effects          :
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
-                   Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (350 -> 400)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -3579,13 +3580,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.23500 | Target: Self (1)
+                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-17 -> -13), PvP Coefficient (1.235 -> 1)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.23500 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-17 -> -13), PvP Coefficient (1.235 -> 1)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -10477,7 +10480,7 @@ Description      : Expel Harm's healing is increased by |cFFFFFFFF${$s1}.1%|r.
 Name             : Inner Fury (id=336452) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 16 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
+Conduit Id       : 16 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10843,6 +10846,7 @@ Effects          :
 Description      : Life Cocoon increases healing over time received by an additional |cFFFFFFFF${$s1}.1%|r, and this effect lingers for an additional $337242d after the cocoon is removed.
 
 Name             : Evasive Stride (id=337250) [Spell Family (53), Passive, Hidden] 
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Conduit Id       : 56 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
@@ -11697,6 +11701,25 @@ Effects          :
                    Affected Spells: Life Cocoon (116849)
                    Family Flags: 78
 Description      : Life Cocoon increases all healing over time received by $m1%.
+
+Name             : Evasive Stride (id=343764) [Spell Family (6)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Cannot crit (93), Scales with item level (354)
+Effects          :
+#1 (id=867560)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc337250
 
 Name             : Invoke Chi-Ji, the Red Crane (id=343818) [Spell Family (53), Passive] 
 Class            : Monk

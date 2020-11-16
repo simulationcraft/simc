@@ -153,7 +153,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
-    buff_t* rushing_tiger_palm;
+    buff_t* keefers_skyreach;
     buff_t* recently_rushing_tiger_palm;
   } debuff;
 
@@ -201,6 +201,9 @@ public:
 
     // Azerite Traits
     action_t* fit_to_burst;
+
+    // Conduit
+    heal_t* evasive_stride;
 
     // Covenant
     action_t* bonedust_brew_dmg;
@@ -296,6 +299,7 @@ public:
     buff_t* swift_roundhouse;
 
     // Covenant Abilities
+    buff_t* bonedust_brew_hidden;
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;
     buff_t* faeline_stomp;
@@ -306,7 +310,7 @@ public:
 
     // Shadowland Legendary
     buff_t* chi_energy;
-    buff_t* flaming_kicks;
+    buff_t* charred_passions;
     buff_t* invokers_delight;
     buff_t* mighty_pour;
     buff_t* pressure_point;
@@ -652,11 +656,12 @@ public:
 
     // Conduits
     const spell_data_t* fortifying_ingredients;
+    const spell_data_t* evasive_stride;
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
     const spell_data_t* face_palm;
-    const spell_data_t* flaming_kicks_dmg;
+    const spell_data_t* charred_passions_dmg;
   } passives;
 
   // RPPM objects
@@ -4065,6 +4070,9 @@ public:
 
     if ( p()->cooldown.black_ox_brew->down() )
       p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p()->covenant.necrolord->ok() && p()->cooldown.bonedust_brew->down() )
+      p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
   void trigger_shuffle( double time_extension )
@@ -4277,6 +4285,9 @@ public:
       if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
       {
         double damage = s->result_total * p()->covenant.necrolord->effectN( 1 ).percent();
+        if ( p()->conduit.bone_marrow_hops->ok() )
+          damage *= 1 + p()->conduit.bone_marrow_hops.percent();
+
         p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
         p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
         p()->active_actions.bonedust_brew_dmg->execute();
@@ -4703,8 +4714,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double c = player->composite_player_target_crit_chance( target );
 
-    if ( td( target )->debuff.rushing_tiger_palm->up() )
-      c += td( target )->debuff.rushing_tiger_palm->value();
+    if ( td( target )->debuff.keefers_skyreach->up() )
+      c += td( target )->debuff.keefers_skyreach->value();
 
     return c;
   }
@@ -4900,9 +4911,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
 
-    if ( p->specialization() == MONK_BREWMASTER )
-      base_costs[ RESOURCE_ENERGY ] *= 1 + p->spec.brewmaster_monk->effectN( 17 ).percent();  // -50% for Brewmasters
-
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
     else
@@ -4917,8 +4925,6 @@ struct tiger_palm_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-//    am *= 1 + p()->spec.mistweaver_monk->effectN( 13 ).percent();
 
     if ( p()->buff.blackout_combo->check() )
       am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
@@ -4994,10 +5000,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       }
       case MONK_BREWMASTER:
       {
-        if ( p()->cooldown.blackout_kick->down() )
-          p()->cooldown.blackout_kick->adjust(
-              timespan_t::from_seconds( -1 * p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
-
         if ( p()->talent.spitfire->ok() )
         {
           if ( rng().roll( p()->talent.spitfire->proc_chance() ) )
@@ -5038,7 +5040,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       if ( !td( s->target )->debuff.recently_rushing_tiger_palm->up() )
       {
-        td( s->target )->debuff.rushing_tiger_palm->trigger();
+        td( s->target )->debuff.keefers_skyreach->trigger();
         td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
       }
     }
@@ -5214,8 +5216,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    cooldown->duration += p->spec.mistweaver_monk->effectN( 10 ).time_value();
-
     may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
@@ -5250,11 +5250,11 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI,
-            base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
@@ -5329,15 +5329,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return timespan_t::from_millis( 100 );
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
-
-    return am;
-  }
-
   double cost() const override
   {
     return 0;
@@ -5379,26 +5370,27 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
-// Flaming Kicks ============================================================
-struct flaming_kicks_t : public monk_spell_t
+// Charred Passions ============================================================
+struct charred_passions_t : public monk_spell_t
 {
-  flaming_kicks_t( monk_t* p ) : monk_spell_t( "flaming_kicks", p, p->passives.flaming_kicks_dmg )
+  charred_passions_t( monk_t* p ) : monk_spell_t( "charred_passions", p, p->passives.charred_passions_dmg )
   {
     background = dual             = true;
+    proc                          = true;
+    may_crit                      = false;
   }
 };
-
 
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_totm_proc* bok_totm_proc;
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "blackout_kick", p,
         ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-        flaming_kicks( new flaming_kicks_t( p ) )
+        charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery = true;
 
@@ -5450,23 +5442,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    switch ( p()->specialization() )
-    {
-      case MONK_MISTWEAVER:
-      {
-        am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
-        break;
-      }
-      default:
-        break;
-    }
-    return am;
-  }
-
   double bonus_da( const action_state_t* s ) const override
   {
     double b = base_t::bonus_da( s );
@@ -5481,6 +5456,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
@@ -5489,6 +5465,7 @@ struct blackout_kick_t : public monk_melee_attack_t
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
 
+    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.bok_proc->up() )
     {
       p()->buff.bok_proc->expire();
@@ -5586,12 +5563,12 @@ struct blackout_kick_t : public monk_melee_attack_t
           bok_totm_proc->execute();
       }
 
-      if ( p()->buff.flaming_kicks->up() )
+      if ( p()->buff.charred_passions->up() )
       {
         double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-        flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-        flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-        flaming_kicks->execute();
+        charred_passions->base_dd_min = s->result_amount * dmg_percent;
+        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+        charred_passions->execute();
 
         if ( td( s->target )->dots.breath_of_fire->is_ticking() )
           td( s->target )->dots.breath_of_fire->refresh_duration();
@@ -5692,11 +5669,11 @@ struct chi_explosion_t : public monk_spell_t
 
 struct sck_tick_action_t : public monk_melee_attack_t
 {
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data ),
-      flaming_kicks( new flaming_kicks_t( p ) )
+      charred_passions( new charred_passions_t( p ) )
   {
     affected_by.sunrise_technique = true;
     ww_mastery                    = true;
@@ -5796,20 +5773,16 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->buff.flaming_kicks->up() )
+    if ( p()->buff.charred_passions->up() )
     {
       double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-      flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-      flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-      flaming_kicks->execute();
+      charred_passions->base_dd_min = s->result_amount * dmg_percent;
+      charred_passions->base_dd_max = s->result_amount * dmg_percent;
+      charred_passions->execute();
 
       if ( td( s->target )->dots.breath_of_fire->is_ticking() )
         td( s->target )->dots.breath_of_fire->refresh_duration();
     }
-
-    // Bonedust Brew
-    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.bonedust_brew->up() )
-      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
   }
 };
 
@@ -5884,7 +5857,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       if ( cost < 0 )
         cost = 0;
 
-      p()->gain.serenity->add( RESOURCE_CHI, cost );
+      p()->resource_gain( RESOURCE_CHI, cost, p()->gain.serenity );
     }
   }
 
@@ -5920,8 +5893,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
     if ( p()->covenant.necrolord->ok() )
-      if ( p()->specialization() == MONK_WINDWALKER && td( execute_state->target )->debuff.bonedust_brew->up() )
-        p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
+      if ( p()->specialization() == MONK_WINDWALKER && td( execute_state->target )->debuff.bonedust_brew->up() &&
+           !p()->buff.dance_of_chiji->up() )
+        p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(),
+                            p()->gain.bonedust_brew );
 
   }
 
@@ -6023,8 +5998,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     if ( p()->azerite.open_palm_strikes.ok() &&
          rng().roll( p()->azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
-      p()->gain.open_palm_strikes->add( RESOURCE_CHI,
-                                        p()->azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value() );
+      p()->resource_gain( RESOURCE_CHI, p()->azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value(),
+                          p()->gain.open_palm_strikes );
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
@@ -6076,11 +6051,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.serenity->up() )
     {
       if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] -
-                                                   p()->buff.weapons_of_order_ww->value() );
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
       else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
@@ -6274,9 +6249,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
-      if ( player->specialization() == MONK_MISTWEAVER )
-        base_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 5 ).percent();
-      else
+      if ( !player->specialization() == MONK_MISTWEAVER )
         base_hit -= 0.19;
     }
   }
@@ -6411,8 +6384,7 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // For more than 5 targets damage is based on a logarithmic function.
-  // This is the closest we can figure out what that function is
+  // For more than 5 targets damage is based on a Sqrt(5/x)
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
@@ -6422,7 +6394,7 @@ struct keg_smash_t : public monk_melee_attack_t
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
       if ( state->target != target )
-        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+        cam *= std::sqrt( 5 / state->n_targets );
 
     return cam;
   }
@@ -7105,6 +7077,8 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
+    aoe = 1;
+
     add_child( p.active_actions.breath_of_fire );
   }
 
@@ -7129,7 +7103,7 @@ struct breath_of_fire_t : public monk_spell_t
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-        return cam / std::sqrt( state->n_targets );
+      return cam / std::sqrt( state->n_targets );
 
     return cam;
   }
@@ -7142,7 +7116,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->buff.spitfire->expire();
 
     if ( p()->legendary.charred_passions->ok() )
-      p()->buff.flaming_kicks->trigger();
+      p()->buff.charred_passions->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7309,6 +7283,20 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->conduit.evasive_stride->ok() )
+    {
+      // Tooltip shows this as (Value / 10)%; ie: (25 / 10)% = 2.5%.
+      // For roll purpose we need this to go to 0.025 or value / 1000
+      if ( p()->buff.shuffle->up() && p()->buff.heavy_stagger->up() &&
+           rng().roll( p()->conduit.evasive_stride.value() / 1000 ) )
+      {
+        p()->active_actions.evasive_stride->base_dd_min = s->result_amount;
+        p()->active_actions.evasive_stride->base_dd_max = s->result_amount;
+        p()->active_actions.evasive_stride->execute();
+        s->result_amount = 0;
+      }
+    }
+
     base_t::impact( s );
     p()->buff.shuffle->up();  // benefit tracking
     p()->stagger_damage_changed();
@@ -7843,9 +7831,16 @@ struct bonedust_brew_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    harmful     = false;
-    base_dd_min = 0;
-    base_dd_max = 0;
+    harmful          = false;
+    aoe              = -1;
+    base_dd_min      = 0;
+    base_dd_max      = 0;
+  }
+
+  void execute() override
+  {
+    p()->buff.bonedust_brew_hidden->trigger();
+    monk_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -7866,26 +7861,19 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
-    ww_mastery = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p()->conduit.bone_marrow_hops->ok() )
-        am *= 1 + p()->conduit.bone_marrow_hops.percent();
-
-    return am;
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok() )
-     // Saved at -500
-     p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+    if ( p()->conduit.bone_marrow_hops->ok() && p()->buff.bonedust_brew_hidden->up() )
+    {
+      // Saved at -500
+      p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+      p()->buff.bonedust_brew_hidden->decrement();
+    }
   }
 };
 
@@ -7901,23 +7889,17 @@ struct bonedust_brew_heal_t : public monk_heal_t
     background = true;
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p()->conduit.bone_marrow_hops->ok() )
-      am *= 1 + p()->conduit.bone_marrow_hops.percent();
-
-    return am;
-  }
-
   void execute() override
   {
     monk_heal_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok() )
+    if ( p()->conduit.bone_marrow_hops->ok() && p()->buff.bonedust_brew_hidden->up() )
+    {
       // Saved at -500
       p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+      p()->buff.bonedust_brew_hidden->decrement();
+    }
   }
 };
 
@@ -8945,6 +8927,20 @@ struct fit_to_burst_t : public monk_heal_t
   }
 };
 
+// ==========================================================================
+// Evasive Stride Conduit
+// ==========================================================================
+
+struct evasive_stride_t : public monk_heal_t
+{
+  evasive_stride_t( monk_t& p ) : monk_heal_t( "evasive_stride", p, p.passives.evasive_stride )
+  {
+    background  = true;
+    proc        = true;
+    target      = player;
+  }
+};
+
 }  // end namespace heals
 
 namespace absorbs
@@ -9340,6 +9336,7 @@ void init()
 // Monk Character Definition
 // ==========================================================================
 
+// Debuffs ==================================================================
 monk_td_t::monk_td_t( player_t* target, monk_t* p )
   : actor_target_data_t( target, p ), dots( dots_t() ), debuff( buffs_t() ), monk( *p )
 {
@@ -9361,9 +9358,11 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
+                           ->set_cooldown( timespan_t::zero() )
                            ->set_default_value_from_effect( 3 );
 
-    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
+    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg )
+                               ->set_cooldown(timespan_t::zero());
   }
 
   // Azerite
@@ -9371,6 +9370,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew", p->covenant.necrolord )
+                             ->set_cooldown( timespan_t::zero() )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
@@ -9383,7 +9383,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
-  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 344021 ) )
+  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -10105,11 +10105,12 @@ void monk_t::init_spells()
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );
+  passives.evasive_stride             = find_spell( 343764 );
 
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
   passives.face_palm                  = find_spell( 227679 );
-  passives.flaming_kicks_dmg          = find_spell( 338141 );
+  passives.charred_passions_dmg          = find_spell( 338141 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -10134,15 +10135,18 @@ void monk_t::init_spells()
   active_actions.stagger_self_damage    = new actions::stagger_self_damage_t( this );
 
   // Windwalker
-  active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
-  windwalking_aura                 = new actions::windwalking_aura_t( this );
+  active_actions.sunrise_technique      = new actions::sunrise_technique_t( this );
+  windwalking_aura                      = new actions::windwalking_aura_t( this );
 
   // Azerite Traits
-  active_actions.fit_to_burst = new actions::heals::fit_to_burst_t( *this );
+  active_actions.fit_to_burst           = new actions::heals::fit_to_burst_t( *this );
+
+  // Conduit
+  active_actions.evasive_stride         = new actions::heals::evasive_stride_t( *this );
 
   // Covenant
-  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
-  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
+  active_actions.bonedust_brew_dmg      = new actions::spells::bonedust_brew_damage_t( *this );
+  active_actions.bonedust_brew_heal     = new actions::spells::bonedust_brew_heal_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -10408,9 +10412,7 @@ void monk_t::create_buffs()
   // Brewmaster
   buff.straight_no_chaser = make_buff<stat_buff_t>( this, "straight_no_chaser", find_spell( 285959 ) )
                                 ->add_stat( STAT_ARMOR, azerite.straight_no_chaser.value() );
-//                                ->set_duration_multiplier( 3 )
-//                                 ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-  ;
+
   buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
                           ->set_reverse( true );
@@ -10450,9 +10452,15 @@ void monk_t::create_buffs()
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
   // Covenant Abilities
+  buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
+                                  ->set_quiet( true )
+                                  ->set_duration( timespan_t::from_seconds( 10 ) )
+                                  ->set_max_stack( 5 )
+                                  ->set_reverse( true )
+                                  ->set_reverse_stack_count( 5 );
+
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() +
-                            ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity.value() : 0 ) )
+                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
                         ->set_duration( find_spell( 310454 )->duration() + (
                             conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
                         ->add_invalidate( CACHE_MASTERY );
@@ -10472,7 +10480,7 @@ void monk_t::create_buffs()
 
   // Shadowland Legendaries
   // General
-  buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
+  buff.charred_passions    = make_buff( this, "charred_passions", find_spell( 338140 ) );
   buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
       ->add_invalidate( CACHE_ATTACK_HASTE )
       ->add_invalidate( CACHE_HASTE )
@@ -11051,26 +11059,9 @@ double monk_t::composite_mastery() const
 
   if ( buff.weapons_of_order->up() )
   {
-    switch ( specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        m += mastery.elusive_brawler->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
-        break;
-      }
-      case MONK_MISTWEAVER:
-      {
-        m += mastery.gust_of_mists->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        m += mastery.combo_strikes->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
-        break;
-      }
-      default:
-        break;
-    }
+    m += buff.weapons_of_order->value();
+    if ( conduit.strike_with_clarity->ok() )
+      m += conduit.strike_with_clarity.value();
   }
 
   return m;
@@ -12200,11 +12191,6 @@ double monk_t::current_stagger_tick_dmg()
   if ( buff.invoke_niuzao->up() )
     dmg *= 1 - buff.invoke_niuzao->value(); // Saved as 25%
 
-  if ( conduit.evasive_stride->ok() )
-  {
-    if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.percent() ) )
-      dmg = 0;
-  }
   return dmg;
 }
 

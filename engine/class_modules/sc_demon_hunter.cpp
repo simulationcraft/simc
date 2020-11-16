@@ -109,23 +109,42 @@ public:
 constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
 constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
-enum class soul_fragment
+enum class soul_fragment : unsigned
 {
-  ALL,
-  GREATER,
-  LESSER,
+  GREATER = 0x01,
+  LESSER = 0x02,
+  GREATER_DEMON = 0x04,
+  EMPOWERED_DEMON = 0x08,
+
+  ANY_GREATER = ( GREATER | GREATER_DEMON | EMPOWERED_DEMON ),
+  ANY_DEMON = ( GREATER_DEMON | EMPOWERED_DEMON ),
+  ANY = 0xFF
 };
+
+soul_fragment operator&( soul_fragment l, soul_fragment r )
+{
+  return static_cast<soul_fragment> ( static_cast<unsigned>( l ) & static_cast<unsigned>( r ) );
+}
+
+soul_fragment operator|( soul_fragment l, soul_fragment r )
+{
+  return static_cast<soul_fragment> ( static_cast<unsigned>( l ) | static_cast<unsigned>( r ) );
+}
 
 const char* get_soul_fragment_str( soul_fragment type )
 {
   switch ( type )
   {
-    case soul_fragment::ALL:
+    case soul_fragment::ANY:
       return "soul fragment";
     case soul_fragment::GREATER:
       return "greater soul fragment";
     case soul_fragment::LESSER:
       return "lesser soul fragment";
+    case soul_fragment::GREATER_DEMON:
+      return "greater demon fragment";
+    case soul_fragment::EMPOWERED_DEMON:
+      return "empowered demon fragment";
     default:
       return "";
   }
@@ -181,7 +200,8 @@ public:
   struct buffs_t
   {
     // General
-    buff_t* demon_soul;
+    damage_buff_t* demon_soul;
+    damage_buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
 
@@ -210,7 +230,6 @@ public:
     buff_t* thirsting_blades_driver;
 
     // Covenant
-    buff_t* fodder_to_the_flame;
     buff_t* growing_inferno;
     buff_t* soul_furance;
 
@@ -301,6 +320,7 @@ public:
     const spell_data_t* disrupt;
     const spell_data_t* disrupt_rank_2;
     const spell_data_t* disrupt_rank_3;
+    const spell_data_t* empowered_demon_soul;
     const spell_data_t* leather_specialization;
     const spell_data_t* immolation_aura;
     const spell_data_t* immolation_aura_rank_2;
@@ -513,6 +533,8 @@ public:
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
     proc_t* soul_fragment_greater;
+    proc_t* soul_fragment_greater_demon;
+    proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
 
     // Havoc
@@ -583,7 +605,6 @@ public:
     double initial_fury = 0;
     double memory_of_lucid_dreams_proc_chance = 0.15;
     int fodder_to_the_flame_kill_seconds = 4;
-    double fodder_to_the_flame_min_percent = 0.75;
     double razelikhs_defilement_utility_pct = 0;
   } options;
 
@@ -669,11 +690,10 @@ public:
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
-  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ALL, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
-  unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ALL, bool require_demon = false ) const;
-  unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ALL ) const;
+  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
+  unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
+  unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   void activate_soul_fragment( soul_fragment_t* );
-  void spawn_soul_fragment( soul_fragment, unsigned, bool, bool );
   void spawn_soul_fragment( soul_fragment, unsigned = 1, bool = false );
   void spawn_soul_fragment( soul_fragment, unsigned, player_t* target, bool = false );
   void trigger_demonic();
@@ -893,11 +913,10 @@ struct soul_fragment_t
   event_t* activate;
   event_t* expiration;
   const soul_fragment type;
-  bool from_demon;
   bool consume_on_activation;
 
-  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool from_demon, bool consume_on_activation )
-    : dh( p ), type( t ), from_demon( from_demon ), consume_on_activation( consume_on_activation )
+  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool consume_on_activation )
+    : dh( p ), type( t ), consume_on_activation( consume_on_activation )
   {
     activate = expiration = nullptr;
 
@@ -943,9 +962,9 @@ struct soul_fragment_t
     }
   }
 
-  bool is_type( soul_fragment t ) const
+  bool is_type( soul_fragment type_mask ) const
   {
-    return ( t == soul_fragment::ALL || type == t );
+    return ( type_mask & type ) == type;
   }
 
   void set_position()
@@ -983,7 +1002,7 @@ struct soul_fragment_t
 
     if ( heal )
     {
-      action_t* consume_action = type == soul_fragment::GREATER ?
+      action_t* consume_action = is_type( soul_fragment::ANY_GREATER ) ?
         dh->active.consume_soul_greater : dh->active.consume_soul_lesser;
 
       if ( instant )
@@ -1023,7 +1042,11 @@ struct soul_fragment_t
       dh->buff.soul_furance->trigger();
     }
 
-    if ( type == soul_fragment::GREATER && from_demon )
+    if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
+    {
+      dh->buff.empowered_demon_soul->trigger();
+    }
+    else if ( is_type( soul_fragment::GREATER_DEMON ) )
     {
       dh->buff.demon_soul->trigger();
     }
@@ -1153,6 +1176,7 @@ public:
   struct
   {
     affect_flags demon_soul;
+    affect_flags empowered_demon_soul;
 
     // Havoc
     affect_flags demonic_presence;
@@ -1206,6 +1230,7 @@ public:
 
     // Generic Affect Flags
     parse_affect_flags( p->spec.demon_soul, affected_by.demon_soul );
+    parse_affect_flags( p->spec.empowered_demon_soul, affected_by.empowered_demon_soul );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
@@ -1335,7 +1360,12 @@ public:
 
     if ( affected_by.demon_soul.direct )
     {
-      m *= 1.0 + p()->buff.demon_soul->check_stack_value();
+      m *= p()->buff.demon_soul->check_value_direct();
+    }
+
+    if ( affected_by.empowered_demon_soul.direct )
+    {
+      m *= p()->buff.empowered_demon_soul->check_value_direct();
     }
 
     return m;
@@ -1357,7 +1387,12 @@ public:
 
     if ( affected_by.demon_soul.periodic )
     {
-      m *= 1.0 + p()->buff.demon_soul->check_stack_value();
+      m *= p()->buff.demon_soul->check_value_periodic();
+    }
+
+    if ( affected_by.empowered_demon_soul.periodic )
+    {
+      m *= p()->buff.empowered_demon_soul->check_value_periodic();
     }
 
     return m;
@@ -1380,6 +1415,7 @@ public:
     if ( ab::snapshot_flags & STATE_MUL_TA )
     {
       p()->buff.demon_soul->up();
+      p()->buff.empowered_demon_soul->up();
     }
 
     if ( affected_by.momentum.direct || affected_by.momentum.periodic )
@@ -2121,7 +2157,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     }
 
     // Darkglare Boon Legendary
-    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->proc_chance() ) )
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->effectN( 1 ).percent() ) )
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
@@ -2731,7 +2767,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   pick_up_fragment_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "pick_up_fragment", p, spell_data_t::nil() ),
       select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
-      type( soul_fragment::ALL )
+      type( soul_fragment::ANY )
   {
     std::string type_str, mode_str;
     add_option( opt_string( "type", type_str ) );
@@ -2774,7 +2810,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   {
     if ( value == "greater" )
     {
-      type = soul_fragment::GREATER;
+      type = soul_fragment::ANY_GREATER;
     }
     else if ( value == "lesser" )
     {
@@ -2782,7 +2818,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
     else if ( value == "all" || value == "any" )
     {
-      type = soul_fragment::ALL;
+      type = soul_fragment::ANY;
     }
     else if ( value != "" )
     {
@@ -2942,7 +2978,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
-    const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ALL, true, max_fragments_consumed );
+    const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
     if ( fragments_consumed > 0 )
     {
       damage->set_target( target );
@@ -3039,18 +3075,8 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      demon_hunter_spell_t::execute();
-      
-      p()->buff.fodder_to_the_flame->trigger();
-      p()->spawn_soul_fragment( soul_fragment::GREATER, 1, true, false );
-
-      // Adjust the duration downward if specified by the user input setting
-      double buff_duration_percent = p()->rng().range( p()->options.fodder_to_the_flame_min_percent, 1.0 );
-      if( buff_duration_percent )
-      {
-        timespan_t adjusted_duration = p()->buff.fodder_to_the_flame->buff_duration() * ( 1.0 - buff_duration_percent );
-        p()->buff.fodder_to_the_flame->extend_duration( p(), -adjusted_duration );
-      }
+      demon_hunter_spell_t::execute();     
+      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
     }
   };
 
@@ -3090,7 +3116,7 @@ struct the_hunt_t : public demon_hunter_spell_t
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
       the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->find_spell( 345335 ) )
+        : demon_hunter_spell_t( name, p, p->covenant.the_hunt->effectN( 4 ).trigger() )
       {
         dual = true;
         aoe = as<int>( p->covenant.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
@@ -3158,7 +3184,6 @@ namespace attacks
       base_execute_time = weapon->swing_time;
       
       affected_by.momentum.direct = true;
-      affected_by.demon_soul.direct = true;
 
       status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
@@ -3166,6 +3191,16 @@ namespace attacks
       {
         base_hit -= 0.19;
       }
+    }
+
+    double action_multiplier() const override
+    {
+      double m = demon_hunter_attack_t::action_multiplier();
+
+      m *= p()->buff.demon_soul->stack_value_auto_attack();
+      m *= p()->buff.empowered_demon_soul->stack_value_auto_attack();
+
+      return m;
     }
 
     void reset() override
@@ -4192,6 +4227,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   heals::soul_cleave_heal_t* heal;
   std::vector<cooldown_t*> sigil_cooldowns;
+  timespan_t sigil_cooldown_adjust;
+  timespan_t decree_cooldown_adjust;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -4211,6 +4248,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p->legendary.razelikhs_defilement->ok() )
     {
       sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree };
+      sigil_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
+      decree_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 2 ).base_value() );
     }
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
@@ -4237,13 +4276,16 @@ struct soul_cleave_t : public demon_hunter_attack_t
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
       if ( sigils_on_cooldown.size() > 0 )
       {
-        const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
-        sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ]->adjust( adjust_duration );
+        cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
+        if ( sigil_cooldown == p()->cooldown.elysian_decree )
+          sigil_cooldown->adjust( decree_cooldown_adjust );
+        else
+          sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
     }
 
     // Soul fragments consumed are capped for Soul Cleave
-    unsigned consumed = p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
+    unsigned consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, (unsigned)data().effectN( 3 ).base_value() );
     
     if ( p()->legendary.fiery_soul->ok() )
     {
@@ -4795,10 +4837,9 @@ void demon_hunter_t::create_buffs()
 
   // General ================================================================
 
-  buff.demon_soul = make_buff( this, "demon_soul", spec.demon_soul )
-    ->set_default_value_from_effect( 1 )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
+  buff.demon_soul = make_buff<damage_buff_t>( this, "demon_soul", spec.demon_soul );
+  buff.empowered_demon_soul = make_buff<damage_buff_t>( this, "empowered_demon_soul", spec.empowered_demon_soul )
+    ->apply_affecting_conduit( conduit.brooding_pool );
   buff.immolation_aura = new buffs::immolation_aura_buff_t( this );
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
@@ -4812,6 +4853,7 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate( CACHE_DODGE );
 
   buff.eye_beam_rank_3 = make_buff( this, "furious_gaze", find_spell( 343312 ) )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->add_invalidate( CACHE_HASTE );
 
@@ -4904,13 +4946,6 @@ void demon_hunter_t::create_buffs()
 
   // Covenant ===============================================================
 
-  const spell_data_t* fodder_to_the_flame_buff = covenant.fodder_to_the_flame->ok() ? find_spell( 330910 ) : spell_data_t::not_found();
-  buff.fodder_to_the_flame = make_buff<buff_t>( this, "fodder_to_the_flame", fodder_to_the_flame_buff )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_duration( find_spell( 330846 )->duration() )
-    ->apply_affecting_conduit( conduit.brooding_pool )
-    ->add_invalidate( CACHE_HASTE );
-
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
@@ -4930,8 +4965,11 @@ void demon_hunter_t::create_buffs()
 
   // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
   const spell_data_t* fel_bombardment_buff = legendary.fel_bombardment->ok() ? find_spell( 337849 ) : spell_data_t::not_found();
-  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff )
-    ->set_chance( 0.2 );
+  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff );
+  if ( legendary.fel_bombardment->ok() )
+  {
+    buff.fel_bombardment->set_chance( 0.2 );
+  }
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -5015,16 +5053,15 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
     {
       demon_hunter_t* dh;
       soul_fragment type;
-      bool require_demon;
 
       soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t, bool require_demon )
-        : expr_t( n ), dh( p ), type( t ), require_demon( require_demon )
+        : expr_t( n ), dh( p ), type( t )
       {
       }
 
       double evaluate() override
       {
-        return dh->get_active_soul_fragments( type, require_demon );
+        return dh->get_active_soul_fragments( type );
       }
     };
 
@@ -5033,16 +5070,15 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
     if ( name_str == "soul_fragments" )
     {
-      type = soul_fragment::ALL;
+      type = soul_fragment::ANY;
     }
     else if ( name_str == "greater_soul_fragments" )
     {
-      type = soul_fragment::GREATER;
+      type = soul_fragment::ANY_GREATER;
     }
     else if ( name_str == "demon_soul_fragments" )
     {
-      type = soul_fragment::GREATER;
-      require_demon = true;
+      type = soul_fragment::ANY_DEMON;
     }
 
     return std::make_unique<soul_fragments_expr_t>( this, name_str, type, require_demon );
@@ -5076,7 +5112,6 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "target_reach", options.target_reach ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "fodder_to_the_flame_min_percent", options.fodder_to_the_flame_min_percent, 0.0, 1.0 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
   add_option( opt_float( "razelikhs_defilement_utility_pct", options.razelikhs_defilement_utility_pct, 0.0, 1.0 ) );
 }
@@ -5191,11 +5226,13 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range       = get_proc( "delayed_swing__out_of_range" );
-  proc.delayed_aa_channel     = get_proc( "delayed_swing__channeling" );
-  proc.soul_fragment_greater  = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_lesser   = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset         = get_proc( "felblade_reset" );
+  proc.delayed_aa_range               = get_proc( "delayed_swing__out_of_range" );
+  proc.delayed_aa_channel             = get_proc( "delayed_swing__channeling" );
+  proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser           = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset                 = get_proc( "felblade_reset" );
 
   // Havoc
   proc.demon_blades_wasted            = get_proc( "demon_blades_wasted" );
@@ -5207,15 +5244,15 @@ void demon_hunter_t::init_procs()
   proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
 
   // Vengeance
-  proc.soul_fragment_expire         = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow       = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear     = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture  = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_fallout   = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta      = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_expire           = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow         = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear       = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture    = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_fallout     = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta        = get_proc( "soul_fragment_from_meta" );
 
   // Legendary
-  proc.darkglare_boon_resets        = get_proc( "darkglare_boon_resets" );
+  proc.darkglare_boon_resets          = get_proc( "darkglare_boon_resets" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -5279,6 +5316,7 @@ void demon_hunter_t::init_spells()
   spec.demonic_wards_rank_2   = find_rank_spell( "Demonic Wards", "Rank 2" );
   spec.demonic_wards_rank_3   = find_rank_spell( "Demonic Wards", "Rank 3" );
   spec.demon_soul             = find_spell( 163073 );
+  spec.empowered_demon_soul   = find_spell( 347765 );
   spec.thick_skin             = find_specialization_spell( "Thick Skin" );
   spec.soul_fragment          = find_spell( 204255 );
   spec.leather_specialization = find_specialization_spell( "Leather Specialization", "Passive" );
@@ -5772,16 +5810,19 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
 
   apl_default->add_action( "auto_attack" );
+  apl_default->add_action( "variable,name=brand_build,value=talent.agonizing_flames.enabled&talent.burning_alive.enabled&talent.charred_flesh.enabled" );
+  apl_default->add_action( this, "Disrupt" );
   // Only triggers if there is something to steal
   apl_default->add_action( this, "Consume Magic" );
-  apl_default->add_action( "call_action_list,name=brand" );
+  apl_default->add_action( this, "Throw Glaive", "if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)" );
+  apl_default->add_action( "call_action_list,name=brand,if=variable.brand_build" );
   apl_default->add_action( "call_action_list,name=defensives" );
   apl_default->add_action( "call_action_list,name=cooldowns" );
   apl_default->add_action( "call_action_list,name=normal" );
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  apl_defensives->add_action( this, "Metamorphosis" );
+  apl_defensives->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
@@ -5793,28 +5834,25 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down" );
   cooldowns->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
+  cooldowns->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
+  cooldowns->add_action( "the_hunt" );
+  cooldowns->add_action( "fodder_to_the_flame" );
+  cooldowns->add_action( "elysian_decree" );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&cooldown.fiery_brand.remains<2" );
-  apl_brand->add_action( this, "Infernal Strike", "if=cooldown.fiery_brand.remains=0" );
   apl_brand->add_action( this, "Fiery Brand" );
   apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_talent( this, "Fel Devastation", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Infernal Strike", "if=dot.fiery_brand.ticking" );
-  apl_brand->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped&dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
-  apl_normal->add_action( "elysian_decree" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
-  apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
-  apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
-  apl_normal->add_talent( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Immolation Aura", "if=fury<=90" );
-  apl_normal->add_talent( this, "Felblade", "if=fury<=70" );
-  apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
+  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)" );
+  apl_normal->add_action( this, "Fel Devastation" );
+  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
+  apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
+  apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
+  apl_normal->add_talent( this, "Fracture", "if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement.equipped)" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
@@ -5998,7 +6036,6 @@ double demon_hunter_t::composite_melee_haste() const
   }
 
   mh /= 1.0 + buff.eye_beam_rank_3->check_value();
-  mh /= 1.0 + buff.fodder_to_the_flame->check_value();
 
   return mh;
 }
@@ -6015,7 +6052,6 @@ double demon_hunter_t::composite_spell_haste() const
   }
 
   sh /= 1.0 + buff.eye_beam_rank_3->check_value();
-  sh /= 1.0 + buff.fodder_to_the_flame->check_value();
 
   return sh;
 }
@@ -6506,37 +6542,27 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
 
 // demon_hunter_t::get_active_soul_fragments ================================
 
-unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type, bool require_demon ) const
+unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type_mask ) const
 {
-  if ( type == soul_fragment::GREATER || type == soul_fragment::LESSER )
-  {
     return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
-                            [ &type, require_demon ]( unsigned acc, soul_fragment_t* frag ) {
-                              return acc + ( frag->is_type( type ) && frag->active() && ( !require_demon || frag->from_demon ) );
+                            [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) {
+                              return acc + ( frag->is_type( type_mask ) && frag->active() );
                             } );
-  }
-  else
-  {
-    return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
-                            [ require_demon ]( unsigned acc, soul_fragment_t* frag ) {
-                              return acc + ( frag->active() && ( !require_demon || frag->from_demon ) );
-                            } );
-  }
 }
 
 // demon_hunter_t::get_total_soul_fragments =================================
 
-unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type ) const
+unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) const
 {
-  if ( type == soul_fragment::GREATER || type == soul_fragment::LESSER )
+  if ( type_mask == soul_fragment::ANY )
   {
-    return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
-                            [ &type ]( unsigned acc, soul_fragment_t* frag ) {
-                              return acc + frag->is_type( type );
-                            } );
+    return (unsigned)soul_fragments.size();
   }
 
-  return (unsigned)soul_fragments.size();
+  return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
+                          [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) {
+                            return acc + frag->is_type( type_mask );
+                          } );
 }
 
 // demon_hunter_t::activate_soul_fragment ===================================
@@ -6591,14 +6617,25 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool from_demon, bool consume_on_activation )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool consume_on_activation )
 {
-  proc_t* soul_proc = ( type == soul_fragment::GREATER ) ? 
-    proc.soul_fragment_greater : proc.soul_fragment_lesser;
+  if ( type == soul_fragment::GREATER && sim->target->race == RACE_DEMON )
+  {
+    type = soul_fragment::GREATER_DEMON;
+  }
+
+  proc_t* soul_proc;
+  switch ( type )
+  {
+    case soul_fragment::GREATER:          soul_proc = proc.soul_fragment_greater; break;
+    case soul_fragment::GREATER_DEMON:    soul_proc = proc.soul_fragment_greater_demon; break;
+    case soul_fragment::EMPOWERED_DEMON:  soul_proc = proc.soul_fragment_empowered_demon; break;
+    default:                              soul_proc = proc.soul_fragment_lesser;
+  }
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    soul_fragments.push_back( new soul_fragment_t( this, type, from_demon, consume_on_activation ) );
+    soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation ) );
     soul_proc->occur();
   }
 
@@ -6609,14 +6646,14 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool f
   }
 }
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool consume_on_activation )
-{
-  demon_hunter_t::spawn_soul_fragment( type, n, sim->target->race == RACE_DEMON, consume_on_activation );
-}
-
 void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target, bool consume_on_activation )
 {
-  demon_hunter_t::spawn_soul_fragment( type, n, target->race == RACE_DEMON, consume_on_activation );
+  if ( type == soul_fragment::GREATER && target->race == RACE_DEMON )
+  {
+    type = soul_fragment::GREATER_DEMON;
+  }
+
+  demon_hunter_t::spawn_soul_fragment( type, n, consume_on_activation );
 }
 
 // demon_hunter_t::trigger_demonic ==========================================

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36512 shadowlands-BETA (hotfix 2020-11-05/36512, git build shadowlands fa18139, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-14/36639)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -710,6 +710,7 @@ Description      : Commands your pet to intimidate the target, stunning it for $
 Tooltip          : Stuns the target for $24394d.
 
 Name             : Tranquilizing Shot (id=19801) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -720,7 +721,7 @@ Velocity         : 50 yards/sec
 Cooldown         : 10 seconds
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
+Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -2837,15 +2838,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 106
+Hotfixed         : Base Value (0 -> -5)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 106
+Hotfixed         : Base Value (0 -> -5)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -5)
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -4097,7 +4101,7 @@ Effects          :
 #1 (id=279987)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 186260 | Target: Enemy (6)
 #2 (id=870215)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : Hurls a harpoon at an enemy, rooting them in place for $190927d and pulling you to them.
 Tooltip          : Rooted.
 
@@ -4188,7 +4192,8 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.73700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.7 -> 0.737)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -4978,6 +4983,7 @@ Effects          :
 Description      : Tell your pet to wake up.
 
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -4991,7 +4997,7 @@ Requires weapon  : Two-handed Axe, Bow, Gun, Two-handed Mace, Polearm, Two-hande
 Cooldown         : 30 seconds
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 63, 121
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   .......x ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5089,7 +5095,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Tick on application (169), Periodic effect can crit (265)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.216 -> 0.227)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d.
@@ -5917,6 +5924,7 @@ Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)*(1+($137017s1/100))}
 
 
 Name             : Serpent Sting (id=259491) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -5928,7 +5936,7 @@ Velocity         : 60 yards/sec
 Duration         : 12 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (266779 effects: #1, #2), Viper's Venom (268552 effects: #1, #2)
 Family Flags     : 1, 14, 55, 106
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5946,6 +5954,7 @@ Description      : Fire a poison-tipped arrow at an enemy, dealing $s1 Nature da
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.$?a265428[ The Hunter's pet deals $w3% increased damage to you.][]
 
 Name             : Wildfire Bomb (id=259495) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5957,7 +5966,7 @@ Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
-Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6128,6 +6137,7 @@ Description      : $@spelldesc260240
 Tooltip          : Damage of $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot increased by $s1%.
 
 Name             : Volley (id=260243) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6138,7 +6148,7 @@ Duration         : 6 seconds
 Cooldown         : 45 seconds
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 121
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6172,7 +6182,8 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=485317)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.35 -> 0.245)
 Description      : $@spelldesc260243
 
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive, Hidden] 
@@ -8471,6 +8482,7 @@ Description      : $@spelldesc270323
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
 Name             : Shrapnel Bomb (id=270335) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8481,7 +8493,7 @@ Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
-Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -2825,7 +2825,12 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( p()->buffs.clearcasting_channel->check() )
+    {
       p()->buffs.arcane_pummeling->trigger();
+
+      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
+      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2842,11 +2847,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-    {
       p()->buffs.arcane_harmony->trigger();
-      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
-      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
-    }
   }
 };
 
@@ -3229,22 +3230,16 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
-  timespan_t delay;
   action_t* projectile;
 
   comet_storm_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.comet_storm ),
-    delay( timespan_t::from_seconds( p->find_spell( 228601 )->missile_speed() ) ),
     projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
-  }
-
-  timespan_t travel_time() const override
-  {
-    return delay;
+    travel_delay = p->find_spell( 228601 )->missile_speed();
   }
 
   void execute() override
@@ -3941,10 +3936,8 @@ struct frost_nova_t final : public mage_spell_t
     timespan_t duration = timespan_t::min();
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
     {
-      // The damage taken debuff is triggered even on targets that cannot be rooted.
-      auto debuff = get_td( s->target )->debuffs.grisly_icicle;
-      duration = debuff->buff_duration();
-      debuff->trigger();
+      get_td( s->target )->debuffs.grisly_icicle->trigger();
+      duration = data().duration() + p()->spec.frost_nova_2->effectN( 1 ).time_value();
     }
     p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
@@ -4256,7 +4249,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      // Hardcoded in the talent description.
+      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent() - 0.15;
     }
 
     if ( p->runeforge.glacial_fragments.ok() )
@@ -4647,11 +4641,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     triggers.ignite = triggers.radiant_spark = true;
   }
 
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -4750,11 +4739,6 @@ struct nether_tempest_aoe_t final : public arcane_mage_spell_t
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_OVER_TIME;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -5121,6 +5105,9 @@ struct scorch_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
+    travel_delay = p->options.scorch_delay.total_seconds();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5149,13 +5136,6 @@ struct scorch_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
       p()->buffs.frenetic_speed->trigger();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // There is a tiny delay between Scorch dealing damage and Hot Streak
-    // state being updated. Here we model it as a tiny travel time.
-    return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
   }
 
   bool usable_moving() const override
@@ -5833,9 +5813,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
 
   // Runeforge Legendaries
-  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
-                            ->set_default_value_from_effect( 3 )
-                            ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
+  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 348007 ) )
+                            ->set_default_value_from_effect( 1 )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
   // Covenant Abilities

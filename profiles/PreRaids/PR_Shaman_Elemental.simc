@@ -58,6 +58,7 @@ actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.single_target+=/stormkeeper,if=talent.stormkeeper.enabled
 actions.single_target+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
 actions.single_target+=/echoing_shock,if=talent.echoing_shock.enabled
+actions.single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.single_target+=/ascendance,if=talent.ascendance.enabled
 actions.single_target+=/lava_burst,if=cooldown_react
 actions.single_target+=/lava_burst,if=cooldown_react

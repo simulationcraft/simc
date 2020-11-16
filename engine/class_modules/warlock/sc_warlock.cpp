@@ -223,6 +223,7 @@ struct impending_catastrophe_t : public warlock_spell_t
   {
     parse_options( options_str );
     travel_speed = 16;
+    aoe = -1;
    
     add_child( impending_catastrophe_impact );
     add_child( impending_catastrophe_dot );
@@ -232,10 +233,10 @@ struct impending_catastrophe_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    impending_catastrophe_dot->set_target( target );
+    impending_catastrophe_dot->set_target( s->target );
     impending_catastrophe_dot->execute();
 
-    impending_catastrophe_impact->set_target( target );
+    impending_catastrophe_impact->set_target( s->target );
     impending_catastrophe_impact->execute();
   }
 };
@@ -433,7 +434,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       ->set_cooldown( 0_ms )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
+                        {
+                          p.get_target_data( p.havoc_target )->debuffs_odr->expire();
                           p.havoc_target = nullptr;
+                        }
                         else
                           p.havoc_target = b->player;
 
@@ -1544,6 +1548,55 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   {
     return make_fn_expr( name_str, [ this ] { return this->get_spawning_imp_count(); } );
   }
+  else if ( name_str == "can_seed" )
+  {
+    std::vector<action_t*> soc_list;
+    for ( auto a : action_list )
+    {
+      if ( a->name_str == "seed_of_corruption" )
+        soc_list.push_back( a );
+    }
+
+    return make_fn_expr( name_str, [this, soc_list] {
+      std::vector<player_t*> no_dots;
+
+      if ( soc_list.size() == 0 ) 
+        return false;
+
+      //All the actions should have the same target list, so do this once only
+      auto tl = soc_list[ 0 ]->target_list();
+
+      for ( auto t : tl )
+      {
+        if ( !get_target_data( t )->dots_seed_of_corruption->is_ticking() )
+          no_dots.push_back( t );
+      }
+
+      //If there are no targets without a seed already, this expression should be false
+      if ( no_dots.size() == 0 )
+        return false;
+
+      //If all of the remaining unseeded targets have a seed in flight, we should also return false
+      for ( auto t : no_dots )
+      {
+        bool can_seed = true;
+
+        for ( auto s : soc_list )
+        {
+          if ( s->has_travel_events_for( t ) )
+          {
+            can_seed = false;
+            break;
+          }
+        }
+
+        if ( can_seed )
+          return true;
+      }
+
+      return false;
+    });
+  }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
@@ -1733,6 +1786,11 @@ struct warlock_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11.0 )
+      .verification_value( 43.0 );
   }
 
   bool valid() const override

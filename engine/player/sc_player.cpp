@@ -1109,9 +1109,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Reaction
     reaction_offset( timespan_t::from_seconds( 0.1 ) ),
     reaction_max( timespan_t::from_seconds( 1.4 ) ),
-    reaction_mean( timespan_t::from_seconds( 0.3 ) ),
+    reaction_mean( timespan_t::from_seconds( 0.25 ) ),
     reaction_stddev( timespan_t::zero() ),
-    reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+    reaction_nu( timespan_t::from_seconds( 0.15 ) ),
     // Latency
     world_lag( timespan_t::from_seconds( 0.1 ) ),
     world_lag_stddev( timespan_t::min() ),
@@ -4049,6 +4049,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
     m *= 1 + buffs.echo_of_eonar->check_value();
 
+  if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
+    m *= 1.0 + buffs.volatile_solvent_damage->check_value();
+
   return m;
 }
 
@@ -5824,7 +5827,6 @@ double player_t::get_stat_value(stat_e stat)
 {
   switch (stat)
   {
-
   case STAT_STRENGTH:
     return cache.strength();
   case STAT_AGILITY:
@@ -5835,6 +5837,10 @@ double player_t::get_stat_value(stat_e stat)
     return cache.spell_power(SCHOOL_NONE);
   case STAT_ATTACK_POWER:
     return cache.attack_power();
+  case STAT_CRIT_RATING:
+    return composite_melee_crit_rating();
+  case STAT_HASTE_RATING:
+    return composite_melee_haste_rating();
   case STAT_MASTERY_RATING:
     return composite_mastery_rating();
   case STAT_VERSATILITY_RATING:
@@ -7601,9 +7607,9 @@ struct lights_judgment_t : public racial_spell_t
   {
     // Reduce the delay before the hit by the player's gcd when used during precombat
     if ( ! player -> in_combat && is_precombat )
-      return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
+      return racial_spell_t::travel_time() - player -> base_gcd;
 
-    return timespan_t::from_seconds( travel_speed );
+    return racial_spell_t::travel_time();
   }
 
   void impact( action_state_t* state ) override

@@ -46,6 +46,7 @@ actions.precombat+=/variable,name=totm_max_charges,op=reset,default=2
 actions.precombat+=/variable,name=aoe_totm_max_charges,op=reset,default=2
 actions.precombat+=/variable,name=am_spam,op=reset,default=0
 actions.precombat+=/variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&variable.am_spam=1
+actions.precombat+=/variable,name=am_spam_evo_pct,op=reset,default=15
 actions.precombat+=/flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
@@ -69,7 +70,9 @@ actions+=/call_action_list,name=rotation,if=variable.final_burn=0
 actions+=/call_action_list,name=final_burn,if=variable.final_burn=1
 actions+=/call_action_list,name=movement
 
-actions.am_spam=rune_of_power,if=buff.rune_of_power.down&cooldown.arcane_power.remains>0
+actions.am_spam=cancel_action,if=action.evocation.channeling&mana.pct>=95
+actions.am_spam+=/evocation,if=mana.pct<=variable.am_spam_evo_pct&(cooldown.touch_of_the_magi.remains<=action.evocation.execute_time|cooldown.arcane_power.remains<=action.evocation.execute_time|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<=action.evocation.execute_time))&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down
+actions.am_spam+=/rune_of_power,if=buff.rune_of_power.down&cooldown.arcane_power.remains>0
 actions.am_spam+=/touch_of_the_magi,if=(cooldown.arcane_power.remains=0&buff.rune_of_power.down)|prev_gcd.1.rune_of_power
 actions.am_spam+=/touch_of_the_magi,if=cooldown.arcane_power.remains<50&buff.rune_of_power.down&essence.vision_of_perfection.enabled
 actions.am_spam+=/arcane_power,if=buff.rune_of_power.down&cooldown.touch_of_the_magi.remains>variable.ap_max_delay
@@ -78,8 +81,7 @@ actions.am_spam+=/arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_
 actions.am_spam+=/arcane_barrage,if=buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.am_spam+=/arcane_missiles,if=buff.clearcasting.react,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|buff.rune_of_power.up|cooldown.evocation.ready)
 actions.am_spam+=/arcane_missiles,if=!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down,chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|buff.rune_of_power.up|cooldown.evocation.ready)
-actions.am_spam+=/cancel_action,if=action.evocation.channeling&mana.pct>=95
-actions.am_spam+=/evocation
+actions.am_spam+=/evocation,if=buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down
 actions.am_spam+=/arcane_orb,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack
 actions.am_spam+=/arcane_barrage
 actions.am_spam+=/arcane_blast
