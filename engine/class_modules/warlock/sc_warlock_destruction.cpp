@@ -1265,7 +1265,7 @@ void warlock_t::create_apl_destruction()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* cds = get_action_priority_list( "cds" );
-  action_priority_list_t* havoc     = get_action_priority_list( "havoc" );
+  action_priority_list_t* havoc = get_action_priority_list( "havoc" );
   action_priority_list_t* ess = get_action_priority_list( "essences" );
 
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
