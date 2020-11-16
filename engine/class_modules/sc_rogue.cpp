@@ -6770,7 +6770,8 @@ double rogue_t::composite_player_target_armor( player_t* target ) const
 
 std::string rogue_t::default_flask() const
 {
-  return ( true_level >= 40 ) ? "greater_flask_of_the_currents" :
+  return ( true_level >= 51 ) ? "spectral_flask_of_power" :
+         ( true_level >= 40 ) ? "greater_flask_of_the_currents" :
          ( true_level >= 35 ) ? "greater_draenic_agility_flask" :
          "disabled";
 }
@@ -6779,7 +6780,8 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level >= 40 ) ? "potion_of_unbridled_fury" :
+  return ( true_level >= 51 ) ? "phantom_fire" :
+         ( true_level >= 40 ) ? "potion_of_unbridled_fury" :
          ( true_level >= 35 ) ? "draenic_agility" :
          "disabled";
 }
@@ -6788,7 +6790,8 @@ std::string rogue_t::default_potion() const
 
 std::string rogue_t::default_food() const
 {
-  return ( true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
+  return ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+         ( true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
          ( true_level >= 40 ) ? "lavish_suramar_feast" :
          "disabled";
 }
@@ -6797,7 +6800,8 @@ std::string rogue_t::default_food() const
 
 std::string rogue_t::default_rune() const
 {
-  return ( true_level >= 50 ) ? "battle_scarred" :
+  return ( true_level >= 60 ) ? "veiled" :
+         ( true_level >= 50 ) ? "battle_scarred" :
          ( true_level >= 45 ) ? "defiled" :
          ( true_level >= 40 ) ? "hyper" :
          "disabled";

@@ -23,8 +23,6 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
-  dot_t* dots_ancient_aftershock;
-  buff_t* debuffs_ancient_aftershock;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_exploiter;
   buff_t* debuffs_rend;
@@ -72,7 +70,7 @@ public:
   // Active
   struct active_t
   {
-    action_t* ancient_aftershock_dot;
+    action_t* ancient_aftershock_pulse;
     action_t* spear_of_bastion_attack;
     action_t* deep_wounds_ARMS;
     action_t* deep_wounds_PROT;
@@ -260,6 +258,7 @@ public:
     const spell_data_t* ravager_protection;
     const spell_data_t* shield_block_buff;
     const spell_data_t* riposte;
+    const spell_data_t* aftershock_duration;
   } spell;
 
   // Mastery
@@ -4652,21 +4651,20 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 // ==========================================================================
 // Covenant Abilities
 // ==========================================================================
-
+  
 // Ancient Aftershock========================================================
 
-struct ancient_aftershock_dot_t : public warrior_attack_t
+struct ancient_aftershock_pulse_t : public warrior_attack_t
 {
-  ancient_aftershock_dot_t( warrior_t* p ) : warrior_attack_t( "ancient_aftershock_dot", p, p->find_spell( 326062 ) )
+  ancient_aftershock_pulse_t( warrior_t* p ) : warrior_attack_t( "ancient_aftershock_pulse", p, p->find_spell( 326062 ) )
   {
-    background = tick_may_crit = true;
-    hasted_ticks               = false;
+    background = true;
+    aoe               = 5;
     energize_amount   = p->find_spell( 326076 )->effectN( 1 ).base_value() / 10.0;
-    energize_type     = action_energize::PER_TICK;
+    energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_RAGE;
   }
 };
-
 struct ancient_aftershock_t : public warrior_attack_t
 {
   ancient_aftershock_t( warrior_t* p, const std::string& options_str )
@@ -4675,7 +4673,17 @@ struct ancient_aftershock_t : public warrior_attack_t
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
-    impact_action = p->active.ancient_aftershock_dot;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
+      .target( execute_state->target )
+      .pulse_time( timespan_t::from_seconds( 3.0 ) ) // hard coded by interns
+      .duration( p()->spell.aftershock_duration->duration() )
+      .action( p()->active.ancient_aftershock_pulse ) );
   }
 };
 
@@ -6025,10 +6033,11 @@ void warrior_t::init_spells()
   spell.ravager_protection    = find_spell( 227744 );
   spell.shield_block_buff     = find_spell( 132404 );
   spell.riposte               = find_class_spell( "Riposte" );
+  spell.aftershock_duration   = find_spell( 343607 );
 
 
   // Active spells
-  active.ancient_aftershock_dot = nullptr;
+  //active.ancient_aftershock_pulse = nullptr;
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
   active.charge           = nullptr;
@@ -6052,7 +6061,7 @@ void warrior_t::init_spells()
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
 
   if ( covenant.ancient_aftershock->ok() )
-    active.ancient_aftershock_dot = new ancient_aftershock_dot_t( this );
+    active.ancient_aftershock_pulse = new ancient_aftershock_pulse_t( this );
   if ( covenant.spear_of_bastion->ok() )
     active.spear_of_bastion_attack = new spear_of_bastion_attack_t( this );
   if ( spec.deep_wounds_ARMS->ok() )
@@ -6821,7 +6830,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
-  dots_ancient_aftershock = target->get_dot( "ancient_aftershock_dot", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
