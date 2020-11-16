@@ -6074,12 +6074,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   int n_targets() const override
   {
-    int num_targets = 0;
-    if ( p() -> covenant.deaths_due -> ok() )
-    {
-      num_targets = p() -> in_death_and_decay() ? deaths_due_cleave_targets : 0;
-    }
-    return num_targets;
+      if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
+        return deaths_due_cleave_targets;
+      return death_knight_melee_attack_t::n_targets();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
