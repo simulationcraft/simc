@@ -8883,6 +8883,7 @@ void death_knight_t::init_spells()
   // Shadowlands specific - Commented out = NYI
 
   // Covenants
+  // Death's due damage debuff is NYI
   covenant.deaths_due = find_covenant_spell( "Death's Due" );
 
   // Conduits
