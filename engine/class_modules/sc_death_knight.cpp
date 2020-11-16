@@ -962,7 +962,6 @@ public:
     // const spell_data_t* deaths_due; // Night Fae
     const spell_data_t* shackle_the_unworthy; // Kyrian
     // const spell_data_t* swarming_mist; // Venthyr
-    // const spell_data_t* swarming_mist_energize; // Venthyr, Runic power gain
   } covenant;
 
   struct legendary_t
@@ -2999,6 +2998,38 @@ struct death_knight_action_t : public Base
 
     return base_gcd;
   }
+
+  void execute() override
+  {
+    action_base_t::execute();
+    // If we spend a rune, we have a chance to spread the dot
+    if ( this->triggers_shackle_the_unworthy && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
+    {
+      if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
+      {
+        death_knight_td_t* source = p() -> get_target_data( p()->target );
+        if ( source -> dot.shackle_the_unworthy -> is_ticking() )
+        {
+          for ( auto destination : action_t::target_list() )
+          {
+            death_knight_td_t* destination_td = p() -> get_target_data( destination );
+            if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
+            {
+              continue;
+            }
+
+            action_t::sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
+                    action_t::player->name(), this->name(), action_t::target->name(), destination->name(),
+                    source->dot.shackle_the_unworthy->remains().total_seconds() );
+            source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
+            p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
+            // after we successfully spread to one target, return.
+            return;
+          }
+        }
+      }
+    }
+  }
 };
 
 // ==========================================================================
@@ -3021,41 +3052,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
-
-  double cost() const override
-  {
-    double c = death_knight_action_t::cost();
-    if ( this -> current_resource() == RESOURCE_RUNE )
-    {
-      // If we spend a rune, we have a chance to spread the dot
-      if ( this->triggers_shackle_the_unworthy && as<int>(c) > 0 && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
-      {
-        if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
-        {
-          death_knight_td_t* source = p() -> get_target_data( p()->target );
-          if ( source -> dot.shackle_the_unworthy -> is_ticking() )
-          {
-            for ( auto destination : target_list() )
-            {
-              death_knight_td_t* destination_td = p() -> get_target_data( destination );
-              if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
-              {
-                continue;
-              }
-              
-              sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
-                      player->name(), this->name(), target->name(), destination->name(), 
-                      source->dot.shackle_the_unworthy->remains().total_seconds() );
-              source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
-              p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
-              return c;
-            }
-          }
-        }
-      }
-    }
-    return c;
-  }
 };
 
 // ==========================================================================
@@ -3068,42 +3064,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
                         const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
-
-  double cost() const override
-  {
-    double c = death_knight_action_t::cost();
-    if ( this -> current_resource() == RESOURCE_RUNE )
-    {
-      // If we spend a rune, we have a chance to spread the dot
-      if ( this->triggers_shackle_the_unworthy && as<int>(c) > 0 && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
-      {
-        if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
-        {
-          death_knight_td_t* source = p() -> get_target_data( p()->target );
-          if ( source -> dot.shackle_the_unworthy -> is_ticking() )
-          {
-            for ( auto destination : target_list() )
-            {
-              death_knight_td_t* destination_td = p() -> get_target_data( destination );
-              if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
-              {
-                continue;
-              }
-              
-              sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
-                      player->name(), this->name(), target->name(), destination->name(), 
-                      source->dot.shackle_the_unworthy->remains().total_seconds() );
-              source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
-              p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
-              return c;
-            }
-          }
-        }
-      }
-    }
-    return c;
-  }
-
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -8831,6 +8791,7 @@ void death_knight_t::init_spells()
   // Shadowlands specific - Commented out = NYI
 
   // Covenants
+  // Damage debuff is not implemented yet for shackle_the_unworthy
   covenant.shackle_the_unworthy = find_covenant_spell( "Shackle the Unworthy" );
 
   // Conduits
@@ -8999,6 +8960,7 @@ void death_knight_t::default_apl_blood()
   precombat -> add_action( "use_item,effect_name=cyclotronic_blast" );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "shackle_the_unworthy" );
   // Interrupt
   // def -> add_action( this, "Mind Freeze" );
 
