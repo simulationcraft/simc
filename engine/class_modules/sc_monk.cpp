@@ -5734,9 +5734,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
           am /= 1 + p()->cache.mastery_value();
         if ( p()->buff.hit_combo->up() )
           am /= 1 + p()->buff.hit_combo->stack_value();
-
-        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
-        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
       }
       else
         motc_multiplier += p()->conduit.calculated_strikes.percent();
