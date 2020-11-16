@@ -3445,18 +3445,17 @@ public:
       }
     }
 
-    // For more than 5 targets damage is based on a logarithmic function.
-    // This is the closest we can figure out what that function is
+    // For more than 5 targets damage is based on a Sqrt(5/x)
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
-        // Primary takes 100% damage
+        // Primary takes the 100% damage
         // Secondary targets get reduced damage
         if ( state->target != target )
-          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+          cam *= std::sqrt( 5 / state->n_targets );
 
       return cam;
     }
