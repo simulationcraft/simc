@@ -2639,9 +2639,9 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
       resource_type == RESOURCE_HEALTH &&
       legendary.reign_of_endless_kings -> ok() &&
       ! buffs.reign_of_ancient_kings -> up() &&
-      health_percentage()/100 < legendary.reign_of_endless_kings -> effectN( 2 ).percent() &&
+      health_percentage() < legendary.reign_of_endless_kings -> effectN( 2 ).base_value() &&
       // Won't trigger if you're below the threshhold when the debuff expires. You have to be healed back over it for it to be able to proc again.
-      initial_hp/100 >= legendary.reign_of_endless_kings -> effectN( 2 ).percent()
+      initial_hp >= legendary.reign_of_endless_kings -> effectN( 2 ).base_value()
     )
   {
     timespan_t reign_proc_duration = legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> duration();
