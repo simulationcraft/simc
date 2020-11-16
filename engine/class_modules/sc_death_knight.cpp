@@ -504,6 +504,7 @@ public:
 
     // Covenants
     buff_t* deaths_due;
+    buff_t* death_turf;
   } buffs;
 
   struct runeforge_t {
@@ -970,7 +971,7 @@ public:
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
     // Shared
-    // item_runeforge_t phearomones; // 6954
+    item_runeforge_t phearomones; // 6954
     item_runeforge_t superstrain; // 6953
 
     // Blood
@@ -1673,6 +1674,32 @@ struct death_knight_pet_t : public pet_t
     }
 
     return m;
+  }
+
+  double composite_melee_haste() const override
+  {
+    double haste = pet_t::composite_melee_haste();
+
+    // pets are currently doubledipping and getting their own haste buff on top of scaling with the owner's haste - 11/14/20
+    if (o() -> legendary.phearomones -> ok() && o() -> bugs)
+    {
+      haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
+    }
+
+    return haste;
+  }
+
+  double composite_spell_haste() const override
+  {
+    double haste = pet_t::composite_spell_haste();
+
+    // pets are currently doubledipping and getting their own haste buff on top of scaling with the owner's haste - 11/14/20
+    if (o() -> legendary.phearomones -> ok() && o() -> bugs)
+    {
+      haste *= 1.0 / (1.0 + o() -> buffs.death_turf -> check_value());
+    }
+
+    return haste;
   }
 };
 
@@ -4540,6 +4567,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> active_spells.bone_spike_graveyard -> execute();
     }
 
+    if ( p() -> legendary.phearomones -> ok() )
+    {
+      p() -> buffs.death_turf -> trigger();
+      p() -> buffs.death_turf -> set_duration(data().duration() + 500_ms);
+    }
+
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
       // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
@@ -6263,6 +6296,19 @@ struct virulent_plague_t : public death_knight_spell_t
       base_multiplier *= .375;
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    
+    if ( p() -> legendary.superstrain -> ok() && p() -> specialization() == DEATH_KNIGHT_UNHOLY)
+    {
+      p() -> active_spells.frost_fever -> set_target( state -> target );
+      p() -> active_spells.frost_fever -> execute();
+      p() -> active_spells.blood_plague -> set_target( state -> target );
+      p() -> active_spells.blood_plague -> execute();
+    }
+  }
 };
 
 struct outbreak_t : public death_knight_spell_t
@@ -6285,14 +6331,6 @@ struct outbreak_t : public death_knight_spell_t
     {
       vp -> set_target( s -> target );
       vp -> execute();
-
-      if ( p() -> legendary.superstrain -> ok() )
-      {
-        p() -> active_spells.frost_fever -> set_target( s -> target );
-        p() -> active_spells.frost_fever -> execute();
-        p() -> active_spells.blood_plague -> set_target( s -> target );
-        p() -> active_spells.blood_plague -> execute();
-      }
     }
   }
 };
@@ -6852,14 +6890,6 @@ struct unholy_blight_dot_t : public death_knight_spell_t
 
     p() -> active_spells.virulent_plague -> set_target( state -> target );
     p() -> active_spells.virulent_plague -> execute();
-
-    if ( p() -> legendary.superstrain -> ok() )
-    {
-      p() -> active_spells.frost_fever -> set_target( state -> target );
-      p() -> active_spells.frost_fever -> execute();
-      p() -> active_spells.blood_plague -> set_target( state -> target );
-      p() -> active_spells.blood_plague -> execute();
-    }
   }
 };
 
@@ -8898,7 +8928,7 @@ void death_knight_t::init_spells()
   // Legendary Items
 
   // Shared
-  // legendary.phearomones = find_runeforge_legendary( "Phearomones" );
+  legendary.phearomones = find_runeforge_legendary( "Phearomones" );
   legendary.superstrain = find_runeforge_legendary( "Superstrain" );
 
   // Blood
@@ -9273,6 +9303,7 @@ void death_knight_t::default_apl_unholy()
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   def -> add_action( this, "Outbreak", "if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2" );
+  def -> add_action( this, "Outbreak", "if=runeforge.superstrain.equipped&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
 
   // Action Lists
   // def -> add_action( "call_action_list,name=covenants" );
@@ -9591,10 +9622,21 @@ void death_knight_t::create_buffs()
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
       -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+
+  buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
+    -> set_default_value_from_effect( 1 )
+    -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+// According to tooltip data and ingame testing, the buff's value is halved for blood
+  if ( specialization() == DEATH_KNIGHT_BLOOD ) 
+  {
+    buffs.death_turf -> default_value /= 2;
+  }
+
 }
 
 // death_knight_t::init_gains ===============================================

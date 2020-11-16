@@ -1821,6 +1821,10 @@ void buff_t::decrement( int stacks, double value )
 
     sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
 
+    if ( requires_invalidation )
+      invalidate_cache();
+    adjust_haste();
+
     if ( old_stack != current_stack )
     {
       if ( sim->buff_stack_uptime_timeline )
@@ -1831,10 +1835,6 @@ void buff_t::decrement( int stacks, double value )
       if ( stack_change_callback )
         stack_change_callback( this, old_stack, current_stack );
     }
-
-    if ( requires_invalidation )
-      invalidate_cache();
-    adjust_haste();
   }
 }
 
@@ -2191,6 +2191,13 @@ void buff_t::bump( int stacks, double value )
     overflow_total += stacks;
   }
 
+  if ( changes_stack_value )
+  {
+    if ( requires_invalidation )
+      invalidate_cache();
+    adjust_haste();
+  }
+
   if ( old_stack != current_stack )
   {
     if ( sim->buff_stack_uptime_timeline )
@@ -2200,13 +2207,6 @@ void buff_t::bump( int stacks, double value )
 
     if ( stack_change_callback )
       stack_change_callback( this, old_stack, current_stack );
-  }
-
-  if (changes_stack_value)
-  {
-    if ( requires_invalidation )
-      invalidate_cache();
-    adjust_haste();
   }
 
   if ( player )
@@ -2337,14 +2337,14 @@ void buff_t::expire( timespan_t delay )
 
   aura_loss();
 
+  if ( requires_invalidation )
+    invalidate_cache();
+  adjust_haste();
+
   if ( stack_change_callback )
   {
     stack_change_callback( this, old_stack, current_stack );
   }
-
-  if ( requires_invalidation )
-    invalidate_cache();
-  adjust_haste();
 
   if ( player )
     player->trigger_ready();

@@ -9257,18 +9257,18 @@ void druid_t::apl_guardian()
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
 
-  pre->add_action( this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-  pre->add_action( this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+  pre->add_action( this, "Cat Form", "if=druid.catweave_bear");
+  pre->add_action( this, "prowl", "if=druid.catweave_bear");
+  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear" );
   pre->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
-  pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&druid.owlweave_bear" );
+  pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
 
-  def->add_action( "auto_attack" );
-  def->add_action( "use_items" );
+  def->add_action( "auto_attack,if=!buff.prowl.up" );
+  def->add_action( "use_items,if=!buff.prowl.up" );
   def->add_action(
-      "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
-      "bear))" );
+      "potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
+      "bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 
   lycara_owl->add_action( this, "Moonkin Form" );
   lycara_cat->add_action( this, "Cat Form" );
@@ -9296,21 +9296,19 @@ void druid_t::apl_guardian()
   def->add_action( "run_action_list,name=bear" );
 
   bear->add_action( "bear_form,if=!buff.bear_form.up" );
-  bear->add_action(
-      "potion,if=((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_"
-      "bear))" );
   bear->add_action( "ravenous_frenzy" );
   bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear" );
   bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2" );
   bear->add_action( "barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)" );
-  bear->add_action( "ironfur,if=buff.ironfur.remains<0.5" );
-  bear->add_action( "adaptive_swarm,target_if=refreshable" );
+  bear->add_action(
+       "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+       "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   bear->add_action( "moonfire,if=(buff.galactic_guardian.up&druid.owlweave_bear)&active_enemies<=3" );
   bear->add_action(
       "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_"
-      "embrace.equipped)|active_enemies>5" );
+      "embrace.equipped)|active_enemies>=4" );
   bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
   bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2" );
   bear->add_action(
@@ -9318,17 +9316,18 @@ void druid_t::apl_guardian()
   bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
   bear->add_action( "moonfire,target_if=refreshable&active_enemies<=3" );
   bear->add_action(
-      "maul,if=(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_"
-      "combatant.stack>=3)" );
+      "maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_"
+      "combatant.stack>=3))&active_enemies<3)" );
   bear->add_action( "thrash_bear,if=active_enemies>1" );
   bear->add_action(
       "moonfire,if=(buff.galactic_guardian.up&druid.catweave_bear)&active_enemies<=3|(buff.galactic_guardian.up&!druid."
       "catweave_bear&!druid.owlweave_bear)&active_enemies<=3" );
-  bear->add_action( "mangle,if=(rage<80)&active_enemies<4" );
+  bear->add_action( "mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)" );
   bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
   bear->add_action( "thrash_bear" );
-  bear->add_action( "maul" );
+  bear->add_action( "maul,if=active_enemies<3" );
   bear->add_action( "swipe_bear" );
+  bear->add_action( "ironfur,if=rage.deficit<40&buff.ironfur.remains<0.5" );
 
   catweave->add_action( "cat_form,if=!buff.cat_form.up" );
   catweave->add_action( this, "Rake", "if=buff.prowl.up" );
@@ -9337,7 +9336,9 @@ void druid_t::apl_guardian()
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
   catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points>=4" );
   catweave->add_action( "ferocious_bite,if=combo_points>=4" );
-  catweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  catweave->add_action(
+           "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+           "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   catweave->add_action( this, "Rake", "if=dot.rake.refreshable&combo_points<4" );
   catweave->add_action( this, "Shred" );
 
@@ -9345,7 +9346,9 @@ void druid_t::apl_guardian()
   owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   owlweave->add_action( "empower_bond,if=druid.owlweave_bear" );
   owlweave->add_action( "convoke_the_spirits,if=druid.owlweave_bear" );
-  owlweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  owlweave->add_action(
+           "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+           "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   owlweave->add_action( "moonfire,target_if=refreshable|buff.galactic_guardian.up" );
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
@@ -9732,11 +9735,18 @@ void druid_t::arise()
     eclipse_handler.enabled_ = true;
 
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-        eclipse_handler.snapshot_eclipse();
-        make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
+      eclipse_handler.snapshot_eclipse();
+      make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
           eclipse_handler.snapshot_eclipse();
-        } );
-      }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+      } );
+    }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+  }
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+      buff.lycaras_fleeting_glimpse->trigger();
+    }, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ) ) );
   }
 
   if ( buff.yseras_gift )

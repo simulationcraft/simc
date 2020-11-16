@@ -589,6 +589,13 @@ void combat_meditation( special_effect_t& effect )
   {
     double duration_mod = class_value_from_desc_vars( effect, "mod" );
     bool icd_enabled = extra_desc_text_for_class( effect, effect.driver()->name_cstr() );
+    // warlock still has an internal cooldown of 1 minute
+    // despite the tooltip not saying it does
+    if ( effect.player->type == WARLOCK )
+    {
+      icd_enabled = true;
+    }
+ 
     effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
     buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
   }
@@ -843,86 +850,86 @@ void brons_call_to_action( special_effect_t& effect )
 // 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
-  util::string_view type_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
+  auto splits =
+    util::string_split<util::string_view>( effect.player->sim->shadowlands_opts.volatile_solvent_type, "/:" );
 
-  auto race_type = util::parse_race_type( type_str );
-  if ( race_type == RACE_UNKNOWN )
+  for ( auto type_str : splits )
   {
-    if      ( util::str_compare_ci( type_str, "mastery"  ) ) race_type = RACE_HUMANOID;
-    else if ( util::str_compare_ci( type_str, "primary"  ) ) race_type = RACE_BEAST;
-    else if ( util::str_compare_ci( type_str, "crit"     ) ) race_type = RACE_DRAGONKIN;
-    else if ( util::str_compare_ci( type_str, "magic"    ) ) race_type = RACE_ELEMENTAL;
-    else if ( util::str_compare_ci( type_str, "physical" ) ) race_type = RACE_GIANT;
+    auto race_type = util::parse_race_type( type_str );
+    if ( race_type == RACE_UNKNOWN )
+    {
+      if      ( util::str_compare_ci( type_str, "mastery"  ) ) race_type = RACE_HUMANOID;
+      else if ( util::str_compare_ci( type_str, "primary"  ) ) race_type = RACE_BEAST;
+      else if ( util::str_compare_ci( type_str, "crit"     ) ) race_type = RACE_DRAGONKIN;
+      else if ( util::str_compare_ci( type_str, "magic"    ) ) race_type = RACE_ELEMENTAL;
+      else if ( util::str_compare_ci( type_str, "physical" ) ) race_type = RACE_GIANT;
+    }
+
+    buff_t* buff;
+
+    switch ( race_type )
+    {
+      case RACE_HUMANOID:
+        buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+        if ( !buff )
+        {
+          buff =
+            make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+        }
+        break;
+
+      case RACE_BEAST:
+        buff = buff_t::find( effect.player, "volatile_solvent_beast" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_beast", effect.player->find_spell( 323498 ) )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                  ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+        }
+        break;
+
+      case RACE_DRAGONKIN:
+        buff = buff_t::find( effect.player, "volatile_solvent_dragonkin" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_dragonkin", effect.player->find_spell( 323502 ) )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+        }
+        break;
+
+      case RACE_ELEMENTAL:
+        buff = buff_t::find( effect.player, "volatile_solvent_elemental" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
+                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                  ->set_schools_from_effect( 1 );
+        }
+        effect.player->buffs.volatile_solvent_damage = buff;
+        break;
+
+      case RACE_GIANT:
+        buff = buff_t::find( effect.player, "volatile_solvent_giant" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
+                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                  ->set_schools_from_effect( 2 );
+        }
+        effect.player->buffs.volatile_solvent_damage = buff;
+        break;
+
+      default: buff = nullptr; break;
+    }
+
+    if ( buff )
+      effect.player->register_combat_begin( buff );
+    else
+      effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
   }
-
-  if ( race_type == RACE_UNKNOWN )
-  {
-    effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
-    return;
-  }
-
-  buff_t* buff;
-
-  switch ( race_type )
-  {
-    case RACE_HUMANOID:
-      buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
-      if ( !buff )
-      {
-        buff =
-          make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
-      }
-      break;
-
-    case RACE_BEAST:
-      buff = buff_t::find( effect.player, "volatile_solvent_beast" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_beast", effect.player->find_spell( 323498 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                 ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
-      }
-      break;
-
-    case RACE_DRAGONKIN:
-      buff = buff_t::find( effect.player, "volatile_solvent_dragonkin" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_dragonkin", effect.player->find_spell( 323502 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-      }
-      break;
-
-    case RACE_ELEMENTAL:
-      buff = buff_t::find( effect.player, "volatile_solvent_elemental" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
-                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                 ->set_schools_from_effect( 1 );
-      }
-      effect.player->buffs.volatile_solvent_damage = buff;
-      break;
-
-    case RACE_GIANT:
-      buff = buff_t::find( effect.player, "volatile_solvent_giant" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
-                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                 ->set_schools_from_effect( 2 );
-      }
-      effect.player->buffs.volatile_solvent_damage = buff;
-      break;
-
-    default: buff = nullptr; break;
-  }
-
-  if ( buff )
-    effect.player->register_combat_begin( buff );
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )

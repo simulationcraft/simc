@@ -2157,7 +2157,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     }
 
     // Darkglare Boon Legendary
-    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->proc_chance() ) )
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->effectN( 1 ).percent() ) )
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
@@ -4227,6 +4227,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   heals::soul_cleave_heal_t* heal;
   std::vector<cooldown_t*> sigil_cooldowns;
+  timespan_t sigil_cooldown_adjust;
+  timespan_t decree_cooldown_adjust;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -4246,6 +4248,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p->legendary.razelikhs_defilement->ok() )
     {
       sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree };
+      sigil_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
+      decree_cooldown_adjust = -timespan_t::from_seconds( p->legendary.razelikhs_defilement->effectN( 2 ).base_value() );
     }
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
@@ -4272,8 +4276,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
       if ( sigils_on_cooldown.size() > 0 )
       {
-        const timespan_t adjust_duration = -timespan_t::from_seconds( p()->legendary.razelikhs_defilement->effectN( 1 ).base_value() );
-        sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ]->adjust( adjust_duration );
+        cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
+        if ( sigil_cooldown == p()->cooldown.elysian_decree )
+          sigil_cooldown->adjust( decree_cooldown_adjust );
+        else
+          sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
     }
 
@@ -4958,8 +4965,11 @@ void demon_hunter_t::create_buffs()
 
   // TOCHECK: 20% proc rate was removed from the primary spell, need to confirm the actual proc rate
   const spell_data_t* fel_bombardment_buff = legendary.fel_bombardment->ok() ? find_spell( 337849 ) : spell_data_t::not_found();
-  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff )
-    ->set_chance( 0.2 );
+  buff.fel_bombardment = make_buff<buff_t>( this, "fel_bombardment", fel_bombardment_buff );
+  if ( legendary.fel_bombardment->ok() )
+  {
+    buff.fel_bombardment->set_chance( 0.2 );
+  }
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -5836,13 +5846,13 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Bulk Extraction" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
+  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)" );
   apl_normal->add_action( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled>=5)|(!talent.fracture.enabled&fury>=20))))" );
+  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
   apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
   apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
-  apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_action( this, "Sigil of Flame", "if=!runeforge.razelikhs_defilement.equipped" );
+  apl_normal->add_talent( this, "Fracture", "if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement.equipped)" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
