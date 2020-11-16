@@ -666,7 +666,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   if ( buffs.devotion_aura -> up() )
-    s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buffs.devotion_aura -> value();
 
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )

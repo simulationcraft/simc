@@ -1833,7 +1833,8 @@ void paladin_t::create_buffs()
        -> set_cooldown( 0_ms ); // let the ability handle the cooldown
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
         -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) );
+  buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) )
+        -> set_default_value( find_class_spell( "Devotion Aura" ) -> effectN( 1 ).percent() );
 
   // Legendaries
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() );
