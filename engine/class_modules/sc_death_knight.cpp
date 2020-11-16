@@ -4399,13 +4399,8 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 
 struct deaths_due_damage_t : public death_and_decay_damage_t
 {
-  int pestilence_procs_per_tick;
-  int pestilence_procs_per_cast;
-
   deaths_due_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_t( "deaths_due_damage", p, p -> find_spell( 341340 ) ),
-    pestilence_procs_per_tick( 0 ),
-    pestilence_procs_per_cast( 0 )
+    death_and_decay_damage_t( "deaths_due_damage", p, p -> find_spell( 341340 ) )
   { }
 };
 
