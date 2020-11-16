@@ -1259,24 +1259,31 @@ void warlock_t::create_options_destruction()
 {
 }
 
+//destruction_apl_start
 void warlock_t::create_apl_destruction()
 {
-  action_priority_list_t* def   = get_action_priority_list( "default" );
-  action_priority_list_t* cds   = get_action_priority_list( "cds" );
-  action_priority_list_t* havoc = get_action_priority_list( "havoc" );
-  action_priority_list_t* aoe   = get_action_priority_list( "aoe" );
-  action_priority_list_t* ess   = get_action_priority_list( "essences" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* precombat =get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+  action_priority_list_t* cds = get_action_priority_list( "cds" );
+  action_priority_list_t* havoc     = get_action_priority_list( "havoc" );
+  action_priority_list_t* ess = get_action_priority_list( "essences" );
 
-  def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
+  def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
+  def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
-  def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
   def->add_action( "call_action_list,name=cds" );
   def->add_action( "call_action_list,name=essences" );
   def->add_action( "channel_demonfire" );
+  def->add_action( "scouring_tithe" );
+  def->add_action( "decimating_bolt" );
   def->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)" );
+  def->add_action( "impending_catastrophe" );
+  def->add_action( "soul_rot" );
+  def->add_action( "havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped" );
   def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=15&talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)" );
   def->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards" );
   def->add_action( "chaos_bolt,if=buff.dark_soul_instability.up" );
@@ -1288,6 +1295,7 @@ void warlock_t::create_apl_destruction()
   def->add_action( "incinerate" );
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
+  aoe->add_action( "soul_rot" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
@@ -1295,10 +1303,13 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
   aoe->add_action( "rain_of_fire" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
+  aoe->add_action( "decimating_bolt,if=(soulbind.lead_by_example.enabled||!talent.fire_and_brimstone.enabled)" );
   aoe->add_action( "incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies" );
   aoe->add_action( "soul_fire" );
   aoe->add_action( "conflagrate,if=buff.backdraft.down" );
   aoe->add_action( "shadowburn,if=target.health.pct<20" );
+  aoe->add_action( "scouring_tithe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
+  aoe->add_action( "impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
   aoe->add_action( "incinerate" );
 
   cds->add_action( "summon_infernal" );
@@ -1310,12 +1321,13 @@ void warlock_t::create_apl_destruction()
   cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<20" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
-  havoc->add_action( "soul_fire" );
+  havoc->add_action( "soul_fire,if=cast_time<havoc_remains" );
+  havoc->add_action( "decimating_bolt,if=cast_time<havoc_remains&soulbind.lead_by_example.enabled" );
+  havoc->add_action( "scouring_tithe,if=cast_time<havoc_remains" );
   havoc->add_action( "immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
   havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
-
   ess->add_action( "worldvein_resonance" );
   ess->add_action( "memory_of_lucid_dreams" );
   ess->add_action( "blood_of_the_enemy" );
@@ -1327,4 +1339,5 @@ void warlock_t::create_apl_destruction()
   ess->add_action( "concentrated_flame" );
   ess->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
 }
+//destruction_apl_end
 }  // namespace warlock
