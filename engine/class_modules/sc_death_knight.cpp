@@ -4331,6 +4331,13 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
     pestilence_procs_per_cast( 0 )
   { }
 
+  // Add new constructor to support deaths_due, so we can reuse the code of dnd
+  death_and_decay_damage_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+    death_and_decay_damage_base_t( name, p, spell ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
+    { }
+
   void execute() override
   {
     pestilence_procs_per_tick = 0;
@@ -4390,49 +4397,16 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   }
 };
 
-struct deaths_due_damage_t : public death_and_decay_damage_base_t
+struct deaths_due_damage_t : public death_and_decay_damage_t
 {
   int pestilence_procs_per_tick;
   int pestilence_procs_per_cast;
 
   deaths_due_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_base_t( "deaths_due_damage", p, p -> find_spell( 341340 ) ),
+    death_and_decay_damage_t( "deaths_due_damage", p, p -> find_spell( 341340 ) ),
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
   { }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> conduits.withering_ground.percent();
-
-    return m;
-  }
-
-  void execute() override
-  {
-    pestilence_procs_per_tick = 0;
-
-    death_and_decay_damage_base_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_and_decay_damage_base_t::impact( s );
-
-    if ( p() -> talent.pestilence -> ok() &&
-         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
-    {
-      if ( rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
-      {
-        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_procs_per_tick++;
-        pestilence_procs_per_cast++;
-      }
-    }
-  }
 };
 
 // Bone Spike Graveyard azerite trait
