@@ -5032,8 +5032,10 @@ struct spear_of_bastion_t : public warrior_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     execute_action = p->active.spear_of_bastion_attack;
-    //execute_action->stats = stats;
-    energize_amount   = p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0;
+    if ( p->conduit.piercing_verdict->ok() )
+      {
+        energize_amount = p->conduit.piercing_verdict.percent() * (1 + p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0 );
+      }
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_RAGE;
   }
@@ -6846,7 +6848,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
   debuffs_exploiter = make_buff( *this , "exploiter", p.find_spell( 335452 ) )
-                               ->set_default_value( p.find_spell( 335452 )->effectN( 1 ).percent() )
+                               ->set_default_value( ( (player_t *)(&p))->covenant->id() == (unsigned int)covenant_e::VENTHYR
+                                 ? p.find_spell( 335452 )->effectN( 1 ).percent()
+                                 : p.find_spell( 335451 )->effectN( 1 ).percent() )
                                ->set_duration( p.find_spell( 335452 )->duration() )
                                ->set_cooldown( timespan_t::zero() );
 }
@@ -7066,7 +7070,9 @@ void warrior_t::create_buffs()
 
   // Conduits===============================================================================================================
   buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
-    ->set_default_value( conduit.ashen_juggernaut.percent() );
+                           ->set_default_value( ( (player_t*)this )->covenant->id() == (unsigned int)covenant_e::VENTHYR
+                             ? conduit.ashen_juggernaut.percent() * (1 + covenant.condemn_driver ->effectN( 7 ).percent())
+                             :  conduit.ashen_juggernaut.percent());
 
   buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) );
 
