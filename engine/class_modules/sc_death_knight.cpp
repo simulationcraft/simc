@@ -9125,7 +9125,7 @@ void death_knight_t::default_apl_unholy()
 
   // Covenant Abilities
   covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>6" );
-  covenants -> add_action( "swarming_mist,if=active_enemies>=2&active_enemies<5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30" );
+  covenants -> add_action( "swarming_mist,if=active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30" );
   covenants -> add_action( "abomination_limb,if=variable.st_planning&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "shackle_the_unworthy,if=variable.st_planning&cooldown.apocalypse.remains" );
