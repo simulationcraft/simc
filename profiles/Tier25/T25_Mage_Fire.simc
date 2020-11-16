@@ -43,8 +43,9 @@ actions.precombat+=/variable,name=kindling_reduction,default=0.2,op=reset
 actions.precombat+=/variable,name=shifting_power_reduction,op=set,value=-action.shifting_power.execute_time%action.shifting_power.new_tick_time*(dbc.effect.815503.base_value%1000+conduit.discipline_of_the_grove.time_value),if=covenant.night_fae.enabled
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,op=set,value=dbc.effect.828420.base_value
-actions.precombat+=/variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch
+actions.precombat+=/variable,name=combustion_on_use,op=set,value=equipped.macabre_sheet_music|equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch
 actions.precombat+=/variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use
+actions.precombat+=/variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use+5*equipped.macabre_sheet_music
 # This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.
 actions.precombat+=/variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&!talent.firestarter.enabled&variable.font_of_power_precombat_channel=0
 # How long before Combustion should Empyreal Ordnance be used?
@@ -59,16 +60,16 @@ actions=counterspell,if=!runeforge.disciplinary_command.equipped
 actions+=/variable,name=time_to_combustion,op=set,value=talent.firestarter.enabled*firestarter.remains+(cooldown.combustion.remains*(1-variable.kindling_reduction*talent.kindling.enabled))*!cooldown.combustion.ready*buff.combustion.down
 # Make sure Combustion is delayed if needed based on the empyreal_ordnance_delay variable
 actions+=/variable,name=time_to_combustion,op=max,value=variable.empyreal_ordnance_delay-(cooldown.empyreal_ordnance.duration-cooldown.empyreal_ordnance.remains)*!cooldown.empyreal_ordnance.ready,if=equipped.empyreal_ordnance
-actions+=/shifting_power,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains>0&(cooldown.rune_of_power.remains>0|!talent.rune_of_power.enabled)
+actions+=/shifting_power,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains>0
 actions+=/radiant_spark,if=(buff.combustion.down&buff.rune_of_power.down&(cooldown.combustion.remains<execute_time|cooldown.combustion.remains>cooldown.radiant_spark.duration))|(buff.rune_of_power.up&cooldown.combustion.remains>30)
 actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains<execute_time
 actions+=/mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
 actions+=/use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay
-actions+=/use_item,name=soul_igniter
-actions+=/use_item,name=glyph_of_assimilation
+actions+=/use_item,name=soul_igniter,if=variable.time_to_combustion>=variable.on_use_cutoff
+actions+=/use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff
 actions+=/use_item,name=macabre_sheet_music,if=variable.time_to_combustion<=5
-actions+=/use_item,name=dreadfire_vessel
+actions+=/use_item,name=dreadfire_vessel,if=variable.time_to_combustion>=variable.on_use_cutoff
 actions+=/use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&variable.time_to_combustion>0&!variable.disable_combustion
 actions+=/guardian_of_azeroth,if=(variable.time_to_combustion<10|fight_remains<variable.time_to_combustion)&!variable.disable_combustion
 actions+=/concentrated_flame
