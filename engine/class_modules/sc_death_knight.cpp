@@ -4335,7 +4335,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   const double defile_tick_multiplier;
 
   defile_damage_t( death_knight_t* p ) :
-    death_and_decay_damage_base_t( p -> covenant.deaths_due -> ok() ? "deaths_due_damage" : "defile_damage", p, p -> find_spell( 156000 ) ),
+    death_and_decay_damage_base_t( "defile_damage", p, p -> find_spell( 156000 ) ),
     active_defile_multiplier( 1.0 ),
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
@@ -4607,7 +4607,7 @@ struct death_and_decay_t : public death_and_decay_base_t
 struct defile_t : public death_and_decay_base_t
 {
   defile_t( death_knight_t* p, const std::string& options_str ) :
-    death_and_decay_base_t( p, p -> covenant.deaths_due -> ok() ? "deaths_due" : "defile", p -> talent.defile )
+    death_and_decay_base_t( p, "defile", p -> talent.defile )
   {
     damage = new defile_damage_t( p );
 
