@@ -3964,18 +3964,6 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
-  // TOREMOVE: Beta vs. Prepatch Mechanics
-  struct unbound_chaos_t : public demon_hunter_spell_t
-  {
-    unbound_chaos_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 275148 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-      base_execute_time = p->find_spell( 275147 )->duration();
-    }
-  };
-
   struct fel_rush_damage_t : public demon_hunter_spell_t
   {
     fel_rush_damage_t( util::string_view name, demon_hunter_t* p )
@@ -3997,11 +3985,10 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   bool a_cancel;
   timespan_t gcd_lag;
-  unbound_chaos_t* unbound_chaos;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "fel_rush", p, p->spec.fel_rush ),
-      a_cancel( false ), unbound_chaos( nullptr )
+      a_cancel( false )
   {
     add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
@@ -4011,13 +3998,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     execute_action = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
     execute_action->stats = stats;
-
-    // TOREMOVE: Beta vs. Prepatch Mechanics
-    if ( p->level() <= 50 && p->talent.unbound_chaos->ok() && !unbound_chaos )
-    {
-      unbound_chaos = p->get_background_action<unbound_chaos_t>( "unbound_chaos" );
-      add_child( unbound_chaos );
-    }
 
     if ( !a_cancel )
     {
@@ -4036,12 +4016,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
-    // TOREMOVE: Beta vs. Prepatch Mechanics
-    if ( unbound_chaos && p()->buff.unbound_chaos->check() )
-    {
-      unbound_chaos->set_target( target );
-      unbound_chaos->schedule_execute();
-    }
     p()->buff.unbound_chaos->expire();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
@@ -4884,16 +4858,8 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
-  // TOREMOVE: Beta vs. Prepatch Mechanics
-  if ( level() <= 50 )
-  {
-    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 337313 ) );
-  }
-  else
-  {
-    buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 347462 ) )
-      ->set_default_value_from_effect( 1 );
-  }
+  buff.unbound_chaos = make_buff( this, "unbound_chaos", find_spell( 347462 ) )
+    ->set_default_value_from_effect( 1 );
 
   buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
   buff.vengeful_retreat_move
