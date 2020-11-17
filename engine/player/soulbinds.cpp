@@ -669,7 +669,41 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         interrupt_auto_attack = false;
-        spell_power_mod.direct = 1.1; // Not in spell data
+        spell_power_mod.direct = 0.55; // Not in spell data
+      }
+    };
+
+    struct bron_smash_damage_t : public spell_t
+    {
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
+      {
+        background = true;
+        spell_power_mod.direct = 0.25; // Not in spell data
+        attack_power_mod.direct = 0.25; // Not in spell data
+        aoe = -1;
+        radius = data().effectN( 2 ).radius();
+      }
+
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap <= sp )
+          return 0;
+
+        return spell_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap > sp )
+          return 0;
+
+        return spell_t::spell_direct_power_coefficient( s );
       }
     };
 
@@ -679,11 +713,7 @@ void brons_call_to_action( special_effect_t& effect )
       {
         parse_options( options_str );
 
-        impact_action = new spell_t( "smash", p, p->find_spell( 341165 ) );
-        impact_action->background = true;
-        impact_action->spell_power_mod.direct = 0.5; // Not in spell data
-        impact_action->aoe = -1;
-        impact_action->radius = data().effectN( 2 ).radius();
+        impact_action = new bron_smash_damage_t( p );
       }
     };
 
@@ -694,7 +724,7 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         interrupt_auto_attack = false;
-        spell_power_mod.direct = 1.15; // Not in spell data
+        spell_power_mod.direct = 0.575; // Not in spell data
       }
 
       void execute() override
@@ -713,7 +743,7 @@ void brons_call_to_action( special_effect_t& effect )
 
         school            = SCHOOL_PHYSICAL;
         weapon            = &p->main_hand_weapon;
-        weapon_multiplier = 1.0;
+        weapon_multiplier = 0.25;
         base_execute_time = weapon->swing_time;
       }
     };
@@ -763,13 +793,8 @@ void brons_call_to_action( special_effect_t& effect )
     {
       main_hand_weapon.type       = WEAPON_BEAST;
       main_hand_weapon.swing_time = 2.0_s;
-      // TODO: verify auto attack damage for dual wielding characters and characters with attack power.
-      if ( owner->main_hand_weapon.type != WEAPON_NONE )
-        main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = owner->main_hand_weapon.dps;
-      else
-        main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 1;
-      owner_coeff.sp_from_sp      = 1.0;
-      owner_coeff.sp_from_ap      = 1.0; // TODO: Verify that this actually scales with attack power too.
+      owner_coeff.sp_from_sp      = 2.0;
+      owner_coeff.ap_from_ap      = 2.0;
     }
 
     void init_action_list() override
