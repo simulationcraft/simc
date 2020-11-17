@@ -2956,6 +2956,21 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return std::make_unique<time_to_hpg_expr_t>( name_str, *this );
   }
 
+  struct next_season_expr_t : public paladin_expr_t
+  {
+    next_season_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p ) {}
+
+    double evaluate() override
+    {
+      return paladin.next_season;
+    }
+  };
+
+  if ( splits[ 0 ] == "next_season" )
+  {
+    return std::make_unique<next_season_expr_t>( name_str, *this );
+  }
+
   auto cons_expr = create_consecration_expression( name_str );
   if ( cons_expr )
   {
