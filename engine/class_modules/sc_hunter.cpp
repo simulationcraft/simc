@@ -5357,7 +5357,7 @@ struct coordinated_assault_t: public hunter_spell_t
 
 // Steel Trap =======================================================================
 
-struct steel_trap_t: public hunter_spell_t
+struct steel_trap_t: public trap_base_t
 {
   struct impact_t final : public hunter_spell_t
   {
@@ -5370,11 +5370,9 @@ struct steel_trap_t: public hunter_spell_t
   };
 
   steel_trap_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "steel_trap", p, p -> talents.steel_trap )
+    trap_base_t( "steel_trap", p, p -> talents.steel_trap )
   {
     parse_options( options_str );
-
-    harmful = false;
 
     impact_action = p -> get_background_action<impact_t>( "steel_trap_impact" );
     add_child( impact_action );
