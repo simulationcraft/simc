@@ -1018,7 +1018,7 @@ public:
     double total_regen = regen * cast_time.total_seconds();
     double total_energize = energize_cast_regen( s );
 
-    if ( p() -> buffs.trueshot -> check() && p() -> true_level > 50 ) // XXX: SL - remove true_level check
+    if ( p() -> buffs.trueshot -> check() )
     {
       const timespan_t remains = p() -> buffs.trueshot -> remains();
 
@@ -5357,7 +5357,7 @@ struct coordinated_assault_t: public hunter_spell_t
 
 // Steel Trap =======================================================================
 
-struct steel_trap_t: public hunter_spell_t
+struct steel_trap_t: public trap_base_t
 {
   struct impact_t final : public hunter_spell_t
   {
@@ -5370,11 +5370,9 @@ struct steel_trap_t: public hunter_spell_t
   };
 
   steel_trap_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "steel_trap", p, p -> talents.steel_trap )
+    trap_base_t( "steel_trap", p, p -> talents.steel_trap )
   {
     parse_options( options_str );
-
-    harmful = false;
 
     impact_action = p -> get_background_action<impact_t>( "steel_trap_impact" );
     add_child( impact_action );
@@ -6242,6 +6240,7 @@ void hunter_t::init_base_stats()
 
   base.attack_power_per_strength = 0;
   base.attack_power_per_agility  = 1;
+  base.spell_power_per_intellect = 1;
 
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
   for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, specs.pack_tactics } )
@@ -7539,7 +7538,7 @@ void hunter_t::regen( timespan_t periodicity )
     return;
 
   double total_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_FOCUS );
-  if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+  if ( buffs.trueshot -> check() )
   {
     double regen = total_regen * specs.trueshot -> effectN( 6 ).percent();
     resource_gain( RESOURCE_FOCUS, regen, gains.trueshot );
@@ -7591,7 +7590,7 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
       mul_gains[ mul_gains_count++ ] = { mul, gain };
     };
 
-    if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+    if ( buffs.trueshot -> check() )
       add_gain( specs.trueshot -> effectN( 5 ).percent(), gains.trueshot );
 
     if ( buffs.nesingwarys_apparatus -> check() )

@@ -830,8 +830,8 @@ enum effect_subtype_t : unsigned {
     A_MOD_STEALTH_DETECT = 17,
     A_MOD_INVISIBILITY = 18,
     A_MOD_INVISIBILITY_DETECTION = 19,
-    A_OBS_MOD_HEALTH = 20, //20,21 unofficial
-    A_OBS_MOD_MANA = 21,
+    A_PERIODIC_HEAL_PCT = 20,
+    A_OBS_MOD_MANA = 21, // 21 unofficial
     A_MOD_RESISTANCE = 22,
     A_PERIODIC_TRIGGER_SPELL = 23,
     A_PERIODIC_ENERGIZE = 24,

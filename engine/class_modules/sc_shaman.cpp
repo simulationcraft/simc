@@ -405,7 +405,6 @@ public:
     // shared between all three specs
     buff_t* ascendance;
     buff_t* ghost_wolf;
-    buff_t* windfury_totem;
 
     // Covenant Class Ability Buffs
     buff_t* primordial_wave;
@@ -505,7 +504,6 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
-    cooldown_t* windfury_totem_icd;
   } cooldown;
 
   struct
@@ -639,7 +637,6 @@ public:
     const spell_data_t* windfury;
     const spell_data_t* stormbringer_2;
     const spell_data_t* lava_lash_2;
-    const spell_data_t* windfury_totem_2;
 
     // Restoration
     const spell_data_t* purification;
@@ -746,7 +743,6 @@ public:
     const spell_data_t* flametongue_weapon;
     const spell_data_t* maelstrom;
     const spell_data_t* windfury_weapon;
-    const spell_data_t* windfury_totem;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -799,7 +795,6 @@ public:
     cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.strike          = get_cooldown( "strike" );
     cooldown.shock           = get_cooldown( "shock" );
-    cooldown.windfury_totem_icd = get_cooldown( "windfury_totem_icd" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -839,7 +834,6 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
-  void trigger_windfury_totem( const action_state_t* state );
 
   // Azerite
   void trigger_primal_primer( const action_state_t* state );
@@ -1627,7 +1621,6 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
-    p()->trigger_windfury_totem( state );
 
     // Azerite
     p()->trigger_primal_primer( state );
@@ -6215,18 +6208,45 @@ struct windfury_totem_t : public shaman_spell_t
     shaman_spell_t( "windfury_totem", player, player->find_class_spell( "Windfury Totem" ), options_str )
   {
     harmful = false;
+
+    // If the Shaman has the Doom Winds legendary equipped or the simulator environment
+    // does not enable the "global" windfury totem, we need to ensure the global
+    // Windfury Totem buff for the shaman is proper duration (to force the shaman to
+    // re-cast it periodically).
+    auto wft_buff = buff_t::find( player, "windfury_totem" );
+    if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() )
+    {
+      wft_buff->set_duration( data().duration() );
+    }
+
+    // Set the proc-chance of the Windfury Totem buff unconditionally to 1.0 so it will
+    // properly trigger in all situations (i.e., with or without legendary / global
+    // override)
+    wft_buff->set_chance( 1.0 );
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    p()->buff.windfury_totem->trigger();
+    p()->buffs.windfury_totem->trigger();
 
     if ( !p()->buff.doom_winds_debuff->up() )
     {
       p()->buff.doom_winds_buff->trigger();
     }
+  }
+
+  bool ready() override
+  {
+    // If the shaman does not have Doom Winds legendary equipped, and the global windfury
+    // totem is enabled, don't waste GCDs casting the shaman's own Windfury Totem
+    if ( sim->overrides.windfury_totem && !p()->legendary.doom_winds.ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -7556,7 +7576,6 @@ void shaman_t::init_spells()
 
   spec.stormbringer_2     = find_rank_spell( "Stormbringer", "Rank 2" );
   spec.lava_lash_2        = find_rank_spell( "Lava Lash", "Rank 2" );
-  spec.windfury_totem_2   = find_rank_spell( "Windfury Totem", "Rank 2" );
 
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
@@ -7692,7 +7711,6 @@ void shaman_t::init_spells()
   spell.flametongue_weapon = find_spell( 318038 );
   spell.maelstrom          = find_spell( 343725 );
   spell.windfury_weapon    = find_spell( 319773 );
-  spell.windfury_totem     = find_spell( 327942 );
 
   player_t::init_spells();
 }
@@ -7999,48 +8017,6 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
   // Aand cancel the event .. shaman_t::vesper_totem will have the new event pointer, so
   // we cancel the cached pointer here
   event_t::cancel( current_event );
-}
-
-void shaman_t::trigger_windfury_totem( const action_state_t* state )
-{
-  if ( state->action->special )
-  {
-    return;
-  }
-
-  if ( state->action->weapon && state->action->weapon->slot != SLOT_MAIN_HAND )
-  {
-    return;
-  }
-
-  if ( !buff.windfury_totem->up() )
-  {
-    return;
-  }
-
-  if ( cooldown.windfury_totem_icd->down() )
-  {
-    return;
-  }
-
-  double proc_chance = spell.windfury_totem->proc_chance() +
-    spec.windfury_totem_2->effectN( 1 ).percent();
-
-  if ( !rng().roll( proc_chance ) )
-  {
-    return;
-  }
-
-  if ( sim->debug )
-  {
-    sim->print_debug( "{} windfury_totem repeats {}", name(), main_hand_attack->name() );
-  }
-
-  cooldown.windfury_totem_icd->start( nullptr, spell.windfury_totem->internal_cooldown() );
-
-  main_hand_attack->repeating = false;
-  main_hand_attack->execute();
-  main_hand_attack->repeating = true;
 }
 
 void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
@@ -8471,8 +8447,6 @@ void shaman_t::create_buffs()
   //
   buff.ascendance = new ascendance_buff_t( this );
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
-  buff.windfury_totem = make_buff( this, "windfury_totem", spell.windfury_totem )
-    ->set_chance( 1.0 );
 
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
     ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )

@@ -127,7 +127,12 @@ namespace racial
   void entropic_embrace( special_effect_t& );
   void zandalari_loa( special_effect_t& );
   void combat_analysis( special_effect_t& );
-  }
+}
+
+namespace generic
+{
+  void windfury_totem( special_effect_t& );
+}
 
 /**
  * Select attribute operator for buffs. Selects the attribute based on the
@@ -3487,6 +3492,81 @@ void racial::combat_analysis( special_effect_t& effect )
   } );
 }
 
+void generic::windfury_totem( special_effect_t& effect )
+{
+  struct wft_proc_callback_t : public dbc_proc_callback_t
+  {
+    wft_proc_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      // Windfury totem cannot proc from off-hand hits, apparently
+      if ( s->action->weapon && s->action->weapon->slot != SLOT_MAIN_HAND )
+      {
+        return;
+      }
+
+      // Ranged weapons don't Windfury .. sorry Hunters
+      if ( s->action->weapon->group() == WEAPON_RANGED )
+      {
+        return;
+      }
+
+      // If for some reason there's no auto attack action that would initialize the main
+      // hand attack, bail out
+      if ( !s->action->player->main_hand_attack )
+      {
+        return;
+      }
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      auto atk = listener->main_hand_attack;
+      auto old_target = atk->target;
+
+      if ( listener->sim->debug )
+      {
+        listener->sim->print_debug( "{} windfury_totem repeats {}",
+          listener->name(), atk->name() );
+      }
+
+      atk->repeating = false;
+      atk->set_target( state->target );
+      atk->execute();
+
+      atk->repeating = true;
+      atk->set_target( old_target );
+    }
+  };
+
+  // Apply rank 2 automatically
+  effect.proc_chance_ = effect.driver()->proc_chance() +
+    effect.player->find_spell( 343211 )->effectN( 1 ).percent();
+
+  auto proc = new wft_proc_callback_t( effect );
+
+  auto wft_buff = buff_t::find( effect.player, "windfury_totem" );
+  assert( wft_buff );
+  wft_buff->set_stack_change_callback( [proc]( buff_t*, int /* old_ */, int new_ ) {
+    if ( new_ == 1 )
+    {
+      proc->activate();
+    }
+    else
+    {
+      proc->deactivate();
+    }
+  } );
+
+  // Windfury Totem buff controls whether proc is active or not
+  proc->deactivate();
+}
+
 // Figure out if a given generic buff (associated with a trinket/item) is a
 // stat buff of the correct type
 bool buff_has_stat( const buff_t* buff, stat_e stat )
@@ -4459,6 +4539,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 255669, racial::entropic_embrace );
   register_special_effect( 292751, racial::zandalari_loa );
   register_special_effect( 312923, racial::combat_analysis );
+
+  /* Generic "global scope" special effects */
+  register_special_effect( 327942, generic::windfury_totem );
 }
 
 void unique_gear::unregister_special_effects()

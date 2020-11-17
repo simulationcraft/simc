@@ -242,7 +242,9 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  effect.proc_flags2_ = PF2_CAST_HEAL;
+  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -574,7 +576,7 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur = duration_mod * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
+      ext_dur = std::round( duration_mod ) * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -595,7 +597,7 @@ void combat_meditation( special_effect_t& effect )
     {
       icd_enabled = true;
     }
- 
+
     effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
     buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
   }
@@ -655,24 +657,6 @@ void hammer_of_genesis( special_effect_t& effect )
   new hammer_of_genesis_cb_t( effect );
 }
 
-template <typename Base>
-struct bron_action_t : public Base
-{
-  using base_t = bron_action_t<Base>;
-
-  pet_t* bron;
-
-  bron_action_t( util::string_view n, pet_t* p, const spell_data_t* s ) : Base( n, p, s ), bron( p ) {}
-
-  void execute() override
-  {
-    Base::execute();
-
-    if ( Base::player->main_hand_attack->execute_event )
-      Base::player->main_hand_attack->execute_event->reschedule( Base::player->main_hand_weapon.swing_time );
-  }
-};
-
 void brons_call_to_action( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "brons_call_to_action" } ) )
@@ -680,42 +664,76 @@ void brons_call_to_action( special_effect_t& effect )
 
   struct bron_pet_t : public pet_t
   {
-    struct bron_anima_cannon_t : public bron_action_t<spell_t>
+    struct bron_anima_cannon_t : public spell_t
     {
-      bron_anima_cannon_t( pet_t* p ) : base_t( "anima_cannon", p, p->find_spell( 332525 ) )
+      bron_anima_cannon_t( pet_t* p, const std::string& options_str ) : spell_t( "anima_cannon", p, p->find_spell( 332525 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 8_s;  // TODO: confirm
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 0.55; // Not in spell data
       }
     };
 
-    struct bron_smash_t : public bron_action_t<melee_attack_t>
+    struct bron_smash_damage_t : public spell_t
     {
-      bron_smash_t( pet_t* p ) : base_t( "smash", p, p->find_spell( 341163 ) )
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
-        may_crit          = true;
-        aoe               = -1;
-        radius            = data().effectN( 2 ).radius();
-        travel_speed      = 0.0;
-        base_execute_time = data().cast_time();
-        weapon            = &p->main_hand_weapon;
-        weapon_multiplier = p->find_spell( 341165 )->effectN( 1 ).percent();
+        background = true;
+        spell_power_mod.direct = 0.25; // Not in spell data
+        attack_power_mod.direct = 0.25; // Not in spell data
+        aoe = -1;
+        radius = data().effectN( 1 ).radius_max();
+      }
+
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap <= sp )
+          return 0;
+
+        return spell_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap > sp )
+          return 0;
+
+        return spell_t::spell_direct_power_coefficient( s );
       }
     };
 
-    struct bron_goliath_support_t : public bron_action_t<heal_t>
+    struct bron_smash_t : public spell_t
     {
-      bron_goliath_support_t( pet_t* p ) : base_t( "goliath_support", p, p->find_spell( 332526 ) )
+      bron_smash_t( pet_t* p, const std::string& options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 4_s;  // TODO: confirm
+        parse_options( options_str );
+
+        impact_action = new bron_smash_damage_t( p );
+      }
+    };
+
+    struct bron_vitalizing_bolt_t : public heal_t
+    {
+      bron_vitalizing_bolt_t( pet_t* p, const std::string& options_str ) : heal_t( "vitalizing_bolt", p, p->find_spell( 332526 ) )
+      {
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 0.575; // Not in spell data
       }
 
       void execute() override
       {
         target = debug_cast<pet_t*>( player )->owner;
 
-        base_t::execute();
+        heal_t::execute();
       }
     };
 
@@ -727,7 +745,7 @@ void brons_call_to_action( special_effect_t& effect )
 
         school            = SCHOOL_PHYSICAL;
         weapon            = &p->main_hand_weapon;
-        weapon_multiplier = 1.0;
+        weapon_multiplier = 0.25;
         base_execute_time = weapon->swing_time;
       }
     };
@@ -776,20 +794,23 @@ void brons_call_to_action( special_effect_t& effect )
     bron_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "bron" )
     {
       main_hand_weapon.type       = WEAPON_BEAST;
-      main_hand_weapon.swing_time = 1.5_s;  // TODO: confirm
-      main_hand_weapon.min_dmg    = 60.0;   // TODO: confirm
-      main_hand_weapon.max_dmg    = 60.0;   // TODO: confirm
-      owner_coeff.sp_from_sp      = 1.0;
-      owner_coeff.ap_from_sp      = 0.25;
+      main_hand_weapon.swing_time = 2.0_s;
+      owner_coeff.sp_from_sp      = 2.0;
+      owner_coeff.ap_from_ap      = 2.0;
     }
 
     void init_action_list() override
     {
+      // Use line cooldowns to recreate the in-game timings; the spell data does not actually
+      // have cooldowns and the apparent cooldowns need to start on cast start to work.
+      // TODO: Vitalizing Bolt casts one more time than it should, but it is not a damage
+      // spell and the number of hits for all of the damage spells is correct. There might
+      // need to be some kind of delay when selecting actions to get the timing to match up.
       action_list_str = "travel";
       action_list_str += "/auto_attack";
-      action_list_str += "/goliath_support";
-      action_list_str += "/anima_cannon";
-      action_list_str += "/smash";
+      action_list_str += "/vitalizing_bolt,line_cd=4";
+      action_list_str += "/anima_cannon,line_cd=8";
+      action_list_str += "/smash,line_cd=15";
 
       pet_t::init_action_list();
     }
@@ -798,9 +819,9 @@ void brons_call_to_action( special_effect_t& effect )
     {
       if ( name == "travel" ) return new bron_travel_t( this );
       if ( name == "auto_attack" ) return new bron_auto_attack_t( this );
-      if ( name == "goliath_support" ) return new bron_goliath_support_t( this );
-      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this );
-      if ( name == "smash" ) return new bron_smash_t( this );
+      if ( name == "vitalizing_bolt" ) return new bron_vitalizing_bolt_t( this, options_str );
+      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this, options_str );
+      if ( name == "smash" ) return new bron_smash_t( this, options_str );
 
       return pet_t::create_action( name, options_str );
     }
@@ -833,6 +854,8 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
+  // TODO: This does not seem to proc on all of the spells implied by these proc flags.
+  // For example, Arcane Missiles does not trigger a stack of the buff.
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 

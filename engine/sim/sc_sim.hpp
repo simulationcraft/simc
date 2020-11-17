@@ -199,6 +199,7 @@ struct sim_t : private sc_thread_t
     int arcane_intellect;
     int battle_shout;
     int power_word_fortitude;
+    int windfury_totem;
 
     // Debuff overrides
     int chaos_brand;

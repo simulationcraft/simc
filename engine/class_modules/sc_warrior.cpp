@@ -1678,7 +1678,7 @@ struct mortal_strike_t : public warrior_attack_t
   double mortal_combo_chance;
   mortal_strike_t( warrior_t* p, const std::string& options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
-      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ), 
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
       enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ), from_mortal_combo( mortal_combo )
   {
     parse_options( options_str );
@@ -4651,7 +4651,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 // ==========================================================================
 // Covenant Abilities
 // ==========================================================================
-  
+
 // Ancient Aftershock========================================================
 
 struct ancient_aftershock_pulse_t : public warrior_attack_t
@@ -6173,6 +6173,7 @@ void warrior_t::init_base_stats()
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
+  base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().

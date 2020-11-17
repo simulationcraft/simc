@@ -514,7 +514,7 @@ static bool is_direct_damage_effect( const spelleffect_data_t& effect )
 static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
 {
   static constexpr effect_subtype_t subtypes[] = {
-    A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL
+    A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL, A_PERIODIC_HEAL_PCT
   };
   return effect.type() == E_APPLY_AURA &&
          range::contains( subtypes, effect.subtype() );
@@ -738,7 +738,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE_PERCENT:
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
-        case A_OBS_MOD_HEALTH:
+        case A_PERIODIC_HEAL_PCT:
           if ( spelleffect_data.period() > timespan_t::zero() )
           {
             base_tick_time = spelleffect_data.period();
