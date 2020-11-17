@@ -394,6 +394,7 @@ struct death_knight_td_t : public actor_target_data_t {
   struct
   {
     // Shared
+    buff_t* abomination_limb;
     buff_t* apocalypse_death; // Dummy debuff, simc doesn't really care about healing reduction on enemies
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
@@ -502,6 +503,9 @@ public:
     // Legendaries
     buff_t* frenzied_monstrosity;
     buff_t* death_turf;
+
+    // Covenants
+    buff_t* abomination_limb;
   } buffs;
 
   struct runeforge_t {
@@ -869,6 +873,7 @@ public:
     proc_t* pp_runic_corruption; // from pestilent pustules
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* sr_runic_corruption; // from soul reaper
+    proc_t* al_runic_corruption; // from abomination limb
 
     proc_t* fw_festering_strike;
     proc_t* fw_infected_claws;
@@ -919,7 +924,7 @@ public:
   struct soulbind_conduits_t
   { // Commented out = NYI           // ID
     // Shared - Covenant ability conduits
-    // conduit_data_t brutal_grasp; // Necrolord, 127
+    conduit_data_t brutal_grasp; // Necrolord, 127
     // conduit_data_t impenetrable_glomm; // Venthyr, 126
     // conduit_data_t proliferation; // Kyrian, 128
     // conduit_data_t withering_ground; // Night Fae, 250
@@ -953,6 +958,14 @@ public:
     // conduit_data_t reinforced_shell; // 74
     // conduit_data_t unending_grip; // 106
   } conduits;
+
+  struct covenant_t
+  {
+    const spell_data_t* abomination_limb; // Necrolord
+    // const spell_data_t* deaths_due; // Night Fae
+    // const spell_data_t* shackle_the_unworthy; // Kyrian
+    // const spell_data_t* swarming_mist; // Venthyr
+  } covenant;
 
   struct legendary_t
   { // Commented out = NYI                        // bonus ID
@@ -3373,6 +3386,80 @@ struct auto_attack_t : public death_knight_melee_attack_t
 // ==========================================================================
 // Death Knight Abilities
 // ==========================================================================
+
+// Abomination Limb =========================================================
+
+struct abomination_limb_damage_t : public death_knight_spell_t
+{
+  abomination_limb_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "abomination_limb_damage", p, p -> covenant.abomination_limb -> effectN( 2 ).trigger() )
+  {
+    background = true;
+    base_multiplier *= 1.0 + p -> conduits.brutal_grasp.percent();
+  }
+};
+
+struct abomination_limb_buff_t : public buff_t
+{
+  abomination_limb_damage_t* damage; // (AOE) damage that ticks every second
+
+  abomination_limb_buff_t( death_knight_t* p ) :
+    buff_t( p, "abomination_limb", p -> covenant.abomination_limb ),
+    damage( new abomination_limb_damage_t( p ) )
+  {
+    cooldown -> duration = 0_ms; // Controlled by the action
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+    {
+      damage -> execute();
+    } );
+    set_partial_tick( true );
+  }
+};
+
+struct abomination_limb_t : public death_knight_spell_t
+{
+  int bone_shield_stack_gain;
+  abomination_limb_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "abomination_limb", p, p -> covenant.abomination_limb )
+  {
+    may_crit = may_miss = may_dodge = may_parry = false;
+
+    parse_options( options_str );
+
+    // Periodic behavior handled by the buff
+    dot_duration = base_tick_time = 0_ms;
+
+    bone_shield_stack_gain = as<int>(p -> covenant.abomination_limb -> effectN( 3 ).base_value());
+
+    if ( action_t* abomination_limb_damage = p -> find_action( "abomination_limb_damage" ) )
+    {
+      add_child( abomination_limb_damage );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.abomination_limb -> trigger();
+
+    // Through testing we find that
+    switch ( p() ->specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
+        break;
+      case DEATH_KNIGHT_FROST:
+        p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        p() -> trigger_runic_corruption( 0, 1.0, p() -> procs.al_runic_corruption );
+        break;
+      default:
+        break;
+    }
+  }
+};
 
 // Apocalypse ===============================================================
 
@@ -8103,6 +8190,7 @@ void death_knight_t::create_actions()
 action_t* death_knight_t::create_action( util::string_view name, const std::string& options_str )
 {
   // General Actions
+  if ( name == "abomination_limb"         ) return new abomination_limb_t         ( this, options_str );
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
@@ -8750,7 +8838,7 @@ void death_knight_t::init_spells()
   // Conduits
 
   // Shared - Covenant ability conduits
-  // conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
+  conduits.brutal_grasp = find_conduit_spell( "Brutal Grasp" );
   // conduits.impenetrable_glomm = find_conduit_spell( "Impenetrable Gloom" );
   // conduits.proliferation = find_conduit_spell( "Proliferation" );
   // conduits.withering_ground = find_conduit_spell( "Withering Ground" );
@@ -8811,6 +8899,9 @@ void death_knight_t::init_spells()
   // legendary.grip_of_the_everlasting = find_runeforge_legendary( "Grip of the Everlasting" );
   legendary.gorefiends_domination = find_runeforge_legendary( "Gorefiend's Domination" );
   // legendary.vampiric_aura = find_runeforge_legendary( "Vampiric Aura" );
+
+  // Covenants
+  covenant.abomination_limb = find_covenant_spell( "Abomination Limb" );
 
 }
 
@@ -9489,6 +9580,9 @@ void death_knight_t::create_buffs()
   {
     buffs.death_turf -> default_value /= 2;
   }
+
+  // Covenants
+  buffs.abomination_limb = new abomination_limb_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9560,6 +9654,7 @@ void death_knight_t::init_procs()
   procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
   procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
   procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
+  procs.al_runic_corruption   = get_proc( "Runic Corruption from Abomination Limb" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
 
