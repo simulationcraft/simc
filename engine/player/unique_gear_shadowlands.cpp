@@ -1347,7 +1347,7 @@ void register_special_effects()
 
     // Trinkets
     unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
-    unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
+    unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );
     unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
