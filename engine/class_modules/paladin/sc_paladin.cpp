@@ -1276,7 +1276,7 @@ struct blessing_of_seasons_t : public paladin_spell_t
     p() -> next_season = season( ( p() -> next_season + 1 ) % NUM_SEASONS );
 
     for ( unsigned i = 0; i < NUM_SEASONS; i++ )
-      p() -> active.seasons[ i ] -> cooldown -> start();
+      p() -> active.seasons[ i ] -> cooldown -> start( p() -> active.seasons[i] );
   }
 };
 
@@ -1852,7 +1852,6 @@ void paladin_t::create_buffs()
                 for ( auto a : this->action_list )
                 {
                   // Only class spells have their cooldown reduced.
-                  // TODO: verify if this actually covers everything or if eg. the blessing itself gets its cd reduced
                   bool is_adjustable_class_spell = a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
                   if ( is_adjustable_class_spell )
                   {
@@ -1860,11 +1859,26 @@ void paladin_t::create_buffs()
                       a->base_recharge_multiplier *= recharge_multiplier;
                     else
                       a->base_recharge_multiplier /= recharge_multiplier;
+
                     if ( a->cooldown->action == a )
                       a->cooldown->adjust_recharge_multiplier();
                     if ( a->internal_cooldown->action == a )
                       a->internal_cooldown->adjust_recharge_multiplier();
                   }
+                }
+
+                // TODO(mserrano): is this correct or are these somehow in the action list? they shouldn't be
+                for( auto a : this -> active.seasons )
+                {
+                  if ( new_ == 1 )
+                    a -> base_recharge_multiplier *= recharge_multiplier;
+                  else
+                    a -> base_recharge_multiplier /= recharge_multiplier;
+
+                  if ( a -> cooldown -> action == a )
+                    a -> cooldown -> adjust_recharge_multiplier();
+                  if ( a -> internal_cooldown -> action == a )
+                    a -> internal_cooldown -> adjust_recharge_multiplier();
                 }
              } );
 
@@ -1872,7 +1886,6 @@ void paladin_t::create_buffs()
   bow_effect -> spell_id = 328281;
   bow_effect -> name_str = "blessing_of_winter";
   bow_effect -> execute_action = new blessing_of_winter_proc_t( this );
-  bow_effect -> cooldown_ = timespan_t::from_seconds( 0.5 );
   special_effects.push_back( bow_effect );
   dbc_proc_callback_t* bow_callback = new dbc_proc_callback_t( this, *bow_effect );
   bow_callback -> initialize();
