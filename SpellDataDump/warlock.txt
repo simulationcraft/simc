@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-17/36639)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36639 shadowlands-BETA (hotfix 2020-11-17/36639, git build shadowlands abcbcdd, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
