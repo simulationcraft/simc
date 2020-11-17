@@ -680,6 +680,7 @@ void brons_call_to_action( special_effect_t& effect )
         parse_options( options_str );
 
         impact_action = new spell_t( "smash", p, p->find_spell( 341165 ) );
+        impact_action->background = true;
         impact_action->spell_power_mod.direct = 0.5; // Not in spell data
         impact_action->aoe = -1;
         impact_action->radius = data().effectN( 2 ).radius();
