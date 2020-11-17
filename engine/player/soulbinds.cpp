@@ -681,7 +681,7 @@ void brons_call_to_action( special_effect_t& effect )
         spell_power_mod.direct = 0.25; // Not in spell data
         attack_power_mod.direct = 0.25; // Not in spell data
         aoe = -1;
-        radius = data().effectN( 2 ).radius();
+        radius = data().effectN( 1 ).radius_max();
       }
 
       double attack_direct_power_coefficient( const action_state_t* s ) const override
