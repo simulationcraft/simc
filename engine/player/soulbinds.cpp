@@ -655,24 +655,6 @@ void hammer_of_genesis( special_effect_t& effect )
   new hammer_of_genesis_cb_t( effect );
 }
 
-template <typename Base>
-struct bron_action_t : public Base
-{
-  using base_t = bron_action_t<Base>;
-
-  pet_t* bron;
-
-  bron_action_t( util::string_view n, pet_t* p, const spell_data_t* s ) : Base( n, p, s ), bron( p ) {}
-
-  void execute() override
-  {
-    Base::execute();
-
-    if ( Base::player->main_hand_attack->execute_event )
-      Base::player->main_hand_attack->execute_event->reschedule( Base::player->main_hand_weapon.swing_time );
-  }
-};
-
 void brons_call_to_action( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "brons_call_to_action" } ) )
@@ -680,42 +662,45 @@ void brons_call_to_action( special_effect_t& effect )
 
   struct bron_pet_t : public pet_t
   {
-    struct bron_anima_cannon_t : public bron_action_t<spell_t>
+    struct bron_anima_cannon_t : public spell_t
     {
-      bron_anima_cannon_t( pet_t* p ) : base_t( "anima_cannon", p, p->find_spell( 332525 ) )
+      bron_anima_cannon_t( pet_t* p, const std::string& options_str ) : spell_t( "anima_cannon", p, p->find_spell( 332525 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 8_s;  // TODO: confirm
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 1.1; // Not in spell data
       }
     };
 
-    struct bron_smash_t : public bron_action_t<melee_attack_t>
+    struct bron_smash_t : public spell_t
     {
-      bron_smash_t( pet_t* p ) : base_t( "smash", p, p->find_spell( 341163 ) )
+      bron_smash_t( pet_t* p, const std::string& options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
       {
-        may_crit          = true;
-        aoe               = -1;
-        radius            = data().effectN( 2 ).radius();
-        travel_speed      = 0.0;
-        base_execute_time = data().cast_time();
-        weapon            = &p->main_hand_weapon;
-        weapon_multiplier = p->find_spell( 341165 )->effectN( 1 ).percent();
+        parse_options( options_str );
+
+        impact_action = new spell_t( "smash", p, p->find_spell( 341165 ) );
+        impact_action->spell_power_mod.direct = 0.5; // Not in spell data
+        impact_action->aoe = -1;
+        impact_action->radius = data().effectN( 2 ).radius();
       }
     };
 
-    struct bron_goliath_support_t : public bron_action_t<heal_t>
+    struct bron_vitalizing_bolt_t : public heal_t
     {
-      bron_goliath_support_t( pet_t* p ) : base_t( "goliath_support", p, p->find_spell( 332526 ) )
+      bron_vitalizing_bolt_t( pet_t* p, const std::string& options_str ) : heal_t( "vitalizing_bolt", p, p->find_spell( 332526 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 4_s;  // TODO: confirm
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 1.15; // Not in spell data
       }
 
       void execute() override
       {
         target = debug_cast<pet_t*>( player )->owner;
 
-        base_t::execute();
+        heal_t::execute();
       }
     };
 
@@ -776,20 +761,28 @@ void brons_call_to_action( special_effect_t& effect )
     bron_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "bron" )
     {
       main_hand_weapon.type       = WEAPON_BEAST;
-      main_hand_weapon.swing_time = 1.5_s;  // TODO: confirm
-      main_hand_weapon.min_dmg    = 60.0;   // TODO: confirm
-      main_hand_weapon.max_dmg    = 60.0;   // TODO: confirm
+      main_hand_weapon.swing_time = 2.0_s;
+      // TODO: verify auto attack damage for dual wielding characters and characters with attack power.
+      if ( owner->main_hand_weapon.type != WEAPON_NONE )
+        main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = owner->main_hand_weapon.dps;
+      else
+        main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 1;
       owner_coeff.sp_from_sp      = 1.0;
-      owner_coeff.ap_from_sp      = 0.25;
+      owner_coeff.sp_from_ap      = 1.0; // TODO: Verify that this actually scales with attack power too.
     }
 
     void init_action_list() override
     {
+      // Use line cooldowns to recreate the in-game timings; the spell data does not actually
+      // have cooldowns and the apparent cooldowns need to start on cast start to work.
+      // TODO: Vitalizing Bolt casts one more time than it should, but it is not a damage
+      // spell and the number of hits for all of the damage spells is correct. There might
+      // need to be some kind of delay when selecting actions to get the timing to match up.
       action_list_str = "travel";
       action_list_str += "/auto_attack";
-      action_list_str += "/goliath_support";
-      action_list_str += "/anima_cannon";
-      action_list_str += "/smash";
+      action_list_str += "/vitalizing_bolt,line_cd=4";
+      action_list_str += "/anima_cannon,line_cd=8";
+      action_list_str += "/smash,line_cd=15";
 
       pet_t::init_action_list();
     }
@@ -798,9 +791,9 @@ void brons_call_to_action( special_effect_t& effect )
     {
       if ( name == "travel" ) return new bron_travel_t( this );
       if ( name == "auto_attack" ) return new bron_auto_attack_t( this );
-      if ( name == "goliath_support" ) return new bron_goliath_support_t( this );
-      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this );
-      if ( name == "smash" ) return new bron_smash_t( this );
+      if ( name == "vitalizing_bolt" ) return new bron_vitalizing_bolt_t( this, options_str );
+      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this, options_str );
+      if ( name == "smash" ) return new bron_smash_t( this, options_str );
 
       return pet_t::create_action( name, options_str );
     }
@@ -833,6 +826,8 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
+  // TODO: This does not seem to proc on all of the spells implied by these proc flags.
+  // For example, Arcane Missiles does not trigger a stack of the buff.
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
