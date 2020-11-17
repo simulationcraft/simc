@@ -6738,7 +6738,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
 {
   int swarming_mist_energize_target_cap;
   int swarming_mist_energize_tick;
-  const spell_data_t* swarming_mist_energize;
+  int swarming_mist_energize_amount;
 
   swarming_mist_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "swarming_mist_damage", p, p -> covenant.swarming_mist -> effectN( 1 ).trigger() ),
@@ -6748,7 +6748,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
     background = true;
     aoe = -1;
     base_multiplier *= 1.0 + p -> conduits.impenetrable_gloom.percent();
-    swarming_mist_energize = p -> covenant.swarming_mist->ok() ? p -> find_spell( 312546 ) : spell_data_t::not_found();
+    swarming_mist_energize_amount = p -> covenant.swarming_mist->ok() ? p -> find_spell( 312546 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) : 0;
   }
 
   void execute() override
@@ -6763,7 +6763,7 @@ struct swarming_mist_damage_t : public death_knight_spell_t
     if ( swarming_mist_energize_tick < swarming_mist_energize_target_cap )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                 swarming_mist_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                 swarming_mist_energize_amount,
                  p() -> gains.swarming_mist );
       swarming_mist_energize_tick++;
     }
