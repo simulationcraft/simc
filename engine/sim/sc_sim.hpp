@@ -697,6 +697,15 @@ struct sim_t : private sc_thread_t
     out_debug.print( format, std::forward<Args>(args)... );
   }
 
+  template <typename... Args>
+  void print_debug( const char* format, Args&&... args )
+  {
+    if ( !debug )
+      return;
+
+    out_debug.print( util::string_view( format ), std::forward<Args>( args )... );
+  }
+
   /**
    * Convenient log function using python-like formatting.
    *
