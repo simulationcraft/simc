@@ -574,7 +574,7 @@ void combat_meditation( special_effect_t& effect )
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur = duration_mod * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
+      ext_dur = std::round( duration_mod ) * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -595,7 +595,7 @@ void combat_meditation( special_effect_t& effect )
     {
       icd_enabled = true;
     }
- 
+
     effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
     buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
   }
