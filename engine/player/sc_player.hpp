@@ -428,6 +428,7 @@ struct player_t : public actor_t
 
     buff_t* berserking;
     buff_t* bloodlust;
+    buff_t* windfury_totem;
 
     buff_t* cooldown_reduction;
     buff_t* amplification;

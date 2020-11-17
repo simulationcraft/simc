@@ -2323,6 +2323,7 @@ void sim_t::init_fight_style()
     overrides.battle_shout         = 1;
     overrides.power_word_fortitude = 1;
     overrides.bloodlust            = 1;
+    overrides.windfury_totem       = 0;
 
     ignore_invulnerable_targets = true;
 
@@ -3208,6 +3209,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
+  overrides.windfury_totem          = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3449,6 +3451,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
+  add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
