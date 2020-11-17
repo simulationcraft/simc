@@ -3003,30 +3003,25 @@ struct death_knight_action_t : public Base
   {
     action_base_t::execute();
     // If we spend a rune, we have a chance to spread the dot
-    if ( this->triggers_shackle_the_unworthy && p() -> covenant.shackle_the_unworthy -> ok() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() )
+    dot_t* source_dot = p() -> get_target_data( action_t::target ) -> dot.shackle_the_unworthy;
+    if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy && 
+         source_dot -> is_ticking() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() &&
+        p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
     {
-      if ( p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
+      for ( auto destination : action_t::target_list() )
       {
-        death_knight_td_t* source = p() -> get_target_data( p()->target );
-        if ( source -> dot.shackle_the_unworthy -> is_ticking() )
+        death_knight_td_t* destination_td = p() -> get_target_data( destination );
+        if ( action_t::target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
         {
-          for ( auto destination : action_t::target_list() )
-          {
-            death_knight_td_t* destination_td = p() -> get_target_data( destination );
-            if ( p()->target == destination || destination_td -> dot.shackle_the_unworthy -> is_ticking() )
-            {
-              continue;
-            }
-
-            action_t::sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
-                    action_t::player->name(), this->name(), action_t::target->name(), destination->name(),
-                    source->dot.shackle_the_unworthy->remains().total_seconds() );
-            source->dot.shackle_the_unworthy->copy(destination, DOT_COPY_CLONE);
-            p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
-            // after we successfully spread to one target, return.
-            return;
-          }
+          continue;
         }
+        action_t::sim->out_log.printf("%s spreads shackle the unworthy with %s from %s to target %s (remains=%.3f)",
+                action_t::player->name(), this->name(), action_t::target->name(), destination->name(),
+                source_dot->remains().total_seconds() );
+        source_dot->copy(destination, DOT_COPY_CLONE);
+        p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
+        // after we successfully spread to one target, return.
+        return;
       }
     }
   }
