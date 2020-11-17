@@ -17,6 +17,15 @@ namespace buffs {
                   struct execution_sentence_debuff_t;
                 }
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
+
+enum season : unsigned int {
+  SUMMER = 0,
+  AUTUMN = 1,
+  WINTER = 2,
+  SPRING = 3,
+  NUM_SEASONS = 4,
+};
+
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -142,6 +151,8 @@ public:
     action_t* necrolord_divine_storm;
     action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
+    action_t* seasons[NUM_SEASONS];
+    action_t* blessing_of_summer_proc;
 
     // Conduit stuff
     action_t* virtuous_command;
@@ -196,6 +207,10 @@ public:
 
     // Covenants
     buff_t* vanquishers_hammer;
+    buff_t* blessing_of_summer;
+    buff_t* blessing_of_autumn;
+    buff_t* blessing_of_winter;
+    buff_t* blessing_of_spring;
 
     // Legendaries
     buff_t* vanguards_momentum;
@@ -489,6 +504,8 @@ public:
   double lucid_dreams_accumulator;
   double lucid_dreams_minor_refund_coeff;
 
+  season next_season;
+
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
   virtual void      init_assessors() override;
@@ -506,6 +523,7 @@ public:
 
   // player stat functions
   virtual double    composite_player_multiplier( school_e ) const override;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
@@ -535,6 +553,7 @@ public:
 
   // combat outcome functions
   virtual void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  virtual void      assess_heal( school_e, result_amount_type, action_state_t* ) override;
   virtual void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
   virtual void      invalidate_cache( cache_e ) override;
@@ -855,6 +874,19 @@ public:
 
             p() -> active.reckoning -> set_target( s -> target );
             p() -> active.reckoning -> schedule_execute();
+          }
+        }
+
+        if ( ab::callbacks && p() -> buffs.blessing_of_summer -> up() )
+        {
+          if ( p() -> rng().roll( p() -> buffs.blessing_of_summer -> data().proc_chance() ) )
+          {
+            double amt = s -> result_amount;
+            double multiplier = p() -> buffs.blessing_of_summer -> data().effectN( 1 ).percent();
+            amt *= multiplier;
+            p() -> active.blessing_of_summer_proc -> base_dd_max = p() -> active.blessing_of_summer_proc -> base_dd_min = amt;
+            p() -> active.blessing_of_summer_proc -> set_target( s -> target );
+            p() -> active.blessing_of_summer_proc -> schedule_execute();
           }
         }
       }
