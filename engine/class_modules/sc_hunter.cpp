@@ -1018,7 +1018,7 @@ public:
     double total_regen = regen * cast_time.total_seconds();
     double total_energize = energize_cast_regen( s );
 
-    if ( p() -> buffs.trueshot -> check() && p() -> true_level > 50 ) // XXX: SL - remove true_level check
+    if ( p() -> buffs.trueshot -> check() )
     {
       const timespan_t remains = p() -> buffs.trueshot -> remains();
 
@@ -7540,7 +7540,7 @@ void hunter_t::regen( timespan_t periodicity )
     return;
 
   double total_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_FOCUS );
-  if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+  if ( buffs.trueshot -> check() )
   {
     double regen = total_regen * specs.trueshot -> effectN( 6 ).percent();
     resource_gain( RESOURCE_FOCUS, regen, gains.trueshot );
@@ -7592,7 +7592,7 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
       mul_gains[ mul_gains_count++ ] = { mul, gain };
     };
 
-    if ( buffs.trueshot -> check() && true_level > 50 ) // XXX: SL - remove true_level check
+    if ( buffs.trueshot -> check() )
       add_gain( specs.trueshot -> effectN( 5 ).percent(), gains.trueshot );
 
     if ( buffs.nesingwarys_apparatus -> check() )
