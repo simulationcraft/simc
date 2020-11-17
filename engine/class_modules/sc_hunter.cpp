@@ -6242,6 +6242,7 @@ void hunter_t::init_base_stats()
 
   base.attack_power_per_strength = 0;
   base.attack_power_per_agility  = 1;
+  base.spell_power_per_intellect = 1;
 
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
   for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, specs.pack_tactics } )

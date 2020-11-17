@@ -3613,7 +3613,7 @@ struct blood_plague_t : public death_knight_spell_t
       // we calculated the current value but it is subject to changing without us knowing
       base_multiplier *= .75;
     }
-    
+
   }
 
   double bonus_ta( const action_state_t* state ) const override
@@ -6180,7 +6180,7 @@ struct virulent_plague_t : public death_knight_spell_t
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-    
+
     if ( p() -> legendary.superstrain -> ok() && p() -> specialization() == DEATH_KNIGHT_UNHOLY)
     {
       p() -> active_spells.frost_fever -> set_target( state -> target );
@@ -8465,6 +8465,7 @@ void death_knight_t::init_base_stats()
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
+  base.spell_power_per_intellect = 1.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
@@ -9485,7 +9486,7 @@ void death_knight_t::create_buffs()
     -> set_default_value_from_effect( 1 )
     -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 // According to tooltip data and ingame testing, the buff's value is halved for blood
-  if ( specialization() == DEATH_KNIGHT_BLOOD ) 
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.death_turf -> default_value /= 2;
   }
