@@ -242,7 +242,9 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  effect.proc_flags2_ = PF2_CAST_HEAL;
+  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

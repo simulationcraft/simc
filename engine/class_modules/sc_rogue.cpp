@@ -630,6 +630,8 @@ public:
     conduit_data_t reverberation;
     conduit_data_t sudden_fractures;
     conduit_data_t septic_shock;
+
+    conduit_data_t recuperator;
   } conduit;
 
   // Legendary effects
@@ -1080,14 +1082,9 @@ public:
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
-    bool costs_combo_points = ab::base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.shadow_blades = ab::data().affected_by( p->spec.shadow_blades->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.shadow_blades->effectN( 3 ) );
-    affected_by.ruthlessness = costs_combo_points;
-    affected_by.relentless_strikes = costs_combo_points;
-    affected_by.deepening_shadows = costs_combo_points;
     affected_by.vendetta = ab::data().affected_by( p->spec.vendetta->effectN( 1 ) );
-    affected_by.alacrity = costs_combo_points;
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->spec.adrenaline_rush->effectN( 3 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin->effectN( 1 ) );
     affected_by.shiv_2 = ab::data().affected_by( p->spec.shiv_2_debuff->effectN( 1 ) );
@@ -1152,6 +1149,14 @@ public:
     if ( p()->talent.nightstalker->ok() )
     {
       affected_by.nightstalker = p()->buffs.nightstalker->is_affecting_direct( ab::s_data );
+    }
+
+    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    {
+      affected_by.alacrity = true;
+      affected_by.deepening_shadows = true;
+      affected_by.relentless_strikes = true;
+      affected_by.ruthlessness = true;
     }
   }
 
@@ -4266,7 +4271,6 @@ struct slice_and_dice_t : public rogue_spell_t
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
-    base_costs[ RESOURCE_COMBO_POINT ] = 1; // No resource cost in the spell .. sigh
     harmful = false;
     dot_duration = timespan_t::zero();
   }
@@ -5501,6 +5505,60 @@ struct shuriken_tornado_t : public buff_t
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO, "shuriken_storm_tornado" );
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
+    } );
+  }
+};
+
+struct slice_and_dice_t : public buff_t
+{
+  struct recuperator_t : public actions::rogue_heal_t
+  {
+    recuperator_t( util::string_view name, rogue_t* p ) :
+      rogue_heal_t( name, p, p->spell.slice_and_dice )
+    {
+      // Treat this as direct to avoid duration issues
+      direct_tick = true;
+      may_crit = false;
+      dot_duration = timespan_t::zero();
+      base_pct_heal = p->conduit.recuperator.percent();
+      base_costs.fill( 0 );
+    }
+  };
+
+  rogue_t* rogue;
+  recuperator_t* recuperator;
+
+  slice_and_dice_t( rogue_t* p ) :
+    buff_t( p, "slice_and_dice", p->spell.slice_and_dice ),
+    rogue( p ),
+    recuperator( nullptr )
+  {
+    set_period( data().effectN( 2 ).period() ); // Not explicitly in spell data
+    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    add_invalidate( CACHE_ATTACK_SPEED );
+
+    // 11/14/2020 - Recuperator triggers can proc periodic healing triggers even when 0 value
+    if ( p->conduit.recuperator.ok() || p->bugs )
+    {
+      recuperator = p->get_background_action<recuperator_t>( "recuperator" );
+    }
+
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      if ( rogue->legendary.celerity.ok() && rogue->specialization() == ROGUE_OUTLAW )
+      {
+        if ( rng().roll( rogue->legendary.celerity->effectN( 2 ).percent() ) )
+        {
+          timespan_t duration = timespan_t::from_seconds( rogue->legendary.celerity->effectN( 3 ).base_value() );
+          rogue->buffs.adrenaline_rush->extend_duration_or_trigger( duration );
+        }
+      }
+
+      if ( recuperator )
+      {
+        recuperator->set_target( rogue );
+        recuperator->execute();
+      }
     } );
   }
 };
@@ -7902,6 +7960,8 @@ void rogue_t::init_spells()
   conduit.sudden_fractures        = find_conduit_spell( "Sudden Fractures" );
   conduit.septic_shock            = find_conduit_spell( "Septic Shock" );
 
+  conduit.recuperator             = find_conduit_spell( "Recuperator" );
+
   // Legendary Items ========================================================
 
   // Generic
@@ -8140,24 +8200,7 @@ void rogue_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_RUN_SPEED );
 
-  // TODO: Possibly refactor into buffs::slice_and_dice_t
-  buffs.slice_and_dice = make_buff( this, "slice_and_dice", spell.slice_and_dice )
-    ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->add_invalidate( CACHE_ATTACK_SPEED );
-
-  if ( legendary.celerity.ok() && specialization() == ROGUE_OUTLAW )
-  {
-    buffs.slice_and_dice->set_period( spell.slice_and_dice->effectN( 2 ).period() );
-    buffs.slice_and_dice->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      if ( rng().roll( legendary.celerity->effectN( 2 ).percent() ) )
-      {
-        timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 3 ).base_value() );
-        buffs.adrenaline_rush->extend_duration_or_trigger( duration );
-      }
-    } );
-  }
-
+  buffs.slice_and_dice = new buffs::slice_and_dice_t( this );
   buffs.stealth = new buffs::stealth_t( this );
   buffs.vanish = new buffs::vanish_t( this );
 
