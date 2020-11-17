@@ -443,8 +443,8 @@ void frost( player_t* p )
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=essences" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
-  default_->add_action( "call_action_list,name=st,if=active_enemies<5" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<4" );
   default_->add_action( "call_action_list,name=movement" );
 
   aoe->add_action( "frozen_orb" );
@@ -458,9 +458,10 @@ void frost( player_t* p )
   aoe->add_action( "shifting_power" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle.equipped&target.level<=level&debuff.frozen.down" );
   aoe->add_action( "fire_blast,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
-  aoe->add_action( "arcane_explosion,if=mana.pct>30" );
+  aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=6" );
   aoe->add_action( "ebonbolt" );
-  aoe->add_action( "ice_lance,if=runeforge.glacial_fragments.equipped&talent.splitting_ice.enabled" );
+  aoe->add_action( "ice_lance,if=runeforge.glacial_fragments.equipped&talent.splitting_ice.enabled&travel_time<ground_aoe.blizzard.remains" );
+  aoe->add_action( "wait,sec=0.1,if=runeforge.glacial_fragments.equipped&talent.splitting_ice.enabled" );
   aoe->add_action( "frostbolt" );
 
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<30" );
