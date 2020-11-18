@@ -593,7 +593,7 @@ void combat_meditation( special_effect_t& effect )
     bool icd_enabled = extra_desc_text_for_class( effect, effect.driver()->name_cstr() );
     // warlock still has an internal cooldown of 1 minute
     // despite the tooltip not saying it does
-    if ( effect.player->type == WARLOCK )
+    if ( effect.player->type == WARLOCK || effect.player->type == DRUID )
     {
       icd_enabled = true;
     }
