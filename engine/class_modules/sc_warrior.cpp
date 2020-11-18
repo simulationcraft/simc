@@ -1788,9 +1788,8 @@ struct mortal_strike_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( warrior_t* p, const std::string& name )
-    : warrior_attack_t( name, p,
-                        p->specialization() == WARRIOR_FURY ? p->talents.bladestorm->effectN( 1 ).trigger()
-                                                            : p->spec.bladestorm->effectN( 1 ).trigger() )
+    : warrior_attack_t( name, p, get_correct_spell_data( p ) )
+
   {
     dual = true;
     aoe  = -1;
@@ -1801,6 +1800,25 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
+    static const spell_data_t* get_correct_spell_data( warrior_t* p )
+    {
+      if (p->specialization() == WARRIOR_FURY)
+      {
+          if (!p->talents.bladestorm->ok() && p->legendary.signet_of_tormented_kings.enabled())
+          {
+            return p->find_spell( 46924 ) -> effectN( 1 ).trigger(); 
+          }
+          else
+          {
+            return p->talents.bladestorm->effectN( 1 ).trigger(); 
+          }
+      }
+      else
+      {
+        return p->spec.bladestorm->effectN( 1 ).trigger();
+      }
+    }
+
 };
 
 struct bladestorm_t : public warrior_attack_t
@@ -1819,7 +1837,8 @@ struct bladestorm_t : public warrior_attack_t
       torment_triggered( torment_triggered )
   {
     parse_options( options_str );
-    channeled = tick_zero = true;
+    channeled = !torment_triggered;
+    tick_zero = true;
     callbacks = interrupt_auto_attack = false;
     travel_speed                      = 0;
 
@@ -6881,6 +6900,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() );
 
   buff.avatar = make_buff( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar )
+      ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
   if ( talents.unstoppable_force -> ok() )
@@ -6955,6 +6975,7 @@ void warrior_t::create_buffs()
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
   buff.recklessness = make_buff( this, "recklessness", spec.recklessness )
+    ->set_chance(1)
     ->set_duration( spec.recklessness->duration() + spec.recklessness_rank_2->effectN(1).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
     ->add_invalidate( CACHE_CRIT_CHANCE )
