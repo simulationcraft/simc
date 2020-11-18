@@ -9009,7 +9009,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         this, "Earth Shock",
         "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&"
-        "maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|maelstrom>=60" );
+        "maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|!talent.master_of_the_elements.enabled" );
     single_target->add_action( this, "Lightning Bolt",
                                "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff."
                                "master_of_the_elements.up)" );
@@ -9026,15 +9026,18 @@ void shaman_t::init_action_list_elemental()
         "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
-    single_target->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|(buff.echoes_of_great_sundering.up&buff.master_of_the_elements.up)" );
+    single_target->add_action( this, "Earthquake",
+                               "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|(buff."
+                               "echoes_of_great_sundering.up&buff.master_of_the_elements.up)" );
     single_target->add_action( this, "Frost Shock",
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
+    single_target->add_action( this, "Frost Shock",
+                               "if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!"
+                               "talent.elemental_blast.enabled&!talent.echoing_shock.enabled" );
     single_target->add_action( "chain_harvest" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
-    single_target->add_action( this, "Earth Elemental",
-                               "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet."
-                               "fire_elemental.active)" );
+    single_target->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active" );
     single_target->add_action( this, "Lightning Bolt", "" );
     single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
