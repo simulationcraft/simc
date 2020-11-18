@@ -10631,12 +10631,6 @@ void monk_t::recalculate_resource_max( resource_e r, gain_t* source )
 
 void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 {
-  // Bug: Clones are able to do one last ability while they are flying back to the player
-  // Adding a 0.25 second extension to simulate the clones doing one last attack after the
-  // Damage reduction buff is removed.
-  if ( bugs )
-    duration += timespan_t::from_millis( 250 );
-
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
 

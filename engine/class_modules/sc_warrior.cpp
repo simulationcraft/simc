@@ -153,6 +153,7 @@ public:
     buff_t* veterans_repute;
 
     // Shadowland Legendary
+    buff_t* battlelord;
     buff_t* cadence_of_fujieda;
     buff_t* will_of_the_berserker;
 
@@ -1699,6 +1700,8 @@ struct mortal_strike_t : public warrior_attack_t
     if ( from_mortal_combo )
       return 0;
 
+    if ( p()->buff.battlelord->check() )
+      return 15;
     return warrior_attack_t::cost();
   }
 
@@ -1749,6 +1752,7 @@ struct mortal_strike_t : public warrior_attack_t
         mortal_combo_strike->execute();
       }
     }
+    p()->buff.battlelord->expire();
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
@@ -1788,9 +1792,8 @@ struct mortal_strike_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( warrior_t* p, const std::string& name )
-    : warrior_attack_t( name, p,
-                        p->specialization() == WARRIOR_FURY ? p->talents.bladestorm->effectN( 1 ).trigger()
-                                                            : p->spec.bladestorm->effectN( 1 ).trigger() )
+    : warrior_attack_t( name, p, get_correct_spell_data( p ) )
+
   {
     dual = true;
     aoe  = -1;
@@ -1801,6 +1804,25 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
+    static const spell_data_t* get_correct_spell_data( warrior_t* p )
+    {
+      if (p->specialization() == WARRIOR_FURY)
+      {
+          if (!p->talents.bladestorm->ok() && p->legendary.signet_of_tormented_kings.enabled())
+          {
+            return p->find_spell( 46924 ) -> effectN( 1 ).trigger(); 
+          }
+          else
+          {
+            return p->talents.bladestorm->effectN( 1 ).trigger(); 
+          }
+      }
+      else
+      {
+        return p->spec.bladestorm->effectN( 1 ).trigger();
+      }
+    }
+
 };
 
 struct bladestorm_t : public warrior_attack_t
@@ -1819,7 +1841,8 @@ struct bladestorm_t : public warrior_attack_t
       torment_triggered( torment_triggered )
   {
     parse_options( options_str );
-    channeled = tick_zero = true;
+    channeled = !torment_triggered;
+    tick_zero = true;
     callbacks = interrupt_auto_attack = false;
     travel_speed                      = 0;
 
@@ -1915,6 +1938,10 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
     p()->buff.bladestorm->expire();
+    if ( p()->conduit.merciless_bonegrinder->ok() )
+    {
+    p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 9.0 ) );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -2061,10 +2088,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
-    if ( p()->legendary.cadence_of_fujieda->ok() )
-    {
-      p()->buff.cadence_of_fujieda->trigger( 1 );
-    }
   }
 
   void execute() override
@@ -2084,6 +2107,11 @@ struct bloodthirst_t : public warrior_attack_t
       if ( rng().roll( enrage_chance ) )
       {
         p()->enrage();
+      }
+
+      if ( p()->legendary.cadence_of_fujieda->ok() )
+      {
+        p()->buff.cadence_of_fujieda->trigger( 1 );
       }
     }
     if( !td( execute_state->target )->hit_by_fresh_meat )
@@ -4004,6 +4032,16 @@ struct ravager_t : public warrior_attack_t
       }
     }
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+
+    if ( p()->conduit.merciless_bonegrinder->ok() )
+    {
+    p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
+    }
+  }
 };
 
 // Revenge ==================================================================
@@ -4251,6 +4289,7 @@ struct slam_t : public warrior_attack_t
     if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
+      p() -> buff.battlelord -> trigger();
     }
   }
 
@@ -4426,6 +4465,17 @@ struct whirlwind_off_hand_t : public warrior_attack_t
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN( 1 ).percent();
   }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.merciless_bonegrinder->check() )
+    {
+      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
+    }
+    return am;
+  }
 };
 
 struct fury_whirlwind_mh_t : public warrior_attack_t
@@ -4436,6 +4486,17 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
     aoe = -1;
 
     base_multiplier *= 1.0 + p->talents.meat_cleaver->effectN(1).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.merciless_bonegrinder->check() )
+    {
+      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
+    }
+    return am;
   }
 };
 
@@ -4544,6 +4605,23 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
     aoe = -1;
     background = true;
   }
+
+  int current_tick;
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->legendary.seismic_reverberation->ok() && current_tick == 3 )
+    {
+      am *= 1.0 + p()->legendary.seismic_reverberation->effectN( 3 ).percent();
+    }
+    if ( p()->buff.merciless_bonegrinder->check() )
+    {
+      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
+    }
+    return am;
+  }
 };
 
 struct first_arms_whirlwind_mh_t : public warrior_attack_t
@@ -4553,6 +4631,17 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   {
     background = true;
     aoe = -1;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.merciless_bonegrinder->check() )
+    {
+      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
+    }
+    return am;
   }
 };
 
@@ -4621,6 +4710,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
+    mh_attack->current_tick = d->current_tick;
     warrior_attack_t::tick( d );
 
     if ( d->current_tick == 1 )
@@ -6881,6 +6971,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() );
 
   buff.avatar = make_buff( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar )
+      ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
   if ( talents.unstoppable_force -> ok() )
@@ -6955,6 +7046,7 @@ void warrior_t::create_buffs()
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
   buff.recklessness = make_buff( this, "recklessness", spec.recklessness )
+    ->set_chance(1)
     ->set_duration( spec.recklessness->duration() + spec.recklessness_rank_2->effectN(1).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
     ->add_invalidate( CACHE_CRIT_CHANCE )
@@ -7078,14 +7170,18 @@ void warrior_t::create_buffs()
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Conduits===============================================================================================================
+
   buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
                            ->set_default_value( ( (player_t*)this )->covenant->id() == (unsigned int)covenant_e::VENTHYR
                              ? conduit.ashen_juggernaut.percent() * (1 + covenant.condemn_driver ->effectN( 7 ).percent())
                              :  conduit.ashen_juggernaut.percent());
 
-  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) );
+  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) )
+                                ->set_default_value( conduit.merciless_bonegrinder.percent() );
 
   // Runeforged Legendary Powers============================================================================================
+
+  buff.battlelord = make_buff( this, "battlelord", find_spell( 346369 ) );
 
   buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335558 ) )
                            ->set_default_value( find_spell( 335558 )->effectN( 1 ).percent() )

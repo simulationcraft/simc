@@ -27,7 +27,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   talents( talents_t() ),
   options( options_t() ),
   beacon_target( nullptr ),
-  lucid_dreams_accumulator( 0.0 )
+  lucid_dreams_accumulator( 0.0 ),
+  next_season( SUMMER )
 {
   active_consecration = nullptr;
   active_hallow = nullptr;
@@ -50,6 +51,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
   cooldowns.hammer_of_wrath         = get_cooldown( "hammer_of_wrath" );
+
+  cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
 
   beacon_target = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -1129,6 +1132,160 @@ struct ashen_hallow_t : public paladin_spell_t
 };
 
 
+// Blessing of Seasons
+// For now, this just casts on the player itself. TODO: make this an option
+
+struct blessing_of_summer_proc_t : public paladin_spell_t
+{
+  blessing_of_summer_proc_t( paladin_t* p )
+    : paladin_spell_t( "blessing_of_summer_proc", p, p -> find_spell( 328123 ) )
+  {
+    may_dodge = may_parry = may_block = may_crit = callbacks = false;
+    background = true;
+  }
+
+  virtual void init() override
+  {
+    paladin_spell_t::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+};
+
+struct blessing_of_summer_t : public paladin_spell_t
+{
+  blessing_of_summer_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_summer", p, p -> find_spell( 328620 ) )
+  {
+    harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.blessing_of_summer -> trigger();
+  }
+};
+
+struct blessing_of_autumn_t : public paladin_spell_t
+{
+  blessing_of_autumn_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_autumn", p, p -> find_spell( 328622 ) )
+  {
+    harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.blessing_of_autumn -> trigger();
+  }
+};
+
+struct blessing_of_spring_t : public paladin_spell_t
+{
+  blessing_of_spring_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_spring", p, p -> find_spell( 328282 ) )
+  {
+    harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.blessing_of_spring -> trigger();
+  }
+};
+
+struct blessing_of_winter_proc_t : public paladin_spell_t
+{
+  blessing_of_winter_proc_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_winter_proc", p, p -> find_spell( 328506 ) )
+  {
+    may_dodge = may_parry = may_block = may_crit = callbacks = false;
+    background = true;
+  }
+
+  virtual void init() override
+  {
+    paladin_spell_t::init();
+
+    snapshot_flags |= STATE_AP | STATE_SP | STATE_MUL_DA | STATE_VERSATILITY | STATE_TGT_MITG_DA | STATE_CRIT | STATE_TGT_CRIT | STATE_MUL_PERSISTENT;
+    update_flags |= STATE_AP | STATE_SP | STATE_MUL_DA | STATE_VERSATILITY | STATE_TGT_MITG_DA | STATE_CRIT | STATE_TGT_CRIT;
+  }
+
+  // Uses max(AP, SP)
+  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( s -> attack_power < s -> spell_power ) return 0;
+    return data().effectN( 2 ).percent();
+  }
+
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( s -> spell_power <= s -> attack_power ) return 0;
+    return data().effectN( 2 ).percent();
+  }
+};
+
+struct blessing_of_winter_t : public paladin_spell_t
+{
+  blessing_of_winter_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_winter", p, p -> find_spell( 328281 ) )
+  {
+    harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.blessing_of_winter -> trigger();
+  }
+};
+
+struct blessing_of_the_seasons_t : public paladin_spell_t
+{
+  blessing_of_the_seasons_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_the_seasons", p, spell_data_t::nil() )
+  {
+    parse_options( options_str );
+
+    if ( ! ( p -> covenant.night_fae -> ok() ) )
+      background = true;
+
+    harmful = false;
+
+    hasted_gcd = true;
+    trigger_gcd = p -> covenant.night_fae -> gcd();
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+    cooldown -> duration = p -> covenant.night_fae -> cooldown();
+  }
+
+  timespan_t execute_time() const override
+  {
+    return p() -> active.seasons[ p() -> next_season ] -> execute_time();
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> active.seasons[ p() -> next_season ] -> execute();
+    p() -> next_season = season( ( p() -> next_season + 1 ) % NUM_SEASONS );
+  }
+};
+
 // Hammer of Wrath
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
@@ -1355,6 +1512,15 @@ void paladin_t::create_actions()
     active.lights_decree = new lights_decree_t( this );
   }
 
+  if ( covenant.night_fae -> ok() )
+  {
+    active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
+    active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
+    active.seasons[ WINTER ] = new blessing_of_winter_t( this );
+    active.seasons[ SPRING ] = new blessing_of_spring_t( this );
+    active.blessing_of_summer_proc = new blessing_of_summer_proc_t( this );
+  }
+
   if ( conduit.virtuous_command -> ok() )
   {
     active.virtuous_command = new virtuous_command_t( this );
@@ -1404,6 +1570,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
   if ( name == "ashen_hallow"              ) return new ashen_hallow_t             ( this, options_str );
+  if ( name == "blessing_of_the_seasons"   ) return new blessing_of_the_seasons_t  ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1678,9 +1845,73 @@ void paladin_t::create_buffs()
         -> set_default_value( find_spell( 337682 ) -> effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   buffs.virtuous_command = make_buff( this, "virtuous_command", find_spell( 339664 ) );
+
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
         -> set_cooldown( 0_ms );
+
+  buffs.blessing_of_summer = make_buff( this, "blessing_of_summer", find_spell( 328620 ) )
+        -> apply_affecting_conduit( conduit.the_long_summer );
+  buffs.blessing_of_autumn = make_buff( this, "blessing_of_autumn", find_spell( 328622 ) )
+        -> set_default_value_from_effect( 1 )
+        -> set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+                double recharge_multiplier = 1.0 / ( 1 + b->default_value );
+                for ( auto a : this->action_list )
+                {
+                  // Only class spells have their cooldown reduced.
+                  bool is_adjustable_class_spell = a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
+                  if ( is_adjustable_class_spell )
+                  {
+                    if ( new_ == 1 )
+                      a->base_recharge_multiplier *= recharge_multiplier;
+                    else
+                      a->base_recharge_multiplier /= recharge_multiplier;
+
+                    if ( a->cooldown->action == a )
+                      a->cooldown->adjust_recharge_multiplier();
+                    if ( a->internal_cooldown->action == a )
+                      a->internal_cooldown->adjust_recharge_multiplier();
+                  }
+                }
+
+                // TODO(mserrano): is this correct or are these somehow in the action list? they shouldn't be
+                for( auto a : this -> active.seasons )
+                {
+                  if ( new_ == 1 )
+                    a -> base_recharge_multiplier *= recharge_multiplier;
+                  else
+                    a -> base_recharge_multiplier /= recharge_multiplier;
+
+                  if ( a -> cooldown -> action == a )
+                    a -> cooldown -> adjust_recharge_multiplier();
+                  if ( a -> internal_cooldown -> action == a )
+                    a -> internal_cooldown -> adjust_recharge_multiplier();
+                }
+             } );
+
+  auto bow_effect = new special_effect_t( this );
+  bow_effect -> spell_id = 328281;
+  bow_effect -> name_str = "blessing_of_winter";
+  bow_effect -> execute_action = new blessing_of_winter_proc_t( this );
+  special_effects.push_back( bow_effect );
+  dbc_proc_callback_t* bow_callback = new dbc_proc_callback_t( this, *bow_effect );
+  bow_callback -> initialize();
+  bow_callback -> deactivate();
+
+  buffs.blessing_of_winter = make_buff( this, "blessing_of_winter", find_spell( 328281 ) )
+    -> set_activated( false )
+    -> set_cooldown( timespan_t::zero() ) // cooldown handled by action
+    -> set_chance( 1 )
+    -> set_stack_change_callback( [ bow_callback ]( buff_t*, int old, int new_ )
+        {
+          if ( old == 0 ) {
+            assert( ! bow_callback -> active );
+            bow_callback -> activate();
+          } else if ( new_ == 0 ) {
+            bow_callback -> deactivate();
+          }
+        } );
+  buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -1938,7 +2169,7 @@ void paladin_t::init_spells()
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
   covenant.venthyr = find_covenant_spell( "Ashen Hallow" );
   covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
-  covenant.night_fae = find_covenant_spell( "Blessing of the Seasons" ); // TODO: fix
+  covenant.night_fae = find_covenant_spell( "Blessing of Summer" ); // TODO: fix
 
   spells.ashen_hallow_how = find_spell( 330382 );
 
@@ -2058,6 +2289,18 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.vanguards_momentum -> stack_value();
   }
+
+  return m;
+}
+
+// paladin_t::composite_player_heal_multiplier ==============================
+
+double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_heal_multiplier( s );
+
+  if ( buffs.blessing_of_spring -> up() )
+    m *= 1.0 + buffs.blessing_of_spring -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -2545,6 +2788,15 @@ void paladin_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 }
 
+void paladin_t::assess_heal( school_e school, result_amount_type typ, action_state_t* s )
+{
+  // see comment in player_t::assess_heal for why we modify result_total here
+  if ( buffs.blessing_of_spring -> up() )
+    s -> result_total *= 1.0 + buffs.blessing_of_spring -> data().effectN( 2 ).percent();
+
+  player_t::assess_heal( school, typ, s );
+}
+
 // paladin_t::create_options ================================================
 
 void paladin_t::create_options()
@@ -2581,6 +2833,9 @@ void paladin_t::combat_begin()
   }
 
   lucid_dreams_accumulator = 0;
+
+  // evidently it resets to summer on combat start
+  next_season = SUMMER;
 }
 
 // paladin_t::standing_in_hallow ============================================
@@ -2709,6 +2964,21 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   if ( splits[ 0 ] == "time_to_hpg" )
   {
     return std::make_unique<time_to_hpg_expr_t>( name_str, *this );
+  }
+
+  struct next_season_expr_t : public paladin_expr_t
+  {
+    next_season_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p ) {}
+
+    double evaluate() override
+    {
+      return paladin.next_season;
+    }
+  };
+
+  if ( splits[ 0 ] == "next_season" )
+  {
+    return std::make_unique<next_season_expr_t>( name_str, *this );
   }
 
   auto cons_expr = create_consecration_expression( name_str );

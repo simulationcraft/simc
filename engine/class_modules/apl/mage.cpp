@@ -468,7 +468,7 @@ void frost( player_t* p )
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<30" );
   cds->add_action( "deathborne" );
   cds->add_action( "mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice.enabled|soulbind.wasteland_propriety.enabled)" );
-  cds->add_action( "rune_of_power,if=cooldown.icy_veins.remains>15&buff.rune_of_power.down" );
+  cds->add_action( "rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down" );
   cds->add_action( "icy_veins,if=buff.rune_of_power.down" );
   cds->add_action( "time_warp,if=runeforge.temporal_warp.equipped&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<30)" );
   cds->add_action( "use_items" );
