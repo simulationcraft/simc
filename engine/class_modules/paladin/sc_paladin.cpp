@@ -2833,6 +2833,9 @@ void paladin_t::combat_begin()
   }
 
   lucid_dreams_accumulator = 0;
+
+  // evidently it resets to summer on combat start
+  next_season = SUMMER;
 }
 
 // paladin_t::standing_in_hallow ============================================
