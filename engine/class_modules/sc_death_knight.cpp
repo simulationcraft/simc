@@ -3302,6 +3302,7 @@ struct melee_t : public death_knight_melee_attack_t
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay -> reset( true );
+          p() -> cooldown.deaths_due -> reset( true );
           if ( p() -> azerite.bloody_runeblade.enabled() )
           {
             // Bloody Runeblade's trigger spell has a 10s icd, this icd is applied to the buff in simc and we use it to affect the RP gen
