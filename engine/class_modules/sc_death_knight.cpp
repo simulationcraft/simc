@@ -3441,9 +3441,11 @@ struct abomination_limb_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // Pull affect for this ability is NYI
+
     p() -> buffs.abomination_limb -> trigger();
 
-    // Through testing we find that
+    // We simplify the implementation here.  In game it looks to proc the resource gain the first time the ability deals damage
     switch ( p() ->specialization() )
     {
       case DEATH_KNIGHT_BLOOD:
