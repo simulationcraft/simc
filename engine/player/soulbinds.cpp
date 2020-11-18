@@ -1051,9 +1051,27 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "marrowed_gemstone_charging", "marrowed_gemstone_enhancement" } ) )
     return;
 
+  struct marrowed_gemstone_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    marrowed_gemstone_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {}
+
+    // cooldown applies to both the buff AND the counter, so don't trigger if buff is on cd
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( buff->cooldown->down() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
   auto counter_buff = buff_t::find( effect.player, "marrowed_gemstone_charging" );
   if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )->modify_max_stack( 1 );
+    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )
+      ->modify_max_stack( 1 );
 
   auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
   if ( !buff )
@@ -1061,8 +1079,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
     buff = make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
     buff->set_cooldown( buff->buff_duration() + effect.player->find_spell( 327073 )->duration() );
+
     counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
     {
       if ( b->at_max_stacks() )
@@ -1076,7 +1094,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   effect.custom_buff = counter_buff;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new marrowed_gemstone_cb_t( effect, buff );
 }
 
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
