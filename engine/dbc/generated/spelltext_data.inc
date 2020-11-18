@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.2.36639
+// Spell text, wow build 9.0.2.36671
 static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -12642,7 +12642,6 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -13631,7 +13630,7 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After $330921d out of combat, gain a shield for $330927s2% of your maximum health.", 0, 0 },
   { 329786, "Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.", 0, 0 },
-  { 329791, "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", 0, 0 },
+  { 329791, "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d.", 0, 0 },
   { 329831, "Deploy a power crystal which beams arcane energy into you, inflicting $o1 Arcane damage over $d and granting you $s2 Critical Strike for the duration.", "Critical Strike increased by $w2.", 0 },
   { 329840, "Inflict $s1 Shadow damage split between all nearby enemies, and form a Blood Barrier on yourself. The Blood Barrier absorbs ${$329852s1*(1+$@versadmg)} damage for $329849d.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 329849, "$@spelldesc329840", "Absorbs $w1 damage.", 0 },
@@ -15052,10 +15051,11 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 348169, "$@spelldesc346875", 0, 0 },
   { 348177, "$@spelldesc346835", 0, 0 },
   { 348178, "$@spelldesc346835", 0, 0 },
+  { 348236, "$@spelldesc329791", "Cannot benefit from the effects of Valiant Strikes.", 0 },
   { 348249, "Your melee attacks have a chance to grant you a Mote of Anger.  When you reach $71432u Motes of Anger, they will release, causing you to instantly attack for $71433s2% weapon damage with one of your melee weapons.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36639
+// spelltext hotfix entries, wow build 9.0.2.36671
 static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
@@ -15064,7 +15064,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfi
   {  322108,  0, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
-  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack." },
+  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
   {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
   {  334677,  1, "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands." },
@@ -15080,7 +15080,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfi
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
-// Spell description variables, wow build 9.0.2.36639
+// Spell description variables, wow build 9.0.2.36671
 static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15378,7 +15378,7 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36639
+// spelldesc_vars hotfix entries, wow build 9.0.2.36671
 static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
