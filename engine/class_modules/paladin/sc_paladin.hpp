@@ -278,6 +278,8 @@ public:
     cooldown_t* blade_of_justice;
     cooldown_t* final_reckoning;
     cooldown_t* hammer_of_wrath;
+
+    cooldown_t* blessing_of_the_seasons;
   } cooldowns;
 
   // Passives

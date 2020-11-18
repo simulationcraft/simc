@@ -52,6 +52,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
   cooldowns.hammer_of_wrath         = get_cooldown( "hammer_of_wrath" );
 
+  cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
+
   beacon_target = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -1155,6 +1157,8 @@ struct blessing_of_summer_t : public paladin_spell_t
     paladin_spell_t( "blessing_of_summer", p, p -> find_spell( 328620 ) )
   {
     harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
   }
 
   void execute() override
@@ -1171,6 +1175,8 @@ struct blessing_of_autumn_t : public paladin_spell_t
     paladin_spell_t( "blessing_of_autumn", p, p -> find_spell( 328622 ) )
   {
     harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
   }
 
   void execute() override
@@ -1187,6 +1193,8 @@ struct blessing_of_spring_t : public paladin_spell_t
     paladin_spell_t( "blessing_of_spring", p, p -> find_spell( 328282 ) )
   {
     harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
   }
 
   void execute() override
@@ -1234,6 +1242,8 @@ struct blessing_of_winter_t : public paladin_spell_t
     paladin_spell_t( "blessing_of_winter", p, p -> find_spell( 328281 ) )
   {
     harmful = false;
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
   }
 
   void execute() override
@@ -1244,24 +1254,23 @@ struct blessing_of_winter_t : public paladin_spell_t
   }
 };
 
-struct blessing_of_seasons_t : public paladin_spell_t
+struct blessing_of_the_seasons_t : public paladin_spell_t
 {
-  blessing_of_seasons_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessing_of_seasons", p, spell_data_t::nil() )
+  blessing_of_the_seasons_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_the_seasons", p, spell_data_t::nil() )
   {
     parse_options( options_str );
 
     if ( ! ( p -> covenant.night_fae -> ok() ) )
       background = true;
 
-    trigger_gcd = timespan_t::zero();
-
     harmful = false;
-  }
 
-  bool ready() override
-  {
-    return paladin_spell_t::ready() && p() -> active.seasons[ p() -> next_season ] -> ready();
+    hasted_gcd = true;
+    trigger_gcd = p -> covenant.night_fae -> gcd();
+
+    cooldown = p -> cooldowns.blessing_of_the_seasons;
+    cooldown -> duration = p -> covenant.night_fae -> cooldown();
   }
 
   timespan_t execute_time() const override
@@ -1274,9 +1283,6 @@ struct blessing_of_seasons_t : public paladin_spell_t
     paladin_spell_t::execute();
     p() -> active.seasons[ p() -> next_season ] -> execute();
     p() -> next_season = season( ( p() -> next_season + 1 ) % NUM_SEASONS );
-
-    for ( unsigned i = 0; i < NUM_SEASONS; i++ )
-      p() -> active.seasons[ i ] -> cooldown -> start( p() -> active.seasons[i] );
   }
 };
 
@@ -1564,7 +1570,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
   if ( name == "ashen_hallow"              ) return new ashen_hallow_t             ( this, options_str );
-  if ( name == "blessing_of_seasons"       ) return new blessing_of_seasons_t      ( this, options_str );
+  if ( name == "blessing_of_the_seasons"   ) return new blessing_of_the_seasons_t  ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

@@ -906,7 +906,7 @@ void paladin_t::generate_action_prio_list_ret()
     } */
   }
   cds -> add_action( this, "Shield of Vengeance" );
-  cds -> add_action( "blessing_of_seasons" );
+  cds -> add_action( "blessing_of_the_seasons" );
 
   // Items
   bool has_knot = false;
