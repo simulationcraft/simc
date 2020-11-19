@@ -6679,6 +6679,7 @@ struct scourge_strike_t : public scourge_strike_base_t
 };
 
 // Shackle the Unworthy =====================================================
+// Damage reduction debuff is NYI
 
 struct shackle_the_unworthy_t : public death_knight_spell_t
 {
