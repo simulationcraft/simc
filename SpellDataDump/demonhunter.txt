@@ -7635,10 +7635,11 @@ Effects          :
 Description      : Fel Rush gains an additional charge.
 
 Name             : Sigil of Silence (desc=Rank 2) (id=320417) [Spell Family (107), Passive] 
+Hotfixed         : Learn Level (48 -> 0), Required Level (48 -> 47)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 48
+Spell Level      : 47
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36671
-static const std::array<spelltext_data_t, 15053> __spelltext_data { {
+static const std::array<spelltext_data_t, 15054> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13428,7 +13428,7 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 326511, "Damaging or healing a target below $s1% grants you $327159s1% increased movement speed for $327159d after you start moving. May only occur once per $327160d.", 0, 0 },
   { 326512, "Mounted movement speed is increased by $s1%. If attacked while mounted, mounted movement speed is increased by an additional $327852s1% for $327852d.", 0, 0 },
   { 326513, "You have a chance to obtain a satchel of a bonesmith's preferred ore and gems when you kill an enemy that yields experience or honor.", 0, 0 },
-  { 326514, "Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", 0, 0 },
+  { 326514, "Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.\r\n\r\nUpon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", 0, 0 },
   { 326572, "After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.", 0, 0 },
   { 326646, "Duration increased by ${$s1/1000} sec.", 0, "Rank 2" },
   { 326647, "Empower the bond for $327071d:\r\n\r\n$@spelldesc327097\r\n\r\n|cFFFFFFFFHealer Partner|r\r\nThey focus on you, replicating $327148s2% of all healing they deal onto you.", 0, "Kyrian" },
@@ -15053,10 +15053,11 @@ static const std::array<spelltext_data_t, 15053> __spelltext_data { {
   { 348178, "$@spelldesc346835", 0, 0 },
   { 348236, "$@spelldesc329791", "Cannot benefit from the effects of Valiant Strikes.", 0 },
   { 348249, "Your melee attacks have a chance to grant you a Mote of Anger.  When you reach $71432u Motes of Anger, they will release, causing you to instantly attack for $71433s2% weapon damage with one of your melee weapons.", 0, 0 },
+  { 348272, "$@spelldesc326514", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36671
-static constexpr std::array<hotfix::client_hotfix_entry_t, 24> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 25> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
   {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
@@ -15064,6 +15065,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 24> __spelltext_hotfi
   {  322108,  0, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
+  {  326514,  0, "Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", "Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.\r\n\r\nUpon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing." },
   {  328257,  0, "Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.", "Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%." },
   {  328900,  1, "Versatility increased by $w%.", "Magic damage taken decreased by $w%." },
   {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d." },
@@ -15084,7 +15086,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 24> __spelltext_hotfi
 } };
 
 // Spell description variables, wow build 9.0.2.36671
-static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15348,6 +15350,7 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  325289, "$damage=${4*$327059s1}" },
   {  325886, "$rage=${4*($326076s1/10)}\r\n$areaDmg=${4*$326062s1}\r\n$period=${3}" },
   {  326504, "$points=${$cond($gt($SP,$AP),$SP*0.072,$AP*0.072)*(1+$@versadmg)}" },
+  {  326514, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  328266, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
   {  328281, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
   {  330325, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },

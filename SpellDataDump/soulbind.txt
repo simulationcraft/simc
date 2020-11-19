@@ -983,10 +983,12 @@ Effects          :
 Description      : You have a chance to obtain a satchel of a bonesmith's preferred ore and gems when you kill an enemy that yields experience or honor.
 
 Name             : Forgeborne Reveries (id=326514) [Passive] 
+Hotfixed         : Description
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
+Labels           : 1185: Forgeborne Reveries (326514 effect#5), Forgeborne Reveries (326514 effect#6), Forgeborne Reveries (348272 effect#1), Forgeborne Reveries (348272 effect#2)
 Attributes       : ......x. ........ .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -1001,7 +1003,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x37 | Target: Self (1)
 #2 (id=818504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.
+#3 (id=876235)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0xb | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=876236)   : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#5 (id=876250)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Forgeborne Reveries (326514)
+Hotfixed         : NEW EFFECT
+#6 (id=876253)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 1185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Forgeborne Reveries (326514)
+Hotfixed         : NEW EFFECT
+Description      : Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.
+
+Upon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.
+Variables        : $buff=${$348272s1}
+$max=${3*$<buff>}
 
 Name             : Heirmir's Arsenal: Marrowed Gemstone (id=326572) [Passive, Hidden] 
 Covenant         : Necrolord
