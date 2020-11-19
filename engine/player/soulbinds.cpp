@@ -550,12 +550,15 @@ void let_go_of_the_past( special_effect_t& effect )
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
+  // TODO: currently this only sets the buffs, but doesn't check for the buff in player_t::target_mitigation(). Possibly
+  // we want to consolidate that into vectors on the player like with stat_pct_buff so we don't have to unnecessarily
+  // pollute player_t further.
   effect.custom_buff = buff_t::find( effect.player, "let_go_of_the_past" );
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
-      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+      ->set_schools_from_effect( 1 );
   }
 
   new let_go_of_the_past_cb_t( effect );
