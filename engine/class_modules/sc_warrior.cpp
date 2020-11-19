@@ -2573,6 +2573,7 @@ struct dragon_roar_t : public warrior_attack_t
     crit_bonus_multiplier *= 1.0 + p->spell.warrior_aura->effectN( 6 ).percent();
     parse_options( options_str );
     aoe       = -1;
+    reduced_aoe_damage = true;
     may_dodge = may_parry = may_block = false;
   }
 };
@@ -5108,6 +5109,10 @@ struct conquerors_banner_t : public warrior_spell_t
 
     p()->buff.conquerors_banner->trigger();
     p()->buff.conquerors_frenzy->trigger();
+    if ( p()->conduit.veterans_repute->ok() )
+    {
+      p()->buff.veterans_repute->trigger();
+    }
   }
 };
 
@@ -7181,6 +7186,11 @@ void warrior_t::create_buffs()
   buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) )
                                 ->set_default_value( conduit.merciless_bonegrinder.percent() );
 
+  buff.veterans_repute = make_buff( this, "veterans_repute", conduit.veterans_repute )
+                          ->add_invalidate( CACHE_STRENGTH )
+                          ->set_default_value( conduit.veterans_repute.percent() )
+                          ->set_duration( covenant.conquerors_banner->duration() );
+
   // Runeforged Legendary Powers============================================================================================
 
   buff.battlelord = make_buff( this, "battlelord", find_spell( 346369 ) );
@@ -7664,6 +7674,11 @@ double warrior_t::composite_mastery() const
 double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    m *= 1.0 + buff.veterans_repute->value();
+  }
 
   // Protection has increased stamina from vanguard
   if ( attr == ATTR_STAMINA )
