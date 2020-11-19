@@ -287,6 +287,8 @@ void field_of_blossoms( special_effect_t& effect )
     effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: duration_mod={}", duration_mod );
 
     buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+      // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
+      ->set_duration( effect.player->find_spell( 342761 )->duration() )
       ->set_duration_multiplier( duration_mod )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
