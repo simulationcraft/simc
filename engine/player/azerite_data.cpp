@@ -407,8 +407,8 @@ void azerite_state_t::initialize()
 
 azerite_power_t azerite_state_t::get_power( unsigned id )
 {
-  // All azerite disabled
-  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
   {
     return {};
   }
@@ -958,7 +958,8 @@ azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_p
 // Get an azerite essence object by name
 azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, bool tokenized ) const
 {
-  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
   {
     return { m_player };
   }
