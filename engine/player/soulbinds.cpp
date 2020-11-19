@@ -10,6 +10,8 @@
 
 #include "action/dot.hpp"
 
+#include "item/item.hpp"
+
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
@@ -323,7 +325,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+  effect.player->register_combat_begin( buff );
 }
 
 void first_strike( special_effect_t& effect )
@@ -1046,6 +1048,42 @@ void lead_by_example( special_effect_t& effect )
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
+void forgeborne_reveries( special_effect_t& effect )
+{
+  int count = 0;
+
+  for ( const auto& item : effect.player->items )
+  {
+    if ( item.slot < SLOT_HEAD || item.slot > SLOT_BACK )
+      continue;
+
+    if ( item.parsed.enchant_id )
+    {
+      // All armor enchants currently have a stat associated with them, unlike temporaries & weapon enchants which
+      // can be purely procs. So for now we should be safe filtering for enchants with ITEM_ENCHANTMENT_STAT.
+      auto ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
+      if ( range::contains( ench.ench_type, ITEM_ENCHANTMENT_STAT ) )
+        count++;
+
+      if ( count >= 3 )  // hardcoded into tooltip desc
+        break;
+    }
+  }
+
+  auto buff = buff_t::find( effect.player, "forgeborne_reveries" );
+  if ( !buff )
+  {
+    // armor increase NYI
+    buff = make_buff( effect.player, "forgeborne_reveries", effect.player->find_spell( 348272 ) )
+      ->set_default_value_from_effect( 1, count * 0.01 )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  }
+
+  effect.player->register_combat_begin( buff );
+}
+
 void serrated_spaulders( special_effect_t& effect )
 {
 
@@ -1144,7 +1182,8 @@ void register_special_effects()
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
-  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
+  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }
 
