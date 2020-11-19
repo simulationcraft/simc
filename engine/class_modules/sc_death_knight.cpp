@@ -3015,11 +3015,10 @@ struct death_knight_action_t : public Base
         {
           continue;
         }
-        if ( action_t::sim->log )
-        {
-          action_t::sim -> print_log("{} spreads shackle the unworthy with {} from {} to {} (remains={} )",
-                  *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
-        }
+
+        action_t::sim -> print_log("{} spreads shackle the unworthy with {} from {} to {} (remains={} )",
+                *action_t::player, *this, *action_t::target, *destination, source_dot->remains() );
+
         source_dot->copy(destination, DOT_COPY_CLONE);
         p() -> cooldown.shackle_the_unworthy_icd -> start( p() -> covenant.shackle_the_unworthy -> internal_cooldown() );
         // after we successfully spread to one target, return.
