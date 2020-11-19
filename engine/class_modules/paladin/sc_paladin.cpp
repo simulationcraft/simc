@@ -1851,6 +1851,7 @@ void paladin_t::create_buffs()
         -> set_cooldown( 0_ms );
 
   buffs.blessing_of_summer = make_buff( this, "blessing_of_summer", find_spell( 328620 ) )
+        -> set_chance( 1 )
         -> apply_affecting_conduit( conduit.the_long_summer );
   buffs.blessing_of_autumn = make_buff( this, "blessing_of_autumn", find_spell( 328622 ) )
         -> set_default_value_from_effect( 1 )
