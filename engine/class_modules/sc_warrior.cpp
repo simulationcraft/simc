@@ -1646,7 +1646,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
     }
-    //p()->buff.overpower->expire(); Benefits from but does not consume Overpower in game
+    p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -4003,18 +4003,18 @@ struct ravager_t : public warrior_attack_t
   {
     // the ticks do scale with haste so I turned hasted_ticks on
     // however this made it tick more than 7 times
-    if ( d->current_tick > 7 )
+    if ( d->current_tick > 6 )
       return;
 
     // the helm buff occurs before each tick
     // it refreshes and adds one stack on the first 6 ticks
     // only duration is refreshed on last tick, no stack is added
-    if ( d->current_tick <= 6 )
+    if ( d->current_tick <= 5 )
     {
       p()->buff.tornados_eye->trigger();
       p()->buff.gathering_storm->trigger();
     }
-    if ( d->current_tick == 7 )
+    if ( d->current_tick == 6 )
     {
       p()->buff.tornados_eye->trigger( 0 );
       p()->buff.gathering_storm->trigger( 0 );
