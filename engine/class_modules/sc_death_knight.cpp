@@ -949,7 +949,7 @@ public:
     // Blood
     // conduit_data_t debilitating_malady; // 123
     // conduit_data_t meat_shield; // Endurance trait, 121
-    // conduit_data_t withering_plague; // 80
+    conduit_data_t withering_plague; // 80
 
     // Frost
     conduit_data_t accelerated_cold; // 79
@@ -5797,6 +5797,17 @@ struct heart_strike_t : public death_knight_melee_attack_t
   int n_targets() const override
   { return p() -> in_death_and_decay() ? aoe + as<int>( p() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    if ( p() -> conduits.withering_plague -> ok() && td(state -> target) -> dot.blood_plague -> is_ticking() )
+    {
+      m *= 1.0 + p() -> conduits.withering_plague.percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -9137,7 +9148,7 @@ void death_knight_t::init_spells()
   // Blood
   // conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
   // conduits.meat_shield = find_conduit_spell( "Meat Shield" );
-  // conduits.withering_plague = find_conduit_spell( "Withering Plague" );
+  conduits.withering_plague = find_conduit_spell( "Withering Plague" );
 
   // Frost
   conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
