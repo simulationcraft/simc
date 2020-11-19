@@ -1033,7 +1033,7 @@ void lead_by_example( special_effect_t& effect )
     duration *= class_value_from_desc_vars( effect, "mod" );
 
     buff = make_buff( effect.player, "lead_by_example", s_data )
-      ->set_default_value_from_effect( 2 )
+      ->set_default_value_from_effect( 1 )
       ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
