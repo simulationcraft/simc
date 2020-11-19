@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-18/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-19/36671)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1028,6 +1028,7 @@ Effects          :
 Description      : After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.
 
 Name             : Let Go of the Past (id=328257) [Passive, Hidden] 
+Hotfixed         : Description
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1047,7 +1048,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=821660)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
+Description      : Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
 
 Name             : Ever Forward (id=328258) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1942,6 +1943,7 @@ Effects          :
 Description      : You may channel Fleshcraft while moving.
 
 Name             : Lead by Example (id=342156) [Passive, Hidden] 
+Hotfixed         : Description
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -1966,7 +1968,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=872117)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.
+Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected.
 Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${3}][${1.0}]
 
 Name             : Run Without Tiring (id=342270) [Passive, Hidden] 

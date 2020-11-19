@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-18/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-19/36671)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -960,7 +960,8 @@ Effects          :
 #3 (id=806133)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
+Hotfixed         : Base Value (1 -> 100)
 Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, dispelling all enrage effects.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
 $?s319032[
 Your Nature damage done against the target is increased by $319504s1% for $319504d.
