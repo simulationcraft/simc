@@ -7363,7 +7363,7 @@ static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 136118, 345806, 178809,   1,   1,    0,      -1,      -1 }, // Soul Infusion
   { 136121, 345807, 178809,   2,   1,    0,      -1,      -1 }, // Soul Infusion
   { 136099, 345695, 178810,   0,   0,    0,      -1,      -1 }, // Vial of Spectral Essence
-  { 136102, 345739, 178811,   0,   0,  133,      -1,      -1 }, // Spectral Scythe
+  { 136102, 345739, 178811,   0,   0,    0,      -1,      -1 }, // Spectral Scythe
   { 136157, 345877, 178811,   1,   1,    0,      -1,      -1 }, // Grim Codex
   { 135855, 343399, 178825,   0,   0,    0,      -1,      -1 }, // Heart of a Gargoyle
   { 135856, 343401, 178825,   1,   1,    0,      -1,      -1 }, // Heart of a Gargoyle

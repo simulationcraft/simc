@@ -1344,6 +1344,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+    // Scopes
+    unique_gear::register_special_effect( 321532, "329666trigger" ); // Infra-green Reflex Sight
+    unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
 
     // Trinkets
     unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );

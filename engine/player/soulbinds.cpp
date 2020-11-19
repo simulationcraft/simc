@@ -10,6 +10,8 @@
 
 #include "action/dot.hpp"
 
+#include "item/item.hpp"
+
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
@@ -287,6 +289,8 @@ void field_of_blossoms( special_effect_t& effect )
     effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: duration_mod={}", duration_mod );
 
     buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+      // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
+      ->set_duration( effect.player->find_spell( 342761 )->duration() )
       ->set_duration_multiplier( duration_mod )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
@@ -321,7 +325,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+  effect.player->register_combat_begin( buff );
 }
 
 void first_strike( special_effect_t& effect )
@@ -550,12 +554,15 @@ void let_go_of_the_past( special_effect_t& effect )
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
+  // TODO: currently this only sets the buffs, but doesn't check for the buff in player_t::target_mitigation(). Possibly
+  // we want to consolidate that into vectors on the player like with stat_pct_buff so we don't have to unnecessarily
+  // pollute player_t further.
   effect.custom_buff = buff_t::find( effect.player, "let_go_of_the_past" );
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
-      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+      ->set_schools_from_effect( 1 );
   }
 
   new let_go_of_the_past_cb_t( effect );
@@ -1030,7 +1037,7 @@ void lead_by_example( special_effect_t& effect )
     duration *= class_value_from_desc_vars( effect, "mod" );
 
     buff = make_buff( effect.player, "lead_by_example", s_data )
-      ->set_default_value_from_effect( 2 )
+      ->set_default_value_from_effect( 1 )
       ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
@@ -1039,6 +1046,42 @@ void lead_by_example( special_effect_t& effect )
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
+}
+
+void forgeborne_reveries( special_effect_t& effect )
+{
+  int count = 0;
+
+  for ( const auto& item : effect.player->items )
+  {
+    if ( item.slot < SLOT_HEAD || item.slot > SLOT_BACK )
+      continue;
+
+    if ( item.parsed.enchant_id )
+    {
+      // All armor enchants currently have a stat associated with them, unlike temporaries & weapon enchants which
+      // can be purely procs. So for now we should be safe filtering for enchants with ITEM_ENCHANTMENT_STAT.
+      auto ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
+      if ( range::contains( ench.ench_type, ITEM_ENCHANTMENT_STAT ) )
+        count++;
+
+      if ( count >= 3 )  // hardcoded into tooltip desc
+        break;
+    }
+  }
+
+  auto buff = buff_t::find( effect.player, "forgeborne_reveries" );
+  if ( !buff )
+  {
+    // armor increase NYI
+    buff = make_buff( effect.player, "forgeborne_reveries", effect.player->find_spell( 348272 ) )
+      ->set_default_value_from_effect( 1, count * 0.01 )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  }
+
+  effect.player->register_combat_begin( buff );
 }
 
 void serrated_spaulders( special_effect_t& effect )
@@ -1051,9 +1094,27 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "marrowed_gemstone_charging", "marrowed_gemstone_enhancement" } ) )
     return;
 
+  struct marrowed_gemstone_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    marrowed_gemstone_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {}
+
+    // cooldown applies to both the buff AND the counter, so don't trigger if buff is on cd
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( buff->cooldown->down() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
   auto counter_buff = buff_t::find( effect.player, "marrowed_gemstone_charging" );
   if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )->modify_max_stack( 1 );
+    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )
+      ->modify_max_stack( 1 );
 
   auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
   if ( !buff )
@@ -1061,8 +1122,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
     buff = make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
     buff->set_cooldown( buff->buff_duration() + effect.player->find_spell( 327073 )->duration() );
+
     counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
     {
       if ( b->at_max_stacks() )
@@ -1076,7 +1137,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   effect.custom_buff = counter_buff;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new marrowed_gemstone_cb_t( effect, buff );
 }
 
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
@@ -1121,7 +1182,8 @@ void register_special_effects()
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
-  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
+  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }
 

@@ -1851,6 +1851,7 @@ void paladin_t::create_buffs()
         -> set_cooldown( 0_ms );
 
   buffs.blessing_of_summer = make_buff( this, "blessing_of_summer", find_spell( 328620 ) )
+        -> set_chance( 1 )
         -> apply_affecting_conduit( conduit.the_long_summer );
   buffs.blessing_of_autumn = make_buff( this, "blessing_of_autumn", find_spell( 328622 ) )
         -> set_default_value_from_effect( 1 )
@@ -1873,25 +1874,12 @@ void paladin_t::create_buffs()
                       a->internal_cooldown->adjust_recharge_multiplier();
                   }
                 }
-
-                // TODO(mserrano): is this correct or are these somehow in the action list? they shouldn't be
-                for( auto a : this -> active.seasons )
-                {
-                  if ( new_ == 1 )
-                    a -> base_recharge_multiplier *= recharge_multiplier;
-                  else
-                    a -> base_recharge_multiplier /= recharge_multiplier;
-
-                  if ( a -> cooldown -> action == a )
-                    a -> cooldown -> adjust_recharge_multiplier();
-                  if ( a -> internal_cooldown -> action == a )
-                    a -> internal_cooldown -> adjust_recharge_multiplier();
-                }
              } );
 
   auto bow_effect = new special_effect_t( this );
   bow_effect -> spell_id = 328281;
   bow_effect -> name_str = "blessing_of_winter";
+  bow_effect -> cooldown_ = timespan_t::from_seconds( 0.5 );
   bow_effect -> execute_action = new blessing_of_winter_proc_t( this );
   special_effects.push_back( bow_effect );
   dbc_proc_callback_t* bow_callback = new dbc_proc_callback_t( this, *bow_effect );

@@ -1646,7 +1646,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
     }
-    //p()->buff.overpower->expire(); Benefits from but does not consume Overpower in game
+    p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -1791,8 +1791,8 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p, const std::string& name )
-    : warrior_attack_t( name, p, get_correct_spell_data( p ) )
+  bladestorm_tick_t( warrior_t* p, const std::string& name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
 
   {
     dual = true;
@@ -1800,7 +1800,6 @@ struct bladestorm_tick_t : public warrior_attack_t
     background = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      base_multiplier *= 1.0 + p->spec.arms_warrior->effectN( 4 ).percent();
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
@@ -1834,7 +1833,7 @@ struct bladestorm_t : public warrior_attack_t
 
   bladestorm_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
     : warrior_attack_t( n, p, spell ),
-    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ) ) ),
+    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
       bladestorm_oh( nullptr ),
       mortal_strike( nullptr ),
       torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
@@ -1850,7 +1849,7 @@ struct bladestorm_t : public warrior_attack_t
     add_child( bladestorm_mh );
     if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
     {
-      bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ) );
+    bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ), spell->effectN( 1 ).trigger() );
       bladestorm_oh->weapon = &( player->off_hand_weapon );
       add_child( bladestorm_oh );
     }
@@ -2574,6 +2573,7 @@ struct dragon_roar_t : public warrior_attack_t
     crit_bonus_multiplier *= 1.0 + p->spell.warrior_aura->effectN( 6 ).percent();
     parse_options( options_str );
     aoe       = -1;
+    reduced_aoe_damage = true;
     may_dodge = may_parry = may_block = false;
   }
 };
@@ -3721,6 +3721,7 @@ struct rampage_attack_t : public warrior_attack_t
   bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
+  double reckless_defense_chance;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
@@ -3730,7 +3731,8 @@ struct rampage_attack_t : public warrior_attack_t
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
-          ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 )
+          ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 ),
+      reckless_defense_chance( p->legendary.reckless_defense->effectN( 2 ).percent() )
   {
     background = true;
     dual = true;
@@ -3764,9 +3766,10 @@ struct rampage_attack_t : public warrior_attack_t
       {
         p()->resource_gain( RESOURCE_RAGE, rage_from_simmering_rage, p()->gain.simmering_rage );
       }
-      if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT )
+      if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT
+      && rng().roll( reckless_defense_chance ) )
       {
-        p() -> cooldown.recklessness -> adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+        p()->cooldown.recklessness->adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
       }
     }
   }
@@ -4000,18 +4003,18 @@ struct ravager_t : public warrior_attack_t
   {
     // the ticks do scale with haste so I turned hasted_ticks on
     // however this made it tick more than 7 times
-    if ( d->current_tick > 7 )
+    if ( d->current_tick > 6 )
       return;
 
     // the helm buff occurs before each tick
     // it refreshes and adds one stack on the first 6 ticks
     // only duration is refreshed on last tick, no stack is added
-    if ( d->current_tick <= 6 )
+    if ( d->current_tick <= 5 )
     {
       p()->buff.tornados_eye->trigger();
       p()->buff.gathering_storm->trigger();
     }
-    if ( d->current_tick == 7 )
+    if ( d->current_tick == 6 )
     {
       p()->buff.tornados_eye->trigger( 0 );
       p()->buff.gathering_storm->trigger( 0 );
@@ -5106,6 +5109,10 @@ struct conquerors_banner_t : public warrior_spell_t
 
     p()->buff.conquerors_banner->trigger();
     p()->buff.conquerors_frenzy->trigger();
+    if ( p()->conduit.veterans_repute->ok() )
+    {
+      p()->buff.veterans_repute->trigger();
+    }
   }
 };
 
@@ -6986,7 +6993,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202164 )->effectN( 1 ).percent() );
 
   buff.bladestorm =
-      make_buff( this, "bladestorm", talents.bladestorm->ok() ? talents.bladestorm : spec.bladestorm )
+      make_buff( this, "bladestorm", specialization() == WARRIOR_FURY ? find_spell( 46924 ) : spec.bladestorm )
       ->set_period( timespan_t::zero() )
       ->set_cooldown( timespan_t::zero() );
 
@@ -7178,6 +7185,11 @@ void warrior_t::create_buffs()
 
   buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) )
                                 ->set_default_value( conduit.merciless_bonegrinder.percent() );
+
+  buff.veterans_repute = make_buff( this, "veterans_repute", conduit.veterans_repute )
+                          ->add_invalidate( CACHE_STRENGTH )
+                          ->set_default_value( conduit.veterans_repute.percent() )
+                          ->set_duration( covenant.conquerors_banner->duration() );
 
   // Runeforged Legendary Powers============================================================================================
 
@@ -7662,6 +7674,11 @@ double warrior_t::composite_mastery() const
 double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    m *= 1.0 + buff.veterans_repute->value();
+  }
 
   // Protection has increased stamina from vanguard
   if ( attr == ATTR_STAMINA )
