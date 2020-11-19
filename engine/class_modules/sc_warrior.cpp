@@ -1791,8 +1791,8 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p, const std::string& name )
-    : warrior_attack_t( name, p, get_correct_spell_data( p ) )
+  bladestorm_tick_t( warrior_t* p, const std::string& name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
 
   {
     dual = true;
@@ -1833,7 +1833,7 @@ struct bladestorm_t : public warrior_attack_t
 
   bladestorm_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
     : warrior_attack_t( n, p, spell ),
-    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ) ) ),
+    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
       bladestorm_oh( nullptr ),
       mortal_strike( nullptr ),
       torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
@@ -1849,7 +1849,7 @@ struct bladestorm_t : public warrior_attack_t
     add_child( bladestorm_mh );
     if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
     {
-      bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ) );
+    bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ), spell->effectN( 1 ).trigger() );
       bladestorm_oh->weapon = &( player->off_hand_weapon );
       add_child( bladestorm_oh );
     }
@@ -6988,7 +6988,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202164 )->effectN( 1 ).percent() );
 
   buff.bladestorm =
-      make_buff( this, "bladestorm", talents.bladestorm->ok() ? talents.bladestorm : spec.bladestorm )
+      make_buff( this, "bladestorm", specialization() == WARRIOR_FURY ? find_spell( 46924 ) : spec.bladestorm )
       ->set_period( timespan_t::zero() )
       ->set_cooldown( timespan_t::zero() );
 
