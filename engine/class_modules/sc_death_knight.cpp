@@ -2529,6 +2529,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     int n_targets() const override
     { return p() -> o() -> in_death_and_decay() ? aoe + as<int>( p() -> o() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
 
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+    double m = drw_attack_t::composite_da_multiplier( state );
+    if ( p() -> o() -> conduits.withering_plague -> ok() && target ->get_dot( "blood_plague", p()) -> is_ticking() )
+    {
+      m *= 1.0 + p() -> o() -> conduits.withering_plague.percent();
+    }
+    return m;
+    }
+
     void execute( ) override
     {
       drw_attack_t::execute();
@@ -5804,7 +5814,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> conduits.withering_plague.percent();
     }
-
     return m;
   }
 
