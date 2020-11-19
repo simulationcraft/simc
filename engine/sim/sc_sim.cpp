@@ -3791,7 +3791,7 @@ void sim_t::create_options()
   add_option( opt_uint( "shadowlands.pointed_courage_nearby",
     shadowlands_opts.pointed_courage_nearby, 0, 8 ) );
   add_option( opt_uint( "shadowlands.lead_by_example_nearby",
-    shadowlands_opts.lead_by_example_nearby, 0, 2 ) );
+    shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",
