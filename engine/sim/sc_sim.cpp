@@ -1492,7 +1492,7 @@ sim_t::sim_t() :
   fight_style(), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
-  azerite_status(azerite_control::ENABLED ),
+  azerite_status( azerite_control::DISABLED_ALL ),
   progress_bar( *this ),
   scaling( new scale_factor_control_t( this ) ),
   plot( new plot_t( this ) ),
@@ -3671,6 +3671,10 @@ void sim_t::create_options()
     else if ( util::str_compare_ci( value, "all" ) )
     {
       sim -> azerite_status = azerite_control::DISABLED_ALL;
+    }
+    else if ( util::str_compare_ci( value, "0" ) || util::str_compare_ci( value, "false" ) )
+    {
+     sim -> azerite_status = azerite_control::ENABLED;
     }
     else
     {
