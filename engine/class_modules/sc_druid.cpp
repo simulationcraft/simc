@@ -7433,12 +7433,14 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _init_cat()
   {
-    conv_tigers_fury = get_convoke_action<cat_attacks::tigers_fury_t>("tigers_fury", "");
-    conv_feral_frenzy = get_convoke_action<cat_attacks::feral_frenzy_driver_t>("feral_frenzy", "");
-    conv_ferocious_bite = get_convoke_action<cat_attacks::ferocious_bite_t>("ferocious_bite", "");
-    conv_thrash_cat = get_convoke_action<cat_attacks::thrash_cat_t>("thrash_cat", "");
-    conv_shred = get_convoke_action<cat_attacks::shred_t>("shred", "");
-    conv_lunar_inspiration = get_convoke_action<cat_attacks::lunar_inspiration_t>("lunar_inspiration", "");
+    conv_tigers_fury = get_convoke_action<cat_attacks::tigers_fury_t>( "tigers_fury", p()->find_spell( 5217 ), "" );
+    conv_feral_frenzy =
+      get_convoke_action<cat_attacks::feral_frenzy_driver_t>( "feral_frenzy", p()->find_spell( 274837 ), "" );
+    conv_ferocious_bite = get_convoke_action<cat_attacks::ferocious_bite_t>( "ferocious_bite", "" );
+    conv_thrash_cat     = get_convoke_action<cat_attacks::thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ), "" );
+    conv_shred          = get_convoke_action<cat_attacks::shred_t>( "shred", "" );
+    // LI is a talent but the spell id is hardcoded into the constructor, so we don't need to explictly pass it here
+    conv_lunar_inspiration = get_convoke_action<cat_attacks::lunar_inspiration_t>( "lunar_inspiration", "" );
   }
 
   void _init_moonkin()
