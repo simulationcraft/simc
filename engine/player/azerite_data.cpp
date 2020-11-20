@@ -407,8 +407,8 @@ void azerite_state_t::initialize()
 
 azerite_power_t azerite_state_t::get_power( unsigned id )
 {
-  // All azerite disabled
-  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
   {
     return {};
   }
@@ -863,7 +863,7 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
   // Heart of Azeroth
   const item_t& hoa = m_player->items[ SLOT_NECK ];
 
-  if ( !hoa.active() || hoa.parsed.data.id != 158075 )
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
     return root;
 
   root << "<tr class=\"left\">\n"
@@ -958,6 +958,12 @@ azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_p
 // Get an azerite essence object by name
 azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, bool tokenized ) const
 {
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
+  {
+    return { m_player };
+  }
+
   const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives logged for the player match this
   for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )
@@ -992,6 +998,11 @@ azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, 
 
 azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
 {
+  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
+  {
+    return { m_player };
+  }
+
   const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives for the actor match the id
   for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )

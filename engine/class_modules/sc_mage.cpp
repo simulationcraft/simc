@@ -554,6 +554,8 @@ public:
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
+    proc_t* infernal_cascade_expires; // IC buffs expired during Combustion
+
     proc_t* brain_freeze;
     proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_used;
@@ -6621,7 +6623,9 @@ void mage_t::create_buffs()
                              ->set_default_value( conduits.infernal_cascade.percent() )
                              ->set_schools_from_effect( 1 )
                              ->set_chance( conduits.infernal_cascade.ok() )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                               { if ( cur == 0 && buffs.combustion->check() ) procs.infernal_cascade_expires->occur(); } );
 
   buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
                              ->set_default_value( conduits.siphoned_malice.percent() )
@@ -6671,6 +6675,8 @@ void mage_t::init_procs()
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
+
+      procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion" );
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );

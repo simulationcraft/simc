@@ -412,6 +412,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     aoe = 0;
 
     may_block = false;
+    callbacks = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
 
@@ -906,6 +907,7 @@ void paladin_t::generate_action_prio_list_ret()
     } */
   }
   cds -> add_action( this, "Shield of Vengeance" );
+  cds -> add_action( "blessing_of_the_seasons" );
 
   // Items
   bool has_knot = false;

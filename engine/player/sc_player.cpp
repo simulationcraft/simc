@@ -1979,6 +1979,17 @@ void player_t::create_special_effects()
 
   unique_gear::initialize_racial_effects( this );
 
+  if ( sim->overrides.windfury_totem )
+  {
+    special_effect_t effect( this );
+
+    unique_gear::initialize_special_effect( effect, 327942 );
+    if ( effect.custom_init_object.size() )
+    {
+      special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
+
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
@@ -3301,6 +3312,10 @@ void player_t::create_buffs()
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
+
+      buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
+        ->set_duration( sim->max_time * 3 )
+        ->set_chance( as<double>( sim->overrides.windfury_totem ) );
 
       // 9.0 class buffs
       buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
@@ -4681,6 +4696,11 @@ void player_t::combat_begin()
   if ( buffs.power_infusion )
     for ( auto t : external_buffs.power_infusion )
       make_event( *sim, t, [ this ] { buffs.power_infusion->trigger(); } );
+
+  if ( buffs.windfury_totem )
+  {
+    buffs.windfury_totem->trigger();
+  }
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
