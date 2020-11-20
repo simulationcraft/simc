@@ -6211,6 +6211,9 @@ struct heart_of_the_wild_t : public druid_spell_t
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
   {
     harmful = may_crit = may_miss = false;
+    // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
+    // effect in-game works as a percent reduction.
+    cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
   }
 
   void execute() override
@@ -7561,10 +7564,10 @@ struct convoke_the_spirits_t : public druid_spell_t
     {
       auto target_data = td(conv_tar);
 
-      if (type == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking())
-	type = CAST_WRATH;
-      else if (type == CAST_RAKE && target_data->dots.rake->is_ticking())
-	type = CAST_SHRED;
+      if ( type == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
+        type = CAST_WRATH;
+      else if ( type == CAST_RAKE && target_data->dots.rake->is_ticking() )
+        type = CAST_SHRED;
 
       conv_cast = convoke_action_from_type( type );
     }
@@ -11322,7 +11325,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
-  action.apply_affecting_conduit( conduit.born_of_the_wilds, -1 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
