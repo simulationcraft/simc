@@ -4028,7 +4028,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     latent_poison_injection_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 336904 ) )
-    {}
+    {
+      triggers_wild_spirits = false;
+    }
 
     void trigger( player_t* target )
     {
