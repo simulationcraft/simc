@@ -1070,6 +1070,15 @@ void forgeborne_reveries( special_effect_t& effect )
     }
   }
 
+  if ( count == 0 ) {
+    // no enchants are applied, do not apply the buff
+    //
+    // this is done because the buff code replaces a multiplier of 0 with the
+    // default value from the spelldata---which in this case is 1, or a 100%
+    // increase in stats
+    return;
+  }
+
   auto buff = buff_t::find( effect.player, "forgeborne_reveries" );
   if ( !buff )
   {
