@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-19/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -10416,7 +10416,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Don't display in aura bar (60)
 Effects          :
 #1 (id=831709)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x13f0 | Target: Unknown(87)
+Hotfixed         : Misc Value 2 (711 -> 5104)
 Description      : $@spelldesc1122
 
 Name             : Wilfred's Sigil of Superior Summoning (id=337020) [Spell Family (5), Passive] 

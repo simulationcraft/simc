@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-19/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1024,6 +1024,7 @@ Variables        : $buff=${$348272s1}
 $max=${3*$<buff>}
 
 Name             : Heirmir's Arsenal: Marrowed Gemstone (id=326572) [Passive, Hidden] 
+Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1032,7 +1033,7 @@ Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1153,6 +1154,7 @@ Effects          :
 Description      : Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.
 
 Name             : Combat Meditation (id=328266) [Passive, Hidden] 
+Hotfixed         : Description, Variables
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1172,8 +1174,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. 
 
-Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
-Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
+Walking through Sorrowful Memories extends this effect by ${$328913m2*$<modb>}.1 sec. $?a137018|?a137042[Combat Meditation may only occur once every $345861d.][]
+Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
+$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
 Covenant         : Kyrian

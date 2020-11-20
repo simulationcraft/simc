@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-19/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -12164,11 +12164,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=837982)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 846 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 846 (Label) | Target: Self (1)
                    Affected Spells (Label): Resonating Arrow (308498)
+Hotfixed         : Base Value (5 -> 0)
 #2 (id=837985)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 846 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 846 (Label) | Target: Self (1)
                    Affected Spells (Label): Resonating Arrow (308498)
+Hotfixed         : Base Value (5 -> 0)
 Description      : Your attacks and abilities deal |cFFFFFFFF${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
 
 Name             : Empowered Release (id=339059) [Spell Family (9), Passive, Hidden] 
