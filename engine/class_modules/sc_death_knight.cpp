@@ -2419,8 +2419,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/240
-      if ( p -> o() -> bugs )
-        base_tick_time *= 1.0 + p -> o() -> talent.rapid_decomposition -> effectN( 1 ).percent();
+      // Arma Nov 18, 2020 - The linked issue has been closed, as such, I am removing the bugs check
+      base_tick_time *= 1.0 + p -> o() -> talent.rapid_decomposition -> effectN( 1 ).percent();
     }
   };
 
@@ -3634,7 +3634,7 @@ struct blood_plague_t : public death_knight_spell_t
 
     if ( d -> state -> result_amount > 0 )
     {
-      heal -> base_dd_min = heal -> base_dd_max = d -> state -> result_amount;
+      heal -> base_dd_min = heal -> base_dd_max = d -> state -> result_amount * (1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent());
       heal -> execute();
     }
   }
