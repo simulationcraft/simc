@@ -6757,6 +6757,17 @@ struct swarming_mist_damage_t : public death_knight_spell_t
     death_knight_spell_t::execute();
   }
 
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
+
+    if ( state->n_targets > p() -> covenant.swarming_mist ->effectN( 5 ).base_value() )
+        // When we cross over 5 targets, sqrt on all targets kicks in
+        cam *= std::sqrt( 5.0 / state->n_targets );
+
+    return cam;
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
