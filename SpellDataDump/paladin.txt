@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 60044a7, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -1033,7 +1033,7 @@ Spell Level      : 23
 Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #1, #2, #3), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 49, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8897,6 +8897,25 @@ Effects          :
                    Family Flags: 126
 Description      : Generates $s1 additional Holy Power.
 
+Name             : Blessing of Summer (desc=Night Fae) (id=328123) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ..x..... ........ ........ ........   
+                 : Does not break stealth (37), Cannot crit (93), Disable player multipliers (221)
+Effects          :
+#1 (id=819999)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc328620
+
 Name             : Vanquisher's Hammer (desc=Necrolord) (id=328204) [Spell Family (10)] 
 Class            : Paladin
 Covenant         : Necrolord
@@ -9217,7 +9236,8 @@ Effects          :
 #1 (id=834556)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.94000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=835153)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 15)
 Description      : Unleashes a powerful weapon strike that deals $224266s1 Holy damage to an enemy target.
 
 Has a $s2% chance to activate Hammer of Wrath and reset its cooldown.
@@ -9275,6 +9295,7 @@ Effects          :
 Description      : Replaces Templar's Verdict with Final Verdict, a devastating strike that deals $336872s1 Holy damage. Has a $s2% chance to activate Hammer of Wrath and reset its cooldown.
 
 Name             : Tempest of the Lightbringer (id=337257) [Spell Family (10), Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -9289,13 +9310,10 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=835190)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=835191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=835191)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385)
-                   Family Flags: 49
-Description      : Projects Divine Storm forward $s1 yds, damaging all enemies in its path.
-
-Also increases damage dealt by Divine Storm by $s2%.
+Hotfixed         : Sub Type (108 -> 4), Affects Spells
+Description      : Divine Storm projects an additional wave of light, striking all enemies up to $s1 yards in front of you for $s2% of Divine Storm's damage.
 
 Name             : Relentless Inquisitor (id=337297) [Spell Family (10), Passive] 
 School           : Holy
@@ -9911,7 +9929,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 182 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
+Conduit Id       : 182 (values=8, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10002,7 +10020,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -10427,8 +10445,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Cannot crit (93), Periodic effect can crit (265)
 Effects          :
 #1 (id=845382)   : Apply Aura (6) | Periodic Damage (3): holy every 8 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.5 -> 1.9)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | PvP Coefficient: 0.76000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.76)
 #2 (id=845391)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A hammer slowly falls from the sky upon the target. After $d, they suffer ${$s1*$<mult>} Holy damage, plus $s2% of damage taken from your abilities in that time.

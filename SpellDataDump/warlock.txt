@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36532 shadowlands-BETA (hotfix 2020-11-12/36532, git build shadowlands 60044a7, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -9876,7 +9876,7 @@ Name             : Malefic Rapture (id=324540) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 43
+Spell Level      : 11
 Range            : 100 yards
 Affecting spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1)
 Family Flags     : 49, 73
@@ -10416,7 +10416,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Don't display in aura bar (60)
 Effects          :
 #1 (id=831709)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x13f0 | Target: Unknown(87)
+Hotfixed         : Misc Value 2 (711 -> 5104)
 Description      : $@spelldesc1122
 
 Name             : Wilfred's Sigil of Superior Summoning (id=337020) [Spell Family (5), Passive] 

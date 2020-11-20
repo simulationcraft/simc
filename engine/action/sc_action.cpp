@@ -364,6 +364,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_recharge_multiplier( 1.0 ),
     base_teleport_distance(),
     travel_speed(),
+    travel_delay(),
     energize_amount(),
     movement_directionality( movement_direction_type::NONE ),
     parent_dot(),
@@ -513,7 +514,7 @@ static bool is_direct_damage_effect( const spelleffect_data_t& effect )
 static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
 {
   static constexpr effect_subtype_t subtypes[] = {
-    A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL
+    A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL, A_PERIODIC_HEAL_PCT
   };
   return effect.type() == E_APPLY_AURA &&
          range::contains( subtypes, effect.subtype() );
@@ -543,7 +544,6 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   id                = spell_data.id();
   base_execute_time = spell_data.cast_time();
   range             = spell_data.max_range();
-  travel_speed      = spell_data.missile_speed();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
 
@@ -554,6 +554,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
+
+  if ( spell_data.flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+    travel_delay = spell_data.missile_speed();
+  else
+    travel_speed = spell_data.missile_speed();
 
   if ( has_direct_damage_effect( spell_data ) )
     may_crit = !spell_data.flags( spell_attribute::SX_CANNOT_CRIT );
@@ -733,7 +738,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE_PERCENT:
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
-        case A_OBS_MOD_HEALTH:
+        case A_PERIODIC_HEAL_PCT:
           if ( spelleffect_data.period() > timespan_t::zero() )
           {
             base_tick_time = spelleffect_data.period();
@@ -1073,19 +1078,24 @@ double action_t::false_negative_pct() const
 
 timespan_t action_t::travel_time() const
 {
-  if ( travel_speed == 0 )
+  if ( travel_speed == 0 && travel_delay == 0 )
     return timespan_t::zero();
 
-  double distance;
-  distance = player->get_player_distance( *target );
+  double t = travel_delay;
 
-  if ( execute_state && execute_state->target )
-    distance += execute_state->target->height;
+  if ( travel_speed > 0 )
+  {
+    double distance;
+    distance = player->get_player_distance( *target );
 
-  if ( distance == 0 )
-    return timespan_t::zero();
+    if ( execute_state && execute_state->target )
+      distance += execute_state->target->height;
 
-  double t = distance / travel_speed;
+    if ( distance == 0 )
+      return timespan_t::zero();
+
+    t += distance / travel_speed;
+  }
 
   double v = sim->travel_variance;
 

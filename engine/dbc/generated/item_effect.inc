@@ -1,4 +1,4 @@
-// Item effects, wow build 9.0.2.36532
+// Item effects, wow build 9.0.2.36671
 static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7353,7 +7353,7 @@ static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 125588, 331462, 178763,   0,   1,    0,      -1,      -1 }, // Stinky
   { 136050, 345490, 178769,   0,   1,    0,      -1,      -1 }, // Infinitely Divisible Ooze
   { 125902, 334512, 178770,   0,   1,    0,      -1,      -1 }, // Slimy Consumptive Organ
-  { 136078, 345595, 178770,   1,   0, 1141,   20000,   20000 }, // Voracity
+  { 136078, 345595, 178770,   1,   0,    0,      -1,      -1 }, // Voracity
   { 136044, 345465, 178771,   0,   1,    0,      -1,      -1 }, // Phial of Putrefaction
   { 136076, 345567, 178772,   0,   1,    0,      -1,      -1 }, // Satchel of Misbegotten Minions
   { 136074, 345549, 178783,   0,   0,    0,      -1,      -1 }, // Charged Phylactery
@@ -7363,7 +7363,7 @@ static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 136118, 345806, 178809,   1,   1,    0,      -1,      -1 }, // Soul Infusion
   { 136121, 345807, 178809,   2,   1,    0,      -1,      -1 }, // Soul Infusion
   { 136099, 345695, 178810,   0,   0,    0,      -1,      -1 }, // Vial of Spectral Essence
-  { 136102, 345739, 178811,   0,   0,  133,      -1,      -1 }, // Spectral Scythe
+  { 136102, 345739, 178811,   0,   0,    0,      -1,      -1 }, // Spectral Scythe
   { 136157, 345877, 178811,   1,   1,    0,      -1,      -1 }, // Grim Codex
   { 135855, 343399, 178825,   0,   0,    0,      -1,      -1 }, // Heart of a Gargoyle
   { 135856, 343401, 178825,   1,   1,    0,      -1,      -1 }, // Heart of a Gargoyle
@@ -7440,7 +7440,7 @@ static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 136272, 347649, 183036,   0,   1,    0,      -1,      -1 }, // Denathrius' Privilege
   { 135880, 343817, 183040,   0,   0,    0,      -1,      -1 }, // Charm of Eternal Winter
   { 127436, 344311, 183624,   0,   1,    0,      -1,      -1 }, // Serrated Edge
-  { 127437,  71406, 183650,   0,   1,    0,      -1,      -1 }, // Anger Capacitor
+  { 127437, 348249, 183650,   0,   1,    0,      -1,      -1 }, // Anger Capacitor
   { 127511, 336606, 183849,   0,   1,    0,      -1,      -1 }, // Soulsifter Root
   { 127512, 336588, 183850,   0,   0,    0,      -1,      -1 }, // Wakener's Frond
   { 127513, 336586, 183851,   0,   1,    0,      -1,      -1 }, // Withergrove Shardling

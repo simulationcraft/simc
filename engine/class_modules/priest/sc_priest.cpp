@@ -308,8 +308,8 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
-  power_infusion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) )
+  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name)
+    : priest_spell_t(name, p, p.find_class_spell( "Power Infusion" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -1563,7 +1563,11 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
   }
   if ( name == "power_infusion" )
   {
-    return new power_infusion_t( *this, options_str );
+    return new power_infusion_t( *this, options_str, "power_infusion" );
+  }
+  if ( name == "power_infusion_other" )
+  {
+    return new power_infusion_t( *this, options_str, "power_infusion_other" );
   }
   if ( name == "fae_guardians" )
   {
@@ -1971,7 +1975,7 @@ void priest_t::create_apl_precombat()
       if ( race == RACE_BLOOD_ELF )
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
-      precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=1" );
+      precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
       precombat->add_action( this, "Vampiric Touch" );
       break;
   }

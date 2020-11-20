@@ -1316,6 +1316,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340193, 0 ),          # Righteous Might heal
             ( 337228, 0 ),          # Final verdict buff
             ( 326011, 0 ),          # Divine Toll buff to judgment damage
+            ( 328123, 0 ),          # Blessing of Summer damage spell
             ( 340203, 0 ),          # Hallowed Discernment damage
             ( 340214, 0 ),          # Hallowed Discernment heal
         ),
