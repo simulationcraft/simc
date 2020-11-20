@@ -573,17 +573,17 @@ void combat_meditation( special_effect_t& effect )
   // id:328908 buff spell
   // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
   // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
-  // id:345861 lockout buff (buff->eff#3->trigger)
+  // id:345861 lockout buff
   struct combat_meditation_buff_t : public stat_buff_t
   {
     timespan_t ext_dur;
-    combat_meditation_buff_t( player_t* p, double duration_mod, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
+    combat_meditation_buff_t( player_t* p, double duration_mod, double duration_mod_ext, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
-      set_cooldown( icd_enabled ? data().effectN( 3 ).trigger()->duration() : 0_ms );
+      set_cooldown( icd_enabled ? p->find_spell( 345861 )->duration() : 0_ms );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur = std::round( duration_mod ) * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
+      ext_dur = duration_mod_ext * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -597,16 +597,11 @@ void combat_meditation( special_effect_t& effect )
   if ( !buff )
   {
     double duration_mod = class_value_from_desc_vars( effect, "mod" );
+    double duration_mod_ext = class_value_from_desc_vars( effect, "modb" );
     bool icd_enabled = extra_desc_text_for_class( effect, effect.driver()->name_cstr() );
-    // warlock still has an internal cooldown of 1 minute
-    // despite the tooltip not saying it does
-    if ( effect.player->type == WARLOCK || effect.player->type == DRUID )
-    {
-      icd_enabled = true;
-    }
 
-    effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
-    buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
+    effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, duration_mod_ext={}, icd_enabled={}", duration_mod, duration_mod_ext, icd_enabled );
+    buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, duration_mod_ext, icd_enabled );
   }
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
