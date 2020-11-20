@@ -394,7 +394,8 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
     }
   };
 
-  effect.trigger_spell_id = effect.spell_id;
+  effect.spell_id         = 347047;
+  effect.trigger_spell_id = 334058;
   effect.execute_action   = new putrid_burst_t( effect );
 }
 
@@ -1404,7 +1405,7 @@ void register_target_data_initializers( sim_t& sim )
 
   // Darkmoon Deck: Putrescence
   sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 334058 ) )
+    if ( unique_gear::find_special_effect( td->source, 347047 ) )
     {
       assert( !td->debuff.putrid_burst );
 

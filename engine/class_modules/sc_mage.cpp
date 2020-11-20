@@ -6676,7 +6676,7 @@ void mage_t::init_procs()
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
 
-      procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion (all)" );
+      procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion" );
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );
