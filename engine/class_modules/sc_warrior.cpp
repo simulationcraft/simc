@@ -3294,11 +3294,13 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   double cd_reset_chance;
+  double cruelty_reset_chance;
   raging_blow_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "raging_blow", p, p->spec.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
-      cd_reset_chance( p->spec.raging_blow->effectN( 1 ).percent() )
+      cd_reset_chance( p->spec.raging_blow->effectN( 1 ).percent() ),
+      cruelty_reset_chance( p->talents.cruelty->effectN( 2 ).percent() )
   {
     parse_options( options_str );
 
@@ -3310,11 +3312,6 @@ struct raging_blow_t : public warrior_attack_t
     add_child( mh_attack );
     cooldown->reset( false );
     track_cd_waste = true;
-
-    if (p->talents.cruelty->ok() && p->buff.enrage->check() )
-    {
-      cd_reset_chance = p->talents.cruelty->effectN( 2 ).percent();
-    }
   }
 
   void init() override
@@ -3332,9 +3329,19 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack->execute();
       oh_attack->execute();
     }
-    if ( rng().roll( cd_reset_chance ) )
+    if (p()->talents.cruelty->ok() && p()->buff.enrage->check() )
     {
-      cooldown->reset( true );
+      if ( rng().roll( cruelty_reset_chance ) )
+        { 
+          cooldown->reset( true );
+        }
+    }
+    else 
+    {
+      if ( rng().roll( cd_reset_chance ) )
+        { 
+          cooldown->reset( true );
+        }
     }
     p()->buff.meat_cleaver->decrement();
 
