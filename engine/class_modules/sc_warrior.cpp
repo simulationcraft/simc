@@ -1752,6 +1752,7 @@ struct mortal_strike_t : public warrior_attack_t
         mortal_combo_strike->execute();
       }
     }
+    p()->buff.deadly_calm->decrement();
     p()->buff.battlelord->expire();
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
@@ -2452,6 +2453,7 @@ struct cleave_t : public warrior_attack_t
     {
     p()->buff.overpower->expire();
     }
+    p()->buff.deadly_calm->decrement();
   }
 };
 
@@ -2669,9 +2671,15 @@ struct execute_arms_t : public warrior_attack_t
     p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
 
-    p()->buff.ayalas_stone_heart->expire();
-    p()->buff.sudden_death->expire();
 
+    if (p()->buff.sudden_death->up())
+    {
+      p()->buff.sudden_death->expire();
+    }
+    else
+    {
+      p()->buff.deadly_calm->decrement();
+    }
     if ( p()->azerite.executioners_precision.ok() )
     {
       p()->buff.executioners_precision->trigger();
@@ -4288,7 +4296,10 @@ struct slam_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p()->buff.deadly_calm->decrement();
+    if (!from_Fervor)
+      {
+        p()->buff.deadly_calm->decrement();
+      }
     if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
@@ -4730,6 +4741,13 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     }
   }
 
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->buff.deadly_calm->decrement();
+  }
+
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
@@ -4879,9 +4897,14 @@ struct condemn_arms_t : public warrior_attack_t
     p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
 
-    p()->buff.ayalas_stone_heart->expire();
-    p()->buff.sudden_death->expire();
-
+    if (p()->buff.sudden_death->up())
+    {
+      p()->buff.sudden_death->expire();
+    }
+    else
+    {
+      p()->buff.deadly_calm->decrement();
+    }
     if ( p()->azerite.executioners_precision.ok() )
     {
       p()->buff.executioners_precision->trigger();
