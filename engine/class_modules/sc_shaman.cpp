@@ -8411,9 +8411,6 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   if ( buff.ghost_wolf->check() )
     return;
 
-  if ( specialization() == SHAMAN_ENHANCEMENT && state->action->weapon->slot == SLOT_MAIN_HAND )
-    return;
-
   flametongue->set_target( state->target );
   flametongue->execute();
   attack->proc_ft->occur();
