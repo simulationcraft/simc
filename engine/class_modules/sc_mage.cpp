@@ -5496,6 +5496,17 @@ struct shifting_power_t final : public mage_spell_t
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "tick_reduction" ) )
+      return expr_t::create_constant( name, -reduction.total_seconds() );
+
+    if ( util::str_compare_ci( name, "full_reduction" ) )
+      return expr_t::create_constant( name, -reduction.total_seconds() * dot_duration / base_tick_time );
+
+    return mage_spell_t::create_expression( name );
+  }
 };
 
 // ==========================================================================
