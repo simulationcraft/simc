@@ -521,6 +521,7 @@ public:
   // Cooldowns
   struct cooldowns_t {
     // Shared
+    cooldown_t* abomination_limb;
     cooldown_t* death_and_decay;
     cooldown_t* defile;
     // Blood
@@ -1032,6 +1033,7 @@ public:
     options(),
     _runes( this )
   {
+    cooldown.abomination_limb    = get_cooldown( "abomination_limb_proc" );
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.blood_tap           = get_cooldown( "blood_tap" );
@@ -3391,11 +3393,37 @@ struct auto_attack_t : public death_knight_melee_attack_t
 
 struct abomination_limb_damage_t : public death_knight_spell_t
 {
+  int bone_shield_stack_gain;
   abomination_limb_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "abomination_limb_damage", p, p -> covenant.abomination_limb -> effectN( 2 ).trigger() )
   {
     background = true;
     base_multiplier *= 1.0 + p -> conduits.brutal_grasp.percent();
+    bone_shield_stack_gain = as<int>(p -> covenant.abomination_limb -> effectN( 3 ).base_value());
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    // We proc this on cast, then every 6 seconds thereafter, on tick
+    if ( p() ->cooldown.abomination_limb -> is_ready() )
+    {
+      switch ( p() ->specialization() )
+      {
+        case DEATH_KNIGHT_BLOOD:
+          p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
+          break;
+        case DEATH_KNIGHT_FROST:
+          p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+          break;
+        case DEATH_KNIGHT_UNHOLY:
+          p() -> trigger_runic_corruption( 0, 1.0, p() -> procs.al_runic_corruption );
+          break;
+        default:
+          break;
+      }
+      p() -> cooldown.abomination_limb -> start( timespan_t::from_seconds(p() -> covenant.abomination_limb -> effectN ( 4 ).base_value() ) );
+    }
   }
 };
 
@@ -3418,7 +3446,6 @@ struct abomination_limb_buff_t : public buff_t
 
 struct abomination_limb_t : public death_knight_spell_t
 {
-  int bone_shield_stack_gain;
   abomination_limb_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "abomination_limb", p, p -> covenant.abomination_limb )
   {
@@ -3428,8 +3455,6 @@ struct abomination_limb_t : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-
-    bone_shield_stack_gain = as<int>(p -> covenant.abomination_limb -> effectN( 3 ).base_value());
 
     if ( action_t* abomination_limb_damage = p -> find_action( "abomination_limb_damage" ) )
     {
@@ -3444,22 +3469,6 @@ struct abomination_limb_t : public death_knight_spell_t
     // Pull affect for this ability is NYI
 
     p() -> buffs.abomination_limb -> trigger();
-
-    // We simplify the implementation here.  In game it looks to proc the resource gain the first time the ability deals damage
-    switch ( p() ->specialization() )
-    {
-      case DEATH_KNIGHT_BLOOD:
-        p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
-        break;
-      case DEATH_KNIGHT_FROST:
-        p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-        break;
-      case DEATH_KNIGHT_UNHOLY:
-        p() -> trigger_runic_corruption( 0, 1.0, p() -> procs.al_runic_corruption );
-        break;
-      default:
-        break;
-    }
   }
 };
 
