@@ -45,6 +45,7 @@ actions+=/bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1
 # Maintaining Virulent Plague is a priority
 actions+=/outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight.enabled&!raid_event.adds.exists
 actions+=/outbreak,if=dot.virulent_plague.refreshable&(!talent.unholy_blight.enabled|talent.unholy_blight.enabled&cooldown.unholy_blight.remains)&active_enemies>=2
+actions+=/outbreak,if=runeforge.superstrain.equipped&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)
 # Action Lists
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=essences
