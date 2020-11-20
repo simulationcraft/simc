@@ -2009,11 +2009,11 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
 
-          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast,
-          // the game will immediately finish the cast. This is presumably done to work
-          // around the buff application delay inside Combustion or with Searing Touch
-          // active. The following code is a huge hack.
-          if ( id == 2948 && p->executing && p->executing->id == 11366 )
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast
+          // or Flamestrike, the game will immediately finish the cast. This is presumably
+          // done to work around the buff application delay inside Combustion or with
+          // Searing Touch active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 ) )
           {
             assert( p->executing->execute_event );
             p->current_execute_type = execute_type::FOREGROUND;
