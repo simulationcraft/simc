@@ -413,6 +413,7 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* deep_cuts;
 
     // Soulbinds
+    buff_t* debilitating_malady;
     buff_t* everfrost;
   } debuff;
 
@@ -947,7 +948,7 @@ public:
     // conduit_data_t spirit_drain; Finesse trait, 70
 
     // Blood
-    // conduit_data_t debilitating_malady; // 123
+    conduit_data_t debilitating_malady; // 123
     // conduit_data_t meat_shield; // Endurance trait, 121
     conduit_data_t withering_plague; // 80
 
@@ -1216,6 +1217,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
                            -> set_default_value_from_effect( 1 );
+
+  debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
+                           -> set_default_value( p -> conduits.debilitating_malady.percent() );
 
   debuff.everfrost         = make_buff( *this, "everfrost", p -> find_spell( 337989 ) )
                            -> set_default_value( p -> conduits.everfrost.percent() );
@@ -3780,8 +3784,16 @@ struct blood_plague_t : public death_knight_spell_t
     {
       ta += p() -> azerite.deep_cuts.value();
     }
-
     return ta;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( t );
+
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.debilitating_malady -> check_stack_value();
+
+    return m;
   }
 
   void tick( dot_t* d ) override
@@ -3837,6 +3849,9 @@ struct blood_boil_t : public death_knight_spell_t
         p() -> active_spells.virulent_plague -> execute();
       }
     }
+
+    if ( p() -> conduits.debilitating_malady.ok() )
+      td( state -> target ) -> debuff.debilitating_malady -> trigger();
 
     p() -> buffs.hemostasis -> trigger();
   }
@@ -9155,7 +9170,7 @@ void death_knight_t::init_spells()
   // conduits.spirit_drain = find_conduit_spell( "Spirit Drain" );
 
   // Blood
-  // conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
+  conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
   // conduits.meat_shield = find_conduit_spell( "Meat Shield" );
   conduits.withering_plague = find_conduit_spell( "Withering Plague" );
 
