@@ -166,6 +166,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
+    buff_t* devotion_aura;
 
     buff_t* avengers_might;
 
@@ -188,6 +189,7 @@ public:
     buff_t* shielding_words;
     buff_t* shining_light_stacks;
     buff_t* shining_light_free;
+    buff_t* royal_decree;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -221,6 +223,7 @@ public:
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
     buff_t* virtuous_command;
+    buff_t* reign_of_ancient_kings;
   } buffs;
 
   // Gains
@@ -263,6 +266,7 @@ public:
     cooldown_t* avenging_wrath; // Righteous Protector (prot)
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
+    cooldown_t* the_magistrates_judgment_icd;
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose
@@ -471,6 +475,8 @@ public:
     conduit_data_t punish_the_guilty;
     conduit_data_t resolute_defender;
     conduit_data_t shielding_words;
+    conduit_data_t golden_path;
+    conduit_data_t royal_decree;
   } conduit;
 
   struct convenants_t {
@@ -484,13 +490,14 @@ public:
     item_runeforge_t vanguards_momentum;
     item_runeforge_t the_mad_paragon;
     item_runeforge_t final_verdict;
-    item_runeforge_t from_dusk_till_dawn;
+    item_runeforge_t of_dusk_and_dawn;
     item_runeforge_t the_magistrates_judgment;
     item_runeforge_t bulwark_of_righteous_fury;
     item_runeforge_t holy_avengers_engraved_sigil;
     item_runeforge_t the_ardent_protectors_sanctum;
     item_runeforge_t relentless_inquisitor;
     item_runeforge_t tempest_of_the_lightbringer;
+    item_runeforge_t reign_of_endless_kings;
   } legendary;
 
   // Paladin options
@@ -586,6 +593,7 @@ public:
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_hallow;
+  buff_t* active_aura;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -791,7 +799,7 @@ public:
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
   }
 
@@ -926,7 +934,7 @@ public:
 
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> legendary.from_dusk_till_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      am *= 1.0 + p() -> legendary.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
     }
 
     return am;
@@ -1128,11 +1136,11 @@ struct holy_power_consumer_t : public Base
   public:
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
-  bool is_vanq_hammer;
+  bool is_wog;
   holy_power_consumer_t( const std::string& n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
-    is_vanq_hammer ( false )
+    is_wog( false )
   { }
 
   double cost() const override
@@ -1145,7 +1153,7 @@ struct holy_power_consumer_t : public Base
     }
 
     if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
-         ( ab::p() -> buffs.divine_purpose -> check() && !is_vanq_hammer ) )
+         ( ab::affected_by.divine_purpose && ab::p() -> buffs.divine_purpose -> check() ) )
     {
       return 0.0;
     }
@@ -1160,7 +1168,7 @@ struct holy_power_consumer_t : public Base
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
       c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
-    return c;
+    return std::max( c, 0.0 );
   }
 
   void execute() override
@@ -1178,16 +1186,26 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    // ... and in fact magistrate's causes *extra* stacks?
+    // Royal Decree doesn't proc RP 2020-11-01
+    if ( is_wog && p -> buffs.royal_decree -> up() &&
+        !p -> buffs.divine_purpose -> up() && !p -> buffs.shining_light_free -> up() )
+      num_stacks = as<int>( hp_used );
+
+    // as of 2020-11-08 magistrate's causes *extra* stacks?
     if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
     {
-      num_stacks += 1;
+      if ( p -> specialization() == PALADIN_RETRIBUTION )
+        num_stacks += 1;
+      else if ( p -> specialization() == PALADIN_PROTECTION &&
+          is_wog && !p -> buffs.divine_purpose -> up() &&
+          ( p -> buffs.shining_light_free -> up() || p -> buffs.royal_decree -> up() ) )
+        num_stacks += 1;
     }
 
     if ( p -> azerite.relentless_inquisitor.ok() )
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
-    if ( p -> legendary.relentless_inquisitor -> ok() && !is_vanq_hammer )
+    if ( p -> legendary.relentless_inquisitor -> ok() )
       p -> buffs.relentless_inquisitor -> trigger();
 
     if ( p -> buffs.crusade -> check() )
@@ -1202,10 +1220,8 @@ struct holy_power_consumer_t : public Base
         // Why is this in deciseconds?
          -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
        );
-      if ( p -> buffs.divine_purpose -> up() ) // DP grants full value to RP
-        reduction *= ab::base_costs[ RESOURCE_HOLY_POWER ];
-      else
-        reduction *= hp_used; // All other hopo reductions reduce their contribution to RP
+      reduction *= num_stacks;
+      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_stacks );
       p -> cooldowns.avenging_wrath -> adjust( reduction );
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
@@ -1241,21 +1257,38 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // We should only have should_continue false in the event that we're a divine storm
-    // assert-check here for safety
-    assert( is_divine_storm || should_continue );
+    // 2020-11-01 Royal Decree always expires, even when other holy power reductions are up
+    if ( is_wog && p -> buffs.royal_decree -> up() )
+      p -> buffs.royal_decree -> expire();
 
-    // WARNING: This is correct for prot (as of 2020-09-10), ret may work
-    // differently so be wary. Shining light and magistrate get consumed at the same time.
+    // For prot (2020-11-01). Magistrate's does not get consumed when DP is up.
     // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
     // with FoJ.
     if ( this -> affected_by.the_magistrates_judgment && !p -> buffs.divine_purpose -> up() && should_continue )
-      p -> buffs.the_magistrates_judgment -> expire();
+      p -> buffs.the_magistrates_judgment -> decrement( 1 );
+
+    if ( is_wog && p -> buffs.shining_light_free -> up() )
+    {
+      // Shining Light is now consumed before Divine Purpose 2020-11-01
+      p -> buffs.shining_light_free -> expire();
+      should_continue = false;
+    }
+    else if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
+      ( ab::background || ( is_wog && p -> buffs.vanquishers_hammer -> up () ) ) )
+    {
+      // Vanquisher's Hammer's auto-sotr is not consuming divine purpose.
+      // Vanquisher's Hammer's wog is not consuming divine purpose for some reason.
+      should_continue = false;
+    }
+
+    // We should only have should_continue false in the event that we're a divine storm
+    // assert-check here for safety
+    assert( is_divine_storm || should_continue || p -> specialization() != PALADIN_RETRIBUTION );
 
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() && !is_vanq_hammer )
+      if ( p -> buffs.divine_purpose -> up() )
       {
         p -> buffs.divine_purpose -> expire();
       }
@@ -1268,11 +1301,7 @@ struct holy_power_consumer_t : public Base
 
     // Roll for Divine Purpose
     if ( p -> talents.divine_purpose -> ok() &&
-         this -> rng().roll(
-           // Vanq hammer has a 5% proc chance in testing 2020-10-16
-           p -> talents.divine_purpose -> effectN( 1 ).percent() *
-           ( is_vanq_hammer ? 1/3 : 1.0 )
-         )
+         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() )
       )
     {
       p -> buffs.divine_purpose -> trigger();

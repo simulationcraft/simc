@@ -306,6 +306,9 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = 0_ms;
     cooldown = p -> cooldowns.guardian_of_ancient_kings;
+
+    if ( p -> conduit.royal_decree -> ok() )
+      cooldown -> duration += p -> conduit.royal_decree.time_value();
   }
 
   void execute() override
@@ -431,6 +434,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   {
     parse_options( options_str );
     target = p;
+    is_wog = true;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -465,13 +469,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
   void execute() override
   {
-    // Divine purpose is expired in parent execute, so catch it before then:
-    bool dp_up = p() -> buffs.divine_purpose -> up();
     holy_power_consumer_t::execute();
-
-    // Divine purpose is consumed before shining light.
-    if ( p() -> buffs.shining_light_free -> up() && ! dp_up )
-      p() -> buffs.shining_light_free -> expire();
 
     if ( p() -> specialization() == PALADIN_PROTECTION && p() -> buffs.vanquishers_hammer -> up() )
     {
@@ -480,11 +478,24 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     }
   }
 
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p() -> buffs.shining_light_free -> up() && p() -> buffs.divine_purpose -> up() )
+    // Shining Light does not benefit from divine purpose
+      am /= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+    return am;
+  }
+
   double cost() const override
   {
     double c = holy_power_consumer_t::cost();
-    if ( p() -> buffs.shining_light_free -> up() )
+
+    if ( p() -> buffs.shining_light_free -> check() )
       c *= 1.0 + p() -> buffs.shining_light_free -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.royal_decree -> check() )
+      c *= 1.0 + p() -> buffs.royal_decree -> data().effectN( 1 ).percent();
+
     return c;
   }
 };
@@ -559,15 +570,14 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
     }
 
-    // Current functionality in-game (and here) as of 2020-10-16 is that
-    // Resolute Defender only provides its cdr while AD is active. However the
-    // tooltip says otherwise.
-    if ( p() -> conduit.resolute_defender -> ok() && p() -> buffs.ardent_defender -> up() )
+    // As of 2020-11-07 Resolute Defender now always provides its CDR.
+    if ( p() -> conduit.resolute_defender -> ok() )
     {
-      p() -> buffs.ardent_defender -> extend_duration( p(),
-        p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
-      );
       p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
+      if ( p() -> buffs.ardent_defender -> up() )
+        p() -> buffs.ardent_defender -> extend_duration( p(),
+          p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
+        );
     }
 
     if ( !background )
@@ -654,6 +664,9 @@ void paladin_t::target_mitigation( school_e school,
   {
     s -> result_amount *= 1.0 + buffs.blessing_of_dusk -> value();
   }
+
+  if ( buffs.devotion_aura -> up() )
+    s -> result_amount *= 1.0 + buffs.devotion_aura -> value();
 
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
@@ -838,7 +851,12 @@ void paladin_t::create_buffs_protection()
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-        -> set_cooldown( 0_ms );
+        -> set_cooldown( 0_ms )
+        -> set_stack_change_callback( [ this ] ( buff_t*, int old, int curr )
+        {
+          if ( curr == 1 && conduit.royal_decree -> ok() )
+            this -> buffs.royal_decree -> trigger();
+        } );
 
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
@@ -863,6 +881,10 @@ void paladin_t::create_buffs_protection()
         -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) );
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
+
+  buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
+  buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
+    legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
 
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
@@ -937,6 +959,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( "flask" );
   precombat -> add_action( "food" );
   precombat -> add_action( "augmentation" );
+  precombat -> add_action( "devotion_aura" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
