@@ -173,14 +173,15 @@ void niyas_tools_burrs( special_effect_t& effect )
                           value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
     {}
 
-    result_e calculate_result( action_state_t* s ) const override
+    // UPDATE: Not the case anymore as of 2020-11-20 hotfixes. Keeping commented just in case.
+    /*result_e calculate_result( action_state_t* s ) const override
     {
       // If the target is slow-immune (most bosses) everything gets immuned including dot application
       if ( s->target->is_boss() )
         return result_e::RESULT_MISS;
 
       return niyas_tools_proc_t::calculate_result( s );
-    }
+    }*/
   };
 
   effect.execute_action = effect.player->find_action( "spiked_burrs" );
