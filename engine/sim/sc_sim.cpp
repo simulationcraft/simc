@@ -1492,7 +1492,7 @@ sim_t::sim_t() :
   fight_style(), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
-  azerite_status(azerite_control::ENABLED ),
+  azerite_status( azerite_control::DISABLED_ALL ),
   progress_bar( *this ),
   scaling( new scale_factor_control_t( this ) ),
   plot( new plot_t( this ) ),
@@ -2323,6 +2323,7 @@ void sim_t::init_fight_style()
     overrides.battle_shout         = 1;
     overrides.power_word_fortitude = 1;
     overrides.bloodlust            = 1;
+    overrides.windfury_totem       = 0;
 
     ignore_invulnerable_targets = true;
 
@@ -3208,6 +3209,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
+  overrides.windfury_totem          = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3449,6 +3451,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
+  add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
@@ -3669,6 +3672,10 @@ void sim_t::create_options()
     {
       sim -> azerite_status = azerite_control::DISABLED_ALL;
     }
+    else if ( util::str_compare_ci( value, "0" ) || util::str_compare_ci( value, "false" ) )
+    {
+     sim -> azerite_status = azerite_control::ENABLED;
+    }
     else
     {
       sim -> error( "Unknown disable_azerite value '{}', valid values are 'items' or 'all'",
@@ -3786,9 +3793,9 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
     shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby",
-    shadowlands_opts.pointed_courage_nearby, 0, 8 ) );
+    shadowlands_opts.pointed_courage_nearby, 0, 5 ) );
   add_option( opt_uint( "shadowlands.lead_by_example_nearby",
-    shadowlands_opts.lead_by_example_nearby, 0, 2 ) );
+    shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party",

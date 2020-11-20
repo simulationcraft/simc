@@ -394,7 +394,8 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
     }
   };
 
-  effect.trigger_spell_id = effect.spell_id;
+  effect.spell_id         = 347047;
+  effect.trigger_spell_id = 334058;
   effect.execute_action   = new putrid_burst_t( effect );
 }
 
@@ -1344,10 +1345,13 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+    // Scopes
+    unique_gear::register_special_effect( 321532, "329666trigger" ); // Infra-green Reflex Sight
+    unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
 
     // Trinkets
     unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
-    unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
+    unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );
     unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
@@ -1401,7 +1405,7 @@ void register_target_data_initializers( sim_t& sim )
 
   // Darkmoon Deck: Putrescence
   sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 334058 ) )
+    if ( unique_gear::find_special_effect( td->source, 347047 ) )
     {
       assert( !td->debuff.putrid_burst );
 

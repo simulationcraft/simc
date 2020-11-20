@@ -86,6 +86,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* fury_of_elune;
     dot_t* lifebloom;
     dot_t* moonfire;
+    dot_t* lunar_inspiration;
     dot_t* rake;
     dot_t* regrowth;
     dot_t* rejuvenation;
@@ -6210,6 +6211,9 @@ struct heart_of_the_wild_t : public druid_spell_t
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
   {
     harmful = may_crit = may_miss = false;
+    // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
+    // effect in-game works as a percent reduction.
+    cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
   }
 
   void execute() override
@@ -7294,6 +7298,11 @@ struct convoke_the_spirits_t : public druid_spell_t
     CAST_PULVERIZE,
     CAST_IRONFUR,
     CAST_MANGLE,
+    CAST_TIGERS_FURY,
+    CAST_FERAL_FRENZY,
+    CAST_FEROCIOUS_BITE,
+    CAST_THRASH_CAT,
+    CAST_SHRED
   };
 
   int max_ticks;
@@ -7315,6 +7324,12 @@ struct convoke_the_spirits_t : public druid_spell_t
   action_t* conv_mangle;
   action_t* conv_pulverize;
   // Cat Form
+  action_t* conv_tigers_fury;
+  action_t* conv_feral_frenzy;
+  action_t* conv_ferocious_bite;
+  action_t* conv_thrash_cat;
+  action_t* conv_shred;
+  action_t* conv_lunar_inspiration;
 
   convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
@@ -7327,7 +7342,13 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_starfall( nullptr ),
     conv_ironfur( nullptr ),  // bear
     conv_mangle( nullptr ),
-    conv_pulverize( nullptr )
+    conv_pulverize( nullptr ),
+    conv_tigers_fury( nullptr ), // cat
+    conv_feral_frenzy( nullptr ),
+    conv_ferocious_bite( nullptr ),
+    conv_thrash_cat( nullptr ),
+    conv_shred( nullptr ),
+    conv_lunar_inspiration( nullptr )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
@@ -7349,6 +7370,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( p->find_action( "bear_form" ) )
       _init_bear();
+
+    if ( p->find_action( "cat_form" ) )
+      _init_cat();
   }
 
   template <typename T, typename... Ts>
@@ -7377,7 +7401,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     switch ( type )
     {
       case CAST_WRATH: return conv_wrath;
-      case CAST_MOONFIRE: return conv_moonfire;
+      case CAST_MOONFIRE: if (p()->buff.cat_form->check()) return conv_lunar_inspiration; else return conv_moonfire;
       case CAST_RAKE: return conv_rake;
       case CAST_THRASH_BEAR: return conv_thrash_bear;
       case CAST_FULL_MOON: return conv_full_moon;
@@ -7386,6 +7410,11 @@ struct convoke_the_spirits_t : public druid_spell_t
       case CAST_PULVERIZE: return conv_pulverize;
       case CAST_IRONFUR: return conv_ironfur;
       case CAST_MANGLE: return conv_mangle;
+      case CAST_TIGERS_FURY: return conv_tigers_fury;
+      case CAST_FERAL_FRENZY: return conv_feral_frenzy;
+      case CAST_FEROCIOUS_BITE: return conv_ferocious_bite;
+      case CAST_THRASH_CAT: return conv_thrash_cat;
+      case CAST_SHRED: return conv_shred;
       default: return nullptr;  // heals will fall through and return as null
     }
   }
@@ -7404,6 +7433,18 @@ struct convoke_the_spirits_t : public druid_spell_t
   }
 
   double composite_haste() const override { return 1.0; }
+
+  void _init_cat()
+  {
+    conv_tigers_fury = get_convoke_action<cat_attacks::tigers_fury_t>( "tigers_fury", p()->find_spell( 5217 ), "" );
+    conv_feral_frenzy =
+      get_convoke_action<cat_attacks::feral_frenzy_driver_t>( "feral_frenzy", p()->find_spell( 274837 ), "" );
+    conv_ferocious_bite = get_convoke_action<cat_attacks::ferocious_bite_t>( "ferocious_bite", "" );
+    conv_thrash_cat     = get_convoke_action<cat_attacks::thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ), "" );
+    conv_shred          = get_convoke_action<cat_attacks::shred_t>( "shred", "" );
+    // LI is a talent but the spell id is hardcoded into the constructor, so we don't need to explictly pass it here
+    conv_lunar_inspiration = get_convoke_action<cat_attacks::lunar_inspiration_t>( "lunar_inspiration", "" );
+  }
 
   void _init_moonkin()
   {
@@ -7436,6 +7477,8 @@ struct convoke_the_spirits_t : public druid_spell_t
         cast_list.push_back( CAST_PULVERIZE );
       else if ( p()->buff.moonkin_form->check() )
         cast_list.push_back( CAST_FULL_MOON );
+      else if ( p()->buff.cat_form->check() )
+        cast_list.push_back( CAST_FERAL_FRENZY );
     }
     cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
 
@@ -7444,6 +7487,8 @@ struct convoke_the_spirits_t : public druid_spell_t
       _execute_bear();
     else if ( p()->buff.moonkin_form->check() )
       _execute_moonkin();
+    else if ( p()->buff.cat_form->check() )
+      _execute_cat();
   }
 
   void _execute_bear()
@@ -7459,6 +7504,15 @@ struct convoke_the_spirits_t : public druid_spell_t
     offspec_list = { CAST_HEAL };
     chances    = { { CAST_WRATH,     0.4 },
                    { CAST_STARSURGE, 0.3 } };
+  }
+
+  void _execute_cat()
+  {
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_WRATH, CAST_MOONFIRE };
+    chances      = { { CAST_SHRED, 0.10 }, 
+		     { CAST_FEROCIOUS_BITE, 0.22}, 
+		     { CAST_THRASH_CAT, 0.0588},
+		     { CAST_RAKE, 0.22} };
   }
 
   void tick( dot_t* d ) override
@@ -7494,6 +7548,8 @@ struct convoke_the_spirits_t : public druid_spell_t
         type = _tick_moonkin( tl, conv_tar );
       else if ( p()->buff.bear_form->check() )
         type = _tick_bear( tl, conv_tar );
+      else if ( p()->buff.cat_form->check() )
+        type = _tick_cat( tl, conv_tar );
     }
 
     conv_cast = convoke_action_from_type( type );
@@ -7503,6 +7559,18 @@ struct convoke_the_spirits_t : public druid_spell_t
     // pick random target if we haven't picked one already
     if ( !conv_tar )
       conv_tar = tl.at( rng().range( tl.size() ) );
+
+    if ( p()->buff.cat_form->check() )
+    {
+      auto target_data = td(conv_tar);
+
+      if ( type == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
+        type = CAST_WRATH;
+      else if ( type == CAST_RAKE && target_data->dots.rake->is_ticking() )
+        type = CAST_SHRED;
+
+      conv_cast = convoke_action_from_type( type );
+    }
 
    execute_convoke_action( conv_cast, conv_tar );
   }
@@ -7523,6 +7591,17 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( type == CAST_MOONFIRE )
       conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+
+    return type;
+  }
+
+  convoke_cast_e _tick_cat( const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    auto dist = chances;
+    if ( !p()->buff.tigers_fury->check() )
+      dist.emplace_back( std::make_pair( CAST_TIGERS_FURY, 0.25 ) );
+
+    convoke_cast_e type = get_cast_from_dist( dist );
 
     return type;
   }
@@ -11089,6 +11168,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.fury_of_elune         = target.get_dot( "fury_of_elune", &source );
   dots.lifebloom             = target.get_dot( "lifebloom", &source );
   dots.moonfire              = target.get_dot( "moonfire", &source );
+  dots.lunar_inspiration     = target.get_dot( "lunar_inspiration", &source );
   dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
   dots.rake                  = target.get_dot( "rake", &source );
   dots.regrowth              = target.get_dot( "regrowth", &source );
@@ -11245,7 +11325,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
-  action.apply_affecting_conduit( conduit.born_of_the_wilds, -1 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const

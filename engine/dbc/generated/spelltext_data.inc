@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.36639
-static const std::array<spelltext_data_t, 15051> __spelltext_data { {
+// Spell text, wow build 9.0.2.36671
+static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12639,7 +12639,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 311499, 0, "$@spellaura328741 $w1", 0 },
   { 311516, "Tosses an invitation to your target.", 0, 0 },
   { 311517, "Tosses an invitation to your target.", 0, 0 },
-  { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
+  { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power. Deals reduced damage beyond $s5 targets.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
@@ -12765,7 +12765,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 315391, "$@spelldesc315362", "Movement speed slowed by $s1%.", 0 },
   { 315434, "Teaches you the cooking recipes known only to N'Zoth's followers.", 0, 0 },
   { 315442, "Learn Death's Due, replacing Death and Decay.\r\n", "Drain power from each enemy within the area, reducing their damage done by 10% and increasing your Strength by 80 for 10 sec.", "Night Fae" },
-  { 315443, "Sprout an additional limb for $d. Every $t1 sec, it deals $323798s1 Shadow damage to $323798i nearby enemies and pulls an enemy to your location if they are further than $323710s3 yds from you. The first time the limb pulls an enemy gain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][].\r\n\r\nAbomination Limb can only pull the same enemy once every $323710d.", "Pulling enemies to your location and dealing $323798s1 Shadow damage to nearby enemies every $t1 sec.", "Necrolord" },
+  { 315443, "Sprout an additional limb, dealing ${$323798s1*13} Shadow damage over $d to $323798i nearby enemies. Every $t1 sec, an enemy is pulled to your location if they are further than $323710s3 yds from you. The same enemy can only be pulled once every $323710d.\r\n\r\nGain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][] instantly, and again every $s4 sec.", "Pulling enemies to your location and dealing $323798s1 Shadow damage to nearby enemies every $t1 sec.", "Necrolord" },
   { 315496, "Finishing move that consumes combo points to increase attack speed by $s1%$?s344362[ and Energy regeneration by $s3%][]. Lasts longer per combo point.\r\n   1 point  : 12 seconds\r\n   2 points: 18 seconds\r\n   3 points: 24 seconds\r\n   4 points: 30 seconds\r\n   5 points: 36 seconds$?s193531[\r\n   6 points: 42 seconds][]", "Attack speed increased by $w1%.\r\n$?$w3>0[Energy regeneration increased by $w3%.][]", 0 },
   { 315508, "Roll the dice of fate, providing a random combat enhancement for $d.", "Gained a random combat enhancement.", 0 },
   { 315529, "Increases the amount of Mastery you gain from all sources by $s1%.", "Mastery increased by $s1%.", 0 },
@@ -13428,7 +13428,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 326511, "Damaging or healing a target below $s1% grants you $327159s1% increased movement speed for $327159d after you start moving. May only occur once per $327160d.", 0, 0 },
   { 326512, "Mounted movement speed is increased by $s1%. If attacked while mounted, mounted movement speed is increased by an additional $327852s1% for $327852d.", 0, 0 },
   { 326513, "You have a chance to obtain a satchel of a bonesmith's preferred ore and gems when you kill an enemy that yields experience or honor.", 0, 0 },
-  { 326514, "Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", 0, 0 },
+  { 326514, "Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.\r\n\r\nUpon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", 0, 0 },
   { 326572, "After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.", 0, 0 },
   { 326646, "Duration increased by ${$s1/1000} sec.", 0, "Rank 2" },
   { 326647, "Empower the bond for $327071d:\r\n\r\n$@spelldesc327097\r\n\r\n|cFFFFFFFFHealer Partner|r\r\nThey focus on you, replicating $327148s2% of all healing they deal onto you.", 0, "Kyrian" },
@@ -13553,16 +13553,17 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 328077, "Symbols of Death causes your next combo point generator to critically strike.", 0, "Rank 2" },
   { 328082, "$@spelldesc196819", 0, 0 },
   { 328085, "Mutilate has a $s1% chance to make your next Ambush free and usable without Stealth. Chance increased to $s2% if the target is under $s3% health.", 0, 0 },
+  { 328123, "$@spelldesc328620", 0, "Night Fae" },
   { 328204, "Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous].", "Your next $?c3[Templar's Verdict automatically triggers Divine Storm]?c1[Word of Glory automatically triggers Light of Dawn][Word of Glory automatically triggers Shield of the Righteous].", "Necrolord" },
   { 328210, "$@spelldesc323921", "Maximum health increased by $w%.", 0 },
   { 328225, "$@spelldesc327140", 0, 0 },
   { 328231, "Evoke the energy of Wild Spirits at the target location, dealing $328837s3 Nature damage and apply Hunter's Mark to all enemy targets within the area for $328837d.\r\n\r\nWhile the Wild Spirits are active, each damaging ability you or your pet use against a target in the area will strike up to $328757I nearby targets for $328757s1 Nature damage.", 0, "Night Fae" },
-  { 328257, "Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.", 0, 0 },
+  { 328257, "Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.", 0, 0 },
   { 328258, "While above 90% health, your mounted movement speed is increased by 10%.", 0, 0 },
   { 328261, "Defeating an enemy lowers the cooldown on your Phial of Serenity by ${$328738s1/-1000} sec.", 0, 0 },
   { 328263, "You have a chance to obtain cleansed cloth and enchanting materials when you kill an enemy that yields experience or honor.", 0, 0 },
   { 328265, "Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.", 0, 0 },
-  { 328266, "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]", 0, 0 },
+  { 328266, "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<modb>}.1 sec. $?a137018|?a137042[Combat Meditation may only occur once every $345861d.][]", 0, 0 },
   { 328273, "Increase your Leech by $s1, but reduces your Stamina by $s2.", "Increase your Leech by $w1, but reduces your Stamina by $w2.", 0 },
   { 328275, "$@spelldesc328231", "Damage taken from the hunter increased by $s2%.", "Night Fae" },
   { 328278, " ", 0, "Night Fae" },
@@ -13589,7 +13590,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 328767, "Survival Instincts now has ${$s1+1} charges.\r\n", 0, "Rank 2" },
   { 328837, "$@spelldesc328231", 0, "Night Fae" },
   { 328891, 0, "Food just never seems to satiate while holding the Tantalizingly Large Gilded Plum.", 0 },
-  { 328900, "$@spelldesc328257", "Versatility increased by $w%.", 0 },
+  { 328900, "$@spelldesc328257", "Magic damage taken decreased by $w%.", 0 },
   { 328902, "Increase your $pri by $s1 but reduce your maximum health by ${-$s2}% for $d. Stacks up to $u times. Only usable outdoors in the Shadowlands.", "$pri increased by $w1 and maximum health reduced by ${-$s2}%.Only usable outdoors in the Shadowlands.", 0 },
   { 328906, "Give yourself an Envious Glimmer to look like a great $@class of old. ", "Look at you in that epic armor!", 0 },
   { 328908, "$@spelldesc328266", "Mastery increased by $w.", 0 },
@@ -13629,7 +13630,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing done is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After $330921d out of combat, gain a shield for $330927s2% of your maximum health.", 0, 0 },
   { 329786, "Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.", 0, 0 },
-  { 329791, "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", 0, 0 },
+  { 329791, "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d.", 0, 0 },
   { 329831, "Deploy a power crystal which beams arcane energy into you, inflicting $o1 Arcane damage over $d and granting you $s2 Critical Strike for the duration.", "Critical Strike increased by $w2.", 0 },
   { 329840, "Inflict $s1 Shadow damage split between all nearby enemies, and form a Blood Barrier on yourself. The Blood Barrier absorbs ${$329852s1*(1+$@versadmg)} damage for $329849d.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 329849, "$@spelldesc329840", "Absorbs $w1 damage.", 0 },
@@ -14237,7 +14238,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 337777, "Infusion of Light has $s1 additional charge and its effects are increased by $s3%.", 0, 0 },
   { 337778, "Power Word: Radiance's healing is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 337786, "Pain Suppression also heals your target for |cFFFFFFFF${$s1}.1%|r of their maximum health.", 0, 0 },
-  { 337790, "$?s109964[Spirit Shell's][Rapture's] duration is increased by ${$s2/1000}.1 sec, and its $?s109964[absorption][Power Word: Shield enhancement] is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
+  { 337790, "$?s109964[Spirit Shell's duration is increased by ${$s2/1000}.1 sec, and its absorption is increased by |cFFFFFFFF${$s1}.1%|r.][Rapture's duration is increased by ${$s2/1000}.1 sec, and its Power Word: Shield enhancement is increased by |cFFFFFFFF${$s1*$s3/100}.1%|r.]", 0, 0 },
   { 337811, "Guardian Spirit's duration is increased by ${$s2/1000}.1 sec, and it increases healing received by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 337812, "Light of Dawn's range is increased to $85222a3 yards. All allies within your Light of Dawn benefit from Mastery: Lightbringer as though they were within $s2 yards for $337815d.\r\n\r\nWord of Glory receives $s3% increased benefit from your Mastery.", 0, 0 },
   { 337815, "$@spelldesc238132", "Receiving increased healing from $@auracaster.", 0 },
@@ -14683,7 +14684,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 342049, "A two-headed shot that hits your primary target for $344120sw1 Nature damage and another nearby target for  ${$344121sw1*($s1/100)} Frost damage.", 0, 0 },
   { 342076, "$@spelldesc260367", "Aimed Shot cast time reduced by $s1%.", 0 },
   { 342132, "$@spelldesc327661\r\n", "Direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity to $@auracaster.\r\n\r\nFollows your Shadow Word: Pain.", "Night Fae" },
-  { 342156, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.", 0, 0 },
+  { 342156, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected.", 0, 0 },
   { 342181, "$@spelldesc342156", "$pri increased by $w1%.", 0 },
   { 342216, "Throw a ball of gooey gorm gunk at a target slowing their movement for $d. Only usable on creatures outdoors in the Shadowlands. ", "Movement speed slowed by $s1%.", 0 },
   { 342231, "Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to $s1 nearby enemies.", 0, 0 },
@@ -14902,7 +14903,7 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 344907, "$@spelldesc344900", "Splintered Heart of Al'ar is recovering and will not prevent lethal damage.", 0 },
   { 344916, "Infuse your ally with a tuft of phoenix plumes, healing them for ${$344915s1*(1+$@versadmg)} after $d, increased by up to $s2% based on your target's missing health. If your ally suffers lethal damage, this effect triggers instantly.", "You will be healed when the tuft expires or when you suffer lethal damage.", 0 },
   { 344955, "$@spelldesc63560", 0, "Rank 2" },
-  { 345019, "Become the Skulking Predator for $d, gaining $s1 Speed, decreasing detection radius, and pouncing on the next enemy to come within $s3 yds, dealing $345113s2 Physical damage.", 0, 0 },
+  { 345019, "Become the Skulking Predator for $d, gaining $s1 Speed and pouncing on the next enemy to come within $s2 yds, dealing $345113s2 Physical damage.", "Speed increased by $w1.\r\nYou will pounce on the next enemy to come within $s2 yds.", 0 },
   { 345046, "$@spelldesc337638", "Holy Damage increased by $w1%.", 0 },
   { 345048, "$@spelldesc339056", "Absorbing $w1 damage.", 0 },
   { 345053, "Toss a coin at your target. They're as good as dead.", 0, 0 },
@@ -15050,25 +15051,38 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 348169, "$@spelldesc346875", 0, 0 },
   { 348177, "$@spelldesc346835", 0, 0 },
   { 348178, "$@spelldesc346835", 0, 0 },
+  { 348236, "$@spelldesc329791", "Cannot benefit from the effects of Valiant Strikes.", 0 },
   { 348249, "Your melee attacks have a chance to grant you a Mote of Anger.  When you reach $71432u Motes of Anger, they will release, causing you to instantly attack for $71433s2% weapon damage with one of your melee weapons.", 0, 0 },
+  { 348272, "$@spelldesc326514", 0, 0 },
+  { 348304, "$@spelldesc326572", "Armor continues the fight.\r\nDamage and healing done reduced by $s7%.\r\nHealing received reduced by $s9%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36639
-static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.2.36671
+static constexpr std::array<hotfix::client_hotfix_entry_t, 31> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
   {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
   {  310674,  0, "Increases your chance to bait while fishing in the Shadowlands.", "Increases your chance to find bait while fishing in the Shadowlands." },
+  {  311648,  0, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power. Deals reduced damage beyond $s5 targets." },
+  {  315443,  0, "Sprout an additional limb for $d. Every $t1 sec, it deals $323798s1 Shadow damage to $323798i nearby enemies and pulls an enemy to your location if they are further than $323710s3 yds from you. The first time the limb pulls an enemy gain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][].\r\n\r\nAbomination Limb can only pull the same enemy once every $323710d.", "Sprout an additional limb, dealing ${$323798s1*13} Shadow damage over $d to $323798i nearby enemies. Every $t1 sec, an enemy is pulled to your location if they are further than $323710s3 yds from you. The same enemy can only be pulled once every $323710d.\r\n\r\nGain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][] instantly, and again every $s4 sec." },
   {  322108,  0, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
-  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack." },
+  {  326514,  0, "Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", "Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.\r\n\r\nUpon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing." },
+  {  328257,  0, "Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.", "Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%." },
+  {  328266,  0, "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]", "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<modb>}.1 sec. $?a137018|?a137042[Combat Meditation may only occur once every $345861d.][]" },
+  {  328900,  1, "Versatility increased by $w%.", "Magic damage taken decreased by $w%." },
+  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
   {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
   {  334677,  1, "Surrounded by volumes that each absorb up to ${$w1/$u} damage. Only usable outdoors in the Shadowlands.", "Surrounded by volumes that each absorb up to $s~1 damage. Only usable outdoors in the Shadowlands." },
   {  336873,  0, "Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r each time it deals damage.", "Each wave of a Clearcast Arcane Missiles reduces the cooldown of Arcane Power by |cFFFFFFFF${$s1/10}.2 sec|r." },
   {  337257,  0, "Projects Divine Storm forward $s1 yds, damaging all enemies in its path.\r\n\r\nAlso increases damage dealt by Divine Storm by $s2%.", "Divine Storm projects an additional wave of light, striking all enemies up to $s1 yards in front of you for $s2% of Divine Storm's damage." },
   {  337544,  0, "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec.", "Soul Cleave reduces the remaining cooldown on a random Sigil by $s1 sec$?s306830|s327839[ or Elysian Decree by $s2 sec][]." },
+  {  337790,  0, "$?s109964[Spirit Shell's][Rapture's] duration is increased by ${$s2/1000}.1 sec, and its $?s109964[absorption][Power Word: Shield enhancement] is increased by |cFFFFFFFF${$s1}.1%|r.", "$?s109964[Spirit Shell's duration is increased by ${$s2/1000}.1 sec, and its absorption is increased by |cFFFFFFFF${$s1}.1%|r.][Rapture's duration is increased by ${$s2/1000}.1 sec, and its Power Word: Shield enhancement is increased by |cFFFFFFFF${$s1*$s3/100}.1%|r.]" },
+  {  342156,  0, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.", "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected." },
+  {  345019,  0, "Become the Skulking Predator for $d, gaining $s1 Speed, decreasing detection radius, and pouncing on the next enemy to come within $s3 yds, dealing $345113s2 Physical damage.", "Become the Skulking Predator for $d, gaining $s1 Speed and pouncing on the next enemy to come within $s2 yds, dealing $345113s2 Physical damage." },
+  {  345019,  1, nullptr, "Speed increased by $w1.\r\nYou will pounce on the next enemy to come within $s2 yds." },
   {  346835,  0, "Invoke the Talisman of Destined Defiance, swapping your fate for your abductor's.", "The Jailer's abductors brand your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe brand also draws the Jailer's attention, increasing your Eye of the Jailer." },
   {  346835,  1, "Wielding the Talisman of Destined Defiance.", "Inflicts Shadow damage every $t1 sec.\r\nEye of the Jailer increasing every $t1 sec." },
   {  346875,  0, "The Jailer's assassins wither your soul, inflicting Shadow damage every $t2 sec.\r\n\r\nAt $s1 stacks, you succumb to a Soul Collapse.", "The Jailer's assassins mark your soul, inflicting Shadow damage every $t1 sec for $d.\r\n\r\nThe mark also draws the Jailer's attention, increasing your Eye of the Jailer." },
@@ -15078,8 +15092,8 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 21> __spelltext_hotfi
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
 } };
 
-// Spell description variables, wow build 9.0.2.36639
-static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
+// Spell description variables, wow build 9.0.2.36671
+static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15343,7 +15357,8 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  325289, "$damage=${4*$327059s1}" },
   {  325886, "$rage=${4*($326076s1/10)}\r\n$areaDmg=${4*$326062s1}\r\n$period=${3}" },
   {  326504, "$points=${$cond($gt($SP,$AP),$SP*0.072,$AP*0.072)*(1+$@versadmg)}" },
-  {  328266, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
+  {  326514, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
+  {  328266, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]\r\n$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
   {  328281, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
   {  330325, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  330334, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
@@ -15376,9 +15391,10 @@ static const std::array<spelldesc_vars_data_t, 294> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36639
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 9.0.2.36671
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
+  {  328266,  0, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]", "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]\r\n$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
 } };
 

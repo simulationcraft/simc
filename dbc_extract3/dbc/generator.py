@@ -1316,6 +1316,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340193, 0 ),          # Righteous Might heal
             ( 337228, 0 ),          # Final verdict buff
             ( 326011, 0 ),          # Divine Toll buff to judgment damage
+            ( 328123, 0 ),          # Blessing of Summer damage spell
         ),
 
         # Hunter:
