@@ -32,10 +32,12 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
 {
   active_consecration = nullptr;
   active_hallow = nullptr;
+  active_aura = nullptr;
 
   cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd   = get_cooldown( "judgment_of_light_icd" );
+  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
 
   cooldowns.holy_shock              = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn           = get_cooldown( "light_of_dawn");
@@ -244,10 +246,24 @@ struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 
 // Consecration =============================================================
 
+
+struct golden_path_t : public paladin_heal_t
+{
+  golden_path_t( paladin_t* p ) :
+    paladin_heal_t( "golden_path", p, p -> find_spell( 339119 ) )
+  {
+    background = true;
+    base_multiplier *= p -> conduit.golden_path.percent();
+  }
+};
+
 struct consecration_tick_t : public paladin_spell_t
 {
+  golden_path_t* heal_tick;
+
   consecration_tick_t( paladin_t* p ) :
-    paladin_spell_t( "consecration_tick", p, p -> find_spell( 81297 ) )
+    paladin_spell_t( "consecration_tick", p, p -> find_spell( 81297 ) ),
+    heal_tick( new golden_path_t( p ) )
   {
     aoe = -1;
     dual = true;
@@ -255,6 +271,13 @@ struct consecration_tick_t : public paladin_spell_t
     background = true;
     may_crit = true;
     ground_aoe = true;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() -> conduit.golden_path -> ok() && p() -> standing_in_consecration() )
+      heal_tick -> execute();
   }
 };
 
@@ -561,6 +584,53 @@ struct blinding_light_t : public paladin_spell_t
     aoe = -1;
 
     // TODO: Apply the cc?
+  }
+};
+
+// Auras ===============================================
+
+struct paladin_aura_base_t : public paladin_spell_t
+{
+  buff_t* aura_buff;
+  paladin_aura_base_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
+    paladin_spell_t( n, p, s )
+  {
+    harmful = false;
+    aura_buff = nullptr;
+  }
+
+  void init_finished() override
+  {
+    paladin_spell_t::init_finished();
+    assert( aura_buff != nullptr && "Paladin auras must have aura_buff set to their appropriate buff" );
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    // If this aura is up, cancel it. Otherwise replace the current aura.
+    if ( p() -> active_aura != nullptr )
+    {
+      p() -> active_aura -> expire();
+      if ( p() -> active_aura == aura_buff )
+        p() -> active_aura = nullptr;
+      else
+        p() -> active_aura = aura_buff;
+    }
+    else
+      p() -> active_aura = aura_buff;
+    if ( p() -> active_aura != nullptr)
+      p() -> active_aura -> trigger();
+  }
+};
+
+struct devotion_aura_t : public paladin_aura_base_t
+{
+  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
+    paladin_aura_base_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+  {
+    parse_options( options_str );
+    aura_buff = p -> buffs.devotion_aura;
   }
 };
 
@@ -907,8 +977,11 @@ void judgment_t::execute()
       default:
         magistrate_chance = p() -> legendary.the_magistrates_judgment -> effectN( 3 ).percent();
     }
-    if ( rng().roll( magistrate_chance ))
+    if ( p() -> cooldowns.the_magistrates_judgment_icd -> up() && rng().roll( magistrate_chance ) )
+    {
       p() -> buffs.the_magistrates_judgment -> trigger();
+      p() -> cooldowns.the_magistrates_judgment_icd -> start();
+    }
   }
 
   if ( p() -> conduit.virtuous_command -> ok() )
@@ -965,9 +1038,7 @@ struct hand_of_reckoning_t: public paladin_melee_attack_t
 struct righteous_might_t : public heal_t
 {
   righteous_might_t( paladin_t* p ) :
-    // Should be 340193 but I don't have spell data for that.
-    // p -> conduit.righteous_might may just work when that's added.
-    heal_t( "righteous_might", p, p -> find_spell( 340192 ) )
+    heal_t( "righteous_might", p, p -> find_spell( 340193 ) )
     {
       background = true;
       callbacks = may_crit = may_miss = false;
@@ -975,16 +1046,15 @@ struct righteous_might_t : public heal_t
     }
 };
 
-struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct vanquishers_hammer_t : public paladin_melee_attack_t
 {
   righteous_might_t* r_m_heal;
   vanquishers_hammer_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "vanquishers_hammer", p, p -> covenant.necrolord )
+    paladin_melee_attack_t( "vanquishers_hammer", p, p -> covenant.necrolord )
   {
     parse_options( options_str );
 
     hasted_gcd = true; // also not in spelldata for some reason?
-    is_vanq_hammer = true;
     base_multiplier *= 1.0 + p -> conduit.righteous_might.percent();
 
     if ( p -> specialization() == PALADIN_PROTECTION )
@@ -997,7 +1067,7 @@ struct vanquishers_hammer_t : public holy_power_consumer_t<paladin_melee_attack_
 
   void impact( action_state_t* s ) override
   {
-    holy_power_consumer_t::impact( s );
+    paladin_melee_attack_t::impact( s );
 
     p() -> buffs.vanquishers_hammer -> trigger();
 
@@ -1045,11 +1115,43 @@ struct divine_toll_t : public paladin_spell_t
 
 };
 
-// TODO: fix AoE scaling once the formula is found, implement healing as well
+struct hallowed_discernment_tick_t : public paladin_spell_t
+{
+  double aoe_multiplier;
+  // This should be using 340203 but I don't have its spell data.
+  hallowed_discernment_tick_t( paladin_t* p ) :
+    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 317221 ) )
+    {
+      base_multiplier *= p -> conduit.hallowed_discernment.percent();
+      background = true;
+      aoe_multiplier = 1.0; //This gets overwritten
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_spell_t::action_multiplier();
+      am *= aoe_multiplier;
+      return am;
+    }
+};
+
+struct hallowed_discernment_heal_tick_t : public paladin_heal_t
+{
+  // This should be using 340214 but I don't have its spell data.
+  hallowed_discernment_heal_tick_t( paladin_t* p ) :
+    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 317221 ) )
+    {
+      base_multiplier *= p -> conduit.hallowed_discernment.percent();
+      background = true;
+    }
+};
+
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
-  ashen_hallow_tick_t( paladin_t* p ) :
-    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
+  hallowed_discernment_tick_t* hd_damage_tick;
+  ashen_hallow_tick_t( paladin_t* p, hallowed_discernment_tick_t* hallowed_discernment ) :
+    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) ),
+    hd_damage_tick( hallowed_discernment )
   {
     aoe = -1;
     dual = true;
@@ -1063,24 +1165,67 @@ struct ashen_hallow_tick_t : public paladin_spell_t
   {
     double cam = paladin_spell_t::composite_aoe_multiplier( state );
 
-    // Thanks Melekus & pao for this formula
-    // There's gotta be a cleaner way to do this
-    // TODO: confirm this
+    // Formula courtesy of Mythie. This expression fits experimental data but has not been confirmed.
     if ( state -> n_targets <= 5 )
-    {
       return cam;
-    }
-    else if ( state -> n_targets <= 10 )
+    else
+      return cam * std::sqrt( 5.0 / state -> n_targets );
+    // Post 20 is managed by action_t::calculate_direct_amount
+  }
+
+  void execute() override
+  {
+    // To Do: Check if the initial tick affects the target picked, if not then move this down
+    paladin_spell_t::execute();
+
+    if ( p() -> conduit.hallowed_discernment -> ok() )
     {
-      return cam * (20.0 - state -> n_targets) / 15.0;
+      std::vector<player_t*> targets = target_list();
+      // Hallowed Discernment selects the lowest health target to impact. In this
+      // sim if all targets have a set hp then use that to select the target,
+      // otherwise select based on % hp.
+      bool use_actual_hp = std::all_of( targets.begin(), targets.end(),
+        [] ( player_t * t ) { return t -> max_health() > 0; }
+      );
+      // Find the lowest health target
+      player_t* lowest_hp_target = *std::min_element(
+        targets.begin(), targets.end(), [ use_actual_hp ] ( player_t* lhs, player_t* rhs )
+        {
+          if ( use_actual_hp )
+            return lhs -> current_health() < rhs -> current_health();
+          return lhs -> health_percentage() < rhs -> health_percentage();
+        }
+      );
+      hd_damage_tick -> set_target( lowest_hp_target );
+      // Damage is calculated independently of Ashen Hallow. ie. they crit separately
+      // Hitting more targets with Ashen Hallow reduces the damage of Hallowed Discernment
+      hd_damage_tick -> aoe_multiplier = composite_aoe_multiplier( execute_state );
+      hd_damage_tick -> execute();
     }
-    else if ( state -> n_targets <= 12 )
+  }
+};
+
+// Heal aoe cap not implemented. Hallowed Discernment target selection not implemented.
+struct ashen_hallow_heal_tick_t : public paladin_heal_t
+{
+  hallowed_discernment_heal_tick_t* hd_heal_tick;
+  ashen_hallow_heal_tick_t( paladin_t* p ) :
+    paladin_heal_t( "ashen_hallow_heal_tick", p, p -> find_spell( 317223 ) ),
+    hd_heal_tick( new hallowed_discernment_heal_tick_t( p ) )
+  {
+    aoe = -1;
+    dual = true;
+    direct_tick = true;
+    background = true;
+    ground_aoe = true;
+  }
+
+  void execute() override
+  {
+    paladin_heal_t::execute();
+    if ( p() -> conduit.hallowed_discernment -> ok() )
     {
-      return cam * 2.0 / 3;
-    }
-    else // if ( state -> n_targets > 12 )
-    {
-      return cam * ( 8.0 / state -> n_targets );
+      hd_heal_tick -> execute();
     }
   }
 };
@@ -1088,18 +1233,27 @@ struct ashen_hallow_tick_t : public paladin_spell_t
 struct ashen_hallow_t : public paladin_spell_t
 {
   ashen_hallow_tick_t* damage_tick;
+  ashen_hallow_heal_tick_t* heal_tick;
   ground_aoe_params_t hallow_params;
+  hallowed_discernment_tick_t* hd_damage;
 
   ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr ),
-    damage_tick( new ashen_hallow_tick_t( p ) )
+    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr )
   {
     parse_options( options_str );
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
     may_miss = false;
 
+    hd_damage = new hallowed_discernment_tick_t( p );
+    damage_tick = new ashen_hallow_tick_t( p, hd_damage );
+    heal_tick = new ashen_hallow_heal_tick_t( p );
+
     add_child( damage_tick );
+    if ( p -> conduit.hallowed_discernment -> ok() )
+    {
+      add_child( hd_damage );
+    }
   }
 
   void execute() override
@@ -1107,14 +1261,16 @@ struct ashen_hallow_t : public paladin_spell_t
     paladin_spell_t::execute();
     timespan_t tick_time = data().effectN( 2 ).period();
 
+    hallow_params = ground_aoe_params_t()
+      .duration( data().duration() - tick_time - 100_ms )
+      .pulse_time( tick_time )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .start_time( sim -> current_time() + tick_time )
+      .x( execute_state -> target -> x_position )
+      .y( execute_state -> target -> y_position );
+
     make_event<ground_aoe_event_t>( *sim, p(),
-      ground_aoe_params_t()
-        .target( execute_state -> target )
-        .duration( data().duration() - tick_time - 100_ms )
-        .pulse_time( tick_time )
-        .hasted( ground_aoe_params_t::SPELL_HASTE )
-        .action( damage_tick )
-        .start_time( sim -> current_time() + tick_time )
+      hallow_params.action( damage_tick )
         .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
@@ -1126,8 +1282,14 @@ struct ashen_hallow_t : public paladin_spell_t
           break;
         default:
           break;
-        } } ),
+        } } )
+        .target( execute_state -> target ),
       true );
+
+    make_event<ground_aoe_event_t>( *sim, p() ,
+      hallow_params.action( heal_tick )
+      .target( p() ), true
+    );
   }
 };
 
@@ -1530,6 +1692,9 @@ void paladin_t::create_actions()
     active.virtuous_command = nullptr;
   }
 
+  if ( legendary.the_magistrates_judgment -> ok() )
+    cooldowns.the_magistrates_judgment_icd -> duration = legendary.the_magistrates_judgment -> internal_cooldown();
+
   player_t::create_actions();
 }
 
@@ -1566,6 +1731,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
+  if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
@@ -1710,6 +1876,7 @@ void paladin_t::reset()
 
   active_consecration = nullptr;
   active_hallow = nullptr;
+  active_aura = nullptr;
 }
 
 // paladin_t::init_gains ====================================================
@@ -1825,19 +1992,21 @@ void paladin_t::create_buffs()
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
        -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
-
   buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
        -> add_invalidate( CACHE_CRIT_CHANCE )
        -> add_invalidate( CACHE_HASTE )
        -> add_invalidate( CACHE_MASTERY )
        -> add_invalidate( CACHE_VERSATILITY )
        -> set_cooldown( 0_ms ); // let the ability handle the cooldown
-
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
         -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.from_dusk_till_dawn -> effectN( 1 ).trigger() );
-  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() )
-        -> set_default_value( legendary.from_dusk_till_dawn -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) )
+        -> set_default_value( find_class_spell( "Devotion Aura" ) -> effectN( 1 ).percent() );
+
+  // Legendaries
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() );
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn -> effectN( 2 ).trigger() )
+        -> set_default_value_from_effect( 1 );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
         -> set_default_value( find_spell( 337315 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_HASTE );
@@ -2145,13 +2314,14 @@ void paladin_t::init_spells()
   legendary.vanguards_momentum = find_runeforge_legendary( "Vanguard's Momentum" );
   legendary.the_mad_paragon = find_runeforge_legendary( "The Mad Paragon" );
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
-  legendary.from_dusk_till_dawn = find_runeforge_legendary( "Of Dusk and Dawn" );
+  legendary.of_dusk_and_dawn = find_runeforge_legendary( "Of Dusk and Dawn" );
   legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );
   legendary.bulwark_of_righteous_fury = find_runeforge_legendary( "Bulwark of Righteous Fury" );
   legendary.holy_avengers_engraved_sigil = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
   legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
   legendary.relentless_inquisitor = find_runeforge_legendary( "Relentless Inquisitor" );
   legendary.tempest_of_the_lightbringer = find_runeforge_legendary( "Tempest of the Lightbringer" );
+  legendary.reign_of_endless_kings = find_runeforge_legendary( "Reign of Endless Kings" );
 
   // Covenants
   covenant.kyrian = find_covenant_spell( "Divine Toll" );
@@ -2176,6 +2346,8 @@ void paladin_t::init_spells()
   conduit.punish_the_guilty = find_conduit_spell( "Punish the Guilty" );
   conduit.resolute_defender = find_conduit_spell( "Resolute Defender");
   conduit.shielding_words = find_conduit_spell( "Shielding Words" );
+  conduit.golden_path = find_conduit_spell( "Golden Path" );
+  conduit.royal_decree = find_conduit_spell( "Royal Decree" );
 }
 
 // paladin_t::primary_role ==================================================
@@ -2669,8 +2841,8 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
   if (
       resource_type == RESOURCE_HOLY_POWER &&
       result > 0 &&
-      legendary.from_dusk_till_dawn -> ok() &&
-      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 1 ).base_value()
+      legendary.of_dusk_and_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn -> effectN( 1 ).base_value()
     )
   {
     buffs.blessing_of_dawn -> trigger();
@@ -2682,15 +2854,35 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
+  double initial_hp = health_percentage();
   double result = player_t::resource_loss( resource_type, amount, source, action );
   if (
       resource_type == RESOURCE_HOLY_POWER &&
       result > 0 &&
-      legendary.from_dusk_till_dawn -> ok() &&
-      resources.current[ RESOURCE_HOLY_POWER ] == legendary.from_dusk_till_dawn -> effectN( 2 ).base_value()
+      legendary.of_dusk_and_dawn -> ok() &&
+      resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn -> effectN( 2 ).base_value()
     )
   {
     buffs.blessing_of_dusk -> trigger();
+  }
+
+  if (
+      resource_type == RESOURCE_HEALTH &&
+      legendary.reign_of_endless_kings -> ok() &&
+      ! buffs.reign_of_ancient_kings -> up() &&
+      health_percentage() < legendary.reign_of_endless_kings -> effectN( 2 ).base_value() &&
+      // Won't trigger if you're below the threshhold when the debuff expires. You have to be healed back over it for it to be able to proc again.
+      initial_hp >= legendary.reign_of_endless_kings -> effectN( 2 ).base_value()
+    )
+  {
+    timespan_t reign_proc_duration = legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> duration();
+    // If Reign procs during GoAK, the buff will be set to 12 sec. Meaning up to
+    // a 20sec total duration. Uncertain if that's a bug. If you cast GoAK while
+    // the reign goak is up, it simply overwrites the buff.
+    if ( buffs.guardian_of_ancient_kings -> up() )
+      reign_proc_duration += buffs.guardian_of_ancient_kings -> buff_duration();
+    buffs.guardian_of_ancient_kings -> trigger( reign_proc_duration );
+    buffs.reign_of_ancient_kings -> trigger();
   }
   return result;
 }
