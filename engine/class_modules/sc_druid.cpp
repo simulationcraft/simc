@@ -1140,23 +1140,8 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
     // Treants have base weapon damage + ap from player's sp.
-    // @50-57: 3 base + 0.6 SP
-    //    @58: 3 base + 0.375 SP (needs more testing)
-    //    @59: 3 base + 0.333 SP (needs more testing)
-    //    @60: 3.5 base + 0.28 SP
-
     owner_coeff.ap_from_sp = 0.6;
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.0;
-
-    if ( o()->level() == 58 )
-      owner_coeff.ap_from_sp = 0.375;
-    else if ( o()->level() == 59 )
-      owner_coeff.ap_from_sp = 0.333;
-    else if ( o()->level() == 60 )
-    {
-      owner_coeff.ap_from_sp = 0.28;
-      main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.5;
-    }
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
