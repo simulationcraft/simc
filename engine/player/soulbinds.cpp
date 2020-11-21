@@ -876,8 +876,11 @@ void brons_call_to_action( special_effect_t& effect )
 // 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
-  auto splits =
-    util::string_split<util::string_view>( effect.player->sim->shadowlands_opts.volatile_solvent_type, "/:" );
+  auto opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
+  if ( util::str_compare_ci( opt_str, "none" ) )
+    return;
+
+  auto splits = util::string_split<util::string_view>( opt_str, "/:" );
 
   for ( auto type_str : splits )
   {
