@@ -454,9 +454,9 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
           fmt::format( "Invalid soulbind ability '{}'", expr_str[ 1 ] ) );
     }
 
-    if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+    if ( expr_str.size() == 2 || ( expr_str.size() == 3 && util::str_compare_ci( expr_str[ 2 ], "enabled" ) ) )
     {
-      return expr_t::create_constant( "soulbind_enabled", as<double>( soulbind_spell->ok() ) );
+      return expr_t::create_constant( "soulbind_enabled", soulbind_spell->ok() );
     }
   }
 
