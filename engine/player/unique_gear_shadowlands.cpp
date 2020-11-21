@@ -188,16 +188,16 @@ void potion_of_deathly_fixation( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
+      proc_spell_t::impact( s );
+
       auto d = get_dot( s->target );
 
-      if ( d->at_max_stacks( 1 ) )
+      if ( d->at_max_stacks() )
       {
         eruption->set_target( s->target );
         eruption->schedule_execute();
         d->cancel();
       }
-      else
-        proc_spell_t::impact( s );
     }
   };
 
