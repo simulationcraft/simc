@@ -5500,10 +5500,10 @@ struct shifting_power_t final : public mage_spell_t
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "tick_reduction" ) )
-      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() : 0 );
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() : 0.0 );
 
     if ( util::str_compare_ci( name, "full_reduction" ) )
-      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() * dot_duration / base_tick_time : 0 );
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() * dot_duration / base_tick_time : 0.0 );
 
     return mage_spell_t::create_expression( name );
   }
