@@ -6949,9 +6949,9 @@ void hunter_t::apl_mm()
     action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
-    precombat -> add_action( "double_tap,precast_time=10,if=!covenant.kyrian" );
-    precombat -> add_action( "potion,dynamic_prepot=1" );
+    precombat -> add_action( "double_tap,precast_time=10,if=!covenant.kyrian|active_enemies>1" );
     precombat -> add_action( "aimed_shot,if=active_enemies<3" );
+    precombat -> add_action( "steady_shot,if=active_enemies>2" );
 
     default_list -> add_action( "auto_shot" );
     default_list -> add_action( "use_items" );
@@ -6971,21 +6971,23 @@ void hunter_t::apl_mm()
      * - add some simple ttd checks to optimize the end of the fight / "short" sims?
      * - check why Explo can't be executed in precombat (throws while it *should* have travel time)
      */
-    trickshots -> add_action( "steady_shot,if=talent.steady_focus.enabled&prev_gcd.1.steady_shot&buff.steady_focus.remains<5" );
-    trickshots -> add_action( "double_tap,if=cooldown.rapid_fire.remains<cooldown.aimed_shot.full_recharge_time|!(talent.streamline.enabled&runeforge.surging_shots.equipped)" );
+    trickshots -> add_action( "steady_shot,if=talent.steady_focus.enabled&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)" );
+    trickshots -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&(cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains)" );
     trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
     trickshots -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers.equipped" );
     trickshots -> add_action( "explosive_shot" );
     trickshots -> add_action( "wild_spirits" );
-    trickshots -> add_action( "volley" );
     trickshots -> add_action( "resonating_arrow" );
+    trickshots -> add_action( "volley" );
     trickshots -> add_action( "barrage" );
-    trickshots -> add_action( "trueshot" );
+    trickshots -> add_action( "trueshot,if=cooldown.rapid_fire.remains|focus+action.rapid_fire.cast_regen>focus.max|target.time_to_die<15" );
+    trickshots -> add_action( "rapid_fire,if=buff.trick_shots.up&(action.aimed_shot.charges<2|buff.double_tap.up)" );
     trickshots -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)&(buff.double_tap.down|!(talent.streamline.enabled&runeforge.surging_shots.equipped))" );
     trickshots -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    trickshots -> add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
-    trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up&focus>cost+action.aimed_shot.cost" );
-    trickshots -> add_action( "kill_shot,if=buff.dead_eye.down" );
+    trickshots -> add_action( "rapid_fire,if=buff.trick_shots.up&(buff.double_tap.down|runeforge.surging_shots.equipped)" );
+    trickshots -> add_action( "multishot,if=buff.trick_shots.down|(active_enemies>3|!talent.chimaera_shot.enabled)&(buff.precise_shots.up|focus>85)" );
+    trickshots -> add_action( "chimaera_shot,if=buff.precise_shots.up|focus-cost+cast_regen>action.aimed_shot.cost" );
+    trickshots -> add_action( "kill_shot,if=active_enemies<4|buff.flayers_mark.up" );
     trickshots -> add_action( "a_murder_of_crows" );
     trickshots -> add_action( "flayed_shot" );
     trickshots -> add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
@@ -6993,25 +6995,27 @@ void hunter_t::apl_mm()
 
     st -> add_action( "steady_shot,if=talent.steady_focus.enabled&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)" );
     st -> add_action( "kill_shot" );
-    st -> add_action( "double_tap" );
+    st -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&(cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains)" );
     st -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers.equipped" );
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
+    st -> add_action( "explosive_shot" );
     st -> add_action( "wild_spirits" );
+    st -> add_action( "volley" );
+    st -> add_action( "resonating_arrow" );
+    st -> add_action( "a_murder_of_crows" );
     st -> add_action( "flayed_shot" );
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    st -> add_action( "explosive_shot" );
-    st -> add_action( "volley,if=buff.precise_shots.down|active_enemies<2" );
-    st -> add_action( "a_murder_of_crows" );
-    st -> add_action( "resonating_arrow" );
-    st -> add_action( "trueshot,if=buff.precise_shots.down&cooldown.aimed_shot.up" );
-    st -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.precise_shots.down|buff.trueshot.up&!talent.chimaera_shot.enabled&!runeforge.eagletalons_true_focus.equipped|full_recharge_time<gcd+cast_time&!talent.chimaera_shot.enabled|buff.trick_shots.remains>execute_time&active_enemies>1" );
-    st -> add_action( "rapid_fire,if=focus+cast_regen<focus.max&(buff.trueshot.down|!runeforge.eagletalons_true_focus.equipped)" );
+    st -> add_action( "trueshot,if=cooldown.aimed_shot.remains%3.4<gcd.max|target.time_to_die<15" );
+    st -> add_action( "rapid_fire,if=buff.double_tap.up&!ca_active&talent.streamline.enabled" );
+    st -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trueshot.up&(ca_active|full_recharge_time<cast_time+gcd|buff.lock_and_load.up)&(active_enemies=1|!talent.chimaera_shot.enabled)|buff.precise_shots.down" );
+    st -> add_action( "rapid_fire,if=(buff.trueshot.down|!runeforge.eagletalons_true_focus.equipped)&(buff.double_tap.down|runeforge.surging_shots.equipped)&focus+cast_regen<focus.max" );
     st -> add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
     st -> add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
     st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
     st -> add_action( "barrage,if=active_enemies>1" );
-    st -> add_action( "rapid_fire,if=focus+cast_regen<focus.max" );
-    st -> add_action( "steady_shot" );
+    st -> add_action( "tar_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
+    st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
+    st -> add_action( "steady_shot,if=focus+cast_regen<focus.max" );
   }
   else
   {
