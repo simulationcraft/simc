@@ -8921,7 +8921,7 @@ void death_knight_t::default_apl_blood()
   // If we're venthyr and we're too high on RP as swarming mist is about to come up, dump some
   covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3" );
   // Cast swarming mist if within 3s of DRW
-  covenants -> add_action( "swarming_mist,if=covenant.venthyr&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
+  covenants -> add_action( "swarming_mist,if=covenant.venthyr&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
   // Cast abomination limb if available and DRW isn't (to cast it prior to DRW), or DRW is not up.
   covenants -> add_action( "abomination_limb,if=covenant.necrolord&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
   // Finally, we cast shackle if available and DRW isn't (to cast it prior to DRW), or DRW is not up. TODO: pool 2 runes prior, modify APL to prioritize spreading on multi-target
