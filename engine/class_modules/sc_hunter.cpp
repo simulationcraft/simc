@@ -6835,7 +6835,7 @@ void hunter_t::apl_bm()
     st -> add_action( "kill_shot" );
     st -> add_action( "flayed_shot" );
     st -> add_action( "kill_shot,if=buff.flayers_mark<5|target.health.pct<=20" );
-    st -> add_action( "barbed_shot,if=(cooldown.wild_spirits.remains>full_recharge_time|!covenant.night_fae)&(cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains)|target.time_to_die<9")
+    st -> add_action( "barbed_shot,if=(cooldown.wild_spirits.remains>full_recharge_time|!covenant.night_fae)&(cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains)|target.time_to_die<9" );
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
     st -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
     st -> add_action( "a_murder_of_crows" );
@@ -6847,7 +6847,7 @@ void hunter_t::apl_bm()
     st -> add_action( "dire_beast" );
     st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3" );
     st -> add_action( "barbed_shot,if=buff.wild_spirits.up");
-    st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5")
+    st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
     st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   }
