@@ -339,6 +339,9 @@ public:
   /// Missile travel speed in yards / second
   double travel_speed;
 
+  /// Missile travel delay in seconds
+  double travel_delay;
+
   // Amount of resource for the energize to grant.
   double energize_amount;
 

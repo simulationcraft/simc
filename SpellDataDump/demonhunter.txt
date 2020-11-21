@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-12/36599, git build shadowlands c681e7c, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-21/36710)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -197,6 +197,7 @@ Description      : Quickly attack for $s2 Physical damage.
 |cFFFFFFFFGenerates $?a258876[${$m3+$258876s3} to ${$M3+$258876s4}][$m3 to $M3] Fury.|r
 
 Name             : Metamorphosis (id=162264) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
@@ -208,7 +209,7 @@ Triggered by     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2809,13 +2810,14 @@ Description      : Increases damage against Humanoids by $s1%.
 Tooltip          : Damage against Humanoids increased by $s1%.
 
 Name             : Momentum (id=208628) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4488,6 +4490,7 @@ Effects          :
 Description      : When Chaos Strike refunds Fury, it also reduces the cooldown of Eye Beam by $s1 sec.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
@@ -4496,15 +4499,19 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Category         : 1676
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.. ........ ........ ........ 
+                 : White Melee Taken, Yellow Melee Taken
 Affecting spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2)
 Family Flags     : 11, 32, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=483167)   : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
@@ -7630,10 +7637,11 @@ Effects          :
 Description      : Fel Rush gains an additional charge.
 
 Name             : Sigil of Silence (desc=Rank 2) (id=320417) [Spell Family (107), Passive] 
+Hotfixed         : Learn Level (48 -> 0), Required Level (48 -> 47)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 48
+Spell Level      : 47
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8007,6 +8015,7 @@ Effects          :
 Description      : Fel Devastation causes you to enter demon form for ${$s1/1000} sec after it finishes dealing damage.
 
 Name             : The Hunt (desc=Night Fae) (id=323639) [Spell Family (107)] 
+Hotfixed         : Attributes, Description
 Class            : Demon Hunter
 Covenant         : Night Fae
 School           : Nature
@@ -8017,7 +8026,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 82
-Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
@@ -8036,11 +8045,12 @@ Effects          :
 #4 (id=875846)   : Trigger Spell (64): The Hunt
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 345335 | Target: Enemy (6)
 Hotfixed         : NEW EFFECT
-Description      : Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting ${$345335s1*$345335d} Nature damage over $345335d to up to $345396s2 enemies in your path. 
+Description      : Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting $345335o1 Nature damage over $345335d to up to $345396s2 enemies in your path. 
 
-The pursuit invigorates your soul, healing you for $345422s1% of the damage you deal to your Hunt target for $323802d.
+The pursuit invigorates your soul, healing you for $?c1[$345422s1%][$345422s2%] of the damage you deal to your Hunt target for $323802d.
 
 Name             : The Hunt (desc=Night Fae) (id=323802) [Spell Family (107)] 
+Hotfixed         : Tooltip
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -8071,7 +8081,7 @@ Effects          :
 #6 (id=829702)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 333883 | Target: Enemy (6)
 Description      : $@spelldesc323639
-Tooltip          : Marked by the Demon Hunter, converting $s2% of the damage done to healing.
+Tooltip          : Marked by the Demon Hunter, converting $?c1[$345422s1%][$345422s2%] of the damage done to healing.
 
 Name             : The Hunt (desc=Night Fae) (id=323996) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -8170,11 +8180,13 @@ Description      : Place a Kyrian Sigil at your location that activates after $d
 Detonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.
 
 Name             : Fodder to the Flame (desc=Necrolord) (id=329554) [Spell Family (107)] 
+Hotfixed         : Description, Tooltip
 Class            : Demon Hunter
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 GCD              : 1.5 seconds
+Duration         : 25 seconds
 Cooldown         : 120 seconds
 Category         : 1888
 Category Cooldown: 120 seconds
@@ -8189,57 +8201,15 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=822800)   : Dummy (3)
+#1 (id=822800)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4)
 #2 (id=843122)   : Trigger Spell (64): Fodder to the Flame
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 342357 | Target: Self (1)
-Description      : Commission a duel against a Condemned Demon from the Theater of Pain. Vanquishing your foe releases an Empowered Demon Soul and creates a pool of demon blood for $330846d reducing the damage enemies within the pool deal to you by $330874s1%.
-
-Fleshcraft treats the Condemned Demon as a powerful enemy.
-
-Name             : Fodder to the Flame (id=330846) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Shadow
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Family Flags     : 86
-Attributes       : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=824713)   : Unknown(179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20593 | Radius: 8 yards | Target: AOE Custom (8)
-#2 (id=843357)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 174394 | Misc Value 2: 0x13ac | Target: Unknown(62)
-
-Name             : Fodder to the Flame (id=330874) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Shadow
-Spell Type       : None
-Range            : 100 yards
-Duration         : Aura (infinite)
-Attributes       : ........ ........ ..x....x ...x....   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .x.....x ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=824753)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
-Description      : A pool of demon blood reduces the damage done to the victiorious Demon Hunter by $s1%.
-Tooltip          : Damage to the victiorious Demon Hunter reduced by $s1%.
+Description      : Call forth and defeat a demon from the Theater of Pain to release an Empowered Demon Soul, increasing your damage done by $347765s1% and reducing all damage taken by $347765s4% for $347765d.
+ 
+The demon will escape to the Nether after $d. Throw Glaive deals considerably more damage to the demon and Fleshcraft treats it as a powerful enemy.
+Tooltip          : Battling a demon from the Theater of Pain...
 
 Name             : Darkest Hour (id=331492) [Spell Family (107), Hidden] 
 School           : Physical
@@ -8703,6 +8673,7 @@ Effects          :
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
 
 Name             : Fel Bombardment (id=337849) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -8711,12 +8682,12 @@ Duration         : 30 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=836076)   : Apply Aura (6) | Dummy (4)
@@ -9183,7 +9154,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
 Range            : 50000 yards
-Duration         : 120 seconds
+Duration         : 27 seconds
 Triggered by     : Fodder to the Flame (329554)
 Attributes       : .......x ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x.... ........   ........ ........ ....x... ....x.x. 
@@ -9616,6 +9587,7 @@ Description      : $@spelldesc179057
 Tooltip          : $@spellaura179057
 
 Name             : The Hunt (id=345335) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -9625,13 +9597,13 @@ Triggered by     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Tick on application (169)
+                 : Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=871087)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -9681,6 +9653,9 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=871287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+#2 (id=876331)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Fel Bombardment (id=345604) [Hidden] 
 Class            : Demon Hunter
@@ -9833,10 +9808,11 @@ Hotfixed         : Sub Type (108 -> 4), Affects Spells
 Tooltip          : Damage of your next Fel Rush increased by $s1%.
 
 Name             : Empowered Demon Soul (id=347765) [Spell Family (107)] 
+Hotfixed         : Description, Tooltip
 Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Melee
-Duration         : 15 seconds
+Duration         : 20 seconds
 Proc Chance      : 101%
 Affecting spells : Brooding Pool (340063 effect#1)
 Family Flags     : 21, 91
@@ -9851,16 +9827,24 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=875343)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Soul Cleave (228478), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867), Throw Glaive (346665)
                    Family Flags: 16, 70
+Hotfixed         : Base Value (25 -> 30)
 #2 (id=875344)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Soul Cleave (228478), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), Glaive Tempest (342857), Chaos Nova (344867), Throw Glaive (346665)
                    Family Flags: 16, 70
+Hotfixed         : Base Value (20 -> 30)
 #3 (id=875345)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc163063
-Tooltip          : Dealing $w1% increased damage.
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 30)
+#4 (id=876353)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc329554
+Tooltip          : Dealing $w1% increased damage.
+Taking $w4% reduced damage.
 
 

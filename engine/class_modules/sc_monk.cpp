@@ -153,7 +153,7 @@ public:
     buff_t* weapons_of_order;
 
     // Shadowland Legendaries
-    buff_t* rushing_tiger_palm;
+    buff_t* keefers_skyreach;
     buff_t* recently_rushing_tiger_palm;
   } debuff;
 
@@ -310,7 +310,7 @@ public:
 
     // Shadowland Legendary
     buff_t* chi_energy;
-    buff_t* flaming_kicks;
+    buff_t* charred_passions;
     buff_t* invokers_delight;
     buff_t* mighty_pour;
     buff_t* pressure_point;
@@ -661,7 +661,7 @@ public:
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
     const spell_data_t* face_palm;
-    const spell_data_t* flaming_kicks_dmg;
+    const spell_data_t* charred_passions_dmg;
   } passives;
 
   // RPPM objects
@@ -3445,18 +3445,17 @@ public:
       }
     }
 
-    // For more than 5 targets damage is based on a logarithmic function.
-    // This is the closest we can figure out what that function is
+    // For more than 5 targets damage is based on a Sqrt(5/x)
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
-        // Primary takes 100% damage
+        // Primary takes the 100% damage
         // Secondary targets get reduced damage
         if ( state->target != target )
-          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+          cam *= std::sqrt( 5 / state->n_targets );
 
       return cam;
     }
@@ -4714,8 +4713,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double c = player->composite_player_target_crit_chance( target );
 
-    if ( td( target )->debuff.rushing_tiger_palm->up() )
-      c += td( target )->debuff.rushing_tiger_palm->value();
+    if ( td( target )->debuff.keefers_skyreach->up() )
+      c += td( target )->debuff.keefers_skyreach->value();
 
     return c;
   }
@@ -4911,9 +4910,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
 
-    if ( p->specialization() == MONK_BREWMASTER )
-      base_costs[ RESOURCE_ENERGY ] *= 1 + p->spec.brewmaster_monk->effectN( 17 ).percent();  // -50% for Brewmasters
-
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
     else
@@ -5003,10 +4999,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       }
       case MONK_BREWMASTER:
       {
-        if ( p()->cooldown.blackout_kick->down() )
-          p()->cooldown.blackout_kick->adjust(
-              timespan_t::from_seconds( -1 * p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
-
         if ( p()->talent.spitfire->ok() )
         {
           if ( rng().roll( p()->talent.spitfire->proc_chance() ) )
@@ -5047,7 +5039,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       if ( !td( s->target )->debuff.recently_rushing_tiger_palm->up() )
       {
-        td( s->target )->debuff.rushing_tiger_palm->trigger();
+        td( s->target )->debuff.keefers_skyreach->trigger();
         td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
       }
     }
@@ -5377,26 +5369,27 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
-// Flaming Kicks ============================================================
-struct flaming_kicks_t : public monk_spell_t
+// Charred Passions ============================================================
+struct charred_passions_t : public monk_spell_t
 {
-  flaming_kicks_t( monk_t* p ) : monk_spell_t( "flaming_kicks", p, p->passives.flaming_kicks_dmg )
+  charred_passions_t( monk_t* p ) : monk_spell_t( "charred_passions", p, p->passives.charred_passions_dmg )
   {
     background = dual             = true;
+    proc                          = true;
+    may_crit                      = false;
   }
 };
-
 
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_totm_proc* bok_totm_proc;
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "blackout_kick", p,
         ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-        flaming_kicks( new flaming_kicks_t( p ) )
+        charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery = true;
 
@@ -5569,12 +5562,12 @@ struct blackout_kick_t : public monk_melee_attack_t
           bok_totm_proc->execute();
       }
 
-      if ( p()->buff.flaming_kicks->up() )
+      if ( p()->buff.charred_passions->up() )
       {
         double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-        flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-        flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-        flaming_kicks->execute();
+        charred_passions->base_dd_min = s->result_amount * dmg_percent;
+        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+        charred_passions->execute();
 
         if ( td( s->target )->dots.breath_of_fire->is_ticking() )
           td( s->target )->dots.breath_of_fire->refresh_duration();
@@ -5675,11 +5668,11 @@ struct chi_explosion_t : public monk_spell_t
 
 struct sck_tick_action_t : public monk_melee_attack_t
 {
-  flaming_kicks_t* flaming_kicks;
+  charred_passions_t* charred_passions;
 
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data ),
-      flaming_kicks( new flaming_kicks_t( p ) )
+      charred_passions( new charred_passions_t( p ) )
   {
     affected_by.sunrise_technique = true;
     ww_mastery                    = true;
@@ -5740,9 +5733,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
           am /= 1 + p()->cache.mastery_value();
         if ( p()->buff.hit_combo->up() )
           am /= 1 + p()->buff.hit_combo->stack_value();
-
-        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
-        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
       }
       else
         motc_multiplier += p()->conduit.calculated_strikes.percent();
@@ -5779,12 +5769,12 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->buff.flaming_kicks->up() )
+    if ( p()->buff.charred_passions->up() )
     {
       double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
-      flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
-      flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
-      flaming_kicks->execute();
+      charred_passions->base_dd_min = s->result_amount * dmg_percent;
+      charred_passions->base_dd_max = s->result_amount * dmg_percent;
+      charred_passions->execute();
 
       if ( td( s->target )->dots.breath_of_fire->is_ticking() )
         td( s->target )->dots.breath_of_fire->refresh_duration();
@@ -6390,8 +6380,7 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // For more than 5 targets damage is based on a logarithmic function.
-  // This is the closest we can figure out what that function is
+  // For more than 5 targets damage is based on a Sqrt(5/x)
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
@@ -6401,7 +6390,7 @@ struct keg_smash_t : public monk_melee_attack_t
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
       if ( state->target != target )
-        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+        cam *= std::sqrt( 5 / state->n_targets );
 
     return cam;
   }
@@ -7084,6 +7073,8 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
+    aoe = 1;
+
     add_child( p.active_actions.breath_of_fire );
   }
 
@@ -7108,7 +7099,7 @@ struct breath_of_fire_t : public monk_spell_t
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-        return cam / std::sqrt( state->n_targets );
+      return cam / std::sqrt( state->n_targets );
 
     return cam;
   }
@@ -7121,7 +7112,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->buff.spitfire->expire();
 
     if ( p()->legendary.charred_passions->ok() )
-      p()->buff.flaming_kicks->trigger();
+      p()->buff.charred_passions->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7836,9 +7827,10 @@ struct bonedust_brew_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    harmful     = false;
-    base_dd_min = 0;
-    base_dd_max = 0;
+    harmful          = false;
+    aoe              = -1;
+    base_dd_min      = 0;
+    base_dd_max      = 0;
   }
 
   void execute() override
@@ -9340,6 +9332,7 @@ void init()
 // Monk Character Definition
 // ==========================================================================
 
+// Debuffs ==================================================================
 monk_td_t::monk_td_t( player_t* target, monk_t* p )
   : actor_target_data_t( target, p ), dots( dots_t() ), debuff( buffs_t() ), monk( *p )
 {
@@ -9361,9 +9354,11 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
+                           ->set_cooldown( timespan_t::zero() )
                            ->set_default_value_from_effect( 3 );
 
-    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
+    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg )
+                               ->set_cooldown(timespan_t::zero());
   }
 
   // Azerite
@@ -9371,6 +9366,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew", p->covenant.necrolord )
+                             ->set_cooldown( timespan_t::zero() )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
@@ -9383,7 +9379,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                 ->set_default_value_from_effect( 1 );
 
   // Shadowland Legendary
-  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 344021 ) )
+  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -10110,7 +10106,7 @@ void monk_t::init_spells()
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
   passives.face_palm                  = find_spell( 227679 );
-  passives.flaming_kicks_dmg          = find_spell( 338141 );
+  passives.charred_passions_dmg          = find_spell( 338141 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -10454,7 +10450,7 @@ void monk_t::create_buffs()
   // Covenant Abilities
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
-                                  ->set_duration( covenant.necrolord->duration() )
+                                  ->set_duration( timespan_t::from_seconds( 10 ) )
                                   ->set_max_stack( 5 )
                                   ->set_reverse( true )
                                   ->set_reverse_stack_count( 5 );
@@ -10480,7 +10476,7 @@ void monk_t::create_buffs()
 
   // Shadowland Legendaries
   // General
-  buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
+  buff.charred_passions    = make_buff( this, "charred_passions", find_spell( 338140 ) );
   buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
       ->add_invalidate( CACHE_ATTACK_HASTE )
       ->add_invalidate( CACHE_HASTE )
@@ -10635,12 +10631,6 @@ void monk_t::recalculate_resource_max( resource_e r, gain_t* source )
 
 void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 {
-  // Bug: Clones are able to do one last ability while they are flying back to the player
-  // Adding a 0.25 second extension to simulate the clones doing one last attack after the
-  // Damage reduction buff is removed.
-  if ( bugs )
-    duration += timespan_t::from_millis( 250 );
-
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
 
@@ -12656,12 +12646,18 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    /*    hotfix::register_effect( "Monk", "2018-07-14", "Fists of Fury increased by 18.5%.", 303680 )
-          .field( "ap_coeff" )
-          .operation( hotfix::HOTFIX_MUL)
-          .modifier( 1.185 )
-          .verification_value( 0.94185 );
-        hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per
+    hotfix::register_effect( "Monk", "2020-11-21", "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_ADD)
+          .modifier( 2 )
+          .verification_value( 0 );
+    hotfix::register_effect( "Monk", "2020-11-21", "Manually set Periodic Damage Windwalker Monk Two-Hand Adjustment by 2%", 872418 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_ADD )
+        .modifier( 2 )
+        .verification_value( 0 );
+    /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds
+       per
        rank (was 3 seconds per rank). [SEF]", 739336) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier(
        -5000 ) .verification_value( -3000 ); hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown
        reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 739336) .field( "base_value" )

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-12/36599, git build shadowlands c681e7c, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-21/36710)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -283,6 +283,7 @@ Description      : Your damaging attacks and spells have a chance to toss Niya's
 Variables        : $points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Poison (id=320660) [Passive, Hidden] 
+Hotfixed         : Variables
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
@@ -299,10 +300,11 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=807855)   : Apply Aura (6) | Proc Trigger Spell (42): Paralytic Poison
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Target: Self (1)
+#1 (id=807855)   : Apply Aura Pet (174) | Proc Trigger Spell (42): Paralytic Poison
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321519 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 174)
 Description      : Your interrupts apply Niya's Paralytic Poison to your target, dealing ${$<pointsA>*$321519d} Nature damage over $321519d. Targets with Niya's Paralytic Poison take an additional $<pointsB> Nature damage if interrupted once more.
-Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
+Variables        : $pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}
 $pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}
 
 Name             : Niya's Tools: Herbs (id=320662) [Passive, Hidden] 
@@ -505,8 +507,9 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=811784)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=811784)   : Apply Player/Pet Aura (202) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 202)
 Description      : Your first attack or spell cast on an enemy increases your damage done to them by $323416s1% for $323416d. Limit 1.
 
 Name             : Ooz's Frictionless Coating (id=323091) [Passive, Hidden] 
@@ -713,10 +716,12 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=815074)   : Apply Aura Pet (174) | Unknown(303)
+#1 (id=815074)   : Apply Player/Pet Aura (202) | Unknown(303)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Radius: 100 yards | Target: Self (1)
-#2 (id=815928)   : Apply Aura Pet (174) | Unknown(359)
+Hotfixed         : Type (174 -> 202)
+#2 (id=815928)   : Apply Player/Pet Aura (202) | Unknown(359)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 13 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Type (174 -> 202)
 #3 (id=815931)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
 #4 (id=840995)   : Apply Aura (6) | Dummy (4)
@@ -978,10 +983,12 @@ Effects          :
 Description      : You have a chance to obtain a satchel of a bonesmith's preferred ore and gems when you kill an enemy that yields experience or honor.
 
 Name             : Forgeborne Reveries (id=326514) [Passive] 
+Hotfixed         : Description
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
+Labels           : 1185: Forgeborne Reveries (326514 effect#5), Forgeborne Reveries (326514 effect#6), Forgeborne Reveries (348272 effect#1), Forgeborne Reveries (348272 effect#2)
 Attributes       : ......x. ........ .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -996,9 +1003,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x37 | Target: Self (1)
 #2 (id=818504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.
+#3 (id=876235)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0xb | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=876236)   : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#5 (id=876250)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Forgeborne Reveries (326514)
+Hotfixed         : NEW EFFECT
+#6 (id=876253)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 1185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Forgeborne Reveries (326514)
+Hotfixed         : NEW EFFECT
+Description      : Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.
+
+Upon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.
+Variables        : $buff=${$348272s1}
+$max=${3*$<buff>}
 
 Name             : Heirmir's Arsenal: Marrowed Gemstone (id=326572) [Passive, Hidden] 
+Hotfixed         : Attributes
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -1007,7 +1033,7 @@ Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x.x. 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1023,6 +1049,7 @@ Effects          :
 Description      : After landing ${$327066u+1} critical strikes, you gain $327069s1% increased chance to critical strike for $327069d. May only occur once per ${$327073d+$327069d} sec.
 
 Name             : Let Go of the Past (id=328257) [Passive, Hidden] 
+Hotfixed         : Description
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
@@ -1042,7 +1069,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=821660)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
+Description      : Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.
 
 Name             : Ever Forward (id=328258) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1127,6 +1154,7 @@ Effects          :
 Description      : Defeating an enemy reduces the cooldown on your steward's non-Phial services by ${$s1/1000} sec.
 
 Name             : Combat Meditation (id=328266) [Passive, Hidden] 
+Hotfixed         : Description, Variables
 Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
@@ -1146,8 +1174,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. 
 
-Walking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]
-Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
+Walking through Sorrowful Memories extends this effect by ${$328913m2*$<modb>}.1 sec. $?a137018|?a137042[Combat Meditation may only occur once every $345861d.][]
+Variables        : $mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
+$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]
 
 Name             : Ascendant Phial (id=329776) [Passive, Hidden] 
 Covenant         : Kyrian
@@ -1291,6 +1320,10 @@ Covenant         : Kyrian
 Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
+Internal Cooldown: 1.5 seconds
+Proc Chance      : 100%
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....xx..   ........ .x...... xx..x... ..x.x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -1307,7 +1340,9 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=875122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You and your nearby party members' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.
+Description      : Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.
+
+After healing this way, you may not benefit from Valiant Strikes for $348236d.
 
 Name             : Agent of Chaos (id=331576) [Passive, Hidden] 
 Covenant         : Venthyr
@@ -1931,6 +1966,7 @@ Effects          :
 Description      : You may channel Fleshcraft while moving.
 
 Name             : Lead by Example (id=342156) [Passive, Hidden] 
+Hotfixed         : Description
 Covenant         : Necrolord
 Covenant         : Necrolord
 School           : Shadow
@@ -1955,7 +1991,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=872117)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s2% and nearby allies' primary stat by $342181s1% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected, up to ${($342181s3*$342181s2)}%.
+Description      : $?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected.
 Variables        : $mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${3}][${1.0}]
 
 Name             : Run Without Tiring (id=342270) [Passive, Hidden] 

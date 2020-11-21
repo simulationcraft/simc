@@ -188,16 +188,16 @@ void potion_of_deathly_fixation( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
+      proc_spell_t::impact( s );
+
       auto d = get_dot( s->target );
 
-      if ( d->at_max_stacks( 1 ) )
+      if ( d->at_max_stacks() )
       {
         eruption->set_target( s->target );
         eruption->schedule_execute();
         d->cancel();
       }
-      else
-        proc_spell_t::impact( s );
     }
   };
 
@@ -394,7 +394,8 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
     }
   };
 
-  effect.trigger_spell_id = effect.spell_id;
+  effect.spell_id         = 347047;
+  effect.trigger_spell_id = 334058;
   effect.execute_action   = new putrid_burst_t( effect );
 }
 
@@ -460,22 +461,6 @@ void cabalists_hymnal( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
-}
-
-void dreadfire_vessel( special_effect_t& effect )
-{
-  struct dreadfire_vessel_proc_t : public proc_spell_t
-  {
-    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e ) {}
-
-    timespan_t travel_time() const override
-    {
-      // seems to have a set 1.5s travel time
-      return timespan_t::from_seconds( data().missile_speed() );
-    }
-  };
-
-  effect.execute_action = create_proc_action<dreadfire_vessel_proc_t>( "dreadfire_vessel", effect );
 }
 
 void macabre_sheet_music( special_effect_t& effect )
@@ -1360,15 +1345,17 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+    // Scopes
+    unique_gear::register_special_effect( 321532, "329666trigger" ); // Infra-green Reflex Sight
+    unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
 
     // Trinkets
     unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
-    unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
+    unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );
     unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
     unique_gear::register_special_effect( 344806, items::cabalists_hymnal );
-    unique_gear::register_special_effect( 344732, items::dreadfire_vessel );
     unique_gear::register_special_effect( 345432, items::macabre_sheet_music );
     unique_gear::register_special_effect( 345319, items::glyph_of_assimilation );
     unique_gear::register_special_effect( 345251, items::soul_igniter );
@@ -1418,7 +1405,7 @@ void register_target_data_initializers( sim_t& sim )
 
   // Darkmoon Deck: Putrescence
   sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 334058 ) )
+    if ( unique_gear::find_special_effect( td->source, 347047 ) )
     {
       assert( !td->debuff.putrid_burst );
 

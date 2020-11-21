@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36599 shadowlands-BETA (hotfix 2020-11-12/36599, git build shadowlands c681e7c, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-21/36710)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -442,7 +442,8 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=3548)     : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6112 | Misc Value 2: 0x53 | Target: Unknown(43)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6112 | Misc Value 2: 0xd4e | Target: Unknown(43)
+Hotfixed         : Misc Value 2 (83 -> 3406)
 #2 (id=819687)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Summons a Windfury Totem with $s1 health at the feet of the caster for $d.  Party members within $s2 yds have a $327942h% chance when they auto-attack to swing an extra time.

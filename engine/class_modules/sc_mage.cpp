@@ -554,6 +554,8 @@ public:
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
+    proc_t* infernal_cascade_expires; // IC buffs expired during Combustion
+
     proc_t* brain_freeze;
     proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_used;
@@ -2007,11 +2009,11 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
 
-          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast,
-          // the game will immediately finish the cast. This is presumably done to work
-          // around the buff application delay inside Combustion or with Searing Touch
-          // active. The following code is a huge hack.
-          if ( id == 2948 && p->executing && p->executing->id == 11366 )
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast
+          // or Flamestrike, the game will immediately finish the cast. This is presumably
+          // done to work around the buff application delay inside Combustion or with
+          // Searing Touch active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 ) )
           {
             assert( p->executing->execute_event );
             p->current_execute_type = execute_type::FOREGROUND;
@@ -2825,7 +2827,12 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( p()->buffs.clearcasting_channel->check() )
+    {
       p()->buffs.arcane_pummeling->trigger();
+
+      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
+      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2842,11 +2849,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-    {
       p()->buffs.arcane_harmony->trigger();
-      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
-      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
-    }
   }
 };
 
@@ -3229,22 +3232,16 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
-  timespan_t delay;
   action_t* projectile;
 
   comet_storm_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.comet_storm ),
-    delay( timespan_t::from_seconds( p->find_spell( 228601 )->missile_speed() ) ),
     projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
-  }
-
-  timespan_t travel_time() const override
-  {
-    return delay;
+    travel_delay = p->find_spell( 228601 )->missile_speed();
   }
 
   void execute() override
@@ -4646,11 +4643,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     triggers.ignite = triggers.radiant_spark = true;
   }
 
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -4749,11 +4741,6 @@ struct nether_tempest_aoe_t final : public arcane_mage_spell_t
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_OVER_TIME;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -5120,6 +5107,9 @@ struct scorch_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
+    travel_delay = p->options.scorch_delay.total_seconds();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5148,13 +5138,6 @@ struct scorch_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
       p()->buffs.frenetic_speed->trigger();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // There is a tiny delay between Scorch dealing damage and Hot Streak
-    // state being updated. Here we model it as a tiny travel time.
-    return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
   }
 
   bool usable_moving() const override
@@ -5512,6 +5495,17 @@ struct shifting_power_t final : public mage_spell_t
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "tick_reduction" ) )
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() : 0.0 );
+
+    if ( util::str_compare_ci( name, "full_reduction" ) )
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() * dot_duration / base_tick_time : 0.0 );
+
+    return mage_spell_t::create_expression( name );
   }
 };
 
@@ -6640,7 +6634,9 @@ void mage_t::create_buffs()
                              ->set_default_value( conduits.infernal_cascade.percent() )
                              ->set_schools_from_effect( 1 )
                              ->set_chance( conduits.infernal_cascade.ok() )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                               { if ( cur == 0 && buffs.combustion->check() ) procs.infernal_cascade_expires->occur(); } );
 
   buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
                              ->set_default_value( conduits.siphoned_malice.percent() )
@@ -6690,6 +6686,8 @@ void mage_t::init_procs()
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
+
+      procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion" );
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );

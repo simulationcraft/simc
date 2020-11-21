@@ -10,6 +10,8 @@
 
 #include "action/dot.hpp"
 
+#include "item/item.hpp"
+
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
@@ -171,14 +173,15 @@ void niyas_tools_burrs( special_effect_t& effect )
                           value_from_desc_vars( e, "points", "\\$SP\\*" ), false )
     {}
 
-    result_e calculate_result( action_state_t* s ) const override
+    // UPDATE: Not the case anymore as of 2020-11-20 hotfixes. Keeping commented just in case.
+    /*result_e calculate_result( action_state_t* s ) const override
     {
       // If the target is slow-immune (most bosses) everything gets immuned including dot application
       if ( s->target->is_boss() )
         return result_e::RESULT_MISS;
 
       return niyas_tools_proc_t::calculate_result( s );
-    }
+    }*/
   };
 
   effect.execute_action = effect.player->find_action( "spiked_burrs" );
@@ -242,7 +245,9 @@ void niyas_tools_herbs( special_effect_t& effect )
   }
 
   // TODO: confirm proc flags
-  effect.proc_flags2_ = PF2_CAST_HEAL;
+  // 11/17/2020 - For Rogues this procs from all periodic heals (Recuperator/Soothing Darkness/Crimson Vial)
+  effect.proc_flags_ = PF_ALL_HEAL | PF_PERIODIC;
+  effect.proc_flags2_ = PF2_LANDED | PF2_PERIODIC_HEAL;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -285,6 +290,8 @@ void field_of_blossoms( special_effect_t& effect )
     effect.player->sim->print_debug( "class-specific properties for field_of_blossoms: duration_mod={}", duration_mod );
 
     buff = make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+      // the stat buff id=342774 has 15s duration, but the ground effect spell id=342761 only has a 10s duration
+      ->set_duration( effect.player->find_spell( 342761 )->duration() )
       ->set_duration_multiplier( duration_mod )
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
@@ -319,7 +326,7 @@ void social_butterfly( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "social_butterfly" );
   if ( !buff )
     buff = make_buff<social_butterfly_buff_t>( effect.player );
-  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+  effect.player->register_combat_begin( buff );
 }
 
 void first_strike( special_effect_t& effect )
@@ -548,12 +555,15 @@ void let_go_of_the_past( special_effect_t& effect )
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
+  // TODO: currently this only sets the buffs, but doesn't check for the buff in player_t::target_mitigation(). Possibly
+  // we want to consolidate that into vectors on the player like with stat_pct_buff so we don't have to unnecessarily
+  // pollute player_t further.
   effect.custom_buff = buff_t::find( effect.player, "let_go_of_the_past" );
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
-      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+      ->set_schools_from_effect( 1 );
   }
 
   new let_go_of_the_past_cb_t( effect );
@@ -564,17 +574,17 @@ void combat_meditation( special_effect_t& effect )
   // id:328908 buff spell
   // id:328917 sorrowful memories projectile (buff->eff#2->trigger)
   // id:328913 sorrowful memories duration, extension value in eff#2 (projectile->eff#1->trigger)
-  // id:345861 lockout buff (buff->eff#3->trigger)
+  // id:345861 lockout buff
   struct combat_meditation_buff_t : public stat_buff_t
   {
     timespan_t ext_dur;
-    combat_meditation_buff_t( player_t* p, double duration_mod, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
+    combat_meditation_buff_t( player_t* p, double duration_mod, double duration_mod_ext, bool icd_enabled ) : stat_buff_t( p, "combat_meditation", p->find_spell( 328908 ) )
     {
-      set_cooldown( icd_enabled ? data().effectN( 3 ).trigger()->duration() : 0_ms );
+      set_cooldown( icd_enabled ? p->find_spell( 345861 )->duration() : 0_ms );
       set_refresh_behavior( buff_refresh_behavior::EXTEND );
       set_duration_multiplier( duration_mod );
 
-      ext_dur = duration_mod * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
+      ext_dur = duration_mod_ext * timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() );
 
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -588,9 +598,11 @@ void combat_meditation( special_effect_t& effect )
   if ( !buff )
   {
     double duration_mod = class_value_from_desc_vars( effect, "mod" );
+    double duration_mod_ext = class_value_from_desc_vars( effect, "modb" );
     bool icd_enabled = extra_desc_text_for_class( effect, effect.driver()->name_cstr() );
-    effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, icd_enabled={}", duration_mod, icd_enabled );
-    buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, icd_enabled );
+
+    effect.player->sim->print_debug( "class-specific properties for combat_meditation: duration_mod={}, duration_mod_ext={}, icd_enabled={}", duration_mod, duration_mod_ext, icd_enabled );
+    buff = make_buff<combat_meditation_buff_t>( effect.player, duration_mod, duration_mod_ext, icd_enabled );
   }
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
@@ -648,24 +660,6 @@ void hammer_of_genesis( special_effect_t& effect )
   new hammer_of_genesis_cb_t( effect );
 }
 
-template <typename Base>
-struct bron_action_t : public Base
-{
-  using base_t = bron_action_t<Base>;
-
-  pet_t* bron;
-
-  bron_action_t( util::string_view n, pet_t* p, const spell_data_t* s ) : Base( n, p, s ), bron( p ) {}
-
-  void execute() override
-  {
-    Base::execute();
-
-    if ( Base::player->main_hand_attack->execute_event )
-      Base::player->main_hand_attack->execute_event->reschedule( Base::player->main_hand_weapon.swing_time );
-  }
-};
-
 void brons_call_to_action( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "brons_call_to_action" } ) )
@@ -673,42 +667,76 @@ void brons_call_to_action( special_effect_t& effect )
 
   struct bron_pet_t : public pet_t
   {
-    struct bron_anima_cannon_t : public bron_action_t<spell_t>
+    struct bron_anima_cannon_t : public spell_t
     {
-      bron_anima_cannon_t( pet_t* p ) : base_t( "anima_cannon", p, p->find_spell( 332525 ) )
+      bron_anima_cannon_t( pet_t* p, const std::string& options_str ) : spell_t( "anima_cannon", p, p->find_spell( 332525 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 8_s;  // TODO: confirm
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 0.55; // Not in spell data
       }
     };
 
-    struct bron_smash_t : public bron_action_t<melee_attack_t>
+    struct bron_smash_damage_t : public spell_t
     {
-      bron_smash_t( pet_t* p ) : base_t( "smash", p, p->find_spell( 341163 ) )
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
       {
-        may_crit          = true;
-        aoe               = -1;
-        radius            = data().effectN( 2 ).radius();
-        travel_speed      = 0.0;
-        base_execute_time = data().cast_time();
-        weapon            = &p->main_hand_weapon;
-        weapon_multiplier = p->find_spell( 341165 )->effectN( 1 ).percent();
+        background = true;
+        spell_power_mod.direct = 0.25; // Not in spell data
+        attack_power_mod.direct = 0.25; // Not in spell data
+        aoe = -1;
+        radius = data().effectN( 1 ).radius_max();
+      }
+
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap <= sp )
+          return 0;
+
+        return spell_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+        auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+        if ( ap > sp )
+          return 0;
+
+        return spell_t::spell_direct_power_coefficient( s );
       }
     };
 
-    struct bron_goliath_support_t : public bron_action_t<heal_t>
+    struct bron_smash_t : public spell_t
     {
-      bron_goliath_support_t( pet_t* p ) : base_t( "goliath_support", p, p->find_spell( 332526 ) )
+      bron_smash_t( pet_t* p, const std::string& options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
       {
-        base_execute_time = 0_ms;
-        cooldown->duration = 4_s;  // TODO: confirm
+        parse_options( options_str );
+
+        impact_action = new bron_smash_damage_t( p );
+      }
+    };
+
+    struct bron_vitalizing_bolt_t : public heal_t
+    {
+      bron_vitalizing_bolt_t( pet_t* p, const std::string& options_str ) : heal_t( "vitalizing_bolt", p, p->find_spell( 332526 ) )
+      {
+        parse_options( options_str );
+
+        interrupt_auto_attack = false;
+        spell_power_mod.direct = 0.575; // Not in spell data
       }
 
       void execute() override
       {
         target = debug_cast<pet_t*>( player )->owner;
 
-        base_t::execute();
+        heal_t::execute();
       }
     };
 
@@ -720,7 +748,7 @@ void brons_call_to_action( special_effect_t& effect )
 
         school            = SCHOOL_PHYSICAL;
         weapon            = &p->main_hand_weapon;
-        weapon_multiplier = 1.0;
+        weapon_multiplier = 0.25;
         base_execute_time = weapon->swing_time;
       }
     };
@@ -769,20 +797,23 @@ void brons_call_to_action( special_effect_t& effect )
     bron_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "bron" )
     {
       main_hand_weapon.type       = WEAPON_BEAST;
-      main_hand_weapon.swing_time = 1.5_s;  // TODO: confirm
-      main_hand_weapon.min_dmg    = 60.0;   // TODO: confirm
-      main_hand_weapon.max_dmg    = 60.0;   // TODO: confirm
-      owner_coeff.sp_from_sp      = 1.0;
-      owner_coeff.ap_from_sp      = 0.25;
+      main_hand_weapon.swing_time = 2.0_s;
+      owner_coeff.sp_from_sp      = 2.0;
+      owner_coeff.ap_from_ap      = 2.0;
     }
 
     void init_action_list() override
     {
+      // Use line cooldowns to recreate the in-game timings; the spell data does not actually
+      // have cooldowns and the apparent cooldowns need to start on cast start to work.
+      // TODO: Vitalizing Bolt casts one more time than it should, but it is not a damage
+      // spell and the number of hits for all of the damage spells is correct. There might
+      // need to be some kind of delay when selecting actions to get the timing to match up.
       action_list_str = "travel";
       action_list_str += "/auto_attack";
-      action_list_str += "/goliath_support";
-      action_list_str += "/anima_cannon";
-      action_list_str += "/smash";
+      action_list_str += "/vitalizing_bolt,line_cd=4";
+      action_list_str += "/anima_cannon,line_cd=8";
+      action_list_str += "/smash,line_cd=15";
 
       pet_t::init_action_list();
     }
@@ -791,9 +822,9 @@ void brons_call_to_action( special_effect_t& effect )
     {
       if ( name == "travel" ) return new bron_travel_t( this );
       if ( name == "auto_attack" ) return new bron_auto_attack_t( this );
-      if ( name == "goliath_support" ) return new bron_goliath_support_t( this );
-      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this );
-      if ( name == "smash" ) return new bron_smash_t( this );
+      if ( name == "vitalizing_bolt" ) return new bron_vitalizing_bolt_t( this, options_str );
+      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this, options_str );
+      if ( name == "smash" ) return new bron_smash_t( this, options_str );
 
       return pet_t::create_action( name, options_str );
     }
@@ -826,6 +857,8 @@ void brons_call_to_action( special_effect_t& effect )
     }
   };
 
+  // TODO: This does not seem to proc on all of the spells implied by these proc flags.
+  // For example, Arcane Missiles does not trigger a stack of the buff.
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
@@ -843,86 +876,86 @@ void brons_call_to_action( special_effect_t& effect )
 // 323506: giant (physical damage)
 void volatile_solvent( special_effect_t& effect )
 {
-  util::string_view type_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
+  auto splits =
+    util::string_split<util::string_view>( effect.player->sim->shadowlands_opts.volatile_solvent_type, "/:" );
 
-  auto race_type = util::parse_race_type( type_str );
-  if ( race_type == RACE_UNKNOWN )
+  for ( auto type_str : splits )
   {
-    if      ( util::str_compare_ci( type_str, "mastery"  ) ) race_type = RACE_HUMANOID;
-    else if ( util::str_compare_ci( type_str, "primary"  ) ) race_type = RACE_BEAST;
-    else if ( util::str_compare_ci( type_str, "crit"     ) ) race_type = RACE_DRAGONKIN;
-    else if ( util::str_compare_ci( type_str, "magic"    ) ) race_type = RACE_ELEMENTAL;
-    else if ( util::str_compare_ci( type_str, "physical" ) ) race_type = RACE_GIANT;
+    auto race_type = util::parse_race_type( type_str );
+    if ( race_type == RACE_UNKNOWN )
+    {
+      if      ( util::str_compare_ci( type_str, "mastery"  ) ) race_type = RACE_HUMANOID;
+      else if ( util::str_compare_ci( type_str, "primary"  ) ) race_type = RACE_BEAST;
+      else if ( util::str_compare_ci( type_str, "crit"     ) ) race_type = RACE_DRAGONKIN;
+      else if ( util::str_compare_ci( type_str, "magic"    ) ) race_type = RACE_ELEMENTAL;
+      else if ( util::str_compare_ci( type_str, "physical" ) ) race_type = RACE_GIANT;
+    }
+
+    buff_t* buff;
+
+    switch ( race_type )
+    {
+      case RACE_HUMANOID:
+        buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
+        if ( !buff )
+        {
+          buff =
+            make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
+        }
+        break;
+
+      case RACE_BEAST:
+        buff = buff_t::find( effect.player, "volatile_solvent_beast" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_beast", effect.player->find_spell( 323498 ) )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                  ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
+        }
+        break;
+
+      case RACE_DRAGONKIN:
+        buff = buff_t::find( effect.player, "volatile_solvent_dragonkin" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_dragonkin", effect.player->find_spell( 323502 ) )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+        }
+        break;
+
+      case RACE_ELEMENTAL:
+        buff = buff_t::find( effect.player, "volatile_solvent_elemental" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
+                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                  ->set_schools_from_effect( 1 );
+        }
+        effect.player->buffs.volatile_solvent_damage = buff;
+        break;
+
+      case RACE_GIANT:
+        buff = buff_t::find( effect.player, "volatile_solvent_giant" );
+        if ( !buff )
+        {
+          buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
+                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+                  ->set_schools_from_effect( 2 );
+        }
+        effect.player->buffs.volatile_solvent_damage = buff;
+        break;
+
+      default: buff = nullptr; break;
+    }
+
+    if ( buff )
+      effect.player->register_combat_begin( buff );
+    else
+      effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
   }
-
-  if ( race_type == RACE_UNKNOWN )
-  {
-    effect.player->sim->error( "Warning: Invalid type '{}' for Volatile Solvent, ignoring.", type_str );
-    return;
-  }
-
-  buff_t* buff;
-
-  switch ( race_type )
-  {
-    case RACE_HUMANOID:
-      buff = buff_t::find( effect.player, "volatile_solvent_humanoid" );
-      if ( !buff )
-      {
-        buff =
-          make_buff<stat_buff_t>( effect.player, "volatile_solvent_humanoid", effect.player->find_spell( 323491 ) );
-      }
-      break;
-
-    case RACE_BEAST:
-      buff = buff_t::find( effect.player, "volatile_solvent_beast" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_beast", effect.player->find_spell( 323498 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                 ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT );
-      }
-      break;
-
-    case RACE_DRAGONKIN:
-      buff = buff_t::find( effect.player, "volatile_solvent_dragonkin" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_dragonkin", effect.player->find_spell( 323502 ) )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-      }
-      break;
-
-    case RACE_ELEMENTAL:
-      buff = buff_t::find( effect.player, "volatile_solvent_elemental" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_elemental", effect.player->find_spell( 323504 ) )
-                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                 ->set_schools_from_effect( 1 );
-      }
-      effect.player->buffs.volatile_solvent_damage = buff;
-      break;
-
-    case RACE_GIANT:
-      buff = buff_t::find( effect.player, "volatile_solvent_giant" );
-      if ( !buff )
-      {
-        buff = make_buff( effect.player, "volatile_solvent_giant", effect.player->find_spell( 323506 ) )
-                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-                 ->set_schools_from_effect( 2 );
-      }
-      effect.player->buffs.volatile_solvent_damage = buff;
-      break;
-
-    default: buff = nullptr; break;
-  }
-
-  if ( buff )
-    effect.player->register_combat_begin( buff );
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
@@ -1000,7 +1033,7 @@ void lead_by_example( special_effect_t& effect )
     duration *= class_value_from_desc_vars( effect, "mod" );
 
     buff = make_buff( effect.player, "lead_by_example", s_data )
-      ->set_default_value_from_effect( 2 )
+      ->set_default_value_from_effect( 1 )
       ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
@@ -1009,6 +1042,51 @@ void lead_by_example( special_effect_t& effect )
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
+}
+
+void forgeborne_reveries( special_effect_t& effect )
+{
+  int count = 0;
+
+  for ( const auto& item : effect.player->items )
+  {
+    if ( item.slot < SLOT_HEAD || item.slot > SLOT_BACK )
+      continue;
+
+    if ( item.parsed.enchant_id )
+    {
+      // All armor enchants currently have a stat associated with them, unlike temporaries & weapon enchants which
+      // can be purely procs. So for now we should be safe filtering for enchants with ITEM_ENCHANTMENT_STAT.
+      auto ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
+      if ( range::contains( ench.ench_type, ITEM_ENCHANTMENT_STAT ) )
+        count++;
+
+      if ( count >= 3 )  // hardcoded into tooltip desc
+        break;
+    }
+  }
+
+  if ( count == 0 ) {
+    // no enchants are applied, do not apply the buff
+    //
+    // this is done because the buff code replaces a multiplier of 0 with the
+    // default value from the spelldata---which in this case is 1, or a 100%
+    // increase in stats
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "forgeborne_reveries" );
+  if ( !buff )
+  {
+    // armor increase NYI
+    buff = make_buff( effect.player, "forgeborne_reveries", effect.player->find_spell( 348272 ) )
+      ->set_default_value_from_effect( 1, count * 0.01 )
+      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  }
+
+  effect.player->register_combat_begin( buff );
 }
 
 void serrated_spaulders( special_effect_t& effect )
@@ -1021,9 +1099,27 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "marrowed_gemstone_charging", "marrowed_gemstone_enhancement" } ) )
     return;
 
+  struct marrowed_gemstone_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    marrowed_gemstone_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {}
+
+    // cooldown applies to both the buff AND the counter, so don't trigger if buff is on cd
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( buff->cooldown->down() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
   auto counter_buff = buff_t::find( effect.player, "marrowed_gemstone_charging" );
   if ( !counter_buff )
-    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )->modify_max_stack( 1 );
+    counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )
+      ->modify_max_stack( 1 );
 
   auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
   if ( !buff )
@@ -1031,8 +1127,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
     buff = make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
     buff->set_cooldown( buff->buff_duration() + effect.player->find_spell( 327073 )->duration() );
+
     counter_buff->set_stack_change_callback( [ buff ] ( buff_t* b, int, int )
     {
       if ( b->at_max_stacks() )
@@ -1046,7 +1142,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
   effect.custom_buff = counter_buff;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new marrowed_gemstone_cb_t( effect, buff );
 }
 
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
@@ -1091,7 +1187,8 @@ void register_special_effects()
   register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
   register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   register_soulbind_special_effect( 342156, soulbinds::lead_by_example, true );
-  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  register_soulbind_special_effect( 326514, soulbinds::forgeborne_reveries );  // Heirmir
+  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone, true );
 }
 
