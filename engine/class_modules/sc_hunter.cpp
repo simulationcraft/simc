@@ -6783,13 +6783,13 @@ void hunter_t::apl_bm()
     action_priority_list_t* st           = get_action_priority_list( "st" );
     action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
 
-    precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
-    precombat -> add_action( "aspect_of_the_wild,precast_time=1.3" );
+    precombat -> add_action( "tar_trap,precast_time=1.5,if=runeforge.soulforge_embers.equipped|runeforge.nessingwarys_trapping_apparatus.equipped" );
     precombat -> add_action( "bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood.enabled&!runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "potion,dynamic_prepot=1" );
 
     default_list -> add_action( "auto_shot" );
-    default_list -> add_action( "use_items,if=prev_gcd.1.aspect_of_the_wild|target.time_to_die<20" );
+    default_list -> add_action( "counter_shot,line_cd,if=runeforge.sephuzs_proclamation.equipped|soulbind.niyas_tools_poison.enabled|(conduit.reversal_of_fortune.enabled&!runeforge.sephuzs_proclamation.equipped)" );
+    default_list -> add_action( "use_items" );
     default_list -> add_action( "call_action_list,name=cds" );
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
     default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
@@ -6801,14 +6801,14 @@ void hunter_t::apl_bm()
     cds -> add_action( "lights_judgment,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains>gcd.max|!pet.main.buff.frenzy.up" );
     cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
+    cleave -> add_action( "aspect_of_the_wild" );
     cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
     cleave -> add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
     cleave -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
-    cleave -> add_action( "flare,if=tar_trap.up" );
+    cleave -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers.equipped" );
     cleave -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
     cleave -> add_action( "wild_spirits" );
     cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood.enabled" );
-    cleave -> add_action( "aspect_of_the_wild" );
     cleave -> add_action( "bestial_wrath" );
     cleave -> add_action( "resonating_arrow" );
     cleave -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
@@ -6823,27 +6823,33 @@ void hunter_t::apl_bm()
     cleave -> add_action( "dire_beast" );
     cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9" );
     cleave -> add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
+    cleave -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped|runeforge.nessingwarys_trapping_apparatus.equipped" );
+    cleave -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped" );
 
-    st -> add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood.enabled" );
+    st -> add_action( "aspect_of_the_wild" );
+    st -> add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
-    st -> add_action( "flare,if=tar_trap.up" );
+    st -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers.equipped" );
+    st -> add_action( "bloodshed" );
     st -> add_action( "wild_spirits" );
     st -> add_action( "kill_shot" );
     st -> add_action( "flayed_shot" );
+    st -> add_action( "kill_shot,if=buff.flayers_mark<5|target.health.pct<=20" );
+    st -> add_action( "barbed_shot,if=(cooldown.wild_spirits.remains>full_recharge_time|!covenant.night_fae)&(cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood.enabled|full_recharge_time<gcd&cooldown.bestial_wrath.remains)|target.time_to_die<9")
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    st -> add_action( "bloodshed" );
-    st -> add_action( "aspect_of_the_wild" );
     st -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
     st -> add_action( "a_murder_of_crows" );
-    st -> add_action( "bestial_wrath" );
-    st -> add_action( "resonating_arrow" );
+    st -> add_action( "resonating_arrow,if=buff.bestial_wrath.up|target.time_to_die<10" );
+    st -> add_action( "bestial_wrath,if=cooldown.wild_spirits.remains>15|!covenant.night_fae|target.time_to_die<15" );
     st -> add_action( "chimaera_shot" );
     st -> add_action( "kill_command" );
     st -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
     st -> add_action( "dire_beast" );
-    st -> add_action( "barbed_shot,if=target.time_to_die<9" );
-    st -> add_action( "barrage" );
-    st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains_guess>focus.time_to_max)&cooldown.kill_command.remains>1|target.time_to_die<3" );
+    st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order.equipped|target.time_to_die<3" );
+    st -> add_action( "barbed_shot,if=buff.wild_spirits.up");
+    st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5")
+    st -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped|runeforge.nessingwarys_trapping_apparatus.equipped" );
+    st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped" );
   }
   else
   {
