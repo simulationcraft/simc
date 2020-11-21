@@ -12646,12 +12646,18 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    /*    hotfix::register_effect( "Monk", "2018-07-14", "Fists of Fury increased by 18.5%.", 303680 )
-          .field( "ap_coeff" )
-          .operation( hotfix::HOTFIX_MUL)
-          .modifier( 1.185 )
-          .verification_value( 0.94185 );
-        hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per
+    hotfix::register_effect( "Monk", "2020-11-21", "Increase Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_ADD)
+          .modifier( 2 )
+          .verification_value( 0 );
+    hotfix::register_effect( "Monk", "2020-11-21", "Increase Windwalker Monk Two-Hand Adjustment by 2%", 872418 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_ADD )
+        .modifier( 2 )
+        .verification_value( 0 );
+    /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds
+       per
        rank (was 3 seconds per rank). [SEF]", 739336) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier(
        -5000 ) .verification_value( -3000 ); hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown
        reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 739336) .field( "base_value" )
