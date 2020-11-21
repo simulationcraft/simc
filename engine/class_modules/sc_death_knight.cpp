@@ -504,6 +504,7 @@ public:
     buff_t* unleashed_frenzy;
 
     // Legendaries
+    buff_t* crimson_rune_weapon;
     buff_t* frenzied_monstrosity;
 
     // Covenants
@@ -990,7 +991,7 @@ public:
 
     // Blood
     item_runeforge_t bryndaors_might; // 6940
-    // item_runeforge_t crimson_rune_weapon; // 6941
+    item_runeforge_t crimson_rune_weapon; // 6941
 
     // Frost                                      // bonus_id
     item_runeforge_t absolute_zero;               // 6946
@@ -4262,6 +4263,8 @@ struct dancing_rune_weapon_buff_t : public buff_t
     death_knight_t* p = debug_cast< death_knight_t* >( player );
 
     p -> eternal_rune_weapon_counter = 0;
+    if ( p -> legendary.crimson_rune_weapon -> ok() )
+      p -> buffs.crimson_rune_weapon -> trigger();
   }
 };
 
@@ -9203,7 +9206,7 @@ void death_knight_t::init_spells()
 
   // Blood
   legendary.bryndaors_might = find_runeforge_legendary( "Bryndaor's Might" );
-  // legendary.crimson_rune_weapon = find_runeforge_legendary( "Crimson Rune Weapon" );
+  legendary.crimson_rune_weapon = find_runeforge_legendary( "Crimson Rune Weapon" );
 
   // Frost
   legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
@@ -9893,6 +9896,10 @@ void death_knight_t::create_buffs()
       -> set_default_value( conduits.unleashed_frenzy.percent() );
 
   // Legendaries
+
+  buffs.crimson_rune_weapon = make_buff( this, "crimson_rune_weapon", find_spell( 334526 ) )
+      -> set_default_value( find_spell( 334526 ) -> effectN( 1 ).percent() );
+
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -10112,6 +10119,9 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   {
     buffs.bones_of_the_damned -> expire();
   }
+
+  // Value is stored in the spelldata as negative, so multiply by a positive
+  cooldown.dancing_rune_weapon -> adjust( 1.0 * legendary.crimson_rune_weapon -> effectN( 1).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
@@ -10499,6 +10509,11 @@ inline double death_knight_t::runes_per_second() const
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
   }
 
+  if ( buffs.crimson_rune_weapon -> check() )
+  {
+    rps *= 1.0 + buffs.crimson_rune_weapon -> check_value();
+  }
+
   if ( player_t::buffs.memory_of_lucid_dreams -> check() )
   {
     rps *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
@@ -10514,6 +10529,11 @@ inline double death_knight_t::rune_regen_coefficient() const
   if ( buffs.runic_corruption -> check() )
   {
     coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.crimson_rune_weapon -> check() )
+  {
+    coeff /= 1.0 + buffs.crimson_rune_weapon -> check_value();
   }
 
   if ( player_t::buffs.memory_of_lucid_dreams -> check() )
