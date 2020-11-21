@@ -5047,7 +5047,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/627
     if ( p -> bugs && p -> talent.voracious -> ok() )
     {
-      minimum_healing = std::floor( minimum_healing * 1.0 + p -> talent.voracious -> effectN( 3 ).percent() );
+      minimum_healing = std::floor( (minimum_healing * (1.0 + p -> talent.voracious -> effectN( 3 ).percent())) * 100 ) / 100;
     }
   }
 
