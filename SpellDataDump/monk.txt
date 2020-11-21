@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36671 shadowlands-BETA (hotfix 2020-11-20/36671)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-21/36710)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1086,11 +1086,12 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
+Hotfixed         : Cooldown (420000 -> 360000)
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 28
-Cooldown         : 420 seconds
+Cooldown         : 360 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Fortifying Brew (325208 effect#1)
 Family Flags     : 52, 53
@@ -2400,7 +2401,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
-Affecting spells : Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
 Family Flags     : 77, 116
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -2888,7 +2889,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
@@ -3290,7 +3291,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #14, #19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -3464,8 +3465,8 @@ Hotfixed         : Base Value (350 -> 400)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
-                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 99, 100
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Healing Elixir (122281), Chi Burst (123986), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Chi Burst (148135), Gift of the Ox (178173), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Weapons of Order (310454), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
+                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 77, 99, 100
 Hotfixed         : Affects Spells
 #15 (id=260846)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4147,7 +4148,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -9053,7 +9054,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9756,10 +9757,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=815322)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+#1 (id=815322)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Breath of Fire (123725)
                    Family Flags: 125
+Hotfixed         : Sub Type (108 -> 107)
 Description      : $@spelldesc325177
 Tooltip          : Breath of Fire reduces damage taken by an additional $325177s2%.
 Spinning Crane Kick ignites targets with Breath of Fire.

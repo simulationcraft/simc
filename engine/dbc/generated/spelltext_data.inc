@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.2.36671
+// Spell text, wow build 9.0.2.36710
 static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -13275,7 +13275,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 323602, "Clean the filth from your hands. ", 0, 0 },
   { 323609, "Permanently enchants boots to reduce your falling damage by $323612s1%.", 0, 0 },
   { 323612, "$@spelldesc323609", "Reduce falling damage by $w1%.", 0 },
-  { 323639, "Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting ${$345335s1*$345335d} Nature damage over $345335d to up to $345396s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $345422s1% of the damage you deal to your Hunt target for $323802d.", 0, "Night Fae" },
+  { 323639, "Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting $345335o1 Nature damage over $345335d to up to $345396s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$345422s1%][$345422s2%] of the damage you deal to your Hunt target for $323802d.", 0, "Night Fae" },
   { 323654, "Lash the target $s2 times, dealing $s1 Shadow damage and adding a stack of Flagellation for each lash. The target remains tormented for $d, receiving an additional lash for each combo point you spend.\r\n\r\nReactivating Flagellation cleanses their torment, increasing your Haste by ${$345569s2/10}.1% per stack, up to a maximum of ${$345569s2/10*$345569u}% Haste for $345569d.", "$?$W2>0[Nearby Rogue is tormenting the target, dealing $s1 Shadow damage for each combo point spent.][Combo points spent deal $s1 Shadow damage to the Rogue's tormented target.]", "Venthyr" },
   { 323660, "Poisoned weapons have a chance to deal $s1 Shadow damage to a target already affected by Slaughter Poison.", 0, "Venthyr" },
   { 323673, "Assault an enemy's mind, dealing ${$s1*$m3/100} Shadow damage and briefly reversing their perception of reality.\r\n\r\n$?c3[For $d, the next $<damage> damage they deal will heal their target, and the next $<healing> healing they deal will damage their target.\r\n\r\n|cFFFFFFFFReversed damage and healing generate up to ${$323706s2*2} Insanity.|r]\r\n][For $d, the next $<damage> damage they deal will heal their target, and the next $<healing> healing they deal will damage their target.\r\n\r\n|cFFFFFFFFReversed damage and healing restore up to ${$323706s3*2}% mana.|r]", "The next $w2 damage and $w7 healing dealt will be reversed.", "Venthyr" },
@@ -13289,7 +13289,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 323762, "Permanently enchants a chest piece to increase all stats by $ec1.", 0, 0 },
   { 323764, "Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred, Tiger's Fury,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred, Tiger's Fury,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.", "Night Fae" },
   { 323798, "$@spelldesc315443", 0, "Necrolord" },
-  { 323802, "$@spelldesc323639", "Marked by the Demon Hunter, converting $s2% of the damage done to healing.", "Night Fae" },
+  { 323802, "$@spelldesc323639", "Marked by the Demon Hunter, converting $?c1[$345422s1%][$345422s2%] of the damage done to healing.", "Night Fae" },
   { 323826, "The slime contained is ravenous and uncontrollable, devouring party members and dealing damage to them. Only usable outdoors in the Shadowlands.", "Consumed by the Ravenous Slime.", 0 },
   { 323879, "$@spelldesc323760", 0, 0 },
   { 323889, "Deals $s1 Shadow damage.", 0, 0 },
@@ -13617,7 +13617,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 329492, "$@spelldesc329490", "Your Slumberwood Band has no dream dust remaining.", 0 },
   { 329536, "Your damaging abilities have a very low chance to manifest a drust behemoth, smashing your target and dealing $s2 Physical damage to all nearby enemies.", 0, 0 },
   { 329540, "$@spelldesc329536", 0, 0 },
-  { 329554, "Commission a duel against a Condemned Demon from the Theater of Pain. Vanquishing your foe releases an Empowered Demon Soul and creates a pool of demon blood for $330846d reducing the damage enemies within the pool deal to you by $330874s1%.\r\n\r\nFleshcraft treats the Condemned Demon as a powerful enemy.", 0, "Necrolord" },
+  { 329554, "Call forth and defeat a demon from the Theater of Pain to release an Empowered Demon Soul, increasing your damage done by $347765s1% and reducing all damage taken by $347765s4% for $347765d.\r\n \r\nThe demon will escape to the Nether after $d. Throw Glaive deals considerably more damage to the demon and Fleshcraft treats it as a powerful enemy.", "Battling a demon from the Theater of Pain...", "Necrolord" },
   { 329666, "Increases Haste by $s1.", "Haste increased by $w1.", 0 },
   { 329720, " ", 0, "Night Fae" },
   { 329722, " ", 0, "Night Fae" },
@@ -13673,7 +13673,6 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 330765, "Your abilities have a chance to grant you $330747s2 Critical Strike, Haste, and Mastery for $330131d.", 0, 0 },
   { 330767, "$@spelldesc330765", 0, 0 },
   { 330859, "$@spelldesc329781", "Healing for $w1 every $t sec.", 0 },
-  { 330874, "A pool of demon blood reduces the damage done to the victiorious Demon Hunter by $s1%.", "Damage to the victiorious Demon Hunter reduced by $s1%.", 0 },
   { 330898, "$@spelldesc113656", "$w3 damage every $t3 sec.", 0 },
   { 330901, "Spin while kicking in the air, dealing $?s137025[${4*$107270s1*$<CAP>/$AP}][${4*$107270s1}] Physical damage over $d to up to $s1 enemies within $107270A1 yds.$?c3[\r\n\r\nSpinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]", "Attacking nearby enemies for Physical damage every $101546t1 sec.", 0 },
   { 330903, "$@spelldesc101546", "Attacking all nearby enemies for Physical damage every $101546t1 sec.\r\n\r\nMovement speed reduced by $s2%.", 0 },
@@ -14541,8 +14540,10 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 340197, "Killing an enemy has a high chance to summon an Explosive Mawrat at the corpses location. After $340201d the mawrat will explode, dealing $341617s1 Nature damage to all nearby enemies, poisoning them and decreasing their damage done by $341617s2% for $341617d.", 0, 0 },
   { 340201, "$@spelldesc340197", 0, 0 },
   { 340202, "When Obtained: The Curse of Renagal's Pact leaves the chalice and you begin to attract the attention of foes from further away than before. ", "Attracting enemies to you from further away than normal. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispell the curse.", 0 },
+  { 340203, "$@spelldesc316958", 0, 0 },
   { 340206, "When Obtained: The Curse of Teramanik's Legacy leaves the reins and prevents you from calling on your mounts. ", "The curse prevents you from mounting. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispel the curse.", 0 },
   { 340212, "Ashen Hallow strikes the lowest health ally and enemy within it an additional time for |cFFFFFFFF${$s1}.1%|r of its effect.", 0, 0 },
+  { 340214, "$@spelldesc316958", 0, 0 },
   { 340218, "Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast $s2 extra $ltime:times; on the main target.", 0, 0 },
   { 340223, "$@spelldesc340159", 0, 0 },
   { 340229, "When a target dies under the effect of Scouring Tithe, gain |cFFFFFFFF${$s1}.1%|r increased damage to your $?c1[Malefic Rapture][]$?c2[demons][]$?c3[Chaos Bolt][] for $340238d.", 0, 0 },
@@ -14960,7 +14961,6 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 345697, "$@spelldesc345698", 0, 0 },
   { 345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
   { 345704, "$@spelldesc345695", 0, 0 },
-  { 345705, "The fur of Shadehounds can spontaneously combust, making it tricky to harvest for parts.", 0, 0 },
   { 345714, "$@spelldesc330898", 0, 0 },
   { 345727, "$@spelldesc327104", 0, "Night Fae" },
   { 345739, "Conjure a Spectral Scythe, dealing $345877s1 Shadow damage to your target and $345877s2 Shadow damage in a $345963A1 yd cone to enemies behind your target.", 0, 0 },
@@ -15039,7 +15039,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 347687, "$@spelldesc338138", 0, 0 },
   { 347688, "$@spelldesc338138", 0, 0 },
   { 347760, "The cooldown of your Covenant Signature Ability is reduced by $s1%.", 0, 0 },
-  { 347765, "$@spelldesc163063", "Dealing $w1% increased damage.", 0 },
+  { 347765, "$@spelldesc329554", "Dealing $w1% increased damage.\r\nTaking $w4% reduced damage.", 0 },
   { 347788, "$@spelldesc324724", 0, "Necrolord" },
   { 347901, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 348007, "$@spelldesc333393", "Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%", 0 },
@@ -15057,8 +15057,8 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 348304, "$@spelldesc326572", "Armor continues the fight.\r\nDamage and healing done reduced by $s7%.\r\nHealing received reduced by $s9%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36671
-static constexpr std::array<hotfix::client_hotfix_entry_t, 31> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.2.36710
+static constexpr std::array<hotfix::client_hotfix_entry_t, 37> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
   {  306830,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.", "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
@@ -15066,12 +15066,16 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 31> __spelltext_hotfi
   {  311648,  0, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power. Deals reduced damage beyond $s5 targets." },
   {  315443,  0, "Sprout an additional limb for $d. Every $t1 sec, it deals $323798s1 Shadow damage to $323798i nearby enemies and pulls an enemy to your location if they are further than $323710s3 yds from you. The first time the limb pulls an enemy gain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][].\r\n\r\nAbomination Limb can only pull the same enemy once every $323710d.", "Sprout an additional limb, dealing ${$323798s1*13} Shadow damage over $d to $323798i nearby enemies. Every $t1 sec, an enemy is pulled to your location if they are further than $323710s3 yds from you. The same enemy can only be pulled once every $323710d.\r\n\r\nGain $?a137008[$s3 Bone Shield charges][]$?a137006[Rime][]$?a137007[Runic Corruption][] instantly, and again every $s4 sec." },
   {  322108,  0, "Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.", "Dispersion also increases movement speed by $47585s4% and makes you immune to all movement impairing effects." },
+  {  323639,  0, "Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting ${$345335s1*$345335d} Nature damage over $345335d to up to $345396s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $345422s1% of the damage you deal to your Hunt target for $323802d.", "Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting $345335o1 Nature damage over $345335d to up to $345396s2 enemies in your path. \r\n\r\nThe pursuit invigorates your soul, healing you for $?c1[$345422s1%][$345422s2%] of the damage you deal to your Hunt target for $323802d." },
+  {  323802,  1, "Marked by the Demon Hunter, converting $s2% of the damage done to healing.", "Marked by the Demon Hunter, converting $?c1[$345422s1%][$345422s2%] of the damage done to healing." },
   {  324064,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  324068,  0, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.", "Increase the stamina of an item worn on the chest by $ec for 2 hrs." },
   {  326514,  0, "Upon death, your armor continues to fight, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing.", "Your $pri and Armor are increased by $<buff>% for each enchantment on your armor, up to $<max>%.\r\n\r\nUpon death your armor anchors your soul, allowing you to fight for an additional $327140d. During this time, your damage and healing done is reduced by $327140s7% and you cannot receive healing." },
   {  328257,  0, "Using a spell or ability increases your Versatility by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%.", "Using a spell or ability reduces your magic damage taken by $328900s1% for $328900d. Using another spell or ability increases this amount by $328900s1% when it is not a repeat of the previous spell or ability, stacking to $328900u%." },
   {  328266,  0, "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<mod>}.1 sec. $?a137018|?a137034[Combat Meditation may only occur once every $345861d.][]", "$?a137005[Shackle the Unworthy]?a212611[Elysian Decree]?a137009[Kindred Spirits]?a137014[Resonating Arrow]?a137018[Radiant Spark]?a137022[Weapons of Order]?a137026[Divine Toll]?a137030[Boon of the Ascended]?a137034[Echoing Reprimand]?a137038[Vesper Totem]?a137042[Scouring Tithe]?a137047[Spear of Bastion][Activating your Kyrian class ability] increases your Mastery by $328908m1 for ${$328908d*$<mod>}.1 sec and occasionally expels Sorrowful Memories. \r\n\r\nWalking through Sorrowful Memories extends this effect by ${$328913m2*$<modb>}.1 sec. $?a137018|?a137042[Combat Meditation may only occur once every $345861d.][]" },
   {  328900,  1, "Versatility increased by $w%.", "Magic damage taken decreased by $w%." },
+  {  329554,  0, "Commission a duel against a Condemned Demon from the Theater of Pain. Vanquishing your foe releases an Empowered Demon Soul and creates a pool of demon blood for $330846d reducing the damage enemies within the pool deal to you by $330874s1%.\r\n\r\nFleshcraft treats the Condemned Demon as a powerful enemy.", "Call forth and defeat a demon from the Theater of Pain to release an Empowered Demon Soul, increasing your damage done by $347765s1% and reducing all damage taken by $347765s4% for $347765d.\r\n \r\nThe demon will escape to the Nether after $d. Throw Glaive deals considerably more damage to the demon and Fleshcraft treats it as a powerful enemy." },
+  {  329554,  1, nullptr, "Battling a demon from the Theater of Pain..." },
   {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby ally drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.", "Your critical strikes grant you stacks of Valiant Strikes, up to $330943u. If a nearby party member drops below $s2% health, you consume these stacks to heal them for $s3% of their maximum health per stack.\r\n\r\nAfter healing this way, you may not benefit from Valiant Strikes for $348236d." },
   {  331934,  1, "Taking $w1% more damage from $@auracaster, and dealing ${$W2}.1% less damage to them.", "Taking $w1% more damage from $@auracaster, and dealing ${-$W2}.1% less damage to them." },
   {  334271,  0, "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284s1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands.", "When Obtained: Your attacks have a chance to poison your target reducing their Haste by $334285s1 and dealing $334284o1 Nature damage over $334284d. Lasts $d. Only usable outdoors in the Shadowlands." },
@@ -15090,9 +15094,11 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 31> __spelltext_hotfi
   {  346917,  0, "Don the Talisman of Destined Defiance, giving you the power to overcome the Jailer's winged abductors.", "Don the Soul-Stabilizing Talisman, gaining permanent immunity to Mawsworn Abductors' $@spellname346835." },
   {  347020,  0, "Rub the paste within the sphere onto your skin, permanently reducing the duration of the $@spellname346875 effect when applied by Assassins.", "Stamp the sigil onto your body, gaining permanent immunity to Mawsworn Assassins' $@spellname346875." },
   {  347234,  1, "$pri increased by $s1.", "$pri increased by $w1." },
+  {  347765,  0, "$@spelldesc163063", "$@spelldesc329554" },
+  {  347765,  1, "Dealing $w1% increased damage.", "Dealing $w1% increased damage.\r\nTaking $w4% reduced damage." },
 } };
 
-// Spell description variables, wow build 9.0.2.36671
+// Spell description variables, wow build 9.0.2.36710
 static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15391,7 +15397,7 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36671
+// spelldesc_vars hotfix entries, wow build 9.0.2.36710
 static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
