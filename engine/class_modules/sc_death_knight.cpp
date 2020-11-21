@@ -8923,7 +8923,7 @@ void death_knight_t::default_apl_blood()
   // Cast abomination limb if available and DRW isn't (to cast it prior to DRW), or DRW is not up.
   covenants -> add_action( "abomination_limb,if=covenant.necrolord&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
   // Finally, we cast shackle if available and DRW isn't (to cast it prior to DRW), or DRW is not up. TODO: pool 2 runes prior, modify APL to prioritize spreading on multi-target
-  covenants -> add_action( "shackle_the_unworthy,if=covenant.kyrian&(dancing_rune_weapon.cooldown.remains<3|!buff.dancing_rune_weapon.up)" );
+  covenants -> add_action( "shackle_the_unworthy,if=covenant.kyrian&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
   */
   // Essences
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
