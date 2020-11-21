@@ -10239,25 +10239,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     {
       return expr_t::create_constant(expression_str, find_spell( splits[ 1 ] )->ok());
     }
-
-    if (splits[ 0 ] == "talent" )
-    {
-      if ( splits[ 2 ] == "enabled" )
-      {
-        const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
-        if ( s == spell_data_t::nil() )
-        {
-          throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
-        }
-
-        return expr_t::create_constant( expression_str, s->ok() );
-      }
-      throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
-    }
   } // splits.size() == 3
 
-
   // *** Variable-Length expressions from here on ***
+
+  // talents
+  if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
+  {
+    const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
+    if ( s == spell_data_t::nil() )
+      throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+
+    if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
+      return expr_t::create_constant( expression_str, s->ok() );
+
+    throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
+  }
 
   // trinkets
   if ( !splits.empty() && splits[ 0 ] == "trinket" )
