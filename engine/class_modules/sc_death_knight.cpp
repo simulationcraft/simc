@@ -8915,7 +8915,9 @@ void death_knight_t::default_apl_blood()
   // Hardcast Death's Due with no CS proc if there is < 3s on the buff.
   covenants -> add_action( "deaths_due,if=covenant.night_fae&(!buff.deaths_due.up|buff.deaths_due.remains<5|buff.crimson_scourge.up)" );
   // Cast HS on the last tick of Death's Due to refresh the buff as late as possible
+  covenants -> add_action( "death_strike,if=covenant.night_fae&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
   covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.remains<3" );
+  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&buff.deaths_due.remains<3");
   // If we're venthyr and we're too high on RP as swarming mist is about to come up, dump some
   covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3" );
   // Cast swarming mist if within 3s of DRW
