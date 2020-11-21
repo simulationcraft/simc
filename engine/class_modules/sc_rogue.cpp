@@ -4004,6 +4004,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t( name, p, p -> find_spell( 319190 ) ),
       last_cp( 1 )
     {
+      aoe = -1; // Yup, this is uncapped.
     }
 
     void reset() override
@@ -4015,6 +4016,24 @@ struct black_powder_t: public rogue_attack_t
     double combo_point_da_multiplier( const action_state_t* ) const override
     {
       return as<double>( last_cp );
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+      rogue_attack_t::available_targets( tl );
+
+      // Can only hit FW targets.
+      tl.erase(std::remove_if(tl.begin(), tl.end(), [this](player_t* t) { return !this->td( t )->debuffs.find_weakness->check(); }), tl.end());
+
+      return tl.size();
+    }
+
+    void execute() override
+    {
+      // Invalidate target cache to force re-checking FW debuffs.
+      target_cache.is_valid = false;
+
+      rogue_attack_t::execute();
     }
   };
 
@@ -4033,31 +4052,27 @@ struct black_powder_t: public rogue_attack_t
 
   void execute() override
   {
-    // TOCHECK: Does this happen before or after the bonus damage? Currently after, but see https://github.com/SimCMinMax/WoW-BugTracker/issues/733.
-    // For consistency with Evis, we move it before, so that both are self-affecting.
-    p()->buffs.deeper_daggers->trigger();
-
     rogue_attack_t::execute();
 
+    // Deeper Daggers triggers before bonus damage which makes it self-affecting.
+    p()->buffs.deeper_daggers->trigger();
+
+    // BUG: Finality BP triggers after physical instant attack before scheduling the shadow damage and is immediately consumes by that.
+    // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
     if ( p()->legendary.finality.ok() )
     {
-      if ( p()->buffs.finality_black_powder->check() )
-        p()->buffs.finality_black_powder->expire();
-      else
-        p()->buffs.finality_black_powder->trigger();
+      p()->buffs.finality_black_powder->trigger();
     }
-  }
 
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( bonus_attack && result_is_hit( state->result ) && td( state->target )->debuffs.find_weakness->up() )
+    if ( bonus_attack )
     {
-      bonus_attack->last_cp = get_combo_points( cast_state( state ) );
-      bonus_attack->set_target( state->target );
+      bonus_attack->last_cp = get_combo_points( cast_state( execute_state ) );
+      bonus_attack->set_target( execute_state->target );
       bonus_attack->execute();
     }
+
+    // See bug above.
+    p()->buffs.finality_black_powder->expire();
   }
 
   bool procs_poison() const override
