@@ -38,6 +38,7 @@ actions+=/call_action_list,name=generators
 actions.cooldowns=lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
 actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/shield_of_vengeance
+actions.cooldowns+=/blessing_of_the_seasons
 actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(buff.avenging_wrath.remains>=20|buff.crusade.stack=10&buff.crusade.remains>15)&(cooldown.guardian_of_azeroth.remains>90|target.time_to_die<30|!essence.condensed_lifeforce.major)
 actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0
 actions.cooldowns+=/crusade,if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0
@@ -91,9 +92,9 @@ main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=force_multiplie
 # gear_ilvl=140.20
 # gear_strength=406
 # gear_stamina=749
-# gear_crit_rating=297
-# gear_haste_rating=356
-# gear_mastery_rating=144
+# gear_crit_rating=274
+# gear_haste_rating=333
+# gear_mastery_rating=121
 # gear_versatility_rating=87
 # gear_corruption=97
 # gear_corruption_resistance=50
