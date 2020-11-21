@@ -8974,7 +8974,7 @@ void death_knight_t::default_apl_frost()
   covenants -> add_action( "deaths_due,if=raid_event.adds.in>15|!raid_event.adds.exists|active_enemies>=2" );
   covenants -> add_action( "swarming_mist,if=active_enemies=1&runic_power.deficit>3&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa.enabled&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   covenants -> add_action( "swarming_mist,if=active_enemies>=2&!talent.breath_of_sindragosa.enabled" );
-  covenants -> add_action( "swarming_mist,if=talent.breath_of_sindragosa.enabled&(runic_power.deficit>40&buff.breath_of_sindragosa.up|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
+  covenants -> add_action( "swarming_mist,if=talent.breath_of_sindragosa.enabled&(buff.breath_of_sindragosa.up&(active_enemies=1&runic_power.deficit>40|active_enemies>=2&runic_power.deficit>60)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2" );
   covenants -> add_action( "shackle_the_unworthy,if=active_enemies=1&cooldown.pillar_of_frost.remains<3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
