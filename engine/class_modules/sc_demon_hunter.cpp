@@ -2820,6 +2820,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       type = soul_fragment::ANY;
     }
+    else if ( value == "demon" )
+    {
+      type = soul_fragment::ANY_DEMON;
+    }
     else if ( value != "" )
     {
       sim->errorf(
@@ -3068,7 +3072,7 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
   struct fodder_to_the_flame_death_t : public demon_hunter_spell_t
   {
     fodder_to_the_flame_death_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 330846 ) )
+      : demon_hunter_spell_t( name, p, p->find_spell( 342357 ) )
     {
       quiet = true;
     }
@@ -5683,7 +5687,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
-  apl_default->add_action( "pick_up_fragment,if=demon_soul_fragments>0" );
+  apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
   apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)" );
   apl_default->add_action( this, "Throw Glaive", "if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)" );
   apl_default->add_action( "call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)" );
@@ -5694,7 +5698,7 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<25" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled&level<54|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)" );
   apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
-  apl_cooldown->add_action( "the_hunt" );
+  apl_cooldown->add_action( "the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up" );
   apl_cooldown->add_action( "fodder_to_the_flame" );
   apl_cooldown->add_action( "elysian_decree" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
@@ -6326,6 +6330,11 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
   if ( s->result_amount <= 0 )
   {
     return;
+  }
+
+  if ( buff.empowered_demon_soul->check() )
+  {
+    s->result_amount *= 1.0 + buff.empowered_demon_soul->data().effectN( 4 ).percent();
   }
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
