@@ -4001,7 +4001,7 @@ struct black_powder_t: public rogue_attack_t
     int last_cp;
 
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell( 319190 ) ),
+      rogue_attack_t( name, p, p->find_spell( 319190 ) ),
       last_cp( 1 )
     {
       aoe = -1; // Yup, this is uncapped.
@@ -4022,18 +4022,22 @@ struct black_powder_t: public rogue_attack_t
     {
       rogue_attack_t::available_targets( tl );
 
-      // Can only hit FW targets.
-      tl.erase(std::remove_if(tl.begin(), tl.end(), [this](player_t* t) { return !this->td( t )->debuffs.find_weakness->check(); }), tl.end());
+      // Can only hit targets with the Find Weakness debuff
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return !this->td( t )->debuffs.find_weakness->check(); } ), tl.end() );
 
       return tl.size();
     }
 
     void execute() override
     {
-      // Invalidate target cache to force re-checking FW debuffs.
+      // Invalidate target cache to force re-checking Find Weakness debuffs.
+      // Don't attempt to execute this attack if it has no valid targets
       target_cache.is_valid = false;
-
-      rogue_attack_t::execute();
+      if ( target_list().size() > 0 )
+      {
+        rogue_attack_t::execute();
+      }
     }
   };
 
