@@ -7956,7 +7956,7 @@ struct faeline_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    aoe = 5; // Currently hard-coded
+    aoe = p.covenant.night_fae->effectN( 3 ).base_value();
   }
 
   void impact( action_state_t* s ) override
