@@ -1457,6 +1457,26 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
+    void impact( action_state_t* s ) override
+    {
+      if ( o()->covenant.necrolord->ok() )
+      {
+        if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
+//          if ( p()->conduit.bone_marrow_hops->ok() && proc_bone_marrow_hops )
+//            damage *= 1 + p()->conduit.bone_marrow_hops.percent();
+
+          o()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          o()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          o()->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      super_t::impact( s );
+    }
+
     void snapshot_internal( action_state_t* state, uint32_t flags, result_amount_type rt ) override
     {
       super_t::snapshot_internal( state, flags, rt );
