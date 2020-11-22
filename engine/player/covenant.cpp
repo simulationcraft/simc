@@ -418,7 +418,8 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
       throw std::invalid_argument(
           fmt::format( "Invalid covenant string '{}'.", expr_str[ 1 ] ) );
     }
-    return expr_t::create_constant( "covenant", as<double>( covenant == m_covenant ) );
+    bool active = covenant == covenant_e::DISABLED ? !enabled() : covenant == m_covenant;
+    return expr_t::create_constant( "covenant", as<double>( active ) );
   }
   else if ( util::str_compare_ci( expr_str[ 0 ], "conduit" ) )
   {
