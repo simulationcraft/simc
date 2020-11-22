@@ -6673,8 +6673,7 @@ void hunter_t::init_assessors()
 
 std::string hunter_t::default_potion() const
 {
-  // TODO: update for Shadowlands
-  return ( true_level >  50 ) ? "disabled" :
+  return ( true_level >  50 ) ? "spectral_agility" :
          ( true_level >= 40 ) ? "unbridled_fury" :
          "disabled";
 }
@@ -6695,8 +6694,7 @@ std::string hunter_t::default_food() const
 
 std::string hunter_t::default_rune() const
 {
-  // TODO: update for Shadowlands
-  return ( true_level >= 60 ) ? "disabled" :
+  return ( true_level >= 60 ) ? "veiled" :
          ( true_level >= 50 ) ? "battle_scarred" :
          "disabled";
 }
