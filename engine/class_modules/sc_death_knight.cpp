@@ -7098,6 +7098,12 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     aoe = -1;
   }
 
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // No longer pandemics
+    return triggered_duration;
+  }
+
   void impact(action_state_t* state) override
   {
     death_knight_spell_t::impact( state );
