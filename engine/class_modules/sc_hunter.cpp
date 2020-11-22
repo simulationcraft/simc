@@ -6923,7 +6923,7 @@ void hunter_t::apl_bm()
     cleave -> add_talent( this, "Chimaera Shot" );
     cleave -> add_talent( this, "A Murder of Crows" );
     cleave -> add_talent( this, "Barrage" );
-    cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload" );
+    cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
     cleave -> add_talent( this, "Dire Beast" );
     cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.main.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9" );
     cleave -> add_action( "focused_azerite_beam" );
@@ -6931,8 +6931,8 @@ void hunter_t::apl_bm()
     cleave -> add_action( "concentrated_flame" );
     cleave -> add_action( "blood_of_the_enemy" );
     cleave -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-    cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload&active_enemies>2");
-    cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload)" );
+    cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
+    cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   }
 }
 
@@ -7087,7 +7087,7 @@ void hunter_t::apl_mm()
     trickshots -> add_talent( this, "Barrage" );
     trickshots -> add_talent( this, "Explosive Shot" );
     trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&ca_active&buff.double_tap.up");
-    trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline)" );
+    trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline)" );
     trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)" );
     trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
     trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70" );
