@@ -6785,7 +6785,6 @@ void hunter_t::apl_bm()
 
     precombat -> add_action( "tar_trap,precast_time=1.5,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
     precombat -> add_action( "bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood&!runeforge.soulforge_embers" );
-    precombat -> add_action( "potion,dynamic_prepot=1" );
 
     default_list -> add_action( "auto_shot" );
     default_list -> add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
@@ -6799,7 +6798,7 @@ void hunter_t::apl_bm()
     cds -> add_action( "berserking,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<13" );
     cds -> add_action( "blood_fury,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<16" );
     cds -> add_action( "lights_judgment" );
-    cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
+    cds -> add_action( "potion,if=buff.aspect_of_the_wild.up|target.time_to_die<26" );
 
     cleave -> add_action( "aspect_of_the_wild" );
     cleave -> add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
@@ -6832,9 +6831,8 @@ void hunter_t::apl_bm()
     st -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
     st -> add_action( "bloodshed" );
     st -> add_action( "wild_spirits" );
-    st -> add_action( "kill_shot" );
     st -> add_action( "flayed_shot" );
-    st -> add_action( "kill_shot,if=buff.flayers_mark<5|target.health.pct<=20" );
+    st -> add_action( "kill_shot,if=buff.flayers_mark.remains<5|target.health.pct<=20" );
     st -> add_action( "barbed_shot,if=(cooldown.wild_spirits.remains>full_recharge_time|!covenant.night_fae)&(cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains)|target.time_to_die<9" );
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
     st -> add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
