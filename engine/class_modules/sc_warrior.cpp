@@ -2657,7 +2657,7 @@ struct execute_arms_t : public warrior_attack_t
     }
     if ( p()->buff.deadly_calm->check() )
     {
-      c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
+      return 0;  // To avoid extremely small number shenanigans on raidbots
     }
     return c;
   }
@@ -4883,7 +4883,7 @@ struct condemn_arms_t : public warrior_attack_t
     }
     if ( p()->buff.deadly_calm->check() )
     {
-      c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
+      return 0;  // To avoid extremely small number shenanigans on raidbots
     }
     return c;
   }
