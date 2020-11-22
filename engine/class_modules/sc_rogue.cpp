@@ -820,6 +820,18 @@ public:
   double consume_cp_max() const
   { return COMBO_POINT_MAX + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
 
+  double current_effective_cp() const
+  {
+    double current_cp = resources.current[ RESOURCE_COMBO_POINT ];
+    if ( ( current_cp == 2 && buffs.echoing_reprimand_2->check() ) ||
+         ( current_cp == 3 && buffs.echoing_reprimand_3->check() ) ||
+         ( current_cp == 4 && buffs.echoing_reprimand_4->check() ) )
+    {
+      return covenant.echoing_reprimand->effectN( 2 ).base_value();
+    }
+    return current_cp;
+  }
+
   target_specific_t<rogue_td_t> target_data;
 
   const rogue_td_t* find_target_data( const player_t* target ) const override
@@ -4327,10 +4339,20 @@ struct slice_and_dice_t : public rogue_spell_t
   bool ready() override
   {
     // Grand Melee prevents refreshing if there would be a reduction in the post-pandemic buff duration
-    if ( p()->buffs.slice_and_dice->remains() > get_triggered_duration( as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] ) ) * 1.3 )
+    if ( p()->buffs.slice_and_dice->remains() > get_triggered_duration( as<int>( p()->current_effective_cp() ) ) * 1.3 )
       return false;
 
     return rogue_spell_t::ready();
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "refreshable" ) )
+      return make_fn_expr( name_str, [ this ]() {
+        return p()->buffs.slice_and_dice->remains() < get_triggered_duration( as<int>( p()->current_effective_cp() ) ) * 0.3;
+      } );
+
+    return rogue_spell_t::create_expression( name_str );
   }
 };
 
@@ -6970,8 +6992,8 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
     def->add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
     def->add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)" );
+    def->add_action( this, "Slice and Dice", "if=spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel.equipped)&buff.slice_and_dice.remains<fight_remains&refreshable&combo_points>=3" );
     def->add_action( "call_action_list,name=dot" );
-    def->add_action( this, "Slice and Dice", "if=spell_targets.fan_of_knives<=(5-runeforge.dashing_scoundrel.equipped)&buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     def->add_action( "call_action_list,name=direct" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def->add_action( "arcane_pulse" );
@@ -7072,7 +7094,7 @@ void rogue_t::init_action_list()
     direct->add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct->add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
-    direct->add_action( "echoing_reprimand,if=variable.use_filler" );
+    direct->add_action( "echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10" );
     direct->add_action( this, "Ambush", "if=variable.use_filler" );
     direct->add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
     direct->add_action( this, "Mutilate", "if=variable.use_filler" );
@@ -7363,7 +7385,13 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   auto split = util::string_split<util::string_view>( name_str, "." );
 
   if ( name_str == "combo_points" )
+  {
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
+  }
+  else if ( name_str == "effective_combo_points" )
+  {
+    return make_mem_fn_expr( name_str, *this, &rogue_t::current_effective_cp );
+  }
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
     return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
