@@ -37,8 +37,8 @@ actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invuln
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
 actions=stealth
-# Currently not worth rerolling in SL in any known situation
-actions+=/variable,name=rtb_reroll,value=0
+# Reroll single BT/GM/TB buffs when possible
+actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)
 actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
