@@ -6305,23 +6305,10 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Prevent the monk from melee'ing while channeling soothing_mist.
-    // FIXME: This is super hacky and spams up the APL sample sequence a bit.
-    // Disabled since mistweaver doesn't work atm.
-    // if ( p() -> buff.channeling_soothing_mist -> check() )
-    // return;
-
     if ( first )
       first = false;
 
-    if ( time_to_execute > timespan_t::zero() && player->executing )
-    {
-      sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                               util::slot_type_string( weapon->slot ) );
-      schedule_execute();
-    }
-    else
-      monk_melee_attack_t::execute();
+    monk_melee_attack_t::execute();
   }
 };
 
