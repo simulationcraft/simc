@@ -4774,17 +4774,21 @@ struct trap_base_t : hunter_spell_t
 
 struct tar_trap_t : public trap_base_t
 {
+  timespan_t debuff_duration;
+
   tar_trap_t( hunter_t* p, util::string_view options_str ) :
     trap_base_t( "tar_trap", p, p -> find_class_spell( "Tar Trap" ) )
   {
     parse_options( options_str );
+
+    debuff_duration = p -> find_spell( 13810 ) -> duration();
   }
 
   void impact( action_state_t* s ) override
   {
     trap_base_t::impact( s );
 
-    p() -> state.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, 30_s );
+    p() -> state.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, debuff_duration );
   }
 };
 
