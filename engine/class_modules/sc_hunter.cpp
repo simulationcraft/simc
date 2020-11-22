@@ -6788,7 +6788,7 @@ void hunter_t::apl_bm()
     precombat -> add_action( "potion,dynamic_prepot=1" );
 
     default_list -> add_action( "auto_shot" );
-    default_list -> add_action( "counter_shot,line_cd,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune.enabled&!runeforge.sephuzs_proclamation)" );
+    default_list -> add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune.enabled&!runeforge.sephuzs_proclamation)" );
     default_list -> add_action( "use_items" );
     default_list -> add_action( "call_action_list,name=cds" );
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
@@ -6954,7 +6954,7 @@ void hunter_t::apl_mm()
     precombat -> add_action( "steady_shot,if=active_enemies>2" );
 
     default_list -> add_action( "auto_shot" );
-    default_list -> add_action( "counter_shot,line_cd,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune.enabled&!runeforge.sephuzs_proclamation)" );
+    default_list -> add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune.enabled&!runeforge.sephuzs_proclamation)" );
     default_list -> add_action( "use_items" );
     default_list -> add_action( "call_action_list,name=cds" );
     default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
