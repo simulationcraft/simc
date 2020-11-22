@@ -6796,8 +6796,8 @@ void hunter_t::apl_bm()
 
     cds -> add_action( "ancestral_call,if=cooldown.bestial_wrath.remains>30" );
     cds -> add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
-    cds -> add_action( "berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<13" );
-    cds -> add_action( "blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<16" );
+    cds -> add_action( "berserking,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13" );
+    cds -> add_action( "blood_fury,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16" );
     cds -> add_action( "lights_judgment,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains>gcd.max|!pet.main.buff.frenzy.up" );
     cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
@@ -6846,7 +6846,7 @@ void hunter_t::apl_bm()
     st -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
     st -> add_action( "dire_beast" );
     st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3" );
-    st -> add_action( "barbed_shot,if=buff.wild_spirits.up");
+    st -> add_action( "barbed_shot,if=buff.wild_spirits.up" );
     st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
     st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
