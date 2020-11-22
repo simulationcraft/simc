@@ -7278,7 +7278,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
-    stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped" );
+    stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5" );
     stealthed->add_action( this, "Shadowstrike", "if=level<52&debuff.find_weakness.remains<1&target.time_to_die-remains>6", "For pre-patch, keep Find Weakness up on the primary target due to no Shadow Vault" );
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
@@ -7301,7 +7301,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped" );
+    build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5" );
     build->add_action( this, "Shuriken Storm", "if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)" );
     build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up" );
     build->add_talent( this, "Gloomblade" );
