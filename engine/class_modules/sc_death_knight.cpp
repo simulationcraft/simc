@@ -501,6 +501,7 @@ public:
 
     // Conduits
     buff_t* eradicating_blow;
+    buff_t* meat_shield;
     buff_t* unleashed_frenzy;
 
     // Legendaries
@@ -950,7 +951,7 @@ public:
 
     // Blood
     conduit_data_t debilitating_malady; // 123
-    // conduit_data_t meat_shield; // Endurance trait, 121
+    conduit_data_t meat_shield; // Endurance trait, 121
     conduit_data_t withering_plague; // 80
 
     // Frost
@@ -1102,6 +1103,7 @@ public:
   void      arise() override;
   void      adjust_dynamic_cooldowns() override;
   void      assess_heal( school_e, result_amount_type, action_state_t* ) override;
+  void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void      assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
   void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
@@ -4283,8 +4285,11 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dancing_rune_weapon -> trigger();
+    if ( p() -> conduits.meat_shield -> ok () )
+      p() -> buffs.dancing_rune_weapon -> extend_duration(p(), p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
     p() -> buffs.eternal_rune_weapon -> trigger();
-    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
+    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) + 
+                                                                             p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
   }
 };
 
@@ -9174,7 +9179,7 @@ void death_knight_t::init_spells()
 
   // Blood
   conduits.debilitating_malady = find_conduit_spell( "Debilitating Malady" );
-  // conduits.meat_shield = find_conduit_spell( "Meat Shield" );
+  conduits.meat_shield = find_conduit_spell( "Meat Shield" );
   conduits.withering_plague = find_conduit_spell( "Withering Plague" );
 
   // Frost
@@ -9891,6 +9896,19 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( conduits.eradicating_blow )
         -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
 
+  buffs.meat_shield = make_buff( this, "meat_shield", find_spell( 338438 ) )
+        -> set_default_value( conduits.meat_shield.percent() )
+        -> set_trigger_spell( conduits.meat_shield )
+        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
+          {
+            double ms_health = conduits.meat_shield.percent();
+            double health_change = ( 1.0 + new_stacks * ms_health ) / ( 1.0 + old_stacks * ms_health );
+
+            resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
+
+            recalculate_resource_max( RESOURCE_HEALTH );
+          } );
+
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
       -> set_default_value( conduits.unleashed_frenzy.percent() );
@@ -10094,6 +10112,18 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
     s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + spec.vampiric_blood_2 -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, t, s );
+}
+
+// death_knight_t::assess_damage ============================================
+
+void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
+{
+  player_t::assess_damage( school, type, s );
+
+  if ( s-> result == RESULT_PARRY && buffs.dancing_rune_weapon -> up() )
+  {
+    buffs.meat_shield -> trigger();
+  }
 }
 
 // death_knight_t::assess_damage_imminent ===================================
