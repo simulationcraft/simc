@@ -26,17 +26,17 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/cat_form,if=druid.catweave_bear&talent.feral_affinity.enabled
-actions.precombat+=/prowl,if=druid.catweave_bear&talent.feral_affinity.enabled
-actions.precombat+=/moonkin_form,if=druid.owlweave_bear&talent.balance_affinity.enabled
+actions.precombat+=/cat_form,if=druid.catweave_bear
+actions.precombat+=/prowl,if=druid.catweave_bear
+actions.precombat+=/moonkin_form,if=druid.owlweave_bear
 actions.precombat+=/bear_form,if=!druid.catweave_bear&!druid.owlweave_bear
-actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&druid.owlweave_bear
+actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)
 actions.precombat+=/wrath,if=druid.owlweave_bear
 
 # Executed every time the actor is available.
-actions=auto_attack
-actions+=/use_items
-actions+=/potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_bear))
+actions=auto_attack,if=!buff.prowl.up
+actions+=/use_items,if=!buff.prowl.up
+actions+=/potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))
 actions+=/run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>25)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up&(buff.cat_form.up&energy>20))|(runeforge.oath_of_the_elder_druid.equipped&buff.heart_of_the_wild.remains<10)&(buff.cat_form.up&energy>20)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<2))
 actions+=/run_action_list,name=owlweave,if=druid.owlweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<20&buff.incarnation.down&buff.berserk_bear.down)|(buff.moonkin_form.up&dot.sunfire.refreshable)|(buff.moonkin_form.up&buff.heart_of_the_wild.up)|(buff.moonkin_form.up&(buff.eclipse_lunar.up|buff.eclipse_solar.up)&!runeforge.oath_of_the_elder_druid.equipped)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up)|(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<2))
 actions+=/run_action_list,name=lycarao,if=((runeforge.lycaras_fleeting_glimpse.equipped)&(talent.balance_affinity.enabled)&(buff.lycaras_fleeting_glimpse.up)&(buff.lycaras_fleeting_glimpse.remains<=2))
@@ -44,30 +44,29 @@ actions+=/run_action_list,name=lycarac,if=((runeforge.lycaras_fleeting_glimpse.e
 actions+=/run_action_list,name=bear
 
 actions.bear=bear_form,if=!buff.bear_form.up
-actions.bear+=/potion,if=((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear))
 actions.bear+=/ravenous_frenzy
 actions.bear+=/convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear
 actions.bear+=/berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)
 actions.bear+=/incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)
 actions.bear+=/empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2
 actions.bear+=/barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)
-actions.bear+=/ironfur,if=buff.ironfur.remains<0.5
-actions.bear+=/adaptive_swarm,target_if=refreshable
+actions.bear+=/adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
 actions.bear+=/moonfire,if=(buff.galactic_guardian.up&druid.owlweave_bear)&active_enemies<=3
-actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped)|active_enemies>5
+actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped)|active_enemies>=4
 actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4
 actions.bear+=/maul,if=buff.incarnation.up&active_enemies<2
 actions.bear+=/maul,if=(buff.savage_combatant.stack>=1)&(buff.tooth_and_claw.up)&buff.incarnation.up&active_enemies=2
 actions.bear+=/mangle,if=buff.incarnation.up&active_enemies<=3
 actions.bear+=/moonfire,target_if=refreshable&active_enemies<=3
-actions.bear+=/maul,if=(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3)
+actions.bear+=/maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3))&active_enemies<3)
 actions.bear+=/thrash_bear,if=active_enemies>1
 actions.bear+=/moonfire,if=(buff.galactic_guardian.up&druid.catweave_bear)&active_enemies<=3|(buff.galactic_guardian.up&!druid.catweave_bear&!druid.owlweave_bear)&active_enemies<=3
-actions.bear+=/mangle,if=(rage<80)&active_enemies<4
+actions.bear+=/mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)
 actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
 actions.bear+=/thrash_bear
-actions.bear+=/maul
+actions.bear+=/maul,if=active_enemies<3
 actions.bear+=/swipe_bear
+actions.bear+=/ironfur,if=rage.deficit<40&buff.ironfur.remains<0.5
 
 actions.catweave=cat_form,if=!buff.cat_form.up
 actions.catweave+=/rake,if=buff.prowl.up
@@ -76,7 +75,7 @@ actions.catweave+=/empower_bond,if=druid.catweave_bear
 actions.catweave+=/convoke_the_spirits,if=druid.catweave_bear
 actions.catweave+=/rip,if=dot.rip.refreshable&combo_points>=4
 actions.catweave+=/ferocious_bite,if=combo_points>=4
-actions.catweave+=/adaptive_swarm,target_if=refreshable
+actions.catweave+=/adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
 actions.catweave+=/rake,if=dot.rake.refreshable&combo_points<4
 actions.catweave+=/shred
 
@@ -88,11 +87,11 @@ actions.owlweave=moonkin_form,if=!buff.moonkin_form.up
 actions.owlweave+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
 actions.owlweave+=/empower_bond,if=druid.owlweave_bear
 actions.owlweave+=/convoke_the_spirits,if=druid.owlweave_bear
-actions.owlweave+=/adaptive_swarm,target_if=refreshable
+actions.owlweave+=/adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
 actions.owlweave+=/moonfire,target_if=refreshable|buff.galactic_guardian.up
 actions.owlweave+=/sunfire,target_if=refreshable
 actions.owlweave+=/starsurge,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)
-actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment.up)
+actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=44/459/582/241/13
@@ -115,9 +114,9 @@ main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=force_multiplier
 # gear_ilvl=138.87
 # gear_agility=429
 # gear_stamina=741
-# gear_crit_rating=161
-# gear_haste_rating=250
-# gear_mastery_rating=230
+# gear_crit_rating=138
+# gear_haste_rating=227
+# gear_mastery_rating=207
 # gear_versatility_rating=184
 # gear_corruption=95
 # gear_corruption_resistance=50

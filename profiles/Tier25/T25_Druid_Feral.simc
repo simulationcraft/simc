@@ -58,11 +58,13 @@ actions+=/run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)
 # Multi-gcd stealth
 actions+=/run_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up
 # The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)
-actions+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))>=(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
+actions+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
 actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&(buff.bloodtalons.down|active_bt_triggers=2)
+actions+=/pool_resource,for_next=1
 actions+=/rake,target_if=refreshable|persistent_multiplier>dot.rake.pmultiplier
 actions+=/feral_frenzy,if=combo_points=0
 actions+=/moonfire_cat,target_if=refreshable
+actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>variable.thrash_ticks
 actions+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))&(spell_targets.brutal_slash*action.brutal_slash.damage%action.brutal_slash.cost)>(action.shred.damage%action.shred.cost)
 actions+=/swipe_cat,if=spell_targets.swipe_cat>2
@@ -142,9 +144,9 @@ main_hand=anzig_vra,id=172191,bonus_id=4824/1517,enchant=versatile_navigation
 # gear_ilvl=147.80
 # gear_agility=486
 # gear_stamina=749
-# gear_crit_rating=315
-# gear_haste_rating=265
-# gear_mastery_rating=222
+# gear_crit_rating=292
+# gear_haste_rating=242
+# gear_mastery_rating=199
 # gear_versatility_rating=53
 # gear_corruption=90
 # gear_corruption_resistance=50

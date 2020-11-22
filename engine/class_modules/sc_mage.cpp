@@ -554,6 +554,8 @@ public:
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
+    proc_t* infernal_cascade_expires; // IC buffs expired during Combustion
+
     proc_t* brain_freeze;
     proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_used;
@@ -2007,11 +2009,11 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
 
-          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast,
-          // the game will immediately finish the cast. This is presumably done to work
-          // around the buff application delay inside Combustion or with Searing Touch
-          // active. The following code is a huge hack.
-          if ( id == 2948 && p->executing && p->executing->id == 11366 )
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast
+          // or Flamestrike, the game will immediately finish the cast. This is presumably
+          // done to work around the buff application delay inside Combustion or with
+          // Searing Touch active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 ) )
           {
             assert( p->executing->execute_event );
             p->current_execute_type = execute_type::FOREGROUND;
@@ -5494,6 +5496,17 @@ struct shifting_power_t final : public mage_spell_t
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "tick_reduction" ) )
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() : 0.0 );
+
+    if ( util::str_compare_ci( name, "full_reduction" ) )
+      return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() * dot_duration / base_tick_time : 0.0 );
+
+    return mage_spell_t::create_expression( name );
+  }
 };
 
 // ==========================================================================
@@ -6621,7 +6634,9 @@ void mage_t::create_buffs()
                              ->set_default_value( conduits.infernal_cascade.percent() )
                              ->set_schools_from_effect( 1 )
                              ->set_chance( conduits.infernal_cascade.ok() )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                               { if ( cur == 0 && buffs.combustion->check() ) procs.infernal_cascade_expires->occur(); } );
 
   buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
                              ->set_default_value( conduits.siphoned_malice.percent() )
@@ -6671,6 +6686,8 @@ void mage_t::init_procs()
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
+
+      procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion" );
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );

@@ -58,14 +58,16 @@ void heal_t::parse_effect_data(const spelleffect_data_t& e)
 {
   base_t::parse_effect_data(e);
 
-  if (e.ok())
+  if ( e.ok() )
   {
-    if (e.type() == E_HEAL_PCT)
+    if ( e.type() == E_HEAL_PCT )
     {
       base_pct_heal = e.percent();
     }
-    else if (e.subtype() == A_OBS_MOD_HEALTH)
+    else if ( e.subtype() == A_PERIODIC_HEAL_PCT )
+    {
       tick_pct_heal = e.percent();
+    }
   }
 }
 
@@ -224,8 +226,10 @@ void heal_t::assess_damage(result_amount_type heal_type, action_state_t* s)
   {
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();
-    if (pt != PROC1_INVALID && pt2 != PROC2_INVALID)
-      action_callback_t::trigger(player->callbacks.procs[pt][pt2], this, s);
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+    {
+      action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, s );
+    }
   }
 
   if (player->record_healing())

@@ -97,12 +97,7 @@ namespace runeforge
 std::unique_ptr<expr_t> create_expression( const player_t* player,
                                            util::span<const util::string_view> expr_str )
 {
-  if ( expr_str.size() != 3 )
-  {
-    return nullptr;
-  }
-
-  if ( !util::str_compare_ci( expr_str.front(), "runeforge" ) )
+  if ( expr_str.size() < 2 || !util::str_compare_ci( expr_str.front(), "runeforge" ) )
   {
     return nullptr;
   }
@@ -114,20 +109,18 @@ std::unique_ptr<expr_t> create_expression( const player_t* player,
         fmt::format( "Unknown runeforge legendary name '{}'", expr_str[ 1 ] ) );
   }
 
-  if ( util::str_compare_ci( expr_str[ 2 ], "equipped" ) )
+  if ( expr_str.size() == 2 || ( expr_str.size() == 3 && util::str_compare_ci( expr_str[ 2 ], "equipped" ) ) )
   {
-    return expr_t::create_constant( "runeforge_equipped",
-        static_cast<double>( runeforge->ok() ) );
-  }
-  else
-  {
-    throw std::invalid_argument(
-        fmt::format( "Invalid runeforge legendary expression '{}', allowed values are 'equipped'.",
-          expr_str[ 2 ] ) );
+    return expr_t::create_constant( "runeforge_equipped", runeforge->ok() );
   }
 
-  return nullptr;
+  throw std::invalid_argument(
+        fmt::format( "Invalid runeforge legendary expression '{}', allowed values are 'equipped'.",
+          expr_str[ 2 ] ) );
+
+  return nullptr; // unreachable
 }
+
 report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root )
 {
   std::string legendary_str;

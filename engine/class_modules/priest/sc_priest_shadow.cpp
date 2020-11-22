@@ -404,7 +404,8 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).base_value() /
+                        10 )  // Spell Data stores this as 100 not 1000 or 10
   {
     parse_options( options_str );
 
@@ -465,11 +466,6 @@ struct shadow_word_death_t final : public priest_spell_t
           dots = swp_ticking + vt_ticking;
         }
 
-        // Right now in-game this is not using the spell data value
-        if ( priest().bugs )
-        {
-          insanity_per_dot = 5;
-        }
         double insanity_gain = dots * insanity_per_dot;
 
         priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
@@ -2161,12 +2157,13 @@ void priest_t::generate_apl_shadow()
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( this, covenant.fae_guardians, "fae_guardians",
-                   "if=!buff.voidform.up&!cooldown.void_torrent.up|buff.voidform.up&(soulbind.grove_invigoration."
-                   "enabled|soulbind.field_of_blossoms.enabled)",
+                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
+                   "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
   cds->add_action( this, covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
+                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|"
+                   "debuff.hungering_void.up|!buff.voidform.up)" );
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"

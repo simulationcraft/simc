@@ -2,16 +2,18 @@ rogue="PR_Rogue_Outlaw"
 source=default
 spec=outlaw
 level=60
-race=pandaren
+race=mechagnome
 role=attack
 position=back
-talents=3010022
+talents=2020022
+covenant=kyrian
+soulbind=combat_meditation/count_the_odds:4
 
 # Default consumables
-potion=potion_of_unbridled_fury
-flask=greater_flask_of_the_currents
-food=famine_evaluator_and_snack_table
-augmentation=battle_scarred
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -116,29 +118,28 @@ actions.finish+=/dispatch
 actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
 actions.stealth+=/ambush
 
-head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1500
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1500
-back=dealer_xyexas_cape,id=179349,bonus_id=6807/1500
-chest=rainshadow_hauberk,id=178698,bonus_id=6807/1500
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1500
-hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1500
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
-legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
-feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
-trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
-main_hand=bloodspiller,id=179328,bonus_id=6807/1500
-off_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
+head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6716/7121/1487
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
+hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
+legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+main_hand=gorebound_predators_gavel,id=178864,bonus_id=6807/1498,enchant=celestial_guidance
+off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.38
-# gear_agility=562
-# gear_stamina=862
-# gear_crit_rating=401
-# gear_haste_rating=332
-# gear_mastery_rating=444
-# gear_versatility_rating=140
-# gear_armor=482
+# gear_agility=597
+# gear_stamina=857
+# gear_crit_rating=516
+# gear_haste_rating=381
+# gear_versatility_rating=477
+# gear_armor=479

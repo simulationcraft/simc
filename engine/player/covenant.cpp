@@ -405,7 +405,7 @@ std::string covenant_state_t::covenant_option_str() const
 std::unique_ptr<expr_t> covenant_state_t::create_expression(
     util::span<const util::string_view> expr_str ) const
 {
-  if ( expr_str.size() == 1 )
+  if ( expr_str.size() < 2 )
   {
     return nullptr;
   }
@@ -418,7 +418,8 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
       throw std::invalid_argument(
           fmt::format( "Invalid covenant string '{}'.", expr_str[ 1 ] ) );
     }
-    return expr_t::create_constant( "covenant", as<double>( covenant == m_covenant ) );
+    bool active = covenant == covenant_e::DISABLED ? !enabled() : covenant == m_covenant;
+    return expr_t::create_constant( "covenant", as<double>( active ) );
   }
   else if ( util::str_compare_ci( expr_str[ 0 ], "conduit" ) )
   {
@@ -428,22 +429,32 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
       return expr_t::create_constant( "conduit_nok", 0.0 );
     }
 
-    if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+    if ( expr_str.size() == 2 )
     {
-      return expr_t::create_constant( "conduit_enabled", as<double>( conduit_ability.ok() ) );
+      return expr_t::create_constant( "conduit_enabled", conduit_ability.ok() );
     }
-    else if ( util::str_compare_ci( expr_str[ 2 ], "rank" ) )
+
+    if ( expr_str.size() == 3 )
     {
-      return expr_t::create_constant( "conduit_rank", as<double>( conduit_ability.rank() ) );
+      if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+      {
+        return expr_t::create_constant( "conduit_enabled", as<double>( conduit_ability.ok() ) );
+      }
+      else if ( util::str_compare_ci( expr_str[ 2 ], "rank" ) )
+      {
+        return expr_t::create_constant( "conduit_rank", as<double>( conduit_ability.rank() ) );
+      }
+      else if ( util::str_compare_ci( expr_str[ 2 ], "value" ) )
+      {
+        return expr_t::create_constant( "conduit_value", conduit_ability.value() );
+      }
+      else if ( util::str_compare_ci( expr_str[ 2 ], "time_value" ) )
+      {
+        return expr_t::create_constant( "conduit_time_value", conduit_ability.time_value() );
+      }
     }
-    else if ( util::str_compare_ci( expr_str[ 2 ], "value" ) )
-    {
-      return expr_t::create_constant( "conduit_value", as<double>( conduit_ability.value() ) );
-    }
-    else if ( util::str_compare_ci( expr_str[ 2 ], "time_value" ) )
-    {
-      return expr_t::create_constant( "conduit_time_value", as<double>( conduit_ability.time_value().total_seconds() ) );
-    }
+
+    throw std::invalid_argument( fmt::format( "Invalid conduit string '{}'", fmt::join( expr_str, "." ) ) );
   }
   else if ( util::str_compare_ci( expr_str[ 0 ], "soulbind" ) )
   {
@@ -454,9 +465,9 @@ std::unique_ptr<expr_t> covenant_state_t::create_expression(
           fmt::format( "Invalid soulbind ability '{}'", expr_str[ 1 ] ) );
     }
 
-    if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+    if ( expr_str.size() == 2 || ( expr_str.size() == 3 && util::str_compare_ci( expr_str[ 2 ], "enabled" ) ) )
     {
-      return expr_t::create_constant( "soulbind_enabled", as<double>( soulbind_spell->ok() ) );
+      return expr_t::create_constant( "soulbind_enabled", soulbind_spell->ok() );
     }
   }
 

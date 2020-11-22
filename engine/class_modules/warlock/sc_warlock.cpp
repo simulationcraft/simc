@@ -434,7 +434,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       ->set_cooldown( 0_ms )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
+                        {
+                          p.get_target_data( p.havoc_target )->debuffs_odr->expire();
                           p.havoc_target = nullptr;
+                        }
                         else
                           p.havoc_target = b->player;
 
@@ -1783,6 +1786,11 @@ struct warlock_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11.0 )
+      .verification_value( 43.0 );
   }
 
   bool valid() const override

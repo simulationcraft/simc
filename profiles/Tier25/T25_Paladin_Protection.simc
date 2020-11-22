@@ -24,6 +24,7 @@ augmentation=disabled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/devotion_aura
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
@@ -86,9 +87,9 @@ off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 # gear_ilvl=139.75
 # gear_strength=407
 # gear_stamina=747
-# gear_crit_rating=288
-# gear_haste_rating=338
-# gear_mastery_rating=130
+# gear_crit_rating=265
+# gear_haste_rating=315
+# gear_mastery_rating=107
 # gear_versatility_rating=122
 # gear_corruption=95
 # gear_corruption_resistance=50

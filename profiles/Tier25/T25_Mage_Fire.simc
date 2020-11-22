@@ -38,17 +38,18 @@ actions.precombat+=/variable,name=arcane_explosion,op=set,if=variable.arcane_exp
 # This variable specifies the percentage of mana below which Arcane Explosion will not be used.
 actions.precombat+=/variable,name=arcane_explosion_mana,default=40,op=reset
 # With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling.
-actions.precombat+=/variable,name=kindling_reduction,default=0.2,op=reset
-# The amount of cooldown reduction in seconds given by a full channel of Shifting Power. The dbc.effect.815503.base_value%1000 expression gives the number of seconds removed by each tick normally and conduit.discipline_of_the_grove.time_value gives the additional adjustment from that conduit.
-actions.precombat+=/variable,name=shifting_power_reduction,op=set,value=-action.shifting_power.execute_time%action.shifting_power.new_tick_time*(dbc.effect.815503.base_value%1000+conduit.discipline_of_the_grove.time_value),if=covenant.night_fae.enabled
+actions.precombat+=/variable,name=kindling_reduction,default=0.4,op=reset
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,op=set,value=dbc.effect.828420.base_value
-actions.precombat+=/variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch
+actions.precombat+=/variable,name=combustion_on_use,op=set,value=equipped.macabre_sheet_music|equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch
 actions.precombat+=/variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use
+actions.precombat+=/variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use+5*equipped.macabre_sheet_music
 # This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.
 actions.precombat+=/variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&!talent.firestarter.enabled&variable.font_of_power_precombat_channel=0
 # How long before Combustion should Empyreal Ordnance be used?
 actions.precombat+=/variable,name=empyreal_ordnance_delay,default=18,op=reset
+# The number of targets Shifting Power should be used on during Combustion.
+actions.precombat+=/variable,name=combustion_shifting_power,default=2,op=reset
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power,if=!variable.disable_combustion
 actions.precombat+=/mirror_image
@@ -59,16 +60,16 @@ actions=counterspell,if=!runeforge.disciplinary_command.equipped
 actions+=/variable,name=time_to_combustion,op=set,value=talent.firestarter.enabled*firestarter.remains+(cooldown.combustion.remains*(1-variable.kindling_reduction*talent.kindling.enabled))*!cooldown.combustion.ready*buff.combustion.down
 # Make sure Combustion is delayed if needed based on the empyreal_ordnance_delay variable
 actions+=/variable,name=time_to_combustion,op=max,value=variable.empyreal_ordnance_delay-(cooldown.empyreal_ordnance.duration-cooldown.empyreal_ordnance.remains)*!cooldown.empyreal_ordnance.ready,if=equipped.empyreal_ordnance
-actions+=/shifting_power,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains>0&(cooldown.rune_of_power.remains>0|!talent.rune_of_power.enabled)
+actions+=/shifting_power,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains>0
 actions+=/radiant_spark,if=(buff.combustion.down&buff.rune_of_power.down&(cooldown.combustion.remains<execute_time|cooldown.combustion.remains>cooldown.radiant_spark.duration))|(buff.rune_of_power.up&cooldown.combustion.remains>30)
 actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&cooldown.combustion.remains<execute_time
 actions+=/mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
 actions+=/use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay
-actions+=/use_item,name=soul_igniter
-actions+=/use_item,name=glyph_of_assimilation
+actions+=/use_item,name=soul_igniter,if=variable.time_to_combustion>=variable.on_use_cutoff
+actions+=/use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff
 actions+=/use_item,name=macabre_sheet_music,if=variable.time_to_combustion<=5
-actions+=/use_item,name=dreadfire_vessel
+actions+=/use_item,name=dreadfire_vessel,if=variable.time_to_combustion>=variable.on_use_cutoff
 actions+=/use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&variable.time_to_combustion>0&!variable.disable_combustion
 actions+=/guardian_of_azeroth,if=(variable.time_to_combustion<10|fight_remains<variable.time_to_combustion)&!variable.disable_combustion
 actions+=/concentrated_flame
@@ -81,16 +82,19 @@ actions+=/the_unbound_force
 actions+=/counterspell,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&cooldown.combustion.remains>30&!buff.disciplinary_command.up
 actions+=/arcane_explosion,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&cooldown.combustion.remains>30&!buff.disciplinary_command.up
 actions+=/frostbolt,if=runeforge.disciplinary_command.equipped&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&cooldown.combustion.remains>30&!buff.disciplinary_command.up
-actions+=/rune_of_power,if=buff.rune_of_power.down&(variable.time_to_combustion>buff.rune_of_power.duration&variable.time_to_combustion>action.fire_blast.full_recharge_time|variable.time_to_combustion>fight_remains|variable.disable_combustion)
 actions+=/call_action_list,name=combustion_phase,if=!variable.disable_combustion&variable.time_to_combustion<=0
-actions+=/variable,name=fire_blast_pooling,value=!variable.disable_combustion&variable.time_to_combustion<action.fire_blast.full_recharge_time-variable.shifting_power_reduction*(cooldown.shifting_power.remains<variable.time_to_combustion)&variable.time_to_combustion<fight_remains
-actions+=/variable,name=phoenix_pooling,value=!variable.disable_combustion&variable.time_to_combustion<action.phoenix_flames.full_recharge_time-variable.shifting_power_reduction*(cooldown.shifting_power.remains<variable.time_to_combustion)&variable.time_to_combustion<fight_remains|runeforge.sun_kings_blessing.equipped
+actions+=/variable,name=fire_blast_pooling,value=!variable.disable_combustion&variable.time_to_combustion<action.fire_blast.full_recharge_time-action.shifting_power.full_reduction*(cooldown.shifting_power.remains<variable.time_to_combustion)&variable.time_to_combustion<fight_remains|talent.rune_of_power.enabled&buff.rune_of_power.down&cooldown.rune_of_power.remains<action.fire_blast.full_recharge_time-action.shifting_power.full_reduction*(cooldown.shifting_power.remains<cooldown.rune_of_power.remains)&cooldown.rune_of_power.remains<fight_remains
+actions+=/variable,name=phoenix_pooling,value=!variable.disable_combustion&variable.time_to_combustion<action.phoenix_flames.full_recharge_time-action.shifting_power.full_reduction*(cooldown.shifting_power.remains<variable.time_to_combustion)&variable.time_to_combustion<fight_remains|runeforge.sun_kings_blessing.equipped
+actions+=/rune_of_power,if=buff.rune_of_power.down&!buff.firestorm.react&(variable.time_to_combustion>buff.rune_of_power.duration&variable.time_to_combustion>action.fire_blast.full_recharge_time|variable.time_to_combustion>fight_remains|variable.disable_combustion)
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&(variable.time_to_combustion>0|variable.disable_combustion)
 # When Hardcasting Flame Strike, Fire Blasts should be used to generate Hot Streaks and to extend Blaster Master.
 actions+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&(variable.time_to_combustion>0|variable.disable_combustion)&active_enemies>=variable.hard_cast_flamestrike&!firestarter.active&!buff.hot_streak.react&(buff.heating_up.react&action.flamestrike.execute_remains<0.5|charges_fractional>=2)
 # During Firestarter, Fire Blasts are used similarly to during Combustion. Generally, they are used to generate Hot Streaks when crits will not be wasted and with Blaster Master, they should be spread out to maintain the Blaster Master buff.
 actions+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=firestarter.active&charges>=1&!variable.fire_blast_pooling&(!action.fireball.executing&!action.pyroblast.in_flight&buff.heating_up.react|action.fireball.executing&!buff.hot_streak.react|action.pyroblast.in_flight&buff.heating_up.react&!buff.hot_streak.react)
+# Avoid capping Fire Blast charges while channeling Shifting Power
+actions+=/fire_blast,use_while_casting=1,if=action.shifting_power.executing&full_recharge_time<action.shifting_power.tick_reduction&buff.hot_streak.down
 actions+=/call_action_list,name=standard_rotation,if=(variable.time_to_combustion>0|variable.disable_combustion)&buff.rune_of_power.down
+actions+=/scorch
 
 actions.active_talents=living_bomb,if=active_enemies>1&buff.combustion.down&(variable.time_to_combustion>cooldown.living_bomb.duration|variable.time_to_combustion<=0|variable.disable_combustion)
 actions.active_talents+=/meteor,if=!variable.disable_combustion&variable.time_to_combustion<=0|(cooldown.meteor.duration<variable.time_to_combustion&!talent.rune_of_power.enabled)|talent.rune_of_power.enabled&buff.rune_of_power.up&variable.time_to_combustion>action.meteor.cooldown|fight_remains<variable.time_to_combustion|variable.disable_combustion
@@ -117,17 +121,19 @@ actions.combustion_phase+=/use_item,name=hyperthread_wristwraps,if=buff.combusti
 actions.combustion_phase+=/blood_of_the_enemy
 actions.combustion_phase+=/memory_of_lucid_dreams
 actions.combustion_phase+=/worldvein_resonance
+# For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges if Infernal Cascade is not selected.
+actions.combustion_phase+=/fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react&(buff.combustion.up|!conduit.infernal_cascade.enabled)
 # BFA Fire Blast usage: During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. For standard Fire, Fire Blasts are only used when Heating Up is active or when a Scorch cast is in progress and Heating Up and Hot Streak are not active. With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion.
-actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!azerite.blaster_master.enabled&(active_enemies<=active_dot.ignite|!cooldown.phoenix_flames.ready)&conduit.infernal_cascade.enabled&charges>=1&((action.fire_blast.charges_fractional+(variable.extended_combustion_remains-buff.infernal_cascade.duration)%cooldown.fire_blast.duration-variable.extended_combustion_remains%(buff.infernal_cascade.duration-0.5))>=0|variable.extended_combustion_remains<=buff.infernal_cascade.duration|buff.infernal_cascade.remains<0.5)&buff.combustion.up&!buff.firestorm.react&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2
-# Without Infernal Cascade, just use Fire Blasts when they won't munch crits and when Firestorm is down.
 actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=azerite.blaster_master.enabled&charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps_300142.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)
-# With Infernal Cascade, Fire Blast use should be additionaly constrained so that it is not be used unless Infernal Cascade is about to expire or there are more than enough Fire Blasts to extend Infernal Cascade to the end of Combustion.
+# Without Infernal Cascade, just use Fire Blasts when they won't munch crits and when Firestorm is down.
 actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!azerite.blaster_master.enabled&(active_enemies<=active_dot.ignite|!cooldown.phoenix_flames.ready)&!conduit.infernal_cascade.enabled&charges>=1&buff.combustion.up&!buff.firestorm.react&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2
+# With Infernal Cascade, Fire Blast use should be additionaly constrained so that it is not be used unless Infernal Cascade is about to expire or there are more than enough Fire Blasts to extend Infernal Cascade to the end of Combustion.
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!azerite.blaster_master.enabled&(active_enemies<=active_dot.ignite|!cooldown.phoenix_flames.ready)&conduit.infernal_cascade.enabled&charges>=1&((action.fire_blast.charges_fractional+(variable.extended_combustion_remains-buff.infernal_cascade.duration)%cooldown.fire_blast.duration-variable.extended_combustion_remains%(buff.infernal_cascade.duration-gcd.max))>=0|variable.extended_combustion_remains<=buff.infernal_cascade.duration|buff.infernal_cascade.remains<gcd.max|cooldown.shifting_power.ready&active_enemies>=variable.combustion_shifting_power&covenant.night_fae.enabled)&buff.combustion.up&(!buff.firestorm.react|buff.infernal_cascade.remains<0.5)&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2
 actions.combustion_phase+=/counterspell,if=runeforge.disciplinary_command.equipped&buff.disciplinary_command.down&buff.disciplinary_command_arcane.down&cooldown.buff_disciplinary_command.ready
 actions.combustion_phase+=/arcane_explosion,if=runeforge.disciplinary_command.equipped&buff.disciplinary_command.down&buff.disciplinary_command_arcane.down&cooldown.buff_disciplinary_command.ready
 actions.combustion_phase+=/frostbolt,if=runeforge.disciplinary_command.equipped&buff.disciplinary_command.down&buff.disciplinary_command_frost.down
 actions.combustion_phase+=/call_action_list,name=active_talents
-actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(runeforge.disciplinary_command.equipped=buff.disciplinary_command.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.5|action.scorch.executing&action.scorch.execute_remains<0.5|action.fireball.executing&action.fireball.execute_remains<0.5|action.pyroblast.executing&action.pyroblast.execute_remains<0.5)
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(runeforge.disciplinary_command.equipped=buff.disciplinary_command.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.6|action.scorch.executing&action.scorch.execute_remains<0.6|action.fireball.executing&action.fireball.execute_remains<0.6|action.pyroblast.executing&action.pyroblast.execute_remains<0.6)
 # Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc.
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used
 actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike
@@ -136,8 +142,10 @@ actions.combustion_phase+=/pyroblast,if=buff.firestorm.react
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react&buff.combustion.up
 actions.combustion_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&active_enemies<variable.combustion_flamestrike
-actions.combustion_phase+=/phoenix_flames,if=buff.combustion.up&((action.fire_blast.charges<1&talent.pyroclasm.enabled&active_enemies=1)|!talent.pyroclasm.enabled|active_enemies>1)
-actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&!conduit.flame_accretion.enabled
+# Using Shifting Power during Combustion to restore Fire Blast and Phoenix Flame charges can be beneficial, but usually only on AoE.
+actions.combustion_phase+=/shifting_power,if=buff.combustion.up&!action.fire_blast.charges&active_enemies>=variable.combustion_shifting_power&action.phoenix_flames.full_recharge_time>full_reduction,interrupt_if=action.fire_blast.charges=action.fire_blast.max_charges
+actions.combustion_phase+=/phoenix_flames,if=buff.combustion.up&((action.fire_blast.charges<1&talent.pyroclasm.enabled&active_enemies=1)|!talent.pyroclasm.enabled|active_enemies>1)&buff.heating_up.react+hot_streak_spells_in_flight<2
+actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&!conduit.flame_accretion.enabled&(debuff.mirrors_of_torment.down|!conduit.infernal_cascade.enabled)
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down&cooldown.combustion.remains<cast_time
 actions.combustion_phase+=/living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1
 actions.combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max&buff.combustion.up
@@ -148,9 +156,9 @@ actions.rop_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings
 actions.rop_phase+=/pyroblast,if=buff.firestorm.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
 # Use one Fire Blast early in RoP if you don't have either Heating Up or Hot Streak yet and either: (a) have more than two already, (b) have Alexstrasza's Fury ready to use, or (c) Searing Touch is active. Don't do this while hard casting Flametrikes or when Sun King's Blessing is ready.
-actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=buff.sun_kings_blessing_ready.down&active_enemies<variable.hard_cast_flamestrike&!firestarter.active&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(talent.alexstraszas_fury.enabled&cooldown.dragons_breath.ready)|(talent.searing_touch.enabled&target.health.pct<=30)))
+actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&buff.sun_kings_blessing_ready.down&active_enemies<variable.hard_cast_flamestrike&!firestarter.active&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(talent.alexstraszas_fury.enabled&cooldown.dragons_breath.ready)|(talent.searing_touch.enabled&target.health.pct<=30)))
 # Use Fire Blast either during a Fireball/Pyroblast cast when Heating Up is active or during execute with Searing Touch.
-actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!firestarter.active&(((action.fireball.executing&(action.fireball.execute_remains<0.5|!runeforge.firestorm.equipped)|action.pyroblast.executing&(action.pyroblast.execute_remains<0.5|!runeforge.firestorm.equipped))&buff.heating_up.react)|(talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!hot_streak_spells_in_flight)))
+actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&!firestarter.active&(((action.fireball.executing&(action.fireball.execute_remains<0.5|!runeforge.firestorm.equipped)|action.pyroblast.executing&(action.pyroblast.execute_remains<0.5|!runeforge.firestorm.equipped))&buff.heating_up.react)|(talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!hot_streak_spells_in_flight)))
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains&cast_time<buff.rune_of_power.remains
 actions.rop_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&talent.searing_touch.enabled&target.health.pct<=30&active_enemies<variable.hot_streak_flamestrike
@@ -180,7 +188,6 @@ actions.standard_rotation+=/scorch,if=target.health.pct<=30&talent.searing_touch
 actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
-actions.standard_rotation+=/scorch
 
 head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=215/168/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -203,9 +210,9 @@ off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6573
 # gear_ilvl=166.31
 # gear_stamina=907
 # gear_intellect=613
-# gear_crit_rating=289
-# gear_haste_rating=262
-# gear_mastery_rating=229
+# gear_crit_rating=266
+# gear_haste_rating=239
+# gear_mastery_rating=206
 # gear_versatility_rating=586
 # gear_corruption=90
 # gear_corruption_resistance=50

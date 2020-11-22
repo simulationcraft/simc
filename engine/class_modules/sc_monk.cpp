@@ -3445,18 +3445,17 @@ public:
       }
     }
 
-    // For more than 5 targets damage is based on a logarithmic function.
-    // This is the closest we can figure out what that function is
+    // For more than 5 targets damage is based on a Sqrt(5/x)
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
       double cam = melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
-        // Primary takes 100% damage
+        // Primary takes the 100% damage
         // Secondary targets get reduced damage
         if ( state->target != target )
-          cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+          cam *= std::sqrt( 5 / state->n_targets );
 
       return cam;
     }
@@ -5734,9 +5733,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
           am /= 1 + p()->cache.mastery_value();
         if ( p()->buff.hit_combo->up() )
           am /= 1 + p()->buff.hit_combo->stack_value();
-
-        // Bug: Calculated Strikes is double dipping and multiplying based on the MotC stacks
-        am *= 1 + ( mark_of_the_crane_counter() * p()->conduit.calculated_strikes.percent() );
       }
       else
         motc_multiplier += p()->conduit.calculated_strikes.percent();
@@ -6384,8 +6380,7 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  // For more than 5 targets damage is based on a logarithmic function.
-  // This is the closest we can figure out what that function is
+  // For more than 5 targets damage is based on a Sqrt(5/x)
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
@@ -6395,7 +6390,7 @@ struct keg_smash_t : public monk_melee_attack_t
       // Primary takes the 100% damage
       // Secondary targets get reduced damage
       if ( state->target != target )
-        cam *= 7.556 * log( ( 0.121 * ( state->n_targets - 1 ) ) + 1.229 ) / ( state->n_targets - 1 );
+        cam *= std::sqrt( 5 / state->n_targets );
 
     return cam;
   }
@@ -7104,7 +7099,7 @@ struct breath_of_fire_t : public monk_spell_t
     double cam  = monk_spell_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-        return cam / std::sqrt( state->n_targets );
+      return cam / std::sqrt( state->n_targets );
 
     return cam;
   }
@@ -10636,12 +10631,6 @@ void monk_t::recalculate_resource_max( resource_e r, gain_t* source )
 
 void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 {
-  // Bug: Clones are able to do one last ability while they are flying back to the player
-  // Adding a 0.25 second extension to simulate the clones doing one last attack after the
-  // Damage reduction buff is removed.
-  if ( bugs )
-    duration += timespan_t::from_millis( 250 );
-
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
 
@@ -12657,12 +12646,18 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    /*    hotfix::register_effect( "Monk", "2018-07-14", "Fists of Fury increased by 18.5%.", 303680 )
-          .field( "ap_coeff" )
-          .operation( hotfix::HOTFIX_MUL)
-          .modifier( 1.185 )
-          .verification_value( 0.94185 );
-        hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per
+    hotfix::register_effect( "Monk", "2020-11-21", "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_ADD)
+          .modifier( 2 )
+          .verification_value( 0 );
+    hotfix::register_effect( "Monk", "2020-11-21", "Manually set Periodic Damage Windwalker Monk Two-Hand Adjustment by 2%", 872418 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_ADD )
+        .modifier( 2 )
+        .verification_value( 0 );
+    /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds
+       per
        rank (was 3 seconds per rank). [SEF]", 739336) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier(
        -5000 ) .verification_value( -3000 ); hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown
        reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 739336) .field( "base_value" )
