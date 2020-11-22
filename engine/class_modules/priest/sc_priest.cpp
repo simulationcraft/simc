@@ -1985,7 +1985,7 @@ void priest_t::create_apl_precombat()
 std::string priest_t::default_potion() const
 {
   std::string lvl60_potion =
-      ( specialization() == PRIEST_SHADOW ) ? "potion_of_empowered_exorcisms" : "potion_of_spectral_intellect";
+      ( specialization() == PRIEST_SHADOW ) ? "potion_of_phantom_fire" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
   return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
