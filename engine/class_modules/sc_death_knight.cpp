@@ -9335,7 +9335,7 @@ void death_knight_t::default_apl_blood()
   precombat -> add_action( "use_item,effect_name=cyclotronic_blast" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( "shackle_the_unworthy" );
+
   // Interrupt
   // def -> add_action( this, "Mind Freeze" );
 
