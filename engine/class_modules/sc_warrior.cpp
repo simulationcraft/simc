@@ -5575,6 +5575,7 @@ struct ignore_pain_t : public warrior_spell_t
 
     base_dd_max = base_dd_min = 0;
     cooldown->duration += p->spec.ignore_pain_2->effectN( 1 ).time_value();
+    resource_current = RESOURCE_RAGE; 
   }
 
   double bonus_da( const action_state_t* state ) const override
