@@ -1044,44 +1044,105 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* se    = get_action_priority_list( "se" );
   action_priority_list_t* aoe   = get_action_priority_list( "aoe" );
   action_priority_list_t* item  = get_action_priority_list( "item" );
+  action_priority_list_t* covs  = get_action_priority_list( "covenant" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
-  def->add_action( "phantom_singularity" );
+  def->add_action( "phantom_singularity,if=time>30" ); // Delay in opener
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.venthyr&dot.impending_catastrophe_dot.ticking&cooldown.summon_"
+      "darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.night_fae&dot.soul_rot.ticking&cooldown.summon_darkglare."
+      "remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=(covenant.necrolord|covenant.kyrian|covenant.none)&dot.phantom_"
+      "singularity.ticking&dot.phantom_singularity.remains<2" );
+
+  def->add_action( "agony,if=dot.agony.remains<4" );
+  def->add_action( "agony,cycle_targets=1,if=active_enemies>1,target_if=dot.agony.remains<4" );
+  def->add_action( "haunt" );
+
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=active_enemies>2&covenant.venthyr&(cooldown.impending_catastrophe.ready|"
+      "dot.impending_catastrophe_dot.ticking)&(dot.phantom_singularity.ticking|!talent.phantom_singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=active_enemies>2&(covenant.necrolord|covenant.kyrian|covenant.none)&("
+      "dot.phantom_singularity.ticking|!talent.phantom_singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=active_enemies>2&covenant.night_fae&(cooldown.soul_rot.ready|dot.soul_"
+      "rot.ticking)&(dot.phantom_singularity.ticking|!talent.phantom_singularity.enabled)" );
+
+  def->add_action(
+      "seed_of_corruption,if=active_enemies>2&talent.sow_the_seeds.enabled&!dot.seed_of_corruption.ticking&!in_"
+      "flight" );
+  def->add_action(
+      "seed_of_corruption,if=active_enemies>2&talent.siphon_life.enabled&!dot.seed_of_corruption.ticking&!in_flight&"
+      "dot.corruption.remains<4" );
+
+  def->add_action( "vile_taint,if=(soul_shard>1|active_enemies>2)&cooldown.summon_darkglare.remains>12" );
+  def->add_action( "unstable_affliction,if=dot.unstable_affliction.remains<4" );
+  def->add_action( "siphon_life,if=dot.siphon_life.remains<4" );
+  def->add_action( "siphon_life,cycle_targets=1,if=active_enemies>1,target_if=dot.siphon_life.remains<4" );
+
+  def->add_action( "call_action_list,name=covenant,if=!covenant.necrolord" );
+
+  def->add_action(
+      "corruption,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled)&dot.corruption.remains<"
+      "2" );
+  def->add_action(
+      "corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled),target_"
+      "if=dot.corruption.remains<2" );
+  def->add_action( "phantom_singularity,if=covenant.necrolord|covenant.night_fae|covenant.kyrian|covenant.none" );
+  def->add_action( "malefic_rapture,if=soul_shard>4" );
+
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.venthyr&(cooldown.impending_catastrophe.ready|dot.impending_"
+      "catastrophe_dot.ticking)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_"
+      "singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=(covenant.necrolord|covenant.kyrian|covenant.none)&cooldown.summon_"
+      "darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  def->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.night_fae&(cooldown.soul_rot.ready|dot.soul_rot.ticking)&"
+      "cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+
+  def->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
+  def->add_action( "call_action_list,name=item" );
+  def->add_action(
+      "call_action_list,name=se,if=debuff.shadow_embrace.stack<(2-action.shadow_bolt.in_flight)|debuff.shadow_embrace."
+      "remains<3" );
+
+  def->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
+  def->add_action( "malefic_rapture,if=dot.impending_catastrophe_dot.ticking" );
+  def->add_action( "malefic_rapture,if=dot.soul_rot.ticking" );
+  def->add_action(
+      "malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking|soul_shard>3|time_to_die<"
+      "cooldown.phantom_singularity.remains)" );
+  def->add_action( "malefic_rapture,if=talent.sow_the_seeds.enabled" );
+  def->add_action( "drain_life,if=buff.inevitable_demise.stack>40|buff.inevitable_demise.up&time_to_die<4" );
+  def->add_action( "call_action_list,name=covenant" );
   def->add_action( "agony,if=refreshable" );
   def->add_action( "agony,cycle_targets=1,if=active_enemies>1,target_if=refreshable" );
-  def->add_action( "call_action_list,name=darkglare_prep,if=active_enemies>2&cooldown.summon_darkglare.ready&(dot.phantom_singularity.ticking|!talent.phantom_singularity.enabled)" );
-  def->add_action( "seed_of_corruption,if=active_enemies>2&!talent.vile_taint.enabled&(!talent.writhe_in_agony.enabled|talent.sow_the_seeds.enabled)&!dot.seed_of_corruption.ticking&!in_flight&dot.corruption.refreshable" );
-  def->add_action( "vile_taint,if=(soul_shard>1|active_enemies>2)&cooldown.summon_darkglare.remains>12" );
-  def->add_action( "siphon_life,if=refreshable" );
+  def->add_action(
+      "corruption,if=refreshable&active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled)" );
   def->add_action( "unstable_affliction,if=refreshable" );
-  def->add_action( "unstable_affliction,if=azerite.cascading_calamity.enabled&buff.cascading_calamity.remains<3" );
-  def->add_action( "corruption,if=(active_enemies<3|talent.vile_taint.enabled|talent.writhe_in_agony.enabled&!talent.sow_the_seeds.enabled)&refreshable" );
-  def->add_action( "haunt" );
-  def->add_action( "malefic_rapture,if=soul_shard>4" );
-  def->add_action( "siphon_life,cycle_targets=1,if=active_enemies>1,target_if=dot.siphon_life.remains<3" );
-  def->add_action( "corruption,cycle_targets=1,if=active_enemies<3|talent.vile_taint.enabled|talent.writhe_in_agony.enabled&!talent.sow_the_seeds.enabled,target_if=dot.corruption.remains<3" );
-
-  def->add_action( "call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
-  def->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
-  def->add_action( "call_action_list,name=cooldowns" );
-  def->add_action( "call_action_list,name=item" );
-
-  def->add_action( "call_action_list,name=se,if=debuff.shadow_embrace.stack<(3-action.shadow_bolt.in_flight)|debuff.shadow_embrace.remains<3" );
-  def->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
-  def->add_action( "malefic_rapture,if=talent.phantom_singularity.enabled&(dot.phantom_singularity.ticking||cooldown.phantom_singularity.remains>12||soul_shard>3)" );
-  def->add_action( "malefic_rapture,if=talent.sow_the_seeds.enabled" );
-
-  def->add_action( "drain_life,if=buff.inevitable_demise.stack>30|buff.inevitable_demise.up&time_to_die<5" );
-  def->add_action( "drain_life,if=buff.inevitable_demise_az.stack>30" );
-  def->add_action( "drain_soul" );
+  def->add_action( "siphon_life,if=refreshable" );
+  def->add_action( "siphon_life,cycle_targets=1,if=active_enemies>1,target_if=refreshable" );
+  def->add_action(
+      "corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds.enabled|talent.siphon_life.enabled),target_"
+      "if=refreshable" );
+  def->add_action( "drain_soul,interrupt=1" );
   def->add_action( "shadow_bolt" );
 
-  prep->add_action( "vile_taint" );
+
+  prep->add_action( "vile_taint,if=cooldown.summon_darkglare.remains<2" );
+  prep->add_action( "phantom_singularity,if=cooldown.summon_darkglare.remains<2" );
   prep->add_action( "dark_soul" );
   prep->add_action( "potion" );
   prep->add_action( "fireblood" );
   prep->add_action( "blood_fury" );
   prep->add_action( "berserking" );
+  prep->add_action( "call_action_list,name=covenant,if=!covenant.necrolord&cooldown.summon_darkglare.remains<2" );
   prep->add_action( "summon_darkglare" );
 
   cds->add_action( "worldvein_resonance" );
@@ -1096,28 +1157,64 @@ void warlock_t::create_apl_affliction()
   cds->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
 
   se->add_action( "haunt" );
-  se->add_action( "drain_soul,interrupt_if=debuff.shadow_embrace.stack>=3" );
+  se->add_action( "drain_soul,interrupt_global=1,interrupt_if=debuff.shadow_embrace.stack>=3" );
   se->add_action( "shadow_bolt" );
 
   aoe->add_action( "phantom_singularity" );
   aoe->add_action( "haunt" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.venthyr&dot.impending_catastrophe_dot.ticking&cooldown.summon_"
+      "darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.night_fae&dot.soul_rot.ticking&cooldown.summon_darkglare."
+      "remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=(covenant.necrolord|covenant.kyrian|covenant.none)&dot.phantom_"
+      "singularity.ticking&dot.phantom_singularity.remains<2" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds.enabled&can_seed" );
-  aoe->add_action( "seed_of_corruption,if=!talent.sow_the_seeds.enabled&!dot.seed_of_corruption.ticking&!in_flight&dot.corruption.refreshable" );
-  aoe->add_action( "agony,cycle_targets=1,if=active_dot.agony>=4,target_if=refreshable&dot.agony.ticking" );
+  aoe->add_action(
+      "seed_of_corruption,if=!talent.sow_the_seeds.enabled&!dot.seed_of_corruption.ticking&!in_flight&dot.corruption."
+      "refreshable" );
   aoe->add_action( "agony,cycle_targets=1,if=active_dot.agony<4,target_if=!dot.agony.ticking" );
+  aoe->add_action( "agony,cycle_targets=1,if=active_dot.agony>=4,target_if=refreshable&dot.agony.ticking" );
   aoe->add_action( "unstable_affliction,if=dot.unstable_affliction.refreshable" );
   aoe->add_action( "vile_taint,if=soul_shard>1" );
-  aoe->add_action( "call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.ready&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  aoe->add_action( "call_action_list,name=covenant,if=!covenant.necrolord" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.venthyr&(cooldown.impending_catastrophe.ready|dot.impending_"
+      "catastrophe_dot.ticking)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_"
+      "singularity.enabled)" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=(covenant.necrolord|covenant.kyrian|covenant.none)&cooldown.summon_"
+      "darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
+  aoe->add_action(
+      "call_action_list,name=darkglare_prep,if=covenant.night_fae&(cooldown.soul_rot.ready|dot.soul_rot.ticking)&"
+      "cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   aoe->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
-  aoe->add_action( "call_action_list,name=cooldowns" );
   aoe->add_action( "call_action_list,name=item" );
   aoe->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
+  aoe->add_action( "malefic_rapture,if=dot.soul_rot.ticking&!talent.sow_the_seeds.enabled" ); // Rapture into soul rot if not using seeds
   aoe->add_action( "malefic_rapture,if=!talent.vile_taint.enabled" );
+  aoe->add_action( "malefic_rapture,if=soul_shard>4" );  // If, by some fluke, we cap shards outside vile taint windows,
+                                                         // don't overcap
   aoe->add_action( "siphon_life,cycle_targets=1,if=active_dot.siphon_life<=3,target_if=!dot.siphon_life.ticking" );
-  aoe->add_action( "drain_life,if=buff.inevitable_demise.stack>=50|buff.inevitable_demise.up&time_to_die<5" );
+  aoe->add_action(
+      "drain_life,if=buff.inevitable_demise.stack>=50|(buff.inevitable_demise.up&time_to_die<5)|(buff.inevitable_"
+      "demise.stack>35&dot.soul_rot.ticking)" );  // Use ID stacks into AOE soul rot windows
   aoe->add_action( "drain_soul" );
   aoe->add_action( "shadow_bolt" );
 
+
   item->add_action( "use_items" );
+
+  // Covenant ability lines
+  covs->add_action( "impending_catastrophe,if=cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>50" );
+  covs->add_action(
+      "decimating_bolt,if=cooldown.summon_darkglare.remains>5&(debuff.haunt.remains>4|!talent.haunt.enabled)" );
+  covs->add_action(
+      "soul_rot,if=cooldown.summon_darkglare.remains<5|cooldown.summon_darkglare.remains>50|(cooldown.summon_darkglare."
+      "remains>25&conduit.corrupting_leer.enabled)" ); // Changed from 50 seconds to 25 seconds if the person is running Corrupting Leer. This allows for better synchronization without excessive waiting.
+  covs->add_action( "scouring_tithe" );
+
 }
 }  // namespace warlock
