@@ -9395,7 +9395,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "lights_judgment,if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
-  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3" );
+  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
 
   // Cooldowns
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.obliteration&(cooldown.pillar_of_frost.ready&rune.time_to_5>gcd&runic_power.deficit>=10|buff.pillar_of_frost.up&rune.time_to_5>gcd)|fight_remains<20", "Cooldowns" );
