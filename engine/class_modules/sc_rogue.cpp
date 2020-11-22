@@ -5714,7 +5714,13 @@ struct roll_the_bones_t : public buff_t
   rogue_t* rogue;
   std::array<buff_t*, 6> buffs;
   std::array<proc_t*, 6> procs;
-  std::vector<timespan_t> count_the_odds_remains;
+
+  struct count_the_odds_state
+  {
+    buff_t* buff;
+    timespan_t remains;
+  };
+  std::vector<count_the_odds_state> count_the_odds_states;
 
   roll_the_bones_t( rogue_t* r ) :
     buff_t( r, "roll_the_bones", r -> spec.roll_the_bones ),
@@ -5774,31 +5780,35 @@ struct roll_the_bones_t : public buff_t
     inactive_buffs[ buff_idx ]->trigger( duration );
   }
 
-  void count_the_odds_check()
+  void count_the_odds_expire( bool save_remains )
   {
     if ( !rogue->conduit.count_the_odds.ok() )
       return;
 
-    // TOCHECK: Assuming this works the same as the T21 4pc bonus for now
-    // Collect a list of buffs with partially triggered durations
-    count_the_odds_remains.clear();
+    count_the_odds_states.clear();
+
     for ( buff_t* buff : buffs )
     {
-      if ( buff->check() && buff->remains() != remains() )
-        count_the_odds_remains.push_back( buff->remains() );
+      if ( save_remains && buff->check() && buff->remains() != remains() )
+      {
+        count_the_odds_states.push_back( { buff, buff->remains() } );
+      }
     }
   }
 
-  void count_the_odds_reroll()
+  void count_the_odds_restore()
   {
-    if ( count_the_odds_remains.empty() )
+    if ( count_the_odds_states.empty() )
       return;
 
-    // TOCHECK: Assuming this works the same as the T21 4pc bonus for now
-    // Trigger random inactive buffs with the previously remaining durations
-    for ( timespan_t remains : count_the_odds_remains )
+    // 11/21/2020 -- Buffs are only persisted when RtB is already down with no re-randomization
+    //               If the same roll as an existing partial buff is in the result, the partial buff is lost
+    for ( auto state : count_the_odds_states )
     {
-      count_the_odds_trigger( remains );
+      if ( !state.buff->check() )
+      {
+        state.buff->trigger( state.remains );
+      }
     }
   }
 
@@ -5830,7 +5840,7 @@ struct roll_the_bones_t : public buff_t
       std::vector<double> current_odds = rogue->options.fixed_rtb_odds;
       if ( loaded_dice )
       {
-        // At some point Loaded Dice were apparently changed to just convert 1 buffs straight into two buffs. (2020-03-09)
+        // Loaded Dice converts 1 buff chance directly into two buff chance. (2020-03-09)
         current_odds[ 1 ] += current_odds[ 0 ];
         current_odds[ 0 ] = 0.0;
       }
@@ -5895,7 +5905,8 @@ struct roll_the_bones_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    count_the_odds_check();
+    // 11/21/2020 -- Count the Odds buffs are cleared if rerolling, but not if the buff is down
+    count_the_odds_expire( !check() );
 
     buff_t::execute( stacks, value, duration );
 
@@ -5912,7 +5923,14 @@ struct roll_the_bones_t : public buff_t
       rogue->buffs.paradise_lost->trigger( roll_duration );
     }
 
-    count_the_odds_reroll();
+    count_the_odds_restore();
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    // 11/21/2020 -- Count the Odds buffs are cleared if the container buff expires
+    count_the_odds_expire( false );
   }
 };
 
