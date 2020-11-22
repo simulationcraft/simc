@@ -6972,11 +6972,11 @@ void hunter_t::apl_mm()
   trickshots -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   trickshots -> add_action( "explosive_shot" );
   trickshots -> add_action( "wild_spirits" );
-  trickshots -> add_action( "volley" );
   trickshots -> add_action( "resonating_arrow" );
+  trickshots -> add_action( "volley" );
   trickshots -> add_action( "barrage" );
   trickshots -> add_action( "trueshot" );
-  trickshots -> add_action( "rapid_fire,if=buff.trick_shots.up&runeforge.surging_shots&buff.double_tap.down" );
+  trickshots -> add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&runeforge.surging_shots&buff.double_tap.down" );
   trickshots -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
   trickshots -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   trickshots -> add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
