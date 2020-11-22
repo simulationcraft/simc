@@ -2162,7 +2162,8 @@ void priest_t::generate_apl_shadow()
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
   cds->add_action( this, covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
+                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|"
+                   "debuff.hungering_void.up|!buff.voidform.up)" );
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
