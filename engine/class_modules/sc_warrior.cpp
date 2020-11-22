@@ -248,6 +248,7 @@ public:
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* deep_wounds_debuff;
     const spell_data_t* hamstring;
+    const spell_data_t* ignore_pain;
     const spell_data_t* warrior_aura;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
@@ -260,6 +261,7 @@ public:
     const spell_data_t* shield_block_buff;
     const spell_data_t* riposte;
     const spell_data_t* aftershock_duration;
+    
   } spell;
 
   // Mastery
@@ -299,6 +301,7 @@ public:
     const spell_data_t* execute_rank_3;
     const spell_data_t* execute_rank_4;
     const spell_data_t* ignore_pain;
+    const spell_data_t* ignore_pain_2;
     const spell_data_t* intercept;
     const spell_data_t* last_stand;
     const spell_data_t* mortal_strike;
@@ -5542,8 +5545,9 @@ struct recklessness_t : public warrior_spell_t
 
 struct ignore_pain_buff_t : public absorb_buff_t
 {
-  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->spec.ignore_pain )
+  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->spell.ignore_pain )
   {
+    cooldown->duration = 0_ms;
     set_absorb_source( player->get_stats( "ignore_pain" ) );
     set_absorb_gain( player->get_gain( "ignore_pain" ) );
   }
@@ -5552,7 +5556,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   double consume( double amount ) override
   {
     // IP only absorbs up to 50% of the damage taken
-    amount *= debug_cast< warrior_t* >( player ) -> spec.ignore_pain -> effectN( 2 ).percent();
+    amount *= debug_cast< warrior_t* >( player ) -> spell.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
     return absorbed;
@@ -5562,7 +5566,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
 struct ignore_pain_t : public warrior_spell_t
 {
   ignore_pain_t( warrior_t* p, const std::string& options_str )
-    : warrior_spell_t( "ignore_pain", p, p->spec.ignore_pain )
+    : warrior_spell_t( "ignore_pain", p, p->spell.ignore_pain )
   {
     parse_options( options_str );
     may_crit     = false;
@@ -5570,6 +5574,7 @@ struct ignore_pain_t : public warrior_spell_t
     target       = player;
 
     base_dd_max = base_dd_min = 0;
+    cooldown->duration += p->spec.ignore_pain_2->effectN( 1 ).time_value();
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -5828,13 +5833,13 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
     return new enraged_regeneration_t( this, options_str );
   if ( name == "execute" )
   {
-    if ( specialization() == WARRIOR_ARMS )
+    if ( specialization() == WARRIOR_FURY )
     {
-      return new execute_arms_t( this, options_str );
+      return new fury_execute_parent_t( this, options_str );
     }
     else
     {
-      return new fury_execute_parent_t( this, options_str );
+      return new execute_arms_t( this, options_str );
     }
   }
   if ( name == "hamstring" )
@@ -5957,13 +5962,12 @@ void warrior_t::init_spells()
     spec.execute_rank_3 = find_specialization_spell( 316403 );
     spec.execute_rank_4 = find_specialization_spell( 231827 );
   }
-  if (specialization() == WARRIOR_ARMS)
+  else
   {
     spec.execute = find_spell( 163201 );
     spec.execute_rank_2 = find_specialization_spell( 316405 );
     spec.execute_rank_3 = find_specialization_spell( 231830 );
   }
-  spec.ignore_pain      = find_specialization_spell( "Ignore Pain" );
   spec.intercept        = find_specialization_spell( "Intercept" );
   spec.last_stand       = find_specialization_spell( "Last Stand" );
   spec.mortal_strike    = find_specialization_spell( "Mortal Strike" );
@@ -5989,6 +5993,7 @@ void warrior_t::init_spells()
   spec.shield_wall      = find_specialization_spell( "Shield Wall" );
   spec.shockwave        = find_specialization_spell( "Shockwave" );
   spec.slam             = find_spell( 1464 );
+  spec.ignore_pain_2    = find_specialization_spell( "Ignore Pain", "Rank 2" );
   if (specialization() == WARRIOR_ARMS)
   {
     spec.slam_rank_2 = find_specialization_spell( 261901 );
@@ -6136,6 +6141,7 @@ void warrior_t::init_spells()
 
 
   // Generic spells
+  spell.ignore_pain           = find_class_spell( "Ignore Pain" );
   spell.battle_shout          = find_class_spell( "Battle Shout" );
   spell.charge                = find_class_spell( "Charge" );
   spell.charge_rank_2         = find_spell( 319157 );
