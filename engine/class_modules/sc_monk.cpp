@@ -7942,6 +7942,7 @@ struct faeline_stomp_damage_t : public monk_spell_t
     ww_mastery = true;
 
     attack_power_mod.direct = p.passives.faeline_stomp_damage->effectN( 1 ).ap_coeff();
+    spell_power_mod.direct  = 0;
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
