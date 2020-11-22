@@ -1096,37 +1096,32 @@ struct tank_dummy_enemy_t : public enemy_t
       // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
       // than 1.000 9.0 values here
 
-      /* Level 50 Base/open world: 860.000 (Level 50 Armor mitigation constants (K-values))
-        Level 50 M0/M+: 1020.82 (ExpectedStatModID: 171; ArmorConstMod: 1.187)
-        Ny'alotha LFR: 984.7 (ExpectedStatModID: 143; ArmorConstMod: 1.145)
-        Ny'alotha Normal: 1020.82 (ExpectedStatModID: 151; ArmorConstMod: 1.187)
-        Ny'alotha Heroic: 1106.82 (ExpectedStatModID: 152; ArmorConstMod: 1.287)
-        Ny'alotha Mythic: 1205.72‬ (ExpectedStatModID: 158; ArmorConstMod: 1.402)
+      /* 
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
-        Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982) *Needs to be updated closer to release
+        Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
         Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
         Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
         Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        */
+      */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * ( sim->max_player_level == 60 ? 0.982 : 1.187 );  // M0/M+
+          base.armor_coeff = k_value * 0.982;  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * ( sim->max_player_level == 60 ? 1.065 : 1.187 );  // Normal Raid
+          base.armor_coeff = k_value * 1.065;  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * ( sim->max_player_level == 60 ? 1.138 : 1.287 );  // Heroic Raid
+          base.armor_coeff = k_value * 1.138;  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * ( sim->max_player_level == 60 ? 1.220 : 1.402 );  // Mythic Raid
+          base.armor_coeff = k_value * 1.220;  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
