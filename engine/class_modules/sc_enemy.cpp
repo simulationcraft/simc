@@ -1326,14 +1326,9 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
   // Level 60 Values
   // Raid values using Sludgefist as a baseline
-//  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35239, 48255, 79858 };     // Base auto attack damage
-//  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105717, 144765, 239574 };  // Base melee nuke damage
-//  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1410, 1930, 3195 };  // Base background dot damage
-  // Level 50 values
-  // Raid values using Raden as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 1445, 4450, 6321, 8693, 13000 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 4335, 13350, 18963, 26079, 39000 };  // Base melee nuke damage
-  int background_spell_damage[ numTankDummies ] = { 0, 58, 178, 253, 348, 520 };  // Base background dot damage
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35239, 48255, 79858 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105717, 144765, 239574 };  // Base melee nuke damage
+  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1410, 1930, 3195 };  // Base background dot damage
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + 
