@@ -9360,7 +9360,7 @@ void death_knight_t::default_apl_frost()
   // Apply frost fever and maintain Icy Talons
   def -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking&(talent.icecap|cooldown.breath_of_sindragosa.remains>15|talent.obliteration&cooldown.pillar_of_frost.remains<dot.frost_fever.remains)", "Apply Frost Fever and maintain Icy Talons" );
   def -> add_talent( this, "Glacial Advance", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>15)" );
-  def -> add_action( this, "Frost Strike", "if=(buff.icy_talons.remains<=gcd&buff.icy_talons.up|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3&buff.unleased_frenzy.up)&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
+  def -> add_action( this, "Frost Strike", "if=(buff.icy_talons.remains<=gcd&buff.icy_talons.up|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3&buff.unleashed_frenzy.up)&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
 
   // Choose APL
   def -> add_action( "call_action_list,name=covenants", "Choose Action list to run" );
