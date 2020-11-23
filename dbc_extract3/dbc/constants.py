@@ -178,3 +178,7 @@ SPELL_NAME_BLACKLIST = [
 SPELL_LABEL_BLACKLIST = [
   16,     # Agonizing Backlash
 ]
+
+ACTIVE_SPELL_WHITELIST = [
+    114074  # Lava Beam (Shaman)
+]

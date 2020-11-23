@@ -1,5 +1,5 @@
 // Active class spells, wow build 9.0.2.36710
-static const std::array<active_class_spell_t, 610> __active_spells_data { {
+static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1161,      0, "Challenging Shout"                  },
@@ -332,6 +332,7 @@ static const std::array<active_class_spell_t, 610> __active_spells_data { {
   {  7,    0,  57994,      0, "Wind Shear"                         },
   {  7,    0,  73899,      0, "Primal Strike"                      },
   {  7,    0, 108271,      0, "Astral Shift"                       },
+  {  7,    0, 114074,      0, "Lava Beam"                          },
   {  7,    0, 188196,      0, "Lightning Bolt"                     },
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 188443,      0, "Chain Lightning"                    },
