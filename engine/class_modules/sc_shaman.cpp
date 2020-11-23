@@ -9117,7 +9117,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Flametongue Weapon" );
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-  precombat->add_action( this, "Windfury Totem" );
+  precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
 
   // Precombat potion
   precombat->add_action( "potion" );
