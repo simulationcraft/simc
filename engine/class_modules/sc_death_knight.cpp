@@ -9408,11 +9408,11 @@ void death_knight_t::default_apl_blood()
   covenants -> add_action( "sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<10|target.time_to_die<gcd)", "Attempt to sacrifice the ghoul if we predictably will not do much in the near future" );
   // Venthyr
   covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3", "Burn RP off just before swarming comes back off CD");
-  covenants -> add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And swarming as long as we're not < 3s off DRW" );
+  covenants -> add_action( "swarming_mist,if=!buff.dancing_rune_weapon.up", "And swarming as long as we're not < 3s off DRW" );
 
   // Necrolord (forces a marrowrend on pull)
   covenants -> add_action( "marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0", "Pre-AL marrow on pull in order to guarantee ossuary during the first DRW");
-  covenants -> add_action( "abomination_limb,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And we cast AL" );
+  covenants -> add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up", "And we cast AL" );
 
   // Kyrian
   covenants -> add_action( "shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "We just don't cast this during DRW" );
