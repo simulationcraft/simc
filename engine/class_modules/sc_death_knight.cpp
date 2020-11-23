@@ -4531,7 +4531,9 @@ struct deaths_due_damage_t : public death_and_decay_damage_t
 {
   deaths_due_damage_t( death_knight_t* p ) :
     death_and_decay_damage_t( "deaths_due_damage", p, p -> find_spell( 341340 ) )
-  { }
+  {
+    base_multiplier *= 1.0 + p -> conduits.withering_ground.percent();
+  }
 };
 
 // Bone Spike Graveyard azerite trait
