@@ -2,17 +2,18 @@ shaman="PR_Shaman_Enhancement"
 source=default
 spec=enhancement
 level=60
-race=troll
+race=orc
 role=attack
 position=back
-talents=1111123
-covenant=venthyr
+talents=3111131
+covenant=night_fae
+soulbind=niya,322721/focused_lightning:6
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_spectral_agility
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -112,29 +113,29 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=honorbound_vanguards_helm,id=163447,bonus_id=6938
-neck=shaleshell_pendant,id=177165,bonus_id=6938
-shoulders=honorbound_vanguards_pauldrons,id=163442,bonus_id=6938
-back=honorbound_vanguards_greatcloak,id=163365,bonus_id=6938
-chest=honorbound_vanguards_vestments,id=163444,bonus_id=6938
-wrists=honorbound_vanguards_bindings,id=177100,bonus_id=6938
-hands=honorbound_vanguards_handguards,id=177108,bonus_id=6938
-waist=honorbound_vanguards_chain_belt,id=163452,bonus_id=6938
-legs=honorbound_vanguards_leggings,id=177107,bonus_id=6938
-feet=honorbound_vanguards_sabatons,id=177109,bonus_id=6938
-finger1=beaten_copper_loop,id=177167,bonus_id=6938/1762
-finger2=sea_sapphire_band,id=177164,bonus_id=6938
-trinket1=lucky_braid,id=177166,bonus_id=6938/605
-trinket2=enchanted_devilsaur_claw,id=177158,bonus_id=6938/603
-main_hand=honorbound_warhammer,id=177144,bonus_id=6938
-off_hand=honorbound_warhammer,id=177144,bonus_id=6938
+head=soulthorn_visage,id=178692,bonus_id=6807/1498
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulders=boneshatter_pauldrons,id=172327,bonus_id=6995/6716/6649/6647/1487
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=triumphant_combatants_chainmail,id=178794,bonus_id=6807/1498,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498
+hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498
+waist=clasp_of_waning_shadow,id=178700,bonus_id=6807/1498
+legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498
+feet=spatial_rift_striders,id=179345,bonus_id=6807/1498,enchant=eternal_agility
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+trinket1=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
+main_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=59.25
-# gear_agility=169
-# gear_stamina=249
-# gear_crit_rating=160
-# gear_haste_rating=139
-# gear_mastery_rating=119
-# gear_versatility_rating=74
-# gear_armor=224
+# gear_ilvl=184.38
+# gear_agility=587
+# gear_stamina=857
+# gear_crit_rating=481
+# gear_haste_rating=545
+# gear_mastery_rating=230
+# gear_versatility_rating=119
+# gear_armor=691

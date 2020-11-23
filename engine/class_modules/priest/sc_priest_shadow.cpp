@@ -404,7 +404,8 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).base_value() /
+                        10 )  // Spell Data stores this as 100 not 1000 or 10
   {
     parse_options( options_str );
 
@@ -465,11 +466,6 @@ struct shadow_word_death_t final : public priest_spell_t
           dots = swp_ticking + vt_ticking;
         }
 
-        // Right now in-game this is not using the spell data value
-        if ( priest().bugs )
-        {
-          insanity_per_dot = 5;
-        }
         double insanity_gain = dots * insanity_per_dot;
 
         priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
@@ -2101,43 +2097,34 @@ void priest_t::generate_apl_shadow()
   }
 
   // Potions
-  default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
-      "target.health.pct<35" );
+  default_list->add_action( "potion,if=buff.voidform.up|buff.power_infusion.up" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
   default_list->add_action(
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
-  default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>3" );
   default_list->add_action(
-      "variable,name=pi_or_vf_sync_condition,op=set,value=(priest.self_power_infusion|runeforge.twins_of_the_sun_"
-      "priestess.equipped)&level>=58&cooldown.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_"
-      "of_the_sun_priestess.equipped)&cooldown.void_eruption.up",
-      "Variable to switch between syncing cooldown usage to Power Infusion or Void Eruption depending whether "
-      "priest_self_power_infusion is in use or we don't have power infusion learned." );
+      "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
+      "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
+  default_list->add_action(
+      "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds.duration<"
+      "=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|"
+      "spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)",
+      "Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate "
+      "voidform with incoming adds." );
 
   // Racials
   if ( race == RACE_DARK_IRON_DWARF )
-    default_list->add_action(
-        "fireblood,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
-        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
-        "sun_priestess.equipped)&buff.voidform.up" );
+    default_list->add_action( "fireblood,if=buff.voidform.up" );
   if ( race == RACE_TROLL )
-    default_list->add_action(
-        "berserking,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
-        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
-        "sun_priestess.equipped)&buff.voidform.up" );
+    default_list->add_action( "berserking,if=buff.voidform.up" );
   if ( race == RACE_LIGHTFORGED_DRAENEI )
     default_list->add_action(
         "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
         "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   if ( race == RACE_MAGHAR_ORC )
-    default_list->add_action(
-        "ancestral_call,if=(priest.self_power_infusion|runeforge.twins_of_the_sun_priestess."
-        "equipped)&level>=58&buff.power_infusion.up|(level<58|!priest.self_power_infusion&!runeforge.twins_of_the_"
-        "sun_priestess.equipped)&buff.voidform.up" );
+    default_list->add_action( "ancestral_call,if=buff.voidform.up" );
 
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
@@ -2158,34 +2145,54 @@ void priest_t::generate_apl_shadow()
   essences->add_action( "the_unbound_force" );
 
   // CDs
-  cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
+  cds->add_action( this, "Power Infusion",
+                   "if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_"
+                   "remains<cooldown.void_eruption.remains",
+                   "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
+                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+                   "be another Void Eruption this fight." );
   cds->add_action( this, "Silence",
                    "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
                    "Use Silence on CD to proc Sephuz's Proclamation." );
-  cds->add_action( this, covenant.fae_guardians, "fae_guardians" );
-  cds->add_action( this, covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
-  cds->add_action( this, covenant.unholy_nova, "unholy_nova", "if=raid_event.adds.in>20" );
+  cds->add_action( this, covenant.fae_guardians, "fae_guardians",
+                   "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
+                   "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
+                   "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
+                   "Grove Invigoration or Field of Blossoms" );
+  cds->add_action(
+      this, covenant.mindgames, "mindgames",
+      "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_"
+      "void.up|!buff.voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on the target if "
+      "talented. Stop using at 5+ targets with Searing Nightmare." );
+  cds->add_action(
+      this, covenant.unholy_nova, "unholy_nova",
+      "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
+      "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10)",
+      "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
-                   "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
-                   "buff.voidform.up&talent.searing_nightmare.enabled)" );
+                   "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&"
+                   "prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)",
+                   "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
+                   "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
+  cds->add_action(
+      "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)",
+      "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
   cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova",
-                    "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent."
-                    "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
+                    "if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled" );
 
   // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
-  cwc->add_talent(
-      this, "Searing Nightmare",
-      "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pi_or_vf_sync_condition)|("
-      "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-      "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
-      "ready, or to refresh SW:P on two or more targets." );
+  cwc->add_talent( this, "Searing Nightmare",
+                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot."
+                   "shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
+                   "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
+                   "ready, or to refresh SW:P on two or more targets." );
   cwc->add_talent( this, "Searing Nightmare",
                    "use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&"
                    "spell_targets.mind_sear>2",
@@ -2195,27 +2202,33 @@ void priest_t::generate_apl_shadow()
 
   // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=variable.pi_or_vf_sync_condition&insanity>=40",
-                    "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
+  main->add_action( this, "Void Eruption",
+                    "if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable."
+                    "searing_nightmare_cutoff)&pet.fiend.down",
+                    "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
+                    "in VF. Make sure shadowfiend/mindbender is on cooldown before VE." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
-                    "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>(variable.mind_sear_cutoff+1)&!"
-                    "dot.shadow_word_pain.ticking&pet.fiend.down",
+                    "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
+                    "shadow_word_pain.ticking&pet.fiend.down",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action(
       this, "Void Bolt",
-      "if=insanity<=85&((talent.hungering_void.enabled&spell_targets.mind_sear<5)|spell_targets.mind_sear=1)",
+      "if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|(("
+      "talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)",
       "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
   main->add_action( this, "Devouring Plague",
-                    "target_if=(refreshable|insanity>75)&!variable.pi_or_vf_sync_condition&(!talent.searing_nightmare."
-                    "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+                    "target_if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_"
+                    "nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
-  main->add_action( this, "Void Bolt", "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85",
+  main->add_action( this, "Void Bolt",
+                    "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85&talent.searing_"
+                    "nightmare.enabled|!talent.searing_nightmare.enabled",
                     "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
                     "with conduit)." );
   main->add_action( this, "Shadow Word: Death",
@@ -2225,13 +2238,13 @@ void priest_t::generate_apl_shadow()
                     "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
-  main->add_talent( this, "Mindbender",
-                    "if=dot.vampiric_touch.ticking&((talent.searing_nightmare.enabled&spell_targets.mind_sear>("
-                    "variable.mind_sear_cutoff+1))|dot.shadow_word_pain.ticking)" );
   main->add_talent( this, "Void Torrent",
-                    "target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&spell_targets.mind_sear<(5+(6*"
-                    "talent.twist_of_fate.enabled))",
+                    "target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&active_dot.vampiric_touch=="
+                    "spell_targets.vampiric_touch&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
+  main->add_talent( this, "Mindbender",
+                    "if=dot.vampiric_touch.ticking&(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable."
+                    "mind_sear_cutoff|dot.shadow_word_pain.ticking)" );
   main->add_action(
       this, "Shadow Word: Death",
       "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
@@ -2251,8 +2264,8 @@ void priest_t::generate_apl_shadow()
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Blast",
-                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&(spell_targets.mind_sear<4|!talent."
-                    "searing_nightmare.enabled)",
+                    "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&(spell_targets.mind_sear<4&!talent."
+                    "misery.enabled|spell_targets.mind_sear<6&talent.misery.enabled)",
                     "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
                     "Nightmare talented." );
   main->add_action( this, "Vampiric Touch",
@@ -2266,8 +2279,8 @@ void priest_t::generate_apl_shadow()
   main->add_action(
       this, "Shadow Word: Pain",
       "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_"
-      "targets.mind_sear>(variable.mind_sear_cutoff+1))&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&"
-      "spell_targets.mind_sear<=2))",
+      "targets.mind_sear>variable.mind_sear_cutoff)&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_"
+      "targets.mind_sear<=2))",
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
   main->add_action( this, "Mind Sear",
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"

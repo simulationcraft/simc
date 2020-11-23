@@ -40,7 +40,7 @@ actions+=/variable,name=waiting_for_essence_break,value=talent.essence_break.ena
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
-actions+=/pick_up_fragment,if=demon_soul_fragments>0
+actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0
 actions+=/pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)
 actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
 actions+=/call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)
@@ -50,7 +50,7 @@ actions+=/run_action_list,name=normal
 actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<25
 actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled&level<54|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)
 actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking
-actions.cooldown+=/the_hunt
+actions.cooldown+=/the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up
 actions.cooldown+=/fodder_to_the_flame
 actions.cooldown+=/elysian_decree
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
@@ -145,9 +145,9 @@ off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versa
 # gear_ilvl=151.31
 # gear_agility=462
 # gear_stamina=835
-# gear_crit_rating=335
-# gear_haste_rating=202
-# gear_mastery_rating=187
+# gear_crit_rating=312
+# gear_haste_rating=179
+# gear_mastery_rating=164
 # gear_versatility_rating=208
 # gear_corruption=95
 # gear_corruption_resistance=50

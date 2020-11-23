@@ -65,6 +65,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* fury_of_elune;
     dot_t* lifebloom;
     dot_t* moonfire;
+    dot_t* lunar_inspiration;
     dot_t* rake;
     dot_t* regrowth;
     dot_t* rejuvenation;
@@ -1020,23 +1021,8 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
     // Treants have base weapon damage + ap from player's sp.
-    // @50-57: 3 base + 0.6 SP
-    //    @58: 3 base + 0.375 SP (needs more testing)
-    //    @59: 3 base + 0.333 SP (needs more testing)
-    //    @60: 3.5 base + 0.28 SP
-
     owner_coeff.ap_from_sp = 0.6;
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.0;
-
-    if ( o()->level() == 58 )
-      owner_coeff.ap_from_sp = 0.375;
-    else if ( o()->level() == 59 )
-      owner_coeff.ap_from_sp = 0.333;
-    else if ( o()->level() == 60 )
-    {
-      owner_coeff.ap_from_sp = 0.28;
-      main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.5;
-    }
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
@@ -2654,12 +2640,6 @@ struct shooting_stars_t : public druid_spell_t
   shooting_stars_t( druid_t* player ) : druid_spell_t( "shooting_stars", player, player->spec.shooting_stars_dmg )
   {
     background = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -5362,12 +5342,6 @@ struct full_moon_t : public moon_base_t
   {
     return free_cast ? 0_ms : moon_base_t::cooldown_duration();
   }
-
-  timespan_t travel_time() const override
-  {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
 };
 
 struct moon_proxy_t : public druid_spell_t
@@ -5660,6 +5634,9 @@ struct heart_of_the_wild_t : public druid_spell_t
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
   {
     harmful = may_crit = may_miss = false;
+    // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
+    // effect in-game works as a percent reduction.
+    cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
   }
 
   void execute() override
@@ -6155,8 +6132,8 @@ struct starfall_t : public druid_spell_t
 
     timespan_t travel_time() const override
     {
-      // seems to have a random travel time between 1x - 2x missile speed
-      return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
+      // seems to have a random travel time between 1x - 2x travel delay
+      return timespan_t::from_seconds( travel_delay * rng().range( 1.0, 2.0 ) );
     }
   };
 
@@ -6497,6 +6474,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     CAST_OFFSPEC,
     CAST_SPEC,
     CAST_HEAL,
+    CAST_MAIN,
     CAST_WRATH,
     CAST_MOONFIRE,
     CAST_RAKE,
@@ -6507,6 +6485,11 @@ struct convoke_the_spirits_t : public druid_spell_t
     CAST_PULVERIZE,
     CAST_IRONFUR,
     CAST_MANGLE,
+    CAST_TIGERS_FURY,
+    CAST_FERAL_FRENZY,
+    CAST_FEROCIOUS_BITE,
+    CAST_THRASH_CAT,
+    CAST_SHRED
   };
 
   int max_ticks;
@@ -6514,6 +6497,9 @@ struct convoke_the_spirits_t : public druid_spell_t
   std::vector<convoke_cast_e> cast_list;
   std::vector<convoke_cast_e> offspec_list;
   std::vector<std::pair<convoke_cast_e, double>> chances;
+  unsigned main_count;
+  unsigned filler_count;
+  unsigned off_count;
   // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
@@ -6528,9 +6514,18 @@ struct convoke_the_spirits_t : public druid_spell_t
   action_t* conv_mangle;
   action_t* conv_pulverize;
   // Cat Form
+  action_t* conv_tigers_fury;
+  action_t* conv_feral_frenzy;
+  action_t* conv_ferocious_bite;
+  action_t* conv_thrash_cat;
+  action_t* conv_shred;
+  action_t* conv_lunar_inspiration;
 
   convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
+    main_count( 0 ),
+    filler_count( 0 ),
+    off_count( 0 ),
     conv_wrath( nullptr ),  // multi-spec
     conv_moonfire( nullptr ),
     conv_rake( nullptr ),
@@ -6540,7 +6535,13 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_starfall( nullptr ),
     conv_ironfur( nullptr ),  // bear
     conv_mangle( nullptr ),
-    conv_pulverize( nullptr )
+    conv_pulverize( nullptr ),
+    conv_tigers_fury( nullptr ),  // cat
+    conv_feral_frenzy( nullptr ),
+    conv_ferocious_bite( nullptr ),
+    conv_thrash_cat( nullptr ),
+    conv_shred( nullptr ),
+    conv_lunar_inspiration( nullptr )
   {
     if ( !p->covenant.night_fae->ok() )
       return;
@@ -6562,6 +6563,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( p->find_action( "bear_form" ) )
       _init_bear();
+
+    if ( p->find_action( "cat_form" ) )
+      _init_cat();
   }
 
   template <typename T, typename... Ts>
@@ -6590,7 +6594,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     switch ( type )
     {
       case CAST_WRATH: return conv_wrath;
-      case CAST_MOONFIRE: return conv_moonfire;
+      case CAST_MOONFIRE: if (p()->buff.cat_form->check()) return conv_lunar_inspiration; else return conv_moonfire;
       case CAST_RAKE: return conv_rake;
       case CAST_THRASH_BEAR: return conv_thrash_bear;
       case CAST_FULL_MOON: return conv_full_moon;
@@ -6599,6 +6603,11 @@ struct convoke_the_spirits_t : public druid_spell_t
       case CAST_PULVERIZE: return conv_pulverize;
       case CAST_IRONFUR: return conv_ironfur;
       case CAST_MANGLE: return conv_mangle;
+      case CAST_TIGERS_FURY: return conv_tigers_fury;
+      case CAST_FERAL_FRENZY: return conv_feral_frenzy;
+      case CAST_FEROCIOUS_BITE: return conv_ferocious_bite;
+      case CAST_THRASH_CAT: return conv_thrash_cat;
+      case CAST_SHRED: return conv_shred;
       default: return nullptr;  // heals will fall through and return as null
     }
   }
@@ -6618,6 +6627,18 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   double composite_haste() const override { return 1.0; }
 
+  void _init_cat()
+  {
+    conv_tigers_fury = get_convoke_action<cat_attacks::tigers_fury_t>( "tigers_fury", p()->find_spell( 5217 ), "" );
+    conv_feral_frenzy =
+      get_convoke_action<cat_attacks::feral_frenzy_driver_t>( "feral_frenzy", p()->find_spell( 274837 ), "" );
+    conv_ferocious_bite = get_convoke_action<cat_attacks::ferocious_bite_t>( "ferocious_bite", "" );
+    conv_thrash_cat     = get_convoke_action<cat_attacks::thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ), "" );
+    conv_shred          = get_convoke_action<cat_attacks::shred_t>( "shred", "" );
+    // LI is a talent but the spell id is hardcoded into the constructor, so we don't need to explictly pass it here
+    conv_lunar_inspiration = get_convoke_action<cat_attacks::lunar_inspiration_t>( "lunar_inspiration", "" );
+  }
+
   void _init_moonkin()
   {
     conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
@@ -6633,6 +6654,192 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
   }
 
+  void _execute_bear()
+  {
+    main_count   = 0;
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
+    chances      = { { CAST_THRASH_BEAR, 0.95 },
+                     { CAST_IRONFUR, 1.0 },
+                     { CAST_MANGLE, 1.0 }
+                   };
+
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
+
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_PULVERIZE );
+  }
+
+  convoke_cast_e _tick_bear( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    convoke_cast_e type_ = base_type;
+
+    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( base_type == CAST_SPEC )
+    {
+      auto dist = chances;  // local copy of distribution
+
+      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+      for ( auto t : tl )
+        if ( !td( t )->dots.moonfire->is_ticking() )
+          mf_tl.push_back( t );
+
+      if ( mf_tl.size() )
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
+
+      type_ = get_cast_from_dist( dist );
+
+      if ( type_ == CAST_MOONFIRE )
+        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+    }
+
+    if ( !conv_tar )
+      conv_tar = tl.at( rng().range( tl.size() ) );
+
+    if ( type_ == CAST_RAKE && td( conv_tar )->dots.rake->is_ticking() )
+      type_ = CAST_WRATH;
+
+    if ( type_ == CAST_MOONFIRE )
+      main_count++;
+
+    return type_;
+  }
+
+  void _execute_cat()
+  {
+    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_WRATH, CAST_MOONFIRE };
+    chances      = { { CAST_SHRED, 0.10 },
+                     { CAST_THRASH_CAT, 0.0588 },
+                     { CAST_RAKE, 0.22 }
+                   };
+
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
+
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_FERAL_FRENZY );
+
+    cast_list.insert( cast_list.end(), static_cast<int>( rng().gauss( 4.2, 0.9360890055, true ) ), CAST_MAIN );
+  }
+
+  convoke_cast_e _tick_cat( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    convoke_cast_e type_ = base_type;
+
+    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( base_type == CAST_MAIN )
+      type_ = CAST_FEROCIOUS_BITE;
+    else if ( base_type == CAST_SPEC )
+    {
+      auto dist = chances;
+      if ( !p()->buff.tigers_fury->check() )
+        dist.emplace_back( std::make_pair( CAST_TIGERS_FURY, 0.25 ) );
+
+      type_ = get_cast_from_dist( dist );
+    }
+
+    conv_tar = tl.at( rng().range( tl.size() ) );
+
+    auto target_data = td( conv_tar );
+    if ( type_ == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
+      type_ = CAST_WRATH;
+    else if ( type_ == CAST_RAKE && target_data->dots.rake->is_ticking() )
+      type_ = CAST_SHRED;
+
+    return type_;
+  }
+
+  void _execute_moonkin()
+  {
+    cast_list.insert( cast_list.end(), 5, CAST_HEAL );
+    off_count    = 0;
+    main_count   = 0;
+    filler_count = 0;
+
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_FULL_MOON );
+  }
+
+  convoke_cast_e _tick_moonkin( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    convoke_cast_e type_ = base_type;
+    std::vector<std::pair<convoke_cast_e, double>> dist;
+
+    conv_tar = tl.at( rng().range( tl.size() ) );
+
+    if ( type_ == CAST_SPEC )
+    {
+      bool add_more = true;
+
+      if ( !p()->buff.starfall->check() )
+      {
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 10.0 ) );
+        add_more = false;
+      }
+
+      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+      for ( auto t : tl )
+        if ( !td( t )->dots.moonfire->is_ticking() )
+          mf_tl.push_back( t );
+
+      if ( mf_tl.size() )
+      {
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.0 ) );
+        add_more = false;
+      }
+
+      if ( add_more )
+      {
+        if ( main_count < 3 )
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+        else if ( main_count < 4 )
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+
+        if ( filler_count < 3 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 2.25 ) );
+        else if ( filler_count < 4 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 1.5 ) );
+        else if ( filler_count < 5 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 0.75 ) );
+      }
+
+      if ( main_count < 2 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 20.0 ) );
+      else if ( main_count < 3 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+      else if ( main_count < 4 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+      else if ( main_count < 5 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.05 ) );
+
+      if ( filler_count < 4 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 2.75 ) );
+      else if ( filler_count < 5 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 2.0 ) );
+      else if ( filler_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
+      else if ( filler_count < 7 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
+
+      if ( off_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
+
+      type_ = get_cast_from_dist( dist );
+
+      if ( type_ == CAST_MOONFIRE )
+        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+    }
+
+    if ( type_ == CAST_STARSURGE )
+      main_count++;
+    else if ( type_ == CAST_WRATH )
+      filler_count++;
+    else if ( type_ == CAST_HEAL )
+      off_count++;
+
+    return type_;
+  }
+
   void execute() override
   {
     // Generic routine
@@ -6640,38 +6847,18 @@ struct convoke_the_spirits_t : public druid_spell_t
     p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
     p()->buff.convoke_the_spirits->trigger();
 
-    // form-agnostic
     cast_list.clear();
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 3, 6 ) ), CAST_OFFSPEC );
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // form-based ultimate
-    {
-      if ( p()->buff.bear_form->check() )
-        cast_list.push_back( CAST_PULVERIZE );
-      else if ( p()->buff.moonkin_form->check() )
-        cast_list.push_back( CAST_FULL_MOON );
-    }
-    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
+    main_count = 0;
 
-    // form-specific distribution list
+    // form-specific execute setup
     if ( p()->buff.bear_form->check() )
       _execute_bear();
     else if ( p()->buff.moonkin_form->check() )
       _execute_moonkin();
-  }
+    else if ( p()->buff.cat_form->check() )
+      _execute_cat();
 
-  void _execute_bear()
-  {
-    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances    = { { CAST_THRASH_BEAR, 0.3 },
-                   { CAST_IRONFUR,     0.35 },
-                   { CAST_MANGLE,      0.35 } };
-  }
-
-  void _execute_moonkin()
-  {
-    offspec_list = { CAST_HEAL };
-    chances    = { { CAST_WRATH,     0.4 },
-                   { CAST_STARSURGE, 0.3 } };
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
   }
 
   void tick( dot_t* d ) override
@@ -6694,73 +6881,19 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( !tl.size() )
       return;
 
-    // Figure out which offspec/spec spell to cast
-    if ( type == CAST_OFFSPEC )
-    {
-      if ( offspec_list.size() )
-        type = offspec_list.at( rng().range( offspec_list.size() ) );
-    }
-    else if ( type == CAST_SPEC )
-    {
-      // Do form-specific spell selection
-      if ( p()->buff.moonkin_form->check() )
-        type = _tick_moonkin( tl, conv_tar );
-      else if ( p()->buff.bear_form->check() )
-        type = _tick_bear( tl, conv_tar );
-    }
+    // Do form-specific spell selection
+    if ( p()->buff.moonkin_form->check() )
+      type = _tick_moonkin( type, tl, conv_tar );
+    else if ( p()->buff.bear_form->check() )
+      type = _tick_bear( type, tl, conv_tar );
+    else if ( p()->buff.cat_form->check() )
+      type = _tick_cat( type, tl, conv_tar );
 
     conv_cast = convoke_action_from_type( type );
     if ( !conv_cast )
       return;
 
-    // pick random target if we haven't picked one already
-    if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
-
-   execute_convoke_action( conv_cast, conv_tar );
-  }
-
-  convoke_cast_e _tick_bear( const std::vector<player_t*>& tl, player_t*& conv_tar )
-  {
-    auto dist = chances;  // local copy of distribution
-
-    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-    for ( auto t : tl )
-      if ( !td( t )->dots.moonfire->is_ticking() )
-        mf_tl.push_back( t );
-
-    if ( mf_tl.size() )
-      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
-
-    auto type = get_cast_from_dist( dist );
-
-    if ( type == CAST_MOONFIRE )
-      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
-
-    return type;
-  }
-
-  convoke_cast_e _tick_moonkin( const std::vector<player_t*>& tl, player_t*& conv_tar )
-  {
-    auto dist = chances;  // local copy of distribution
-
-    std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-    for ( auto t : tl )
-      if ( !td( t )->dots.moonfire->is_ticking() )
-        mf_tl.push_back( t );
-
-    if ( mf_tl.size() )
-      dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.3 ) );  // mf if undotted
-
-    if ( !p()->buff.starfall->check() )
-      dist.emplace_back( std::make_pair( CAST_STARFALL, 1.0 ) );  // starfall if it isn't up
-
-    auto type = get_cast_from_dist( dist );
-
-    if ( type == CAST_MOONFIRE )
-      conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
-
-    return type;
+    execute_convoke_action( conv_cast, conv_tar );
   }
 
   void last_tick( dot_t* d ) override
@@ -8360,18 +8493,18 @@ void druid_t::apl_guardian()
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
 
-  pre->add_action( this, "Cat Form", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-  pre->add_action( this, "prowl", "if=druid.catweave_bear&talent.feral_affinity.enabled");
-  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear&talent.balance_affinity.enabled" );
+  pre->add_action( this, "Cat Form", "if=druid.catweave_bear");
+  pre->add_action( this, "prowl", "if=druid.catweave_bear");
+  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear" );
   pre->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
-  pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&druid.owlweave_bear" );
+  pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
 
-  def->add_action( "auto_attack" );
-  def->add_action( "use_items" );
+  def->add_action( "auto_attack,if=!buff.prowl.up" );
+  def->add_action( "use_items,if=!buff.prowl.up" );
   def->add_action(
-      "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
-      "bear))" );
+      "potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
+      "bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 
   lycara_owl->add_action( this, "Moonkin Form" );
   lycara_cat->add_action( this, "Cat Form" );
@@ -8399,21 +8532,19 @@ void druid_t::apl_guardian()
   def->add_action( "run_action_list,name=bear" );
 
   bear->add_action( "bear_form,if=!buff.bear_form.up" );
-  bear->add_action(
-      "potion,if=((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_"
-      "bear))" );
   bear->add_action( "ravenous_frenzy" );
   bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear" );
   bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2" );
   bear->add_action( "barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)" );
-  bear->add_action( "ironfur,if=buff.ironfur.remains<0.5" );
-  bear->add_action( "adaptive_swarm,target_if=refreshable" );
+  bear->add_action(
+       "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+       "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   bear->add_action( "moonfire,if=(buff.galactic_guardian.up&druid.owlweave_bear)&active_enemies<=3" );
   bear->add_action(
       "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_"
-      "embrace.equipped)|active_enemies>5" );
+      "embrace.equipped)|active_enemies>=4" );
   bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
   bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2" );
   bear->add_action(
@@ -8421,17 +8552,18 @@ void druid_t::apl_guardian()
   bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
   bear->add_action( "moonfire,target_if=refreshable&active_enemies<=3" );
   bear->add_action(
-      "maul,if=(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_"
-      "combatant.stack>=3)" );
+      "maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_"
+      "combatant.stack>=3))&active_enemies<3)" );
   bear->add_action( "thrash_bear,if=active_enemies>1" );
   bear->add_action(
       "moonfire,if=(buff.galactic_guardian.up&druid.catweave_bear)&active_enemies<=3|(buff.galactic_guardian.up&!druid."
       "catweave_bear&!druid.owlweave_bear)&active_enemies<=3" );
-  bear->add_action( "mangle,if=(rage<80)&active_enemies<4" );
+  bear->add_action( "mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)" );
   bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
   bear->add_action( "thrash_bear" );
-  bear->add_action( "maul" );
+  bear->add_action( "maul,if=active_enemies<3" );
   bear->add_action( "swipe_bear" );
+  bear->add_action( "ironfur,if=rage.deficit<40&buff.ironfur.remains<0.5" );
 
   catweave->add_action( "cat_form,if=!buff.cat_form.up" );
   catweave->add_action( this, "Rake", "if=buff.prowl.up" );
@@ -8440,7 +8572,9 @@ void druid_t::apl_guardian()
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
   catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points>=4" );
   catweave->add_action( "ferocious_bite,if=combo_points>=4" );
-  catweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  catweave->add_action(
+           "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+           "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   catweave->add_action( this, "Rake", "if=dot.rake.refreshable&combo_points<4" );
   catweave->add_action( this, "Shred" );
 
@@ -8448,7 +8582,9 @@ void druid_t::apl_guardian()
   owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   owlweave->add_action( "empower_bond,if=druid.owlweave_bear" );
   owlweave->add_action( "convoke_the_spirits,if=druid.owlweave_bear" );
-  owlweave->add_action( "adaptive_swarm,target_if=refreshable" );
+  owlweave->add_action(
+           "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
+           "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   owlweave->add_action( "moonfire,target_if=refreshable|buff.galactic_guardian.up" );
   owlweave->add_action( "sunfire,target_if=refreshable" );
   owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
@@ -8799,11 +8935,18 @@ void druid_t::arise()
     eclipse_handler.enabled_ = true;
 
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-        eclipse_handler.snapshot_eclipse();
-        make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
+      eclipse_handler.snapshot_eclipse();
+      make_repeating_event( *sim, timespan_t::from_seconds( eclipse_snapshot_period ), [ this ]() {
           eclipse_handler.snapshot_eclipse();
-        } );
-      }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+      } );
+    }, timespan_t::from_seconds( eclipse_snapshot_period ) ) );
+  }
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+      buff.lycaras_fleeting_glimpse->trigger();
+    }, timespan_t::from_seconds( buff.lycaras_fleeting_glimpse->default_value ) ) );
   }
 
   if ( buff.yseras_gift )
@@ -10068,6 +10211,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.fury_of_elune         = target.get_dot( "fury_of_elune", &source );
   dots.lifebloom             = target.get_dot( "lifebloom", &source );
   dots.moonfire              = target.get_dot( "moonfire", &source );
+  dots.lunar_inspiration     = target.get_dot( "lunar_inspiration", &source );
   dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
   dots.rake                  = target.get_dot( "rake", &source );
   dots.regrowth              = target.get_dot( "regrowth", &source );
@@ -10221,7 +10365,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
-  action.apply_affecting_conduit( conduit.born_of_the_wilds, -1 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const

@@ -1109,9 +1109,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Reaction
     reaction_offset( timespan_t::from_seconds( 0.1 ) ),
     reaction_max( timespan_t::from_seconds( 1.4 ) ),
-    reaction_mean( timespan_t::from_seconds( 0.3 ) ),
+    reaction_mean( timespan_t::from_seconds( 0.25 ) ),
     reaction_stddev( timespan_t::zero() ),
-    reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+    reaction_nu( timespan_t::from_seconds( 0.15 ) ),
     // Latency
     world_lag( timespan_t::from_seconds( 0.1 ) ),
     world_lag_stddev( timespan_t::min() ),
@@ -1978,6 +1978,17 @@ void player_t::create_special_effects()
   }
 
   unique_gear::initialize_racial_effects( this );
+
+  if ( sim->overrides.windfury_totem )
+  {
+    special_effect_t effect( this );
+
+    unique_gear::initialize_special_effect( effect, 327942 );
+    if ( effect.custom_init_object.size() )
+    {
+      special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
 
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
@@ -3301,6 +3312,10 @@ void player_t::create_buffs()
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
+
+      buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
+        ->set_duration( sim->max_time * 3 )
+        ->set_chance( as<double>( sim->overrides.windfury_totem ) );
 
       // 9.0 class buffs
       buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
@@ -4681,6 +4696,11 @@ void player_t::combat_begin()
   if ( buffs.power_infusion )
     for ( auto t : external_buffs.power_infusion )
       make_event( *sim, t, [ this ] { buffs.power_infusion->trigger(); } );
+
+  if ( buffs.windfury_totem )
+  {
+    buffs.windfury_totem->trigger();
+  }
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -7607,9 +7627,9 @@ struct lights_judgment_t : public racial_spell_t
   {
     // Reduce the delay before the hit by the player's gcd when used during precombat
     if ( ! player -> in_combat && is_precombat )
-      return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
+      return racial_spell_t::travel_time() - player -> base_gcd;
 
-    return timespan_t::from_seconds( travel_speed );
+    return racial_spell_t::travel_time();
   }
 
   void impact( action_state_t* state ) override
@@ -10219,25 +10239,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     {
       return expr_t::create_constant(expression_str, find_spell( splits[ 1 ] )->ok());
     }
-
-    if (splits[ 0 ] == "talent" )
-    {
-      if ( splits[ 2 ] == "enabled" )
-      {
-        const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
-        if ( s == spell_data_t::nil() )
-        {
-          throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
-        }
-
-        return expr_t::create_constant( expression_str, s->ok() );
-      }
-      throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
-    }
   } // splits.size() == 3
 
-
   // *** Variable-Length expressions from here on ***
+
+  // talents
+  if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
+  {
+    const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
+    if ( s == spell_data_t::nil() )
+      throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+
+    if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
+      return expr_t::create_constant( expression_str, s->ok() );
+
+    throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
+  }
 
   // trinkets
   if ( !splits.empty() && splits[ 0 ] == "trinket" )
