@@ -3,6 +3,7 @@ from dbc import constants
 def class_id(**kwargs):
     pet_skill = int(kwargs.get('pet_skill', 0))
     player_skill = int(kwargs.get('player_skill', 0))
+    spell_family = int(kwargs.get('family', 0))
     mask = int(kwargs.get('mask', 0))
 
     if player_skill > 0:
@@ -24,7 +25,7 @@ def class_id(**kwargs):
         return class_id._bypetskill.get(pet_skill, -1)
 
     if mask > 0:
-        if not hasattr(race_id, '_mask_cache'):
+        if not hasattr(class_id, '_mask_cache'):
             class_id._mask_cache = {}
 
         if mask in class_id._mask_cache:
@@ -42,6 +43,15 @@ def class_id(**kwargs):
         class_id._mask_cache[mask] = set_
 
         return set_
+
+    if spell_family > 0:
+        if not hasattr(class_id, '_byfamily'):
+            class_id._byfamily = dict()
+
+            for v in constants.CLASS_INFO:
+                class_id._byfamily[v['family']] = v['id']
+
+        return class_id._byfamily.get(spell_family, -1)
 
     return -1
 

@@ -43,7 +43,7 @@ actions.precombat+=/potion,dynamic_prepot=1
 actions=auto_shot
 actions+=/use_items,if=prev_gcd.1.aspect_of_the_wild|target.time_to_die<20
 actions+=/use_item,name=azsharas_font_of_power,if=cooldown.aspect_of_the_wild.remains_guess<15&target.time_to_die>10
-actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(!equipped.azsharas_font_of_power|trinket.azsharas_font_of_power.cooldown.remains>86|essence.blood_of_the_enemy.major)&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.remains>9)&(!essence.condensed_lifeforce.major|buff.guardian_of_azeroth.up)&(target.health.pct<35|!essence.condensed_lifeforce.major|!talent.killer_instinct.enabled)|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))
+actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(!equipped.azsharas_font_of_power|trinket.azsharas_font_of_power.cooldown.remains>86|essence.blood_of_the_enemy.major)&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.remains>9)&(!essence.condensed_lifeforce.major|buff.guardian_of_azeroth.up)&(target.health.pct<35|!essence.condensed_lifeforce.major|!talent.killer_instinct)|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))
 actions+=/use_item,effect_name=cyclotronic_blast,if=buff.bestial_wrath.down|target.time_to_die<5
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<2
@@ -51,8 +51,8 @@ actions+=/call_action_list,name=cleave,if=active_enemies>1
 
 actions.cds=ancestral_call,if=cooldown.bestial_wrath.remains>30
 actions.cds+=/fireblood,if=cooldown.bestial_wrath.remains>30
-actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13
-actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
+actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<13
+actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<16
 actions.cds+=/lights_judgment,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains>gcd.max|!pet.main.buff.frenzy.up
 actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)
 actions.cds+=/worldvein_resonance,if=(prev_gcd.1.aspect_of_the_wild|cooldown.aspect_of_the_wild.remains<gcd|target.time_to_die<20)|!essence.vision_of_perfection.minor
@@ -61,12 +61,12 @@ actions.cds+=/ripple_in_space
 actions.cds+=/memory_of_lucid_dreams
 actions.cds+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 
-actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd.max|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood.enabled
+actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd.max|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood
 actions.cleave+=/multishot,if=gcd.max-pet.main.buff.beast_cleave.remains>0.25
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains
 actions.cleave+=/aspect_of_the_wild
 actions.cleave+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
-actions.cleave+=/bestial_wrath,if=talent.scent_of_blood.enabled|cooldown.aspect_of_the_wild.remains_guess>20|talent.one_with_the_pack.enabled|target.time_to_die<15
+actions.cleave+=/bestial_wrath,if=talent.scent_of_blood|cooldown.aspect_of_the_wild.remains_guess>20|talent.one_with_the_pack|target.time_to_die<15
 actions.cleave+=/chimaera_shot
 actions.cleave+=/a_murder_of_crows
 actions.cleave+=/barrage
@@ -83,21 +83,21 @@ actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&(
 
 actions.st=kill_shot
 actions.st+=/bloodshed
-actions.st+=/barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood.enabled
+actions.st+=/barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood
 actions.st+=/concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5
 actions.st+=/aspect_of_the_wild,if=buff.aspect_of_the_wild.down&(cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled)
 actions.st+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
 actions.st+=/a_murder_of_crows
 actions.st+=/focused_azerite_beam,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5
-actions.st+=/bestial_wrath,if=talent.scent_of_blood.enabled|talent.one_with_the_pack.enabled&buff.bestial_wrath.remains<gcd|buff.bestial_wrath.down&cooldown.aspect_of_the_wild.remains>15|target.time_to_die<15+gcd
+actions.st+=/bestial_wrath,if=talent.scent_of_blood|talent.one_with_the_pack&buff.bestial_wrath.remains<gcd|buff.bestial_wrath.down&cooldown.aspect_of_the_wild.remains>15|target.time_to_die<15+gcd
 actions.st+=/barbed_shot,if=azerite.dance_of_death.rank>1&buff.dance_of_death.remains<gcd
 actions.st+=/blood_of_the_enemy,if=buff.aspect_of_the_wild.remains>10+gcd|target.time_to_die<10+gcd
 actions.st+=/kill_command
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/chimaera_shot
 actions.st+=/dire_beast
-actions.st+=/barbed_shot,if=talent.one_with_the_pack.enabled&charges_fractional>1.5|charges_fractional>1.8|cooldown.aspect_of_the_wild.remains<pet.main.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
+actions.st+=/barbed_shot,if=talent.one_with_the_pack&charges_fractional>1.5|charges_fractional>1.8|cooldown.aspect_of_the_wild.remains<pet.main.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
 actions.st+=/purifying_blast,if=buff.bestial_wrath.down|target.time_to_die<8
 actions.st+=/barrage
 actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains_guess>focus.time_to_max|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1|target.time_to_die<3
@@ -123,9 +123,9 @@ main_hand=whispering_eldritch_bow,id=172193,bonus_id=4824/1517/6568,enchant=gale
 # gear_ilvl=146.07
 # gear_agility=439
 # gear_stamina=798
-# gear_crit_rating=359
-# gear_haste_rating=309
-# gear_mastery_rating=195
+# gear_crit_rating=336
+# gear_haste_rating=286
+# gear_mastery_rating=172
 # gear_versatility_rating=51
 # gear_corruption=97
 # gear_corruption_resistance=50

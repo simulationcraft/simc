@@ -2,10 +2,12 @@ rogue="PR_Rogue_Subtlety"
 source=default
 spec=subtlety
 level=60
-race=void_elf
+race=mechagnome
 role=attack
 position=back
 talents=1320031
+covenant=kyrian
+soulbind=combat_meditation/planned_execution:4
 
 # Default consumables
 potion=phantom_fire
@@ -66,7 +68,7 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Builders
-actions.build=shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped
+actions.build=shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5
 actions.build+=/shuriken_storm,if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)
 actions.build+=/serrated_bone_spike,if=cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up
 actions.build+=/gloomblade
@@ -165,7 +167,7 @@ actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&com
 actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
-actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped
+actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5
 # For pre-patch, keep Find Weakness up on the primary target due to no Shadow Vault
 actions.stealthed+=/shadowstrike,if=level<52&debuff.find_weakness.remains<1&target.time_to_die-remains>6
 # Up to 3 targets keep up Find Weakness by cycling Shadowstrike.
@@ -180,29 +182,28 @@ actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.sym
 actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
 
-head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1500
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1500
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1500
-back=dealer_xyexas_cape,id=179349,bonus_id=6807/1500
-chest=rainshadow_hauberk,id=178698,bonus_id=6807/1500
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1500
-hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1500
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
-legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
-feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
-trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
-main_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
-off_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
+head=umbrahide_helm,id=172317,bonus_id=7124/6647/6650/1487
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
+hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
+legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_versatility
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=celestial_guidance
+off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.38
-# gear_agility=562
-# gear_stamina=862
-# gear_crit_rating=402
-# gear_haste_rating=332
-# gear_mastery_rating=465
-# gear_versatility_rating=118
-# gear_armor=482
+# gear_agility=597
+# gear_stamina=860
+# gear_crit_rating=622
+# gear_haste_rating=280
+# gear_versatility_rating=475
+# gear_armor=479

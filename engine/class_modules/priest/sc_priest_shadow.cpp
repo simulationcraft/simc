@@ -2097,9 +2097,7 @@ void priest_t::generate_apl_shadow()
   }
 
   // Potions
-  default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
-      "target.health.pct<35" );
+  default_list->add_action( "potion,if=buff.voidform.up|buff.power_infusion.up" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
@@ -2161,8 +2159,12 @@ void priest_t::generate_apl_shadow()
                    "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
-  cds->add_action( this, covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)" );
+  cds->add_action(
+      this, covenant.mindgames, "mindgames",
+      "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_"
+      "void.up|!buff.voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on the target if "
+      "talented. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"

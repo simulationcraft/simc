@@ -32,6 +32,7 @@ actions.precombat+=/use_item,effect_name=cyclotronic_blast
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/shackle_the_unworthy
 actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions+=/berserking
 actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
@@ -97,9 +98,9 @@ main_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=rune_of_the_fall
 # gear_ilvl=144.67
 # gear_strength=482
 # gear_stamina=829
-# gear_crit_rating=304
-# gear_haste_rating=281
-# gear_mastery_rating=147
+# gear_crit_rating=281
+# gear_haste_rating=258
+# gear_mastery_rating=124
 # gear_versatility_rating=49
 # gear_corruption=95
 # gear_corruption_resistance=50
