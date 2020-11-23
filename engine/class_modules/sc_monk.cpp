@@ -12097,6 +12097,12 @@ void monk_t::apl_combat_mistweaver()
   def->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3" );
 
+  // Covenant Abilities
+  def->add_action( "weapons_of_order" );
+  def->add_action( "faeline_stomp" );
+  def->add_action( "fallen_order" );
+  def->add_action( "bonedust_brew" );
+
   st->add_action( this, "Thunder Focus Tea" );
   st->add_action( this, "Rising Sun Kick" );
   st->add_action( this, "Blackout Kick",
@@ -12109,9 +12115,6 @@ void monk_t::apl_combat_mistweaver()
   aoe->add_action( this, "Spinning Crane Kick" );
   aoe->add_talent( this, "Chi Wave" );
   aoe->add_talent( this, "Chi Burst" );
-  //  aoe -> add_action( this, "Blackout Kick",
-  //  "if=buff.teachings_of_the_monastery.stack=3&cooldown.rising_sun_kick.down" ); aoe -> add_action( this, "Tiger
-  //  Palm", "if=buff.teachings_of_the_monastery.stack<3|buff.teachings_of_the_monastery.remains<2" );
 }
 
 // monk_t::init_actions =====================================================
