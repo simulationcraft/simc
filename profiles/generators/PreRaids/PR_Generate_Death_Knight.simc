@@ -33,7 +33,7 @@ role=attack
 position=back
 talents=3102013
 covenant=kyrian
-soulbind=combat_meditation/91:6
+soulbind=combat_meditation/91:4
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498
