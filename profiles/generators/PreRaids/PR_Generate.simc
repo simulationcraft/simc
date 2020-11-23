@@ -1,6 +1,6 @@
 # PreRaids
 # Shadowlands Pre-Raids
-# * Ilvl Cap: 184 - reason: should be mythic itemlevel (bonus_id=6807/1498)
+# * Ilvl Cap: 184 - reason: should be mythic itemlevel (ex: ",bonus_id=6807/1498")
 # * 1 Ilvl 190 legendary
 # * 1 Soulbind starting trait and 1 potency conduit
 # * No items from World Bosses / World Quests / BoEs (craftables are allowed)
