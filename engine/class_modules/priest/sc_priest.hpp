@@ -140,12 +140,6 @@ public:
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
 
-    // Azerite Powers
-    // Shadow
-    propagate_const<buff_t*> chorus_of_insanity;
-    propagate_const<buff_t*> harvested_thoughts;
-    propagate_const<buff_t*> whispers_of_the_damned;
-
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
     propagate_const<buff_t*> sephuzs_proclamation;
@@ -333,10 +327,7 @@ public:
     propagate_const<gain_t*> insanity_blessing;
     propagate_const<gain_t*> shadowy_insight;
     propagate_const<gain_t*> vampiric_touch_health;
-    propagate_const<gain_t*> insanity_death_throes;
     propagate_const<gain_t*> power_of_the_dark_side;
-    propagate_const<gain_t*> insanity_lucid_dreams;
-    propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
     propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> insanity_mindgames;
@@ -404,14 +395,12 @@ public:
   // Options
   struct
   {
-    bool autoUnshift                              = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time                        = true;
-    bool priest_ignore_healing                    = false;  // Remove Healing calculation codes
-    int priest_set_voidform_duration              = 0;      // Voidform will always have this duration
-    double priest_lucid_dreams_proc_chance_disc   = 0.08;
-    double priest_lucid_dreams_proc_chance_holy   = 0.08;
-    double priest_lucid_dreams_proc_chance_shadow = 0.15;
+    bool autoUnshift                 = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time           = true;
+    bool priest_ignore_healing       = false;  // Remove Healing calculation codes
+    int priest_set_voidform_duration = 0;      // Voidform will always have this duration
 
+    // Default param to set if you should cast Power Infusion on yourself
     bool priest_self_power_infusion = true;
 
     // Add in easy options to change if you are in range or not
@@ -431,34 +420,6 @@ public:
     // Setting to 0 turns off the bug
     int priest_ascended_eruption_additional_targets = 0;
   } options;
-
-  // Azerite
-  struct azerite_t
-  {
-    // Holy
-    azerite_power_t sacred_flame;
-    // Disc
-    azerite_power_t depth_of_the_shadows;
-    azerite_power_t contemptuous_homily;
-    // Shadow
-    azerite_power_t chorus_of_insanity;
-    azerite_power_t death_throes;
-    azerite_power_t searing_dialogue;
-    azerite_power_t spiteful_apparitions;
-    azerite_power_t thought_harvester;
-    azerite_power_t torment_of_torments;
-    azerite_power_t whispers_of_the_damned;
-  } azerite;
-
-  // Essences
-  struct
-  {
-    const spell_data_t* lucid_dreams;
-    const spell_data_t* memory_of_lucid_dreams;
-    azerite_essence_t vision_of_perfection;
-    const spell_data_t* vision_of_perfection_r1;
-    const spell_data_t* vision_of_perfection_r2;
-  } azerite_essence;
 
   // Legendaries
   struct
@@ -549,7 +510,6 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
-  void vision_of_perfection_proc() override;
   void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
   void invalidate_cache( cache_e ) override;
@@ -589,7 +549,6 @@ private:
 
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
-  void trigger_lucid_dreams( double cost );
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
@@ -1353,14 +1312,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return action_t::ready();
   }
 
-  void consume_resource() override
-  {
-    base_t::consume_resource();
-
-    if ( priest().azerite_essence.lucid_dreams )
-      priest().trigger_lucid_dreams( last_resource_cost );
-  }
-
   void impact( action_state_t* s ) override
   {
     double save_health_percentage = s->target->health_percentage();
@@ -1387,13 +1338,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         {
           priest().trigger_wrathful_faerie_fermata();
         }
-      }
-
-      if ( priest().specialization() == PRIEST_SHADOW && priest().buffs.voidform->check() )
-      {
-        // TODO: Remove after pre-patch?
-        // Just an approximation of the value added by Lucid Minor, not accurate
-        priest().trigger_lucid_dreams( 4.0 );
       }
     }
   }
@@ -1428,21 +1372,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return ttm;
-  }
-
-  double get_death_throes_bonus() const
-  {
-    if ( priest().azerite.death_throes.enabled() )
-    {
-      auto value = priest().azerite.death_throes.value( 1 );
-      if ( priest().specs.discipline_priest->ok() )
-      {
-        value *= ( 100.0 + priest().specs.discipline_priest->effectN( 8 ).base_value() ) / 100.0;
-      }
-      return value;
-    }
-
-    return 0.0;
   }
 
   void trigger_dark_thoughts( const player_t* target, proc_t* proc, action_state_t* s )
