@@ -14,7 +14,7 @@ static const std::array<covenant_ability_entry_t, 64> __covenant_ability_data { 
   {  1, 4, 0, 324143, "Conqueror's Banner"                 },
   { 11, 3, 0, 323764, "Convoke the Spirits"                },
   {  3, 4, 0, 325028, "Death Chakram"                      },
-  {  0, 3, 0, 324128, "Death's Due"                        },
+  {  6, 3, 0, 324128, "Death's Due"                        },
   {  8, 4, 0, 324220, "Deathborne"                         },
   {  9, 4, 0, 325289, "Decimating Bolt"                    },
   {  2, 1, 0, 304971, "Divine Toll"                        },
