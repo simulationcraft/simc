@@ -1954,13 +1954,6 @@ void priest_t::create_apl_precombat()
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
                          "pre-potting is done." );
-
-  // do all kinds of calculations here to reduce CPU time
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    precombat->add_action( "potion" );
-  }
-
   // Precast
   switch ( specialization() )
   {

@@ -2097,9 +2097,7 @@ void priest_t::generate_apl_shadow()
   }
 
   // Potions
-  default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
-      "target.health.pct<35" );
+  default_list->add_action( "potion,if=buff.voidform.up|buff.power_infusion.up" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
