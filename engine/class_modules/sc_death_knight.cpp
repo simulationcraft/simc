@@ -9301,7 +9301,7 @@ void death_knight_t::default_apl_blood()
   covenants -> add_action( "deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<3|buff.crimson_scourge.up", "And that we always cast DD as high prio when we actually need it" );
 
   // Venthyr
-  covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3 ", "Burn RP off just before swarming comes back off CD");
+  covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3", "Burn RP off just before swarming comes back off CD");
   covenants -> add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And swarming as long as we're not < 3s off DRW" );
 
   // Necrolord (forces a marrowrend on pull)
