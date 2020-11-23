@@ -9290,7 +9290,7 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" , "Since the potion cooldown has changed, we'll sync with DRW");
   def -> add_action( "use_items" );
   def -> add_action( "raise_dead" );
-  def -> add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|cooldown.dancing_rune_weapon.remains<7)" );
+  def -> add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|buff.deaths_due.remains>7)" );
   def -> add_action( "blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up)" );
   def -> add_action( "raise_dead" );
   def -> add_action( "death_strike,if=fight_remains<3" );
