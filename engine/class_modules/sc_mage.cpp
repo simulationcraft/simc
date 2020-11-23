@@ -5644,8 +5644,8 @@ void mage_t::create_actions()
 
   if ( spec.icicles->ok() )
   {
-    action.icicle.frostbolt    = get_action<icicle_t>( "frostbolt_icicle", this );
-    action.icicle.flurry       = get_action<icicle_t>( "flurry_icicle", this );
+    action.icicle.frostbolt = get_action<icicle_t>( "frostbolt_icicle", this );
+    action.icicle.flurry    = get_action<icicle_t>( "flurry_icicle", this );
   }
 
   if ( talents.arcane_familiar->ok() )
