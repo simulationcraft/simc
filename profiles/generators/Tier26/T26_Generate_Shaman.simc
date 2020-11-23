@@ -28,31 +28,31 @@
 # save=T26_Shaman_Elemental.simc
 
 
-# shaman="T26_Shaman_Enhancement"
-# level=60
-# race=orc
-# spec=enhancement
-# role=attack
-# position=back
-# talents=3111131
-# covenant=night_fae
-# soulbind=niya,322721/focused_lightning:6
+shaman="T26_Shaman_Enhancement"
+level=60
+race=orc
+spec=enhancement
+role=attack
+position=back
+talents=3111131
+covenant=night_fae
+soulbind=niya,322721/focused_lightning:7/unruly_winds:7
 
-# head=soulthorn_visage,id=178692,bonus_id=6807/1498
-# neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-# shoulder=,id=172327,bonus_id=6995/6716/6649/6647/1487
-# back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-# chest=triumphant_combatants_chainmail,id=178794,bonus_id=6807/1498,enchant=eternal_skirmish
-# wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498
-# hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498
-# waist=clasp_of_waning_shadow,id=178700,bonus_id=6807/1498
-# legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498
-# feet=spatial_rift_striders,id=179345,bonus_id=6807/1498,enchant=eternal_agility
-# finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-# finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-# trinket1=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498
-# trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
-# main_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=sinful_revelation
-# off_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=celestial_guidance
+head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
+neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498
+shoulder=,id=172327,bonus_id=6995/6716/6649/6647/1532
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
+chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
+wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498
+hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498
+legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
+feet=stoneclas_stompers,id=183006,bonus_id=4800/4786/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_critical_strike
+trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
+trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+main_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=sinful_revelation
+off_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=celestial_guidance
 
-# save=T26_Shaman_Enhancement.simc
+save=T26_Shaman_Enhancement.simc
