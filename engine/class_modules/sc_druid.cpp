@@ -9376,11 +9376,15 @@ void druid_t::apl_guardian()
 
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
+	
+  action_priority_list_t* owlconvoke = get_action_priority_list( "oconvoke" );
+  action_priority_list_t* catconvoke = get_action_priority_list( "cconvoke" );
 
-  pre->add_action( this, "Cat Form", "if=druid.catweave_bear");
+  pre->add_action( this, "Cat Form", "if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)");
   pre->add_action( this, "prowl", "if=druid.catweave_bear");
-  pre->add_action( this, "Moonkin Form", "if=druid.owlweave_bear" );
-  pre->add_action( this, "Bear Form", "if=!druid.catweave_bear&!druid.owlweave_bear" );
+  pre->add_action( this, "Moonkin Form", "if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
+  pre->add_action( this, "Bear Form", "if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|"
+      "((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
 
@@ -9392,6 +9396,11 @@ void druid_t::apl_guardian()
 
   lycara_owl->add_action( this, "Moonkin Form" );
   lycara_cat->add_action( this, "Cat Form" );
+	
+  owlconvoke->add_action( this, "Moonkin Form" );
+  owlconvoke->add_action( this, "convoke_the_spirits" );
+  catconvoke->add_action( this, "Cat Form" );
+  catconvoke->add_action( this, "convoke_the_spirits" );
 
   def->add_action(
       "run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
@@ -9413,6 +9422,12 @@ void druid_t::apl_guardian()
   def->add_action(
       "run_action_list,name=lycarac,if=((runeforge.lycaras_fleeting_glimpse.equipped)&(talent.feral_affinity.enabled)&("
       "buff.lycaras_fleeting_glimpse.up)&(buff.lycaras_fleeting_glimpse.remains<=2))" );
+  def->add_action(
+      "run_action_list,name=oconvoke,if=((talent.balance_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)"
+      "&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))" );
+  def->add_action(
+      "run_action_list,name=cconvoke,if=((talent.feral_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)"
+      "&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))" );  
   def->add_action( "run_action_list,name=bear" );
 
   bear->add_action( "bear_form,if=!buff.bear_form.up" );
