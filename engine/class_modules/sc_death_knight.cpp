@@ -2398,6 +2398,35 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
+
+  struct drw_td_t : public actor_target_data_t
+  {
+    dot_t* blood_plague;
+
+    drw_td_t( player_t* target, dancing_rune_weapon_pet_t* p ) :
+      actor_target_data_t( target, p )
+    {
+      blood_plague = target -> get_dot( "blood_plague", p );
+    }
+  };
+
+  target_specific_t<drw_td_t> target_data;
+
+  const drw_td_t* find_target_data( const player_t* target ) const override
+  {
+    return target_data[ target ];
+  }
+
+  drw_td_t* get_target_data( player_t* target ) const override
+  {
+    drw_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new drw_td_t( target, const_cast<dancing_rune_weapon_pet_t*>( this ) );
+    }
+    return td;
+  }
+
   struct drw_spell_t : public pet_spell_t<dancing_rune_weapon_pet_t>
   {
     drw_spell_t( dancing_rune_weapon_pet_t* p, const std::string& name, const spell_data_t* s ) :
@@ -2536,14 +2565,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     int n_targets() const override
     { return p() -> o() -> in_death_and_decay() ? aoe + as<int>( p() -> o() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
 
-    double composite_da_multiplier( const action_state_t* state ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
-    double m = drw_attack_t::composite_da_multiplier( state );
-    if ( p() -> o() -> conduits.withering_plague -> ok() && target ->get_dot( "blood_plague", p()) -> is_ticking() )
-    {
-      m *= 1.0 + p() -> o() -> conduits.withering_plague.percent();
-    }
-    return m;
+      double m = drw_attack_t::composite_target_multiplier( t );
+
+      if ( p() -> o() -> conduits.withering_plague -> ok() && p() -> get_target_data( t ) -> blood_plague -> is_ticking() )
+      {
+        m *= 1.0 + p() -> o() -> conduits.withering_plague.percent();
+      }
+
+      return m;
     }
 
     void execute( ) override
@@ -5830,13 +5861,15 @@ struct heart_strike_t : public death_knight_melee_attack_t
   int n_targets() const override
   { return p() -> in_death_and_decay() ? aoe + as<int>( p() -> spec.death_and_decay_2 -> effectN( 1 ).base_value() ) : aoe; }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
-    if ( p() -> conduits.withering_plague -> ok() && td(state -> target) -> dot.blood_plague -> is_ticking() )
+    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> conduits.withering_plague -> ok() && p() -> get_target_data( t ) -> dot.blood_plague -> is_ticking() )
     {
       m *= 1.0 + p() -> conduits.withering_plague.percent();
     }
+
     return m;
   }
 
@@ -9918,8 +9951,8 @@ void death_knight_t::create_buffs()
   buffs.crimson_rune_weapon = make_buff( this, "crimson_rune_weapon", find_spell( 334526 ) )
       -> set_default_value( find_spell( 334526 ) -> effectN( 1 ).percent() )
       -> set_affects_regen( true )
-      -> set_stack_change_callback( [ p ]( buff_t*, int, int )
-           { p -> _runes.update_coefficient(); } );
+      -> set_stack_change_callback( [ this ]( buff_t*, int, int )
+           { _runes.update_coefficient(); } );
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
