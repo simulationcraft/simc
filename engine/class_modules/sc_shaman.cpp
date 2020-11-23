@@ -1772,7 +1772,7 @@ public:
 
   virtual bool benefit_from_maelstrom_weapon() const
   {
-    return affected_by_maelstrom_weapon &p()->buff.maelstrom_weapon->up();
+    return affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up();
   }
 
   unsigned maelstrom_weapon_stacks() const
@@ -4209,18 +4209,6 @@ struct chain_lightning_t : public chained_base_t
     affected_by_master_of_the_elements = true;
   }
 
-  // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
-  // Chain Lightning, but the spell still benefits from the damage increase.
-  bool benefit_from_maelstrom_weapon() const override
-  {
-    if ( p()->buff.stormkeeper->check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::benefit_from_maelstrom_weapon();
-  }
-
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
@@ -4231,6 +4219,18 @@ struct chain_lightning_t : public chained_base_t
     }
 
     return m;
+  }
+
+  // If Stormkeeper is up, Chain Lightning will not consume Maelstrom Weapon stacks, but
+  // will allow Chain Lightning to fully benefit from the stacks.
+  bool consume_maelstrom_weapon() const override
+  {
+    if ( p()->buff.stormkeeper->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::consume_maelstrom_weapon();
   }
 
   timespan_t execute_time() const override
