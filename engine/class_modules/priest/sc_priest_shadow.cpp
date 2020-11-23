@@ -2204,7 +2204,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action( this, "Void Eruption",
                     "if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable."
-                    "searing_nightmare_cutoff)&pet.fiend.down",
+                    "searing_nightmare_cutoff)&!cooldown.fiend.up",
                     "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
                     "in VF. Make sure shadowfiend/mindbender is on cooldown before VE." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
@@ -2212,7 +2212,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
-                    "shadow_word_pain.ticking&pet.fiend.down",
+                    "shadow_word_pain.ticking&!cooldown.fiend.up",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );

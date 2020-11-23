@@ -308,8 +308,8 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
-  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name)
-    : priest_spell_t(name, p, p.find_class_spell( "Power Infusion" ) )
+  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
+    : priest_spell_t( name, p, p.find_class_spell( "Power Infusion" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -1367,11 +1367,6 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
               };
             } );
           }
-          else if ( splits[ 2 ] == "down" )
-          {
-            cooldown_t* cd = get_cooldown( pet->name_str );
-            return make_fn_expr( expression_str, [ cd ] { return cd->down(); } );
-          }
 
           // build player/pet expression from the tail of the expression string.
           auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
@@ -1391,6 +1386,23 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         return expr_t::create_constant( "self_power_infusion", options.priest_self_power_infusion );
       }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
+    }
+    else if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) && splits.size() == 3 )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
+           util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
+      {
+        pet_t* pet = get_current_main_pet();
+        if ( !pet )
+        {
+          throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet." );
+        }
+        if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
+        {
+          return cooldown->create_expression( splits[ 2 ] );
+        }
+        throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.", pet->name_str ) );
+      }
     }
   }
 
@@ -1636,10 +1648,9 @@ void priest_t::trigger_lucid_dreams( double cost )
     return;
 
   double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
-  double proc_chance = ( specialization() == PRIEST_SHADOW )
-                           ? options.priest_lucid_dreams_proc_chance_shadow
-                           : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
-                                                                 : options.priest_lucid_dreams_proc_chance_disc;
+  double proc_chance = ( specialization() == PRIEST_SHADOW ) ? options.priest_lucid_dreams_proc_chance_shadow
+                       : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
+                                                             : options.priest_lucid_dreams_proc_chance_disc;
 
   if ( rng().roll( proc_chance ) )
   {
