@@ -375,7 +375,6 @@ void fire( player_t* p )
   combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( "worldvein_resonance" );
   combustion_phase->add_action( "fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react&(buff.combustion.up|!conduit.infernal_cascade)", "For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges if Infernal Cascade is not selected." );
-  combustion_phase->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=azerite.blaster_master.enabled&charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps_300142.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)", "BFA Fire Blast usage: During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. For standard Fire, Fire Blasts are only used when Heating Up is active or when a Scorch cast is in progress and Heating Up and Hot Streak are not active. With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." );
   combustion_phase->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=!azerite.blaster_master.enabled&(active_enemies<=active_dot.ignite|!cooldown.phoenix_flames.ready)&!conduit.infernal_cascade&charges>=1&buff.combustion.up&!buff.firestorm.react&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2", "Without Infernal Cascade, just use Fire Blasts when they won't munch crits and when Firestorm is down." );
   combustion_phase->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=!azerite.blaster_master.enabled&(active_enemies<=active_dot.ignite|!cooldown.phoenix_flames.ready)&conduit.infernal_cascade&charges>=1&((action.fire_blast.charges_fractional+(variable.extended_combustion_remains-buff.infernal_cascade.duration)%cooldown.fire_blast.duration-variable.extended_combustion_remains%(buff.infernal_cascade.duration-gcd.max))>=0|variable.extended_combustion_remains<=buff.infernal_cascade.duration|buff.infernal_cascade.remains<gcd.max|cooldown.shifting_power.ready&active_enemies>=variable.combustion_shifting_power&covenant.night_fae)&buff.combustion.up&(!buff.firestorm.react|buff.infernal_cascade.remains<0.5)&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react<2", "With Infernal Cascade, Fire Blast use should be additionaly constrained so that it is not be used unless Infernal Cascade is about to expire or there are more than enough Fire Blasts to extend Infernal Cascade to the end of Combustion." );
   combustion_phase->add_action( "counterspell,if=runeforge.disciplinary_command&buff.disciplinary_command.down&buff.disciplinary_command_arcane.down&cooldown.buff_disciplinary_command.ready" );
@@ -440,7 +439,6 @@ void frost( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* essences = p->get_action_priority_list( "essences" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
 
@@ -454,7 +452,6 @@ void frost( player_t* p )
 
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=essences" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<4" );
   default_->add_action( "call_action_list,name=movement" );
@@ -489,17 +486,6 @@ void frost( player_t* p )
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
   cds->add_action( "bag_of_tricks" );
-
-  essences->add_action( "guardian_of_azeroth" );
-  essences->add_action( "focused_azerite_beam" );
-  essences->add_action( "memory_of_lucid_dreams" );
-  essences->add_action( "blood_of_the_enemy" );
-  essences->add_action( "purifying_blast" );
-  essences->add_action( "ripple_in_space" );
-  essences->add_action( "concentrated_flame,line_cd=6" );
-  essences->add_action( "reaping_flames" );
-  essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-  essences->add_action( "worldvein_resonance" );
 
   movement->add_action( "blink_any,if=movement.distance>10" );
   movement->add_action( "ice_floes,if=buff.ice_floes.down" );

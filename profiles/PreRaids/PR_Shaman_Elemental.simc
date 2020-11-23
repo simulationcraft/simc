@@ -5,8 +5,9 @@ level=60
 race=troll
 role=spell
 position=back
-talents=1111111
-covenant=night_fae
+talents=2301032
+covenant=necrolord
+soulbind=emeni,lead_by_example/call_of_flame:4
 
 # Default consumables
 potion=disabled
@@ -50,7 +51,7 @@ actions+=/run_action_list,name=se_single_target,if=talent.storm_elemental.enable
 actions.aoe=earthquake,if=buff.echoing_shock.up
 actions.aoe+=/chain_harvest
 actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.aoe+=/flame_shock,if=active_dot.flame_shock<3&active_enemies<=5,target_if=refreshable
+actions.aoe+=/flame_shock,if=active_dot.flame_shock<3&active_enemies<=5|runeforge.skybreakers_fiery_demise.equipped,target_if=refreshable
 actions.aoe+=/flame_shock,if=!active_dot.flame_shock
 actions.aoe+=/echoing_shock,if=talent.echoing_shock.enabled&maelstrom>=60
 actions.aoe+=/ascendance,if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
@@ -104,7 +105,7 @@ actions.single_target+=/lava_burst,if=talent.echoing_shock.enabled&buff.echoing_
 actions.single_target+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&spell_targets.chain_lightning<2&(buff.master_of_the_elements.up)
 actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)
-actions.single_target+=/earthquake,if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)
+actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)
 actions.single_target+=/earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|!talent.master_of_the_elements.enabled
 actions.single_target+=/lightning_bolt,if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up
@@ -115,7 +116,7 @@ actions.single_target+=/lava_burst,if=cooldown_react&charges>talent.echo_of_the_
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 actions.single_target+=/lava_burst,if=cooldown_react
 actions.single_target+=/flame_shock,target_if=refreshable
-actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|(buff.echoes_of_great_sundering.up&buff.master_of_the_elements.up)
+actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury.stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)
 actions.single_target+=/frost_shock,if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!talent.elemental_blast.enabled&!talent.echoing_shock.enabled
 actions.single_target+=/chain_harvest
@@ -126,30 +127,30 @@ actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
-head=honorbound_vanguards_helm,id=163447,bonus_id=6938
-neck=shaleshell_pendant,id=177165,bonus_id=6938
-shoulders=honorbound_vanguards_pauldrons,id=163442,bonus_id=6938
-back=honorbound_vanguards_greatcloak,id=163365,bonus_id=6938
-chest=honorbound_vanguards_vestments,id=163444,bonus_id=6938
-wrists=honorbound_vanguards_bindings,id=177100,bonus_id=6938
-hands=honorbound_vanguards_handguards,id=177108,bonus_id=6938
-waist=honorbound_vanguards_chain_belt,id=163452,bonus_id=6938
-legs=honorbound_vanguards_leggings,id=177107,bonus_id=6938
-feet=honorbound_vanguards_sabatons,id=177109,bonus_id=6938
-finger1=beaten_copper_loop,id=177167,bonus_id=6938/1762
-finger2=sea_sapphire_band,id=177164,bonus_id=6938
-trinket1=bijou_of_the_golden_city,id=177157,bonus_id=6938/603
-trinket2=shimmering_rune,id=177155,bonus_id=6938/605
-main_hand=honorbound_skullcrusher,id=177116
-off_hand=honorbound_barrier,id=177125,bonus_id=6938
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6716/6991/1487
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498,enchant=eternal_insight
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498,enchant=eternal_intellect
+hands=absonant_constructs_handguards,id=180105,bonus_id=6807/1498
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498
+feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1498
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498,enchant=tenet_of_versatility
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498,enchant=tenet_of_versatility
+trinket1=darkmoon_deck_putrescence,id=173069
+trinket2=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
+main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=acidslough_bulwark,id=178712,bonus_id=6807/1498
 
 # Gear Summary
-# gear_ilvl=59.25
-# gear_strength=8
-# gear_stamina=249
-# gear_intellect=228
-# gear_crit_rating=146
-# gear_haste_rating=127
-# gear_mastery_rating=143
-# gear_versatility_rating=78
-# gear_armor=389
+# gear_ilvl=185.38
+# gear_strength=27
+# gear_stamina=857
+# gear_intellect=785
+# gear_crit_rating=120
+# gear_haste_rating=589
+# gear_mastery_rating=170
+# gear_versatility_rating=489
+# gear_armor=1187
