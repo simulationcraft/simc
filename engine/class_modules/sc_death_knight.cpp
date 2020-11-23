@@ -5069,12 +5069,14 @@ struct death_strike_heal_t : public death_knight_heal_t
   blood_shield_t* blood_shield;
   timespan_t interval;
   double minimum_healing;
+  double deathstrike_cost;
 
   death_strike_heal_t( death_knight_t* p ) :
     death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
     interval( timespan_t::from_seconds( p -> spec.death_strike -> effectN( 4 ).base_value() ) ),
-    minimum_healing( p -> spec.death_strike -> effectN( 3 ).percent() )
+    minimum_healing( p -> spec.death_strike -> effectN( 3 ).percent() ),
+    deathstrike_cost( 0 )
   {
     may_crit = callbacks = false;
     background = true;
@@ -5140,9 +5142,8 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     if ( state -> result_total > player -> resources.max[ RESOURCE_HEALTH ] * p() -> legendary.bryndaors_might -> effectN( 2 ).percent() )
     {
-      // Last resource cost doesn't return anything so we have to get the cost of Death Strike
-      double c = p() -> find_action( "death_strike" ) -> cost();
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> legendary.bryndaors_might -> effectN( 1 ).percent() * c,
+      // deathstrike cost gets set from the parent as a call before heal -> execute()
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> legendary.bryndaors_might -> effectN( 1 ).percent() * deathstrike_cost,
       p() -> gains.bryndaors_might, this );
     }
 
@@ -5169,6 +5170,11 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     blood_shield -> base_dd_min = blood_shield -> base_dd_max = amount;
     blood_shield -> execute();
+  }
+
+  void set_deathstrike_cost( double c )
+  {
+    deathstrike_cost = c;
   }
 };
 
@@ -5267,6 +5273,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      heal -> set_deathstrike_cost( cost() );
       heal -> execute();
     }
 
