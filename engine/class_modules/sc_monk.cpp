@@ -12712,7 +12712,7 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2020-11-21", "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
+    /*hotfix::register_effect( "Monk", "2020-11-21", "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
           .field( "base_value" )
           .operation( hotfix::HOTFIX_ADD)
           .modifier( 2 )
@@ -12722,6 +12722,7 @@ struct monk_module_t : public module_t
         .operation( hotfix::HOTFIX_ADD )
         .modifier( 2 )
         .verification_value( 0 );
+    */
     /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds
        per
        rank (was 3 seconds per rank). [SEF]", 739336) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier(
