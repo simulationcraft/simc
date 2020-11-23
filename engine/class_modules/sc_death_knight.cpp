@@ -10152,8 +10152,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     buffs.bones_of_the_damned -> expire();
   }
 
-  // Value is stored in the spelldata as negative, so multiply by a positive
-  cooldown.dancing_rune_weapon -> adjust( 1.0 * legendary.crimson_rune_weapon -> effectN( 1).time_value() );
+  cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
