@@ -9273,21 +9273,12 @@ void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
-  action_priority_list_t* essences  = get_action_priority_list( "essences" );
-  // action_priority_list_t* covenants = get_action_priority_list( "covenants" );
+  action_priority_list_t* covenants = get_action_priority_list( "covenants" );
   action_priority_list_t* standard  = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
-
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( "use_item,effect_name=cyclotronic_blast" );
-
   def -> add_action( "auto_attack" );
-  def -> add_action( "shackle_the_unworthy" );
-  // Interrupt
-  // def -> add_action( this, "Mind Freeze" );
-
   // Racials
   def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
   def -> add_action( "berserking" );
@@ -9296,67 +9287,52 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "ancestral_call" );
   def -> add_action( "fireblood" );
   def -> add_action( "bag_of_tricks" );
-
-  // On-use items
-  def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
-  def -> add_action( "use_item,name=razdunks_big_red_button" );
-  def -> add_action( "use_item,effect_name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time" );
-  def -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)" );
-  def -> add_action( "use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod");
-
-  // Cooldowns
-  def -> add_action( this, "Vampiric Blood" );
-  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  //def -> add_action( "call_action_list,name=covenants" );
-  def -> add_action( "call_action_list,name=essences" );
+  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" , "Since the potion cooldown has changed, we'll sync with DRW");
+  def -> add_action( "use_items" );
+  def -> add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&cooldown.dancing_rune_weapon.remains<3" );
+  def -> add_action( "blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up" );
+  def -> add_action( "death_strike,if=fight_remains<3" );
+  def -> add_action( "call_action_list,name=covenants" );
   def -> add_action( "call_action_list,name=standard" );
-  /*
-  // Hardcast Death's Due with no CS proc if there is < 3s on the buff.
-  covenants -> add_action( "deaths_due,if=covenant.night_fae&(!buff.deaths_due.up|buff.deaths_due.remains<5|buff.crimson_scourge.up)" );
-  // Cast HS on the last tick of Death's Due to refresh the buff as late as possible
-  covenants -> add_action( "death_strike,if=covenant.night_fae&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
-  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.remains<3" );
-  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&buff.deaths_due.remains<3");
-  // If we're venthyr and we're too high on RP as swarming mist is about to come up, dump some
-  covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3" );
-  // Cast swarming mist if within 3s of DRW
-  covenants -> add_action( "swarming_mist,if=covenant.venthyr&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
-  // Cast abomination limb if available and DRW isn't (to cast it prior to DRW), or DRW is not up.
-  covenants -> add_action( "abomination_limb,if=covenant.necrolord&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
-  // Finally, we cast shackle if available and DRW isn't (to cast it prior to DRW), or DRW is not up. TODO: pool 2 runes prior, modify APL to prioritize spreading on multi-target
-  covenants -> add_action( "shackle_the_unworthy,if=covenant.kyrian&(cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up)" );
-  */
-  // Essences
-  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
-  essences -> add_action( "anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
-  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "worldvein_resonance" );
-  essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
+  
+  // Night fae
+  covenants -> add_action( "death_strike,if=covenant.night_fae&buff.deaths_due.remains>3&runic_power>70", "Burn RP if we have time between DD refreshes" );
+  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<5)", "Make sure we never lose that buff" );
+  covenants -> add_action( "deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<3|buff.crimson_scourge.up", "And that we always cast DD as high prio when we actually need it" );
 
-  // Single Target Rotation
-  standard -> add_action( "blood_tap,if=rune.time_to_4>gcd&charges_fractional>=1.8", "Use blood tap to prevent capping" );
-  standard -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
-  standard -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
-  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
-  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&runic_power.deficit>=15" );
-  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
-  standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
-  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
-  standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
+  // Venthyr
+  covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3 ", "Burn RP off just before swarming comes back off CD");
+  covenants -> add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And swarming as long as we're not < 3s off DRW" );
+
+  // Necrolord (forces a marrowrend on pull)
+  covenants -> add_action( "marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0", "Pre-AL marrow on pull in order to guarantee ossuary during the first DRW");
+  covenants -> add_action( "abomination_limb,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And we cast AL" );
+
+  // Kyrian
+  covenants -> add_action( "shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "We just don't cast this during DRW" );
+
+  standard -> add_action( "blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8", "Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it" );
+  standard -> add_action( "dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
+  standard -> add_action( "tombstone,if=buff.bone_shield.stack>=7&rune>=2" );
+  standard -> add_action( "marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20");
+  standard -> add_action( "death_strike,if=runic_power.deficit<=70" );
+  standard -> add_action( "marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15" );
+  standard -> add_action( "heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  standard -> add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
+  standard -> add_action( "death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10" );
+  standard -> add_action( "bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up" );
+  standard -> add_action( "death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
+  standard -> add_action( "death_and_decay,if=spell_targets.death_and_decay>=3" );
+  standard -> add_action( "heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
+  standard -> add_action( "blood_boil,if=buff.dancing_rune_weapon.up" );
   standard -> add_action( "blood_tap,if=rune.time_to_3>gcd" );
-  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
-  standard -> add_talent( this, "Consumption" );
-  standard -> add_action( this, "Blood Boil" );
-  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
-  standard -> add_action( "use_item,name=grongs_primal_rage" ); // Because this prevents all casting it should be used during downtime
+  standard -> add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
+  standard -> add_action( "consumption" );
+  standard -> add_action( "blood_boil,if=charges_fractional>=1.1" );
+  standard -> add_action( "heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))" );
   standard -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+
+
 }
 
 // death_knight_t::default_apl_frost ========================================
