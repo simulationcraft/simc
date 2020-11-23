@@ -7296,6 +7296,9 @@ struct convoke_the_spirits_t : public druid_spell_t
   std::vector<convoke_cast_e> cast_list;
   std::vector<convoke_cast_e> offspec_list;
   std::vector<std::pair<convoke_cast_e, double>> chances;
+  unsigned main_count;
+  unsigned filler_count;
+  unsigned off_count;
   // Multi-spec
   action_t* conv_wrath;
   action_t* conv_moonfire;
@@ -7319,6 +7322,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   convoke_the_spirits_t( druid_t* p, util::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->covenant.night_fae, options_str ),
+    main_count( 0 ),
+    filler_count( 0 ),
+    off_count( 0 ),
     conv_wrath( nullptr ),  // multi-spec
     conv_moonfire( nullptr ),
     conv_rake( nullptr ),
@@ -7329,7 +7335,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_ironfur( nullptr ),  // bear
     conv_mangle( nullptr ),
     conv_pulverize( nullptr ),
-    conv_tigers_fury( nullptr ), // cat
+    conv_tigers_fury( nullptr ),  // cat
     conv_feral_frenzy( nullptr ),
     conv_ferocious_bite( nullptr ),
     conv_thrash_cat( nullptr ),
@@ -7447,26 +7453,6 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_pulverize = get_convoke_action<bear_attacks::pulverize_t>( "pulverize", p()->find_spell( 80313 ), "" );
   }
 
-  void execute() override
-  {
-    // Generic routine
-    druid_spell_t::execute();
-    p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
-    p()->buff.convoke_the_spirits->trigger();
-
-    cast_list.clear();
-
-    // form-specific execute setup
-    if ( p()->buff.bear_form->check() )
-      _execute_bear();
-    else if ( p()->buff.moonkin_form->check() )
-      _execute_moonkin();
-    else if ( p()->buff.cat_form->check() )
-      _execute_cat();
-
-    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
-  }
-
   void _execute_bear()
   {
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
@@ -7481,17 +7467,34 @@ struct convoke_the_spirits_t : public druid_spell_t
       cast_list.push_back( CAST_PULVERIZE );
   }
 
-  void _execute_moonkin()
+  convoke_cast_e _tick_bear( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
   {
-    offspec_list = { CAST_HEAL };
-    chances      = { { CAST_WRATH, 0.4 },
-                     { CAST_STARSURGE, 0.3 }
-                   };
+    convoke_cast_e type_ = base_type;
 
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
+    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( base_type == CAST_SPEC )
+    {
+      auto dist = chances;  // local copy of distribution
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
-      cast_list.push_back( CAST_FULL_MOON );
+      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+      for ( auto t : tl )
+        if ( !td( t )->dots.moonfire->is_ticking() )
+          mf_tl.push_back( t );
+
+      if ( mf_tl.size() )
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
+
+      type_ = get_cast_from_dist( dist );
+
+      if ( type_ == CAST_MOONFIRE )
+        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+    }
+
+    if ( !conv_tar )
+      conv_tar = tl.at( rng().range( tl.size() ) );
+
+    return type_;
   }
 
   void _execute_cat()
@@ -7508,6 +7511,146 @@ struct convoke_the_spirits_t : public druid_spell_t
       cast_list.push_back( CAST_FERAL_FRENZY );
 
     cast_list.insert( cast_list.end(), static_cast<int>( rng().gauss( 4.2, 0.9360890055, true ) ), CAST_MAIN );
+  }
+
+  convoke_cast_e _tick_cat( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    convoke_cast_e type_ = base_type;
+
+    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+    else if ( base_type == CAST_MAIN )
+      type_ = CAST_FEROCIOUS_BITE;
+    else if ( base_type == CAST_SPEC )
+    {
+      auto dist = chances;
+      if ( !p()->buff.tigers_fury->check() )
+        dist.emplace_back( std::make_pair( CAST_TIGERS_FURY, 0.25 ) );
+
+      type_ = get_cast_from_dist( dist );
+    }
+
+    conv_tar = tl.at( rng().range( tl.size() ) );
+
+    auto target_data = td( conv_tar );
+    if ( type_ == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
+      type_ = CAST_WRATH;
+    else if ( type_ == CAST_RAKE && target_data->dots.rake->is_ticking() )
+      type_ = CAST_SHRED;
+
+    return type_;
+  }
+
+  void _execute_moonkin()
+  {
+    cast_list.insert( cast_list.end(), 5, CAST_HEAL );
+    off_count    = 0;
+    main_count   = 0;
+    filler_count = 0;
+
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      cast_list.push_back( CAST_FULL_MOON );
+  }
+
+  convoke_cast_e _tick_moonkin( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
+  {
+    convoke_cast_e type_ = base_type;
+    std::vector<std::pair<convoke_cast_e, double>> dist;
+
+    conv_tar = tl.at( rng().range( tl.size() ) );
+
+    if ( type_ == CAST_SPEC )
+    {
+      bool add_more = true;
+
+      if ( !p()->buff.starfall->check() )
+      {
+        dist.emplace_back( std::make_pair( CAST_STARFALL, 10.0 ) );
+        add_more = false;
+      }
+
+      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+      for ( auto t : tl )
+        if ( !td( t )->dots.moonfire->is_ticking() )
+          mf_tl.push_back( t );
+
+      if ( mf_tl.size() )
+      {
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.0 ) );
+        add_more = false;
+      }
+
+      if ( add_more )
+      {
+        if ( main_count < 3 )
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+        else if ( main_count < 4 )
+          dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+
+        if ( filler_count < 3 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 2.25 ) );
+        else if ( filler_count < 4 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 1.5 ) );
+        else if ( filler_count < 5 )
+          dist.emplace_back( std::make_pair( CAST_WRATH, 0.75 ) );
+      }
+
+      if ( main_count < 2 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 20.0 ) );
+      else if ( main_count < 3 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 2.0 ) );
+      else if ( main_count < 4 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 1.0 ) );
+      else if ( main_count < 5 )
+        dist.emplace_back( std::make_pair( CAST_STARSURGE, 0.05 ) );
+
+      if ( filler_count < 4 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 2.75 ) );
+      else if ( filler_count < 5 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 2.0 ) );
+      else if ( filler_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 1.0 ) );
+      else if ( filler_count < 7 )
+        dist.emplace_back( std::make_pair( CAST_WRATH, 0.2 ) );
+
+      if ( off_count < 6 )
+        dist.emplace_back( std::make_pair( CAST_HEAL, 0.25 ) );
+
+      type_ = get_cast_from_dist( dist );
+
+      if ( type_ == CAST_MOONFIRE )
+        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+    }
+
+    if ( type_ == CAST_STARSURGE )
+      main_count++;
+    else if ( type_ == CAST_WRATH )
+      filler_count++;
+    else if ( type_ == CAST_HEAL )
+      off_count++;
+
+    return type_;
+  }
+
+  void execute() override
+  {
+    // Generic routine
+    druid_spell_t::execute();
+    p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    p()->buff.convoke_the_spirits->trigger();
+
+    cast_list.clear();
+    main_count = 0;
+
+    // form-specific execute setup
+    if ( p()->buff.bear_form->check() )
+      _execute_bear();
+    else if ( p()->buff.moonkin_form->check() )
+      _execute_moonkin();
+    else if ( p()->buff.cat_form->check() )
+      _execute_cat();
+
+    cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
   }
 
   void tick( dot_t* d ) override
@@ -7543,97 +7686,6 @@ struct convoke_the_spirits_t : public druid_spell_t
       return;
 
     execute_convoke_action( conv_cast, conv_tar );
-  }
-
-  convoke_cast_e _tick_bear( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
-  {
-    convoke_cast_e type_ = base_type;
-
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
-      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
-    else if ( base_type == CAST_SPEC )
-    {
-      auto dist = chances;  // local copy of distribution
-
-      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto t : tl )
-        if ( !td( t )->dots.moonfire->is_ticking() )
-          mf_tl.push_back( t );
-
-      if ( mf_tl.size() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
-
-      type_ = get_cast_from_dist( dist );
-
-      if ( type_ == CAST_MOONFIRE )
-        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
-    }
-
-    if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
-
-    return type_;
-  }
-
-  convoke_cast_e _tick_cat( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
-  {
-    convoke_cast_e type_ = base_type;
-
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
-      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
-    else if ( base_type == CAST_MAIN )
-      type_ = CAST_FEROCIOUS_BITE;
-    else if ( base_type == CAST_SPEC )
-    {
-      auto dist = chances;
-      if ( !p()->buff.tigers_fury->check() )
-        dist.emplace_back( std::make_pair( CAST_TIGERS_FURY, 0.25 ) );
-
-      type_ = get_cast_from_dist( dist );
-    }
-
-    conv_tar = tl.at( rng().range( tl.size() ) );
-
-    auto target_data = td( conv_tar );
-    if ( type_ == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
-      type_ = CAST_WRATH;
-    else if ( type_ == CAST_RAKE && target_data->dots.rake->is_ticking() )
-      type_ = CAST_SHRED;
-
-    return type_;
-  }
-
-  convoke_cast_e _tick_moonkin( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
-  {
-    convoke_cast_e type_ = base_type;
-
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
-      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
-    else if ( base_type == CAST_SPEC )
-    {
-      auto dist = chances;  // local copy of distribution
-
-      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto t : tl )
-        if ( !td( t )->dots.moonfire->is_ticking() )
-          mf_tl.push_back( t );
-
-      if ( mf_tl.size() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.3 ) );  // mf if undotted
-
-      if ( !p()->buff.starfall->check() )
-        dist.emplace_back( std::make_pair( CAST_STARFALL, 1.0 ) );  // starfall if it isn't up
-
-      type_ = get_cast_from_dist( dist );
-
-      if ( type_ == CAST_MOONFIRE )
-        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
-    }
-
-    if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
-
-    return type_;
   }
 
   void last_tick( dot_t* d ) override
