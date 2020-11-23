@@ -11560,13 +11560,17 @@ std::string monk_t::default_flask() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level >= 50 )
+      if ( true_level >= 60 )
+        return "spectral_flask_of_power";
+      else if ( true_level >= 50 )
         return "currents";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level >= 50 )
+      if ( true_level >= 60 )
+        return "spectral_flask_of_power";
+      else if ( true_level >= 50 )
         return "greater_flask_of_endless_fathoms";
       else
         return "disabled";
@@ -11591,13 +11595,17 @@ std::string monk_t::default_potion() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level >= 50 )
+      if ( true_level >= 60 )
+        return "phantom_fire";
+      else if ( true_level >= 50 )
         return "unbridled_fury";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level >= 50 )
+      if ( true_level >= 60 )
+        return "potion_of_spectral_intellect";
+      else if ( true_level >= 50 )
         return "superior_battle_potion_of_intellect";
       else
         return "disabled";
@@ -11622,13 +11630,17 @@ std::string monk_t::default_food() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 50 )
+      if ( true_level > 60 )
+        return "spinefin_souffle_and_fries";
+      else if ( true_level > 50 )
         return "biltong";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level > 50 )
+      if ( true_level >= 60 )
+        return "feast_of_gluttonous_hedonism";
+      else if ( true_level > 50 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
@@ -11737,79 +11749,87 @@ void monk_t::apl_combat_brewmaster()
   std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def             = get_action_priority_list( "default" );
   def->add_action( "auto_attack" );
+  def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
   def->add_action( this, "Gift of the Ox", "if=health<health.max*0.65" );
   def->add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def->add_action( this, "Fortifying Brew",
-                   "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
+  def->add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
-  def->add_action(
-      "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target."
-      "health.pct<31|target.time_to_die<20" );
-  def->add_action( "use_items" );
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    std::string name_str = "";
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      def->add_action( "use_item,name=" + items[ i ].name_str );
+    }
+  }
+
   def->add_action( "potion" );
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[ i ] != "arcane_torrent" )
       def->add_action( racial_actions[ i ] );
   }
-  def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
+
+  def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox" );
+  def->add_action( this, "Touch of Death" );
+
+  // Covenant Abilities
+  def->add_action( "weapons_of_order" );
+  def->add_action( "fallen_order" );
+  def->add_action( "bonedust_brew" );
+
   // Purifying Brew
-  def->add_action( this, "Purifying Brew", "if=stagger.pct>18", "Purifying behaviour is based on normalization." );
-  def->add_action( this, "Purifying Brew", "if=stagger.pct>9&stagger.amounttototalpct>53" );
-  def->add_action( this, "Purifying Brew", "if=stagger.pct>4.5&stagger.amounttototalpct>71" );
-  def->add_action( this, "Purifying Brew", "if=stagger.pct>3&stagger.amounttototalpct>80" );
+  def->add_action( this, "Purifying Brew" );
 
   // Black Ox Brew
   def->add_talent( this, "Black Ox Brew", "if=cooldown.purifying_brew.charges_fractional<0.5",
-                   "Black Ox Brew is currently used to either replenish brews based on less than half a brew charge "
-                   "available, or low energy to enable Keg Smash" );
-  def->add_talent(
-      this, "Black Ox Brew",
-      "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
+                   "Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash" );
+  def->add_talent( this, "Black Ox Brew", "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
 
-  def->add_action(
-      this, "Keg Smash", "if=spell_targets>=2",
+  def->add_action( this, "Keg Smash", "if=spell_targets>=2",
       "Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below" );
 
-  // Celestial Brew
-  def->add_action(
-      this, "Celestial Brew",
-      "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
-      "brawler.stack<2",
-      "Celestial Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
-      "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
+  // Covenant Faeline Stomp
+  def->add_action( "faeline_stomp,if=spell_targets>=2" );
 
-  def->add_action( this, "Tiger Palm",
-                   "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
-  def->add_action(
-      this, "Tiger Palm",
-      "if=(1|talent.special_delivery.enabled)&buff.blackout_combo.up" );
-  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
+  def->add_action( this, "Keg Smash", "if=buff.weapons_of_order.up",
+      "cast KS at top prio during WoO buff" );
+
+  // Celestial Brew
+  def->add_action( this, "Celestial Brew", "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2",
+      "Celestial Brew priority whenever it took significant damage (adjust the health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
+
+  def->add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
+  def->add_action( this, "Breath of Fire", "if=buff.charred_passions.down&runeforge.charred_passions.equipped" );
+  def->add_action( this, "Tiger Palm" );
   def->add_action( this, "Blackout Kick" );
+
   def->add_action( this, "Keg Smash" );
-  def->add_action( "concentrated_flame,if=dot.concentrated_flame.remains=0" );
-  def->add_action( "heart_essence,if=!essence.the_crucible_of_flame.major" );
-  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
-  def->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
+
+  // Covenant Faeline Stomp
+  def->add_action( "faeline_stomp" );
+
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
-  def->add_action(
-      this, "Breath of Fire",
-      "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))" );
+  def->add_action( this, "Spinning Crane Kick", "if=buff.charred_passions.up" );
+  def->add_action( this, "Breath of Fire", "if=buff.charred_passions.down&runeforge.charred_passions.equipped" );
   def->add_talent( this, "Chi Burst" );
   def->add_talent( this, "Chi Wave" );
-  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
-                   "Expel Harm has higher DPET than TP when you have at least 2 orbs." );
-  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>execute_time&"
-                   "(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
-  def->add_action( this, "Tiger Palm",
-                   "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
-                   "keg_smash.remains+gcd)))>=65" );
+  def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
+  def->add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[ i ] == "arcane_torrent" )
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
+
   def->add_talent( this, "Rushing Jade Wind" );
+
+
+//  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
+
+//  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
 }
 
 // Windwalker Combat Action Priority List ===============================
