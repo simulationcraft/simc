@@ -106,18 +106,18 @@ RACE_INFO = [
 ]
 
 CLASS_INFO = [
-  { 'id':  1, 'bit':  0, 'name': 'Warrior',      'skill': 840  },
-  { 'id':  2, 'bit':  1, 'name': 'Paladin',      'skill': 800  },
-  { 'id':  3, 'bit':  2, 'name': 'Hunter',       'skill': 795  },
-  { 'id':  4, 'bit':  3, 'name': 'Rogue',        'skill': 921  },
-  { 'id':  5, 'bit':  4, 'name': 'Priest',       'skill': 804  },
-  { 'id':  6, 'bit':  5, 'name': 'Death Knight', 'skill': 796  },
-  { 'id':  7, 'bit':  6, 'name': 'Shaman',       'skill': 924  },
-  { 'id':  8, 'bit':  7, 'name': 'Mage',         'skill': 904  },
-  { 'id':  9, 'bit':  8, 'name': 'Warlock',      'skill': 849  },
-  { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill': 829  },
-  { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill': 798  },
-  { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848 }
+  { 'id':  1, 'bit':  0, 'name': 'Warrior',      'skill': 840,  'family': 4   },
+  { 'id':  2, 'bit':  1, 'name': 'Paladin',      'skill': 800,  'family': 10  },
+  { 'id':  3, 'bit':  2, 'name': 'Hunter',       'skill': 795,  'family': 9   },
+  { 'id':  4, 'bit':  3, 'name': 'Rogue',        'skill': 921,  'family': 8   },
+  { 'id':  5, 'bit':  4, 'name': 'Priest',       'skill': 804,  'family': 6   },
+  { 'id':  6, 'bit':  5, 'name': 'Death Knight', 'skill': 796,  'family': 15  },
+  { 'id':  7, 'bit':  6, 'name': 'Shaman',       'skill': 924,  'family': 11  },
+  { 'id':  8, 'bit':  7, 'name': 'Mage',         'skill': 904,  'family': 3   },
+  { 'id':  9, 'bit':  8, 'name': 'Warlock',      'skill': 849,  'family': 5   },
+  { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill': 829,  'family': 53  },
+  { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill': 798,  'family': 7   },
+  { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848, 'family': 107 }
 ]
 
 PET_SKILL_CATEGORIES = [

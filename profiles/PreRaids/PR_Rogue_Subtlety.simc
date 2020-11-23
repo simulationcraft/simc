@@ -68,7 +68,7 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Builders
-actions.build=shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped
+actions.build=shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5
 actions.build+=/shuriken_storm,if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)
 actions.build+=/serrated_bone_spike,if=cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up
 actions.build+=/gloomblade
@@ -167,7 +167,7 @@ actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&com
 actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
-actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped
+actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5
 # For pre-patch, keep Find Weakness up on the primary target due to no Shadow Vault
 actions.stealthed+=/shadowstrike,if=level<52&debuff.find_weakness.remains<1&target.time_to_die-remains>6
 # Up to 3 targets keep up Find Weakness by cycling Shadowstrike.

@@ -8759,13 +8759,10 @@ std::string shaman_t::default_potion() const
                       : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
 
   std::string enhance_pot =
-      ( true_level > 110 )
-          ? "potion_of_unbridled_fury"
-          : ( true_level > 100 )
-                ? "prolonged_power"
-                : ( true_level >= 90 )
-                      ? "draenic_agility"
-                      : ( true_level >= 85 ) ? "virmens_bite" : ( true_level >= 80 ) ? "tolvir" : "disabled";
+      ( true_level >= 60 )
+          ? "potion_of_spectral_agility"
+          : ( true_level >= 50 )
+                ? "potion_of_unbridled_fury" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
 }
@@ -8784,13 +8781,10 @@ std::string shaman_t::default_flask() const
                       : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
 
   std::string enhance_flask =
-      ( true_level > 110 )
-          ? "greater_flask_of_the_currents"
-          : ( true_level > 100 )
-                ? "seventh_demon"
-                : ( true_level >= 90 )
-                      ? "greater_draenic_agility_flask"
-                      : ( true_level >= 85 ) ? "spring_blossoms" : ( true_level >= 80 ) ? "winds" : "disabled";
+      ( true_level >= 60 )
+          ? "spectral_flask_of_power"
+          : ( true_level >= 50 )
+                ? "greater_flask_of_the_currents" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
 }
@@ -8809,15 +8803,10 @@ std::string shaman_t::default_food() const
                                                      ? "mogu_fish_stew"
                                                      : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  std::string enhance_food = ( true_level > 110 )
-                                 ? "baked_port_tato"
-                                 : ( true_level > 100 )
-                                       ? "lemon_herb_filet"
-                                       : ( true_level > 90 )
-                                             ? "buttered_sturgeon"
-                                             : ( true_level >= 90 )
-                                                   ? "sea_mist_rice_noodles"
-                                                   : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string enhance_food = ( true_level >= 60 )
+                                 ? "feast_of_gluttonous_hedonism"
+                                 : ( true_level >= 50 )
+                                       ? "baked_port_tato" : "disabled";
 
   std::string restoration_food = ( true_level > 110 )
                                      ? "baked_port_tato"
@@ -8842,9 +8831,9 @@ std::string shaman_t::default_rune() const
                                    ? "battle_scarred"
                                    : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 
-  std::string enhance_rune = ( true_level >= 120 )
-                                 ? "battle_scarred"
-                                 : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
+  std::string enhance_rune = ( true_level >= 60 )
+                                 ? "veiled"
+                                 : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
 }
@@ -8897,7 +8886,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5,target_if=refreshable");
+    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5|runeforge.skybreakers_fiery_demise.equipped,target_if=refreshable");
     aoe->add_action( this, "Flame Shock", "if=!active_dot.flame_shock" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_talent(
@@ -9001,7 +8990,7 @@ void shaman_t::init_action_list_elemental()
                                "master_of_the_elements.up)" );
     single_target->add_action(
         this, "Earthquake",
-        "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)&(!talent."
+        "if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_great_sundering.equipped&(!talent."
         "master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
     single_target->add_action(
         this, "Earth Shock",
@@ -9024,8 +9013,8 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
     single_target->add_action( this, "Earthquake",
-                               "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|(buff."
-                               "echoes_of_great_sundering.up&buff.master_of_the_elements.up)" );
+                               "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff."
+                               "echoes_of_great_sundering.up" );
     single_target->add_action( this, "Frost Shock",
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );

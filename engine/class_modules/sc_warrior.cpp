@@ -1608,10 +1608,22 @@ struct auto_attack_t : public warrior_attack_t
 
 struct mortal_strike_unhinged_t : public warrior_attack_t
 {
+  mortal_strike_unhinged_t* mortal_combo_strike;
+  bool from_mortal_combo;
   double enduring_blow_chance;
-  mortal_strike_unhinged_t( warrior_t* p, const std::string& name ) : warrior_attack_t( name, p, p->spec.mortal_strike ),
-  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
+  double mortal_combo_chance;
+  mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false ) 
+  : warrior_attack_t( name, p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
+  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ), 
+  mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ), from_mortal_combo( mortal_combo )
   {
+
+    if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
+    {
+      mortal_combo_strike                      = new mortal_strike_unhinged_t( p, "Mortal Combo", true );
+      add_child(mortal_combo_strike);
+      mortal_combo_strike->background          = true;
+    }
     cooldown->duration = timespan_t::zero();
     weapon             = &( p->main_hand_weapon );
   }
@@ -1667,6 +1679,10 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
       {
         td( s-> target )->debuffs_colossus_smash->trigger( timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
       }
+    }
+    if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
+    {
+      mortal_combo_strike->execute();
     }
   }
 };
@@ -1747,10 +1763,6 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
-      if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
-      {
-        mortal_combo_strike->execute();
-      }
     }
     p()->buff.deadly_calm->decrement();
     p()->buff.battlelord->expire();
@@ -1775,6 +1787,10 @@ struct mortal_strike_t : public warrior_attack_t
       {
         td( s-> target )->debuffs_colossus_smash->trigger( timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
       }
+    }
+    if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
+    {
+      mortal_combo_strike->execute();
     }
   }
 
@@ -2657,7 +2673,7 @@ struct execute_arms_t : public warrior_attack_t
     }
     if ( p()->buff.deadly_calm->check() )
     {
-      c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
+      return 0;  // To avoid extremely small number shenanigans on raidbots
     }
     return c;
   }
@@ -4883,7 +4899,7 @@ struct condemn_arms_t : public warrior_attack_t
     }
     if ( p()->buff.deadly_calm->check() )
     {
-      c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
+      return 0;  // To avoid extremely small number shenanigans on raidbots
     }
     return c;
   }
@@ -5203,7 +5219,14 @@ struct avatar_t : public warrior_spell_t
 
     if( torment_triggered )
     {
-      p()->buff.avatar->trigger( p()->legendary.signet_of_tormented_kings->effectN( 2 ).time_value() );
+      if ( p()->buff.avatar->check() )
+      {
+        p()->buff.avatar->extend_duration( p(), timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
+      }
+      else
+      {
+        p()->buff.avatar->trigger( p()->legendary.signet_of_tormented_kings->effectN( 2 ).time_value() );
+      }
     }
     else
     {
@@ -5510,7 +5533,14 @@ struct recklessness_t : public warrior_spell_t
 
     if( torment_triggered )
     {
-      p()->buff.recklessness->trigger( p()->legendary.signet_of_tormented_kings->effectN( 4 ).time_value() );
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 1 ).base_value() ) );
+      }
+      else
+      {
+        p()->buff.recklessness->trigger( p()->legendary.signet_of_tormented_kings->effectN( 1 ).time_value() );
+      }
     }
     else
     {

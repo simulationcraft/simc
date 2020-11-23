@@ -1,53 +1,28 @@
-# priest="PR_Priest_Shadow"
-# level=120
-# race=troll
-# spec=shadow
-# role=spell
-# position=ranged_back
-# talents=1111122
+priest="PR_Priest_Shadow"
+level=60
+race=mechagnome
+spec=shadow
+role=spell
+position=ranged_back
+talents=1111332
 
-# head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/15/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulder=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/31/86/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/472/13
-# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-# hands=handwraps_of_oscillating_polarity,id=159247,bonus_id=4779/1512/4786
-# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-# legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
-# feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
-# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# trinket2=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
-# main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=deadly_navigation
-# off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
+covenant=kyrian
+soulbind=pelagos,115:6/328266
 
-# save=PR_Priest_Shadow.simc
+head=depraved_physicians_mask,id=178759,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulder=reanimators_mantle,id=178740,bonus_id=6807/1498
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
+wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
+hands=,id=173244,ilevel=190,bonus_id=6983/6647/6649
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=celestial_guidance
 
-# priest="PR_Priest_Holy"
-# spec=holy
-# level=120
-# race=pandaren
-# role=spell
-# position=ranged_back
-# talents=1300031
-
-# head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/15/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/31/86/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/472/13
-# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-# hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
-# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-# legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
-# feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
-# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
-# trinket2=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
-# main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=deadly_navigation
-# off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
-
-# save=PR_Priest_Holy.simc
+save=PR_Priest_Shadow.simc

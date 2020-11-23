@@ -1,18 +1,19 @@
-priest="T25_Priest_Shadow"
+priest="T26_Priest_Shadow"
 source=default
 spec=shadow
-level=50
-race=human
+level=60
+race=mechagnome
 role=spell
 position=ranged_back
-talents=1123122
-azerite_essences=14:4/23:4/27:4/12:4
+talents=1111332
+covenant=kyrian
+soulbind=pelagos,115:7/107:7/328266
 
 # Default consumables
-potion=unbridled_fury
-flask=greater_flask_of_endless_fathoms
-food=baked_port_tato
-augmentation=battle_scarred
+potion=potion_of_phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled_augment_rune
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -42,9 +43,15 @@ actions+=/variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!ra
 actions+=/call_action_list,name=cwc
 actions+=/run_action_list,name=main
 
+actions.boon=ascended_blast,if=spell_targets.mind_sear<=3
+actions.boon+=/ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled
 
+# Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not be another Void Eruption this fight.
+actions.cds=power_infusion,if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_remains<cooldown.void_eruption.remains
 # Use Silence on CD to proc Sephuz's Proclamation.
-actions.cds=silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
+actions.cds+=/silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
+# Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a voidbolt for cooldown efficiency and for hungering void uptime if talented.
+actions.cds+=/boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)
 # Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF.
 actions.cds+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)
 actions.cds+=/call_action_list,name=essences
@@ -69,8 +76,9 @@ actions.essences+=/reaping_flames
 actions.essences+=/worldvein_resonance
 actions.essences+=/the_unbound_force
 
+actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 # Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender is on cooldown before VE.
-actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&pet.fiend.down
+actions.main+=/void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&pet.fiend.down
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
 actions.main+=/call_action_list,name=cds
@@ -113,31 +121,29 @@ actions.main+=/shadow_word_death
 # Use SW:P as last resort if on the move and SW:D is on CD
 actions.main+=/shadow_word_pain
 
-head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4786/6511/4775,azerite_powers=403/582/31/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=6316/4932/4933/1564,azerite_level=96
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4786/6512/4775,azerite_powers=403/582/18/204/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6603/1472,enchant_id=6088
-chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=5448/1543/4786/6510/4775,azerite_powers=236/403/459/84/13
-wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517/4786/6514/6476/6470
-hands=emberscale_gloves,id=174125,bonus_id=4824/1517/4786/6476/6470/6514
-waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/4786/6476/6470/6514
-legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/6578/6515/1517/4786/6573
-feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/4786/6476/6470/6514
-finger1=logic_loop_of_recursion,id=169158,bonus_id=6536/1514/4786/6476/6470/6514,enchant_id=6108
-finger2=overclocking_bit_band,id=169159,bonus_id=6536/1514/4786/6482/6470/6514,enchant_id=6108
-trinket1=highborne_compendium_of_storms,id=169328
-trinket2=manifesto_of_madness,id=174103,bonus_id=4824/6515/1517/4786
-main_hand=vorzz_yoqal,id=172196,bonus_id=4824/6578/1517/4786/6513/6476/6470,enchant_id=5949
-off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/6578/6579/6481/6462/1517/4786/6514
+head=depraved_physicians_mask,id=178759,bonus_id=1540/6808
+neck=sin_stained_pendant,id=178827,bonus_id=1540/6808
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
+wrists=deathshackle_wristwraps,id=178704,bonus_id=1540/6808,enchant=eternal_intellect
+hands=grimveiled_mittens,id=173244,bonus_id=6983/6647/6649,ilevel=235
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1540/6808
+feet=slippers_of_leavened_station,id=178831,bonus_id=1540/6808
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_haste
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_haste
+trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498,enchant=shadowcore_oil
+main_hand=sinstealers_sentencing_gavel,id=182391,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=stonewrights_infused_stonecarver,id=182426,bonus_id=7187/1524
 
 # Gear Summary
-# gear_ilvl=131.38
-# gear_stamina=701
-# gear_intellect=551
-# gear_crit_rating=208
-# gear_haste_rating=207
-# gear_mastery_rating=152
-# gear_versatility_rating=55
-# gear_corruption=170
-# gear_corruption_resistance=125
-# gear_armor=178
+# gear_ilvl=229.19
+# gear_stamina=1519
+# gear_intellect=1169
+# gear_crit_rating=277
+# gear_haste_rating=1275
+# gear_mastery_rating=241
+# gear_versatility_rating=57
+# gear_armor=373

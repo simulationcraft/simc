@@ -192,6 +192,11 @@ action_t* create_action( player_t* player, util::string_view name, const std::st
 
 } // Namespace covenant ends
 
+namespace report_decorators
+{
+std::string decorated_conduit_name( const sim_t& sim, const conduit_data_t& conduit );
+}
+
 inline void format_to( covenant_e covenant, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", util::covenant_type_string( covenant ) );
