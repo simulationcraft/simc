@@ -268,9 +268,7 @@ struct hunter_td_t: public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* latent_poison;
     buff_t* latent_poison_injection;
-    buff_t* steady_aim;
   } debuffs;
 
   struct dots_t
@@ -300,31 +298,6 @@ public:
 
     pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ) {}
   } pets;
-
-  struct azerite_t
-  {
-    // Beast Mastery
-    azerite_power_t dance_of_death;
-    azerite_power_t dire_consequences;
-    azerite_power_t feeding_frenzy;
-    azerite_power_t haze_of_rage;
-    azerite_power_t primal_instincts;
-    azerite_power_t serrated_jaws;
-    // Marksmanship
-    azerite_power_t focused_fire;
-    azerite_power_t in_the_rhythm;
-    azerite_power_t rapid_reload;
-    azerite_power_t steady_aim;
-    azerite_power_t surging_shots;
-    azerite_power_t unerring_vision;
-    // Survival
-    azerite_power_t blur_of_talons;
-    azerite_power_t latent_poison;
-    azerite_power_t primeval_intuition;
-    azerite_power_t venomous_fangs;
-    azerite_power_t wilderness_survival;
-    azerite_power_t wildfire_cluster;
-  } azerite;
 
   struct {
     spell_data_ptr_t death_chakram;
@@ -379,14 +352,6 @@ public:
     spell_data_ptr_t wildfire_cluster;
   } legendary;
 
-  struct {
-    azerite_essence_t memory_of_lucid_dreams; // Memory of Lucid Dreams Minor
-    double memory_of_lucid_dreams_major_mult = 0;
-    double memory_of_lucid_dreams_minor_mult = 0;
-    azerite_essence_t vision_of_perfection;
-    double vision_of_perfection_major_mult = 0;
-  } azerite_essence;
-
   // Buffs
   struct buffs_t
   {
@@ -416,7 +381,6 @@ public:
     // Survival
     buff_t* aspect_of_the_eagle;
     buff_t* coordinated_assault;
-    buff_t* coordinated_assault_vision;
     buff_t* mongoose_fury;
     buff_t* predator;
     buff_t* terms_of_engagement;
@@ -440,17 +404,6 @@ public:
     buff_t* flayers_mark;
     buff_t* resonating_arrow;
     buff_t* wild_spirits;
-
-    // azerite
-    buff_t* blur_of_talons;
-    buff_t* blur_of_talons_vision;
-    buff_t* dance_of_death;
-    buff_t* haze_of_rage;
-    buff_t* in_the_rhythm;
-    buff_t* primal_instincts;
-    buff_t* primeval_intuition;
-    buff_t* unerring_vision;
-    buff_t* unerring_vision_driver;
   } buffs;
 
   // Cooldowns
@@ -474,8 +427,6 @@ public:
   {
     gain_t* aspect_of_the_wild;
     gain_t* barbed_shot;
-    gain_t* memory_of_lucid_dreams_major;
-    gain_t* memory_of_lucid_dreams_minor;
     gain_t* nesingwarys_apparatus_direct;
     gain_t* nesingwarys_apparatus_buff;
     gain_t* reversal_of_fortune;
@@ -632,7 +583,6 @@ public:
     std::string summon_pet_str = "turtle";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
-    double memory_of_lucid_dreams_proc_chance = 0.15;
     // random testing stuff
     bool unblinking_vigil_on_execute = false;
     bool brutal_projectiles_on_execute = false;
@@ -711,7 +661,6 @@ public:
   std::string      create_profile( save_e ) override;
   void      copy_from( player_t* source ) override;
   void      moving( ) override;
-  void      vision_of_perfection_proc() override;
 
   void              apl_default();
   void              apl_surv();
@@ -978,25 +927,6 @@ public:
     ab::update_ready( cd );
   }
 
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( !p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
-      return;
-    if ( ab::last_resource_cost <= 0 )
-      return;
-
-    if ( !ab::rng().roll( p() -> options.memory_of_lucid_dreams_proc_chance ) )
-      return;
-
-    const double gain = ab::last_resource_cost * p() -> azerite_essence.memory_of_lucid_dreams_minor_mult;
-    p() -> resource_gain( RESOURCE_FOCUS, gain, p() -> gains.memory_of_lucid_dreams_minor );
-
-    if ( p() -> azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
-      ab::player -> buffs.lucid_dreams -> trigger();
-  }
-
   virtual double energize_cast_regen( const action_state_t* s ) const
   {
     const int num_targets = this -> n_targets();
@@ -1026,16 +956,6 @@ public:
                      p() -> specs.trueshot -> effectN( 6 ).percent();
       if ( execute_time < remains )
         total_energize *= 1 + p() -> specs.trueshot -> effectN( 5 ).percent();
-    }
-
-    if ( ab::player -> buffs.memory_of_lucid_dreams -> check() )
-    {
-      const timespan_t remains = ab::player -> buffs.memory_of_lucid_dreams -> remains();
-
-      total_regen += regen * std::min( cast_time, remains ).total_seconds() *
-                     p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
-      if ( execute_time < remains )
-        total_energize *= 1 + p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
     }
 
     if ( p() -> buffs.nesingwarys_apparatus -> check() &&
@@ -1384,8 +1304,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buffs.frenzy =
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value_from_effect( 1 )
-        -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> modify_duration( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).time_value() );
+        -> add_invalidate( CACHE_ATTACK_SPEED );
 
     buffs.rylakstalkers_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
@@ -1856,53 +1775,17 @@ using hunter_main_pet_attack_t = hunter_main_pet_action_t< melee_attack_t >;
 
 struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
 {
-  struct {
-    double chance = 0;
-    double energize_amount = 0;
-    double bonus_da = 0;
-    gain_t* gain = nullptr;
-    bool procced = false;
-  } serrated_jaws;
-
   kill_command_base_t( hunter_main_pet_base_t* p, const spell_data_t* s ):
     hunter_pet_action_t( "kill_command", p, s )
   {
     background = true;
     proc = true;
-
-    if ( o() -> azerite.serrated_jaws.ok() )
-    {
-      serrated_jaws.chance = o() -> azerite.serrated_jaws.spell() -> effectN( 3 ).percent();
-      serrated_jaws.energize_amount = o() -> azerite.serrated_jaws.spell() -> effectN( 2 ).base_value();
-      serrated_jaws.bonus_da = o() -> azerite.serrated_jaws.value( 1 );
-      serrated_jaws.gain = p ->resource_regeneration != regen_type::DISABLED ? p -> get_gain( "serrated_jaws" ) : nullptr;
-    }
-  }
-
-  void execute() override
-  {
-    serrated_jaws.procced = rng().roll( serrated_jaws.chance );
-
-    hunter_pet_action_t::execute();
-
-    if ( serrated_jaws.procced && serrated_jaws.gain )
-      p() -> resource_gain( RESOURCE_FOCUS, serrated_jaws.energize_amount, serrated_jaws.gain, this );
   }
 
   double composite_attack_power() const override
   {
     // Kill Command for both Survival & Beast Mastery uses player AP directly
     return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = hunter_pet_action_t::bonus_da( s );
-
-    if ( serrated_jaws.procced )
-      b += serrated_jaws.bonus_da;
-
-    return b;
   }
 };
 
@@ -1923,7 +1806,6 @@ struct kill_command_bm_t: public kill_command_base_t
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 2 ).percent();
-    base_dd_adder += o() -> azerite.dire_consequences.value( 1 );
 
     if ( o() -> talents.killer_instinct.ok() )
     {
@@ -1985,7 +1867,6 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 1 ).percent();
     attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
-    base_dd_adder += o() -> azerite.dire_consequences.value( 2 );
 
     if ( ! o() -> talents.bloodseeker.ok() )
       dot_duration = 0_ms;
@@ -2100,11 +1981,9 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } wild_hunt;
-  const double venomous_fangs_bonus_da;
 
   basic_attack_t( hunter_main_pet_t* p, util::string_view n, util::string_view options_str ):
-    hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
-    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) )
+    hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) )
   {
     parse_options( options_str );
 
@@ -2156,16 +2035,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
       c *= wild_hunt.cost_pct;
 
     return c;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = hunter_main_pet_attack_t::bonus_da( s );
-
-    if ( o() -> get_target_data( s -> target ) -> dots.serpent_sting -> is_ticking() )
-      b += venomous_fangs_bonus_da;
-
-    return b;
   }
 };
 
@@ -2424,10 +2293,7 @@ void hunter_t::trigger_birds_of_prey( player_t* t )
     return;
 
   if ( t == pets.main -> target )
-  {
     buffs.coordinated_assault -> extend_duration( this, talents.birds_of_prey -> effectN( 1 ).time_value() );
-    buffs.coordinated_assault_vision -> extend_duration( this, talents.birds_of_prey -> effectN( 1 ).time_value() );
-  }
 }
 
 void hunter_t::trigger_bloodseeker_update()
@@ -2938,34 +2804,10 @@ struct barrage_t: public hunter_spell_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
-  struct rapid_reload_t final : public hunter_ranged_attack_t
-  {
-    rapid_reload_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 278565 ) )
-    {
-      aoe = -1;
-      base_dd_min = base_dd_max = p -> azerite.rapid_reload.value( 1 );
-    }
-  };
-
-  struct {
-    rapid_reload_t* action = nullptr;
-    int min_targets = std::numeric_limits<int>::max();
-    timespan_t reduction = 0_ms;
-  } rapid_reload;
-
   multi_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
-
-    if ( p -> azerite.rapid_reload.ok() )
-    {
-      rapid_reload.action = p -> get_background_action<rapid_reload_t>( "multishot_rapid_reload" );
-      rapid_reload.min_targets = as<int>(p -> azerite.rapid_reload.spell() -> effectN( 2 ).base_value());
-      rapid_reload.reduction = ( timespan_t::from_seconds( p -> azerite.rapid_reload.spell() -> effectN ( 3 ).base_value() ) );
-      add_child( rapid_reload.action );
-    }
   }
 
   void execute() override
@@ -2983,13 +2825,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
-
-    if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
-    {
-      rapid_reload.action -> set_target( target );
-      p() -> cooldowns.aspect_of_the_wild -> adjust( - ( rapid_reload.reduction * num_targets_hit ) );
-      rapid_reload.action -> execute();
-    }
   }
 };
 
@@ -3169,8 +3004,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     parse_options(options_str);
 
-    base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
-
     if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
 
@@ -3204,9 +3037,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> legendary.qapla_eredun_war_order.ok() )
       p() -> cooldowns.kill_command -> adjust( -p() -> legendary.qapla_eredun_war_order -> effectN( 1 ).time_value() );
-
-    if ( p() -> azerite.dance_of_death.ok() && rng().roll( composite_crit_chance() ) )
-      p() -> buffs.dance_of_death -> trigger();
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
@@ -3382,24 +3212,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
     return m;
   }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = hunter_ranged_attack_t::bonus_da( s );
-
-    if ( auto td_ = find_td( s -> target ) )
-      b += td_ -> debuffs.steady_aim -> stack_value();
-
-    return b;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( auto td_ = find_td( s -> target ) )
-      td_ -> debuffs.steady_aim -> expire();
-  }
 };
 
 // Aimed Shot =========================================================================
@@ -3470,11 +3282,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( p -> legendary.surging_shots.ok() )
     {
       surging_shots.chance = p -> legendary.surging_shots -> proc_chance();
-      surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
-    }
-    else if ( p -> azerite.surging_shots.ok() )
-    {
-      surging_shots.chance = p -> azerite.surging_shots.spell_ref().effectN( 1 ).percent();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
     }
   }
@@ -3620,14 +3427,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
       p() -> state.steady_focus_counter = 0;
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( p() -> azerite.steady_aim.ok() )
-      td( s -> target ) -> debuffs.steady_aim -> trigger();
-  }
 };
 
 // Rapid Fire =========================================================================
@@ -3664,15 +3463,6 @@ struct rapid_fire_t: public hunter_spell_t
   struct damage_t final : public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
-    struct {
-      double chance = 0;
-      double amount = 0;
-      gain_t* gain = nullptr;
-    } focused_fire;
-    struct {
-      double value = 0;
-      int max_num_ticks = 0;
-    } surging_shots;
 
     damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 257045 ) ),
@@ -3686,24 +3476,6 @@ struct rapid_fire_t: public hunter_spell_t
 
       if ( p -> find_rank_spell( "Rapid Fire", "Rank 2" ) -> ok() )
         parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
-
-      base_dd_adder += p -> azerite.focused_fire.value( 2 );
-      if ( p -> azerite.focused_fire.ok() )
-      {
-        auto trigger_ = p -> azerite.focused_fire.spell() -> effectN( 1 ).trigger();
-        focused_fire.chance = trigger_ -> proc_chance();
-        focused_fire.amount = trigger_ -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-        focused_fire.gain = p -> get_gain( "focused_fire" );
-      }
-
-      if ( p -> azerite.surging_shots.ok() )
-      {
-        // XXX: The multipliers are emperically hardcoded. The tooltip is wrong.
-        base_dd_adder += p -> azerite.surging_shots.value( 2 ) * .5;
-        surging_shots.value = p -> azerite.surging_shots.value( 2 ) * .2;
-        // XXX: Does not scale beyond the base number of ticks
-        surging_shots.max_num_ticks = as<int>(p -> specs.rapid_fire -> effectN( 1 ).base_value());
-      }
     }
 
     int n_targets() const override
@@ -3730,9 +3502,6 @@ struct rapid_fire_t: public hunter_spell_t
 
       if ( p() -> options.brutal_projectiles_on_execute )
         trigger_brutal_projectiles();
-
-      if ( rng().roll( focused_fire.chance ) )
-        p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
 
     void impact( action_state_t* s ) override
@@ -3754,15 +3523,6 @@ struct rapid_fire_t: public hunter_spell_t
       m *= 1 + p() -> buffs.brutal_projectiles_hidden -> check_stack_value();
 
       return m;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = hunter_ranged_attack_t::bonus_da( s );
-
-      b += surging_shots.value * std::min( parent_dot -> current_tick, surging_shots.max_num_ticks );
-
-      return b;
     }
 
     void trigger_brutal_projectiles() const
@@ -3847,9 +3607,6 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.double_tap -> decrement();
 
     p() -> buffs.brutal_projectiles_hidden -> expire();
-
-    // XXX: this triggers *only* after a *full* uninterrupted channel
-    p() -> buffs.in_the_rhythm -> trigger();
 
     // schedule auto shot
     if ( p() -> main_hand_attack )
@@ -4004,26 +3761,6 @@ struct internal_bleeding_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct latent_poison_t final : hunter_spell_t
-  {
-    latent_poison_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> find_spell( 273289 ) )
-    {}
-
-    void trigger( player_t* target )
-    {
-      auto debuff = td( target ) -> debuffs.latent_poison;
-      if ( ! debuff -> check() )
-        return;
-
-      base_dd_min = base_dd_max = debuff -> check_stack_value();
-      set_target( target );
-      execute();
-
-      debuff -> expire();
-    }
-  };
-
   struct latent_poison_injection_t final : hunter_spell_t
   {
     latent_poison_injection_t( util::string_view n, hunter_t* p ):
@@ -4055,9 +3792,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   };
 
   internal_bleeding_t internal_bleeding;
-  latent_poison_t* latent_poison = nullptr;
   latent_poison_injection_t* latent_poison_injection = nullptr;
-  timespan_t wilderness_survival_reduction;
   struct {
     double chance = 0;
     proc_t* proc;
@@ -4065,8 +3800,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ),
-    internal_bleeding( p ),
-    wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
+    internal_bleeding( p )
   {
     if ( p -> legendary.latent_poison_injectors.ok() )
       latent_poison_injection = p -> get_background_action<latent_poison_injection_t>( "latent_poison_injection" );
@@ -4076,9 +3810,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       rylakstalkers_strikes.chance = p -> legendary.rylakstalkers_strikes -> proc_chance();
       rylakstalkers_strikes.proc = p -> get_proc( "Rylakstalker's Confounding Strikes" );
     }
-
-    if ( p -> azerite.latent_poison.ok() )
-      latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
 
   void execute() override
@@ -4086,33 +3817,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p() -> buffs.vipers_venom -> trigger();
-    p() -> buffs.primeval_intuition -> trigger();
     p() -> buffs.butchers_bone_fragments -> trigger();
 
     p() -> trigger_birds_of_prey( target );
-
-    if ( p() -> buffs.coordinated_assault -> check() )
-    {
-      if ( p()->buffs.coordinated_assault_vision->check() )
-      {
-        p()->buffs.blur_of_talons_vision->trigger();
-      }
-      else
-      {
-        if ( p()->buffs.blur_of_talons_vision->check() )
-        {
-          p()->buffs.blur_of_talons->trigger( p()->buffs.blur_of_talons_vision->check() + 1 );
-          p()->buffs.blur_of_talons_vision->expire();
-        }
-        else
-        {
-          p()->buffs.blur_of_talons->trigger();
-        }
-      }
-    }
-
-    if ( wilderness_survival_reduction != 0_ms )
-      p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
     if ( rng().roll( rylakstalkers_strikes.chance ) )
     {
@@ -4128,9 +3835,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t::impact( s );
 
     internal_bleeding.trigger( s );
-
-    if ( latent_poison )
-      latent_poison -> trigger( s -> target );
 
     if ( latent_poison_injection )
       latent_poison_injection -> trigger( s -> target );
@@ -4163,8 +3867,6 @@ struct mongoose_bite_base_t: melee_focus_spender_t
   mongoose_bite_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
-
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( fmt::format( "bite_at_{}_fury", i ) );
 
@@ -4348,8 +4050,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
-
     background = p -> talents.mongoose_bite.ok();
   }
 };
@@ -4492,9 +4192,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     if ( s -> result_amount > 0 && p() -> legendary.latent_poison_injectors.ok() )
       td( s -> target ) -> debuffs.latent_poison_injection -> trigger();
-
-    if ( s -> result_amount > 0 && p() -> azerite.latent_poison.ok() )
-      td( s -> target ) -> debuffs.latent_poison -> trigger();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -4868,10 +4565,6 @@ struct kill_command_t: public hunter_spell_t
     double chance = 0;
     proc_t* proc = nullptr;
   } flankers_advantage;
-  struct {
-    real_ppm_t* rppm = nullptr;
-    proc_t* proc;
-  } dire_consequences;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> specs.kill_command )
@@ -4882,14 +4575,6 @@ struct kill_command_t: public hunter_spell_t
     {
       flankers_advantage.chance = data().effectN( 2 ).percent();
       flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
-    }
-
-    if ( p -> azerite.dire_consequences.ok() )
-    {
-      dire_consequences.rppm = p -> get_rppm( "dire_consequences", 1, 1, RPPM_ATTACK_SPEED );
-      if ( p -> specialization() == HUNTER_BEAST_MASTERY )
-        dire_consequences.rppm -> set_modifier( .65 );
-      dire_consequences.proc = p -> get_proc( "Dire Consequences" );
     }
   }
 
@@ -4930,12 +4615,6 @@ struct kill_command_t: public hunter_spell_t
 
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
     p() -> buffs.flamewakers_cobra_sting -> decrement();
-
-    if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() )
-    {
-      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      dire_consequences.proc -> occur();
-    }
   }
 
   double cost() const override
@@ -5055,7 +4734,6 @@ struct bestial_wrath_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     trigger_buff( p() -> buffs.bestial_wrath, precast_time );
-    trigger_buff( p() -> buffs.haze_of_rage, precast_time );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
@@ -5098,8 +4776,6 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     harmful = false;
     dot_duration = 0_ms;
 
-    cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
-
     precast_time = clamp( precast_time, 0_ms, data().duration() );
 
     p -> actions.aspect_of_the_wild = this;
@@ -5109,12 +4785,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.aspect_of_the_wild -> expire();
     trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
-
-    p()->buffs.primal_instincts->expire();
-    if ( trigger_buff( p() -> buffs.primal_instincts, precast_time ) )
-      p() -> cooldowns.barbed_shot -> reset( true );
 
     adjust_precast_cooldown( precast_time );
   }
@@ -5230,7 +4901,6 @@ struct trueshot_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
-    cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
@@ -5239,10 +4909,7 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p()->buffs.trueshot->expire();
-
     trigger_buff( p() -> buffs.trueshot, precast_time );
-    trigger_buff( p() -> buffs.unerring_vision_driver, precast_time );
 
     adjust_precast_cooldown( precast_time );
   }
@@ -5347,16 +5014,12 @@ struct coordinated_assault_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.coordinated_assault->expire();
-    p() -> buffs.coordinated_assault_vision->expire();
     p() -> buffs.coordinated_assault -> trigger();
   }
 };
@@ -5396,16 +5059,6 @@ struct wildfire_bomb_t: public hunter_spell_t
     {
       aoe = -1;
       triggers_wild_spirits = false;
-    }
-  };
-
-  struct azerite_wildfire_cluster_t final : public hunter_spell_t
-  {
-    azerite_wildfire_cluster_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> find_spell( 272745 ) )
-    {
-      aoe = -1;
-      base_dd_min = base_dd_max = p -> azerite.wildfire_cluster.value( 1 );
     }
   };
 
@@ -5564,11 +5217,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       wildfire_cluster = p -> get_background_action<wildfire_cluster_t>( "wildfire_cluster" );
       add_child( wildfire_cluster );
     }
-    else if ( p -> azerite.wildfire_cluster.ok() )
-    {
-      wildfire_cluster = p -> get_background_action<azerite_wildfire_cluster_t>( "wildfire_cluster" );
-      add_child( wildfire_cluster );
-    }
   }
 
   void execute() override
@@ -5688,19 +5336,9 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs(),
   dots()
 {
-  debuffs.latent_poison =
-    make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
-      -> set_default_value( p -> azerite.latent_poison.value( 1 ) )
-      -> set_trigger_spell( p -> azerite.latent_poison );
-
   debuffs.latent_poison_injection =
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
-
-  debuffs.steady_aim =
-    make_buff( *this, "steady_aim", p -> find_spell( 277959 ) )
-      -> set_default_value( p -> azerite.steady_aim.value( 1 ) )
-      -> set_trigger_spell( p -> azerite.steady_aim );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
@@ -5730,73 +5368,6 @@ void hunter_td_t::target_demise()
   }
 
   damaged = false;
-}
-
-void hunter_t::vision_of_perfection_proc()
-{
-  switch ( specialization() )
-  {
-  case HUNTER_BEAST_MASTERY:
-  {
-    if ( azerite.primal_instincts.ok() )
-    {
-      timespan_t recharge = cooldown_t::cooldown_duration( cooldowns.barbed_shot ) * azerite_essence.vision_of_perfection_major_mult;
-      cooldowns.barbed_shot->adjust( -recharge );
-    }
-
-    timespan_t dur = buffs.aspect_of_the_wild->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
-    if ( buffs.aspect_of_the_wild->check() )
-    {
-      buffs.aspect_of_the_wild->extend_duration( this, dur );
-      buffs.primal_instincts->extend_duration( this, dur );
-    }
-    else
-    {
-      buffs.aspect_of_the_wild->trigger( dur );
-      buffs.primal_instincts->trigger( dur );
-    }
-    break;
-  }
-  case HUNTER_MARKSMANSHIP:
-  {
-    timespan_t ts_dur = buffs.trueshot->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
-    timespan_t uv_dur = buffs.unerring_vision_driver->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
-
-    if ( buffs.trueshot->check() )
-    {
-      buffs.trueshot->extend_duration( this, ts_dur );
-      if ( buffs.unerring_vision_driver->check() )
-        buffs.unerring_vision_driver->extend_duration( this, uv_dur );
-    }
-    else
-    {
-      buffs.trueshot->trigger( ts_dur );
-      buffs.unerring_vision_driver->trigger( uv_dur );
-    }
-    break;
-  }
-  case HUNTER_SURVIVAL:
-  {
-    // the vision proc on its own starts at 35% effectiveness, upgraded to 100% if refreshed by the active cooldown
-    timespan_t dur = buffs.coordinated_assault->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
-    if ( buffs.coordinated_assault->check() )
-    {
-      buffs.coordinated_assault->extend_duration( this, dur );
-      if ( buffs.coordinated_assault_vision->check() )
-      {
-        buffs.coordinated_assault_vision->extend_duration( this, dur );
-      }
-    }
-    else
-    {
-      buffs.coordinated_assault->trigger( dur );
-      buffs.coordinated_assault_vision->trigger( dur );
-    }
-    break;
-  }
-  default:
-    break;
-  }
 }
 
 /**
@@ -6016,7 +5587,7 @@ void hunter_t::create_pets()
   if ( talents.spitting_cobra.ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
 
-  if ( azerite.dire_consequences.ok() )
+  if ( legendary.dire_command.ok() )
   {
     pets.dc_dire_beast.set_creation_callback(
       [] ( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(dc)" ); });
@@ -6196,39 +5767,6 @@ void hunter_t::init_spells()
   legendary.latent_poison_injectors  = find_runeforge_legendary( "Latent Poison Injectors" );
   legendary.rylakstalkers_strikes    = find_runeforge_legendary( "Rylakstalker's Confounding Strikes" );
   legendary.wildfire_cluster         = find_runeforge_legendary( "Wildfire Cluster" );
-
-  // Azerite
-
-  azerite.dance_of_death        = find_azerite_spell( "Dance of Death" );
-  azerite.dire_consequences     = find_azerite_spell( "Dire Consequences" );
-  azerite.feeding_frenzy        = find_azerite_spell( "Feeding Frenzy" );
-  azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
-  azerite.primal_instincts      = find_azerite_spell( "Primal Instincts" );
-  azerite.serrated_jaws         = find_azerite_spell( "Serrated Jaws" );
-
-  azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
-  azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
-  azerite.rapid_reload          = find_azerite_spell( "Rapid Reload" );
-  azerite.steady_aim            = find_azerite_spell( "Steady Aim" );
-  azerite.surging_shots         = find_azerite_spell( "Surging Shots" );
-  azerite.unerring_vision       = find_azerite_spell( "Unerring Vision" );
-
-  azerite.blur_of_talons        = find_azerite_spell( "Blur of Talons" );
-  azerite.latent_poison         = find_azerite_spell( "Latent Poison" );
-  azerite.primeval_intuition    = find_azerite_spell( "Primeval Intuition" );
-  azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
-  azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
-  azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
-
-  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_essence.memory_of_lucid_dreams_major_mult = find_spell( 298357 ) -> effectN( 1 ).percent();
-  azerite_essence.memory_of_lucid_dreams_minor_mult =
-    azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
-
-  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
-  azerite_essence.vision_of_perfection_major_mult =
-    azerite_essence.vision_of_perfection.spell( 1u )->effectN( 1 ).percent() +
-    azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE )->effectN( 1 ).percent();
 }
 
 // hunter_t::init_base ======================================================
@@ -6259,8 +5797,6 @@ void hunter_t::init_base_stats()
   }
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
-  if ( azerite.primeval_intuition.ok() )
-    resources.base[RESOURCE_FOCUS] += find_spell( 288571 ) -> effectN( 2 ).base_value();
 }
 
 void hunter_t::create_actions()
@@ -6402,15 +5938,9 @@ void hunter_t::create_buffs()
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 )
-          {
-            buffs.unerring_vision_driver -> expire();
-            buffs.unerring_vision -> expire();
             buffs.eagletalons_true_focus -> expire();
-          }
           else if ( old == 0 )
-          {
             buffs.eagletalons_true_focus -> trigger();
-          }
         } )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
 
@@ -6427,12 +5957,6 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_conduit( conduits.deadly_tandem );
-
-  buffs.coordinated_assault_vision =
-    make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
-      -> set_cooldown( 0_ms )
-      -> set_default_value_from_effect( 1 )
-      -> set_quiet( true );
 
   buffs.vipers_venom =
     make_buff( this, "vipers_venom", talents.vipers_venom -> effectN( 1 ).trigger() )
@@ -6529,61 +6053,6 @@ void hunter_t::create_buffs()
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.secrets_of_the_vigil );
-
-  // Azerite
-
-  buffs.blur_of_talons =
-    make_buff<stat_buff_t>( this, "blur_of_talons", find_spell( 277969 ) )
-      -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) )
-      -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) )
-      -> set_trigger_spell( azerite.blur_of_talons );
-
-  buffs.blur_of_talons_vision =
-    make_buff<stat_buff_t>( this, "blur_of_talons_vision", find_spell( 277969 ) )
-      -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) * azerite_essence.vision_of_perfection_major_mult )
-      -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) * azerite_essence.vision_of_perfection_major_mult )
-      -> set_trigger_spell( azerite.blur_of_talons );
-
-  buffs.dance_of_death =
-    make_buff<stat_buff_t>( this, "dance_of_death", find_spell( 274443 ) )
-      -> add_stat( STAT_AGILITY, azerite.dance_of_death.value( 1 ) );
-
-  buffs.haze_of_rage =
-    make_buff<stat_buff_t>( this, "haze_of_rage", find_spell( 273264 ) )
-      -> add_stat( STAT_AGILITY, azerite.haze_of_rage.value( 1 ) )
-      -> set_trigger_spell( azerite.haze_of_rage );
-
-  buffs.in_the_rhythm =
-    make_buff<stat_buff_t>( this, "in_the_rhythm", find_spell( 272733 ) )
-      -> add_stat( STAT_HASTE_RATING, azerite.in_the_rhythm.value( 1 ) )
-      -> set_trigger_spell( azerite.in_the_rhythm );
-
-  buffs.primal_instincts =
-    make_buff<stat_buff_t>( this, "primal_instincts", find_spell( 279810 ) )
-      -> add_stat( STAT_MASTERY_RATING, azerite.primal_instincts.value( 1 ) )
-      -> set_trigger_spell( azerite.primal_instincts );
-
-  buffs.primeval_intuition =
-    make_buff<stat_buff_t>( this, "primeval_intuition", find_spell( 288573 ) )
-      -> add_stat( STAT_CRIT_RATING, azerite.primeval_intuition.value( 1 ) )
-      -> set_trigger_spell( azerite.primeval_intuition );
-
-  buffs.unerring_vision_driver =
-    make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
-      -> set_quiet( true )
-      -> set_tick_zero( true )
-      -> set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.unerring_vision -> trigger(); } )
-      -> set_trigger_spell( azerite.unerring_vision )
-      -> set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-          if ( cur == 0 && buffs.unerring_vision->check() <= buffs.unerring_vision->max_stack() )
-            buffs.unerring_vision->trigger();
-        } );
-
-  buffs.unerring_vision =
-    make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
-      -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
-
-  player_t::buffs.memory_of_lucid_dreams -> set_affects_regen( true );
 }
 
 // hunter_t::init_gains =====================================================
@@ -6594,8 +6063,6 @@ void hunter_t::init_gains()
 
   gains.aspect_of_the_wild     = get_gain( "aspect_of_the_wild" );
   gains.barbed_shot            = get_gain( "barbed_shot" );
-  gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
-  gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
   gains.nesingwarys_apparatus_direct = get_gain( "Nesingwary's Trapping Apparatus (Direct)" );
   gains.nesingwarys_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
   gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
@@ -7285,13 +6752,6 @@ void hunter_t::regen( timespan_t periodicity )
     total_regen += regen;
   }
 
-  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
-  {
-    double regen = total_regen * azerite_essence.memory_of_lucid_dreams_major_mult;
-    resource_gain( RESOURCE_FOCUS, regen, gains.memory_of_lucid_dreams_major );
-    total_regen += regen;
-  }
-
   if ( buffs.terms_of_engagement -> check() )
     resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
 }
@@ -7336,9 +6796,6 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
     if ( buffs.nesingwarys_apparatus -> check() )
       add_gain( buffs.nesingwarys_apparatus -> check_value(), gains.nesingwarys_apparatus_buff );
 
-    if ( player_t::buffs.memory_of_lucid_dreams -> check() )
-      add_gain( azerite_essence.memory_of_lucid_dreams_major_mult, gains.memory_of_lucid_dreams_major );
-
     const double additional_amount = floor( amount ) - initial_amount;
     if ( additional_amount > 0 )
     {
@@ -7380,11 +6837,12 @@ void hunter_t::create_options()
                             0.5_s, 4_s ) );
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
-  add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
-                            0, 1 ) );
+
   add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
+
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
+  add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
 }
 
 // hunter_t::create_profile =================================================
