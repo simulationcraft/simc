@@ -300,7 +300,6 @@ public:
     const spell_data_t* execute_rank_2;
     const spell_data_t* execute_rank_3;
     const spell_data_t* execute_rank_4;
-    const spell_data_t* ignore_pain;
     const spell_data_t* ignore_pain_2;
     const spell_data_t* intercept;
     const spell_data_t* last_stand;
