@@ -8886,7 +8886,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5,target_if=refreshable");
+    aoe->add_action( this, "Flame Shock", "if=active_dot.flame_shock<3&active_enemies<=5|runeforge.skybreakers_fiery_demise.equipped,target_if=refreshable");
     aoe->add_action( this, "Flame Shock", "if=!active_dot.flame_shock" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_talent(
@@ -8990,7 +8990,7 @@ void shaman_t::init_action_list_elemental()
                                "master_of_the_elements.up)" );
     single_target->add_action(
         this, "Earthquake",
-        "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)&(!talent."
+        "if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_great_sundering.equipped&(!talent."
         "master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
     single_target->add_action(
         this, "Earth Shock",
@@ -9013,8 +9013,8 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
     single_target->add_action( this, "Earthquake",
-                               "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|(buff."
-                               "echoes_of_great_sundering.up&buff.master_of_the_elements.up)" );
+                               "if=spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff."
+                               "echoes_of_great_sundering.up" );
     single_target->add_action( this, "Frost Shock",
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
