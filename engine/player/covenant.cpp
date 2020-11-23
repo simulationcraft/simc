@@ -574,6 +574,8 @@ covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const speci
   // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
   if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
     class_ability = 326446;
+  if ( p->type == DEATH_KNIGHT && p->covenant->type() == covenant_e::NIGHT_FAE )
+    class_ability = 324128;
 }
 
 void covenant_ability_cast_cb_t::initialize()
