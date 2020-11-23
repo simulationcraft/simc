@@ -1123,22 +1123,22 @@ void warlock_t::apl_precombat()
 
 std::string warlock_t::default_potion() const
 {
-  return ( true_level >= 50 ) ? "unbridled_fury" : "disabled";
+  return ( true_level >= 60 ) ? "spectral_intellect" : "disabled";
 }
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
+  return ( true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
 }
 
 std::string warlock_t::default_food() const
 {
-  return ( true_level >= 50 ) ? "famine_evaluator_and_snack_table" : "disabled";
+  return ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 50 ) ? "battle_scarred" : "disabled";
+  return ( true_level >= 60 ) ? "veiled" : "disabled";
 }
 
 void warlock_t::apl_global_filler()
