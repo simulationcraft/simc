@@ -3476,6 +3476,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // Chaos Theory Legendary
+    // This has a 0.5s ICD in the spell data, so just trigger once in the execute and not on impacts
     p()->buff.chaos_theory->trigger();
 
     // Benefit Tracking and Consume Buff
@@ -5668,10 +5669,6 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t*, action_priority_list_t* apl )
 {
-  apl->add_action( "use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled|cooldown.fel_barrage.ready" );
-  apl->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.metamorphosis.up&buff.memory_of_lucid_dreams.down&(!variable.blade_dance|!cooldown.blade_dance.ready)" );
-  apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20" );
-  apl->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>60" );
   apl->add_action( "use_items,if=buff.metamorphosis.up", "Default fallback for usable items." );
 }
 
@@ -5679,7 +5676,7 @@ void demon_hunter_t::apl_havoc()
 {
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
-  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)" );
+  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)|runeforge.chaos_theory&buff.chaos_theory.down" );
   apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
@@ -5688,7 +5685,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
-  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)" );
+  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35" );
   apl_default->add_action( this, "Throw Glaive", "if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)" );
   apl_default->add_action( "call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
@@ -5696,30 +5693,13 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<25" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled&level<54|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)" );
   apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   apl_cooldown->add_action( "the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up" );
   apl_cooldown->add_action( "fodder_to_the_flame" );
   apl_cooldown->add_action( "elysian_decree" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
   add_havoc_use_items( this, apl_cooldown );
-
-  action_priority_list_t* essences = get_action_priority_list( "essences" );
-  essences->add_action( "variable,name=fel_barrage_sync,if=talent.fel_barrage.enabled,value=cooldown.fel_barrage.ready&(((!talent.demonic.enabled|buff.metamorphosis.up)&!variable.waiting_for_momentum&raid_event.adds.in>30)|active_enemies>desired_targets)" );
-  essences->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-  essences->add_action( "blood_of_the_enemy,if=(!talent.fel_barrage.enabled|cooldown.fel_barrage.remains>45)&!variable.waiting_for_momentum&((!talent.demonic.enabled|buff.metamorphosis.up&!cooldown.blade_dance.ready)|target.time_to_die<=10)",
-                        "Attempt to sync with Fel Barrage or AoE if it will be used within the next 45 seconds, otherwise use during normal burst damage." );
-  essences->add_action( "blood_of_the_enemy,if=talent.fel_barrage.enabled&variable.fel_barrage_sync" );
-  essences->add_action( "guardian_of_azeroth,if=(buff.metamorphosis.up&cooldown.metamorphosis.ready)|buff.metamorphosis.remains>25|target.time_to_die<=30" );
-  essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
-  essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
-  essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-  essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up|variable.fel_barrage_sync" );
-  essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
-  essences->add_action( "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die", "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies." );
-  essences->add_action( "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))" );
-  apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
@@ -5738,7 +5718,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)"
                                                 "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break" );
   apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled&raid_event.adds.in>cooldown" );
-  apl_normal->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound.equipped&debuff.burning_wound.remains<4" );
+  apl_normal->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4" );
   apl_normal->add_action( this, "Demon's Bite" );
   apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled" );
   apl_normal->add_talent( this, "Felblade", "if=movement.distance>15|buff.out_of_range.up" );
@@ -5753,13 +5733,13 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Throw Glaive", "if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
-                                                "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+                                                "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_demonic->add_action( this, "Immolation Aura" );
   apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=!variable.pooling_for_blade_dance" );
   apl_demonic->add_talent( this, "Felblade", "if=fury.deficit>=40" );
   apl_demonic->add_action( this, "Chaos Strike", "if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_demonic->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound.equipped&debuff.burning_wound.remains<4" );
+  apl_demonic->add_action( this, "Demon's Bite", "target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
@@ -5798,12 +5778,6 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
   cooldowns->add_action( "potion" );
-  cooldowns->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-  cooldowns->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
-  cooldowns->add_action( "memory_of_lucid_dreams" );
-  cooldowns->add_action( "heart_essence", "Default fallback for usable essences." );
-  cooldowns->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down" );
-  cooldowns->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
   cooldowns->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   cooldowns->add_action( "the_hunt" );
@@ -5823,7 +5797,7 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
   apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
   apl_normal->add_talent( this, "Fracture", "if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))" );
-  apl_normal->add_action( this, "Sigil of Flame", "if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement.equipped)" );
+  apl_normal->add_action( this, "Sigil of Flame", "if=!(covenant.kyrian.enabled&runeforge.razelikhs_defilement)" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
 }
