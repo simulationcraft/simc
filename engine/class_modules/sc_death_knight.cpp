@@ -9916,8 +9916,10 @@ void death_knight_t::create_buffs()
   // Legendaries
 
   buffs.crimson_rune_weapon = make_buff( this, "crimson_rune_weapon", find_spell( 334526 ) )
-      -> set_default_value( find_spell( 334526 ) -> effectN( 1 ).percent() );
-
+      -> set_default_value( find_spell( 334526 ) -> effectN( 1 ).percent() )
+      -> set_affects_regen( true )
+      -> set_stack_change_callback( [ p ]( buff_t*, int, int )
+           { p -> _runes.update_coefficient(); } );
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
