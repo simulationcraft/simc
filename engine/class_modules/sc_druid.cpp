@@ -9432,7 +9432,7 @@ void druid_t::apl_guardian()
 
   bear->add_action( "bear_form,if=!buff.bear_form.up" );
   bear->add_action( "ravenous_frenzy" );
-  bear->add_action( "convoke_the_spirits,if=(!druid.catweave_bear&!druid.owlweave_bear&talent.restoration_affinity.enabled)" );
+  bear->add_action( "convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear&talent.restoration_affinity.enabled" );
   bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2" );
