@@ -11652,7 +11652,7 @@ std::string monk_t::default_rune() const
 {
   if ( true_level >= 60 )
     return "veiled";
-  if ( true_level >= 50 )
+  else if ( true_level >= 50 )
     return "battle_scarred";
   else if ( true_level >= 45 )
     return "defiled";
