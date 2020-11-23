@@ -9232,7 +9232,6 @@ void druid_t::apl_balance()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* dreambinder = get_action_priority_list( "dreambinder" );
   action_priority_list_t* boat = get_action_priority_list( "boat" );
-  action_priority_list_t* prepatch_st = get_action_priority_list( "prepatch_st" );
   action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
   precombat->add_action( "moonkin_form" );
@@ -9250,11 +9249,7 @@ void druid_t::apl_balance()
   def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
   def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
   def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
-  def->add_action( "run_action_list,name=st,if=level>50" );
-  def->add_action( "variable,name=prev_wrath,value=prev.wrath" );
-  def->add_action( "variable,name=prev_starfire,value=prev.starfire" );
-  def->add_action( "variable,name=prev_starsurge,value=prev.starsurge" );
-  def->add_action( "run_action_list,name=prepatch_st" );
+  def->add_action( "run_action_list,name=st" );
 
   st->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
   st->add_action( "convoke_the_spirits,if=(variable.convoke_desync&interpolated_fight_remains>130&!cooldown.ca_inc.ready|buff.ca_inc.up)&astral_power<50&(buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)|fight_remains<10" );
@@ -9362,26 +9357,6 @@ void druid_t::apl_balance()
   boat->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&eclipse.in_lunar|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
   boat->add_action( "wrath" );
   boat->add_action( "run_action_list,name=fallthru" );
-
-  prepatch_st->add_action( "moonfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "sunfire,target_if=refreshable&target.time_to_die>12,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "stellar_flare,target_if=refreshable&target.time_to_die>16,if=(buff.ca_inc.remains>5|!buff.ca_inc.up|astral_power<30)&ap_check" );
-  prepatch_st->add_action( "force_of_nature,if=ap_check" );
-  prepatch_st->add_action( "celestial_alignment,if=(astral_power>90|buff.bloodlust.up&buff.bloodlust.remains<26)&!buff.ca_inc.up" );
-  prepatch_st->add_action( "incarnation,if=(astral_power>90|buff.bloodlust.up&buff.bloodlust.remains<36)&!buff.ca_inc.up" );
-  prepatch_st->add_action( "variable,name=save_for_ca_inc,value=!cooldown.ca_inc.ready" );
-  prepatch_st->add_action( "fury_of_elune,if=eclipse.in_any&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<6&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&astral_power>90" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&(buff.ca_inc.up|astral_power>90&eclipse.in_any)" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&talent.starlord.enabled&(buff.starlord.up|astral_power>90)&buff.starlord.stack<3&(buff.eclipse_solar.up|buff.eclipse_lunar.up)&cooldown.ca_inc.remains>7" );
-  prepatch_st->add_action( "starsurge,if=(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starsurge)&buff.eclipse_solar.remains>7&eclipse.in_solar&!talent.starlord.enabled&cooldown.ca_inc.remains>7" );
-  prepatch_st->add_action( "new_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "half_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "full_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3|buff.ca_inc.up)&ap_check&variable.save_for_ca_inc" );
-  prepatch_st->add_action( "warrior_of_elune" );
-  prepatch_st->add_action( "starfire,if=(azerite.streaking_stars.rank&buff.ca_inc.remains>execute_time&variable.prev_wrath)|(!azerite.streaking_stars.rank|buff.ca_inc.remains<execute_time|!variable.prev_starfire)&(eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&buff.eclipse_lunar.up|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up))|(azerite.dawning_sun.rank>2&buff.eclipse_solar.remains>5&!buff.dawning_sun.remains>action.wrath.execute_time)" );
-  prepatch_st->add_action( "wrath" );
-  prepatch_st->add_action( "run_action_list,name=fallthru" );
 
   fallthru->add_action( "starsurge,if=!runeforge.balance_of_all_things.equipped" );
   fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains" );
