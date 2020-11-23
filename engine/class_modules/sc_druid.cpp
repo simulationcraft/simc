@@ -7455,10 +7455,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void _execute_bear()
   {
+    main_count   = 0;
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances      = { { CAST_THRASH_BEAR, 0.3 },
-                     { CAST_IRONFUR, 0.35 },
-                     { CAST_MANGLE, 0.35 }
+    chances      = { { CAST_THRASH_BEAR, 0.95 },
+                     { CAST_IRONFUR, 1.0 },
+                     { CAST_MANGLE, 1.0 }
                    };
 
     cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 5, 7 ) ), CAST_OFFSPEC );
@@ -7483,7 +7484,7 @@ struct convoke_the_spirits_t : public druid_spell_t
           mf_tl.push_back( t );
 
       if ( mf_tl.size() )
-        dist.emplace_back( std::make_pair( CAST_MOONFIRE, 0.2 ) );  // mf if undotted
+        dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
 
       type_ = get_cast_from_dist( dist );
 
@@ -7493,6 +7494,12 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     if ( !conv_tar )
       conv_tar = tl.at( rng().range( tl.size() ) );
+
+    if ( type_ == CAST_RAKE && td( conv_tar )->dots.rake->is_ticking() )
+      type_ = CAST_WRATH;
+
+    if ( type_ == CAST_MOONFIRE )
+      main_count++;
 
     return type_;
   }
