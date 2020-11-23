@@ -9309,13 +9309,13 @@ void death_knight_t::default_apl_dps_precombat()
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
+  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_phantom_fire" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
+  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_phantom_fire" :
                               "disabled";
 
-  std::string blood_potion =  ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
+  std::string blood_potion =  ( true_level >= 50 ) ? "potion_of_phantom_fire" :
                               "disabled";
 
   switch ( specialization() )
@@ -9330,13 +9330,13 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level >= 50 ) ? "abyssalfried_rissole" :
+  std::string frost_food = ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
                            "disabled";
 
-  std::string unholy_food = ( true_level >= 50 ) ? "baked_port_tato" :
+  std::string unholy_food = ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
                             "disabled";
 
-  std::string blood_food =  ( true_level >= 50 ) ? "mechdowels_big_mech" :
+  std::string blood_food =  ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
                             "disabled";
 
   switch ( specialization() )
@@ -9352,7 +9352,7 @@ std::string death_knight_t::default_food() const
 
 std::string death_knight_t::default_flask() const
 {
-  std::string flask_name = ( true_level >= 50 ) ? "greater_flask_of_the_undertow" :
+  std::string flask_name = ( true_level >= 50 ) ? "spectral_flask_of_power" :
                            "disabled";
 
   // All specs use a strength flask as default
