@@ -439,7 +439,6 @@ void frost( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* essences = p->get_action_priority_list( "essences" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
 
@@ -453,7 +452,6 @@ void frost( player_t* p )
 
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=essences" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<4" );
   default_->add_action( "call_action_list,name=movement" );
@@ -488,17 +486,6 @@ void frost( player_t* p )
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
   cds->add_action( "bag_of_tricks" );
-
-  essences->add_action( "guardian_of_azeroth" );
-  essences->add_action( "focused_azerite_beam" );
-  essences->add_action( "memory_of_lucid_dreams" );
-  essences->add_action( "blood_of_the_enemy" );
-  essences->add_action( "purifying_blast" );
-  essences->add_action( "ripple_in_space" );
-  essences->add_action( "concentrated_flame,line_cd=6" );
-  essences->add_action( "reaping_flames" );
-  essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-  essences->add_action( "worldvein_resonance" );
 
   movement->add_action( "blink_any,if=movement.distance>10" );
   movement->add_action( "ice_floes,if=buff.ice_floes.down" );
