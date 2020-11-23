@@ -9363,7 +9363,7 @@ std::string death_knight_t::default_flask() const
 
 std::string death_knight_t::default_rune() const
 {
-  return ( true_level >= 50 ) ? "battle_scarred" :
+  return ( true_level >= 50 ) ? "veiled" :
          "disabled";
 }
 
