@@ -6847,7 +6847,7 @@ void hunter_t::apl_bm()
   st -> add_action( "barbed_shot,if=buff.wild_spirits.up" );
   st -> add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
-st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
+  st -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
 }
 
 // Marksman Action List ======================================================================
