@@ -268,6 +268,8 @@ public:
   // Options
   double predator_rppm_rate;
   double initial_astral_power;
+  double thorns_attack_period;
+  double thorns_hit_chance;
   int initial_moon_stage;
   double eclipse_snapshot_period;  // how often to re-snapshot mastery onto eclipse
   bool catweave_bear;
@@ -330,6 +332,7 @@ public:
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
     buff_t* innervate;
+    buff_t* thorns;
     buff_t* heart_of_the_wild;
     // General Legendaries
     buff_t* oath_of_the_elder_druid;
@@ -764,6 +767,8 @@ public:
       spec_override( spec_override_t() ),
       predator_rppm_rate( 0.0 ),
       initial_astral_power( 0 ),
+      thorns_attack_period( 2.0 ),
+      thorns_hit_chance( 0.75 ),
       initial_moon_stage( NEW_MOON ),
       eclipse_snapshot_period( 3.0 ),
       catweave_bear( false ),
@@ -6316,6 +6321,104 @@ struct survival_instincts_t : public druid_spell_t
   }
 };
 
+// Thorns ===================================================================
+
+struct thorns_t : public druid_spell_t
+{
+  struct thorns_proc_t : public druid_spell_t
+  {
+    thorns_proc_t( druid_t* player ) : druid_spell_t( "thorns_hit", player, player->find_spell( 305496 ) )
+    {
+      background = true;
+      if ( p()->specialization() == DRUID_FERAL )
+      {  // a little gnarly, TODO(xan): clean this up
+        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, A_366 )->percent();
+        spell_power_mod.direct  = 0;
+      }
+    }
+  };
+
+  struct thorns_attack_event_t : public event_t
+  {
+    action_t* thorns;
+    player_t* target_actor;
+    timespan_t attack_period;
+    druid_t* source;
+    bool randomize_first;
+    double hit_chance;
+
+    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false )
+      : event_t( *player ),
+        thorns( thorns_proc ),
+        target_actor( source ),
+        attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ),
+        source( player ),
+        randomize_first( randomize ),
+        hit_chance( player->thorns_hit_chance )
+    {
+      // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
+      if ( randomize_first )
+        schedule( rng().real() * attack_period );
+      else
+        schedule( attack_period );
+    }
+
+    const char* name() const override { return "Thorns auto attack event"; }
+
+    void execute() override
+    {
+      // Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
+
+      if ( target_actor->is_sleeping() )
+        return;
+
+      thorns->target = target_actor;
+      if ( thorns->ready() && thorns->cooldown->up() && rng().roll( hit_chance ) )
+        thorns->execute();
+
+      if ( source->buff.thorns->remains() >= attack_period )
+        make_event<thorns_attack_event_t>( *source->sim, source, thorns, target_actor, false );
+    }
+  };
+
+  // unavailable for now. need to manually allow later.
+  bool available             = false;
+  thorns_proc_t* thorns_proc = nullptr;
+
+  thorns_t( druid_t* player, util::string_view options_str )
+    : druid_spell_t( "thorns", player, player->find_spell( 305497 ), options_str )
+  {
+    // workaround so that we do not need to enable mana regen
+    base_costs[ RESOURCE_MANA ] = 0.0;
+
+    if ( !thorns_proc )
+    {
+      thorns_proc        = new thorns_proc_t( player );
+      thorns_proc->stats = stats;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !available )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    p()->buff.thorns->trigger();
+
+    for ( player_t* target : p()->sim->target_non_sleeping_list )
+    {
+      make_event<thorns_attack_event_t>( *sim, p(), thorns_proc, target, true );
+    }
+
+    druid_spell_t::execute();
+  }
+};
+
 // Warrior of Elune =========================================================
 
 struct warrior_of_elune_t : public druid_spell_t
@@ -7474,6 +7577,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
+  if ( name == "thorns"                 ) return new                 thorns_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
 
@@ -7905,6 +8009,8 @@ void druid_t::create_buffs()
   buff.innervate = make_buff<innervate_buff_t>( *this );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
+
+  buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
 
   buff.wild_charge_movement = make_buff( this, "wild_charge_movement" );
 
@@ -9656,6 +9762,8 @@ void druid_t::create_options()
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
+  add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
+  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
   add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
   add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
@@ -10258,6 +10366,8 @@ void druid_t::copy_from( player_t* source )
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
+  thorns_attack_period         = p->thorns_attack_period;
+  thorns_hit_chance            = p->thorns_hit_chance;
 }
 
 void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
