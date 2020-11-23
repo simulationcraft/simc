@@ -134,13 +134,14 @@ feet=slippers_of_leavened_station,id=178831,bonus_id=1540/6808
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_haste
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_haste
 trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498,enchant=shadowcore_oil
 main_hand=sinstealers_sentencing_gavel,id=182391,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=stonewrights_infused_stonecarver,id=182426,bonus_id=7187/1524
 
 # Gear Summary
-# gear_ilvl=228.93
+# gear_ilvl=229.19
 # gear_stamina=1519
-# gear_intellect=1086
+# gear_intellect=1169
 # gear_crit_rating=277
 # gear_haste_rating=1275
 # gear_mastery_rating=241
