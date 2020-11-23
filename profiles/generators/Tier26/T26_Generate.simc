@@ -12,6 +12,7 @@
 # * Must use enchant name (ex: ",enchant=binding_of_mastery") instead of id/hardcoded stats.
 # * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
 # * Soulbind with Rank 7 conduits allowed. Assume level 29 renown.
+# * 1 Legendary at Rank 4 should be used.
 
 # Death Knight
 T26_Generate_Death_Knight.simc
