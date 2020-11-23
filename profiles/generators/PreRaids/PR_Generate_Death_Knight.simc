@@ -52,7 +52,7 @@ trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498
 main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498,enchant=rune_of_razorice
 off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498,enchant=rune_of_the_fallen_crusader
 
-
+save=PR_Death_Knight_Frost.simc
 
 deathknight="PR_Death_Knight_Unholy"
 spec=unholy
@@ -79,3 +79,5 @@ finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant_id=tene
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
 trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498
 main_hand=dessias_decimating_decapitator,id=178866,bonus_id=6807/1498,enchant_id=rune_of_the_fallen_crusader
+
+save=PR_Death_Knight_Unholy.simc
