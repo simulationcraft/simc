@@ -9289,17 +9289,19 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "bag_of_tricks" );
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" , "Since the potion cooldown has changed, we'll sync with DRW");
   def -> add_action( "use_items" );
-  def -> add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&cooldown.dancing_rune_weapon.remains<3" );
+  def -> add_action( "raise_dead" );
+  def -> add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|cooldown.dancing_rune_weapon.remains<7)" );
   def -> add_action( "blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up)" );
+  def -> add_action( "raise_dead" );
   def -> add_action( "death_strike,if=fight_remains<3" );
   def -> add_action( "call_action_list,name=covenants" );
   def -> add_action( "call_action_list,name=standard" );
   
   // Night fae
-  covenants -> add_action( "death_strike,if=covenant.night_fae&buff.deaths_due.remains>3&runic_power>70", "Burn RP if we have time between DD refreshes" );
-  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<5)", "Make sure we never lose that buff" );
-  covenants -> add_action( "deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<3|buff.crimson_scourge.up", "And that we always cast DD as high prio when we actually need it" );
-
+  covenants -> add_action( "death_strike,if=covenant.night_fae&buff.deaths_due.remains>6&runic_power>70", "Burn RP if we have time between DD refreshes" );
+  covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<6)", "Make sure we never lose that buff" );
+  covenants -> add_action( "deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up", "And that we always cast DD as high prio when we actually need it" );
+  covenants -> add_action( "sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<10|target.time_to_die<gcd", "Attempt to sacrifice the ghoul if we predictably will not do much in the near future" );
   // Venthyr
   covenants -> add_action( "death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3", "Burn RP off just before swarming comes back off CD");
   covenants -> add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "And swarming as long as we're not < 3s off DRW" );
@@ -9316,7 +9318,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( "tombstone,if=buff.bone_shield.stack>=7&rune>=2" );
   standard -> add_action( "marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20");
   standard -> add_action( "death_strike,if=runic_power.deficit<=70" );
-  standard -> add_action( "marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15" );
+  standard -> add_action( "marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15&(!covenant.night_fae|buff.deaths_due.remains>5)" );
   standard -> add_action( "heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
   standard -> add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
   standard -> add_action( "death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10" );
