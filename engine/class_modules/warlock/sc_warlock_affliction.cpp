@@ -1130,7 +1130,6 @@ void warlock_t::create_apl_affliction()
   aoe->add_action( "call_action_list,name=darkglare_prep,if=(covenant.necrolord|covenant.kyrian|covenant.none)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   aoe->add_action( "call_action_list,name=darkglare_prep,if=covenant.night_fae&(cooldown.soul_rot.ready|dot.soul_rot.ticking)&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   aoe->add_action( "dark_soul,if=cooldown.summon_darkglare.remains>time_to_die" );
-  aoe->add_action( "call_action_list,name=cooldowns" );
   aoe->add_action( "call_action_list,name=item" );
   aoe->add_action( "malefic_rapture,if=dot.vile_taint.ticking" );
   aoe->add_action( "malefic_rapture,if=dot.soul_rot.ticking&!talent.sow_the_seeds.enabled" );
