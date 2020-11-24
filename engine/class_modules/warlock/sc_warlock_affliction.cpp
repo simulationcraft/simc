@@ -1046,7 +1046,7 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* item  = get_action_priority_list( "item" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
-  def->add_action( "phantom_singularity,if=time>30" );
+  def->add_action( "phantom_singularity,if=time>30&cooldown.summon_darkglare.remains>15" );
 
   def->add_action( "call_action_list,name=darkglare_prep,if=covenant.venthyr&dot.impending_catastrophe_dot.ticking&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
   def->add_action( "call_action_list,name=darkglare_prep,if=covenant.night_fae&dot.soul_rot.ticking&cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity.enabled)" );
@@ -1102,6 +1102,7 @@ void warlock_t::create_apl_affliction()
   def->add_action( "shadow_bolt" );
 
   prep->add_action( "vile_taint,if=cooldown.summon_darkglare.remains<2" );
+  prep->add_action( "phantom_singularity" );
   prep->add_action( "dark_soul" );
   prep->add_action( "potion" );
   prep->add_action( "fireblood" );
