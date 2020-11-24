@@ -9380,10 +9380,10 @@ void druid_t::apl_guardian()
   action_priority_list_t* owlconvoke = get_action_priority_list( "oconvoke" );
   action_priority_list_t* catconvoke = get_action_priority_list( "cconvoke" );
 
-  pre->add_action( "Cat Form", "if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)");
+  pre->add_action( "cat_form", "if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)");
   pre->add_action( "prowl", "if=druid.catweave_bear");
-  pre->add_action( "Moonkin Form", "if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
-  pre->add_action( "Bear Form", "if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|"
+  pre->add_action( "moonkin_form", "if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
+  pre->add_action( "bear_form", "if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|"
       "((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
@@ -9394,12 +9394,12 @@ void druid_t::apl_guardian()
       "potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
       "bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 
-  lycara_owl->add_action( "Moonkin Form" );
-  lycara_cat->add_action( "Cat Form" );
+  lycara_owl->add_action( "moonkin_form" );
+  lycara_cat->add_action( "cat_form" );
 	
-  owlconvoke->add_action( "Moonkin Form" );
+  owlconvoke->add_action( "moonkin_form" );
   owlconvoke->add_action( "convoke_the_spirits" );
-  catconvoke->add_action( "Cat Form" );
+  catconvoke->add_action( "cat_form" );
   catconvoke->add_action( "convoke_the_spirits" );
 
   def->add_action(
