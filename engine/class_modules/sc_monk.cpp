@@ -11771,8 +11771,8 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] );
   }
 
-  def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox" );
-  def->add_action( this, "Touch of Death" );
+  def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
+  def->add_action( this, "Touch of Death", "if=target.health.pct<=15" );
 
   // Covenant Abilities
   def->add_action( "weapons_of_order" );
@@ -11802,9 +11802,7 @@ void monk_t::apl_combat_brewmaster()
 
   def->add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
   def->add_action( this, "Breath of Fire", "if=buff.charred_passions.down&runeforge.charred_passions.equipped" );
-  def->add_action( this, "Tiger Palm" );
   def->add_action( this, "Blackout Kick" );
-
   def->add_action( this, "Keg Smash" );
 
   // Covenant Faeline Stomp
@@ -11812,7 +11810,7 @@ void monk_t::apl_combat_brewmaster()
 
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( this, "Spinning Crane Kick", "if=buff.charred_passions.up" );
-  def->add_action( this, "Breath of Fire", "if=buff.charred_passions.down&runeforge.charred_passions.equipped" );
+  def->add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))" );
   def->add_talent( this, "Chi Burst" );
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
