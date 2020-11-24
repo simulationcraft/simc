@@ -9380,10 +9380,10 @@ void druid_t::apl_guardian()
   action_priority_list_t* owlconvoke = get_action_priority_list( "oconvoke" );
   action_priority_list_t* catconvoke = get_action_priority_list( "cconvoke" );
 
-  pre->add_action( this, "Cat Form", "if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)");
-  pre->add_action( this, "prowl", "if=druid.catweave_bear");
-  pre->add_action( this, "Moonkin Form", "if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
-  pre->add_action( this, "Bear Form", "if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|"
+  pre->add_action( "Cat Form", "if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)");
+  pre->add_action( "prowl", "if=druid.catweave_bear");
+  pre->add_action( "Moonkin Form", "if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)" );
+  pre->add_action( "Bear Form", "if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|"
       "((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear" );
@@ -9394,13 +9394,13 @@ void druid_t::apl_guardian()
       "potion,if=(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_"
       "bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 
-  lycara_owl->add_action( this, "Moonkin Form" );
-  lycara_cat->add_action( this, "Cat Form" );
+  lycara_owl->add_action( "Moonkin Form" );
+  lycara_cat->add_action( "Cat Form" );
 	
-  owlconvoke->add_action( this, "Moonkin Form" );
-  owlconvoke->add_action( this, "convoke_the_spirits" );
-  catconvoke->add_action( this, "Cat Form" );
-  catconvoke->add_action( this, "convoke_the_spirits" );
+  owlconvoke->add_action( "Moonkin Form" );
+  owlconvoke->add_action( "convoke_the_spirits" );
+  catconvoke->add_action( "Cat Form" );
+  catconvoke->add_action( "convoke_the_spirits" );
 
   def->add_action(
       "run_action_list,name=catweave,if=druid.catweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
@@ -9465,17 +9465,17 @@ void druid_t::apl_guardian()
   bear->add_action( "ironfur,if=rage.deficit<40&buff.ironfur.remains<0.5" );
 
   catweave->add_action( "cat_form,if=!buff.cat_form.up" );
-  catweave->add_action( this, "Rake", "if=buff.prowl.up" );
+  catweave->add_action( "Rake", "if=buff.prowl.up" );
   catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
   catweave->add_action( "empower_bond,if=druid.catweave_bear" );
   catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
-  catweave->add_action( this, "Rip", "if=dot.rip.refreshable&combo_points>=4" );
+  catweave->add_action( "Rip", "if=dot.rip.refreshable&combo_points>=4" );
   catweave->add_action( "ferocious_bite,if=combo_points>=4" );
   catweave->add_action(
            "adaptive_swarm,,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking"
            "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
-  catweave->add_action( this, "Rake", "if=dot.rake.refreshable&combo_points<4" );
-  catweave->add_action( this, "Shred" );
+  catweave->add_action( "Rake", "if=dot.rake.refreshable&combo_points<4" );
+  catweave->add_action( "Shred" );
 
   owlweave->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
   owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
@@ -9486,10 +9486,10 @@ void druid_t::apl_guardian()
            "|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   owlweave->add_action( "moonfire,target_if=refreshable|buff.galactic_guardian.up" );
   owlweave->add_action( "sunfire,target_if=refreshable" );
-  owlweave->add_action( this, "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
-  owlweave->add_action( this, "Starfire",
+  owlweave->add_action( "Starsurge", "if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
+  owlweave->add_action( "Starfire",
                         "if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
-  owlweave->add_action( this, "Wrath" );
+  owlweave->add_action( "Wrath" );
 }
 
 // Restoration Combat Action Priority List ==================================
