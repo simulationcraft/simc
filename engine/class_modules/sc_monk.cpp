@@ -11810,7 +11810,7 @@ void monk_t::apl_combat_brewmaster()
 
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( this, "Spinning Crane Kick", "if=buff.charred_passions.up" );
-  def->add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))" );
+  def->add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))" );
   def->add_talent( this, "Chi Burst" );
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)" );
