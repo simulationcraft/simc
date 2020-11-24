@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-23/36710)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36734 shadowlands-BETA (hotfix 2020-11-24/36710, git build shadowlands 6117db8, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -856,6 +856,7 @@ Effects          :
 Description      : After standing still for $325613d, you take $325612s1% less Physical damage until you move.
 
 Name             : Serrated Spaulders (id=326504) [Passive, Hidden] 
+Hotfixed         : Variables
 Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
@@ -876,7 +877,7 @@ Effects          :
 #1 (id=817554)   : Apply Aura (6) | Proc Trigger Spell (42): Serrated Spaulders
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 326939 | Target: Self (1)
 Description      : Inflict ${$<points>*$326939d} Shadow damage to your attacker over $326939d when hit at melee range.
-Variables        : $points=${$cond($gt($SP,$AP),$SP*0.072,$AP*0.072)*(1+$@versadmg)}
+Variables        : $points=${$cond($gt($SP,$AP),$SP*0.03,$AP*0.03)*(1+$@versadmg)}
 
 Name             : Resourceful Fleshcrafting (id=326507) [Passive, Hidden] 
 Covenant         : Necrolord
@@ -1759,10 +1760,9 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=829765)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Trigger Spell: 334068 | Target: Self (1)
-#2 (id=829766)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 334069 | Target: Self (1)
+#1 (id=829765)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (468 -> 23), Period (0 -> 1000), Trigger Spell (334068 -> 0)
 Description      : While above $m1% health, you increase nearby party members' maximum health by $334067m1%.
 
 Name             : Watch the Shoes! (id=336140) [Passive] 
