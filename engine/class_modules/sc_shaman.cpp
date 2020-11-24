@@ -5297,7 +5297,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe        = -1;
     ground_aoe = background = true;
     school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.2875;  // still cool to hardcode the SP% into tooltip
+    spell_power_mod.direct  = 0.23;  // still cool to hardcode the SP% into tooltip
   }
 
   double composite_target_armor( player_t* ) const override
@@ -5317,11 +5317,6 @@ struct earthquake_damage_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
   }
 };
 
@@ -5365,12 +5360,6 @@ struct earthquake_t : public shaman_spell_t
   {
     shaman_spell_t::init();
     may_proc_echoing_shock = true;
-  }
-
-  double cost() const override
-  {
-    double d = shaman_spell_t::cost();
-    return d;
   }
 
   void execute() override
