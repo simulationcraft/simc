@@ -9685,7 +9685,7 @@ void death_knight_t::default_apl_unholy()
   // AoE Setup Actions
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
-  aoe_setup -> add_action( this, "Epidemic", "if=actions.aoe_setup+=/epidemic,if=!variable.pooling_for_gargoyle&!talent.bursting_sores" );
+  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&!talent.bursting_sores" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react|covenant.venthyr&buff.swarming_mist.up" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
