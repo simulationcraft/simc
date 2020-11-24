@@ -23,9 +23,6 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double mind_blast_insanity;
-  double whispers_of_the_damned_value;
-  double harvested_thoughts_value;
-  double whispers_bonus_insanity;
   const spell_data_t* mind_flay_spell;
   const spell_data_t* mind_sear_spell;
   bool only_cwc;
@@ -34,16 +31,6 @@ public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.find_class_spell( "Mind Blast" ) ),
       mind_blast_insanity( priest().find_spell( 137033 )->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
-      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
-      whispers_bonus_insanity( priest()
-                                   .azerite.whispers_of_the_damned.spell()
-                                   ->effectN( 1 )
-                                   .trigger()
-                                   ->effectN( 1 )
-                                   .trigger()
-                                   ->effectN( 1 )
-                                   .resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( p.find_specialization_spell( "Mind Flay" ) ),
       mind_sear_spell( p.find_class_spell( "Mind Sear" ) ),
       only_cwc( false )
@@ -66,8 +53,6 @@ public:
 
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting = only_cwc;
-
-    base_dd_adder += whispers_of_the_damned_value;
 
     // Cooldown reduction
     apply_affecting_aura( p.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
@@ -99,18 +84,6 @@ public:
     {
       return priest_spell_t::ready();
     }
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double amount = priest_spell_t::composite_energize_amount( s );
-
-    if ( s->result == RESULT_CRIT )
-    {
-      amount += whispers_bonus_insanity;
-    }
-
-    return amount;
   }
 
   bool talbadars_stratagem_active( const player_t* target ) const
@@ -197,20 +170,9 @@ public:
 struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
-  double harvested_thoughts_multiplier;
-  bool thought_harvester_empowered = false;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
-    : priest_spell_t( "mind_sear_tick", p, s ),
-      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
-      harvested_thoughts_multiplier( priest()
-                                         .azerite.thought_harvester.spell()
-                                         ->effectN( 1 )
-                                         .trigger()
-                                         ->effectN( 1 )
-                                         .trigger()
-                                         ->effectN( 1 )
-                                         .percent() )
+    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -224,35 +186,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_amount            = insanity_gain;
     energize_resource          = RESOURCE_INSANITY;
     radius                     = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
-  }
-
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_da( state );
-
-    if ( priest().azerite.searing_dialogue.enabled() )
-    {
-      auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
-
-      if ( shadow_word_pain_dot != nullptr && shadow_word_pain_dot->is_ticking() )
-      {
-        d += priest().azerite.searing_dialogue.value( 1 );
-      }
-    }
-
-    return d;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( thought_harvester_empowered )
-    {
-      d *= ( 1.0 + harvested_thoughts_multiplier );
-    }
-
-    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -287,16 +220,6 @@ struct mind_sear_t final : public priest_spell_t
     priest_spell_t::execute();
 
     auto mind_sear_tick_action = debug_cast<mind_sear_tick_t*>( tick_action );
-
-    if ( priest().buffs.harvested_thoughts->check() )
-    {
-      mind_sear_tick_action->thought_harvester_empowered = true;
-      priest().buffs.harvested_thoughts->expire();
-    }
-    else
-    {
-      mind_sear_tick_action->thought_harvester_empowered = false;
-    }
   }
 };
 
@@ -654,12 +577,10 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct shadowy_apparition_damage_t final : public priest_spell_t
 {
   double insanity_gain;
-  double spiteful_apparitions_bonus;
 
   shadowy_apparition_damage_t( priest_t& p )
     : priest_spell_t( "shadowy_apparition", p, p.find_spell( 148859 ) ),
-      insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() ),
-      spiteful_apparitions_bonus( priest().azerite.spiteful_apparitions.value( 1 ) )
+      insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -684,23 +605,6 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
-  }
-
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_da( state );
-
-    if ( priest().azerite.spiteful_apparitions.enabled() )
-    {
-      auto vampiric_touch_dot = state->target->find_dot( "vampiric_touch", player );
-
-      if ( vampiric_touch_dot != nullptr && vampiric_touch_dot->is_ticking() )
-      {
-        d += spiteful_apparitions_bonus;
-      }
-    }
-
-    return d;
   }
 };
 
@@ -758,16 +662,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       dot_duration += rank2->effectN( 1 ).time_value();
     }
-
-    // TODO: This assumes death_throes doesn't affect the direct damage portion - didn't test it
-    base_ta_adder += get_death_throes_bonus();
-
-    if ( casted && priest().azerite.torment_of_torments.enabled() )
-    {
-      base_dd_adder += priest().azerite.torment_of_torments.value( 2 );
-    }
-
-    dot_duration += priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value();
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -856,8 +750,6 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    base_ta_adder += priest().azerite.thought_harvester.value( 2 );
-
     if ( priest().talents.unfurling_darkness->ok() )
     {
       child_ud = new unfurling_darkness_t( priest() );
@@ -926,11 +818,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     trigger_heal( d->state );
-
-    if ( d->state->result_amount > 0 && priest().azerite.thought_harvester.enabled() )
-    {
-      priest().buffs.harvested_thoughts->trigger();
-    }
   }
 };
 
@@ -1658,13 +1545,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.shadowform->trigger();
     }
 
-    if ( priest().azerite.chorus_of_insanity.enabled() )
-    {
-      priest().buffs.chorus_of_insanity->expire();
-      // This is fixed in-game right now
-      priest().buffs.chorus_of_insanity->trigger( 20 );
-    }
-
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -1763,45 +1643,6 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
   }
 };
 
-// ==========================================================================
-// Whispers of the Damned (Battle for Azeroth)
-// ==========================================================================
-struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
-{
-  whispers_of_the_damned_t( priest_t& p )
-    : base_t( p, "whispers_of_the_damned", p.azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
-  {
-    set_trigger_spell( p.azerite.whispers_of_the_damned.spell() );
-  }
-};
-
-// ==========================================================================
-// Chorus of Insanity (Battle for Azeroth)
-// ==========================================================================
-struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
-{
-  chorus_of_insanity_t( priest_t& p ) : base_t( p, "chorus_of_insanity", p.find_spell( 279572 ) )
-  {
-    add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
-    set_reverse( true );
-    set_tick_behavior( buff_tick_behavior::REFRESH );
-    set_max_stack( 20 );
-  }
-};
-
-// ==========================================================================
-// Harvested Thoughts (Battle for Azeroth)
-// ==========================================================================
-struct harvested_thoughts_t final : public priest_buff_t<buff_t>
-{
-  harvested_thoughts_t( priest_t& p )
-    : base_t( p, "harvested_thoughts",
-              p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
-  {
-    set_trigger_spell( p.azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
-  }
-};
-
 }  // namespace buffs
 
 // ==========================================================================
@@ -1834,9 +1675,8 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                             = num_amount;
-    double amount_from_surrender_to_madness   = 0.0;
-    double amount_from_memory_of_lucid_dreams = 0.0;
+    double amount                           = num_amount;
+    double amount_from_surrender_to_madness = 0.0;
 
     if ( buffs.surrender_to_madness->check() )
     {
@@ -1844,30 +1684,8 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 2 ).percent();
 
-      if ( player_t::buffs.memory_of_lucid_dreams->check() )
-      {
-        // If both are up, give the benefit to Memory of Lucid Dreams because it is shorter
-        amount_from_memory_of_lucid_dreams += ( amount + amount_from_surrender_to_madness ) *
-                                              ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
-
-        total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 2 ).percent() ) *
-                       ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
-      }
-
       // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_surrender_to_madness + amount_from_memory_of_lucid_dreams );
-    }
-    else if ( player_t::buffs.memory_of_lucid_dreams->check() )
-    {
-      double total_amount;
-
-      amount_from_memory_of_lucid_dreams +=
-          ( amount ) * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
-
-      total_amount = amount * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
-
-      // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_memory_of_lucid_dreams );
+      assert( total_amount == amount + amount_from_surrender_to_madness );
     }
 
     resource_gain( RESOURCE_INSANITY, amount, g, action );
@@ -1875,11 +1693,6 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     if ( amount_from_surrender_to_madness > 0.0 )
     {
       resource_gain( RESOURCE_INSANITY, amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
-    }
-    if ( amount_from_memory_of_lucid_dreams > 0.0 )
-    {
-      resource_gain( RESOURCE_INSANITY, amount_from_memory_of_lucid_dreams, gains.insanity_memory_of_lucid_dreams,
-                     action );
     }
   }
 }
@@ -1906,11 +1719,6 @@ void priest_t::create_buffs_shadow()
           ->set_duration( timespan_t::zero() )
           ->set_default_value( 0.0 )
           ->set_chance( 1.0 );
-
-  // Azerite Powers (Battle for Azeroth)
-  buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
-  buffs.harvested_thoughts     = make_buff<buffs::harvested_thoughts_t>( *this );
-  buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 
   // Conduits (Shadowlands)
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
@@ -1963,16 +1771,6 @@ void priest_t::init_spells_shadow()
   specs.shadowy_apparitions = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_priest       = find_specialization_spell( "Shadow Priest" );
   specs.dark_thoughts       = find_specialization_spell( "Dark Thoughts" );
-
-  // Azerite
-  azerite.chorus_of_insanity     = find_azerite_spell( "Chorus of Insanity" );
-  azerite.death_throes           = find_azerite_spell( "Death Throes" );
-  azerite.depth_of_the_shadows   = find_azerite_spell( "Depth of the Shadows" );
-  azerite.searing_dialogue       = find_azerite_spell( "Searing Dialogue" );
-  azerite.spiteful_apparitions   = find_azerite_spell( "Spiteful Apparitions" );
-  azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
-  azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
-  azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2088,7 +1886,6 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* cwc          = get_action_priority_list( "cwc" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
   action_priority_list_t* boon         = get_action_priority_list( "boon" );
-  action_priority_list_t* essences     = get_action_priority_list( "essences" );
 
   // Professions
   for ( const auto& profession_action : get_profession_actions() )
@@ -2097,9 +1894,7 @@ void priest_t::generate_apl_shadow()
   }
 
   // Potions
-  default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
-      "target.health.pct<35" );
+  default_list->add_action( "potion,if=buff.voidform.up|buff.power_infusion.up" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
@@ -2117,34 +1912,15 @@ void priest_t::generate_apl_shadow()
       "voidform with incoming adds." );
 
   // Racials
-  if ( race == RACE_DARK_IRON_DWARF )
-    default_list->add_action( "fireblood,if=buff.voidform.up" );
-  if ( race == RACE_TROLL )
-    default_list->add_action( "berserking,if=buff.voidform.up" );
-  if ( race == RACE_LIGHTFORGED_DRAENEI )
-    default_list->add_action(
-        "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
-        "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
-  if ( race == RACE_MAGHAR_ORC )
-    default_list->add_action( "ancestral_call,if=buff.voidform.up" );
+  default_list->add_action( "fireblood,if=buff.voidform.up" );
+  default_list->add_action( "berserking,if=buff.voidform.up" );
+  default_list->add_action(
+      "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
+      "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
+  default_list->add_action( "ancestral_call,if=buff.voidform.up" );
 
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
-
-  // BfA Essences for Pre-patch
-  // Delete this after Shadowlands launch
-  essences->add_action( "memory_of_lucid_dreams" );
-  essences->add_action( "blood_of_the_enemy" );
-  essences->add_action( "guardian_of_azeroth" );
-  essences->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  essences->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  essences->add_action(
-      "concentrated_flame,line_cd=6,"
-      "if=time<=10|full_recharge_time<gcd|target.time_to_die<5" );
-  essences->add_action( "ripple_in_space" );
-  essences->add_action( "reaping_flames" );
-  essences->add_action( "worldvein_resonance" );
-  essences->add_action( "the_unbound_force" );
 
   // CDs
   cds->add_action( this, "Power Infusion",
@@ -2161,9 +1937,12 @@ void priest_t::generate_apl_shadow()
                    "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
-  cds->add_action( this, covenant.mindgames, "mindgames",
-                   "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|"
-                   "debuff.hungering_void.up|!buff.voidform.up)" );
+  cds->add_action(
+      this, covenant.mindgames, "mindgames",
+      "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_"
+      "void.up|!buff.voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on the target if "
+      "talented. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
@@ -2178,7 +1957,6 @@ void priest_t::generate_apl_shadow()
   cds->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)",
       "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
-  cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // APL to use when Boon of the Ascended is active
@@ -2203,7 +1981,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action( this, "Void Eruption",
                     "if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable."
-                    "searing_nightmare_cutoff)&pet.fiend.down",
+                    "searing_nightmare_cutoff)&!cooldown.fiend.up",
                     "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
                     "in VF. Make sure shadowfiend/mindbender is on cooldown before VE." );
   main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
@@ -2211,7 +1989,7 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_action( this, "Mind Sear",
                     "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
-                    "shadow_word_pain.ticking&pet.fiend.down",
+                    "shadow_word_pain.ticking&!cooldown.fiend.up",
                     "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up." );

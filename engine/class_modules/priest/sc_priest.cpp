@@ -308,8 +308,8 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
-  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name)
-    : priest_spell_t(name, p, p.find_class_spell( "Power Infusion" ) )
+  power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
+    : priest_spell_t( name, p, p.find_class_spell( "Power Infusion" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -740,7 +740,6 @@ struct summon_shadowfiend_t final : public summon_pet_t
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -755,7 +754,6 @@ struct summon_mindbender_t final : public summon_pet_t
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -1162,12 +1160,6 @@ void priest_td_t::reset()
 
 void priest_td_t::target_demise()
 {
-  if ( priest().azerite.death_throes.enabled() && dots.shadow_word_pain->is_ticking() )
-  {
-    priest().generate_insanity( priest().azerite.death_throes.value( 2 ), priest().gains.insanity_death_throes,
-                                nullptr );
-  }
-
   priest().sim->print_debug( "{} demised. Priest {} resets targetdata for him.", *target, priest() );
 
   reset();
@@ -1193,8 +1185,6 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     active_items(),
     pets( *this ),
     options(),
-    azerite(),
-    azerite_essence(),
     legendary(),
     conduits(),
     covenant()
@@ -1222,17 +1212,15 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.mindbender                      = get_gain( "Mana Gained from Mindbender" );
-  gains.power_word_solace               = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_auspicious_spirits     = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_pet                    = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness   = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.vampiric_touch_health           = get_gain( "Health from Vampiric Touch" );
-  gains.insanity_lucid_dreams           = get_gain( "Insanity Gained from Lucid Dreams" );
-  gains.insanity_memory_of_lucid_dreams = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
-  gains.insanity_death_and_madness      = get_gain( "Insanity Gained from Death and Madness" );
-  gains.shadow_word_death_self_damage   = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.insanity_mindgames              = get_gain( "Insanity Gained from Mindgames" );
+  gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
+  gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_auspicious_spirits   = get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.vampiric_touch_health         = get_gain( "Health from Vampiric Touch" );
+  gains.insanity_death_and_madness    = get_gain( "Insanity Gained from Death and Madness" );
+  gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
+  gains.insanity_mindgames            = get_gain( "Insanity Gained from Mindgames" );
   gains.insanity_eternal_call_to_the_void_mind_flay =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
   gains.insanity_eternal_call_to_the_void_mind_sear =
@@ -1367,11 +1355,6 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
               };
             } );
           }
-          else if ( splits[ 2 ] == "down" )
-          {
-            cooldown_t* cd = get_cooldown( pet->name_str );
-            return make_fn_expr( expression_str, [ cd ] { return cd->down(); } );
-          }
 
           // build player/pet expression from the tail of the expression string.
           auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
@@ -1391,6 +1374,23 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         return expr_t::create_constant( "self_power_infusion", options.priest_self_power_infusion );
       }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
+    }
+    else if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) && splits.size() == 3 )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
+           util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
+      {
+        pet_t* pet = get_current_main_pet();
+        if ( !pet )
+        {
+          throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet." );
+        }
+        if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
+        {
+          return cooldown->create_expression( splits[ 2 ] );
+        }
+        throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.", pet->name_str ) );
+      }
     }
   }
 
@@ -1630,38 +1630,6 @@ void priest_t::create_pets()
   }
 }
 
-void priest_t::trigger_lucid_dreams( double cost )
-{
-  if ( !azerite_essence.lucid_dreams )
-    return;
-
-  double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
-  double proc_chance = ( specialization() == PRIEST_SHADOW )
-                           ? options.priest_lucid_dreams_proc_chance_shadow
-                           : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
-                                                                 : options.priest_lucid_dreams_proc_chance_disc;
-
-  if ( rng().roll( proc_chance ) )
-  {
-    switch ( specialization() )
-    {
-      case PRIEST_SHADOW:
-        // TODO: Figure this out for prepatch?
-        generate_insanity( cost * multiplier, gains.insanity_lucid_dreams, nullptr );
-        // generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
-        break;
-      case PRIEST_HOLY:
-      case PRIEST_DISCIPLINE:
-        resource_gain( RESOURCE_MANA, multiplier * cost );
-        break;
-      default:
-        break;
-    }
-
-    player_t::buffs.lucid_dreams->trigger();
-  }
-}
-
 void priest_t::trigger_wrathful_faerie()
 {
   background_actions.wrathful_faerie->trigger();
@@ -1759,25 +1727,6 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.shadow_weaving = find_mastery_spell( PRIEST_SHADOW );
 
-  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-
-  // Rank 1: Major - Increased insanity generation rate for 10s, Minor - Chance to refund
-  // Rank 2: Major - Increased insanity generation rate for 12s, Minor - Chance to refund
-  // Rank 3: Major - Increased insanity generation rate for 12s, Minor - Chance to refund and Vers on Proc
-  if ( memory_lucid_dreams.enabled() )
-  {
-    azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
-    azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
-  }
-
-  // Rank 1: Major - CD at 25% duration, Minor - CDR
-  // Rank 2: Major - CD at 35% duration, Minor - CDR
-  // Rank 3: Major - CD at 35% duration + Haste on Proc, Minor - Vers on Proc
-  azerite_essence.vision_of_perfection    = find_azerite_essence( "Vision of Perfection" );
-  azerite_essence.vision_of_perfection_r1 = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
-  azerite_essence.vision_of_perfection_r2 =
-      azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
-
   // Generic Legendaries
   legendary.sephuzs_proclamation       = find_runeforge_legendary( "Sephuz's Proclamation" );
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
@@ -1855,55 +1804,6 @@ void priest_t::init_background_actions()
   init_background_actions_shadow();
 }
 
-void priest_t::vision_of_perfection_proc()
-{
-  if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
-  {
-    return;
-  }
-
-  double vision_multiplier = azerite_essence.vision_of_perfection_r1->effectN( 1 ).percent() +
-                             azerite_essence.vision_of_perfection_r2->effectN( 1 ).percent();
-
-  if ( vision_multiplier <= 0 )
-    return;
-
-  timespan_t base_duration = timespan_t::zero();
-
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    base_duration = talents.mindbender->ok() ? find_talent_spell( "Mindbender" )->duration()
-                                             : find_class_spell( "Shadowfiend" )->duration();
-  }
-
-  if ( base_duration == timespan_t::zero() )
-  {
-    return;
-  }
-
-  timespan_t duration = vision_multiplier * base_duration;
-
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    auto current_pet = get_current_main_pet();
-    if ( current_pet )
-    {
-      // check if the pet is active or not
-      if ( current_pet->is_sleeping() )
-      {
-        current_pet->summon( duration );
-      }
-      else
-      {
-        // if the pet is currently active, just add to the existing duration
-        auto new_duration = current_pet->expiration->remains();
-        new_duration += duration;
-        current_pet->expiration->reschedule( new_duration );
-      }
-    }
-  }
-}
-
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
 pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
@@ -1954,13 +1854,6 @@ void priest_t::create_apl_precombat()
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
                          "pre-potting is done." );
-
-  // do all kinds of calculations here to reduce CPU time
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    precombat->add_action( "potion" );
-  }
-
   // Precast
   switch ( specialization() )
   {
@@ -1972,8 +1865,7 @@ void priest_t::create_apl_precombat()
     default:
       // Calculate these variables once to reduce sim time
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      if ( race == RACE_BLOOD_ELF )
-        precombat->add_action( "arcane_torrent" );
+      precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
       precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
       precombat->add_action( this, "Vampiric Touch" );
@@ -2021,14 +1913,10 @@ void priest_t::create_apl_default()
   {
     def->add_action( this, "Shadowfiend" );
   }
-  if ( race == RACE_TROLL )
-  {
-    def->add_action( "berserking" );
-  }
-  if ( race == RACE_BLOOD_ELF )
-  {
-    def->add_action( "arcane_torrent,if=mana.pct<=90" );
-  }
+  // Racials
+  def->add_action( "berserking" );
+  def->add_action( "arcane_torrent,if=mana.pct<=90" );
+  // Spells
   def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
   def->add_action( this, "Smite" );
 }
@@ -2137,9 +2025,6 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration ) );
-  add_option( opt_float( "priest_lucid_dreams_proc_chance_disc", options.priest_lucid_dreams_proc_chance_disc ) );
-  add_option( opt_float( "priest_lucid_dreams_proc_chance_holy", options.priest_lucid_dreams_proc_chance_holy ) );
-  add_option( opt_float( "priest_lucid_dreams_proc_chance_shadow", options.priest_lucid_dreams_proc_chance_shadow ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
   add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
@@ -2182,8 +2067,6 @@ void priest_t::copy_from( player_t* source )
 void priest_t::arise()
 {
   base_t::arise();
-
-  buffs.whispers_of_the_damned->trigger();
 }
 
 void priest_t::trigger_shadowflame_prism( player_t* target )

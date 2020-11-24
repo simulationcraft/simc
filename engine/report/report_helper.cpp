@@ -388,6 +388,15 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name                  = "T25";
     max_cloak_ilevel           = 500;
   }
+  else if ( p.report_information.save_str.find( "T26" ) != std::string::npos )
+  {
+    max_ilevel_allowed         = 233;
+    max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
+    hoa_ilevel                 = 493;
+    hoa_level                  = 80;
+    tier_name                  = "T26";
+    max_cloak_ilevel           = 500;
+  }
   else
   {
     return true;

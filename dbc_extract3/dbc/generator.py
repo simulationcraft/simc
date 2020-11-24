@@ -4008,35 +4008,18 @@ class CovenantAbilityGenerator(DataGenerator):
         return CovenantAbilitySet(self._options).get()
 
     def generate(self, data=None):
-        # Generate a spell id, classes map so we can explode the ability set
-        # based on class info
-        _class_map = defaultdict(lambda: [0])
-        for entry in self.db('SkillLineAbility').values():
-            if entry.mask_class == 0:
-                continue
-
-            _class_map[entry.id_spell] = util.class_id(mask = entry.mask_class)
-
-        _output_data = []
-        for entry in data:
-            classes = _class_map[entry.id_spell]
-            if isinstance(classes, int):
-                classes = [classes]
-
-            _output_data.extend([
-                (c, entry) for c in classes
-            ])
-
-        _output_data.sort(key = lambda v: v[1].ref('id_spell').name)
+        data.sort(key = lambda v: v.ref('id_spell').name)
 
         self.output_header(
                 header = 'Covenant abilities',
                 type = 'covenant_ability_entry_t',
                 array = 'covenant_ability',
-                length = len(_output_data))
+                length = len(data))
 
-        for class_id, entry in _output_data:
-            fields = ['{:2d}'.format(class_id)]
+        for entry in data:
+            class_id = util.class_id(family = entry.ref('id_spell').child_ref('SpellClassOptions').family)
+
+            fields = ['{:2d}'.format(class_id > -1 and class_id or 0)]
             fields += entry.ref('id_covenant_preview').field('id_covenant')
             fields += entry.field('ability_type')
             fields += entry.ref('id_spell').field('id', 'name')

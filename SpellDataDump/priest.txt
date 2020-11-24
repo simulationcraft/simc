@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36710 shadowlands-BETA (hotfix 2020-11-21/36710)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36734 shadowlands-BETA (hotfix 2020-11-24/36710, git build shadowlands 6117db8, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
@@ -5501,10 +5501,11 @@ Effects          :
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $?s137033[${$s3/100} Insanity][$s2% of your mana].
 
 Name             : Shadowform (id=232698) [Spell Family (6)] 
+Hotfixed         : Learn Level (12 -> 10), Required Level (12 -> 10)
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 12
+Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -9716,11 +9717,12 @@ Effects          :
 Description      : Mass Dispel is now potent enough to remove some Magic that is normally undispellable.
 
 Name             : Devouring Plague (id=335467) [Spell Family (6)] 
+Hotfixed         : Learn Level (10 -> 12), Required Level (10 -> 12)
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
 Resource         : 50 Insanity (13) (id=215233)
-Spell Level      : 10
+Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds

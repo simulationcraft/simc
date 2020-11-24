@@ -5852,6 +5852,12 @@ void items::writhing_segment_of_drestagath( special_effect_t& effect )
  */
 void items::draconic_empowerment( special_effect_t& effect )
 {
+  if ( effect.player->level() > 50 )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
   if ( !effect.custom_buff )
     effect.custom_buff =

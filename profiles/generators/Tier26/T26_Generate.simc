@@ -1,0 +1,51 @@
+# T26
+# Tier 26 Castle Nathria
+# * Ilvl Cap: 226 (or 233 for items that drop at that itemlevel)
+# * Ilvl for PvP gear: 226
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (226)
+# * Crafted gear must be BoE and without profession requirements
+# * No items from World Bosses / World Quests / BoEs (except for BoEs from Castle Nathria)
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No buyable Sockets from Ven'ari
+# * No Tertiary Stats
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * Must use enchant name (ex: ",enchant=binding_of_mastery") instead of id/hardcoded stats.
+# * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
+# * Soulbind with Rank 7 conduits allowed. Assume level 29 renown.
+# * 1 Legendary at Rank 4 should be used.
+
+# Death Knight
+T26_Generate_Death_Knight.simc
+
+# Demon Hunter
+T26_Generate_Demon_Hunter.simc
+
+# Druid
+T26_Generate_Druid.simc
+
+# Hunter
+T26_Generate_Hunter.simc
+
+# Mage
+T26_Generate_Mage.simc
+
+# Monk
+T26_Generate_Monk.simc
+
+# Paladin
+T26_Generate_Paladin.simc
+
+# Priest
+T26_Generate_Priest.simc
+
+# Rogue
+T26_Generate_Rogue.simc
+
+# Shaman
+T26_Generate_Shaman.simc
+
+# Warlock
+T26_Generate_Warlock.simc
+
+# Warrior
+T26_Generate_Warrior.simc

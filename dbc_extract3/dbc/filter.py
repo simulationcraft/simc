@@ -123,6 +123,20 @@ class ActiveClassSpellSet(DataSet):
             if entry not in _data:
                 _data.append(entry)
 
+        for active_spell in constants.ACTIVE_SPELL_WHITELIST:
+            spell = self.db('SpellName')[active_spell]
+            if spell.id != active_spell:
+                continue
+
+            class_id = util.class_id(family = spell.child_ref('SpellClassOptions').family)
+            if class_id == -1:
+                continue
+
+            entry = (class_id, spell, self.db('SpellName').default())
+
+            if entry not in _data:
+                _data.append(entry)
+
         return _data
 
     def ids(self, **kwargs):

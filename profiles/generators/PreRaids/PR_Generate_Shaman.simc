@@ -2,57 +2,57 @@ shaman="PR_Shaman_Elemental"
 spec=elemental
 level=60
 race=troll
-role=spell
+role=ranged
 position=back
-talents=1111111
-covenant=night_fae
+talents=2301032
+covenant=necrolord
+soulbind=emeni,lead_by_example/call_of_flame:4
 
-# ilvl 138 template blue gear from beta
-head=,id=163447,bonus_id=6938
-neck=,id=177165,bonus_id=6938
-shoulder=,id=163442,bonus_id=6938
-back=,id=163365,bonus_id=6938
-chest=,id=163444,bonus_id=6938
-wrist=,id=177100,bonus_id=6938
-hands=,id=177108,bonus_id=6938
-waist=,id=163452,bonus_id=6938
-legs=,id=177107,bonus_id=6938
-feet=,id=177109,bonus_id=6938
-finger1=,id=177167,bonus_id=6938/1762
-finger2=,id=177164,bonus_id=6938
-trinket1=,id=177157,bonus_id=6938/603
-trinket2=,id=177155,bonus_id=6938/605
-main_hand=,id=177116bonus_id=6938
-off_hand=,id=177125,bonus_id=6938
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulder=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6716/6991/1487
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498,enchant=eternal_insight
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498,enchant=eternal_intellect
+hands=absonant_constructs_handguards,id=180105,bonus_id=6807/1498
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498
+feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1498
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498,enchant=tenet_of_versatility
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498,enchant=tenet_of_versatility
+trinket1=darkmoon_deck_putrescence,id=173069
+trinket2=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
+main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=acidslough_bulwark,id=178712,bonus_id=6807/1498
 
 save=PR_Shaman_Elemental.simc
 
 
 shaman="PR_Shaman_Enhancement"
 level=60
-race=troll
+race=orc
 spec=enhancement
 role=attack
 position=back
-talents=1111123
-covenant=venthyr
+talents=3111131
+covenant=night_fae
+soulbind=niya,322721/focused_lightning:4
 
-# ilvl 138 template blue gear from beta
-head=,id=163447,bonus_id=6938
-neck=,id=177165,bonus_id=6938
-shoulder=,id=163442,bonus_id=6938
-back=,id=163365,bonus_id=6938
-chest=,id=163444,bonus_id=6938
-wrist=,id=177100,bonus_id=6938
-hands=,id=177108,bonus_id=6938
-waist=,id=163452,bonus_id=6938
-legs=,id=177107,bonus_id=6938
-feet=,id=177109,bonus_id=6938
-finger1=,id=177167,bonus_id=6938/1762
-finger2=,id=177164,bonus_id=6938
-trinket1=,id=177166,bonus_id=6938/605
-trinket2=,id=177158,bonus_id=6938/603
-main_hand=,id=177144,bonus_id=6938
-off_hand=,id=177144,bonus_id=6938
+head=soulthorn_visage,id=178692,bonus_id=6807/1498
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulder=,id=172327,bonus_id=6995/6716/6649/6647/1487
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=triumphant_combatants_chainmail,id=178794,bonus_id=6807/1498,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498
+hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498
+waist=clasp_of_waning_shadow,id=178700,bonus_id=6807/1498
+legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498
+feet=spatial_rift_striders,id=179345,bonus_id=6807/1498,enchant=eternal_agility
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
+trinket2=darkmoon_deck_voracity,id=173087
+main_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=celestial_guidance
 
 save=PR_Shaman_Enhancement.simc

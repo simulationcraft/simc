@@ -312,13 +312,13 @@ void sinful_revelation( special_effect_t& effect )
 
 namespace items
 {
-// Trinkets
-
-void darkmoon_deck_shuffle( special_effect_t& effect )
+void DISABLED_EFFECT( special_effect_t& effect )
 {
   // Disable the effect, as we handle shuffling within the on-use effect
   effect.type = SPECIAL_EFFECT_NONE;
 }
+
+// Trinkets
 
 struct SL_darkmoon_deck_t : public darkmoon_deck_t
 {
@@ -627,22 +627,22 @@ void soul_igniter( special_effect_t& effect )
     buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
-void skulkers_wing( special_effect_t& effect )
+void skulkers_wing( special_effect_t& /* effect */ )
 {
 
 }
 
-void memory_of_past_sins( special_effect_t& effect )
+void memory_of_past_sins( special_effect_t& /* effect */ )
 {
 
 }
 
-void gluttonous_spike( special_effect_t& effect )
+void gluttonous_spike( special_effect_t& /* effect */ )
 {
 
 }
 
-void hateful_chain( special_effect_t& effect )
+void hateful_chain( special_effect_t& /* effect */ )
 {
 
 }
@@ -740,7 +740,7 @@ void empyreal_ordnance( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      size_t n = num_bolts / s->n_targets + ( s->chain_target < num_bolts % s->n_targets ? 1 : 0 );
+      size_t n = num_bolts / s->n_targets + ( as<unsigned>( s->chain_target ) < num_bolts % s->n_targets ? 1 : 0 );
       player_t* t = s->target;
       for ( size_t i = 0; i < n; i++ )
       {
@@ -930,7 +930,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       return 1.0;
     }
 
-    double composite_versatility( const action_state_t* ) const
+    double composite_versatility( const action_state_t* ) const override
     {
       return 1.0;
     }
@@ -992,7 +992,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
 
     infinitely_divisible_ooze_cb_t( const special_effect_t& e ) :
       dbc_proc_callback_t( e.player, e ),
-      spawner( "infinitely_divisible_ooze", e.player, [ &e, this ]( player_t* )
+      spawner( "infinitely_divisible_ooze", e.player, [ &e ]( player_t* )
         { return new frothing_pustule_pet_t( e ); } )
     {
       spawner.set_default_duration( e.player->find_spell( 345489 )->duration() );
@@ -1062,7 +1062,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       proc_spell_t( "inscrutable_quantum_device", e.player, e.player->find_spell( 330323 ) )
     {
       buffs[ STAT_NONE ] = nullptr;
-      for ( int i = 0; i < ratings.size(); i++ )
+      for ( unsigned i = 0; i < ratings.size(); i++ )
       {
         util::string_view name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( ratings[ i ] );
         stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, name ) );
@@ -1115,7 +1115,8 @@ void inscrutable_quantum_device ( special_effect_t& effect )
         for ( auto s : ratings )
         {
           auto v = player->get_stat_value( s );
-          if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) && ( player->bugs && v < player->get_stat_value( s1 ) || !player->bugs && s != s1 ) )
+          if ( ( s2 == STAT_NONE || v > player->get_stat_value( s2 ) ) &&
+               ( ( player->bugs && v < player->get_stat_value( s1 ) ) || ( !player->bugs && s != s1 ) ) )
             s2 = s;
         }
 
@@ -1216,7 +1217,7 @@ void judgment_of_the_arbiter( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void maw_rattle( special_effect_t& effect )
+void maw_rattle( special_effect_t& /* effect */ )
 {
 
 }
@@ -1248,12 +1249,12 @@ void sephuzs_proclamation( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void third_eye_of_the_jailer( special_effect_t& effect )
+void third_eye_of_the_jailer( special_effect_t& /* effect */ )
 {
 
 }
 
-void vitality_sacrifice( special_effect_t& effect )
+void vitality_sacrifice( special_effect_t& /* effect */ )
 {
 
 }
@@ -1350,9 +1351,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 321533, "330038trigger" ); // Optical Target Embiggener
 
     // Trinkets
-    unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );
-    unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
     unique_gear::register_special_effect( 344806, items::cabalists_hymnal );
@@ -1385,6 +1384,11 @@ void register_special_effects()
     unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
     unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
     unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
+
+    // Disabled effects
+    unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
+    unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
+    unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
 }
 
 void register_target_data_initializers( sim_t& sim )

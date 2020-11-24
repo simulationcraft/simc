@@ -16,7 +16,7 @@ back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
 wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
 hands=,id=173244,ilevel=190,bonus_id=6983/6647/6649
-waist=kin_taras_baleful_cord,id=180109,bonus_id=6807/1498
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
