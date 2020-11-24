@@ -9155,7 +9155,7 @@ std::string druid_t::default_potion() const
 std::string druid_t::default_food() const
 {
   if      ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
-  //else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
+  else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
   else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
   else return "disabled";
 }
