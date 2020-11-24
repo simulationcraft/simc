@@ -9643,7 +9643,7 @@ void death_knight_t::default_apl_unholy()
 
   // Covenant Abilities
   covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>6", "Covenant Abilities" );
-  covenants -> add_action( "swarming_mist,if=active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30" );
+  covenants -> add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30)" );
   covenants -> add_action( "abomination_limb,if=variable.st_planning&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "shackle_the_unworthy,if=variable.st_planning&cooldown.apocalypse.remains" );
@@ -9685,14 +9685,15 @@ void death_knight_t::default_apl_unholy()
   // AoE Setup Actions
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
-  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react" );
+  aoe_setup -> add_action( this, "Epidemic", "if=actions.aoe_setup+=/epidemic,if=!variable.pooling_for_gargoyle&!talent.bursting_sores" );
+  aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle&runic_power.deficit<20|buff.sudden_doom.react|covenant.venthyr&buff.swarming_mist.up" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
 
   // AoE Burst Actions
-  aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle", "AoE Burst" );
+  aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyl|covenant.venthyr&buff.swarming_mist.upe", "AoE Burst" );
   aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle" );
   aoe_burst -> add_action( this, "Epidemic", "if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle" );
   aoe_burst -> add_action( "wound_spender" );
