@@ -52,30 +52,31 @@
 
 # save=PR_Mage_Fire.simc
 
+mage="PR_Mage_Frost"
+level=60
+race=pandaren
+spec=frost
+role=spell
+position=ranged_back
+talents=2032021
 
-# mage="PR_Mage_Frost"
-# level=120
-# race=pandaren
-# spec=frost
-# role=spell
-# position=ranged_back
-# talents=1013033
+covenant=venthyr
+soulbind=nadjia,21:4/331586
 
-# head=,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
-# neck=,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulder=,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/22/13
-# back=,id=159294,bonus_id=4779/1512/4786
-# chest=,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/13
-# wrists=,id=158348,bonus_id=4779/1512/4786
-# hands=,id=155891,bonus_id=4779/1512/4786
-# waist=,id=158346,bonus_id=4779/1512/4786
-# legs=,id=159277,bonus_id=4779/1512/4786
-# feet=,id=159243,bonus_id=4779/1512/4786
-# finger1=,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# finger2=,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# trinket1=,id=159624,bonus_id=4779/1512/4786
-# trinket2=,id=159631,bonus_id=4779/1512/4786
-# main_hand=,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
-# off_hand=,id=158322,bonus_id=4779/1512/4786
+head=,id=178759,bonus_id=6807/1498
+neck=,id=178827,bonus_id=6807/1498
+shoulders=,id=178740,bonus_id=6807/1498
+back=,id=180123,bonus_id=6807/1498
+chest=,id=180098,bonus_id=6807/1498,enchant=eternal_insight
+wrists=,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
+hands=,id=178705,bonus_id=6807/1498
+waist=,id=180109,bonus_id=6807/1498
+legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6716/6823/1487,ilevel=190
+feet=,id=180102,bonus_id=6807/1498
+finger1=,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=,id=178708,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=,id=178809,bonus_id=6807/1498
+main_hand=,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
 
-# save=PR_Mage_Frost.simc
+save=PR_Mage_Frost.simc
