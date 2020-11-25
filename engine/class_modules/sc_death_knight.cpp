@@ -2669,6 +2669,9 @@ struct magus_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.4;
+    // Looks like Magus' AP coefficient is the same as the pet ghouls'
+    // Including the +6% buff applied before magus was even a thing
+    owner_coeff.ap_from_ap *= 1.06;
   }
 
   void init_action_list() override
