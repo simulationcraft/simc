@@ -40,6 +40,7 @@ actions+=/variable,name=is_cleave,value=spell_targets.starfire>1
 actions+=/berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up
 actions+=/potion,if=buff.ca_inc.up
 actions+=/use_items
+actions+=/heart_essence,if=level=50
 actions+=/run_action_list,name=aoe,if=variable.is_aoe
 actions+=/run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped
 actions+=/run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped
