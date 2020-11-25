@@ -44,8 +44,8 @@ actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
-actions+=/invoke_niuzao_the_black_ox
-actions+=/touch_of_death
+actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
+actions+=/touch_of_death,if=target.health.pct<=15
 actions+=/weapons_of_order
 actions+=/fallen_order
 actions+=/bonedust_brew
@@ -62,13 +62,12 @@ actions+=/keg_smash,if=buff.weapons_of_order.up
 actions+=/celestial_brew,if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2
 actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
 actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passions.equipped
-actions+=/tiger_palm
 actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/faeline_stomp
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/spinning_crane_kick,if=buff.charred_passions.up
-actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passions.equipped
+actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))
 actions+=/chi_burst
 actions+=/chi_wave
 actions+=/spinning_crane_kick,if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)
