@@ -91,6 +91,7 @@ struct item_t
     timespan_t                                       initial_cd;
     unsigned                                         drop_level;
     std::vector<unsigned>                            azerite_ids;
+    std::vector<int>                                 crafted_stat_mod;
 
     parsed_input_t();
     ~parsed_input_t();
@@ -131,6 +132,7 @@ struct item_t
   std::string option_drop_level_str;
   std::string option_azerite_powers_str;
   std::string option_azerite_level_str;
+  std::string option_crafted_stat_str;
   double option_initial_cd;
 
   // Extracted data

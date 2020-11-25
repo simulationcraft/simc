@@ -596,6 +596,15 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
       }
     }
 
+    if ( slot_data.HasMember( "modified_crafting_stat" ) )
+    {
+      for ( auto idx = 0u, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
+      {
+        const auto& stat_data = slot_data[ "modified_crafting_stat" ][ idx ];
+        item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
+      }
+    }
+
     azerite::parse_blizzard_azerite_information( item, slot_data );
 
     auto it = __ILEVEL_OVERRIDE_MAP.find( item.parsed.data.id );

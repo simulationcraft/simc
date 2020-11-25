@@ -350,8 +350,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
 
       for ( size_t i = 0, end = range::size( item.parsed.data.stat_type_e ); i < end; i++ )
       {
-        if ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_BONUS_STAT_1 ||
-             item.parsed.data.stat_type_e[ i ] == ITEM_MOD_BONUS_STAT_2 )
+        if ( item_database::is_crafted_item_mod( item.parsed.data.stat_type_e[ i ] ) )
         {
           item.player->sim->print_debug( "Player {} item '{}' modifying stat type to '{}' (index={})",
               item.player->name(), item.name(), util::stat_type_abbrev( stat_type ), i );

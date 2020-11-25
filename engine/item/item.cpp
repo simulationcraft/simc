@@ -633,7 +633,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 32> options { {
+  std::array<std::unique_ptr<option_t>, 33> options { {
     opt_uint("id", parsed.data.id),
     opt_obsoleted("upgrade"),
     opt_string("stats", option_stats_str),
@@ -666,6 +666,7 @@ void item_t::parse_options()
     opt_string("azerite_powers", option_azerite_powers_str),
     opt_string("azerite_level", option_azerite_level_str),
     opt_string("context", DUMMY_CONTEXT),
+    opt_string("crafted_stats", option_crafted_stat_str)
   } };
 
   try
@@ -818,6 +819,52 @@ void item_t::parse_options()
 
   if ( ! option_azerite_level_str.empty() )
     parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
+
+  if ( !option_crafted_stat_str.empty() )
+  {
+    try
+    {
+      auto split = util::string_split( option_crafted_stat_str, "/" );
+      for ( auto& stat_str : split )
+      {
+        int item_mod = ITEM_MOD_NONE;
+        if ( util::is_number( stat_str ) )
+        {
+          item_mod = util::to_int( stat_str );
+        }
+
+        if ( item_mod > 0 )
+        {
+          if ( util::translate_item_mod( item_mod ) != STAT_NONE )
+          {
+            parsed.crafted_stat_mod.push_back( item_mod );
+          }
+          else
+          {
+            sim->error( "Unsupported Blizzard item modifier {} on '{}'",
+              stat_str, name() );
+          }
+        }
+        else
+        {
+          auto stat_type = util::parse_stat_type( stat_str );
+          auto item_mod = util::translate_stat( stat_type );
+          if ( item_mod != ITEM_MOD_NONE )
+          {
+            parsed.crafted_stat_mod.push_back( item_mod );
+          }
+          else
+          {
+            throw std::invalid_argument( fmt::format( "Unknown stat mod {}", stat_str ) );
+          }
+        }
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      std::throw_with_nested( std::runtime_error( "Crafted Stats" ) );
+    }
+  }
 }
 
 // item_t::initialize_data ==================================================
@@ -1012,6 +1059,32 @@ std::string item_t::encoded_item() const
   else if ( parsed.drop_level > 0 )
   {
     s << ",drop_level=" << parsed.drop_level;
+  }
+
+  if ( ! option_crafted_stat_str.empty() )
+  {
+    s << ",crafted_stats=" << option_crafted_stat_str;
+  }
+  else if ( parsed.crafted_stat_mod.size() )
+  {
+    std::vector<std::string> strs;
+    range::for_each( parsed.crafted_stat_mod, [ &strs ]( int mod ) {
+      auto stat_type = util::translate_item_mod( mod );
+      // If for some reason we have an unknown stat mod on an item (allowed to happen with
+      // blizzard import), push it as a number instead of a stat string.
+      if ( stat_type == STAT_NONE )
+      {
+        strs.push_back( util::to_string( mod ) );
+      }
+      else
+      {
+        std::string stat_str = util::stat_type_abbrev( stat_type );
+        util::tolower( stat_str );
+        strs.push_back( stat_str );
+      }
+    } );
+
+    s << ",crafted_stats=" << util::string_join( strs, "/" );
   }
 
   return s.str();
@@ -1441,7 +1514,25 @@ void item_t::decode_stats()
     item_database::apply_item_scaling( *this, parsed.data.id_curve, player -> level() );
   }
 
-  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
+  // Apply crafted stats modifiers before applying stats. Crafted modifiers are applied
+  // directly to the "base stats" of the item, replacing the item_mod_type in question
+  // with an actual stat item_mod_type.
+  range::for_each( parsed.crafted_stat_mod, [ this ]( int crafted_mod ) {
+    auto it = range::find_if( parsed.data.stat_type_e, []( int item_mod ) {
+      return item_database::is_crafted_item_mod( item_mod );
+    } );
+
+    if ( it != parsed.data.stat_type_e.end() )
+    {
+      auto stat_type = util::translate_item_mod( crafted_mod );
+      player->sim->print_debug( "Player {} item '{}' modifying crafted stat type {} to '{}' (index={})",
+          player->name(), name(), *it,  util::stat_type_string( stat_type ),
+          std::distance( parsed.data.stat_type_e.begin(), it ) );
+      (*it) = crafted_mod;
+    }
+  } );
+
+  for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
   {
     stat_e s = stat( i );
     if ( s == STAT_NONE )
