@@ -68,16 +68,16 @@ head=wing_commanders_helmet,id=178812,bonus_id=6807/1498
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498
 shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498
 back=dealer_xyexas_cape,id=179349,bonus_id=6807/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6648/6650/6758/6952/1487,enchant_id=eternal_skirmish
+chest=shadowghast_breastplate,id=171412,bonus_id=6648/6650/6758/6952/1487,enchant=eternal_skirmish
 wrists=thunderous_echo_vambraces,id=180113,bonus_id=6807/1498
-hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498,enchant_id=eternal_strength
+hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498,enchant=eternal_strength
 waist=fused_bone_greatbelt,id=178734,bonus_id=6807/1498
 legs=gormshell_greaves,id=178701,bonus_id=6807/1498
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant_id=tenet_of_mastery
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant_id=tenet_of_mastery
+finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_mastery
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
 trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498
-main_hand=dessias_decimating_decapitator,id=178866,bonus_id=6807/1498,enchant_id=rune_of_the_fallen_crusader
+main_hand=dessias_decimating_decapitator,id=178866,bonus_id=6807/1498,enchant=rune_of_the_fallen_crusader
 
 save=PR_Death_Knight_Unholy.simc
