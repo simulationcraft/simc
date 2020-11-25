@@ -5,7 +5,7 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=2020022
+talents=2020122
 covenant=kyrian
 soulbind=combat_meditation/count_the_odds:4
 
@@ -61,6 +61,7 @@ actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!d
 actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)
 actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
 actions.build+=/sinister_strike
+actions.build+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up
 
 # Cooldowns
 actions.cds=call_action_list,name=essences,if=!stealthed.all
