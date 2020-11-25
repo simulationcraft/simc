@@ -1,56 +1,59 @@
-# mage="PR_Mage_Arcane"
-# level=120
-# race=troll
-# spec=arcane
-# role=spell
-# position=back
-# talents=2032021
+mage="PR_Mage_Arcane"
+level=60
+race=orc
+spec=arcane
+role=spell
+position=back
+talents=1032021
 
-# head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=374/22/13
-# back=raals_bib,id=159294,bonus_id=4779/1512/4786
-# chest=blooddrenched_robes,id=159241,bonus_id=4779/1512/4786/4775,azerite_powers=374/31/13
-# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-# hands=greasy_bacongrabbers,id=155891,bonus_id=4779/1512/4786
-# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-# legs=wild_pyromancers_trousers,id=159277,bonus_id=4779/1512/4786
-# feet=sandals_of_wise_voodoo,id=159243,bonus_id=4779/1512/4786
-# finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# trinket1=balefire_branch,id=159630,bonus_id=4779/1512/4786
-# trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# main_hand=aqmar_the_tidecaller,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
-# off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
+covenant=night_fae
+soulbind=grove_invigoration/magis_brand:4
 
-# save=PR_Mage_Arcane.simc
+head=abominable_visage,id=178732,bonus_id=6807/1498
+neck=trailspinner_pendant,id=178707,bonus_id=6807/1498
+shoulders=castigators_mantle,id=178859,bonus_id=6807/1498
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498
+chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_insight
+wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect
+hands=gory_surgeons_gloves,id=178748,bonus_id=6807/1498
+waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=6807/1498
+feet=stradamas_misplaced_slippers,id=178756,bonus_id=6807/1498
+finger1=shadowghast_ring,id=178926,bonus_id=6649/6650/6758/6927/1532,ilevel=190,enchant=tenet_of_mastery
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_mastery
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
+main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498,enchant=sinful_revelation
 
+save=PR_Mage_Arcane.simc
 
-# mage="PR_Mage_Fire"
-# level=120
-# race=dark_iron_dwarf
-# spec=fire
-# role=spell
-# position=ranged_back
-# talents=1031023
+mage="PR_Mage_Fire"
+level=60
+race=troll
+spec=fire
+role=spell
+position=ranged_back
+talents=3031021
 
-# head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=377/30/86/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/13
-# back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-# chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/468/13
-# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-# hands=twisted_sisters_handwraps,id=159272,bonus_id=4779/1512/4786
-# waist=cord_of_the_pious_warder,id=159245,bonus_id=4779/1512/4786
-# legs=powder_monkeys_leggings,id=159250,bonus_id=4779/1512/4786
-# feet=blood_warders_moccasins,id=159270,bonus_id=4779/1512/4786
-# finger1=overseer's_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
-# trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
-# main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+covenant=night_fae
+soulbind=319210/infernal_cascade:4
 
-# save=PR_Mage_Fire.simc
+head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
+wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
+hands=mitts_of_flawless_duplication,id=178930,bonus_id=6807/1498
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6716/6932/6649/6650/1532,ilevel=190,enchant=tenet_of_haste
+finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=unbound_changeling,id=178708,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
+main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=deathwalkers_promise,id=178868,bonus_id=6807/1498
+
+save=PR_Mage_Fire.simc
 
 mage="PR_Mage_Frost"
 level=60
