@@ -492,8 +492,7 @@ struct mindgames_t final : public priest_spell_t
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
-      // this resource value is not in spell data correctly, mimicking what blizzard does
-      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() * 2 )
+      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
   {
     parse_options( options_str );
 
@@ -509,9 +508,9 @@ struct mindgames_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Mindgames gives a total of 40 insanity
-    // 20 if the target deals enough dmg to break the shield
-    // 20 if the targets heals enough to break the shield
+    // Mindgames gives a total of 20 insanity
+    // 10 if the target deals enough dmg to break the shield
+    // 10 if the targets heals enough to break the shield
     double insanity = 0;
     if ( priest().options.priest_mindgames_healing_insanity )
     {
