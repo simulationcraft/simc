@@ -5649,6 +5649,12 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.heart_of_the_wild->trigger();
+    if ( p()->talent.balance_affinity->ok() )
+      p()->shapeshift( MOONKIN_FORM );
+    else if ( p()->talent.feral_affinity->ok() )
+      p()->shapeshift( CAT_FORM );
+    else if ( p()->talent.guardian_affinity->ok() )
+      p()->shapeshift( BEAR_FORM );
   }
 };
 

@@ -82,4 +82,7 @@ struct token_t
 std::vector<token_t> parse_tokens( util::string_view encoded_str );
 
 bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
+
+inline bool is_crafted_item_mod( int mod )
+{ return mod == ITEM_MOD_BONUS_STAT_1 || mod == ITEM_MOD_BONUS_STAT_2; }
 }
