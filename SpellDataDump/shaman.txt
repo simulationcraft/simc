@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36734 shadowlands-BETA (hotfix 2020-11-24/36734, git build shadowlands 493ac7b6b6)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 shadowlands-BETA (hotfix 2020-11-25/36753, git build shadowlands 8c25d82, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -123,7 +123,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=387)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10000 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
-Hotfixed         : SP Coefficient (2.25 -> 2.1)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Chain Friendly (45)
 Description      : Heals the friendly target for $s1, then jumps to heal the $<jumps> most injured nearby allies. Healing is reduced by $s2% with each jump.
@@ -443,7 +442,6 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=3548)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6112 | Misc Value 2: 0xd4e | Target: Unknown(43)
-Hotfixed         : Misc Value 2 (83 -> 3406)
 #2 (id=819687)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Summons a Windfury Totem with $s1 health at the feet of the caster for $d.  Party members within $s2 yds have a $327942h% chance when they auto-attack to swing an extra time.
@@ -541,11 +539,9 @@ Effects          :
 #2 (id=875890)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1182 (Label) | Target: Self (1)
                    Affected Spells (Label): Restoration Shaman (137039)
-Hotfixed         : NEW EFFECT
 #3 (id=875891)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 1182 (Label) | Target: Self (1)
                    Affected Spells (Label): Restoration Shaman (137039)
-Hotfixed         : NEW EFFECT
 Description      : Your direct heal criticals refund a percentage of your maximum mana: ${$m1/100}.2% from Healing Wave, ${$m1/100*0.6}.2% from Healing Surge$?s73685[, Unleash Life,][] or Riptide, and ${$m1/100*0.25}.2% from Chain Heal.
 
 Name             : Stormstrike (id=17364) [Spell Family (11)] 
@@ -3091,12 +3087,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
-Hotfixed         : Base Value (40 -> 15)
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
-Hotfixed         : Base Value (40 -> 15)
 #5 (id=191049)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=260997)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -10870,7 +10864,6 @@ Effects          :
 #1 (id=829611)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 1183 (Label) | Target: Self (1)
                    Affected Spells (Label): Crash Lightning (187874)
-Hotfixed         : Sub Type (108 -> 218), Misc Value 2 (0 -> 1183), Affects Spells
 #2 (id=829612)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc187874
