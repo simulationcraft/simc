@@ -658,6 +658,8 @@ void bottled_chimera_toxin( special_effect_t& effect )
     chimeric_poison_t( const special_effect_t& e )
       : proc_spell_t( "chimeric_poison", e.player, e.trigger(), e.item )
     {
+      // Tick behavior is odd, it always ticks on refresh but is not rescheduled
+      tick_zero = true;
       // Tick damage value lives in a different spell for some reason
       base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
     }
