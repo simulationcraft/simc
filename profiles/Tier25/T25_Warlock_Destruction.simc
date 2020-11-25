@@ -9,10 +9,10 @@ talents=2103023
 azerite_essences=27:3:1/22:3:0/35:3:0/5:3:0
 
 # Default consumables
-potion=unbridled_fury
-flask=greater_flask_of_endless_fathoms
-food=famine_evaluator_and_snack_table
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
