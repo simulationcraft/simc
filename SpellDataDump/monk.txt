@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36734 shadowlands-BETA (hotfix 2020-11-24/36734, git build shadowlands 493ac7b6b6)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 shadowlands-BETA (hotfix 2020-11-25/36753, git build shadowlands 8c25d82, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1086,7 +1086,6 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
-Hotfixed         : Cooldown (420000 -> 360000)
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -2650,7 +2649,6 @@ Effects          :
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Spell Family (53), Hidden] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -3357,7 +3355,6 @@ Effects          :
 Description      : $@spelldesc115098
 
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
-Hotfixed         : GCD (1500 -> 1000)
 Class            : Brewmaster Monk
 School           : Nature
 Spell Type       : Magic
@@ -3460,14 +3457,12 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (350 -> 400)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Healing Elixir (122281), Chi Burst (123986), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Chi Burst (148135), Gift of the Ox (178173), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Weapons of Order (310454), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
                    Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 77, 99, 100
-Hotfixed         : Affects Spells
 #15 (id=260846)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -3587,12 +3582,10 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
-Hotfixed         : Base Value (-17 -> -13), PvP Coefficient (1.235 -> 1)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
-Hotfixed         : Base Value (-17 -> -13), PvP Coefficient (1.235 -> 1)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -9761,7 +9754,6 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Breath of Fire (123725)
                    Family Flags: 125
-Hotfixed         : Sub Type (108 -> 107)
 Description      : $@spelldesc325177
 Tooltip          : Breath of Fire reduces damage taken by an additional $325177s2%.
 Spinning Crane Kick ignites targets with Breath of Fire.

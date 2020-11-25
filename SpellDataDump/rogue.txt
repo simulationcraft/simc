@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36734 shadowlands-BETA (hotfix 2020-11-24/36734, git build shadowlands 493ac7b6b6)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 shadowlands-BETA (hotfix 2020-11-25/36753, git build shadowlands 8c25d82, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -961,7 +961,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
-Hotfixed         : Base Value (1 -> 100)
 Description      : Attack with your $?s319032[your poisoned blades][off-hand], dealing $sw1 Physical damage, and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, dispelling all enrage effects.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]
 $?s319032[
 Your Nature damage done against the target is increased by $319504s1% for $319504d.
@@ -4265,7 +4264,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Dispatch (2098), Shiv (5938), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Dismantle (207777), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142)
                    Family Flags: 3, 4, 9, 10, 17, 21, 26, 29, 45, 52, 82, 93, 98, 112, 118, 119, 124
-Hotfixed         : Affects Spells
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Stealth (1784), Vanish (11327), Stealth (115191)
@@ -10818,7 +10816,6 @@ Description      : $@spelldesc341567
 Tooltip          : Damage of your next $?s200758[Gloomblade][Backstab] increased by $w1%.
 
 Name             : Dreadblades (id=343142) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -11066,7 +11063,6 @@ Description      : $@spelldesc323654
 Tooltip          : Haste increased by ${$s1/10}.1%.
 
 Name             : Sepsis (desc=Night Fae) (id=347037) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11089,7 +11085,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cheap Shot (1833), Sap (6770), Ambush (8676), Shadowstrike (185438), Shadowstrike (345121)
                    Family Flags: 7, 9, 10, 31, 104
-Hotfixed         : Affects Spells
 Description      : $@spelldesc328305
 Tooltip          : Allows $328305s6 use of any Stealth ability.
 
