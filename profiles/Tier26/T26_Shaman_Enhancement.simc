@@ -29,7 +29,7 @@ actions.precombat+=/windfury_weapon
 actions.precombat+=/flametongue_weapon
 actions.precombat+=/lightning_shield
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.precombat+=/windfury_totem
+actions.precombat+=/windfury_totem,if=!runeforge.doom_winds.equipped
 actions.precombat+=/potion
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

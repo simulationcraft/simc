@@ -1,7 +1,9 @@
 # PreRaids
 # Shadowlands Pre-Raids
-# * Ilvl Cap: 184 - reason: should be mythic itemlevel
-# * No items from World Bosses / World Quests / BoEs
+# * Ilvl Cap: 184 - reason: should be mythic itemlevel (ex: ",bonus_id=6807/1498")
+# * 1 Ilvl 190 legendary
+# * 1 Soulbind starting trait and 1 potency conduit (rank 4)
+# * No items from World Bosses / World Quests / BoEs (craftables are allowed)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No applied Gems (buyable for resources) - reason: pre-raid we'll be occupied spending that resource on conduits
 # * No Tertiary Stats

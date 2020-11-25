@@ -535,9 +535,9 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     {
       if ( std::get<0>( cd ) == e.id )
       {
-        auto cd_spell = m_player->find_spell( e.spell_id );
+        auto conduit = m_player->find_conduit_spell( e.name );
         root.format( "<li>{} ({})</li>\n",
-                     report_decorators::decorated_spell_name( m_player->sim, *cd_spell ),
+                     report_decorators::decorated_conduit_name( m_player->sim, conduit ),
                      std::get<1>( cd ) + 1 );
       }
     }
@@ -635,3 +635,12 @@ action_t* create_action( player_t* player, util::string_view name, const std::st
 }
 
 }  // namespace covenant
+
+namespace report_decorators
+{
+std::string decorated_conduit_name( const sim_t& sim, const conduit_data_t& conduit )
+{
+  auto rank_str = fmt::format( "rank={}", conduit.rank() );
+  return decorated_spell_name( sim, *( conduit.operator->() ), rank_str );
+}
+} // namespace report_decorators

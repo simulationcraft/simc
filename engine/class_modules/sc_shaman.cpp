@@ -15,21 +15,8 @@
 
 // Shadowlands TODO
 //
-// Shared
-// - Class Legendaries
-//   - Ancestral Reminder
-//     - extending lust duration is easy, but increasing effect of lust seems trickier
-//   - Deeptremor Stone
-//   - Deeply Rooted Elements
-//     - currently also triggers Ascendance cooldown but likely to be fixed
-//     - will require background lava burst support similar to primordial wave
-// - Covenant Conduits
-//   - Elysian Dirge (Kyrian)
-//
 // Elemental
 // - Spec Conduits
-//   - Earth and Sky
-//     - Still waiting on them to reimplement this on beta for post-Fulmination
 //   - Shake the Foundations
 //     - Background CL cast will be similar to Echoing Shock implementation
 // - PreRaid profile gear
@@ -550,6 +537,7 @@ public:
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
     conduit_data_t pyroclastic_shock;
+    conduit_data_t shake_the_foundations;
 
     // Enhancement
     conduit_data_t chilled_to_the_core;
@@ -1784,7 +1772,7 @@ public:
 
   virtual bool benefit_from_maelstrom_weapon() const
   {
-    return affected_by_maelstrom_weapon &p()->buff.maelstrom_weapon->up();
+    return affected_by_maelstrom_weapon && p()->buff.maelstrom_weapon->up();
   }
 
   unsigned maelstrom_weapon_stacks() const
@@ -3181,6 +3169,13 @@ struct elemental_overload_spell_t : public shaman_spell_t
       parent->echoing_shock_stats->add_child( echoing_shock_stats );
     }
 
+    // Generate a new stats object for the elemental overload spell based on the parent
+    // stats object name. This will more or less always let us build correct stats
+    // hierarchies for the overload-capable spells, so that the various different
+    // (reporting) hierarchies function correctly.
+    auto stats_ = player->get_stats( parent->stats->name_str + "_overload", this );
+    stats_->school = get_school();
+    stats = stats_;
     parent->stats->add_child( stats );
   }
 
@@ -3909,84 +3904,6 @@ struct crash_lightning_t : public shaman_attack_t
   }
 };
 
-// Earthquake ===============================================================
-
-struct earthquake_damage_t : public shaman_spell_t
-{
-  double kb_chance;
-
-  earthquake_damage_t( shaman_t* player )
-    : shaman_spell_t( "earthquake_", player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
-  {
-    aoe        = -1;
-    ground_aoe = background = true;
-    school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.2875;  // still cool to hardcode the SP% into tooltip
-  }
-
-  double composite_target_armor( player_t* ) const override
-  {
-    return 0;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_spell_t::composite_persistent_multiplier( state );
-
-    m *= 1.0 + p()->buff.master_of_the_elements->value();
-
-    if ( p()->buff.echoes_of_great_sundering->up() )
-    {
-      m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
-    }
-
-    return m;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-  }
-};
-
-struct earthquake_t : public shaman_spell_t
-{
-  earthquake_damage_t* rumble;
-
-  earthquake_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ), options_str ),
-      rumble( new earthquake_damage_t( player ) )
-  {
-    dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-    add_child( rumble );
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-    may_proc_echoing_shock = true;
-  }
-
-  double cost() const override
-  {
-    double d = shaman_spell_t::cost();
-    return d;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
-
-    // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
-    // buff multiplier as persistent.
-    p()->buff.master_of_the_elements->expire();
-    p()->buff.echoes_of_great_sundering->expire();
-  }
-};
-
 // Earth Elemental ===========================================================
 
 struct earth_elemental_t : public shaman_spell_t
@@ -4292,18 +4209,6 @@ struct chain_lightning_t : public chained_base_t
     affected_by_master_of_the_elements = true;
   }
 
-  // Apparently if Stormkeeper is up, Maelstrom Weapon is not consumed by Lightning Bolt /
-  // Chain Lightning, but the spell still benefits from the damage increase.
-  bool benefit_from_maelstrom_weapon() const override
-  {
-    if ( p()->buff.stormkeeper->check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::benefit_from_maelstrom_weapon();
-  }
-
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
@@ -4314,6 +4219,18 @@ struct chain_lightning_t : public chained_base_t
     }
 
     return m;
+  }
+
+  // If Stormkeeper is up, Chain Lightning will not consume Maelstrom Weapon stacks, but
+  // will allow Chain Lightning to fully benefit from the stacks.
+  bool consume_maelstrom_weapon() const override
+  {
+    if ( p()->buff.stormkeeper->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::consume_maelstrom_weapon();
   }
 
   timespan_t execute_time() const override
@@ -5365,6 +5282,118 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.spiritwalkers_grace->trigger();
+  }
+};
+
+// Earthquake ===============================================================
+
+struct earthquake_damage_t : public shaman_spell_t
+{
+  double kb_chance;
+
+  earthquake_damage_t( shaman_t* player )
+    : shaman_spell_t( "earthquake_", player, player->find_spell( 77478 ) ), kb_chance( data().effectN( 2 ).percent() )
+  {
+    aoe        = -1;
+    ground_aoe = background = true;
+    school                  = SCHOOL_PHYSICAL;
+    spell_power_mod.direct  = 0.23;  // still cool to hardcode the SP% into tooltip
+  }
+
+  double composite_target_armor( player_t* ) const override
+  {
+    return 0;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+
+    m *= 1.0 + p()->buff.master_of_the_elements->value();
+
+    if ( p()->buff.echoes_of_great_sundering->up() )
+    {
+      m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
+    }
+
+    return m;
+  }
+};
+
+struct earthquake_t : public shaman_spell_t
+{
+  earthquake_damage_t* rumble;
+  action_t* shake_the_foundations_cl;
+  action_t* shake_the_foundations_lb;
+
+  earthquake_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ), options_str ),
+      rumble( new earthquake_damage_t( player ) ), shake_the_foundations_cl( nullptr ),
+      shake_the_foundations_lb( nullptr )
+  {
+    dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
+    add_child( rumble );
+
+    if ( p()->conduit.shake_the_foundations.ok() )
+    {
+      auto cl = new chain_lightning_t( player, "" );
+
+      cl->background = true;
+      cl->base_costs[ RESOURCE_MANA ] = 0;
+      cl->stats = player->get_stats( "chain_lightning_stf", cl );
+
+      shake_the_foundations_cl = cl;
+
+      add_child( shake_the_foundations_cl );
+
+      shake_the_foundations_lb = new lava_beam_t( player, "" );
+      shake_the_foundations_lb->background = true;
+      shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
+      shake_the_foundations_lb->stats = player->get_stats( "lava_beam_stf",
+        shake_the_foundations_lb );
+
+      add_child( shake_the_foundations_lb );
+    }
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_echoing_shock = true;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+    make_event<ground_aoe_event_t>(
+        *sim, p(),
+        ground_aoe_params_t()
+          .target( execute_state->target )
+          .duration( data().duration() )
+          .action( rumble ) );
+
+    if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
+         rumble->target_list().size() )
+    {
+      auto t = rumble->target_list()[ static_cast<unsigned>( rng().range( 0,
+            as<double>( rumble->target_list().size() ) ) ) ];
+
+      if ( p()->buff.ascendance->check() )
+      {
+        shake_the_foundations_lb->set_target( t );
+        shake_the_foundations_lb->execute();
+      }
+      else
+      {
+        shake_the_foundations_cl->set_target( t );
+        shake_the_foundations_cl->execute();
+      }
+    }
+
+    // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
+    // buff multiplier as persistent.
+    p()->buff.master_of_the_elements->expire();
+    p()->buff.echoes_of_great_sundering->expire();
   }
 };
 
@@ -7674,6 +7703,7 @@ void shaman_t::init_spells()
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
   conduit.pyroclastic_shock = find_conduit_spell( "Pyroclastic Shock" );
+  conduit.shake_the_foundations = find_conduit_spell( "Shake the Foundations" );
 
   // Enhancement Conduits
   conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
@@ -9117,7 +9147,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( this, "Flametongue Weapon" );
   precombat->add_action( this, "Lightning Shield" );
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-  precombat->add_action( this, "Windfury Totem" );
+  precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
 
   // Precombat potion
   precombat->add_action( "potion" );

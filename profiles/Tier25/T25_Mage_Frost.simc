@@ -32,7 +32,6 @@ actions.precombat+=/frostbolt
 # Executed every time the actor is available.
 actions=counterspell
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=essences
 actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=st,if=active_enemies<4
 actions+=/call_action_list,name=movement
@@ -67,17 +66,6 @@ actions.cds+=/lights_judgment
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 actions.cds+=/bag_of_tricks
-
-actions.essences=guardian_of_azeroth
-actions.essences+=/focused_azerite_beam
-actions.essences+=/memory_of_lucid_dreams
-actions.essences+=/blood_of_the_enemy
-actions.essences+=/purifying_blast
-actions.essences+=/ripple_in_space
-actions.essences+=/concentrated_flame,line_cd=6
-actions.essences+=/reaping_flames
-actions.essences+=/the_unbound_force,if=buff.reckless_force.up
-actions.essences+=/worldvein_resonance
 
 actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down

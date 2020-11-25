@@ -3069,8 +3069,16 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
     {
       dual = true;
 
-      if ( s -> id() == 344121 ) // Secondary frost damage multiplier
+      if ( s -> id() == 344121 )
+      {
+        // "Secondary" frost damage multiplier
         base_multiplier *= p -> talents.chimaera_shot -> effectN( 1 ).percent();
+        /* In-game Wild Spirits procs off the *first* Chimaera Shot damage spell that
+         * hits. As we don't support distance targeting anyway just disable procs from
+         * the "secondary" frost damage spell.
+         */
+        triggers_wild_spirits = false;
+      }
     }
   };
 

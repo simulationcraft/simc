@@ -57,8 +57,6 @@ struct penance_t final : public priest_spell_t
       direct_tick = true;
 
       this->stats = stats;
-
-      base_dd_adder += p.azerite.contemptuous_homily.value(2);
     }
 
     double action_da_multiplier() const override
@@ -71,18 +69,6 @@ struct penance_t final : public priest_spell_t
       }
 
       return m;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      priest_spell_t::impact( state );
-
-      auto& td = get_td( state->target );
-      if ( td.dots.shadow_word_pain->is_ticking() )
-      {
-        td.dots.shadow_word_pain->adjust_duration(
-            priest().azerite.contemptuous_homily.spell()->effectN( 1 ).time_value() );
-      }
     }
 
     void execute() override
@@ -208,15 +194,6 @@ struct purge_the_wicked_t final : public priest_spell_t
       background    = true;
     }
 
-    double bonus_ta( const action_state_t* state ) const override
-    {
-      double d = priest_spell_t::bonus_ta( state );
-
-      d += get_death_throes_bonus();
-
-      return d;
-    }
-
     void tick( dot_t* d ) override
     {
       priest_spell_t::tick( d );
@@ -338,10 +315,6 @@ void priest_t::init_spells_discipline()
   // Passive spell data
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
-
-  // Azerite
-  azerite.death_throes        = find_azerite_spell( "Death Throes" );
-  azerite.contemptuous_homily = find_azerite_spell( "Contemptuous Homily" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

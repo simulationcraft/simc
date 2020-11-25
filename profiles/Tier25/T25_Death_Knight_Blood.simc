@@ -27,12 +27,9 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/use_item,effect_name=cyclotronic_blast
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/shackle_the_unworthy
 actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions+=/berserking
 actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
@@ -40,42 +37,56 @@ actions+=/lights_judgment,if=buff.unholy_strength.up
 actions+=/ancestral_call
 actions+=/fireblood
 actions+=/bag_of_tricks
-actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
-actions+=/use_item,name=razdunks_big_red_button
-actions+=/use_item,effect_name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time
-actions+=/use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)
-actions+=/use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15
-actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
-actions+=/use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod
-actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod
-actions+=/vampiric_blood
+# Since the potion cooldown has changed, we'll sync with DRW
 actions+=/potion,if=buff.dancing_rune_weapon.up
-actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
-actions+=/tombstone,if=buff.bone_shield.stack>=7
-actions+=/call_action_list,name=essences
+actions+=/use_items
+actions+=/raise_dead
+actions+=/blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|buff.deaths_due.remains>7)
+actions+=/blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up)
+actions+=/raise_dead
+actions+=/death_strike,if=fight_remains<3
+actions+=/call_action_list,name=covenants
 actions+=/call_action_list,name=standard
 
-actions.essences=concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up
-actions.essences+=/anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)
-actions.essences+=/memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40
-actions.essences+=/worldvein_resonance
-actions.essences+=/ripple_in_space,if=!buff.dancing_rune_weapon.up
+# Burn RP if we have time between DD refreshes
+actions.covenants=death_strike,if=covenant.night_fae&buff.deaths_due.remains>6&runic_power>70
+# Make sure we never lose that buff
+actions.covenants+=/heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<6)
+# And that we always cast DD as high prio when we actually need it
+actions.covenants+=/deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
+# Attempt to sacrifice the ghoul if we predictably will not do much in the near future
+actions.covenants+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<10|target.time_to_die<gcd)
+# Burn RP off just before swarming comes back off CD
+actions.covenants+=/death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3
+# And swarming as long as we're not < 3s off DRW
+actions.covenants+=/swarming_mist,if=!buff.dancing_rune_weapon.up
+# Pre-AL marrow on pull in order to guarantee ossuary during the first DRW
+actions.covenants+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
+# And we cast AL
+actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
+# We just don't cast this during DRW
+actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
 
-actions.standard=death_strike,if=runic_power.deficit<=10
-actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
-actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+# Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it
+actions.standard=blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8
+actions.standard+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
+actions.standard+=/tombstone,if=buff.bone_shield.stack>=7&rune>=2
+actions.standard+=/marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/death_strike,if=runic_power.deficit<=70
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15&(!covenant.night_fae|buff.deaths_due.remains>5)
+actions.standard+=/heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&runic_power.deficit>=15
+actions.standard+=/death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
 actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
 actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
 actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/blood_tap,if=rune.time_to_3>gcd
 actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
 actions.standard+=/consumption
-actions.standard+=/blood_boil
-actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
-actions.standard+=/use_item,name=grongs_primal_rage
+actions.standard+=/blood_boil,if=charges_fractional>=1.1
+actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=140/582/21/13

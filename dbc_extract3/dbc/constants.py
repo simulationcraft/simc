@@ -31,6 +31,7 @@ CONSUMABLE_ITEM_WHITELIST = {
     166804,                            # Boralus Blood Sausage (8.1)
     166240,                            # Sanguinated Feast (8.1)
     168315,                            # Famine Evaluator And Snack Table (8.2),
+    172042,                            # Surprisingly Palatable Feast (9.0)
     172043,                            # Feast of Gluttonous Hedonism (9.0)
     ],
   # "Other"
@@ -177,4 +178,8 @@ SPELL_NAME_BLACKLIST = [
 
 SPELL_LABEL_BLACKLIST = [
   16,     # Agonizing Backlash
+]
+
+ACTIVE_SPELL_WHITELIST = [
+    114074  # Lava Beam (Shaman)
 ]

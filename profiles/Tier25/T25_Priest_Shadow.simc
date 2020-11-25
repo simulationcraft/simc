@@ -27,6 +27,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/shadowform,if=!buff.shadowform.up
+actions.precombat+=/arcane_torrent
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=2
 actions.precombat+=/vampiric_touch
@@ -39,6 +40,11 @@ actions+=/variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&do
 actions+=/variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up
 # Cooldown Pool Variable, Used to pool before activating voidform. Currently used to control when to activate voidform with incoming adds.
 actions+=/variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&(!raid_event.adds.up|raid_event.adds.duration<=10|raid_event.adds.remains>=10+5*(talent.hungering_void.enabled|covenant.kyrian))&((raid_event.adds.in>20|spell_targets.void_eruption>=5)|talent.hungering_void.enabled|covenant.kyrian)
+actions+=/fireblood,if=buff.voidform.up
+actions+=/berserking,if=buff.voidform.up
+# Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s.
+actions+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
+actions+=/ancestral_call,if=buff.voidform.up
 actions+=/call_action_list,name=cwc
 actions+=/run_action_list,name=main
 
@@ -47,7 +53,6 @@ actions+=/run_action_list,name=main
 actions.cds=silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
 # Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF.
 actions.cds+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)
-actions.cds+=/call_action_list,name=essences
 # Default fallback for usable items: Use on cooldown.
 actions.cds+=/use_items
 
@@ -58,24 +63,13 @@ actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nig
 # Only_cwc makes the action only usable during channeling and not as a regular action.
 actions.cwc+=/mind_blast,only_cwc=1
 
-actions.essences=memory_of_lucid_dreams
-actions.essences+=/blood_of_the_enemy
-actions.essences+=/guardian_of_azeroth
-actions.essences+=/focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60
-actions.essences+=/purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60
-actions.essences+=/concentrated_flame,line_cd=6,if=time<=10|full_recharge_time<gcd|target.time_to_die<5
-actions.essences+=/ripple_in_space
-actions.essences+=/reaping_flames
-actions.essences+=/worldvein_resonance
-actions.essences+=/the_unbound_force
-
 # Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender is on cooldown before VE.
-actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&pet.fiend.down
+actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
 actions.main+=/call_action_list,name=cds
 # High Priority Mind Sear action to refresh DoTs with Searing Nightmare
-actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot.shadow_word_pain.ticking&pet.fiend.down
+actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot.shadow_word_pain.ticking&!cooldown.fiend.up
 # Prefer to use Damnation ASAP if any DoT is not up.
 actions.main+=/damnation,target_if=!variable.all_dots_up
 # Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST.

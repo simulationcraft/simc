@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.2.36710
+// Spell text, wow build 9.0.2.36734
 static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -12642,6 +12642,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power. Deals reduced damage beyond $s5 targets.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -13810,7 +13811,6 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 334058, "Cause the target to explode with energy, dealing $s1 Shadow damage split evenly to all enemies within 10 yards. Enemies hit are ${$311464S1*0.01}% to ${$311471S1*0.01}% more likely to be critically hit by you. The critical strike chance amount depends on the topmost card of the deck. Lasts $d.", "Chance to be critically hit by caster increased by $W2%.", 0 },
   { 334066, "While above $m1% health, you increase nearby party members' maximum health by $334067m1%.", 0, 0 },
   { 334067, "$@spelldesc334066", "Maximum health increased by $w%.", 0 },
-  { 334068, "$@spelldesc334066", 0, 0 },
   { 334168, "$@spelldesc334046", "Damage taken from the Shaman's Flame Shock increased by $s1%.", 0 },
   { 334183, "Reduces Summon Darkglare's cooldown by ${-$s1/1000} seconds.", 0, 0 },
   { 334195, "Each stack of Maelstrom Weapon consumed increases the damage of your next Frost Shock by $334196s1%, and causes your next Frost Shock to hit $334196m2 additional target per Maelstrom Weapon stack consumed.", 0, 0 },
@@ -15057,7 +15057,7 @@ static const std::array<spelltext_data_t, 15055> __spelltext_data { {
   { 348304, "$@spelldesc326572", "Armor continues the fight.\r\nDamage and healing done reduced by $s7%.\r\nHealing received reduced by $s9%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36710
+// spelltext hotfix entries, wow build 9.0.2.36734
 static constexpr std::array<hotfix::client_hotfix_entry_t, 37> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for ${$s2-15}% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage." },
   {  118000,  0, "Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r" },
@@ -15098,7 +15098,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 37> __spelltext_hotfi
   {  347765,  1, "Dealing $w1% increased damage.", "Dealing $w1% increased damage.\r\nTaking $w4% reduced damage." },
 } };
 
-// Spell description variables, wow build 9.0.2.36710
+// Spell description variables, wow build 9.0.2.36734
 static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15362,7 +15362,7 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  325203, "$mult=$?s337979[${$337979m1/100+1}][${1}]" },
   {  325289, "$damage=${4*$327059s1}" },
   {  325886, "$rage=${4*($326076s1/10)}\r\n$areaDmg=${4*$326062s1}\r\n$period=${3}" },
-  {  326504, "$points=${$cond($gt($SP,$AP),$SP*0.072,$AP*0.072)*(1+$@versadmg)}" },
+  {  326504, "$points=${$cond($gt($SP,$AP),$SP*0.03,$AP*0.03)*(1+$@versadmg)}" },
   {  326514, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  328266, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]\r\n$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
   {  328281, "$points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}" },
@@ -15397,10 +15397,11 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36710
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 9.0.2.36734
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.8*(1+$@versadmg)*$<rapture>*$<shadow>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.05,$AP*0.05)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.24,$AP*0.24)*(1+$@versadmg)}" },
+  {  326504,  0, "$points=${$cond($gt($SP,$AP),$SP*0.072,$AP*0.072)*(1+$@versadmg)}", "$points=${$cond($gt($SP,$AP),$SP*0.03,$AP*0.03)*(1+$@versadmg)}" },
   {  328266,  0, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]", "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]\r\n$modb=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${1}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${1}]?a137047[${1}][${1}]" },
 } };
 
