@@ -42,12 +42,13 @@ namespace pets {
 
 namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
-  void fallen_crusader( special_effect_t& );
-  void stoneskin_gargoyle( special_effect_t& );
   void apocalypse( special_effect_t& );
+  void fallen_crusader( special_effect_t& );
   void hysteria( special_effect_t& );
+  void razorice( special_effect_t& );
   void sanguination( special_effect_t& );
   void spellwarding( special_effect_t& );
+  void stoneskin_gargoyle( special_effect_t& );
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
   // Legendary runeforges, blame blizzard for using the same names
   void reanimated_shambler( special_effect_t& );
@@ -395,15 +396,14 @@ struct death_knight_td_t : public actor_target_data_t {
   struct
   {
     // Shared
-    buff_t* abomination_limb;
-    buff_t* apocalypse_death; // Dummy debuff, simc doesn't really care about healing reduction on enemies
+    buff_t* abomination_limb; // Tracks per-target icd
+    buff_t* razorice;
+    buff_t* apocalypse_death; // Empty debuff, simc doesn't really care about healing reduction on enemies
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
 
     // Blood
     buff_t* mark_of_blood;
-    // Frost
-    buff_t* razorice;
     // Unholy
     buff_t* festering_wound;
     buff_t* unholy_blight;
@@ -495,12 +495,12 @@ public:
   } buffs;
 
   struct runeforge_t {
+    bool rune_of_apocalypse;
+    bool rune_of_hysteria;
+    bool rune_of_razorice;
+    bool rune_of_sanguination;
     bool rune_of_the_fallen_crusader;
     bool rune_of_the_stoneskin_gargoyle;
-    bool rune_of_razorice;
-    bool rune_of_hysteria;
-    heal_t* rune_of_sanguination;
-    bool rune_of_apocalypse;
     bool rune_of_unending_thirst;
 
     // Simpler to store Spellwarding as a double to check whether it's stacked or not
@@ -540,6 +540,7 @@ public:
     action_t* razorice_oh;
     action_t* runeforge_pestilence;
     absorb_t* runeforge_spellwarding;
+    action_t* rune_of_sanguination;
     action_t* sacrificial_pact_damage;
     action_t* unholy_strength;
 
@@ -5265,7 +5266,7 @@ struct glacial_advance_damage_t : public death_knight_spell_t
 
     // Only applies the razorice debuff without the damage, regardless of runeforge equipped (bug?)
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/663
-    if ( p() -> bugs || p() -> active_spells.razorice_mh || p() -> active_spells.razorice_oh )
+    if ( p() -> bugs || p() -> runeforge.rune_of_razorice )
     {
       td( state -> target ) -> debuff.razorice -> trigger();
     }
@@ -6920,6 +6921,29 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+void runeforge::razorice( special_effect_t& effect )
+{
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+
+  p -> runeforge.rune_of_razorice = true;
+
+  // Create the appropriate razorice attack depending on where the runeforge is applied
+  if ( effect.item -> slot == SLOT_MAIN_HAND )
+  {
+    p -> active_spells.razorice_mh = new razorice_attack_t( p, "razorice" );
+  }
+  else if ( effect.item -> slot == SLOT_OFF_HAND )
+  {
+    p -> active_spells.razorice_oh = new razorice_attack_t( p, "razorice_offhand" );
+  }
+}
+
 void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 {
   if ( effect.player->type != DEATH_KNIGHT )
@@ -7030,7 +7054,9 @@ void runeforge::sanguination( special_effect_t& effect )
     }
   };
 
-  p -> runeforge.rune_of_sanguination = new sanguination_heal_t( effect );
+  p -> runeforge.rune_of_sanguination = true;
+
+  p -> active_spells.rune_of_sanguination = new sanguination_heal_t( effect );
 }
 
 void runeforge::spellwarding( special_effect_t& effect )
@@ -7828,7 +7854,7 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   // Razorice, looks for the damage procs related to MH and OH
   if ( util::str_compare_ci( name, "razorice" ) )
     return make_fn_expr( "razorice_runforge_expression", [ this ]() {
-      return active_spells.razorice_mh || active_spells.razorice_oh;
+      return runeforge.rune_of_razorice;
     } );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
@@ -7868,7 +7894,7 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   // Sanguination
   if ( util::str_compare_ci( name, "sanguination" ) )
     return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_sanguination != nullptr;
+      return runeforge.rune_of_sanguination;
     } );
 
   // Spellwarding
@@ -9305,8 +9331,8 @@ void death_knight_t::do_damage( action_state_t* state )
   if ( runeforge.rune_of_sanguination )
   {
     // Health threshold and internal cooldown handled in ready()
-    if ( runeforge.rune_of_sanguination -> ready() )
-      runeforge.rune_of_sanguination -> execute();
+    if ( active_spells.rune_of_sanguination -> ready() )
+      active_spells.rune_of_sanguination -> execute();
   }
 }
 
@@ -9763,26 +9789,6 @@ private:
 
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
-// We can infer razorice enablement from just one of the associated spells
-struct razorice_attack_cb_t : public scoped_actor_callback_t<death_knight_t>
-{
-  razorice_attack_cb_t() : super( DEATH_KNIGHT )
-  { }
-
-  // Create the razorice actions based on handedness
-  void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  {
-    if ( e.item -> slot == SLOT_MAIN_HAND )
-    {
-      p -> active_spells.razorice_mh = new razorice_attack_t( p, e.name() );
-    }
-    else if ( e.item -> slot == SLOT_OFF_HAND )
-    {
-      p -> active_spells.razorice_oh = new razorice_attack_t( p, e.name() );
-    }
-  }
-};
-
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9795,7 +9801,7 @@ struct death_knight_module_t : public module_t {
 
   void static_init() const override
   {
-    unique_gear::register_special_effect(  50401, razorice_attack_cb_t() );
+    unique_gear::register_special_effect(  50401, runeforge::razorice );
     unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
     unique_gear::register_special_effect( 327087, runeforge::apocalypse );
