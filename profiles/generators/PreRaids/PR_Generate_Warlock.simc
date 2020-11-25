@@ -1,83 +1,88 @@
-# warlock="PR_Warlock_Affliction"
-# level=120
-# race=troll
-# spec=affliction
-# role=spell
-# position=ranged_back
-# talents=3302023
-# default_pet=imp
+#Aff Pre-raid, no legendary m0 gear, used the apl you sent me
+warlock="PR_Warlock_Affliction"
+spec=affliction
+level=60
+race=mechagnome
+role=spell
+position=back
+talents=3302023
+covenant=kyrian
+soulbind=pelagos:7,328266/202:4
 
-# head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/13
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-# chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/13
-# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-# hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
-# waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
-# legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
-# feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
-# finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=quick_navigation
+head=cowl_of_the_devoted_general,id=178860,bonus_id=6807/1498
+neck=trailspinner_pendant,id=178707,bonus_id=6807/1498
+shoulders=castigators_mantle,id=178859,bonus_id=6807/1498
+back=dealer_xyexas_cape,id=179349,bonus_id=6807/1498
+chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_stats
+wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect
+hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
+legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498
+feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=16haste
+finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=16haste
+trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
 
-# save=PR_Warlock_Affliction.simc
-
-
-# warlock="PR_Warlock_Demonology"
-# level=120
-# race=troll
-# spec=demonology
-# role=spell
-# position=ranged_back
-# talents=2303031
-# default_pet=felguard
-
-# head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=30/428/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
-# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-# hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
-# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-# legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
-# feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
-# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# main_hand=wand_of_zealous_purification,id=158321,bonus_id=4779/1512/4786,enchant=quick_navigation
-# off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
-
-# save=PR_Warlock_Demonology.simc
+save=PR_Warlock_Affliction.simc
 
 
-# warlock="PR_Warlock_Destruction"
-# level=120
-# race=troll
-# spec=destruction
-# role=spell
-# position=ranged_back
-# talents=1203023
-# default_pet=imp
+warlock=PR_Warlock_Demonology
+level=60
+race=troll
+role=spell
+position=back
+spec=Demonology
+talents=3103021
 
-# head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/13
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-# chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/13
-# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-# hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
-# waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
-# legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
-# feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
-# finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=quick_navigation
+covenant=venthyr
+soulbind=theotar_the_mad_duke:9,336239/171:1/336147/204:4
 
-# save=PR_Warlock_Destruction.simc
+head=,id=178759,bonus_id=6807/1498
+neck=,id=178827,bonus_id=6807/1498
+shoulder=,id=178740,bonus_id=6807/1498
+back=,id=180123,bonus_id=6807/1498
+chest=,id=178792,bonus_id=6807/1498,enchant_id=6230,enchant=eternal_stats
+wrist=,id=178782,bonus_id=6807/1498,enchant_id=6220,enchant=eternal_intellect
+hands=,id=178833,bonus_id=6807/1498
+waist=,id=180109,bonus_id=6807/1498
+legs=,id=180107,bonus_id=6807/1498
+feet=,id=180102,bonus_id=6807/1498
+finger1=,id=178933,bonus_id=6807/1498,enchant_id=6170,enchant=16haste
+finger2=,id=179355,bonus_id=6807/1498,enchant_id=6164,enchant=16haste
+trinket1=,id=178772,bonus_id=6807/1498
+trinket2=,id=179350,bonus_id=6807/1498
+main_hand=,id=178829,bonus_id=6807/1498,enchant_id=6228,enchant=sinful_revelation
+
+save=PR_Warlock_Demonology.simc
+
+
+#Destro Pre-raid, no legendary m0 gear, reviewed soulbinds using toe's scripts made sure it was using the most recent default apl
+warlock="PR_Warlock_Destruction"
+spec=destruction
+level=60
+race=mechagnome
+role=spell
+position=back
+talents=3203012
+covenant=necrolord
+soulbind=emeni:5,342156/211:4
+
+head=abominable_visage,id=178732,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulders=castigators_mantle,id=178859,bonus_id=6807/1498
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_stats
+wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect
+hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
+legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498
+feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=16crit
+finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=16mastery
+trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
+
+save=PR_Warlock_Destruction.simc
