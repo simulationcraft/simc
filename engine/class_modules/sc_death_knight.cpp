@@ -437,6 +437,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    buff_t* rune_of_hysteria;
     buff_t* stoneskin_gargoyle;
     buff_t* unholy_strength;
 
@@ -496,11 +497,15 @@ public:
   struct runeforge_t {
     bool rune_of_the_fallen_crusader;
     bool rune_of_the_stoneskin_gargoyle;
-    buff_t* rune_of_hysteria;
+    bool rune_of_razorice;
+    bool rune_of_hysteria;
     heal_t* rune_of_sanguination;
-    double rune_of_spellwarding;
     bool rune_of_apocalypse;
     bool rune_of_unending_thirst;
+
+    // Simpler to store Spellwarding as a double to check whether it's stacked or not
+    double rune_of_spellwarding;
+
   } runeforge;
 
   // Cooldowns
@@ -534,6 +539,7 @@ public:
     action_t* razorice_mh;
     action_t* razorice_oh;
     action_t* runeforge_pestilence;
+    absorb_t* runeforge_spellwarding;
     action_t* sacrificial_pact_damage;
     action_t* unholy_strength;
 
@@ -1002,7 +1008,6 @@ public:
   void      init_gains() override;
   void      init_procs() override;
   void      init_finished() override;
-  double    composite_armor_multiplier() const override;
   double    composite_bonus_armor() const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_melee_speed() const override;
@@ -1056,7 +1061,7 @@ public:
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
-  void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
+  void      burst_festering_wound( player_t* target, unsigned n = 1 );
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -1120,7 +1125,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
                            -> set_cooldown( 0_ms ); // Handled by the action
   debuff.razorice          = make_buff( *this, "razorice", p -> spell.razorice_debuff )
-                           -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
+                           -> set_default_value_from_effect( 1 )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
@@ -3010,19 +3015,20 @@ struct death_knight_action_t : public Base
 
 struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t>
 {
+  bool triggers_icecap;
+
   death_knight_melee_attack_t( const std::string& n, death_knight_t* p,
                                const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s )
+    base_t( n, p, s ),
+    triggers_icecap( false )
   {
     special    = true;
     may_crit   = true;
     may_glance = false;
   }
 
-  void schedule_travel( action_state_t* state ) override;
-
-  void trigger_icecap( const action_state_t* state ) const;
-  void trigger_razorice( const action_state_t* state ) const;
+  void execute() override;
+  void impact( action_state_t * state ) override;
 };
 
 // ==========================================================================
@@ -3053,87 +3059,42 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // Death Knight Attack Methods
 // ==========================================================================
 
-// death_knight_melee_attack_t::schedule_travel() ===========================
+// death_knight_melee_attack_t:execute() ====================================
 
-void death_knight_melee_attack_t::schedule_travel( action_state_t* state )
+void death_knight_melee_attack_t::execute()
 {
-  base_t::schedule_travel( state );
+  base_t::execute();
 
-  // Razorice has to be triggered in schedule_travel because simc core lacks support for per-target,
-  // on execute callbacks (per target callbacks in core are handled on impact, i.e., after travel
-  // time). Schedule_travel is guaranteed to be called per-target on execute, so we can hook into it
-  // to deliver that behavior for Razorice as a special case.
-  trigger_razorice( state );
+  if ( triggers_icecap && p() -> talent.icecap -> ok() && hit_any_target &&
+       p() -> cooldown.icecap_icd -> is_ready() && execute_state -> result == RESULT_CRIT )
+  {
+    p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
+      - p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
+
+    p() -> cooldown.icecap_icd -> start( p() -> talent.icecap -> internal_cooldown() );
+  }
 }
 
-// death_knight_melee_attack_t::trigger_icecap() ============================
+// death_knight_melee_attack_t::impact() ====================================
 
-void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) const
+void death_knight_melee_attack_t::impact( action_state_t* state )
 {
-  if ( state -> result != RESULT_CRIT )
+  base_t::impact( state );
+
+  if ( state -> result_amount > 0 && callbacks && p() -> runeforge.rune_of_razorice )
   {
-    return;
-  }
+    // Use the action's weapon slot, or default to main hand
+    auto razorice_attack = state -> action -> weapon && state -> action -> weapon -> slot == SLOT_OFF_HAND ?
+      p() -> active_spells.razorice_oh :
+      p() -> active_spells.razorice_mh;
 
-  if ( ! p() -> talent.icecap -> ok() )
-  {
-    return;
-  }
-
-  if ( p() -> cooldown.icecap_icd -> down() )
-  {
-    return;
-  }
-
-  p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
-    - p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
-
-  p() -> cooldown.icecap_icd -> start( p() -> talent.icecap -> internal_cooldown() );
-}
-
-// death_knight_melee_attack_t::trigger_razorice ===================================
-
-void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state ) const
-{
-  if ( state -> result_amount <= 0 || ! callbacks )
-  {
-    return;
-  }
-
-  // Weapon slot check, if the "melee attack" has no weapon defined, presume an implicit main hand
-  // weapon
-  action_t* razorice_attack = nullptr;
-
-  if ( state -> action -> weapon )
-  {
-    if ( state -> action -> weapon -> slot == SLOT_MAIN_HAND && p() -> active_spells.razorice_mh )
+    if ( razorice_attack )
     {
-      razorice_attack = p() -> active_spells.razorice_mh;
-    }
-    else if ( state -> action -> weapon -> slot == SLOT_OFF_HAND && p() -> active_spells.razorice_oh )
-    {
-      razorice_attack = p() -> active_spells.razorice_oh;
+      // Razorice is executed after the attack that triggers it
+      razorice_attack -> set_target( state -> target );
+      razorice_attack -> schedule_execute();
     }
   }
-  // No weapon defined in the action, presume an implicit main hand weapon, requiring that the
-  // razorice runeforge is applied to the main hand weapon on the actor
-  else
-  {
-    if ( p() -> active_spells.razorice_mh )
-    {
-      razorice_attack = p() -> active_spells.razorice_mh;
-    }
-  }
-
-  if ( ! razorice_attack )
-  {
-    return;
-  }
-
-  razorice_attack -> set_target( state -> target );
-  razorice_attack -> execute();
-
-  td( state -> target ) -> debuff.razorice -> trigger();
 }
 
 // ==========================================================================
@@ -3151,9 +3112,14 @@ struct razorice_attack_t : public death_knight_melee_attack_t
     may_miss    = callbacks = false;
     background  = proc = true;
 
-    // Note, razorice always attacks with the main hand weapon, regardless of which hand it is used
-    // in
+    // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
     weapon = &( player -> main_hand_weapon );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+    td( s -> target ) -> debuff.razorice -> trigger();
   }
 };
 
@@ -3454,7 +3420,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ),
                               td( state -> target ) -> debuff.festering_wound -> stack() );
 
-    p() -> burst_festering_wound( state, n_wounds );
+    p() -> burst_festering_wound( state -> target, n_wounds );
     p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
 
     if ( p() -> talent.army_of_the_damned -> ok() )
@@ -5120,7 +5086,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
-    triggers_shackle_the_unworthy = true;
+    triggers_shackle_the_unworthy = triggers_icecap = true;
     // The crit multipier is now handled by the apply_affecting_auras( spec.death_knight ) call
   }
 
@@ -5129,7 +5095,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-    trigger_icecap( execute_state );
 
     if ( p() -> buffs.inexorable_assault -> up() )
     {
@@ -5190,6 +5155,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     background = special = true;
     weapon = w;
     base_multiplier *= 1.0 + p -> spec.frost_strike_2 -> effectN( 1 ).percent();
+    triggers_icecap = true;
   }
 
   double action_multiplier() const override
@@ -5207,8 +5173,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-
-    trigger_icecap( execute_state );
 
     if ( p() -> conduits.unleashed_frenzy->ok() )
     {
@@ -5693,6 +5657,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+    triggers_icecap;
 
     deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) +
                                   data().effectN ( 1 ).chain_target() +
@@ -5770,8 +5735,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
 
     death_knight_melee_attack_t::execute();
-
-    trigger_icecap( execute_state );
 
     if ( p() -> conduits.eradicating_blow->ok() )
     {
@@ -6266,10 +6229,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
-      p() -> burst_festering_wound( state, 1 );
-    }
+    p() -> burst_festering_wound( state -> target, 1 );
 
     if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
     {
@@ -6980,7 +6940,12 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     -> set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
     -> set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
 
-  // The buff isn't shown ingame, leave it visible in the sim
+  // Change the player's base armor multiplier
+  p -> base.armor_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).percent();
+
+  // This buff can only be applied on a 2H weapon, stacking mechanic is unknown territory
+
+  // The buff isn't shown ingame, leave it visible in the sim for clarity
   // p -> quiet = true;
 }
 
@@ -7010,15 +6975,21 @@ void runeforge::hysteria( special_effect_t& effect )
     return;
   }
 
-  // 2020-08-23: If the runeforge is applied on both weapons:
-  // 1. The RP cap increase is applied twice and
-  // 2. It seems that there are two independant procs for the buff (seen proc twice off the same action) even though it can't stack
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
 
-  p -> resources.base[ RESOURCE_RUNIC_POWER ] += p -> find_spell( effect.spell_id ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+  if ( ! p -> runeforge.rune_of_hysteria )
+  {
+    p -> runeforge.rune_of_hysteria = true;
+    p -> buffs.rune_of_hysteria = make_buff( p, "rune_of_hysteria", effect.driver() -> effectN( 1 ).trigger() )
+      -> set_default_value_from_effect( 1 );
+  }
 
-  effect.custom_buff = p -> runeforge.rune_of_hysteria;
-  p -> runeforge.rune_of_hysteria -> default_chance = 1.0;
+  // The RP cap increase stacks
+  p -> resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+
+  // The buff doesn't stack and doesn't have an increased effect
+  // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
+  effect.custom_buff = p -> buffs.rune_of_hysteria;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -7071,30 +7042,35 @@ void runeforge::spellwarding( special_effect_t& effect )
   }
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  // Stacking the rune seems to create a second proc object, and doubles the damage reduction
-  p -> runeforge.rune_of_spellwarding += p -> find_spell( effect.spell_id ) -> effectN( 2 ).percent();
-
-  struct spellwarding_absorb_t : public absorb_t
+  if ( ! p -> runeforge.rune_of_spellwarding )
   {
-    double health_percentage;
-    spellwarding_absorb_t( special_effect_t& effect ) :
-      absorb_t( "rune_of_spellwarding", static_cast<death_knight_t*>( effect.player ),
-                           effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() ),
-      health_percentage( effect.player -> find_spell( 326855 ) -> effectN( 2 ).percent() )
-      // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
+    struct spellwarding_absorb_t : public absorb_t
     {
-      target = player;
-      background = true;
-    }
+      double health_percentage;
+      spellwarding_absorb_t( special_effect_t& effect ) :
+        absorb_t( "rune_of_spellwarding", static_cast<death_knight_t*>( effect.player ),
+                             effect.driver() -> effectN( 1 ).trigger() ),
+        health_percentage( effect.player -> find_spell( 326855 ) -> effectN( 2 ).percent() )
+        // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
+      {
+        target = player;
+        background = true;
+      }
 
-    void execute() override
-    {
-      base_dd_min = base_dd_max = health_percentage * player -> resources.max[ RESOURCE_HEALTH ];
+      void execute() override
+      {
+        base_dd_min = base_dd_max = health_percentage * player -> resources.max[ RESOURCE_HEALTH ];
 
-      absorb_t::execute();
-    }
-  };
-  effect.execute_action = new spellwarding_absorb_t( effect );
+        absorb_t::execute();
+      }
+    };
+
+    p -> active_spells.runeforge_spellwarding = new spellwarding_absorb_t( effect );
+  }
+
+  // Stacking the rune doubles the damage reduction, and seems to create a second proc
+  p -> runeforge.rune_of_spellwarding += effect.driver() -> effectN( 2 ).percent();
+  effect.execute_action = p -> active_spells.runeforge_spellwarding;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -7150,9 +7126,9 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 {
   double actual_amount = player_t::resource_gain( resource_type, amount, g, action );
 
-  if ( resource_type == RESOURCE_RUNIC_POWER && runeforge.rune_of_hysteria -> up() )
+  if ( resource_type == RESOURCE_RUNIC_POWER && buffs.rune_of_hysteria -> up() )
   {
-    double bonus_rp = amount * runeforge.rune_of_hysteria -> data().effectN( 1 ).percent();
+    double bonus_rp = amount * buffs.rune_of_hysteria -> value();
     actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
   }
 
@@ -7541,7 +7517,7 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   }
 }
 
-void death_knight_t::burst_festering_wound( const action_state_t* state, unsigned n )
+void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
 {
   struct fs_burst_t : public event_t
   {
@@ -7598,17 +7574,12 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
     return;
   }
 
-  if ( ! state -> action -> result_is_hit( state -> result ) )
+  if ( ! get_target_data( target ) -> debuff.festering_wound -> up() )
   {
     return;
   }
 
-  if ( ! get_target_data( state -> target ) -> debuff.festering_wound -> up() )
-  {
-    return;
-  }
-
-  make_event<fs_burst_t>( *sim, this, state -> target, n );
+  make_event<fs_burst_t>( *sim, this, target, n );
 }
 
 // Launches the repeating event for the Inexorable Assault talent
@@ -7891,7 +7862,7 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   // Hysteria
   if ( util::str_compare_ci( name, "hysteria" ) )
     return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
-      return runeforge.rune_of_hysteria -> default_chance;
+      return runeforge.rune_of_hysteria;
     } );
 
   // Sanguination
@@ -8933,9 +8904,6 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) )
-            -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
-
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -8970,7 +8938,7 @@ void death_knight_t::create_buffs()
 
   buffs.hemostasis = make_buff( this, "hemostasis", talent.hemostasis -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.hemostasis )
-        -> set_default_value( talent.hemostasis -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+        -> set_default_value_from_effect( 1 );
 
   buffs.rune_tap = make_buff( this, "rune_tap", spec.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -8996,14 +8964,14 @@ void death_knight_t::create_buffs()
 
   buffs.gathering_storm = make_buff( this, "gathering_storm", find_spell( 211805 ) )
         -> set_trigger_spell( talent.gathering_storm )
-        -> set_default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
+        -> set_default_value_from_effect( 1 );
 
   buffs.hypothermic_presence = make_buff( this, "hypothermic_presence", talent.hypothermic_presence )
         -> set_default_value_from_effect( 1 );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> set_default_value( talent.icy_talons -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
@@ -9013,7 +8981,7 @@ void death_knight_t::create_buffs()
   buffs.killing_machine = make_buff( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
         -> set_trigger_spell( spec.killing_machine )
         -> set_chance( 1.0 )
-        -> set_default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
+        -> set_default_value_from_effect( 1 );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
   buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
@@ -9039,7 +9007,7 @@ void death_knight_t::create_buffs()
                    1 );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy_assault )
-        -> set_default_value( talent.unholy_assault -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
 
@@ -9073,7 +9041,7 @@ void death_knight_t::create_buffs()
   // Legendaries
 
   buffs.crimson_rune_weapon = make_buff( this, "crimson_rune_weapon", find_spell( 334526 ) )
-      -> set_default_value( find_spell( 334526 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_affects_regen( true )
       -> set_stack_change_callback( [ this ]( buff_t*, int, int )
            { _runes.update_coefficient(); } );
@@ -9360,18 +9328,6 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
 
   player_t::target_mitigation( school, type, state );
-}
-
-// death_knight_t::composite_armor_multiplier ===============================
-
-double death_knight_t::composite_armor_multiplier() const
-{
-  double am = player_t::composite_armor_multiplier();
-
-  if ( runeforge.rune_of_the_stoneskin_gargoyle )
-    am *= 1.0 + buffs.stoneskin_gargoyle -> data().effectN( 1 ).percent();
-
-  return am;
 }
 
 // death_knight_t::composite_bonus_armor =========================================
