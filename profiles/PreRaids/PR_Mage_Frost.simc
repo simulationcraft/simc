@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=2032021
 covenant=venthyr
-soulbind=nadjia,21:4/331586
+soulbind=nadjia,icy_propulsion:4/thrill_seeker
 
 # Default consumables
 potion=spectral_intellect
