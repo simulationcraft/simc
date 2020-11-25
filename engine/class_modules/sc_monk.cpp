@@ -5745,18 +5745,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
     if ( p()->conduit.calculated_strikes->ok() )
-    {
-      if ( p()->bugs )
-      {
-        // Bug: Mastery does not get applied if Calculated Strikes is applied
-        if ( p()->buff.combo_strikes->up() )
-          am /= 1 + p()->cache.mastery_value();
-        if ( p()->buff.hit_combo->up() )
-          am /= 1 + p()->buff.hit_combo->stack_value();
-      }
-      else
-        motc_multiplier += p()->conduit.calculated_strikes.percent();
-    }
+      motc_multiplier += p()->conduit.calculated_strikes.percent();
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
