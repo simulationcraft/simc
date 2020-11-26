@@ -9693,7 +9693,7 @@ void death_knight_t::default_apl_unholy()
   // AoE Burst Actions
   aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle|buff.swarming_mist.up", "AoE Burst" );
   aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle" );
-  aoe_burst -> add_action( this, "Epidemic", "if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle" );
+  aoe_burst -> add_action( this, "Epidemic", "if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle|target.time_to_die>5" );
   aoe_burst -> add_action( "wound_spender" );
   aoe_burst -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
 
