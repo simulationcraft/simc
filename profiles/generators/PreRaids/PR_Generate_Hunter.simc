@@ -4,7 +4,7 @@ race=orc
 spec=beast_mastery
 role=attack
 position=ranged_back
-talents=2102012
+talents=2102013
 
 covenant=night_fae
 soulbind=grove_invigoration/bloodletting:4
