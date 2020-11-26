@@ -3488,7 +3488,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
-    background = p -> options.disable_aotd;
+    if ( p -> options.disable_aotd )
+      background = true;
 
     // If used during precombat, army is cast around X seconds before the fight begins
     // This is done to save rune regeneration time once the fight starts
@@ -4423,7 +4424,8 @@ struct death_and_decay_t : public death_and_decay_base_t
     parse_options( options_str );
 
     // Disable when Defile or Death's Due are taken
-    background = p -> talent.defile -> ok() || p -> covenant.deaths_due -> ok();
+    if ( p -> talent.defile -> ok() || p -> covenant.deaths_due -> ok() )
+      background = true;
   }
 
   void execute() override
@@ -4463,7 +4465,8 @@ struct deaths_due_t : public death_and_decay_base_t
     parse_options( options_str );
 
     // Disable when Defile is taken
-    background = p -> talent.defile -> ok();
+    if ( p -> talent.defile -> ok() )
+      background = true;
   }
 
   void execute() override
@@ -6286,7 +6289,8 @@ struct scourge_strike_t : public scourge_strike_base_t
     add_child( scourge_strike_shadow );
 
     // Disable when Clawing Shadows is talented
-    background = p -> talent.clawing_shadows -> ok();
+    if ( p -> talent.clawing_shadows -> ok() )
+      background = true;
   }
 
   void impact( action_state_t* state ) override
@@ -7152,7 +7156,7 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 {
   double actual_amount = player_t::resource_gain( resource_type, amount, g, action );
 
-  if ( resource_type == RESOURCE_RUNIC_POWER && buffs.rune_of_hysteria -> up() )
+  if ( runeforge.rune_of_hysteria && resource_type == RESOURCE_RUNIC_POWER )
   {
     double bonus_rp = amount * buffs.rune_of_hysteria -> value();
     actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
