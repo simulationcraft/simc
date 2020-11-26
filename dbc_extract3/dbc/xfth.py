@@ -100,6 +100,18 @@ class XFTHParser(DBCParserBase):
     def compute_block_offsets(self):
         return len(self.data)
 
+    def parse_header(self):
+        if not super().parse_header():
+            return False
+
+        if self.build != self.options.build.build():
+            logging.error('Invalid hotfix file build version %d, expected %d' % (
+                self.build, self.options.build.build()
+            ))
+            return False
+
+        return True
+
     def parse_blocks(self):
         entry_unpacker = struct.Struct('<4sIIIIB3s')
 
