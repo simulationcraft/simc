@@ -145,12 +145,13 @@ class DataStore:
 
     def __apply_hotfixes(self, dbc_parser, database):
         for record, hotfix_header in self.cache.entries(dbc_parser):
-            if hotfix_header['state'] == HotfixType.REMOVED and database[hotfix_header['record_id']].id:
-                if self.options.debug:
-                    logging.debug('%s REMOVE: %s', dbc_parser.file_name(),
-                            database[hotfix_header['record_id']])
+            if hotfix_header['state'] == HotfixType.REMOVED:
+                if database[hotfix_header['record_id']].id:
+                    if self.options.debug:
+                        logging.debug('%s REMOVE: %s', dbc_parser.file_name(),
+                                database[hotfix_header['record_id']])
 
-                del database[hotfix_header['record_id']]
+                    del database[hotfix_header['record_id']]
 
                 continue
 
@@ -169,6 +170,11 @@ class DataStore:
 
                 if hotfix_data:
                     record._flags = hotfix_data
+                    # Remove old entry before adding the replaced entry in so
+                    # references get updated properly
+                    if record.id in database:
+                        del database[record.id]
+
                     database[record.id] = record
             except Exception as e:
                 logging.error('Error while parsing %s: record=%s, error=%s',
