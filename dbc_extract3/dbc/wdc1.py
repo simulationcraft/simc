@@ -121,8 +121,8 @@ class WDC1HotfixKeyIdParser:
         elif bytes_left == 1:
             unpacker = self.u8
         else:
-            raise ValueError('Unknown key field length {} in {}'.format(bytes_left,
-                self.record_parser.parser()))
+            raise ValueError('Unknown key field length {} (offset={}, id={}, file={})'.format(bytes_left,
+                offset, id, self.record_parser.parser()))
 
         return unpacker.unpack_from(data, offset)
 
