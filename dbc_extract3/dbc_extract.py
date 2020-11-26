@@ -212,7 +212,7 @@ elif options.type == 'view':
             if id in replaced_ids:
                 continue
 
-            print('{} [hotfix/add]'.format(entry))
+            print('{} [hotfix/add]'.format(entry[0]))
     else:
         if id in entries:
             record = entries[id]
