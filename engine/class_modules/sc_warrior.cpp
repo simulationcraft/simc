@@ -6953,7 +6953,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_exploiter = make_buff( *this , "exploiter", p.find_spell( 335452 ) )
                                ->set_default_value( ( (player_t *)(&p))->covenant->id() == (unsigned int)covenant_e::VENTHYR
-                                 ? p.find_spell( 335452 )->effectN( 1 ).percent()
+                                 ? p.find_spell( 335451 )->effectN( 1 ).percent() + p.covenant.condemn_driver->effectN( 6 ).percent()
                                  : p.find_spell( 335451 )->effectN( 1 ).percent() )
                                ->set_duration( p.find_spell( 335452 )->duration() )
                                ->set_cooldown( timespan_t::zero() );
