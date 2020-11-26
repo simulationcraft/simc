@@ -551,6 +551,8 @@ public:
 
     const spell_data_t* shadow_focus;
 
+    const spell_data_t* soothing_darkness;
+
     const spell_data_t* enveloping_shadows;
     const spell_data_t* dark_shadow;
 
@@ -5411,15 +5413,40 @@ struct subterfuge_t : public buff_t
   }
 };
 
+struct soothing_darkness_t : public actions::rogue_heal_t
+{
+  soothing_darkness_t( util::string_view name, rogue_t* p ) :
+    rogue_heal_t( name, p, p->find_spell( 158188 ) )
+  {
+    // Treat this as direct to avoid duration issues
+    direct_tick = true;
+    may_crit = false;
+    dot_duration = timespan_t::zero();
+    base_pct_heal = p->talent.soothing_darkness->effectN( 1 ).percent();
+    base_dd_min = base_dd_max = 1; // HAX: Make it always heal at least one to allow procing herbs.
+  }
+};
+
 template <typename BuffBase>
 struct stealth_like_buff_t : public BuffBase
 {
   using base_t = stealth_like_buff_t<BuffBase>;
   rogue_t* rogue;
+  soothing_darkness_t* soothing_darkness;
 
   stealth_like_buff_t( rogue_t* r, util::string_view name, const spell_data_t* spell ) :
-    BuffBase( r, name, spell ), rogue( r )
-  { }
+    BuffBase( r, name, spell ), rogue( r ), soothing_darkness( nullptr )
+  {
+    if ( r->talent.soothing_darkness->ok() || r->bugs )
+    {
+      soothing_darkness = r->get_background_action<soothing_darkness_t>( "soothing_darkness" );
+      bb::set_period( soothing_darkness->data().effectN( 2 ).period() );
+      bb::set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        soothing_darkness->set_target( rogue );
+        soothing_darkness->execute();
+      } );
+    }
+  }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
@@ -5572,6 +5599,7 @@ struct slice_and_dice_t : public buff_t
       may_crit = false;
       dot_duration = timespan_t::zero();
       base_pct_heal = p->conduit.recuperator.percent();
+      base_dd_min = base_dd_max = 1; // HAX: Make it always heal at least one even without conduit, to allow procing herbs.
       base_costs.fill( 0 );
     }
   };
@@ -7965,6 +7993,8 @@ void rogue_t::init_spells()
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
+
+  talent.soothing_darkness  = find_talent_spell( "Soothing Darkness" );
 
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
