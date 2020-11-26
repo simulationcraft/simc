@@ -1,29 +1,31 @@
-# hunter="PR_Hunter_Beast_Mastery"
-# level=120
-# race=orc
-# spec=beast_mastery
-# role=attack
-# position=ranged_back
-# talents=1303011
+hunter="PR_Hunter_Beast_Mastery"
+level=60
+race=orc
+spec=beast_mastery
+role=attack
+position=ranged_back
+talents=2102012
 
-# head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulder=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
-# back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
-# chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
-# wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
-# hands=linked_pummeler_grips,id=159357,bonus_id=4779/1512/4786
-# waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786
-# legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
-# feet=shellkickers,id=158356,bonus_id=4779/1512/4786
-# finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# finger2=band_of_the_roving_scalawag,id=162541,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-# trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
-# main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
+covenant=night_fae
+soulbind=grove_invigoration/bloodletting:4
 
-# save=PR_Hunter_Beast_Mastery.simc
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulders=umbrahide_pauldrons,id=172319,bonus_id=7005/6647/6649,ilevel=190
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498
+hands=hakkari_revenants_grips,id=179325,bonus_id=6807/1498
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498
+feet=boots_of_shuddering_matter,id=178796,bonus_id=6807/1498,enchant=agile_soulwalker
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+trinket1=overcharged_anima_battery,id=180116,bonus_id=6807/1498
+trinket2=empyreal_ordnance,id=180117,bonus_id=6807/1498
+main_hand=the_philosopher,id=180112,bonus_id=6807/1498,enchant=celestial_guidance
 
+save=PR_Hunter_Beast_Mastery.simc
 
 # hunter="PR_Hunter_Marksmanship"
 # level=120
