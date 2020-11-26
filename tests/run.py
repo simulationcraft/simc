@@ -41,7 +41,7 @@ def test_talents(klass: str, path: str):
         for talents in talent_combinations(klass):
             talent_name = get_talent_name(spec, talents)
             Test('{:<40} ({})'.format(talent_name, talents),
-                 group=grp, args=[('talents', talents)])
+                 group=grp, args=[('talents', talents), ('level', 60)])
 
 
 def test_covenants(klass: str, path: str):
@@ -73,7 +73,7 @@ def test_trinkets(klass: str, path: str):
     tests.append(grp)
     for trinket in trinkets:
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
-            ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel))])
+            ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel)), ('level', 60)])
 
 
 def test_legendaries(klass: str, path: str):
@@ -85,7 +85,7 @@ def test_legendaries(klass: str, path: str):
         tests.append(grp)
         for legendary in legendaries:
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
-                ('trinket1', '{},bonus_id={}'.format(legendary.full_name, legendary.bonus_id))])
+                ('trinket1', '{},bonus_id={}'.format(legendary.full_name, legendary.bonus_id)), ('level', 60)])
 
 
 def test_soulbinds(klass: str, path: str):
