@@ -446,6 +446,7 @@ public:
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* hemostasis;
+    buff_t* ossuary;
     buff_t* rune_tap;
     buff_t* vampiric_blood;
     buff_t* voracious;
@@ -4748,13 +4749,11 @@ struct death_strike_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t* oh_attack;
   death_strike_heal_t* heal;
-  double ossuary_cost_reduction;
 
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> spec.death_strike ),
     oh_attack( nullptr ),
-    heal( new death_strike_heal_t( p ) ),
-    ossuary_cost_reduction( p -> find_spell( 219788 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+    heal( new death_strike_heal_t( p ) )
   {
     parse_options( options_str );
     may_parry = false;
@@ -4803,11 +4802,7 @@ struct death_strike_t : public death_knight_melee_attack_t
   {
     double c = death_knight_melee_attack_t::cost();
 
-    if ( p() -> spec.ossuary -> ok() &&
-         p() -> buffs.bone_shield -> stack() >= p() -> spec.ossuary -> effectN( 1 ).base_value() )
-    {
-      c += ossuary_cost_reduction;
-    }
+    c += p() -> buffs.ossuary -> value();
 
     return c;
   }
@@ -8143,7 +8138,7 @@ void death_knight_t::init_base_stats()
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
 
   if ( spec.ossuary -> ok() )
-    resources.base [ RESOURCE_RUNIC_POWER ] += ( spec.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
+    resources.base [ RESOURCE_RUNIC_POWER ] += spec.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -8950,6 +8945,16 @@ void death_knight_t::create_buffs()
 
               recalculate_resource_max( RESOURCE_HEALTH );
             }
+
+            // Trigger/cancel ossuary
+            // Trigger is done regardless of current stacks to feed the 'refresh' data, but requires a stack gain
+            if ( spec.ossuary -> ok() && new_stacks > old_stacks &&
+                 new_stacks >= spec.ossuary -> effectN( 1 ).base_value() )
+              buffs.ossuary -> trigger();
+            // Only expire if the buff is already up
+            else if ( buffs.ossuary -> up() && new_stacks < spec.ossuary -> effectN( 1 ).base_value() )
+              buffs.ossuary -> expire();
+
             // If the buff starts or expires, invalidate relevant caches
             if ( ( ! old_stacks && new_stacks ) || ( old_stacks && ! new_stacks ) )
             {
@@ -8960,6 +8965,11 @@ void death_knight_t::create_buffs()
           } )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
         -> set_cooldown( 0_ms );
+
+  buffs.ossuary = make_buff( this, "ossuary", find_spell( 219788 ) )
+        -> set_default_value_from_effect( 1, 0.1 );
+
+  sim -> print_log( "LOOKING AT OSSUARY DATA: effect#1 has a miscvalue1 of {}", find_spell( 219788 ) -> effectN( 1 ).misc_value1() );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
         -> set_trigger_spell( spec.crimson_scourge );
