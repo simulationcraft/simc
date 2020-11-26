@@ -1066,7 +1066,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       buffs[ STAT_NONE ] = nullptr;
       for ( unsigned i = 0; i < ratings.size(); i++ )
       {
-        util::string_view name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( ratings[ i ] );
+        auto name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( ratings[ i ] );
         stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, name ) );
         if ( !buff )
         {
