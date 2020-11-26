@@ -6473,6 +6473,7 @@ void hunter_t::apl_surv()
   apst -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7" );
   apst -> add_action( "flayed_shot" );
   apst -> add_action( "resonating_arrow" );
+  apst -> add_action( "wild_spirits" );
   apst -> add_action( "coordinated_assault" );
   apst -> add_action( "kill_shot" );
   apst -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
