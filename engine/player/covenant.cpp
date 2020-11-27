@@ -643,7 +643,9 @@ bool parse_blizzard_covenant_information( player_t*               player,
     return true;
   }
 
-  auto covenant = util::parse_covenant_string( covenant_data[ "chosen_covenant" ][ "name" ].GetString() );
+  std::string covenant_str = covenant_data[ "chosen_covenant" ][ "name" ].GetString();
+  util::tokenize( covenant_str );
+  auto covenant = util::parse_covenant_string( covenant_str );
   if ( covenant == covenant_e::INVALID )
   {
     return false;
