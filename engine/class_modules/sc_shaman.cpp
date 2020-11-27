@@ -5813,6 +5813,7 @@ struct wind_shear_t : public shaman_spell_t
   {
     may_miss = may_crit   = false;
     ignore_false_positive = true;
+    is_interrupt = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -9061,12 +9062,15 @@ void shaman_t::init_action_list_elemental()
   } else if (options.rotation == ROTATION_SIMPLE) {
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
     action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
+
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
     def->add_action( "use_items" );
     def->add_action( this, "Flame Shock", "if=!ticking" );
     def->add_action( this, "Fire Elemental" );
     def->add_talent( this, "Storm Elemental" );
+    def->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active&!pet.storm_elemental.active" );
+
     // Racials
     def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
@@ -9075,7 +9079,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
     // Covenants
-    def->add_action( "primordial_wave,if=covenant.necrolord" );
+    def->add_action( "primordial_wave,if=covenant.necrolord&!buff.primordial_wave.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
     def->add_action( "chain_harvest,if=covenant.venthyr" );
     def->add_action( "fae_transfusion,if=covenant.night_fae" );
@@ -9083,15 +9087,17 @@ void shaman_t::init_action_list_elemental()
     // Pick APL to run
     def->add_action(
         "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
-    def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
+    def->add_action( "run_action_list,name=single_target" );
 
     // Aoe APL
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
-    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
+    aoe->add_action( this, "Earth Shock", "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
+    aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_action( this, "Earthquake" );
+    aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
     aoe->add_action( this, "Chain Lightning" );
     aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     aoe->add_action( this, "Frost Shock", "moving=1" );
@@ -9108,7 +9114,6 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Earthquake", "if=(spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)" );
     single_target->add_action( this, "Earth Shock" );
-    single_target->add_action( "lightning_lasso" );
     single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     single_target->add_talent( this, "Icefury", "if=talent.icefury.enabled" );
     single_target->add_action( this, "Lightning Bolt" );
