@@ -389,7 +389,7 @@ std::string covenant_state_t::soulbind_option_str() const
     b.emplace_back( fmt::format( "{}", spell_id ) );
   } );
 
-  return fmt::format( "soulbind={}", util::string_join( b, "/" ) );
+  return fmt::format( "soulbind={},{}", m_soulbind_id, util::string_join( b, "/" ) );
 }
 
 std::string covenant_state_t::covenant_option_str() const
@@ -632,6 +632,77 @@ action_t* create_action( player_t* player, util::string_view name, const std::st
   if ( util::str_compare_ci( name, "fleshcraft" ) ) return new fleshcraft_t( player, options );
 
   return nullptr;
+}
+
+bool parse_blizzard_covenant_information( player_t*               player,
+                                          const rapidjson::Value& covenant_data )
+{
+  if ( !covenant_data.HasMember( "chosen_covenant" ) ||
+       !covenant_data[ "chosen_covenant" ].HasMember( "name" ) )
+  {
+    return true;
+  }
+
+  auto covenant = util::parse_covenant_string( covenant_data[ "chosen_covenant" ][ "name" ].GetString() );
+  if ( covenant == covenant_e::INVALID )
+  {
+    return false;
+  }
+
+  player->covenant->set_type( covenant );
+
+  if ( !covenant_data.HasMember( "soulbinds" ) || !covenant_data[ "soulbinds" ].IsArray() )
+  {
+    return true;
+  }
+
+  for ( auto i = 0u; i < covenant_data[ "soulbinds" ].Size(); ++i )
+  {
+    const auto& soulbind = covenant_data[ "soulbinds" ][ i ];
+    if ( !soulbind[ "is_active" ].GetBool() )
+    {
+      continue;
+    }
+
+    std::string soulbind_name = soulbind[ "soulbind" ][ "name" ].GetString();
+    util::tokenize( soulbind_name );
+    unsigned soulbind_id = soulbind[ "soulbind" ][ "id" ].GetUint();
+
+    player->covenant->set_soulbind_id( fmt::format( "{}:{}", soulbind_name, soulbind_id ) );
+
+    for ( auto trait_idx = 0u; trait_idx < soulbind[ "traits" ].Size(); ++trait_idx )
+    {
+      const auto& entry = soulbind[ "traits" ][ trait_idx ];
+      // Soulbind spell
+      if ( entry.HasMember( "trait" ) )
+      {
+        auto data_entry = soulbind_ability_entry_t::find(
+            entry[ "trait" ][ "name" ].GetString(), player->dbc->ptr );
+        if ( !data_entry.spell_id )
+        {
+          continue;
+        }
+
+        player->covenant->add_soulbind( data_entry.spell_id );
+      }
+      // Conduit
+      else
+      {
+        const auto& conduit = entry[ "conduit_socket" ];
+        if ( !conduit.HasMember( "socket" ) )
+        {
+          continue;
+        }
+
+        player->covenant->add_conduit( conduit[ "socket" ][ "conduit" ][ "id" ].GetUint(),
+            conduit[ "socket" ][ "rank" ].GetUint() - 1 );
+      }
+    }
+
+    break;
+  }
+
+  return true;
 }
 
 }  // namespace covenant
