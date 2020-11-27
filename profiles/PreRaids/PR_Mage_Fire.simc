@@ -193,7 +193,7 @@ actions.standard_rotation+=/fireball
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498
+shoulders=grimveiled_spaulders,id=173247,bonus_id=6932/6716/6649/6650/1487
 back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
 chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
 wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
@@ -201,19 +201,19 @@ hands=mitts_of_flawless_duplication,id=178930,bonus_id=6807/1498
 waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
 legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6716/6932/6649/6650/1532,ilevel=190,enchant=tenet_of_haste
-finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=unbound_changeling,id=178708,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=empyreal_ordnance,id=180117,bonus_id=6807/1498
 main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revelation
 off_hand=deathwalkers_promise,id=178868,bonus_id=6807/1498
 
 # Gear Summary
 # gear_ilvl=184.38
-# gear_stamina=856
-# gear_intellect=773
-# gear_crit_rating=73
-# gear_haste_rating=823
-# gear_mastery_rating=161
-# gear_versatility_rating=319
-# gear_armor=291
+# gear_stamina=857
+# gear_intellect=724
+# gear_crit_rating=178
+# gear_haste_rating=695
+# gear_mastery_rating=269
+# gear_versatility_rating=306
+# gear_armor=292
