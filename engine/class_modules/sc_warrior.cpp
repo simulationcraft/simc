@@ -2647,10 +2647,14 @@ struct execute_arms_t : public warrior_attack_t
   {
     double c = max_rage;
 
-    if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
+    if ( !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
       c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
       c = ( c / max_rage ) * 40;
+    }
+    else
+    {
+      c = 0;
     }
     if ( sim->log )
     {
@@ -4679,6 +4683,7 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
 
 struct arms_whirlwind_parent_t : public warrior_attack_t
 {
+  double max_rage;
   slam_t* fervor_slam;
   first_arms_whirlwind_mh_t* first_mh_attack;
   arms_whirlwind_mh_t* mh_attack;
@@ -4738,6 +4743,22 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     if ( p()->talents.fervor_of_battle->ok() && p()->buff.crushing_assault->check() )
       return 10;
     return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    double c = max_rage;
+
+    if ( p()->buff.deadly_calm->check() )
+    {
+      c = 0;
+    }
+    if ( sim->log )
+    {
+      sim->out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
+                             name(), c, cost() );
+    }
+    return c;
   }
 
   void tick( dot_t* d ) override
@@ -4877,6 +4898,10 @@ struct condemn_arms_t : public warrior_attack_t
     {
       c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
       c = ( c / max_rage ) * 40;
+    }
+    else
+    {
+      c = 0;
     }
     if ( sim->log )
     {
