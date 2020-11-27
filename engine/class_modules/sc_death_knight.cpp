@@ -2545,6 +2545,18 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
 
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    o() -> buffs.dancing_rune_weapon -> trigger();
+  }
+
+  void demise() override
+  {
+    death_knight_pet_t::demise();
+    o() -> buffs.dancing_rune_weapon -> expire();
+  }
+
   attack_t* create_auto_attack() override
   { return new auto_attack_melee_t<dancing_rune_weapon_pet_t>( this ); }
 };
@@ -3657,7 +3669,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute();
@@ -4025,6 +4037,8 @@ struct dancing_rune_weapon_buff_t : public buff_t
     buff_t( p, "dancing_rune_weapon", p -> find_spell( 81256 ) )
   {
     cooldown -> duration = 0_ms; // Handled by the ability
+    base_buff_duration = 0_ms; // Uptime handled by the pet
+    set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
     add_invalidate( CACHE_PARRY );
   }
 
@@ -4053,9 +4067,6 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.dancing_rune_weapon -> trigger();
-    if ( p() -> conduits.meat_shield -> ok () )
-      p() -> buffs.dancing_rune_weapon -> extend_duration(p(), p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
   }
@@ -4493,7 +4504,7 @@ struct deaths_caress_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute();
@@ -4816,7 +4827,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( oh_attack )
       oh_attack -> execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute();
@@ -5339,7 +5350,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
@@ -5607,7 +5618,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> set_target(  target );
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute();
@@ -8969,8 +8980,6 @@ void death_knight_t::create_buffs()
   buffs.ossuary = make_buff( this, "ossuary", find_spell( 219788 ) )
         -> set_default_value_from_effect( 1, 0.1 );
 
-  sim -> print_log( "LOOKING AT OSSUARY DATA: effect#1 has a miscvalue1 of {}", find_spell( 219788 ) -> effectN( 1 ).misc_value1() );
-
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
         -> set_trigger_spell( spec.crimson_scourge );
 
@@ -9476,7 +9485,7 @@ double death_knight_t::composite_parry() const
   double parry = player_t::composite_parry();
 
   if ( buffs.dancing_rune_weapon -> up() )
-    parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
+    parry += buffs.dancing_rune_weapon -> value();
 
   return parry;
 }
