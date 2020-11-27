@@ -7012,18 +7012,11 @@ void rogue_t::init_action_list()
   // Make restealth first action in the default list.
   def->add_action( this, "Stealth", "", "Restealth if possible (no vulnerable enemies in combat)" );
 
-  // Reaping Flames Generic Lines
-  const std::string reaping_flames_comment = "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies.";
-  const std::string reaping_flames_condition = "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die";
-  const std::string reaping_flames_action = "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))";
-
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     // Pre-Combat
     precombat->add_action( this, "Stealth" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( "guardian_of_azeroth,if=talent.exsanguinate.enabled" );
 
     // Main Rotation
     def->add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
@@ -7042,23 +7035,17 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( "flagellation" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
-    cds->add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up" );
-    cds->add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( "variable,name=vendetta_subterfuge_condition,value=!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1&(spell_targets.fan_of_knives<6|!cooldown.vanish.up)", "Vendetta logical conditionals based on current spec" );
-    cds->add_action( "variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled" );
-    cds->add_action( "variable,name=variable,name=vendetta_font_condition,value=!equipped.azsharas_font_of_power|azerite.shrouded_suffocation.enabled|debuff.razor_coral_debuff.down|trinket.ashvanes_razor_coral.cooldown.remains<10&(cooldown.shiv.remains<1|debuff.shiv.up)" );
-    cds->add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_subterfuge_condition&variable.vendetta_nightstalker_condition&variable.vendetta_font_condition" );
+    cds->add_action( "variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled", "Vendetta logical conditionals based on current spec" );
+    cds->add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition" );
     cds->add_action( this, "Vanish", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1", "Vanish with Exsg + Nightstalker: Maximum CP and Exsg ready for next GCD" );
-    cds->add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&effective_combo_points>=cp_max_spend&(debuff.vendetta.up|essence.vision_of_perfection.enabled)", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up (unless using VoP)" );
-    cds->add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
+    cds->add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&effective_combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds->add_action( "pool_resource,for_next=1,extra_amount=45" );
-    cds->add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    cds->add_action( this, "Vanish", "if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin.equipped)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
-    cds->add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
+    cds->add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)&raid_event.adds.in>12" );
+    cds->add_action( this, "Vanish", "if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin.equipped)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&debuff.shiv.up", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB" );
     cds->add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    cds->add_action( this, "Shiv", "if=level>=58&(dot.rupture.ticking|dot.sepsis.ticking)&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
+    cds->add_action( this, "Shiv", "if=dot.rupture.ticking|dot.sepsis.ticking" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
@@ -7067,61 +7054,34 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=debuff.vendetta.up" );
     cds->add_action( "ancestral_call,if=debuff.vendetta.up" );
 
-    cds->add_action( "use_item,name=galecallers_boon,if=(debuff.vendetta.up|(!talent.exsanguinate.enabled&cooldown.vendetta.remains>45|talent.exsanguinate.enabled&(cooldown.exsanguinate.remains<6|cooldown.exsanguinate.remains>20&fight_remains>65)))&!exsanguinated.rupture" );
-    cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|target.time_to_die<20" );
-    cds->add_action( "use_item,name=ashvanes_razor_coral,if=(!talent.exsanguinate.enabled|!talent.subterfuge.enabled)&debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power" );
-    cds->add_action( "use_item,name=ashvanes_razor_coral,if=(talent.exsanguinate.enabled&talent.subterfuge.enabled)&debuff.vendetta.up&(exsanguinated.garrote|azerite.shrouded_suffocation.enabled&dot.garrote.pmultiplier>1)" );
-    cds->add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.shiv.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
-    cds->add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
-    cds->add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
     cds->add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
     cds->add_action( "use_item,effect_name=gladiators_badge,if=debuff.vendetta.up" );
     cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
-
-    // Azerite Essences
-    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-    essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!debuff.vendetta.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-    essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(exsanguinated.garrote|debuff.shiv.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Hold for Exsanguinate. Use with TB up before a finisher as long as it runs for 10s during Vendetta." );
-    essences->add_action( "guardian_of_azeroth,if=cooldown.vendetta.remains<3|debuff.vendetta.up|target.time_to_die<30", "Attempt to align Guardian with Vendetta as long as it won't result in losing a full-value cast over the remaining duration of the fight" );
-    essences->add_action( "guardian_of_azeroth,if=floor((target.time_to_die-30)%cooldown)>floor((target.time_to_die-30-cooldown.vendetta.remains)%cooldown)" );
-    essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60&energy<70" );
-    essences->add_action( "purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
-    essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-    essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
-    essences->add_action( reaping_flames_action );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
     stealthed->add_talent( this, "Crimson Tempest", "if=talent.nightstalker.enabled&spell_targets>=3&combo_points>=4&target.time_to_die-remains>6", "Nighstalker on 3T: Crimson Tempest" );
     stealthed->add_action( this, "Rupture", "if=talent.nightstalker.enabled&combo_points>=4&target.time_to_die-remains>6", "Nighstalker on 1T: Snapshot Rupture" );
-    stealthed->add_action( "pool_resource,for_next=1", "Subterfuge + Shrouded Suffocation: Ensure we use one global to apply Garrote to the main target if it is not snapshot yet, so all other main target abilities profit." );
-    stealthed->add_action( this, "Garrote", "if=azerite.shrouded_suffocation.enabled&buff.subterfuge.up&buff.subterfuge.remains<1.3&!ss_buffed" );
     stealthed->add_action( "pool_resource,for_next=1", "Subterfuge: Apply or Refresh with buffed Garrotes" );
     stealthed->add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&(remains<12|pmultiplier<=1)&target.time_to_die-remains>2" );
-    stealthed->add_action( this, "Rupture", "if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking&variable.single_target", "Subterfuge + Shrouded Suffocation in ST: Apply early Rupture that will be refreshed for pandemic" );
-    stealthed->add_action( "pool_resource,for_next=1", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and/or extended snapshot duration." );
-    stealthed->add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&(active_enemies>1|!talent.exsanguinate.enabled)&target.time_to_die>remains&(remains<18|!ss_buffed)" );
     stealthed->add_action( "pool_resource,for_next=1", "Subterfuge + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
     stealthed->add_action( this, "Garrote", "if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3" );
 
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
     dot->add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)", "Limit Garrotes on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
-    dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|(poisoned_bleeds>5&!azerite.scent_of_blood.enabled))", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
+    dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|poisoned_bleeds>5)", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
     dot->add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
     dot->add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
     dot->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
     dot->add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot->add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>4&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
+    dot->add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0" );
     dot->add_action( "pool_resource,for_next=1" );
-    dot->add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>12&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
+    dot->add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0" );
     dot->add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&effective_combo_points>=4", "Crimson Tempest on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
-    dot->add_action( this, "Rupture", "if=!variable.skip_rupture&(effective_combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
-    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4" );
-    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&master_assassin_remains=0&!azerite.twist_the_knife.enabled&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA/TtK" );
+    dot->add_action( this, "Rupture", "if=!variable.skip_rupture&(effective_combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
+    dot->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>4" );
+    dot->add_talent( this, "Crimson Tempest", "if=spell_targets=1&effective_combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&master_assassin_remains=0&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA" );
     dot->add_action( "sepsis" );
 
     // Direct damage abilities
@@ -7129,8 +7089,7 @@ void rogue_t::init_action_list()
     direct->add_action( this, "Envenom", "if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
     direct->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up" );
-    direct->add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
-    direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
+    direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
     direct->add_action( "echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10" );
     direct->add_action( this, "Ambush", "if=variable.use_filler" );
@@ -7143,8 +7102,6 @@ void rogue_t::init_action_list()
     precombat->add_action( this, "Stealth", "if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
     precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
 
     // Main Rotation
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)", "Reroll single BT/GM/TB buffs when possible" );
@@ -7152,7 +7109,7 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def->add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def->add_action( "call_action_list,name=cds" );
-    def->add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))*(azerite.ace_up_your_sleeve.rank<2|!cooldown.between_the_eyes.up)|combo_points=animacharged_cp", "Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second. Always max BtE with 2+ Ace." );
+    def->add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))|combo_points=animacharged_cp", "Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second." );
     def->add_action( "call_action_list,name=build" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def->add_action( "arcane_pulse" );
@@ -7161,10 +7118,9 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
-    cds->add_action( "call_action_list,name=essences,if=!stealthed.all" );
     cds->add_action( "flagellation" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
-    cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
+    cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)" );
     cds->add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
@@ -7184,24 +7140,7 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood" );
     cds->add_action( "ancestral_call" );
 
-    cds->add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5" );
-    cds->add_action( "use_item,name=azsharas_font_of_power,if=!buff.adrenaline_rush.up&!buff.blade_flurry.up&cooldown.adrenaline_rush.remains<15" );
-    cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<32&target.health.pct>=30|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=20-10*debuff.blood_of_the_enemy.up|target.time_to_die<60)&buff.adrenaline_rush.remains>18", "Very roughly rule of thumbified maths below: Use for Inkpod crit, otherwise with AR at 20+ stacks or 10+ with also Blood up." );
     cds->add_action( "use_items,if=buff.bloodlust.react|fight_remains<=20|combo_points.deficit<=2", "Default fallback for usable items." );
-
-    // Azerite Essences
-    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-    essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!buff.blade_flurry.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-    essences->add_action( "blood_of_the_enemy,if=variable.blade_flurry_sync&cooldown.between_the_eyes.up&(spell_targets.blade_flurry>=2|raid_event.adds.in>45)" );
-    essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60&!buff.adrenaline_rush.up" );
-    essences->add_action( "purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60" );
-    essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-    essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
-    essences->add_action( reaping_flames_action );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -7231,7 +7170,6 @@ void rogue_t::init_action_list()
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
     precombat->add_action( this, "Shadow Blades", "if=runeforge.mark_of_the_master_assassin.equipped" );
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
     def->add_action( "variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=6", "Used to determine whether cooldowns wait for SnD based on targets." );
@@ -7258,12 +7196,11 @@ void rogue_t::init_action_list()
     cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped&combo_points.deficit<=3|runeforge.deathly_shadows.equipped&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
-    cds->add_action( "call_action_list,name=essences,if=!stealthed.all&variable.snd_condition|essence.breath_of_the_dying.major&time>=2" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1" );
-    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2" );
@@ -7278,25 +7215,7 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=buff.symbols_of_death.up" );
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
-    cds->add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&variable.snd_condition&!buff.symbols_of_death.up&energy.deficit>=30" );
-    cds->add_action( "use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10" );
-    cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<32&target.health.pct>=30|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=25-10*debuff.blood_of_the_enemy.up|fight_remains<40)&buff.symbols_of_death.remains>8", "Very roughly rule of thumbified maths below: Use for Inkpod crit, otherwise with SoD at 25+ stacks or 15+ with also Blood up." );
-    cds->add_action( "use_item,name=mydas_talisman" );
     cds->add_action( "use_items,if=buff.symbols_of_death.up|fight_remains<20", "Default fallback for usable items: Use with Symbols of Death." );
-
-    // Azerite Essences
-    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-    essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!buff.symbols_of_death.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-    essences->add_action( "blood_of_the_enemy,if=!cooldown.shadow_blades.up&cooldown.symbols_of_death.up|fight_remains<=10" );
-    essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam,if=(spell_targets.shuriken_storm>=2|raid_event.adds.in>60)&!cooldown.symbols_of_death.up&!buff.symbols_of_death.up&energy.deficit>=30" );
-    essences->add_action( "purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60" );
-    essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-    essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance,if=cooldown.symbols_of_death.remains<5|fight_remains<18" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
-    essences->add_action( reaping_flames_action );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
@@ -7316,10 +7235,8 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5" );
-    stealthed->add_action( this, "Shadowstrike", "if=level<52&debuff.find_weakness.remains<1&target.time_to_die-remains>6", "For pre-patch, keep Find Weakness up on the primary target due to no Shadow Vault" );
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
-    stealthed->add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
-    stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
+    stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
     stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.premeditation.up|buff.the_rotten.up|runeforge.akaaris_soul_fragment.equipped&conduit.deeper_daggers.rank>=7)" );
     stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
     stealthed->add_talent( this, "Gloomblade", "if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
@@ -7339,7 +7256,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade.equipped&spell_targets.shuriken_storm<5" );
-    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)" );
+    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2" );
     build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.charges_fractional>=2.75|soulbind.lead_by_example.enabled&!buff.lead_by_example.up" );
     build->add_talent( this, "Gloomblade" );
     build->add_action( this, "Backstab" );
