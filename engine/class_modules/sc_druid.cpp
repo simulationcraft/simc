@@ -5997,7 +5997,8 @@ struct wrath_t : public druid_spell_t
   double gcd_mul;
 
   wrath_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str )
+    : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str ),
+      count( 0 )
   {
     form_mask       = NO_FORM | MOONKIN_FORM;
     energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
