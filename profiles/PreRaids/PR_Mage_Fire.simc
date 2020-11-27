@@ -199,6 +199,7 @@ chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_in
 wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
 hands=mitts_of_flawless_duplication,id=178930,bonus_id=6807/1498
 waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
 finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6716/6932/6649/6650/1532,ilevel=190,enchant=tenet_of_haste
 finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_haste
@@ -208,11 +209,11 @@ main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revela
 off_hand=deathwalkers_promise,id=178868,bonus_id=6807/1498
 
 # Gear Summary
-# gear_ilvl=184.40
-# gear_stamina=769
-# gear_intellect=718
+# gear_ilvl=184.38
+# gear_stamina=856
+# gear_intellect=773
 # gear_crit_rating=73
-# gear_haste_rating=758
-# gear_mastery_rating=116
+# gear_haste_rating=823
+# gear_mastery_rating=161
 # gear_versatility_rating=319
-# gear_armor=250
+# gear_armor=291

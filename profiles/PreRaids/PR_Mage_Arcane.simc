@@ -255,6 +255,7 @@ chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_insight
 wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect
 hands=gory_surgeons_gloves,id=178748,bonus_id=6807/1498
 waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=6807/1498
+legs=beryllias_leggings_of_endless_torment,id=178838,bonus_id=6807/1498
 feet=stradamas_misplaced_slippers,id=178756,bonus_id=6807/1498
 finger1=shadowghast_ring,id=178926,bonus_id=6649/6650/6758/6927/1532,ilevel=190,enchant=tenet_of_mastery
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_mastery
@@ -263,11 +264,11 @@ trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
 main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=184.43
-# gear_stamina=770
-# gear_intellect=668
-# gear_crit_rating=325
+# gear_ilvl=184.40
+# gear_stamina=857
+# gear_intellect=723
+# gear_crit_rating=395
 # gear_haste_rating=162
-# gear_mastery_rating=645
+# gear_mastery_rating=686
 # gear_versatility_rating=213
-# gear_armor=250
+# gear_armor=291
