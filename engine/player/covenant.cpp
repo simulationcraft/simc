@@ -678,8 +678,8 @@ bool parse_blizzard_covenant_information( player_t*               player,
       // Soulbind spell
       if ( entry.HasMember( "trait" ) )
       {
-        auto data_entry = soulbind_ability_entry_t::find(
-            entry[ "trait" ][ "name" ].GetString(), player->dbc->ptr );
+        auto data_entry = soulbind_ability_entry_t::find_by_soulbind_id(
+            entry[ "trait" ][ "id" ].GetUint(), player->dbc->ptr );
         if ( !data_entry.spell_id )
         {
           continue;

@@ -99,6 +99,23 @@ const soulbind_ability_entry_t& soulbind_ability_entry_t::find( util::string_vie
   return find_entry( data( ptr ), name , tokenized );
 }
 
+const soulbind_ability_entry_t& soulbind_ability_entry_t::find_by_soulbind_id(
+    unsigned soulbind_id, bool ptr )
+{
+  auto __data = soulbind_ability_entry_t::data( ptr );
+
+  auto it = range::find_if( __data, [soulbind_id]( const soulbind_ability_entry_t& e ) {
+    return e.soulbind_id == soulbind_id;
+  } );
+
+  if ( it != __data.end() )
+  {
+    return *it;
+  }
+
+  return nil();
+}
+
 const covenant_ability_entry_t& covenant_ability_entry_t::find( util::string_view name,
                                                                 bool              ptr )
 {
