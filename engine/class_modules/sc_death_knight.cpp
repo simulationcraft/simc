@@ -5260,7 +5260,7 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     death_knight_spell_t( name, p, p -> find_spell( 195975 ) )
   {
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
-    background = dual = true;
+    background = true;
     ap_type = attack_power_type::WEAPON_BOTH;
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
@@ -5292,10 +5292,8 @@ struct glacial_advance_t : public death_knight_spell_t
 
     weapon = &( p -> main_hand_weapon );
 
-    action_t* ga = p -> find_action( "glacial_advance_damage" );
-    if ( !ga )
-      ga = new glacial_advance_damage_t( "glacial_advance_damage", p );
-    execute_action = ga;
+    execute_action = get_action<glacial_advance_damage_t>( "glacial_advance_damage", p );
+    add_child( execute_action );
   }
 
   void execute() override
