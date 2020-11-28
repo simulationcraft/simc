@@ -9630,12 +9630,12 @@ void death_knight_t::default_apl_unholy()
 
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials" );
-  def -> add_action( "blood_fury,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die|pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>cooldown.blood_fury.duration)" );
-  def -> add_action( "berserking,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die|pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>cooldown.berserking.duration)" );
+  def -> add_action( "blood_fury,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>cooldown.blood_fury.duration)" );
+  def -> add_action( "berserking,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>cooldown.berserking.duration)" );
   def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
-  def -> add_action( "ancestral_call,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die|pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>cooldown.ancestral_call.duration)" );
+  def -> add_action( "ancestral_call,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>cooldown.ancestral_call.duration)" );
   def -> add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
-  def -> add_action( "fireblood,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die|pet.apoc_ghoul.active&cooldown.army_of_the_dead.remains>cooldown.fireblood.duration)" );
+  def -> add_action( "fireblood,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>cooldown.fireblood.duration)" );
   def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1" );
 
   // Maintain Virulent Plague
