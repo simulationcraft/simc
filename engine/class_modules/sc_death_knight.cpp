@@ -9523,7 +9523,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_talent( this, "Hypothermic Presence", "if=talent.breath_of_sindragosa&runic_power.deficit>40&rune>=3&buff.pillar_of_frost.up|!talent.breath_of_sindragosa&runic_power.deficit>=25" );
   cooldowns -> add_action( this, "Raise Dead", "if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&(pet.ghoul.remains<gcd|target.time_to_die<gcd)" );
-  cooldowns -> add_action( this, "Death and Decay", "if=active_enemies>5" );
+  cooldowns -> add_action( this, "Death and Decay", "if=active_enemies>5|runeforge.phearomones" );
 
   // Cold Heart
   cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration", "Cold Heart Conditions" );
