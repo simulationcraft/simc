@@ -4101,6 +4101,21 @@ struct black_powder_t: public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "fw_targets" ) )
+    {
+      return make_fn_expr( name_str, [ this ]() {
+        auto count = range::count_if( rogue_attack_t::target_list(), [ this ]( player_t* t ) {
+          return this->td( t )->debuffs.find_weakness->check();
+        } );
+        return count;
+      } );
+    }
+
+    return rogue_attack_t::create_expression( name_str );
+  }
 };
 
 // Shuriken Storm ===========================================================
@@ -7250,7 +7265,8 @@ void rogue_t::init_action_list()
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-    finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=3" );
+    finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=4-debuff.find_weakness.down" );
+
     finish->add_action( this, "Eviscerate" );
 
     // Builders
