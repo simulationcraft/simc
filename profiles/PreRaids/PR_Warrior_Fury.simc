@@ -1,0 +1,95 @@
+warrior="PR_Warrior_Fury"
+source=default
+spec=fury
+level=60
+race=human
+role=attack
+position=back
+talents=2213323
+covenant=venthyr
+soulbind=331586/11:4
+
+# Default consumables
+potion=potion_of_phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/run_action_list,name=movement,if=movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/potion
+actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
+actions+=/recklessness,if=gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up
+actions+=/blood_fury
+actions+=/berserking,if=buff.recklessness.up
+actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks,if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up
+actions+=/run_action_list,name=single_target
+
+actions.movement=heroic_leap
+
+actions.single_target=raging_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/crushing_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.adds.in>15
+actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5
+actions.single_target+=/condemn
+actions.single_target+=/execute
+actions.single_target+=/bladestorm,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>45)
+actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
+actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
+actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
+actions.single_target+=/onslaught
+actions.single_target+=/raging_blow,if=charges=2
+actions.single_target+=/crushing_blow,if=charges=2
+actions.single_target+=/bloodthirst
+actions.single_target+=/bloodbath
+actions.single_target+=/raging_blow
+actions.single_target+=/crushing_blow
+actions.single_target+=/whirlwind
+
+head=wrathbark_greathelm,id=178694,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498
+back=grimveiled_cape,id=173242,bonus_id=6648/6649/6716/6964
+chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498,enchant=eternal_skirmish
+wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498
+hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498
+legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498
+feet=muckwallow_stompers,id=178774,bonus_id=6807/1498
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498,enchant=shadowcore_oil
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498,enchant=sinful_revelation
+off_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498,enchant=celestial_guidance
+
+# Gear Summary
+# gear_ilvl=183.44
+# gear_strength=637
+# gear_stamina=934
+# gear_crit_rating=155
+# gear_haste_rating=859
+# gear_mastery_rating=327
+# gear_versatility_rating=136
+# gear_armor=1019

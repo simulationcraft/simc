@@ -28,7 +28,6 @@ class XFTHParser(DBCParserBase):
         self.header_format = self.__XFTH_HEADER_FIELDS
 
         self.entries = {}
-        self.entry_map = {}
         self.parsers = {}
 
     # Never consider hotfix cache "empty"
@@ -49,10 +48,7 @@ class XFTHParser(DBCParserBase):
     def get_hotfix_record(self, record_id, wdb_parser):
         sig = wdb_parser.table_hash
 
-        if sig not in self.entry_map:
-            return None
-
-        return self.entry_map[sig][record_id]
+        return self.entries[sig][record_id]
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id, wdb_parser):
@@ -104,6 +100,18 @@ class XFTHParser(DBCParserBase):
     def compute_block_offsets(self):
         return len(self.data)
 
+    def parse_header(self):
+        if not super().parse_header():
+            return False
+
+        if self.build != self.options.build.build():
+            logging.error('Invalid hotfix file build version %d, expected %d' % (
+                self.build, self.options.build.build()
+            ))
+            return False
+
+        return True
+
     def parse_blocks(self):
         entry_unpacker = struct.Struct('<4sIIIIB3s')
 
@@ -131,11 +139,9 @@ class XFTHParser(DBCParserBase):
 
             if sig not in self.entries:
                 self.entries[sig] = []
-                self.entry_map[sig] = defaultdict()
 
             if state in [HotfixType.ENABLED, HotfixType.REMOVED]:
                 self.entries[sig].append(entry)
-                self.entry_map[sig][entry['record_id']] = entry
 
             all_entries.append(entry)
 

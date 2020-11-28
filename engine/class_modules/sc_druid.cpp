@@ -3663,7 +3663,7 @@ struct ferocious_bite_t : public cat_attack_t
   void consume_resource() override
   {
     // TODO: check if consumed on miss
-    if ( p()->buff.apex_predators_craving->check() )
+    if ( p()->buff.apex_predators_craving->check() || free_cast )
     {
       ApexPredatorResource();
       return;
@@ -3699,7 +3699,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
-    if ( p()->buff.apex_predators_craving->up() )
+    if ( p()->buff.apex_predators_craving->up() || free_cast )
       return am * 2.0;
 
     am *= p()->resources.current[ RESOURCE_COMBO_POINT ] / p()->resources.max[ RESOURCE_COMBO_POINT ];
@@ -5997,7 +5997,8 @@ struct wrath_t : public druid_spell_t
   double gcd_mul;
 
   wrath_t( druid_t* p, util::string_view options_str )
-    : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str )
+    : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str ),
+      count( 0 )
   {
     form_mask       = NO_FORM | MOONKIN_FORM;
     energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );

@@ -5256,14 +5256,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
 struct glacial_advance_damage_t : public death_knight_spell_t
 {
-  glacial_advance_damage_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "glacial_advance", player, player -> find_spell( 195975 ) )
+  glacial_advance_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 195975 ) )
   {
-    parse_options( options_str );
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
-    background = true;
+    background = dual = true;
     ap_type = attack_power_type::WEAPON_BOTH;
-    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
       ap_type = attack_power_type::WEAPON_MAINHAND;
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
@@ -5286,14 +5285,17 @@ struct glacial_advance_damage_t : public death_knight_spell_t
 
 struct glacial_advance_t : public death_knight_spell_t
 {
-  glacial_advance_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
+  glacial_advance_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "glacial_advance", p, p -> talent.glacial_advance )
   {
     parse_options( options_str );
 
-    weapon = &( player -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
 
-    execute_action = new glacial_advance_damage_t( player, options_str );
+    action_t* ga = p -> find_action( "glacial_advance_damage" );
+    if ( !ga )
+      ga = new glacial_advance_damage_t( "glacial_advance_damage", p );
+    execute_action = ga;
   }
 
   void execute() override

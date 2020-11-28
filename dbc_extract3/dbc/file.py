@@ -35,7 +35,7 @@ class HotfixIterator:
             raise StopIteration
 
         dbc_id, offset, size, key_id, _ = self._parser.get_record_info(self._record, self._wdb_parser)
-        hotfix_entry = self._parser.get_hotfix_record(dbc_id, self._wdb_parser)
+        hotfix_entry = self._parser.get_hotfix_record(self._record, self._wdb_parser)
         self._record += 1
 
         if hotfix_entry['state'] == HotfixType.REMOVED:

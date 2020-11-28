@@ -49,11 +49,13 @@ struct soulbind_ability_entry_t
 {
   unsigned spell_id;
   unsigned covenant_id;
+  unsigned soulbind_id;
   const char* name;
 
   static const soulbind_ability_entry_t& find( util::string_view name, bool ptr, bool tokenized = false );
   static const soulbind_ability_entry_t& find( unsigned spell_id, bool ptr )
   { return dbc::find<soulbind_ability_entry_t>( spell_id, ptr, &soulbind_ability_entry_t::spell_id ); }
+  static const soulbind_ability_entry_t& find_by_soulbind_id( unsigned soulbind_id, bool ptr );
 
   static const soulbind_ability_entry_t& nil()
   { return dbc::nil<soulbind_ability_entry_t>; }

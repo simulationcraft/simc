@@ -66,6 +66,7 @@ actions.apst=death_chakram,if=focus+cast_regen<focus.max
 actions.apst+=/serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7
 actions.apst+=/flayed_shot
 actions.apst+=/resonating_arrow
+actions.apst+=/wild_spirits
 actions.apst+=/coordinated_assault
 actions.apst+=/kill_shot
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max

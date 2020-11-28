@@ -34,7 +34,7 @@ def->add_action( "run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled
 def->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(!talent.bloodtalons.enabled|buff.bloodtalons.up)" );
 def->add_action( "feral_frenzy,if=combo_points=0" );
 def->add_action( "pool_resource,for_next=1" );
-def->add_action( "rake,target_if=refreshable|persistent_multiplier>dot.rake.pmultiplier&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2" );
+def->add_action( "rake,target_if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2" );
 def->add_action( "moonfire_cat,target_if=refreshable&druid.moonfire.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2" );
 def->add_action( "pool_resource,for_next=1" );
 def->add_action( "thrash_cat,if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>variable.thrash_ticks" );

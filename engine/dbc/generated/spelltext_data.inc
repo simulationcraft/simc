@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36753
-static const std::array<spelltext_data_t, 15052> __spelltext_data { {
+static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13732,7 +13732,7 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 332300, "Play a melody, buoying the spirits of your allies for $d. Your song grants your allies' abilities a low chance to grant them $330132s1 Haste for $330132d.", "You are humming the tune recently played by $@auracaster.\r\n\r\nYour abilities have a low chance to grant you $w1 Haste for $330132d.", 0 },
   { 332301, "Play a melody, buoying the spirits of your allies for $d. Your song grants your allies' abilities a low chance to grant them $330132s1 Mastery for $330132d.", "You are humming the tune recently played by $@auracaster.\r\n\r\nYour abilities have a low chance to grant you $w1 Mastery for $332079d.", 0 },
   { 332423, "$@spelldesc331612", "Stunned.", 0 },
-  { 332506, "$@spelldesc331611", "Incoming stun duration reduced by $m1%.", 0 },
+  { 332506, "$@spelldesc331611", "Duration of incoming stuns and incapacitates reduced by $w1%.", 0 },
   { 332507, "$@spelldesc331611", "$@spelldesc331611", 0 },
   { 332514, "$@spelldesc333950", "Bron arrives in ${$332514u+1-$w1} damaging or healing spells or abilities.", 0 },
   { 332525, "$@spelldesc333950", 0, 0 },
@@ -13777,8 +13777,6 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 333218, "$@spelldesc319983", "Versatility increased by $w1%. Delicious!", 0 },
   { 333221, "$@spelldesc319983", 0, 0 },
   { 333251, "$@spelldesc319983", "$@auracaster has served you some tea! Versatility increased by $w1%.", 0 },
-  { 333260, "Throws a Maldraxxi Axe at a current target.", 0, 0 },
-  { 333273, "Deals Physical damage to enemies around the target.", 0, 0 },
   { 333313, "After consuming $s1 Hot Streaks, your next non-instant Pyroblast cast within $333315d grants you Combustion for $s2 sec.", 0, 0 },
   { 333314, "$@spelldesc333313", "Building up a Combustion.", 0 },
   { 333315, "$@spelldesc333313", "Your next non-instant Pyroblast will grant you Combustion.", 0 },
@@ -15055,7 +15053,8 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36753
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  332506,  1, "Incoming stun duration reduced by $m1%.", "Duration of incoming stuns and incapacitates reduced by $w1%." },
 } };
 
 // Spell description variables, wow build 9.0.2.36753
