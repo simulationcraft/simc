@@ -11601,7 +11601,7 @@ std::string monk_t::default_potion() const
       break;
     case MONK_WINDWALKER:
       if ( true_level >= 60 )
-        return "potion_of_deathly_fixation";
+        return "potion_of_spectral_agility";
       else if ( true_level >= 50 )
         return "unbridled_fury";
       else
