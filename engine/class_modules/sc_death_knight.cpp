@@ -6,18 +6,23 @@
 // TODO as of 2020-09-06
 // Class:
 // Killing Blow based mechanics (free Death Strike, Rune of Unending Thirst)
-// Defensives: Anti-Magic Zone, Lichborne
+// Defensives: Anti-Magic Zone (+ group wide effect), Lichborne
 // Disable noise from healing/defensive actions when simming a single, dps role, character
-// Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides?
-// utilize stat_pct_buffs instead of overriding player_t methods?
+// Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides
+// utilize stat_pct_buffs instead of overriding player_t methods
+// Add get_action() handling to diseases, obliterate/frost strike, active_spells.x
+// Standardize debug_cast<T>() over other types of casting where possible
+// Look into Death Strike OH handling (p -> dual_wield()?) and see if it can apply to other DW attacks
 // Unholy:
-// - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
-//   and the driver uptime (6s every 45s)
+// - Predict the first two Festering wounds on FS and use reaction time on the third?
 // Blood:
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
 // Frost:
 // - Revisit Eradicating Blow, Deaths Due, Koltiras to verify 1H vs 2H behavior, especially with DD cleave
+// - Test Frost's damage with atypical weapon setups (single 1H/OH, etc.)
+//     on abilities with the 2H penalty or combined AP type
+// - Figure out what to do with Obliterate/Frost Strike strikes, reporting, etc.
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
