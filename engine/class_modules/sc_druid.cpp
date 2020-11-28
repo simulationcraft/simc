@@ -6815,6 +6815,15 @@ struct convoke_the_spirits_t : public druid_spell_t
     return type_;
   }
 
+  inline static size_t _clamp_and_cast( double x, size_t min, size_t max )
+  {
+    if ( x < min )
+      return min;
+    if ( x > max )
+      return max;
+    return static_cast<size_t>( x );
+  }
+
   void _execute_cat()
   {
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_WRATH, CAST_MOONFIRE };
@@ -6823,12 +6832,14 @@ struct convoke_the_spirits_t : public druid_spell_t
                      { CAST_RAKE, 0.22 }
                    };
 
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
+    cast_list.insert( cast_list.end(), static_cast<size_t>( rng().range( 4, 9 ) ), CAST_OFFSPEC );
 
     if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
       cast_list.push_back( CAST_FERAL_FRENZY );
 
-    cast_list.insert( cast_list.end(), static_cast<int>( rng().gauss( 4.2, 0.9360890055, true ) ), CAST_MAIN );
+    cast_list.insert( cast_list.end(),
+                      _clamp_and_cast( rng().gauss( 4.2, 0.9360890055, true ), 0, max_ticks - cast_list.size() ),
+                      CAST_MAIN );
   }
 
   convoke_cast_e _tick_cat( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
