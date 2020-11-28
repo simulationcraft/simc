@@ -6466,6 +6466,11 @@ struct touch_of_death_t : public monk_melee_attack_t
     snapshot_flags = update_flags = 0;
   }
 
+  double composite_target_armor( player_t* ) const override
+  {
+    return 0;
+  }
+
   bool ready() override
   {
     if ( p()->spec.touch_of_death_2->ok() &&
