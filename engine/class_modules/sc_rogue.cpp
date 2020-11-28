@@ -962,7 +962,7 @@ struct secondary_action_trigger_t : public event_t
     if ( !state )
     {
       state = action->get_state();
-      action->cast_state( state )->cp = cp;
+      action->cast_state( state )->set_combo_points( cp, cp );
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
     }
@@ -982,23 +982,28 @@ struct secondary_action_trigger_t : public event_t
 
 struct rogue_action_state_t : public action_state_t
 {
-  int cp;
+private:
+  int base_cp;
+  int total_cp;
+
+public:
   bool exsanguinated;
 
   rogue_action_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), cp( 0 ), exsanguinated( false )
+    action_state_t( action, target ), base_cp( 0 ), total_cp( 0 ), exsanguinated( false )
   {}
 
   void initialize() override
   {
     action_state_t::initialize();
-    cp = 0;
+    base_cp = 0;
+    total_cp = 0;
     exsanguinated = false;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " cp=" << cp << " exsanguinated=" << exsanguinated;
+    action_state_t::debug_str( s ) << " base_cp=" << base_cp << " total_cp=" << total_cp << " exsanguinated=" << exsanguinated;
     return s;
   }
 
@@ -1006,8 +1011,23 @@ struct rogue_action_state_t : public action_state_t
   {
     action_state_t::copy_state( s );
     const rogue_action_state_t* rs = debug_cast<const rogue_action_state_t*>( s );
-    cp = rs->cp;
+    base_cp = rs->base_cp;
+    total_cp = rs->total_cp;
     exsanguinated = rs->exsanguinated;
+  }
+
+  void set_combo_points( int base_cp, int total_cp )
+  {
+    this->base_cp = base_cp;
+    this->total_cp = total_cp;
+  }
+
+  int get_combo_points( bool base_only = false ) const
+  {
+    if ( base_only )
+      return base_cp;
+
+    return total_cp;
   }
 };
 
@@ -1276,8 +1296,21 @@ public:
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
   {
-    double max_cp = std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() );
-    cast_state( state )->cp = static_cast<int>( max_cp );
+    int consume_cp = as<int>( std::min( p()->resources.current[ RESOURCE_COMBO_POINT ], p()->consume_cp_max() ) );
+    int effective_cp = consume_cp;
+
+    // Apply and Snapshot Echoing Reprimand Buffs
+    if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
+    {
+      if ( consume_cp == 2 && p()->buffs.echoing_reprimand_2->up() || 
+           consume_cp == 3 && p()->buffs.echoing_reprimand_3->up() || 
+           consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() )
+      {
+        effective_cp = as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
+      }
+    }
+
+    cast_state( state )->set_combo_points( consume_cp, effective_cp );
 
     ab::snapshot_state( state, rt );
   }
@@ -1373,22 +1406,6 @@ public:
     return false;
   }
 
-  // Returns how many combo points an ability would assume for its functionality which can differ from actual/consumed CP.
-  int get_combo_points( const rogue_action_state_t* state ) const
-  {
-    if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
-    {
-      if ( ( state->cp == 2 && p()->buffs.echoing_reprimand_2->check() ) ||
-        ( state->cp == 3 && p()->buffs.echoing_reprimand_3->check() ) ||
-        ( state->cp == 4 && p()->buffs.echoing_reprimand_4->check() ) )
-      {
-        return as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
-      }
-    }
-
-    return state->cp;
-  }
-
 private:
   void do_exsanguinate( dot_t* dot, double coeff );
 
@@ -1452,7 +1469,7 @@ public:
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
   {
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] )
-      return static_cast<double>( get_combo_points( cast_state( s ) ) );
+      return static_cast<double>( cast_state( s )->get_combo_points() );
 
     return 1.0;
   }
@@ -2467,14 +2484,14 @@ struct between_the_eyes_t : public rogue_attack_t
     if ( result_is_hit( execute_state->result ) )
     {
       // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
-      td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * get_combo_points( rs ) );
+      td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * rs->get_combo_points() );
 
       p()->buffs.deadshot->trigger();
 
-      if ( p()->azerite.ace_up_your_sleeve.ok() && rng().roll( get_combo_points( rs ) * p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
+      if ( p()->azerite.ace_up_your_sleeve.ok() && rng().roll( rs->get_combo_points() * p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
         trigger_combo_point_gain( as<int>( p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() ), p()->gains.ace_up_your_sleeve );
 
-      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( get_combo_points( rs ) * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
+      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( rs->get_combo_points() * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
         p()->buffs.greenskins_wickers->trigger();
     }
   }
@@ -2636,7 +2653,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     const rogue_action_state_t* state = cast_state( s );
 
-    timespan_t duration = data().duration() * ( 1 + get_combo_points( state ) );
+    timespan_t duration = data().duration() * ( 1 + state->get_combo_points() );
     if ( state -> exsanguinated )
     {
       duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
@@ -2647,7 +2664,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
   double combo_point_da_multiplier( const action_state_t* s ) const override
   {
-    return static_cast<double>( get_combo_points( cast_state( s ) ) + 1 );
+    return static_cast<double>( cast_state( s )->get_combo_points() + 1 );
   }
 };
 
@@ -2741,7 +2758,7 @@ struct envenom_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
-    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + get_combo_points( cast_state( state ) ) );
+    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->get_combo_points() );
     if ( p()->azerite.twist_the_knife.ok() && state->result == RESULT_CRIT )
       envenom_duration += p()->azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
     p()->buffs.envenom->trigger( envenom_duration );
@@ -2809,7 +2826,7 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
-      bonus_attack->last_eviscerate_cp = get_combo_points( cast_state( execute_state ) );
+      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->get_combo_points();
       bonus_attack->set_target( target );
       bonus_attack->execute();
     }
@@ -3557,7 +3574,7 @@ struct rupture_t : public rogue_attack_t
   {
     const rogue_action_state_t* state = cast_state( s );
 
-    timespan_t duration = data().duration() * ( 1 + get_combo_points( state ) );
+    timespan_t duration = data().duration() * ( 1 + state->get_combo_points() );
     if ( state -> exsanguinated )
     {
       duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
@@ -3691,7 +3708,7 @@ struct replicating_shadows_t : public rogue_spell_t
       // Estimated 10 yd spread radius.
       if ( minDistTarget && minDist < 10.0 )
       {
-        rupture_action->trigger_secondary_action( minDistTarget, cast_state( last_nb_tdata->dots.rupture->state )->cp );
+        rupture_action->trigger_secondary_action( minDistTarget, cast_state( last_nb_tdata->dots.rupture->state )->get_combo_points() );
       }
     }
   }
@@ -3711,7 +3728,7 @@ struct secret_technique_t : public rogue_attack_t
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      return static_cast<double>( get_combo_points( cast_state( state ) ) );
+      return static_cast<double>( cast_state( state )->get_combo_points() );
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3746,7 +3763,7 @@ struct secret_technique_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    int cp = get_combo_points( cast_state( execute_state ) );
+    int cp = cast_state( execute_state )->get_combo_points();
 
     // Hit of the main char happens right on cast.
     player_attack->trigger_secondary_action( execute_state->target, cp );
@@ -4093,7 +4110,7 @@ struct black_powder_t: public rogue_attack_t
 
     if ( bonus_attack )
     {
-      bonus_attack->last_cp = get_combo_points( cast_state( execute_state ) );
+      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
       bonus_attack->set_target( execute_state->target );
       bonus_attack->execute();
     }
@@ -4343,7 +4360,7 @@ struct slice_and_dice_t : public rogue_spell_t
 
     trigger_restless_blades( execute_state );
 
-    int cp = get_combo_points( cast_state( execute_state ) );
+    int cp = cast_state( execute_state )->get_combo_points();
     timespan_t snd_duration = get_triggered_duration( cp );
 
     if ( precombat_seconds && ! p() -> in_combat )
@@ -4601,7 +4618,7 @@ struct kidney_shot_t : public rogue_attack_t
     double composite_persistent_multiplier( const action_state_t* state ) const override
     {
       double m = rogue_attack_t::composite_persistent_multiplier( state );
-      m *= get_combo_points( cast_state( state ) );
+      m *= cast_state( state )->get_combo_points();
       return m;
     }
   };
@@ -4627,7 +4644,7 @@ struct kidney_shot_t : public rogue_attack_t
 
     if ( state->target->type == ENEMY_ADD && internal_bleeding )
     {
-      internal_bleeding->trigger_secondary_action( state->target, get_combo_points( cast_state( state ) ) );
+      internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
     }
   }
 };
@@ -6151,7 +6168,7 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
 
   // They put 25 as value in spell data and divide it by 10 later, it's due to the int restriction.
   const actions::rogue_action_state_t* s = cast_state( state );
-  if ( p()->rng().roll( p()->talent.poison_bomb->effectN( 1 ).percent() / 10 * get_combo_points( s ) ) )
+  if ( p()->rng().roll( p()->talent.poison_bomb->effectN( 1 ).percent() / 10 * s->get_combo_points() ) )
   {
     make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
       .target( state->target )
@@ -6254,11 +6271,11 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
   if ( !affected_by.ruthlessness )
     return;
 
-  const rogue_action_state_t* s = cast_state( state );
-  if ( s->cp == 0 )
+  int cp = cast_state( state )->get_combo_points();
+  if ( cp == 0 )
     return;
 
-  double cp_chance = p()->spec.ruthlessness->effectN( 1 ).pp_combo_points() * get_combo_points( s ) / 100.0;
+  double cp_chance = p()->spec.ruthlessness->effectN( 1 ).pp_combo_points() * cp / 100.0;
   int cp_gain      = 0;
   if ( cp_chance > 1 )
   {
@@ -6283,8 +6300,8 @@ void actions::rogue_action_t<Base>::trigger_deepening_shadows( const action_stat
   if ( !p()->spec.deepening_shadows->ok() || !affected_by.deepening_shadows )
     return;
 
-  const rogue_action_state_t* s = cast_state( state );
-  if ( s->cp == 0 )
+  int cp = cast_state( state )->get_combo_points();
+  if ( cp == 0 )
     return;
 
   // Note: this changed to be 10 * seconds as of 2017-04-19
@@ -6294,7 +6311,6 @@ void actions::rogue_action_t<Base>::trigger_deepening_shadows( const action_stat
     cdr += as<int>( p()->talent.enveloping_shadows->effectN( 1 ).base_value() );
   }
 
-  int cp = get_combo_points( s );
   timespan_t adjustment = timespan_t::from_seconds( -0.1 * cdr * cp );
   p()->cooldowns.shadow_dance->adjust( adjustment, cp >= 5 );
 }
@@ -6339,7 +6355,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   }
 
   // Direct damage re-computes on execute
-  action->trigger_secondary_action( state->target, get_combo_points( cast_state( state ) ) );
+  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
 }
 
 template <typename Base>
@@ -6356,7 +6372,7 @@ void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* stat
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  double chance = p()->talent.alacrity->effectN( 2 ).percent() * get_combo_points( cast_state( state ) );
+  double chance = p()->talent.alacrity->effectN( 2 ).percent() * cast_state( state )->get_combo_points();
   int stacks = 0;
   if ( chance > 1 )
   {
@@ -6380,7 +6396,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 {
   timespan_t v = timespan_t::from_seconds( p()->spec.restless_blades->effectN( 1 ).base_value() / 10.0 );
   v += timespan_t::from_seconds( p()->buffs.true_bearing->value() );
-  v *= -get_combo_points( cast_state( state ) );
+  v *= -cast_state( state )->get_combo_points();
 
   // Abilities
   p()->cooldowns.adrenaline_rush->adjust( v, false );
@@ -6447,7 +6463,7 @@ void actions::rogue_action_t<Base>::trigger_relentless_strikes( const action_sta
   if ( !p()->spec.relentless_strikes->ok() || !affected_by.relentless_strikes )
     return;
 
-  double grant_energy = get_combo_points( cast_state( state ) ) *
+  double grant_energy = cast_state( state )->get_combo_points() *
     p()->spell.relentless_strikes_energize->effectN( 1 ).resource( RESOURCE_ENERGY );
 
   if ( grant_energy > 0 )
@@ -6507,20 +6523,29 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   // Remove Echoing Reprimand Buffs
   if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
   {
-    if ( max_spend == 2 && p()->buffs.echoing_reprimand_2->up() )
+    const rogue_action_state_t* rs = cast_state( state );
+    int base_cp = rs->get_combo_points( true );
+    if ( rs->get_combo_points() > base_cp )
     {
-      p()->buffs.echoing_reprimand_2->expire();
-      p()->procs.echoing_reprimand_2->occur();
-    }
-    else if ( max_spend == 3 && p()->buffs.echoing_reprimand_3->up() )
-    {
-      p()->buffs.echoing_reprimand_3->expire();
-      p()->procs.echoing_reprimand_3->occur();
-    }
-    else if ( max_spend == 4 && p()->buffs.echoing_reprimand_4->up() )
-    {
-      p()->buffs.echoing_reprimand_4->expire();
-      p()->procs.echoing_reprimand_4->occur();
+      if ( base_cp == 2 )
+      {
+        assert( p()->buffs.echoing_reprimand_2->check() );
+        p()->buffs.echoing_reprimand_2->expire();
+        p()->procs.echoing_reprimand_2->occur();
+      }
+      else if ( base_cp == 3 )
+      {
+        assert( p()->buffs.echoing_reprimand_3->check() );
+        p()->buffs.echoing_reprimand_3->expire();
+        p()->procs.echoing_reprimand_3->occur();
+
+      }
+      else if ( base_cp == 4 )
+      {
+        assert( p()->buffs.echoing_reprimand_4->check() );
+        p()->buffs.echoing_reprimand_4->expire();
+        p()->procs.echoing_reprimand_4->occur();
+      }
     }
   }
 }
@@ -6579,7 +6604,7 @@ void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* s
   if ( !ab::result_is_hit( state->result ) || !p()->buffs.grand_melee->up() )
     return;
 
-  timespan_t snd_extension = get_combo_points( cast_state( state ) ) * timespan_t::from_seconds( p()->buffs.grand_melee->check_value() );
+  timespan_t snd_extension = cast_state( state )->get_combo_points() * timespan_t::from_seconds( p()->buffs.grand_melee->check_value() );
   p()->buffs.slice_and_dice->extend_duration_or_trigger( snd_extension );
 }
 
@@ -7218,7 +7243,7 @@ void rogue_t::init_action_list()
     cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1" );
-    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2" );
@@ -7270,7 +7295,6 @@ void rogue_t::init_action_list()
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=4-debuff.find_weakness.down" );
-
     finish->add_action( this, "Eviscerate" );
 
     // Builders
