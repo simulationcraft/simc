@@ -3098,7 +3098,7 @@ struct death_knight_action_t : public Base
     action_base_t::execute();
     // If we spend a rune, we have a chance to spread the dot
     dot_t* source_dot = p() -> get_target_data( action_t::target ) -> dot.shackle_the_unworthy;
-    if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy && 
+    if ( p() -> covenant.shackle_the_unworthy -> ok() && this->triggers_shackle_the_unworthy &&
          source_dot -> is_ticking() && p() -> cooldown.shackle_the_unworthy_icd -> is_ready() &&
         p() -> rng().roll( p() -> covenant.shackle_the_unworthy -> effectN( 5 ).percent() ) )
     {
@@ -4319,7 +4319,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     if ( p() -> conduits.meat_shield -> ok () )
       p() -> buffs.dancing_rune_weapon -> extend_duration(p(), p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
     p() -> buffs.eternal_rune_weapon -> trigger();
-    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) + 
+    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
   }
 };
@@ -5790,14 +5790,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
 struct glacial_advance_damage_t : public death_knight_spell_t
 {
-  glacial_advance_damage_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "glacial_advance", player, player -> find_spell( 195975 ) )
+  glacial_advance_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 195975 ) )
   {
-    parse_options( options_str );
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
-    background = true;
+    background = dual = true;
     ap_type = attack_power_type::WEAPON_BOTH;
-    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
       ap_type = attack_power_type::WEAPON_MAINHAND;
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
@@ -5820,14 +5819,17 @@ struct glacial_advance_damage_t : public death_knight_spell_t
 
 struct glacial_advance_t : public death_knight_spell_t
 {
-  glacial_advance_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
+  glacial_advance_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "glacial_advance", p, p -> talent.glacial_advance )
   {
     parse_options( options_str );
 
-    weapon = &( player -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
 
-    execute_action = new glacial_advance_damage_t( player, options_str );
+    action_t* ga = p -> find_action( "glacial_advance_damage" );
+    if ( !ga )
+      ga = new glacial_advance_damage_t( "glacial_advance_damage", p );
+    execute_action = ga;
   }
 
   void execute() override
@@ -6255,8 +6257,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     may_miss = false;
     weapon = w;
 
-    deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) + 
-                                  data().effectN ( 1 ).chain_target() + 
+    deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) +
+                                  data().effectN ( 1 ).chain_target() +
                                   as<int>(p -> spell.dnd_buff -> effectN ( 4 ).base_value());
 
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
@@ -9400,7 +9402,7 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "death_strike,if=fight_remains<3" );
   def -> add_action( "call_action_list,name=covenants" );
   def -> add_action( "call_action_list,name=standard" );
-  
+
   // Night fae
   covenants -> add_action( "death_strike,if=covenant.night_fae&buff.deaths_due.remains>6&runic_power>70", "Burn RP if we have time between DD refreshes" );
   covenants -> add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<6)", "Make sure we never lose that buff" );
