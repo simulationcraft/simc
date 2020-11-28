@@ -9309,10 +9309,10 @@ void death_knight_t::default_apl_dps_precombat()
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_phantom_fire" :
+  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_spectral_strength" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_phantom_fire" :
+  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_spectral_strength" :
                               "disabled";
 
   std::string blood_potion =  ( true_level >= 50 ) ? "potion_of_phantom_fire" :
