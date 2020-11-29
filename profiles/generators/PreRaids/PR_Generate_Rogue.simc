@@ -21,8 +21,8 @@ legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6716/7117/1487
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=20attackpower
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=20attackpower
 main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=celestial_guidance
 off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
 
@@ -51,8 +51,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=20attackpower
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=20attackpower
 main_hand=gorebound_predators_gavel,id=178864,bonus_id=6807/1498,enchant=celestial_guidance
 off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
 
@@ -81,8 +81,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_versatility
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=20attackpower
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=20attackpower
 main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=celestial_guidance
 off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
 

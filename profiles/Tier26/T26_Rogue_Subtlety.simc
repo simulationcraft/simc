@@ -1,4 +1,4 @@
-rogue="PR_Rogue_Subtlety"
+rogue="T26_Rogue_Subtlety"
 source=default
 spec=subtlety
 level=60
@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=1320031
 covenant=kyrian
-soulbind=combat_meditation/planned_execution:4
+soulbind=combat_meditation/planned_execution:7/stiletto_staccato:7
 
 # Default consumables
 potion=phantom_fire
@@ -159,29 +159,29 @@ actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.sym
 actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
 
-head=umbrahide_helm,id=172317,bonus_id=7124/6647/6650/1487
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
-legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_versatility
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=20attackpower
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=20attackpower
-main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=celestial_guidance
-off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
+head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
+legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
+trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
+trinket2=skulkers_wing,id=184016,bonus_id=7187/1498,enchant=20attackpower
+main_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=celestial_guidance
+off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=184.38
-# gear_agility=597
-# gear_stamina=860
+# gear_ilvl=228.00
+# gear_agility=880
+# gear_stamina=1413
 # gear_attack_power=40
-# gear_crit_rating=622
-# gear_haste_rating=280
-# gear_versatility_rating=475
-# gear_armor=479
+# gear_crit_rating=448
+# gear_haste_rating=453
+# gear_mastery_rating=280
+# gear_versatility_rating=418
+# gear_armor=606
