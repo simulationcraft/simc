@@ -3072,24 +3072,21 @@ public:
   {
     double eff_cost = base_cost();
 
+    base_t::consume_resource();
+
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
     if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->up() )
     {
+      p()->buff.clearcasting->decrement();
+
       // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
-    }
-
-    base_t::consume_resource();
-
-    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY )
-    {
-      p()->buff.clearcasting->decrement();
 
       if ( p()->legendary.cateye_curio->ok() )
       {
-        // TODO: check if we need to modify by eff_cost for berserk/incarn
+        // TODO: confirm refund is based on actual energy expenditure, including reduction from incarn
         p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->legendary.cateye_curio->effectN( 1 ).percent(),
                             p()->gain.cateye_curio );
       }
