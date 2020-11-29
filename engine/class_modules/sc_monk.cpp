@@ -6254,7 +6254,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
-      if ( !player->specialization() == MONK_MISTWEAVER )
+      if ( player->specialization() != MONK_MISTWEAVER )
         base_hit -= 0.19;
     }
   }
