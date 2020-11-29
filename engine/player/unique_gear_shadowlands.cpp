@@ -1153,9 +1153,16 @@ void phial_of_putrefaction( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* s ) override
     {
-      proc_buff->expire();
-      proc_action->set_target( s->target );
-      proc_action->execute();
+      auto d = proc_action->get_dot( s->target );
+
+      // Phial only procs when at max stacks, otherwise the buff just lingers on the
+      // character, waiting for the dot to fall off
+      if ( !d->is_ticking() || !d->at_max_stacks() )
+      {
+        proc_buff->expire();
+        proc_action->set_target( s->target );
+        proc_action->execute();
+      }
     }
   };
 
@@ -1163,7 +1170,8 @@ void phial_of_putrefaction( special_effect_t& effect )
   if ( !putrefaction_buff )
   {
     putrefaction_buff = make_buff( effect.player, "phial_of_putrefaction",
-        effect.player->find_spell( 345464 ) );
+        effect.player->find_spell( 345464 ) )
+      ->set_duration( timespan_t::zero() );
 
     special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
     putrefaction_proc->spell_id = 345464;
