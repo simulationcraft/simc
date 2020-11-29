@@ -447,6 +447,7 @@ public:
     const spell_data_t* weight_of_the_earth;
     const spell_data_t* raging_fury;
     const spell_data_t* the_great_storms_eye;
+    const spell_data_t* the_wall;
 
     legendary_t()
       : sephuzs_secret( spell_data_t::not_found() ),
@@ -459,7 +460,8 @@ public:
         ayalas_stone_heart( spell_data_t::not_found() ),
         weight_of_the_earth( spell_data_t::not_found() ),
         raging_fury( spell_data_t::not_found() ),
-        the_great_storms_eye( spell_data_t::not_found() )
+        the_great_storms_eye( spell_data_t::not_found() ),
+        the_wall( spell_data_t::not_found() )
     {
     }
     // General
@@ -4204,6 +4206,12 @@ struct shield_slam_t : public warrior_attack_t
     energize_type = action_energize::NONE;
     rage_gain += p->talents.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
   }
+  
+    void init() override
+  {
+    warrior_attack_t::init();
+    rage_gain += p()->legendary.the_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+  }
 
   double action_multiplier() const override
   {
@@ -5856,13 +5864,13 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
     return new colossus_smash_t( this, options_str );
   if ( name == "condemn" )
   {
-    if ( specialization() == WARRIOR_ARMS )
+    if ( specialization() == WARRIOR_FURY )
     {
-      return new condemn_arms_t( this, options_str );
+     return new fury_condemn_parent_t( this, options_str );
     }
     else
     {
-      return new fury_condemn_parent_t( this, options_str );
+     return new condemn_arms_t( this, options_str );
     }
   }
   if ( name == "conquerors_banner" )
@@ -6233,6 +6241,8 @@ void warrior_t::init_spells()
   legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
   legendary.reckless_defense   = find_runeforge_legendary( "Reckless Defense" );
   legendary.will_of_the_berserker = find_runeforge_legendary( "Will of the Berserker" );
+  
+  legendary.the_wall              = find_runeforge_legendary( "The Wall" );
 
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
 
