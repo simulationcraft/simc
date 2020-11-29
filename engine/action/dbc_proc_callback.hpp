@@ -52,6 +52,9 @@ struct dbc_proc_callback_t : public action_callback_t
   action_t* proc_action;
   weapon_t* weapon;
 
+  /// Expires proc_buff on max stack, automatically set if proc_buff max_stack > 1
+  bool expire_on_max_stack;
+
   dbc_proc_callback_t(const item_t& i, const special_effect_t& e);
 
   dbc_proc_callback_t(const item_t* i, const special_effect_t& e);
