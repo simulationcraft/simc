@@ -433,8 +433,8 @@ void frost( player_t* p )
 
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
-  default_->add_action( "call_action_list,name=st,if=active_enemies<4" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=movement" );
 
   aoe->add_action( "frozen_orb" );
