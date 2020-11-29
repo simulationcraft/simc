@@ -7813,6 +7813,9 @@ struct weapons_of_order_t : public monk_spell_t
   void execute() override
   {
     p()->buff.weapons_of_order->trigger();
+    if ( p()->specialization() == MONK_BREWMASTER ) {
+      p()->cooldown.keg_smash->reset( true );
+    }
     monk_spell_t::execute();
   }
 };
