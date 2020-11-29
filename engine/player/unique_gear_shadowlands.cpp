@@ -1196,6 +1196,32 @@ void phial_of_putrefaction( special_effect_t& effect )
   }
 }
 
+void grim_codex( special_effect_t& effect )
+{
+  struct grim_codex_t : public proc_spell_t
+  {
+    double dmg_primary = 0.0;
+    double dmg_secondary = 0.0;
+
+    grim_codex_t( const special_effect_t& e ) :
+      proc_spell_t( "spectral_scythe", e.player, e.driver(), e.item )
+    {
+      aoe = -1;
+
+      dmg_primary = player->find_spell( 345877 )->effectN( 1 ).average( e.item );
+      dmg_secondary = player->find_spell( 345877 )->effectN( 2 ).average( e.item );
+    }
+
+    double base_da_min( const action_state_t* s ) const override
+    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
+
+    double base_da_max( const action_state_t* s ) const override
+    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
+  };
+
+  effect.execute_action = create_proc_action<grim_codex_t>( "grim_codex", effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1442,6 +1468,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
+    unique_gear::register_special_effect( 345739, items::grim_codex );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
