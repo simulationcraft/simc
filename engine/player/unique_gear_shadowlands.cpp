@@ -1222,6 +1222,46 @@ void grim_codex( special_effect_t& effect )
   effect.execute_action = create_proc_action<grim_codex_t>( "grim_codex", effect );
 }
 
+void anima_field_emitter( special_effect_t& effect )
+{
+  struct anima_field_emitter_proc_t : public dbc_proc_callback_t
+  {
+    timespan_t max_duration;
+
+    anima_field_emitter_proc_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      max_duration( effect.player->find_spell( 345534 )->duration() )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      timespan_t buff_duration = max_duration;
+      if ( listener->sim->shadowlands_opts.anima_field_emitter_mean != std::numeric_limits<double>::max() )
+      {
+        double new_duration = rng().gauss( listener->sim->shadowlands_opts.anima_field_emitter_mean,
+            listener->sim->shadowlands_opts.anima_field_emitter_stddev );
+        buff_duration = timespan_t::from_seconds( clamp( new_duration, 0.0, max_duration.total_seconds() ) );
+      }
+
+      if ( buff_duration > timespan_t::zero() )
+      {
+        proc_buff->trigger( buff_duration );
+      }
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "anima_field" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "anima_field", effect.player->find_spell( 345535 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.custom_buff = buff;
+
+    new anima_field_emitter_proc_t( effect );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1469,6 +1509,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
     unique_gear::register_special_effect( 345739, items::grim_codex );
+    unique_gear::register_special_effect( 345533, items::anima_field_emitter );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
