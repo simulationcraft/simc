@@ -1132,6 +1132,62 @@ void inscrutable_quantum_device ( special_effect_t& effect )
   effect.execute_action = create_proc_action<inscrutable_quantum_device_t>( "inscrutable_quantum_device", effect );
 }
 
+void phial_of_putrefaction( special_effect_t& effect )
+{
+  struct liquefying_ooze_t : public proc_spell_t
+  {
+    liquefying_ooze_t( const special_effect_t& e ) :
+      proc_spell_t( "liquefying_ooze", e.player, e.player->find_spell( 345466 ), e.item )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
+    { return dot->remains(); }
+  };
+
+  struct phial_of_putrefaction_proc_t : public dbc_proc_callback_t
+  {
+    phial_of_putrefaction_proc_t( const special_effect_t* e ) :
+      dbc_proc_callback_t( e->player, *e ) { }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      proc_buff->expire();
+      proc_action->set_target( s->target );
+      proc_action->execute();
+    }
+  };
+
+  auto putrefaction_buff = buff_t::find( effect.player, "phial_of_putrefaction" );
+  if ( !putrefaction_buff )
+  {
+    putrefaction_buff = make_buff( effect.player, "phial_of_putrefaction",
+        effect.player->find_spell( 345464 ) );
+
+    special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
+    putrefaction_proc->spell_id = 345464;
+    putrefaction_proc->cooldown_ = 1_ms; // Proc only once per time unit
+    putrefaction_proc->custom_buff = putrefaction_buff;
+    putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>(
+        "liquefying_ooze", effect );
+
+    auto proc_object = new phial_of_putrefaction_proc_t( putrefaction_proc );
+    proc_object->deactivate();
+
+    putrefaction_buff->set_stack_change_callback( [proc_object]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) { proc_object->activate(); }
+      else { proc_object->deactivate(); }
+    } );
+
+    effect.player->register_combat_begin( [&effect, putrefaction_buff]( player_t* ) {
+      putrefaction_buff->trigger();
+      make_repeating_event( putrefaction_buff->source->sim, effect.driver()->effectN( 1 ).period(),
+          [putrefaction_buff]() { putrefaction_buff->trigger(); } );
+    } );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1377,6 +1433,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 330741, items::unbound_changeling );
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
+    unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
