@@ -1052,6 +1052,9 @@ public:
   // triggered abilities cost no resources or incur cooldowns.
   secondary_trigger_e secondary_trigger;
 
+  proc_t* symbols_of_death_autocrit_proc;
+  proc_t* animacharged_cp_proc;
+
   // Affect flags for various dynamic effects
   struct damage_affect_data
   {
@@ -1095,7 +1098,9 @@ public:
                   const std::string& options = std::string() )
     : ab( n, p, s ),
     _requires_stealth( false ),
-    secondary_trigger( TRIGGER_NONE )
+    secondary_trigger( TRIGGER_NONE ),
+    symbols_of_death_autocrit_proc( nullptr ),
+    animacharged_cp_proc( nullptr )
   {
     ab::parse_options( options );
     parse_spell_data( s );
@@ -1155,6 +1160,16 @@ public:
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+
+    // Action-Based Procs
+    if ( affected_by.symbols_of_death_autocrit )
+    {
+      symbols_of_death_autocrit_proc = p->get_proc( "Symbols of Death Autocrit " + ab::name_str );
+    }
+    if ( consumes_echoing_reprimand() )
+    {
+      animacharged_cp_proc = p->get_proc( "Echoing Reprimand " + ab::name_str );
+    }
   }
 
   void init() override
@@ -1717,10 +1732,11 @@ public:
 
     trigger_deepening_shadows( ab::execute_state );
 
-    if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() )
+    // 11/28/2020 - Flagellation does not remove the buff in-game, despite being in the whitelist
+    if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() && ab::data().id() != 323654 )
     {
       p()->buffs.symbols_of_death_autocrit->expire();
-      p()->get_proc( "Symbols of Death Autocrit " + this->name_str )->occur();
+      symbols_of_death_autocrit_proc->occur();
     }
 
     if ( affected_by.blindside )
@@ -6532,19 +6548,21 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
         assert( p()->buffs.echoing_reprimand_2->check() );
         p()->buffs.echoing_reprimand_2->expire();
         p()->procs.echoing_reprimand_2->occur();
+        animacharged_cp_proc->occur();
       }
       else if ( base_cp == 3 )
       {
         assert( p()->buffs.echoing_reprimand_3->check() );
         p()->buffs.echoing_reprimand_3->expire();
         p()->procs.echoing_reprimand_3->occur();
-
+        animacharged_cp_proc->occur();
       }
       else if ( base_cp == 4 )
       {
         assert( p()->buffs.echoing_reprimand_4->check() );
         p()->buffs.echoing_reprimand_4->expire();
         p()->procs.echoing_reprimand_4->occur();
+        animacharged_cp_proc->occur();
       }
     }
   }
