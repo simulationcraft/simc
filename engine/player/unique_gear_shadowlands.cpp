@@ -647,16 +647,16 @@ void hateful_chain( special_effect_t& /* effect */ )
 
 }
 
-void bottled_chimera_toxin( special_effect_t& effect )
+void bottled_flayedwing_toxin( special_effect_t& effect )
 {
   // Assume the player keeps the buff up on its own as the item is off-gcd and
   // the buff has a 60 minute duration which is enough for any encounter.
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  struct chimeric_poison_t : public proc_spell_t
+  struct flayedwing_toxin_t : public proc_spell_t
   {
-    chimeric_poison_t( const special_effect_t& e )
-      : proc_spell_t( "chimeric_poison", e.player, e.trigger(), e.item )
+    flayedwing_toxin_t( const special_effect_t& e )
+      : proc_spell_t( "flayedwing_toxin", e.player, e.trigger(), e.item )
     {
       // Tick behavior is odd, it always ticks on refresh but is not rescheduled
       tick_zero = true;
@@ -674,7 +674,7 @@ void bottled_chimera_toxin( special_effect_t& effect )
   secondary->type     = SPECIAL_EFFECT_EQUIP;
   secondary->source   = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary->spell_id = effect.spell_id;
-  secondary->execute_action = create_proc_action<chimeric_poison_t>( "chimeric_poison", *secondary );
+  secondary->execute_action = create_proc_action<flayedwing_toxin_t>( "flayedwing_toxin", *secondary );
   effect.player->special_effects.push_back( secondary );
 
   auto callback = new dbc_proc_callback_t( effect.item, *secondary );
@@ -1430,7 +1430,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345357, items::hateful_chain );
     unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
-    unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
+    unique_gear::register_special_effect( 345545, items::bottled_flayedwing_toxin );
     unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
     unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
