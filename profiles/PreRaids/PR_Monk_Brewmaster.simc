@@ -90,8 +90,8 @@ finger1=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_ve
 finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
 trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498,enchant=lightless_force
 
 # Gear Summary
 # gear_ilvl=184.00
