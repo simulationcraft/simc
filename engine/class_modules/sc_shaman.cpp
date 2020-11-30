@@ -8780,14 +8780,8 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string elemental_pot =
-      ( true_level > 110 )
-          ? "potion_of_unbridled_fury"
-          : ( true_level > 100 )
-                ? "prolonged_power"
-                : ( true_level >= 90 )
-                      ? "draenic_intellect"
-                      : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  std::string elemental_pot = ( true_level >= 60 ) ? "potion_of_spectral_intellect"
+                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disable";
 
   std::string enhance_pot =
       ( true_level >= 60 )
@@ -8802,14 +8796,9 @@ std::string shaman_t::default_potion() const
 
 std::string shaman_t::default_flask() const
 {
-  std::string elemental_flask =
-      ( true_level > 110 )
-          ? "greater_flask_of_endless_fathoms"
-          : ( true_level > 100 )
-                ? "whispered_pact"
-                : ( true_level >= 90 )
-                      ? "greater_draenic_intellect_flask"
-                      : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+  std::string elemental_flask = ( true_level >= 60 )
+                                    ? "spectral_flask_of_power"
+                                    : ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
 
   std::string enhance_flask =
       ( true_level >= 60 )
@@ -8824,15 +8813,9 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level > 110 )
-                                   ? "mechdowels_big_mech"
-                                   : ( true_level > 100 )
-                                         ? "lemon_herb_filet"
-                                         : ( true_level > 90 )
-                                               ? "pickled_eel"
-                                               : ( true_level >= 90 )
-                                                     ? "mogu_fish_stew"
-                                                     : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string elemental_food =
+      ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : ( true_level >= 50 ) ? "mechdowels_big_mech" : "disabled";
+                                  
 
   std::string enhance_food = ( true_level >= 60 )
                                  ? "feast_of_gluttonous_hedonism"
@@ -8858,9 +8841,7 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  std::string elemental_rune = ( true_level >= 120 )
-                                   ? "battle_scarred"
-                                   : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  std::string elemental_rune = ( true_level >= 60 ) ? "veiled" : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 
   std::string enhance_rune = ( true_level >= 60 )
                                  ? "veiled"
@@ -8879,8 +8860,16 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
+  precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+  precombat->add_action( this, "Stormkeeper",
+                         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
+                         "Use Stormkeeper precombat unless some adds will spawn soon." );
   precombat->add_action( "potion" );
+  precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "potion" );
 
   if ( options.rotation == ROTATION_STANDARD ) {
     action_priority_list_t* single_target = get_action_priority_list( "single_target" );
