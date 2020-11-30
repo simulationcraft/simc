@@ -3514,17 +3514,17 @@ public:
       if ( owner->legendary.stormstouts_last_keg->ok() )
         am *= 1 + owner->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
+      if ( owner->conduit.scalding_brew->ok() )
+        {
+          if ( owner->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+            am *= 1 + owner->conduit.scalding_brew.percent();
+        }
+
       return am;
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->conduit.scalding_brew->ok() )
-      {
-        if ( owner->get_target_data( s->target )->dots.breath_of_fire->is_ticking() )
-          s->result_amount *= 1 + owner->conduit.scalding_brew.percent();
-      }
-
       melee_attack_t::impact( s );
 
       owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -6425,6 +6425,12 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( p()->legendary.stormstouts_last_keg->ok() )
       am *= 1 + p()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
+    if ( p()->conduit.scalding_brew->ok() )
+    {
+      if ( td( p()->target )->dots.breath_of_fire->is_ticking() )
+        am *= 1 + p()->conduit.scalding_brew.percent();
+    }
+
     return am;
   }
 
@@ -6449,12 +6455,6 @@ struct keg_smash_t : public monk_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( p()->conduit.scalding_brew->ok() )
-    {
-      if ( td( s->target )->dots.breath_of_fire->is_ticking() )
-        s->result_amount *= 1 + p()->conduit.scalding_brew.percent();
-    }
-
     monk_melee_attack_t::impact( s );
 
     td( s->target )->debuff.keg_smash->trigger();
