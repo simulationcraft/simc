@@ -3029,7 +3029,7 @@ struct elysian_decree_t : public demon_hunter_spell_t
 
   elysian_decree_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "elysian_decree", p, p->covenant.elysian_decree, options_str ),
-    repeat_decree_sigil( nullptr )
+    sigil( nullptr ), repeat_decree_sigil( nullptr )
   {
     if ( p->covenant.elysian_decree->ok() )
     {
@@ -3058,8 +3058,11 @@ struct elysian_decree_t : public demon_hunter_spell_t
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    if ( auto e = sigil->create_sigil_expression( name ) )
-      return e;
+    if ( sigil )
+    {
+      if ( auto e = sigil->create_sigil_expression( name ) )
+        return e;
+    }
 
     return demon_hunter_spell_t::create_expression( name );
   }
