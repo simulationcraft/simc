@@ -647,16 +647,16 @@ void hateful_chain( special_effect_t& /* effect */ )
 
 }
 
-void bottled_chimera_toxin( special_effect_t& effect )
+void bottled_flayedwing_toxin( special_effect_t& effect )
 {
   // Assume the player keeps the buff up on its own as the item is off-gcd and
   // the buff has a 60 minute duration which is enough for any encounter.
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  struct chimeric_poison_t : public proc_spell_t
+  struct flayedwing_toxin_t : public proc_spell_t
   {
-    chimeric_poison_t( const special_effect_t& e )
-      : proc_spell_t( "chimeric_poison", e.player, e.trigger(), e.item )
+    flayedwing_toxin_t( const special_effect_t& e )
+      : proc_spell_t( "flayedwing_toxin", e.player, e.trigger(), e.item )
     {
       // Tick behavior is odd, it always ticks on refresh but is not rescheduled
       tick_zero = true;
@@ -674,7 +674,7 @@ void bottled_chimera_toxin( special_effect_t& effect )
   secondary->type     = SPECIAL_EFFECT_EQUIP;
   secondary->source   = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary->spell_id = effect.spell_id;
-  secondary->execute_action = create_proc_action<chimeric_poison_t>( "chimeric_poison", *secondary );
+  secondary->execute_action = create_proc_action<flayedwing_toxin_t>( "flayedwing_toxin", *secondary );
   effect.player->special_effects.push_back( secondary );
 
   auto callback = new dbc_proc_callback_t( effect.item, *secondary );
@@ -1132,6 +1132,136 @@ void inscrutable_quantum_device ( special_effect_t& effect )
   effect.execute_action = create_proc_action<inscrutable_quantum_device_t>( "inscrutable_quantum_device", effect );
 }
 
+void phial_of_putrefaction( special_effect_t& effect )
+{
+  struct liquefying_ooze_t : public proc_spell_t
+  {
+    liquefying_ooze_t( const special_effect_t& e ) :
+      proc_spell_t( "liquefying_ooze", e.player, e.player->find_spell( 345466 ), e.item )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t ) const override
+    { return dot->remains(); }
+  };
+
+  struct phial_of_putrefaction_proc_t : public dbc_proc_callback_t
+  {
+    phial_of_putrefaction_proc_t( const special_effect_t* e ) :
+      dbc_proc_callback_t( e->player, *e ) { }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto d = proc_action->get_dot( s->target );
+
+      // Phial only procs when at max stacks, otherwise the buff just lingers on the
+      // character, waiting for the dot to fall off
+      if ( !d->is_ticking() || !d->at_max_stacks() )
+      {
+        proc_buff->expire();
+        proc_action->set_target( s->target );
+        proc_action->execute();
+      }
+    }
+  };
+
+  auto putrefaction_buff = buff_t::find( effect.player, "phial_of_putrefaction" );
+  if ( !putrefaction_buff )
+  {
+    putrefaction_buff = make_buff( effect.player, "phial_of_putrefaction",
+        effect.player->find_spell( 345464 ) )
+      ->set_duration( timespan_t::zero() );
+
+    special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
+    putrefaction_proc->spell_id = 345464;
+    putrefaction_proc->cooldown_ = 1_ms; // Proc only once per time unit
+    putrefaction_proc->custom_buff = putrefaction_buff;
+    putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>(
+        "liquefying_ooze", effect );
+
+    auto proc_object = new phial_of_putrefaction_proc_t( putrefaction_proc );
+    proc_object->deactivate();
+
+    putrefaction_buff->set_stack_change_callback( [proc_object]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) { proc_object->activate(); }
+      else { proc_object->deactivate(); }
+    } );
+
+    effect.player->register_combat_begin( [&effect, putrefaction_buff]( player_t* ) {
+      putrefaction_buff->trigger();
+      make_repeating_event( putrefaction_buff->source->sim, effect.driver()->effectN( 1 ).period(),
+          [putrefaction_buff]() { putrefaction_buff->trigger(); } );
+    } );
+  }
+}
+
+void grim_codex( special_effect_t& effect )
+{
+  struct grim_codex_t : public proc_spell_t
+  {
+    double dmg_primary = 0.0;
+    double dmg_secondary = 0.0;
+
+    grim_codex_t( const special_effect_t& e ) :
+      proc_spell_t( "spectral_scythe", e.player, e.driver(), e.item )
+    {
+      aoe = -1;
+
+      dmg_primary = player->find_spell( 345877 )->effectN( 1 ).average( e.item );
+      dmg_secondary = player->find_spell( 345877 )->effectN( 2 ).average( e.item );
+    }
+
+    double base_da_min( const action_state_t* s ) const override
+    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
+
+    double base_da_max( const action_state_t* s ) const override
+    { return s->chain_target == 0 ? dmg_primary : dmg_secondary; }
+  };
+
+  effect.execute_action = create_proc_action<grim_codex_t>( "grim_codex", effect );
+}
+
+void anima_field_emitter( special_effect_t& effect )
+{
+  struct anima_field_emitter_proc_t : public dbc_proc_callback_t
+  {
+    timespan_t max_duration;
+
+    anima_field_emitter_proc_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      max_duration( effect.player->find_spell( 345534 )->duration() )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      timespan_t buff_duration = max_duration;
+      if ( listener->sim->shadowlands_opts.anima_field_emitter_mean != std::numeric_limits<double>::max() )
+      {
+        double new_duration = rng().gauss( listener->sim->shadowlands_opts.anima_field_emitter_mean,
+            listener->sim->shadowlands_opts.anima_field_emitter_stddev );
+        buff_duration = timespan_t::from_seconds( clamp( new_duration, 0.0, max_duration.total_seconds() ) );
+      }
+
+      if ( buff_duration > timespan_t::zero() )
+      {
+        proc_buff->trigger( buff_duration );
+      }
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "anima_field" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "anima_field", effect.player->find_spell( 345535 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.custom_buff = buff;
+
+    new anima_field_emitter_proc_t( effect );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1366,7 +1496,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345357, items::hateful_chain );
     unique_gear::register_special_effect( 343385, items::overflowing_anima_cage );
     unique_gear::register_special_effect( 343393, items::sunblood_amethyst );
-    unique_gear::register_special_effect( 345545, items::bottled_chimera_toxin );
+    unique_gear::register_special_effect( 345545, items::bottled_flayedwing_toxin );
     unique_gear::register_special_effect( 345539, items::empyreal_ordnance );
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
     unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
@@ -1377,6 +1507,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 330741, items::unbound_changeling );
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
+    unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
+    unique_gear::register_special_effect( 345739, items::grim_codex );
+    unique_gear::register_special_effect( 345533, items::anima_field_emitter );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

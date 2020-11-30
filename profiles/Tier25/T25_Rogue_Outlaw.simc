@@ -51,7 +51,7 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Builders
-actions.build=shiv,if=runeforge.tiny_toxic_blade.equipped
+actions.build=shiv,if=runeforge.tiny_toxic_blade
 actions.build+=/echoing_reprimand
 actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
 # Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down.

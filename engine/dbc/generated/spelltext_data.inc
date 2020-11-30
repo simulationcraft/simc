@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36753
-static const std::array<spelltext_data_t, 15050> __spelltext_data { {
+static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14937,6 +14937,7 @@ static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   { 345499, "$@spelldesc345474", "Versatility increased by $w1.", 0 },
   { 345530, "Gain $s1 Haste and $s2 Speed for $d.", "Haste increased by $w1.\r\nSpeed increased by $w2.", 0 },
   { 345533, "Your attacks have a high chance to create an Anima Field at your location for $345534d. Standing within the field grants you $s1 Haste.", 0, 0 },
+  { 345535, 0, "Haste increased by $w1.", 0 },
   { 345539, "Fire $s1 Empyreal Ordnance at up to $s2 targets. Targets suffer ${$345542s1*6*(1+$@versadmg)} Arcane damage over $345540d for each ordnance that hits them. As the ordnance expires on the target they return, each granting $345543s1 Intellect for $345541d. ", 0, 0 },
   { 345540, "$@spelldesc345539", "Taking $w Arcane damage every $t sec.", 0 },
   { 345541, "$@spelldesc345539", "Intellect increased by $w1.", 0 },

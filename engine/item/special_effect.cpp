@@ -165,6 +165,7 @@ void special_effect_t::reset()
   // Must match buff creator defaults for now
   max_stacks = -1;
   proc_chance_ = -1;
+  expire_on_max_stack = -1;
 
   // ppm < 0 = real ppm, ppm > 0 = normal "ppm", min_double off
   ppm_ = std::numeric_limits<double>::min();
@@ -932,6 +933,11 @@ void format_to( const special_effect_t& se, fmt::format_context::iterator out )
 
   if ( se.weapon_proc )
     fmt::format_to( out, " weaponproc" );
+
+  if ( se.expire_on_max_stack != -1 )
+  {
+    fmt::format_to( out, " expire_buff_on_max_stack={}", as<bool>( se.expire_on_max_stack ) );
+  }
 }
 
 void special_effect::parse_special_effect_encoding( special_effect_t& effect,

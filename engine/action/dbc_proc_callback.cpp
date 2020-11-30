@@ -104,7 +104,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     ppm( 0 ),
     proc_buff( nullptr ),
     proc_action( nullptr ),
-    weapon( nullptr )
+    weapon( nullptr ),
+    expire_on_max_stack( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -119,7 +120,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     ppm( 0 ),
     proc_buff( nullptr ),
     proc_action( nullptr ),
-    weapon( nullptr )
+    weapon( nullptr ),
+    expire_on_max_stack( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -134,7 +136,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     ppm( 0 ),
     proc_buff( nullptr ),
     proc_action( nullptr ),
-    weapon( nullptr )
+    weapon( nullptr ),
+    expire_on_max_stack( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -177,6 +180,15 @@ void dbc_proc_callback_t::initialize()
   if ( effect.weapon_proc && effect.item )
   {
     weapon = effect.item->weapon();
+  }
+
+  if ( proc_buff && effect.expire_on_max_stack != -1 )
+  {
+    expire_on_max_stack = as<bool>( effect.expire_on_max_stack );
+  }
+  else if ( proc_buff && proc_buff->max_stack() > 1 )
+  {
+    expire_on_max_stack = true;
   }
 
   // Register callback to new proc system
@@ -264,7 +276,7 @@ void dbc_proc_callback_t::execute( action_t*, action_state_t* state )
     proc_action->schedule_execute();
 
     // Decide whether to expire the buff even with 1 max stack
-    if ( proc_buff && proc_buff->max_stack() > 1 )
+    if ( expire_on_max_stack )
     {
       proc_buff->expire();
     }

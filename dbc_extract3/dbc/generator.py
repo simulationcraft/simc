@@ -1258,6 +1258,8 @@ class SpellDataGenerator(DataGenerator):
          # Echo Of Eonar Legendary
          347660, 347660, # Healing bonuses
          347662, 347665, # Damage Reduction bonuses
+         # Anima Field for Anima Field Emitter trinket
+         345535,
         ),
 
         # Warrior:

@@ -66,6 +66,8 @@ struct special_effect_t
   bool proc_delay;
   bool unique;
   bool weapon_proc;
+  /// Expire procced buff on max stack, 0 = never, 1 = always, -1 = autodetect (default)
+  int expire_on_max_stack;
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
