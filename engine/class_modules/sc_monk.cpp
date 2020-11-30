@@ -9331,6 +9331,7 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
