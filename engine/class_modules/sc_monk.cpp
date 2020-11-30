@@ -222,6 +222,14 @@ public:
   };
   std::vector<stagger_tick_entry_t> stagger_tick_damage;  // record stagger tick damage for expression
 
+  // Invoke Niuzao purify tracking. We need something a little more involved
+  // because he sees purifies for 6s prior to the cast.
+  struct purify_entry_t {
+    double amount;
+    timespan_t time;
+  };
+  std::deque<purify_entry_t> recent_purifies;
+
   double gift_of_the_ox_proc_chance;
 
   struct buffs_t
@@ -490,6 +498,7 @@ public:
     const spell_data_t* clash;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* invoke_niuzao;
+    const spell_data_t* invoke_niuzao_2;
     const spell_data_t* keg_smash;
     const spell_data_t* purifying_brew;
     const spell_data_t* purifying_brew_2;
@@ -1075,6 +1084,9 @@ public:
   double partial_clear_stagger_amount( double );
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
+  // record purifies for nizzy
+  void record_recent_purify( double amount, timespan_t time );
+  void clean_recent_purifies( timespan_t time );
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
@@ -2643,6 +2655,13 @@ private:
 
       if ( p->buff.niuzao_2_buff->up() )
         b += p->buff.niuzao_2_buff->value();
+
+      // remove purifies that are too long ago
+      p->o()->clean_recent_purifies(p->o()->sim->current_time());
+
+      for(auto purify : p->o()->recent_purifies) {
+        b += purify.amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
+      }
 
       return b;
     }
@@ -7572,6 +7591,7 @@ struct purifying_brew_t : public monk_spell_t
     auto amount_cleared =
         p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
     p()->sample_datas.purified_damage->add( amount_cleared );
+    p()->record_recent_purify( amount_cleared, p()->sim->current_time() );
   }
 };
 
@@ -9944,6 +9964,7 @@ void monk_t::init_spells()
   spec.clash               = find_specialization_spell( "Clash" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
+  spec.invoke_niuzao_2     = find_specialization_spell( "Invoke Niuzao, the Black Ox", "Rank 2" );
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
@@ -10653,6 +10674,7 @@ void monk_t::reset()
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
   stagger_tick_damage.clear();
+  recent_purifies.clear();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -10777,6 +10799,34 @@ void monk_t::accumulate_gale_burst_damage( action_state_t* s )
 {
   if ( !s->action->harmful )
     return;
+}
+
+void monk_t::clean_recent_purifies(timespan_t time) {
+  if ( !recent_purifies.empty() ) {
+    timespan_t cutoff = time;
+    cutoff -= timespan_t::from_seconds(6);
+    auto purify = recent_purifies.front();
+
+    while ( purify.time < cutoff ) {
+      sim->print_debug("{} discarding old purify (time {})", name(), purify.time);
+      recent_purifies.pop_front();
+      if( recent_purifies.empty() ) {
+        break;
+      }
+      purify = recent_purifies.front();
+    }
+  }
+}
+
+void monk_t::record_recent_purify( double amount, timespan_t time )
+{
+  sim->print_debug("{} recording recent purify (time {}, amount {})", name(), time, amount);
+  clean_recent_purifies(time);
+
+  purify_entry_t entry;
+  entry.time = time;
+  entry.amount = amount;
+  recent_purifies.push_back(entry);
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
