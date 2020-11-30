@@ -222,14 +222,6 @@ public:
   };
   std::vector<stagger_tick_entry_t> stagger_tick_damage;  // record stagger tick damage for expression
 
-  // Invoke Niuzao purify tracking. We need something a little more involved
-  // because he sees purifies for 6s prior to the cast.
-  struct purify_entry_t {
-    double amount;
-    timespan_t time;
-  };
-  std::deque<purify_entry_t> recent_purifies;
-
   double gift_of_the_ox_proc_chance;
 
   struct buffs_t
@@ -254,6 +246,8 @@ public:
     buff_t* shuffle;
     buff_t* spitfire;
     buff_t* zen_meditation;
+    // niuzao r2 recent purifies fake buff
+    buff_t* recent_purifies;
 
     buff_t* light_stagger;
     buff_t* moderate_stagger;
@@ -1084,9 +1078,6 @@ public:
   double partial_clear_stagger_amount( double );
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
-  // record purifies for nizzy
-  void record_recent_purify( double amount, timespan_t time );
-  void clean_recent_purifies( timespan_t time );
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
@@ -2666,12 +2657,10 @@ private:
       if ( p->buff.niuzao_2_buff->up() )
         b += p->buff.niuzao_2_buff->value();
 
-      // remove purifies that are too long ago
-      p->o()->clean_recent_purifies(p->o()->sim->current_time());
-
-      for(auto purify : p->o()->recent_purifies) {
-        b += purify.amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
-      }
+      auto purify_amount = p->o()->buff.recent_purifies->value();
+      auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
+      b += actual_damage;
+      p->o()->sim->print_debug("applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage);
 
       return b;
     }
@@ -2685,6 +2674,15 @@ private:
         am *= 1 + p->o()->conduit.walk_with_the_ox.percent();
 
       return am;
+    }
+
+    void execute() override {
+      melee_attack_t::execute();
+      // canceling the purify buff goes here so that in aoe all hits see the
+      // purified damage that needs to be split. this occurs after all damage
+      // has been dealt
+      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+      p->o()->buff.recent_purifies->cancel();
     }
   };
 
@@ -7611,7 +7609,7 @@ struct purifying_brew_t : public monk_spell_t
     auto amount_cleared =
         p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
     p()->sample_datas.purified_damage->add( amount_cleared );
-    p()->record_recent_purify( amount_cleared, p()->sim->current_time() );
+    p()->buff.recent_purifies->trigger( 1, amount_cleared );
   }
 };
 
@@ -9323,7 +9321,9 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
 {
-  std::vector<double> values;
+  std::deque<double> values;
+  // tracking variable for debug code
+  bool ignore_empty;
   purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
@@ -9334,10 +9334,14 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 
     set_duration( timespan_t::from_seconds( 6 ) );
     set_max_stack( 99 );
+
+    ignore_empty = false;
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
+    ignore_empty = false;
+    p().sim->print_debug("adding recent purify (amount: {})", value);
     // Make sure the value is reset upon each trigger
     current_value = 0;
 
@@ -9361,13 +9365,23 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value ) override
   {
-    assert( !values.empty() );
-    values.erase( values.begin() );
+    if (values.empty()) {
+      // decrement ends up being called after expire_override sometimes. if this
+      // debug msg is showing, then we have an error besides that that is
+      // leading to stack/queue mismatches
+      if (!ignore_empty) {
+        p().sim->print_debug("purifying_buff decrement called with no values in queue!");
+      }
+    } else {
+      values.pop_front();
+    }
     buff_t::decrement( stacks, value );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    ignore_empty = true;
+    values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -10417,6 +10431,7 @@ void monk_t::create_buffs()
   buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
   buff.heavy_stagger    = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger );
+  buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
@@ -10691,7 +10706,6 @@ void monk_t::reset()
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
   stagger_tick_damage.clear();
-  recent_purifies.clear();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -10816,34 +10830,6 @@ void monk_t::accumulate_gale_burst_damage( action_state_t* s )
 {
   if ( !s->action->harmful )
     return;
-}
-
-void monk_t::clean_recent_purifies(timespan_t time) {
-  if ( !recent_purifies.empty() ) {
-    timespan_t cutoff = time;
-    cutoff -= timespan_t::from_seconds(6);
-    auto purify = recent_purifies.front();
-
-    while ( purify.time < cutoff ) {
-      sim->print_debug("{} discarding old purify (time {})", name(), purify.time);
-      recent_purifies.pop_front();
-      if( recent_purifies.empty() ) {
-        break;
-      }
-      purify = recent_purifies.front();
-    }
-  }
-}
-
-void monk_t::record_recent_purify( double amount, timespan_t time )
-{
-  sim->print_debug("{} recording recent purify (time {}, amount {})", name(), time, amount);
-  clean_recent_purifies(time);
-
-  purify_entry_t entry;
-  entry.time = time;
-  entry.amount = amount;
-  recent_purifies.push_back(entry);
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
