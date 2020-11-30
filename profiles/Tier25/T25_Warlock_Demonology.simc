@@ -32,34 +32,31 @@ actions.precombat+=/variable,name=tyrant_ready,value=0
 
 # Executed every time the actor is available.
 actions=call_action_list,name=off_gcd
-actions+=/call_action_list,name=essences
-actions+=/run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<5&!variable.tyrant_ready
+actions+=/run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<4&!variable.tyrant_ready
 actions+=/run_action_list,name=summon_tyrant,if=variable.tyrant_ready
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|time_to_die<cooldown.summon_demonic_tyrant.remains+25
 actions+=/call_dreadstalkers
 actions+=/doom,if=refreshable
 actions+=/demonic_strength
 actions+=/bilescourge_bombers
+actions+=/implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5
+actions+=/implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down
 actions+=/hand_of_guldan,if=soul_shard=5|buff.nether_portal.up
 actions+=/hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2
+actions+=/call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled
 actions+=/demonbolt,if=buff.demonic_core.react&soul_shard<4
 actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.summon_demonic_tyrant.remains+15
 actions+=/use_items
 actions+=/power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3
-actions+=/implosion,if=azerite.explosive_potential.rank>1&buff.explosive_potential.remains<3&buff.wild_imps.stack>=3
 actions+=/soul_strike
+actions+=/call_action_list,name=covenant
 actions+=/shadow_bolt
 
-actions.essences=worldvein_resonance,if=cooldown.summon_demonic_tyrant.remains>45
-actions.essences+=/memory_of_lucid_dreams
-actions.essences+=/blood_of_the_enemy
-actions.essences+=/guardian_of_azeroth
-actions.essences+=/ripple_in_space
-actions.essences+=/focused_azerite_beam
-actions.essences+=/purifying_blast
-actions.essences+=/reaping_flames
-actions.essences+=/concentrated_flame
-actions.essences+=/the_unbound_force,if=buff.reckless_force.remains
+actions.covenant=impending_catastrophe,if=!talent.sacrificed_souls.enabled|active_enemies>1
+actions.covenant+=/scouring_tithe,if=talent.sacrificed_souls.enabled&active_enemies=1
+actions.covenant+=/scouring_tithe,if=!talent.sacrificed_souls.enabled&active_enemies<4
+actions.covenant+=/soul_rot
+actions.covenant+=/decimating_bolt
 
 actions.off_gcd=berserking,if=pet.demonic_tyrant.active
 actions.off_gcd+=/potion,if=buff.berserking.up|pet.demonic_tyrant.active&!race.troll
