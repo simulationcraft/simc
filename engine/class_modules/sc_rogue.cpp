@@ -705,6 +705,7 @@ public:
     std::vector<size_t> fixed_rtb;
     std::vector<double> fixed_rtb_odds;
     int initial_combo_points = 0;
+    int initial_shadow_techniques = -1;
     bool rogue_optimize_expressions = true;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
@@ -6340,7 +6341,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( p()->sim->debug )
     p()->sim->out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", p()->shadow_techniques, p()->shadow_techniques + 1 );
 
-  if ( ++p()->shadow_techniques == 5 || ( p()->shadow_techniques == 4 && p()->rng().roll( 0.5 ) ) )
+  if ( ++p()->shadow_techniques >= 5 || ( p()->shadow_techniques == 4 && p()->rng().roll( 0.5 ) ) )
   {
     if ( p()->sim->debug )
       p()->sim->out_debug.printf( "Shadow techniques proc'd at %d, resetting counter to 0", p()->shadow_techniques );
@@ -7242,7 +7243,7 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*20+talent.master_of_shadows.enabled*20+talent.shadow_focus.enabled*25+talent.alacrity.enabled*20+25*(spell_targets.shuriken_storm>=4)", "Used to define when to use stealth CDs or builders" );
     def->add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold", "Consider using a Stealth CD when reaching the energy threshold" );
     def->add_action( "call_action_list,name=finish,if=combo_points=animacharged_cp" );
-    def->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
+    def->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&combo_points>=3|buff.symbols_of_death_autocrit.up&combo_points>=4", "Finish at 4+ without DS or with SoD crit buff, 5+ with DS (outside stealth)" );
     def->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4", "With DS also finish at 4+ against 4 targets (outside stealth)" );
     def->add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
     def->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
@@ -8680,6 +8681,7 @@ void rogue_t::create_options()
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", options.initial_combo_points ) );
+  add_option( opt_int( "initial_shadow_techniques", options.initial_shadow_techniques, -1, 4 ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
@@ -8705,10 +8707,8 @@ void rogue_t::copy_from( player_t* source )
       rogue->weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
   }
 
-  if ( rogue->options.initial_combo_points != 0 )
-  {
-    options.initial_combo_points = rogue->options.initial_combo_points;
-  }
+  options.initial_combo_points = rogue->options.initial_combo_points;
+  options.initial_shadow_techniques = rogue->options.initial_shadow_techniques;
 
   options.fixed_rtb = rogue->options.fixed_rtb;
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
@@ -8864,7 +8864,10 @@ void rogue_t::reset()
 {
   player_t::reset();
 
-  shadow_techniques = 0;
+  if( options.initial_shadow_techniques >= 0 )
+    shadow_techniques = options.initial_shadow_techniques;
+  else
+    shadow_techniques = rng().range( 0, 5 );
 
   last_rupture_target = nullptr;
 
