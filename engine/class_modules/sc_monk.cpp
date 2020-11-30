@@ -887,6 +887,7 @@ public:
     int initial_chi;
     double memory_of_lucid_dreams_proc_chance = 0.15;
     double expel_harm_effectiveness;
+    double faeline_stomp_uptime;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -966,6 +967,7 @@ public:
     }
     user_options.initial_chi = 1;
     user_options.expel_harm_effectiveness = 1.0;
+    user_options.faeline_stomp_uptime = 1.0;
   }
 
   // Default consumables
@@ -4262,8 +4264,10 @@ public:
     trigger_storm_earth_and_fire( this );
 
     if ( p()->buff.faeline_stomp->up() && ab::background == false &&
-         p()->rng().roll( p()->buff.faeline_stomp->value() ) )
-      p()->cooldown.faeline_stomp->reset( true, 1 );
+         p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
+      if ( p()->rng().roll( p()->buff.faeline_stomp->value() ) )
+        p()->cooldown.faeline_stomp->reset( true, 1 );
+
   }
 
   void impact( action_state_t* s ) override
@@ -9299,7 +9303,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Purifying Buff
+// Niuzao Rank 2 Purifying Buff
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
 {
@@ -11278,6 +11282,7 @@ void monk_t::create_options()
   add_option(
       opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
   add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
+  add_option( opt_float( "faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
 }
 
 // monk_t::copy_from =========================================================
