@@ -93,12 +93,12 @@ void arcane( player_t* p )
   precombat->add_action( "evocation,if=variable.prepull_evo=1" );
 
   default_->add_action( "counterspell,if=target.debuff.casting.react" );
-  default_->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened<=0&prev_gcd.1.evocation&!runeforge.siphon_storm" );
-  default_->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened<=0&buff.arcane_power.down&cooldown.arcane_power.remains>0&runeforge.siphon_storm" );
+  default_->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&prev_gcd.1.evocation&!(runeforge.siphon_storm|runeforge.temporal_warp)" );
+  default_->add_action( "variable,name=have_opened,op=set,value=1,if=variable.have_opened=0&buff.arcane_power.down&cooldown.arcane_power.remains&(runeforge.siphon_storm|runeforge.temporal_warp)" );
   default_->add_action( "variable,name=final_burn,op=set,value=1,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&!buff.rule_of_threes.up&fight_remains<=((mana%action.arcane_blast.cost)*action.arcane_blast.execute_time)" );
   default_->add_action( "call_action_list,name=shared_cds" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
-  default_->add_action( "call_action_list,name=opener,if=variable.have_opened<=0" );
+  default_->add_action( "call_action_list,name=opener,if=variable.have_opened=0" );
   default_->add_action( "call_action_list,name=am_spam,if=variable.am_spam=1" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=rotation,if=variable.final_burn=0" );
@@ -123,7 +123,7 @@ void arcane( player_t* p )
   shared_cds->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.inverted_opener=1|time>30)" );
   shared_cds->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.inverted_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
 
-  opener->add_action( "evocation,if=(runeforge.siphon_storm|runeforge.temporal_warp)&talent.rune_of_power&cooldown.rune_of_power.remains>0&(buff.rune_of_power.down|prev_gcd.1.arcane_barrage)" );
+  opener->add_action( "evocation,if=(runeforge.siphon_storm|runeforge.temporal_warp)&talent.rune_of_power&cooldown.rune_of_power.remains&(buff.rune_of_power.down|prev_gcd.1.arcane_barrage)" );
   opener->add_action( "fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up" );
   opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
   opener->add_action( "deathborne,if=!runeforge.siphon_storm" );
@@ -139,6 +139,7 @@ void arcane( player_t* p )
   opener->add_action( "arcane_power,if=prev_gcd.1.touch_of_the_magi" );
   opener->add_action( "rune_of_power,if=buff.rune_of_power.down" );
   opener->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<action.arcane_missiles.execute_time" );
+  opener->add_action( "presence_of_mind,if=talent.rune_of_power&buff.arcane_power.up&buff.rune_of_power.remains<gcd.max" );
   opener->add_action( "arcane_blast,if=dot.radiant_spark.remains>5|debuff.radiant_spark_vulnerability.stack>0" );
   opener->add_action( "arcane_blast,if=buff.presence_of_mind.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=action.arcane_blast.execute_time" );
   opener->add_action( "arcane_barrage,if=buff.rune_of_power.up&cooldown.arcane_power.ready&mana.pct<40&buff.arcane_charge.stack=buff.arcane_charge.max_stack&!runeforge.siphon_storm&!runeforge.temporal_warp" );
@@ -168,8 +169,9 @@ void arcane( player_t* p )
   cooldowns->add_action( "arcane_power,if=cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct", "Use ap if totm is on cd and won't be up for longer than the max delay, making sure that we have enough mana and that there is not already a rune of power down." );
   cooldowns->add_action( "rune_of_power,if=buff.arcane_power.down&cooldown.touch_of_the_magi.remains>variable.rop_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)", "Use rop if totm is on cd and won't be up for longer than the max delay, making sure there isn't already a rune down and that ap won't become available during rune." );
   cooldowns->add_action( "shifting_power,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
-  cooldowns->add_action( "presence_of_mind,if=buff.arcane_charge.stack=0&covenant.kyrian", "Kyrian: RS is mana hungry and AB4s are too expensive to use pom to squeeze an extra ab in the totm window. Let's use it to make low charge ABs instant." );
-  cooldowns->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<action.arcane_missiles.execute_time&!covenant.kyrian", "Non-Kyrian: Use pom to squeeze an extra ab in the totm window." );
+  cooldowns->add_action( "presence_of_mind,if=talent.rune_of_power&buff.arcane_power.up&buff.rune_of_power.remains<gcd.max", "Use pom to squeeze an extra ab in the next cooldown window, unless kyrian then only during arcane power due to how mana hungry radiant spark is" );
+  cooldowns->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<action.arcane_missiles.execute_time&!covenant.kyrian" );
+  cooldowns->add_action( "presence_of_mind,if=buff.rune_of_power.up&buff.rune_of_power.remains<gcd.max&cooldown.evocation.ready&!covenant.kyrian" );
 
   rotation->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95&(!runeforge.siphon_storm|buff.siphon_storm.stack=buff.siphon_storm.max_stack)" );
   rotation->add_action( "evocation,if=mana.pct<=variable.evo_pct&(cooldown.touch_of_the_magi.remains<=action.evocation.execute_time|cooldown.arcane_power.remains<=action.evocation.execute_time|(talent.rune_of_power&cooldown.rune_of_power.remains<=action.evocation.execute_time))&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down" );
@@ -180,7 +182,7 @@ void arcane( player_t* p )
   rotation->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack&(buff.arcane_power.down|buff.arcane_power.remains<=gcd)&(buff.rune_of_power.down|buff.rune_of_power.remains<=gcd)" );
   rotation->add_action( "arcane_blast,if=dot.radiant_spark.remains>8|(debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)" );
   rotation->add_action( "arcane_blast,if=buff.presence_of_mind.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=action.arcane_blast.execute_time" );
-  rotation->add_action( "arcane_missiles,if=debuff.touch_of_the_magi.up&talent.arcane_echo&(buff.deathborne.down|active_enemies=1)&(debuff.touch_of_the_magi.remains>action.arcane_missiles.execute_time|cooldown.presence_of_mind.remains>0|covenant.kyrian)&(!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down),chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|(!talent.overpowered&(buff.rune_of_power.up|cooldown.evocation.ready)))" );
+  rotation->add_action( "arcane_missiles,if=debuff.touch_of_the_magi.up&talent.arcane_echo&(buff.deathborne.down|active_enemies=1)&(debuff.touch_of_the_magi.remains>action.arcane_missiles.execute_time|cooldown.presence_of_mind.remains|covenant.kyrian)&(!azerite.arcane_pummeling.enabled|buff.clearcasting_channel.down),chain=1,early_chain_if=buff.clearcasting_channel.down&(buff.arcane_power.up|(!talent.overpowered&(buff.rune_of_power.up|cooldown.evocation.ready)))" );
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.expanded_potential.up" );
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&(buff.arcane_power.up|buff.rune_of_power.up|debuff.touch_of_the_magi.remains>action.arcane_missiles.execute_time),chain=1" );
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.clearcasting.stack=buff.clearcasting.max_stack,chain=1" );
@@ -189,7 +191,7 @@ void arcane( player_t* p )
   rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack<=variable.totm_max_charges" );
   rotation->add_action( "supernova,if=mana.pct<=95&buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   rotation->add_action( "arcane_blast,if=buff.rule_of_threes.up&buff.arcane_charge.stack>3" );
-  rotation->add_action( "arcane_barrage,if=mana.pct<=variable.barrage_mana_pct&buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.evocation.remains>0" );
+  rotation->add_action( "arcane_barrage,if=mana.pct<=variable.barrage_mana_pct&buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.evocation.remains" );
   rotation->add_action( "arcane_barrage,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack&talent.arcane_orb&cooldown.arcane_orb.remains<=gcd&mana.pct<=90&cooldown.evocation.remains" );
   rotation->add_action( "arcane_barrage,if=buff.arcane_power.up&buff.arcane_power.remains<=gcd&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.evocation.remains" );
   rotation->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.rune_of_power.remains<=gcd&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.evocation.remains" );
@@ -238,7 +240,7 @@ void arcane( player_t* p )
   am_spam->add_action( "mirrors_of_torment,if=cooldown.arcane_power.remains=0&(buff.rune_of_power.down&(cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm|cooldown.touch_of_the_magi.remains=0))" );
   am_spam->add_action( "radiant_spark" );
   am_spam->add_action( "shifting_power,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
-  am_spam->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.arcane_power.remains>0" );
+  am_spam->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.arcane_power.remains" );
   am_spam->add_action( "touch_of_the_magi,if=(cooldown.arcane_power.remains=0&buff.rune_of_power.down)|prev_gcd.1.rune_of_power" );
   am_spam->add_action( "touch_of_the_magi,if=cooldown.arcane_power.remains<50&buff.rune_of_power.down&essence.vision_of_perfection.enabled" );
   am_spam->add_action( "arcane_power,if=buff.rune_of_power.down&cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm" );
