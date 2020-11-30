@@ -9101,7 +9101,9 @@ public:
   }
 };
 
-// Fortifying Brew Buff ==========================================================
+// ===============================================================================
+// Fortifying Brew Buff
+// ===============================================================================
 struct fortifying_brew_t : public monk_buff_t<buff_t>
 {
   int health_gain;
@@ -9139,7 +9141,9 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   }
 };
 
-// Serenity Buff ==========================================================
+// ===============================================================================
+// Serenity Buff 
+// ===============================================================================
 struct serenity_buff_t : public monk_buff_t<buff_t>
 {
   monk_t& m;
@@ -9158,7 +9162,9 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-// Touch of Karma Buff ===================================================
+// ===============================================================================
+// Touch of Karma Buff 
+// ===============================================================================
 struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 {
   touch_of_karma_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
@@ -9183,7 +9189,9 @@ struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-// Rushing Jade Wind Buff ================================================
+// ===============================================================================
+// Rushing Jade Wind Buff 
+// ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 {
   // gonna assume this is 1 buff per monk combatant
@@ -9232,7 +9240,9 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-// Gift of the Ox Buff ===================================================
+// ===============================================================================
+// Gift of the Ox Buff
+// ===============================================================================
 struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 {
   gift_of_the_ox_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
@@ -9268,7 +9278,9 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-// Windwalking Buff ======================================================
+// ===============================================================================
+// Windwalking Buff
+// ===============================================================================
 struct windwalking_driver_t : public monk_buff_t<buff_t>
 {
   double movement_increase;
@@ -9291,6 +9303,9 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
   }
 };
 
+// ===============================================================================
+// Stagger Buff
+// ===============================================================================
 struct stagger_buff_t : public monk_buff_t<buff_t>
 {
   stagger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
