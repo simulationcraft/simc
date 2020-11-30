@@ -61,7 +61,7 @@ actions.cds+=/boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.
 # Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF.
 actions.cds+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)
 # Default fallback for usable items: Use on cooldown.
-actions.cds+=/use_items
+actions.cds+=/use_items,if=buff.voidform.up|buff.power_infusion.up
 
 # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
 actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)

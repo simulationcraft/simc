@@ -2,7 +2,7 @@ mage="PR_Mage_Frost"
 source=default
 spec=frost
 level=60
-race=pandaren
+race=mechagnome
 role=spell
 position=ranged_back
 talents=2032021
@@ -94,19 +94,19 @@ actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipli
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
-head=depraved_physicians_mask,id=178759,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498
+head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+shoulders=ingra_malochs_mantle,id=178696,bonus_id=6807/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
-wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=6807/1498,enchant=eternal_intellect
 hands=tricksprite_gloves,id=178705,bonus_id=6807/1498
 waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
 legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6716/6823/1487,ilevel=190
-feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=unbound_changeling,id=178708,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498,enchant=shadowcore_oil
 trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
 
@@ -114,8 +114,7 @@ main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
 # gear_ilvl=184.40
 # gear_stamina=861
 # gear_intellect=778
-# gear_crit_rating=393
-# gear_haste_rating=809
-# gear_mastery_rating=113
-# gear_versatility_rating=57
+# gear_crit_rating=563
+# gear_haste_rating=599
+# gear_versatility_rating=209
 # gear_armor=292

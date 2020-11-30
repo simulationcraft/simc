@@ -6254,7 +6254,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
-      if ( !player->specialization() == MONK_MISTWEAVER )
+      if ( player->specialization() != MONK_MISTWEAVER )
         base_hit -= 0.19;
     }
   }
@@ -7813,6 +7813,9 @@ struct weapons_of_order_t : public monk_spell_t
   void execute() override
   {
     p()->buff.weapons_of_order->trigger();
+    if ( p()->specialization() == MONK_BREWMASTER ) {
+      p()->cooldown.keg_smash->reset( true, 1 );
+    }
     monk_spell_t::execute();
   }
 };
