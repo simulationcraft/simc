@@ -1957,7 +1957,8 @@ void priest_t::generate_apl_shadow()
   cds->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)",
       "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
-  cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
+  cds->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up",
+                   "Default fallback for usable items: Use on cooldown." );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
