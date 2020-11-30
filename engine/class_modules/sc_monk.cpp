@@ -7529,6 +7529,8 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful     = false;
 
+    cooldown->charges += (int)p.spec.purifying_brew_2->effectN( 1 ).base_value();
+
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent(); // -20
 
