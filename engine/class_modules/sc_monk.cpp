@@ -8025,9 +8025,6 @@ struct faeline_stomp_t : public monk_spell_t
       }
       case MONK_BREWMASTER:
       {
-        p()->active_actions.breath_of_fire->target = s->target;
-        p()->active_actions.breath_of_fire->execute();
-
         p()->buff.faeline_stomp_brm->trigger();
         break;
       }
