@@ -3804,7 +3804,7 @@ void sim_t::create_options()
     shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
   add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
   add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
-  add_option( opt_string( "unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
+  add_option( opt_string( "shadowlands.unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
   add_option( opt_float( "shadowlands.anima_field_emitter_mean",
     shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "shadowlands.anima_field_emitter_stddev",
