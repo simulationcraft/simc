@@ -2665,6 +2665,17 @@ private:
 
       return b;
     }
+
+    double action_multiplier() const override
+    {
+      double am = melee_attack_t::action_multiplier();
+      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+
+      if ( p->o()->conduit.walk_with_the_ox->ok() )
+        am *= 1 + p->o()->conduit.walk_with_the_ox.percent();
+
+      return am;
+    }
   };
 
   struct stomp_t : public spell_t
@@ -2749,9 +2760,6 @@ public:
     double cpm = pet_t::composite_player_multiplier( school );
 
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
-
-    if ( o()->conduit.walk_with_the_ox->ok() )
-      cpm *= 1 + o()->conduit.walk_with_the_ox.percent();
 
     return cpm;
   }
