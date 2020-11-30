@@ -246,6 +246,8 @@ public:
     buff_t* shuffle;
     buff_t* spitfire;
     buff_t* zen_meditation;
+    // niuzao r2 recent purifies fake buff
+    buff_t* recent_purifies;
 
     buff_t* light_stagger;
     buff_t* moderate_stagger;
@@ -490,6 +492,7 @@ public:
     const spell_data_t* clash;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* invoke_niuzao;
+    const spell_data_t* invoke_niuzao_2;
     const spell_data_t* keg_smash;
     const spell_data_t* purifying_brew;
     const spell_data_t* purifying_brew_2;
@@ -2633,6 +2636,16 @@ private:
       range                                                 = radius;
       radius                                                = 0;
       cooldown->duration                                    = timespan_t::zero();
+      // technically the base damage doesn't split. practically, the base damage
+      // is ass and totally irrelevant. the r2 hot trub effect (which does
+      // split) is by far the dominating factor in any aoe sim.
+      //
+      // if i knew more about simc, i'd implement a separate effect for that,
+      // but i'm not breaking something that (mostly) works in pursuit of that
+      // goal.
+      //
+      //  - emallson
+      split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -2644,7 +2657,32 @@ private:
       if ( p->buff.niuzao_2_buff->up() )
         b += p->buff.niuzao_2_buff->value();
 
+      auto purify_amount = p->o()->buff.recent_purifies->value();
+      auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
+      b += actual_damage;
+      p->o()->sim->print_debug("applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage);
+
       return b;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = melee_attack_t::action_multiplier();
+      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+
+      if ( p->o()->conduit.walk_with_the_ox->ok() )
+        am *= 1 + p->o()->conduit.walk_with_the_ox.percent();
+
+      return am;
+    }
+
+    void execute() override {
+      melee_attack_t::execute();
+      // canceling the purify buff goes here so that in aoe all hits see the
+      // purified damage that needs to be split. this occurs after all damage
+      // has been dealt
+      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+      p->o()->buff.recent_purifies->cancel();
     }
   };
 
@@ -2730,9 +2768,6 @@ public:
     double cpm = pet_t::composite_player_multiplier( school );
 
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
-
-    if ( o()->conduit.walk_with_the_ox->ok() )
-      cpm *= 1 + o()->conduit.walk_with_the_ox.percent();
 
     return cpm;
   }
@@ -3487,17 +3522,17 @@ public:
       if ( owner->legendary.stormstouts_last_keg->ok() )
         am *= 1 + owner->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
+      if ( owner->conduit.scalding_brew->ok() )
+        {
+          if ( owner->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+            am *= 1 + owner->conduit.scalding_brew.percent();
+        }
+
       return am;
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->conduit.scalding_brew->ok() )
-      {
-        if ( owner->get_target_data( s->target )->dots.breath_of_fire->is_ticking() )
-          s->result_amount *= 1 + owner->conduit.scalding_brew.percent();
-      }
-
       melee_attack_t::impact( s );
 
       owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -6398,6 +6433,12 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( p()->legendary.stormstouts_last_keg->ok() )
       am *= 1 + p()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
+    if ( p()->conduit.scalding_brew->ok() )
+    {
+      if ( td( p()->target )->dots.breath_of_fire->is_ticking() )
+        am *= 1 + p()->conduit.scalding_brew.percent();
+    }
+
     return am;
   }
 
@@ -6422,12 +6463,6 @@ struct keg_smash_t : public monk_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( p()->conduit.scalding_brew->ok() )
-    {
-      if ( td( s->target )->dots.breath_of_fire->is_ticking() )
-        s->result_amount *= 1 + p()->conduit.scalding_brew.percent();
-    }
-
     monk_melee_attack_t::impact( s );
 
     td( s->target )->debuff.keg_smash->trigger();
@@ -7510,6 +7545,8 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful     = false;
 
+    cooldown->charges += (int)p.spec.purifying_brew_2->effectN( 1 ).base_value();
+
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent(); // -20
 
@@ -7572,6 +7609,7 @@ struct purifying_brew_t : public monk_spell_t
     auto amount_cleared =
         p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
     p()->sample_datas.purified_damage->add( amount_cleared );
+    p()->buff.recent_purifies->trigger( 1, amount_cleared );
   }
 };
 
@@ -7985,9 +8023,6 @@ struct faeline_stomp_t : public monk_spell_t
       }
       case MONK_BREWMASTER:
       {
-        p()->active_actions.breath_of_fire->target = s->target;
-        p()->active_actions.breath_of_fire->execute();
-
         p()->buff.faeline_stomp_brm->trigger();
         break;
       }
@@ -9286,7 +9321,9 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
 {
-  std::vector<double> values;
+  std::deque<double> values;
+  // tracking variable for debug code
+  bool ignore_empty;
   purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
@@ -9297,10 +9334,14 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 
     set_duration( timespan_t::from_seconds( 6 ) );
     set_max_stack( 99 );
+
+    ignore_empty = false;
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
+    ignore_empty = false;
+    p().sim->print_debug("adding recent purify (amount: {})", value);
     // Make sure the value is reset upon each trigger
     current_value = 0;
 
@@ -9324,13 +9365,22 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value ) override
   {
-    assert( !values.empty() );
-    values.erase( values.begin() );
+    if (values.empty()) {
+      // decrement ends up being called after expire_override sometimes. if this
+      // debug msg is showing, then we have an error besides that that is
+      // leading to stack/queue mismatches
+      if (!ignore_empty) {
+        p().sim->print_debug("purifying_buff decrement called with no values in queue!");
+      }
+    } else {
+      values.pop_front();
+    }
     buff_t::decrement( stacks, value );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    ignore_empty = true;
     values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -9945,6 +9995,7 @@ void monk_t::init_spells()
   spec.clash               = find_specialization_spell( "Clash" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
+  spec.invoke_niuzao_2     = find_specialization_spell( "Invoke Niuzao, the Black Ox", "Rank 2" );
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
@@ -10380,6 +10431,7 @@ void monk_t::create_buffs()
   buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
   buff.heavy_stagger    = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger );
+  buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
