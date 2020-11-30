@@ -1829,6 +1829,14 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_shadow_blades_attack( state );
     trigger_bloodfang( state );
   }
+
+  void tick( dot_t* d ) override
+  {
+    base_t::tick( d );
+
+    trigger_shadow_blades_attack( d->state );
+  }
+
 };
 
 // ==========================================================================
@@ -4839,7 +4847,13 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
+      // 11/29/2020 - Not in the whitelist but confirmed as working in-game
+      affected_by.shadow_blades = true;
     }
+
+    // 11/29/2020 - Does not proc Blade Flurry on live
+    bool procs_blade_flurry() const override
+    { return false; }
   };
 
   sepsis_expire_damage_t* sepsis_expire_damage;
@@ -4847,6 +4861,8 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p->covenant.sepsis, options_str )
   {
+    // 11/29/2020 - Not in the whitelist but confirmed as working in-game
+    affected_by.shadow_blades = true;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
