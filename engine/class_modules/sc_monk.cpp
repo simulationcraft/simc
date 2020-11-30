@@ -2645,6 +2645,16 @@ private:
       range                                                 = radius;
       radius                                                = 0;
       cooldown->duration                                    = timespan_t::zero();
+      // technically the base damage doesn't split. practically, the base damage
+      // is ass and totally irrelevant. the r2 hot trub effect (which does
+      // split) is by far the dominating factor in any aoe sim.
+      //
+      // if i knew more about simc, i'd implement a separate effect for that,
+      // but i'm not breaking something that (mostly) works in pursuit of that
+      // goal.
+      //
+      //  - emallson
+      split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
