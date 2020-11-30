@@ -2654,9 +2654,6 @@ private:
 
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
 
-      if ( p->buff.niuzao_2_buff->up() )
-        b += p->buff.niuzao_2_buff->value();
-
       auto purify_amount = p->o()->buff.recent_purifies->value();
       auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
       b += actual_damage;
@@ -2737,11 +2734,6 @@ private:
   };
 
 public:
-  struct buffs_t
-  {
-    buff_t* niuzao_2_buff = nullptr;
-  } buff;
-
   niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
     npc_id                      = 73967;
@@ -2770,16 +2762,6 @@ public:
     cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
 
     return cpm;
-  }
-
-  void create_buffs() override
-  {
-    pet_t::create_buffs();
-
-    buff.niuzao_2_buff =
-        make_buff( this, "stomp_buff" )
-            ->set_duration( timespan_t::from_seconds( 2 ) )
-            ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
   }
 
   void init_action_list() override
@@ -9327,6 +9309,7 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
   purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
+    set_quiet (true );
     set_cooldown( timespan_t::zero() );
     stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
 
