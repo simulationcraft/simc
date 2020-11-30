@@ -4,7 +4,7 @@ race=night_elf
 spec=havoc
 role=attack
 position=back
-talents=1130101
+talents=3330221
 
 covenant=venthyr
 soulbind=thrill_seeker/growing_inferno:4
@@ -13,11 +13,11 @@ timeofday=night
 
 head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulder=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6716/7052/1487
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
+hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6716/7050/1487
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
 legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
@@ -38,7 +38,7 @@ race=night_elf
 spec=havoc
 role=attack
 position=back
-talents=3330202
+talents=3330222
 
 covenant=venthyr
 soulbind=thrill_seeker/growing_inferno:4
@@ -47,11 +47,11 @@ timeofday=night
 
 head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulder=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6716/7052/1487
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
+hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6716/7050/1487
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
 legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility

@@ -9,10 +9,10 @@ talents=2311132
 azerite_essences=4:3/5:3/32:3/35:3
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=mechdowels_big_mech
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -24,9 +24,13 @@ augmentation=disabled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
 actions.precombat+=/potion
+actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
+actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 # Interrupt of casts.

@@ -2,8 +2,7 @@ druid="PR_Druid_Balance"
 source=default
 spec=balance
 level=60
-race=night_elf
-timeofday=day
+race=highmountain_tauren
 role=spell
 position=back
 talents=3000231
@@ -167,7 +166,7 @@ chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_insight
 wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498,enchant=eternal_intellect
 hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498
 waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498
-legs=umbrahide_leggings,id=172318,bonus_id=7107/6716/6648/6649/1532
+legs=umbrahide_leggings,id=172318,bonus_id=7107/6716/6648/6649/1487
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_mastery
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_mastery
@@ -176,11 +175,11 @@ trinket2=darkmoon_deck_putrescence,id=173069,enchant=shadowcore_oil
 main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=188.47
-# gear_stamina=932
-# gear_intellect=817
+# gear_ilvl=185.47
+# gear_stamina=861
+# gear_intellect=787
 # gear_crit_rating=111
-# gear_haste_rating=321
-# gear_mastery_rating=609
+# gear_haste_rating=305
+# gear_mastery_rating=593
 # gear_versatility_rating=368
-# gear_armor=499
+# gear_armor=479
