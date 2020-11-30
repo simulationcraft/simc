@@ -9279,6 +9279,60 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
+// Purifying Buff
+// ===============================================================================
+struct purifying_buff_t : public monk_buff_t<buff_t>
+{
+  std::vector<double> values;
+  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_can_cancel( true );
+    set_cooldown( timespan_t::zero() );
+    stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
+
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+
+    set_duration( timespan_t::from_seconds( 6 ) );
+    set_max_stack( 99 );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    // Make sure the value is reset upon each trigger
+    current_value = 0;
+
+    values.push_back( value );
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  double value() override
+  {
+    double total_value = 0;
+
+    if ( !values.empty() )
+    {
+      for ( auto& i : values )
+        total_value += i;
+    }
+
+    return total_value;
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    assert( !values.empty() );
+    values.erase( values.begin() );
+    buff_t::decrement( stacks, value );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
 // Windwalking Buff
 // ===============================================================================
 struct windwalking_driver_t : public monk_buff_t<buff_t>
