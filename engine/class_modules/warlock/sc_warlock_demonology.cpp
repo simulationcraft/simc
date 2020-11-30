@@ -1284,25 +1284,27 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* prep   = get_action_priority_list( "tyrant_prep" );
   action_priority_list_t* sum    = get_action_priority_list( "summon_tyrant" );
   action_priority_list_t* ogcd   = get_action_priority_list( "off_gcd" );
-  action_priority_list_t* ess    = get_action_priority_list( "essences" );
+  action_priority_list_t* cov    = get_action_priority_list( "covenant" );
 
   def->add_action( "call_action_list,name=off_gcd" );
-  def->add_action( "call_action_list,name=essences" );
-  def->add_action( "run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<5&!variable.tyrant_ready" );
+  def->add_action( "run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<4&!variable.tyrant_ready" );
   def->add_action( "run_action_list,name=summon_tyrant,if=variable.tyrant_ready" );
   def->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|time_to_die<cooldown.summon_demonic_tyrant.remains+25" );
   def->add_action( "call_dreadstalkers" );
   def->add_action( "doom,if=refreshable" );
   def->add_action( "demonic_strength" );
   def->add_action( "bilescourge_bombers" );
+  def->add_action( "implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down" );
   def->add_action( "hand_of_guldan,if=soul_shard=5|buff.nether_portal.up" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2" );
+  def->add_action( "call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4" );
   def->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.summon_demonic_tyrant.remains+15" );
   def->add_action( "use_items" );
   def->add_action( "power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
-  def->add_action( "implosion,if=azerite.explosive_potential.rank>1&buff.explosive_potential.remains<3&buff.wild_imps.stack>=3" );
   def->add_action( "soul_strike" );
+  def->add_action( "call_action_list,name=covenant" );
   def->add_action( "shadow_bolt" );
 
   prep->add_action( "doom,line_cd=30" );
@@ -1332,15 +1334,10 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "blood_fury,if=pet.demonic_tyrant.active" );
   ogcd->add_action( "fireblood,if=pet.demonic_tyrant.active" );
 
-  ess->add_action( "worldvein_resonance,if=cooldown.summon_demonic_tyrant.remains>45" );
-  ess->add_action( "memory_of_lucid_dreams" );
-  ess->add_action( "blood_of_the_enemy" );
-  ess->add_action( "guardian_of_azeroth" );
-  ess->add_action( "ripple_in_space" );
-  ess->add_action( "focused_azerite_beam" );
-  ess->add_action( "purifying_blast" );
-  ess->add_action( "reaping_flames" );
-  ess->add_action( "concentrated_flame" );
-  ess->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
+  cov->add_action( "impending_catastrophe,if=!talent.sacrificed_souls.enabled|active_enemies>1" );
+  cov->add_action( "scouring_tithe,if=talent.sacrificed_souls.enabled&active_enemies=1" );
+  cov->add_action( "scouring_tithe,if=!talent.sacrificed_souls.enabled&active_enemies<4" );
+  cov->add_action( "soul_rot" );
+  cov->add_action( "decimating_bolt" );
 }
 }  // namespace warlock
