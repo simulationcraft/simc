@@ -6692,15 +6692,12 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
-  // TOCHECK: Does this work with Vanish? Shadowmeld?
-  double chance = p()->conduit.count_the_odds.percent();
-  if ( p()->stealthed( STEALTH_BASIC ) )
-    chance *= 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent();
-
-  if ( !p()->rng().roll( chance ) )
+  // TOCHECK: Does this work with Shadowmeld?
+  const double stealth_bonus = p()->stealthed( STEALTH_BASIC ) ? 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent() : 1.0;
+  if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() * stealth_bonus ) )
     return;
 
-  const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() );
+  const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() ) * stealth_bonus;
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration );
   p()->procs.count_the_odds->occur();
 }
