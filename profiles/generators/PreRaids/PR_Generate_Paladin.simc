@@ -1,30 +1,32 @@
-# paladin="PR_Paladin_Protection"
-# level=120
-# race=lightforged_draenei
-# spec=protection
-# role=tank
-# position=front
-# talents=1200003
+paladin="PR_Paladin_Protection
+level=60
+race=draenei
+role=tank
+position=front
+spec=protection
+talents=2222222
 
+covenant=venthyr
+soulbind=nadjia_the_mistblade:8,331586/196:4/331576
 
-# head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
-# wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-# hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
-# waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-# legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-# feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=darkmoon_deck_fathoms,id=159125
-# trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-# main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
-# off_hand=disc_of_Indomitable_will,id=158713,bonus_id=4779/1512/4786
+head=wrathbark_greathelm,id=178694,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulder=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
+chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498,enchant=eternal_skirmish
+wrist=reality_shattering_vambraces,id=179354,bonus_id=6807/1498
+hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498,enchant=eternal_strength
+waist=girldle_of_the_soulflayer,id=179326,bonus_id=6807/1498
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6649/6647/7054/1487
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=decanter_of_anima_charged_winds,id=178861,bonus_id=6807/1498
+main_hand=engorged_worm_smasher,id=178730,bonus_id=6807/1498,enchant=lightless_force
+off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498
 
-# save=PR_Paladin_Protection.simc
+save=PR_Paladin_Protection.simc
 
 
 paladin="PR_Paladin_Retribution"
