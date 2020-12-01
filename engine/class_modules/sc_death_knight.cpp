@@ -59,13 +59,13 @@ namespace runeforge {
   void reanimated_shambler( special_effect_t& );
 }
 
+enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
+
 // ==========================================================================
 // Death Knight Runes
 // ==========================================================================
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
-
-enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
 
 const double RUNIC_POWER_DECAY_RATE = 1.0;
 const double RUNE_REGEN_BASE = 10;
@@ -74,10 +74,6 @@ const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
 const double MAX_START_OF_COMBAT_RP = 20;
-
-// Values found from testing
-const int PESTILENCE_CAP_PER_TICK = 2;
-const int PESTILENCE_CAP_PER_CAST = 10;
 
 template <typename T>
 struct dynamic_event_t : public event_t
@@ -417,9 +413,9 @@ struct death_knight_td_t : public actor_target_data_t {
   struct
   {
     // Shared
-    buff_t* abomination_limb; // Tracks per-target icd
+    buff_t* abomination_limb; // Target-specific icd
     buff_t* razorice;
-    buff_t* apocalypse_death; // Empty debuff, simc doesn't really care about healing reduction on enemies
+    buff_t* apocalypse_death; // Dummy debuff, healing reduction not implemented
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
 
@@ -4228,6 +4224,10 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 
 struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
+  // Values found from testing
+  const int PESTILENCE_CAP_PER_TICK = 2;
+  const int PESTILENCE_CAP_PER_CAST = 10;
+
   int pestilence_procs_per_tick;
   int pestilence_procs_per_cast;
 
@@ -5674,7 +5674,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
-    triggers_icecap;
+    triggers_icecap = true;
 
     deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) +
                                   data().effectN ( 1 ).chain_target() +
@@ -8821,7 +8821,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&rune.time_to_4<gcd&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_item,name=darkmoon_deck_verocity,if=pet.apoc_ghoul.active&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)");
-  
+
   // Cooldowns
   cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<5&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3)|cooldown.apocalypse.remains)" );
