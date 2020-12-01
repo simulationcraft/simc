@@ -1020,6 +1020,11 @@ public:
       tm *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( affected_by.avatar && p()->buff.avatar->up() )
+    {
+      tm *= 1.0 + p()->talents.avatar->effectN( 1 ).percent();
+    }
+
     return tm;
   }
 
