@@ -10,11 +10,11 @@ soulbind=combat_meditation/proliferation:4
 
 head=darkfrost_helmet,id=178777,bonus_id=6807/1498
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6650/6716/6941/1487
 back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6648/6650/6758/6953/1487,enchant=eternal_skirmish
+chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498,enchant=eternal_skirmish
 wrists=pit_fighters_wristguards,id=178807,bonus_id=6807/1498
-hands=fleshfused_crushers,id=178775,bonus_id=6807/1498
+hands=fleshfused_crushers,id=178775,bonus_id=6807/1498,enchant=eternal_strength
 waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498
 legs=halkiass_towering_pillars,id=178818,bonus_id=6807/1498
 feet=sabatons_of_the_rushing_juggernaut,id=178836,bonus_id=6807/1498
