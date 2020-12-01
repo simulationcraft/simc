@@ -1944,7 +1944,8 @@ void priest_t::generate_apl_shadow()
                         "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
   trinkets->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10",
-      "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
+      "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
+      "is 10s or more away." );
   trinkets->add_call_action_list(
       dmg_trinkets,
       "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
