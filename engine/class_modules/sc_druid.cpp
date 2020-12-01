@@ -6750,8 +6750,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     conv_full_moon = get_convoke_action<full_moon_t>( "full_moon", p()->find_spell( 274283 ), "" );
     conv_starfall  = get_convoke_action<starfall_t>( "starfall", p()->find_spell( 191034 ), "" );
-    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge",
-                       p()->find_spell( p()->talent.balance_affinity->ok() ? 197626 : 78674 ), "" );
+    conv_starsurge = get_convoke_action<starsurge_t>( "starsurge", p()->find_spell( 78674 ), "" );
   }
 
   void _init_bear()
