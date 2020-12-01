@@ -586,6 +586,7 @@ public:
     // random testing stuff
     bool unblinking_vigil_on_execute = false;
     bool brutal_projectiles_on_execute = false;
+    bool serpenstalkers_triggers_wild_spirits = true;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -3260,6 +3261,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
+      triggers_wild_spirits = p -> options.serpenstalkers_triggers_wild_spirits;
     }
   };
 
@@ -6853,6 +6855,7 @@ void hunter_t::create_options()
 
   add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
+  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpenstalkers_triggers_wild_spirits ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
