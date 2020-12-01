@@ -6,8 +6,8 @@ race=troll
 role=spell
 position=back
 talents=2301032
-covenant=night_fae
-soulbind=niya:1,322721/call_of_flame:7/essential_extraction:7
+covenant=necrolord
+soulbind=emeni:5,342156/call_of_flame:7/tumbling_waves:7
 
 # Default consumables
 potion=potion_of_spectral_intellect

@@ -6,8 +6,8 @@ position="back"
 spec="elemental"
 talents="2301032"
 
-covenant="night_fae"
-soulbind="niya:1,322721/call_of_flame:7/essential_extraction:7
+covenant=necrolord
+soulbind=emeni:5,342156/call_of_flame:7/tumbling_waves:7
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
 neck=sin_stained_pendant,id=178827,bonus_id=3535/4786/1540
