@@ -121,9 +121,9 @@ shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
 wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=6983/6647/6649,ilevel=190
+hands=tricksprite_gloves,id=178705,bonus_id=6807/1498
 waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498
+legs=grimveiled_pants,id=173246,bonus_id=7162/6647/6649,ilevel=190
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_haste
@@ -133,10 +133,10 @@ main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=celestial_guidanc
 
 # Gear Summary
 # gear_ilvl=184.40
-# gear_stamina=858
+# gear_stamina=861
 # gear_intellect=726
-# gear_crit_rating=244
-# gear_haste_rating=809
-# gear_mastery_rating=340
+# gear_crit_rating=289
+# gear_haste_rating=810
+# gear_mastery_rating=295
 # gear_versatility_rating=57
 # gear_armor=292
