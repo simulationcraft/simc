@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36753
-static const std::array<spelltext_data_t, 15051> __spelltext_data { {
+static const std::array<spelltext_data_t, 15050> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11172,7 +11172,6 @@ static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   { 287662, "Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.", 0, 0 },
   { 287664, "$@spelldesc287662", 0, 0 },
   { 287665, "$@spelldesc287662", 0, 0 },
-  { 287671, "Open the container.", 0, 0 },
   { 287707, "Rapid Fire damage is increased by up to ${$m2*1.5} per shot fired, this damage starts lower and increases per shot of Rapid Fire. Aimed Shot has a $s1% chance to reset the cooldown of Rapid Fire.", 0, 0 },
   { 287711, "$@spelldesc287707", 0, 0 },
   { 287712, "Wind up, then unleash your might upon your foe, dealing $<damage> Physical damage, stunning for $d, and knocking them back substantially. ", "Stunned.", "Racial" },
