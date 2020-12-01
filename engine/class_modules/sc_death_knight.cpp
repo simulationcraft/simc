@@ -6914,6 +6914,14 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         callbacks = may_crit = false;
         base_pct_heal = data -> effectN( 2 ).percent();
       }
+
+      // Procs by default target the target of the action that procced them.
+      void execute() override
+      {
+        target = player;
+
+        death_knight_heal_t::execute();
+      }
     };
 
     p -> active_spells.unholy_strength = new fallen_crusader_heal_t( p, p -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() );
