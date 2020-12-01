@@ -1933,7 +1933,7 @@ void priest_t::generate_apl_shadow()
   // Trinkets
   trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption."
-      "remains>10",
+      "remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
   trinkets->add_action(
       "use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10",
