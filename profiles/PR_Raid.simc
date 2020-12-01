@@ -6,11 +6,11 @@ PR_Death_Knight_Frost.simc
 PR_Death_Knight_Unholy.simc
 
 PR_Demon_Hunter_Havoc.simc
-# PR_Demon_Hunter_Vengeance.simc
+PR_Demon_Hunter_Vengeance.simc
 
 PR_Druid_Balance.simc
 PR_Druid_Feral.simc
-# PR_Druid_Guardian.simc
+PR_Druid_Guardian.simc
 
 PR_Hunter_Beast_Mastery.simc
 PR_Hunter_Marksmanship.simc
@@ -23,7 +23,7 @@ PR_Mage_Frost.simc
 PR_Monk_Brewmaster.simc
 PR_Monk_Windwalker.simc
 
-# PR_Paladin_Protection.simc
+PR_Paladin_Protection.simc
 PR_Paladin_Retribution.simc
 
 PR_Priest_Shadow.simc
