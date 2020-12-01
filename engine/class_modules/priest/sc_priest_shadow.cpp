@@ -1931,10 +1931,15 @@ void priest_t::generate_apl_shadow()
   dmg_trinkets->add_action( "use_item,name=dreadfire_vessel" );
 
   // Trinkets
-  trinkets->add_action( "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up",
-                        "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
-  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=buff.voidform.up", "Sync IQD with Voidform" );
-  trinkets->add_action( "use_item,name=macabre_sheet_music,if=buff.voidform.up", "Sync Sheet Music with Voidform" );
+  trinkets->add_action(
+      "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption."
+      "remains>10",
+      "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
+  trinkets->add_action(
+      "use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10",
+      "Sync IQD with Voidform" );
+  trinkets->add_action( "use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10",
+                        "Sync Sheet Music with Voidform" );
   trinkets->add_action( "use_item,name=soulletting_ruby,if=buff.power_infusion.up,target_if=min:target.health.pct",
                         "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
   trinkets->add_action(
@@ -1942,10 +1947,10 @@ void priest_t::generate_apl_shadow()
       "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
   trinkets->add_call_action_list(
       dmg_trinkets,
-      "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|buff.power_infusion.up|cooldown."
-      "void_eruption.remains>20)",
+      "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
+      "10)",
       "Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it." );
-  trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up",
+  trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // CDs
