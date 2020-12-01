@@ -623,6 +623,7 @@ public:
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* cyclone_strikes;
+    const spell_data_t* dance_of_chiji;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* empowered_tiger_lightning;
     const spell_data_t* fists_of_fury_tick;
@@ -5851,8 +5852,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->buff.weapons_of_order_ww->up() )
       c += p()->buff.weapons_of_order_ww->value();
 
-    if ( p()->buff.dance_of_chiji->up() )
-      c += p()->buff.dance_of_chiji->value();  // saved as -2
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+      c += p()->passives.dance_of_chiji->effectN( 1 ).base_value();  // saved as -2
 
     if ( p()->buff.dance_of_chiji_azerite->up() )
       c += p()->buff.dance_of_chiji_azerite->value();  // saved as -2
@@ -5874,7 +5875,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       if ( p()->buff.weapons_of_order_ww->up() )
         cost -= p()->buff.weapons_of_order_ww->value();
 
-      if ( p()->buff.dance_of_chiji->up() )
+      if ( p()->buff.dance_of_chiji_hidden->up() )
         cost -= p()->buff.dance_of_chiji->value();
 
       if ( p()->buff.dance_of_chiji_azerite->up() )
@@ -10180,6 +10181,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.cyclone_strikes                  = find_spell( 220358 );
+  passives.dance_of_chiji                   = find_spell( 325202 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.empowered_tiger_lightning        = find_spell( 335913 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
@@ -10475,9 +10477,8 @@ void monk_t::create_buffs()
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
-                            ->set_trigger_spell( talent.dance_of_chiji )
-                            ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
+  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
+                            ->set_trigger_spell( talent.dance_of_chiji );
 
   buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
