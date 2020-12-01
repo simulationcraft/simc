@@ -65,31 +65,34 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6805/1498,enchant=c
 save=PR_Demon_Hunter_Havoc_Momentum.simc
 
 
-# demonhunter="PR_Demon_Hunter_Vengeance"
-# level=120
-# race=night_elf
-# spec=vengeance
-# role=tank
-# position=front
-# talents=1213121
+demonhunter="PR_Demon_Hunter_Vengeance"
+level=60
+race=night_elf
+spec=vengeance
+role=tank
+position=front
+talents=1233221
 
-# timeofday=night
+timeofday=night
 
-# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=157/461/83/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/462/202/13
-# wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
-# hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
-# waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
-# legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
-# feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
-# finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-# trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-# main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=versatile_navigation
-# off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
+covenant=Kyrian
+soulbind=combat_meditation/repeat_decree:4
+
+head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
+chest=rainshadow_hauberk,id=178698,bonus_id=6807/1498,enchant=eternal_stats
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6807/1498
+hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498
+waist=sapgorger_belt,id=178699,bonus_id=6807/1498
+legs=umbrahide_leggings,id=172318,bonus_id=7046/6716/6649/6650/1487
+feet=vanquished_usurpers_footpads,id=178797,bonus_id=6807/1498,enchant=eternal_agility
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498,enchant=tenet_of_haste
+trinket1=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498,enchant=shadowcore_oil
+main_hand=stone_generals_edge,id=178857,bonus_id=6807/1498,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498,enchant=celestial_guidance
 
 # save=PR_Demon_Hunter_Vengeance.simc
