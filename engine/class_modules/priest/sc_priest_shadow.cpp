@@ -1886,6 +1886,8 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* cwc          = get_action_priority_list( "cwc" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
   action_priority_list_t* boon         = get_action_priority_list( "boon" );
+  action_priority_list_t* trinkets     = get_action_priority_list( "trinkets" );
+  action_priority_list_t* dmg_trinkets = get_action_priority_list( "dmg_trinkets" );
 
   // Professions
   for ( const auto& profession_action : get_profession_actions() )
@@ -1922,6 +1924,36 @@ void priest_t::generate_apl_shadow()
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
 
+  // DMG Trinkets, specifically tied together with Hungering Void
+  dmg_trinkets->add_action( "use_item,name=darkmoon_deck__putrescence" );
+  dmg_trinkets->add_action( "use_item,name=sunblood_amethyst" );
+  dmg_trinkets->add_action( "use_item,name=glyph_of_assimilation" );
+  dmg_trinkets->add_action( "use_item,name=dreadfire_vessel" );
+
+  // Trinkets
+  trinkets->add_action(
+      "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption."
+      "remains>27",
+      "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
+  trinkets->add_action(
+      "use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10",
+      "Sync IQD with Voidform" );
+  trinkets->add_action( "use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10",
+                        "Sync Sheet Music with Voidform" );
+  trinkets->add_action( "use_item,name=soulletting_ruby,if=buff.power_infusion.up,target_if=min:target.health.pct",
+                        "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
+  trinkets->add_action(
+      "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10",
+      "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
+      "is 10s or more away." );
+  trinkets->add_call_action_list(
+      dmg_trinkets,
+      "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
+      "10)",
+      "Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it." );
+  trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
+                        "Default fallback for usable items: Use on cooldown in order by trinket slot." );
+
   // CDs
   cds->add_action( this, "Power Infusion",
                    "if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_"
@@ -1937,12 +1969,12 @@ void priest_t::generate_apl_shadow()
                    "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
                    "Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either "
                    "Grove Invigoration or Field of Blossoms" );
-  cds->add_action(
-      this, covenant.mindgames, "mindgames",
-      "target_if=insanity<90&(variable.all_dots_up|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_"
-      "void.up|!buff.voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
-      "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on the target if "
-      "talented. Stop using at 5+ targets with Searing Nightmare." );
+  cds->add_action( this, covenant.mindgames, "mindgames",
+                   "target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
+                   "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.up|!buff."
+                   "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+                   "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void is active on "
+                   "the target if talented. Stop using at 5+ targets with Searing Nightmare." );
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
@@ -1954,11 +1986,7 @@ void priest_t::generate_apl_shadow()
                    "prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)",
                    "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
                    "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
-  cds->add_action(
-      "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)",
-      "Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF." );
-  cds->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up",
-                   "Default fallback for usable items: Use on cooldown." );
+  cds->add_call_action_list( trinkets );
 
   // APL to use when Boon of the Ascended is active
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
