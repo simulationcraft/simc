@@ -42,46 +42,42 @@ head=",id=178817,bonus_id=6807/1498"
 neck=",id=178707,bonus_id=6807/1498"
 shoulder=",id=179344,bonus_id=6807/1498"
 back=",id=178851,bonus_id=6807/1498"
-chest=",id=178795,bonus_id=6807/1498,enchant_id=6214"
+chest=",id=172314,bonus_id=6716/7086/6647/6648/1487,enchant_id=6214"
 wrist=",id=178702,bonus_id=6807/1498"
 hands=",id=178757,bonus_id=6807/1498"
 waist=",id=178805,bonus_id=6807/1498"
 legs=",id=178801,bonus_id=6807/1498"
 feet=",id=178837,bonus_id=6807/1498,enchant_id=6211"
 finger1=",id=178872,bonus_id=6807/1498,enchant_id=6164"
-finger2=",id=178926,bonus_id=6716/7089/6647/6648/1487,enchant_id=6164"
-trinket1=",id=179350,bonus_id=6807/1498"
+finger2=",id=178781,bonus_id=6807/1498,enchant_id=6164"
+trinket1=",id=179350,bonus_id=6807/1498,enchant=shadowcore_oil
 trinket2=",id=173087"
 main_hand=",id=180097,bonus_id=6807/1498,enchant_id=6228"
 
 save=PR_Druid_Feral.simc
 
 
-druid="PR_Druid_Guardian"
-level="60"
-race="night_elf"
-role=tank
-position=front
-spec="guardian"
-talents="1013221"
+# druid="PR_Druid_Guardian"
+# level=120
+# race=worgen
+# spec=guardian
+# role=tank
+# position=front
+# talents=1111123
 
-covenant="necrolord"
-soulbind="emeni:5,342156/270:4"
-
-head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
-chest=Umbrahide_vest,id=172314,bonus_id=7092/6647/6649/1487,enchant=eternal_skirmish
-wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_versatility
-finger2=Bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498
-main_hand=devoss_cacophonous_poleaxe,id=180096,bonus_id=6807/1498,enchant=sinful_revelation
-
-save=PR_Druid_Guardian.simc
+# head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
+# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=241/461/83/13
+# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+# chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=361/462/15/13
+# wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
+# hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
+# waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
+# legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
+# feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
+# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+# trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+# trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
+# main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+# save=PR_Druid_Guardian.simc
