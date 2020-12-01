@@ -111,7 +111,6 @@ public:
     buff_t* overpower;
     buff_t* rallying_cry;
     buff_t* ravager;
-    buff_t* ravager_protection;
     buff_t* recklessness;
     buff_t* revenge;
     buff_t* shield_block;
@@ -258,7 +257,6 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
-    const spell_data_t* ravager_protection;
     const spell_data_t* shield_block_buff;
     const spell_data_t* riposte;
     const spell_data_t* aftershock_duration;
@@ -4032,24 +4030,7 @@ struct ravager_t : public warrior_attack_t
 
   void execute() override
   {
-    if( WARRIOR_PROTECTION )
-    {
-      if( torment_triggered)
-      {
-        p()->buff.ravager_protection->trigger( dot_duration );
-      }
-      else
-      {
-        p()->buff.ravager_protection->trigger();
-
-        if ( p()->legendary.signet_of_tormented_kings.ok() )
-        {
-          action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
-          tormet_ability->schedule_execute();
-        }
-      }
-    }
-    else if ( WARRIOR_ARMS )
+    if ( p()->specialization() == WARRIOR_ARMS )
     {
       if( torment_triggered)
       {
@@ -6269,7 +6250,6 @@ void warrior_t::init_spells()
   spell.shield_slam           = find_class_spell( "Shield Slam" );
   spell.siegebreaker_debuff   = find_spell( 280773 );
   spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
-  spell.ravager_protection    = find_spell( 227744 );
   spell.shield_block_buff     = find_spell( 132404 );
   spell.riposte               = find_class_spell( "Riposte" );
   spell.aftershock_duration   = find_spell( 343607 );
@@ -7131,9 +7111,6 @@ void warrior_t::create_buffs()
   buff.ravager = make_buff( this, "ravager", talents.ravager )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.ravager_protection = make_buff( this, "ravager_protection", spell.ravager_protection )
-    ->add_invalidate( CACHE_PARRY );
-
   buff.spell_reflection = make_buff( this, "spell_reflection", spec.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
@@ -7849,11 +7826,7 @@ double warrior_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
-  if ( buff.ravager_protection->check() )
-  {
-    parry += spell.ravager_protection -> effectN( 1 ).percent();
-  }
-  else if ( buff.die_by_the_sword->check() )
+  if ( buff.die_by_the_sword->check() )
   {
     parry += spec.die_by_the_sword->effectN( 1 ).percent();
   }
