@@ -414,10 +414,10 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY )
     {
       equipped_legendaries++;
-      if ( item.parsed.data.level != legendary_ilevel )
+      if ( item.item_level() != legendary_ilevel )
       {
         sim.error( "Player {} has legendary item at slot {} of ilevel {}, legendary ilevel for {} is {}.\n", p.name(),
-                   util::slot_type_string( slot ), item.parsed.data.level, tier_name, legendary_ilevel );
+                   util::slot_type_string( slot ), item.item_level(), tier_name, legendary_ilevel );
       }
     }
     // Normal gear
@@ -434,9 +434,9 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
         }
       }
       // Check item level
-      if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
+      if ( !is_whitelisted && item.item_level() > max_ilevel_allowed )
         sim.error( "Player {} has {} of ilevel {}, maximum allowed ilevel for {} is {}.\n", p.name(),
-                   util::slot_type_string( slot ), item.parsed.data.level, tier_name, max_ilevel_allowed );
+                   util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
     }
 
     size_t num_gems = 0;
@@ -508,11 +508,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   }
 
   // Check that conduit ranks don't exceed the limit
-  if ( p.covenant )
+  if ( p.covenant -> enabled() )
   {
     p.covenant -> check_conduits( tier_name, max_conduit_rank );
   }
-
+  else
+    sim.error( "Player {} doesn't have a covenant selected!\n", p.name() );
   return true;
 }
 
