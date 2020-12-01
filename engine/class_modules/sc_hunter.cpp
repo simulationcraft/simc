@@ -2068,7 +2068,9 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
   {
     hunter_pet_action_t::impact( s );
 
-    o() -> trigger_wild_spirits( s );
+    // Animal Companion can't proc Wild Spirits, but Dire Beast can
+    if ( player != o() -> pets.animal_companion )
+      o() -> trigger_wild_spirits( s );
   }
 };
 
@@ -2086,7 +2088,8 @@ struct bloodshed_t : hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::impact( s );
 
-    o() -> trigger_wild_spirits( s );
+    if ( player == o() -> pets.main )
+      o() -> trigger_wild_spirits( s );
 
     (void) td( s -> target ); // force target_data creation for damage amp handling
   }
@@ -2106,7 +2109,8 @@ struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attac
   {
     hunter_pet_action_t::impact( s );
 
-    o() -> trigger_wild_spirits( s );
+    if ( player == o() -> pets.main )
+      o() -> trigger_wild_spirits( s );
   }
 };
 
