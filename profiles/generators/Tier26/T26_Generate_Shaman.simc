@@ -1,31 +1,31 @@
-# shaman="T26_Shaman_Elemental"
-# spec=elemental
-# level=60
-# race=troll
-# role=spell
-# position=back
-# talents=1111111
-# covenant=night_fae
+shaman="T26_Shaman_Elemental"
+level="60"
+race="tauren"
+role="spell"
+position="back"
+spec="elemental"
+talents="2301032"
 
-# # ilvl 138 template blue gear from beta
-# head=,id=163447,bonus_id=6938
-# neck=,id=177165,bonus_id=6938
-# shoulder=,id=163442,bonus_id=6938
-# back=,id=163365,bonus_id=6938
-# chest=,id=163444,bonus_id=6938
-# wrist=,id=177100,bonus_id=6938
-# hands=,id=177108,bonus_id=6938
-# waist=,id=163452,bonus_id=6938
-# legs=,id=177107,bonus_id=6938
-# feet=,id=177109,bonus_id=6938
-# finger1=,id=177167,bonus_id=6938/1762
-# finger2=,id=177164,bonus_id=6938
-# trinket1=,id=177157,bonus_id=6938/603
-# trinket2=,id=177155,bonus_id=6938/605
-# main_hand=,id=177116bonus_id=6938
-# off_hand=,id=177125,bonus_id=6938
+covenant=necrolord
+soulbind=emeni:5,342156/call_of_flame:7/tumbling_waves:7
 
-# save=T26_Shaman_Elemental.simc
+head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
+neck=sin_stained_pendant,id=178827,bonus_id=3535/4786/1540
+shoulder=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
+chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_insight
+wrist=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498,enchant=eternal_intellect
+hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498
+legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
+feet=boneshatter_treads,id=172323,bonus_id=6716/6992/6647/6650/1532
+finger1=hyperlight_band,id=183038,bonus_id=4800/4786/1498,enchant=tenet_of_mastery
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_mastery
+trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
+trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+main_hand=torch_of_fiery_atonement,id=182418,bonus_id=4800/4786/1531,enchant=sinful_revelation
+
+save=T26_Shaman_Elemental.simc
 
 
 shaman="T26_Shaman_Enhancement"
