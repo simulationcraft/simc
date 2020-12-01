@@ -77,6 +77,7 @@ public:
     action_t* signet_avatar;
     action_t* signet_bladestorm_a;
     action_t* signet_bladestorm_f;
+    action_t* signet_ravager;
     action_t* signet_recklessness;
     action_t* charge;
     action_t* iron_fortress; // Prot azerite trait
@@ -1404,14 +1405,12 @@ struct melee_t : public warrior_attack_t
     affected_by.arms_mastery_direct = p()->mastery.deep_wounds_ARMS->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.colossus_smash      = p()->spec.colossus_smash->ok();
-    //affected_by.rend                = p()->talents.rend->ok();
     affected_by.siegebreaker        = p()->talents.siegebreaker->ok();
     if ( p()->specialization() == WARRIOR_PROTECTION )
       affected_by.avatar            = p()->spec.avatar->ok();
     else
       affected_by.avatar            = p()->talents.avatar->ok();
     affected_by.booming_voice       = p()->talents.booming_voice->ok();
-    //affected_by.glory               = p()->covenant.conquerors_banner->ok();
   }
 
   void reset() override
@@ -3994,10 +3993,14 @@ struct ravager_t : public warrior_attack_t
 {
   ravager_tick_t* ravager;
   mortal_strike_unhinged_t* mortal_strike;
-  ravager_t( warrior_t* p, const std::string& options_str )
+  double torment_chance;
+  bool torment_triggered;
+  ravager_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false ) 
     : warrior_attack_t( "ravager", p, p->talents.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
-      mortal_strike( nullptr )
+      mortal_strike( nullptr ),
+      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
+      torment_triggered( torment_triggered )
   {
     parse_options( options_str );
     ignore_false_positive   = true;
@@ -4015,17 +4018,48 @@ struct ravager_t : public warrior_attack_t
     {
       cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
     }
+
+    if ( torment_triggered )
+    {
+      dot_duration = p->legendary.signet_of_tormented_kings->effectN( 4 ).time_value();
+    }
   }
 
   void execute() override
   {
-    if ( p()->specialization() == WARRIOR_PROTECTION )
+    if( WARRIOR_PROTECTION )
     {
-      p()->buff.ravager_protection->trigger();
+      if( torment_triggered)
+      {
+        p()->buff.ravager_protection->trigger( dot_duration );
+      }
+      else
+      {
+        p()->buff.ravager_protection->trigger();
+
+        if ( p()->legendary.signet_of_tormented_kings.ok() )
+        {
+          action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
+          tormet_ability->schedule_execute();
+        }
+      }
     }
-    else
+    else if ( WARRIOR_ARMS )
     {
-      p()->buff.ravager->trigger();
+      if( torment_triggered)
+      {
+        p()->buff.ravager->trigger( dot_duration );
+      }
+      else
+      {
+        p()->buff.ravager->trigger();
+
+        if ( p()->legendary.signet_of_tormented_kings.ok() )
+        {
+          action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
+          tormet_ability->schedule_execute();
+        }
+      }
     }
 
     warrior_attack_t::execute();
@@ -4076,6 +4110,17 @@ struct ravager_t : public warrior_attack_t
     {
     p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
     }
+  }
+
+  bool verify_actor_spec() const override
+  {
+    if ( torment_triggered )
+      return true;
+
+    if ( !p()->talents.ravager->ok() )
+      return false;
+
+    return warrior_attack_t::verify_actor_spec();
   }
 };
 
@@ -5267,7 +5312,12 @@ struct avatar_t : public warrior_spell_t
     {
       p()->buff.avatar->trigger();
 
-      if ( p()->legendary.signet_of_tormented_kings.ok() )
+      if ( p()->legendary.signet_of_tormented_kings.ok() && p()->talents.ravager->ok() )
+      {
+        action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_recklessness : p()->active.signet_ravager;
+        tormet_ability->schedule_execute();
+      }
+      else if ( p()->legendary.signet_of_tormented_kings.ok() && !p()->talents.ravager->ok() )
       {
         action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_recklessness : p()->active.signet_bladestorm_a;
         tormet_ability->schedule_execute();
@@ -5847,7 +5897,7 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
   if ( name == "battle_shout" )
     return new battle_shout_t( this, options_str );
   if ( name == "recklessness" )
-    return new recklessness_t( this, options_str, name, spec.recklessness );
+    return new recklessness_t( this, options_str, name, specialization() == WARRIOR_FURY ? spec.recklessness : find_spell( 1719 ) );
   if ( name == "berserker_rage" )
     return new berserker_rage_t( this, options_str );
   if ( name == "bladestorm" )
@@ -5933,7 +5983,7 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
   if ( name == "rampage" )
     return new rampage_parent_t( this, options_str );
   if ( name == "ravager" )
-    return new ravager_t( this, options_str );
+    return new ravager_t( this, options_str, name, specialization() == WARRIOR_ARMS ? talents.ravager : talents.ravager  );
   if ( name == "rend" )
     return new rend_t( this, options_str );
   if ( name == "revenge" )
@@ -6039,7 +6089,7 @@ void warrior_t::init_spells()
   spec.rampage          = find_specialization_spell( "Rampage" );
   spec.rampage_rank_3   = find_specialization_spell( 316519 );
   spec.rallying_cry     = find_specialization_spell( "Rallying Cry" );
-  spec.recklessness     = find_specialization_spell( "Recklessness" );
+  spec.recklessness     = find_spell( "Recklessness" );
   spec.recklessness_rank_2 = find_specialization_spell( 316828 );
   spec.revenge          = find_specialization_spell( "Revenge" );
   spec.revenge_trigger  = find_specialization_spell( "Revenge Trigger" );
@@ -6245,6 +6295,7 @@ void warrior_t::init_spells()
   legendary.the_wall              = find_runeforge_legendary( "The Wall" );
 
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
+  auto_attack_multiplier *= 1.0 + spec.single_minded_fury->effectN( 4 ).percent();
 
   if ( covenant.ancient_aftershock->ok() )
     active.ancient_aftershock_pulse = new ancient_aftershock_pulse_t( this );
@@ -6288,9 +6339,11 @@ void warrior_t::init_spells()
 
     active.signet_bladestorm_a  = new bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ), true );
     active.signet_bladestorm_f  = new bladestorm_t( this, "", "bladestorm_torment", find_spell( 46924 ), true );
+    active.signet_ravager       = new ravager_t( this, "", "ravager_torment", find_spell( 152277 ), true );
     active.signet_recklessness  = new recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ), true );
     active.signet_avatar        = new avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
-    for ( action_t* action : { active.signet_recklessness, active.signet_bladestorm_a, active.signet_bladestorm_f, active.signet_avatar } )
+    for ( action_t* action : { active.signet_recklessness, active.signet_bladestorm_a, active.signet_bladestorm_f,
+    active.signet_avatar, active.signet_ravager } )
     {
       action->background = true;
       action->trigger_gcd = timespan_t::zero();
