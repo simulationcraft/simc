@@ -687,8 +687,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::consume_resource();
 
-    // Imp dies if it reaches zero energy
-    if ( player->resources.current[ RESOURCE_ENERGY ] == 0 )
+    // Imp dies if it cannot cast
+    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
     {
       make_event( sim, timespan_t::zero(), [ this ]() { player->cast_pet()->dismiss(); } );
     }
