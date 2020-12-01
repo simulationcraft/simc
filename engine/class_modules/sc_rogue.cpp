@@ -7144,6 +7144,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&(remains<12|pmultiplier<=1)&target.time_to_die-remains>2" );
     stealthed->add_action( "pool_resource,for_next=1", "Subterfuge + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
     stealthed->add_action( this, "Garrote", "if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3" );
+    stealthed->add_action( this, "Mutilate", "if=talent.subterfuge.enabled&combo_points<=3" );
 
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );

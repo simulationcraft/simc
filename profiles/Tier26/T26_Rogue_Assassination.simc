@@ -128,6 +128,7 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&(
 # Subterfuge + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
+actions.stealthed+=/mutilate,if=talent.subterfuge.enabled&combo_points<=3
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498

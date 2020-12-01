@@ -127,6 +127,7 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&(
 # Subterfuge + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
+actions.stealthed+=/mutilate,if=talent.subterfuge.enabled&combo_points<=3
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=136/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,ilevel=145,azerite_level=80
