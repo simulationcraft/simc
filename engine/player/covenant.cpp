@@ -561,6 +561,30 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   return root;
 }
 
+// Conduit checking function for default profile generation in report_helper::check_gear()
+void covenant_state_t::check_conduits( util::string_view tier_name, int max_conduit_rank ) const
+{
+  // Copied logic from covenant_state_t::generate_report(), feel free to improve it
+  for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
+  {
+    for ( const auto& cd : m_conduits )
+    {
+      if ( std::get<0>( cd ) == e.id )
+      {
+        unsigned int conduit_rank = std::get<1>( cd ) + 1;
+        if ( conduit_rank != max_conduit_rank )
+        {
+          auto conduit = m_player -> find_conduit_spell( e.name );
+          m_player -> sim -> error( "Player {} has conduit {} equipped at rank {}, conduit rank for {} is {}.\n",
+                                    m_player -> name(), e.name, conduit_rank, tier_name, max_conduit_rank );
+        }
+      }
+    }
+  }
+  // TODO?: check conduit count too? Not sure if it's possible
+  // It doesn't seem like we extract conduit type or soulbind trees from spelldata
+}
+
 covenant_cb_base_t::covenant_cb_base_t( bool on_class, bool on_base )
   : trigger_on_class( on_class ), trigger_on_base( on_base )
 {}
