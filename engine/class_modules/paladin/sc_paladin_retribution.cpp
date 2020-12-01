@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
@@ -876,10 +878,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   if ( sim -> allow_potions )
   {
-    if ( true_level > 100 )
-      cds -> add_action( "potion,if=(cooldown.guardian_of_azeroth.remains>90|!essence.condensed_lifeforce.major)&(buff.bloodlust.react|buff.avenging_wrath.up&buff.avenging_wrath.remains>18|buff.crusade.up&buff.crusade.remains<25)" );
-    else if ( true_level >= 80 )
-      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up" );
+    cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up&buff.avenging_wrath.remains>18|buff.crusade.up&buff.crusade.remains<25)" );
   }
 
 
@@ -910,126 +909,31 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "blessing_of_the_seasons" );
 
   // Items
-  bool has_knot = false;
+
+  // special-cased items
+  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "sinful_gladiators_badge_of_ferocity" };
+
+  cds -> add_action( "use_item,name=skulkers_wing" );
+  cds -> add_action( "use_item,name=macabre_sheet_music,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
+  cds -> add_action( "use_item,name=memory_of_past_sins" );
+  cds -> add_action( "use_item,name=dreadfire_vessel" );
+  cds -> add_action( "use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
+  cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10" );
+  cds -> add_action( "use_item,name=spare_meat_hook" );
+  cds -> add_action( "use_item,name=grim_codex" );
+  cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
+  cds -> add_action( "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
+
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && special_items.find( items[i].name_str ) == special_items.end() )
     {
-      if ( items[i].name_str == "knot_of_ancient_fury" )
-      {
-        has_knot = true;
-        continue;
-      }
-
-      std::string item_str;
-      if ( items[i].name_str == "razdunks_big_red_button" || items[i].name_str == "vial_of_storms" || items[i].name_str == "living_oil_canister" || items[i].name_str =="writhing_segment_of_drestagath" )
-      {
-        item_str = "use_item,name=" + items[i].name_str;
-      }
-      else if ( items[i].name_str == "jes_howler" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10";
-      }
-      else if ( items[i].name_str == "vial_of_animated_blood" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18)|(cooldown.avenging_wrath.remains>30|cooldown.crusade.remains>30)";
-      }
-      else if ( items[i].name_str == "dooms_fury" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18";
-      }
-      else if ( items[i].name_str == "galecallers_beak" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<15";
-      }
-      else if ( items[i].name_str == "bygone_bee_almanac" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up";
-      }
-      else if ( items[i].name_str == "merekthas_fang" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=(!raid_event.adds.exists|raid_event.adds.in>15)|spell_targets.divine_storm>=2";
-      }
-      else if ( items[i].name_str == "plunderbeards_flask" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|!buff.crusade.up&cooldown.crusade.remains>45";
-      }
-      else if ( items[i].name_str == "berserkers_juju" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|!buff.crusade.up&cooldown.crusade.remains>45";
-      }
-      else if ( items[i].name_str == "endless_tincture_of_fractional_power" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45";
-      }
-      else if ( items[i].name_str == "pearl_divers_compass" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10";
-      }
-      else if ( items[i].name_str == "first_mates_spyglass" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";
-      }
-      else if ( items[i].name_str == "whirlwings_plumage" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
-      }
-      else if ( items[i].name_str == "dread_gladiators_badge" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
-      }
-      else if ( items[i].name_str == "dread_aspirants_medallion" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
-      }
-      else if ( items[i].name_str == "grongs_primal_rage" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=!(buff.avenging_wrath.up|buff.crusade.up)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)";
-      }
-      else if ( items[i].name_str == "sinister_gladiators_badge" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";
-      }
-      else if ( items[i].name_str == "sinister_gladiators_medallion" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
-      }
-      else if ( items[i].name_str == "azsharas_font_of_power" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=!talent.crusade.enabled&cooldown.avenging_wrath.remains<5|talent.crusade.enabled&cooldown.crusade.remains<5&time>10|holy_power>=3&time<10&talent.wake_of_ashes.enabled";
-      }
-      else if ( items[i].name_str == "vision_of_demise" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|cooldown.avenging_wrath.remains>=30|cooldown.crusade.remains>=30";
-      }
-      else if ( items[i].name_str == "ashvanes_razor_coral" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=debuff.razor_coral_debuff.down|(buff.avenging_wrath.remains>=20|buff.crusade.stack=10&buff.crusade.remains>15)&(cooldown.guardian_of_azeroth.remains>90|target.time_to_die<30|!essence.condensed_lifeforce.major)";
-      }
-      else if ( items[i].name_str == "corrupted_gladiators_badge" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";;
-      }
-      else if ( items[i].name_str == "corrupted_gladiators_medallion" )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=25";;
-      }
-      else if ( items[i].slot != SLOT_WAIST )
-      {
-        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
-      }
-
       if ( items[i].slot != SLOT_WAIST )
       {
-        cds -> add_action( item_str );
+        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)" );
       }
     }
-  }
-
-  if ( has_knot )
-  {
-    cds -> add_action( "use_item,name=knot_of_ancient_fury,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>30|!buff.crusade.up&cooldown.crusade.remains>30" );
   }
 
   cds -> add_action( this, "Avenging Wrath", "if=(holy_power>=4&time<5|holy_power>=3&time>5|talent.holy_avenger.enabled&cooldown.holy_avenger.remains=0)&time_to_hpg=0" );
@@ -1060,6 +964,7 @@ void paladin_t::generate_action_prio_list_ret()
   generators -> add_action( "call_action_list,name=finishers,if=(target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up|buff.empyrean_power.up)" );
   generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers" );
+  generators -> add_action( this, "Consecration", "if=!consecration.up" );
   generators -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   generators -> add_action( "arcane_torrent,if=holy_power<=4" );
   generators -> add_action( this, "Consecration", "if=time_to_hpg>gcd" );

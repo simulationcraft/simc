@@ -29,14 +29,14 @@
 
 paladin="PR_Paladin_Retribution"
 level=60
-race=human
+race=dark_iron_dwarf
 spec=retribution
 role=attack
 position=back
-talents=2301102
+talents=2201102
 
 covenant=venthyr
-soulbind=nadjia,templars_vindication:4/thrill_seeker
+soulbind=theotar,templars_vindication:4/soothing_shade
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
@@ -51,7 +51,7 @@ feet=shadowghast_sabatons,id=171413,bonus_id=7054/6647/6649,ilevel=190
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
 trinket1=viscera_of_coalesced_hatred,id=178808,bonus_id=6807/1498
-trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498
+trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498,enchant=shadowcore_oil
 main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498,enchant=sinful_revelation
 
 save=PR_Paladin_Retribution.simc
