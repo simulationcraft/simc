@@ -103,22 +103,22 @@ actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
 
-head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
+head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_stats
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
 hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6716/7050/1487
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
-legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=shadowcore_oil
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6805/1498,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6805/1498,enchant=celestial_guidance
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
+legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498/6646
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=184.38
