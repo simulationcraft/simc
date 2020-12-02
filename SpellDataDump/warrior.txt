@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-01/36753, git build shadowlands f7fb29742f)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-02/36753, git build shadowlands 31c563b, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -750,7 +750,8 @@ Effects          :
 #1 (id=2384)     : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Raid Members (56)
 #2 (id=728517)   : Apply Aura (6) | Modify Ranged Attack Power% (167)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Raid Members (56)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Raid Members (56)
+Hotfixed         : Base Value (10 -> 5)
 Description      : Increases the attack power of all raid and party members within $a1 yards by $s1% for $d.
 Tooltip          : Attack power increased by $w1%.
 

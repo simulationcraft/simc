@@ -1,5 +1,5 @@
 // Runeforge legendary bonuses, wow build 9.0.2.36753
-static const std::array<runeforge_legendary_entry_t, 576> __runeforge_legendary_data { {
+static const std::array<runeforge_legendary_entry_t, 582> __runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, "Freezing Winds" },
@@ -11,6 +11,8 @@ static const std::array<runeforge_legendary_entry_t, 576> __runeforge_legendary_
   { 6832, 63, 327365, 0x00000a00, "Disciplinary Command" },
   { 6832, 64, 327365, 0x00000a00, "Disciplinary Command" },
   { 6834, 62, 327351, 0x00100820, "Temporal Warp" },
+  { 6834, 63, 327351, 0x00100820, "Temporal Warp" },
+  { 6834, 64, 327351, 0x00100820, "Temporal Warp" },
   { 6926, 62, 332769, 0x00000408, "Arcane Infinity" },
   { 6927, 62, 332892, 0x00010100, "Arcane Bombardment" },
   { 6928, 62, 332928, 0x00000180, "Siphon Storm" },
@@ -198,6 +200,8 @@ static const std::array<runeforge_legendary_entry_t, 576> __runeforge_legendary_
   { 7063, 66, 337850, 0x00000600, "Reign of Endless Kings" },
   { 7064, 70, 337247, 0x00010020, "Final Verdict" },
   { 7065, 70, 337638, 0x00000402, "Vanguard's Momentum" },
+  { 7066, 65, 337297, 0x00010080, "Relentless Inquisitor" },
+  { 7066, 66, 337297, 0x00010080, "Relentless Inquisitor" },
   { 7066, 70, 337297, 0x00010080, "Relentless Inquisitor" },
   { 7067, 70, 337257, 0x000000c0, "Tempest of the Lightbringer" },
   { 7068, 269, 337334, 0x00000402, "Keefer's Skyreach" },
@@ -528,6 +532,8 @@ static const std::array<runeforge_legendary_entry_t, 576> __runeforge_legendary_
   { 7123, 261, 340089, 0x00010020, "Finality" },
   { 7124, 261, 340090, 0x00000402, "Akaari's Soul Fragment" },
   { 7125, 261, 340091, 0x00010080, "The Rotten" },
+  { 7126, 259, 340092, 0x000000c0, "Deathly Shadows" },
+  { 7126, 260, 340092, 0x000000c0, "Deathly Shadows" },
   { 7126, 261, 340092, 0x000000c0, "Deathly Shadows" },
   { 7128, 65, 234848, 0x00000820, "Maraad's Dying Breath" },
   { 7159, 62, 340197, 0x00000580, "Maw Rattle" },

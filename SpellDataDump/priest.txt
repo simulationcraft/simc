@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-01/36753, git build shadowlands f7fb29742f)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-02/36753, git build shadowlands 31c563b, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -10003,9 +10003,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Tick on application (169)
 Effects          :
 #1 (id=833395)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
-                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Heal (2060)
                    Family Flags: 12
+Hotfixed         : Base Value (-150 -> -200)
 #2 (id=833396)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Heal (2060)

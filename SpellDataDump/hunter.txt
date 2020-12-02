@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-01/36753, git build shadowlands f7fb29742f)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-02/36753, git build shadowlands 31c563b, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
