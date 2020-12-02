@@ -66,7 +66,7 @@ class Test(object):
         args.append(self._profile)
         for arg in self._args:
             if isinstance(arg, tuple):
-                args.append(shlex.quote('{}={}'.format(*arg)))
+                args.append('{}={}'.format(arg[0], shlex.quote(str(arg[1]))))
             else:
                 args.append(shlex.quote(str(arg)))
         return args
