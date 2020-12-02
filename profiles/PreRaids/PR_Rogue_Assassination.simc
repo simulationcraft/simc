@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3210021
 covenant=kyrian
-soulbind=combat_meditation/lethal_poisons:4
+soulbind=pelagos,combat_meditation/lethal_poisons:4
 
 # Default consumables
 potion=phantom_fire
@@ -130,22 +130,22 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
 actions.stealthed+=/mutilate,if=talent.subterfuge.enabled&combo_points<=3
 
-head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_stats
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498
+head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_stats
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
+hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6716/7117/1487
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498,enchant=20attackpower
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498,enchant=20attackpower
-main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=celestial_guidance
-off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498,enchant=sinful_revelation
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=20attackpower
+main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=celestial_guidance
+off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.38

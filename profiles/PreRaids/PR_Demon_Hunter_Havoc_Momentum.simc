@@ -8,7 +8,7 @@ role=attack
 position=back
 talents=3330222
 covenant=venthyr
-soulbind=thrill_seeker/growing_inferno:4
+soulbind=nadjia_the_mistblade,thrill_seeker/growing_inferno:4
 
 # Default consumables
 potion=phantom_fire

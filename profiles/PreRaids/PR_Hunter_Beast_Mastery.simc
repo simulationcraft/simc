@@ -7,7 +7,7 @@ role=attack
 position=ranged_back
 talents=2102013
 covenant=night_fae
-soulbind=grove_invigoration/spirit_attunement:4
+soulbind=niya,grove_invigoration/spirit_attunement:4
 
 # Default consumables
 potion=spectral_agility
@@ -95,21 +95,21 @@ actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
 
-head=nathrian_usurpers_mask,id=178816,ilevel=184,enchant=shadowcore_oil
-neck=sin_stained_pendant,id=178827,ilevel=184
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7005/6647/6649/1487
-back=drape_of_twisted_loyalties,id=180123,ilevel=184
-chest=harness_of_twisted_whims,id=179353,ilevel=184,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,ilevel=184
-hands=hakkari_revenants_grips,id=179325,ilevel=184
-waist=executors_prideful_girdle,id=178843,ilevel=184
-legs=lichbone_legguards,id=178778,ilevel=184
-feet=spatial_rift_striders,id=179345,ilevel=184,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,ilevel=184,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,ilevel=184,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,ilevel=184
-trinket2=bottled_flayedwing_toxin,id=178742,ilevel=184
-main_hand=the_philosopher,id=180112,ilevel=184,enchant=optical_target_embiggener
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646
+hands=hakkari_revenants_grips,id=179325,bonus_id=6807/1498/6646
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498/6646
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
+feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
+main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=optical_target_embiggener
 
 # Gear Summary
 # gear_ilvl=184.40

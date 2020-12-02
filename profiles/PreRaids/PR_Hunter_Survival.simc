@@ -2,12 +2,12 @@ hunter="PR_Hunter_Survival"
 source=default
 spec=survival
 level=60
-race=troll
+race=mechagnome
 role=attack
 position=back
 talents=3101012
 covenant=night_fae
-soulbind=grove_invigoration/spirit_attunement:4
+soulbind=niya,grove_invigoration/spirit_attunement:4
 
 # Default consumables
 potion=spectral_agility
@@ -175,21 +175,21 @@ actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if
 actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack
 actions.st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
-head=nathrian_usurpers_mask,id=178816,ilevel=184,enchant=shadowcore_oil
-neck=sin_stained_pendant,id=178827,ilevel=184
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7005/6649/6650/1487
-back=drape_of_twisted_loyalties,id=180123,ilevel=184
-chest=harness_of_twisted_whims,id=179353,ilevel=184,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,ilevel=184
-hands=hakkari_revenants_grips,id=179325,ilevel=184
-waist=executors_prideful_girdle,id=178843,ilevel=184
-legs=lichbone_legguards,id=178778,ilevel=184
-feet=spatial_rift_striders,id=179345,ilevel=184,enchant=eternal_agility
-finger1=death_gods_signet,id=179355,ilevel=184,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,ilevel=184,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,ilevel=184
-trinket2=bottled_flayedwing_toxin,id=178742,ilevel=184
-main_hand=halberd_of_the_aranakk,id=178929,ilevel=184,enchant=sinful_revelation
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646
+hands=hakkari_revenants_grips,id=179325,bonus_id=6807/1498/6646
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498/6646
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
+feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
+main_hand=halberd_of_the_aranakk,id=178929,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

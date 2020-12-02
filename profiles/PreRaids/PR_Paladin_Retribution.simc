@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=2201102
 covenant=venthyr
-soulbind=theotar,templars_vindication:4/soothing_shade
+soulbind=theotar,soothing_shade/templars_vindication:4
 
 # Default consumables
 potion=spectral_strength
@@ -84,21 +84,21 @@ actions.generators+=/crusader_strike,if=holy_power<=4
 actions.generators+=/arcane_torrent,if=holy_power<=4
 actions.generators+=/consecration,if=time_to_hpg>gcd
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=pauldrons_of_unleashed_pride,id=178820,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498,enchant=eternal_skirmish
-wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498
-hands=fleshfused_crushers,id=178775,bonus_id=6807/1498,enchant=eternal_strength
-waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498
-legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=7054/6647/6649,ilevel=190
-finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=viscera_of_coalesced_hatred,id=178808,bonus_id=6807/1498
-trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498,enchant=shadowcore_oil
-main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498,enchant=sinful_revelation
+head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=pauldrons_of_unleashed_pride,id=178820,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498/6646
+hands=fleshfused_crushers,id=178775,bonus_id=6807/1498/6646,enchant=eternal_strength
+waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498/6646
+legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/7054/1487
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+trinket1=viscera_of_coalesced_hatred,id=178808,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498/6646
+main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

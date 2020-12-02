@@ -7,7 +7,7 @@ role=attack
 position=ranged_back
 talents=1101032
 covenant=night_fae
-soulbind=grove_invigoration/spirit_attunement:4
+soulbind=niya,grove_invigoration/spirit_attunement:4
 
 # Default consumables
 potion=spectral_agility
@@ -93,21 +93,21 @@ actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=re
 actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
 actions.trickshots+=/steady_shot
 
-head=rattling_deadeye_hood,id=178738,ilevel=184,enchant=shadowcore_oil
-neck=azurevenom_choker,id=180115,ilevel=184
+head=rattling_deadeye_hood,id=178738,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7013/6647/6648/1487
-back=cloak_of_enveloping_manifestations,id=178851,ilevel=184
-chest=soaring_decimators_hauberk,id=178815,ilevel=184,enchant=eternal_skirmish
-wrists=shackles_of_alluring_vitality,id=178846,ilevel=184
-hands=iron_spiked_handgrips,id=178841,ilevel=184
-waist=dark_praetorians_clasp,id=180110,ilevel=184
-legs=blightborne_chain_legguards,id=178762,ilevel=184
-feet=shardskin_sabatons,id=178830,ilevel=184,enchant=eternal_agility
-finger1=fleshfused_circle,id=178869,ilevel=184,enchant=tenet_of_critical_strike
-finger2=ring_of_perpetual_conflict,id=178872,ilevel=184,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,ilevel=184
-trinket2=overcharged_anima_battery,id=180116,ilevel=184
-main_hand=the_philosopher,id=180112,ilevel=184,enchant=sinful_revelation
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
+chest=soaring_decimators_hauberk,id=178815,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6807/1498/6646
+hands=iron_spiked_handgrips,id=178841,bonus_id=6807/1498/6646
+waist=dark_praetorians_clasp,id=180110,bonus_id=6807/1498/6646
+legs=blightborne_chain_legguards,id=178762,bonus_id=6807/1498/6646
+feet=shardskin_sabatons,id=178830,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
+main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40
