@@ -23,8 +23,8 @@ finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatilit
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
-main_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
+main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 save=T26_Rogue_Assassination.simc
 
@@ -54,8 +54,8 @@ finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatilit
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
-main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1524,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
+main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 save=T26_Rogue_Outlaw.simc
 
@@ -85,7 +85,7 @@ finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatilit
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
-main_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
+main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 save=T26_Rogue_Subtlety.simc
