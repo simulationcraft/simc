@@ -60,9 +60,10 @@ save=PR_Druid_Feral.simc
 druid="PR_Druid_Guardian"
 level="60"
 race="night_elf"
-role=tank
-position=front
+timeofday=day
 spec="guardian"
+role="tank"
+position="front"
 talents="1013221"
 
 covenant="necrolord"
