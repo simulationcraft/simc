@@ -47,7 +47,7 @@ void gluttonous_spike( special_effect_t& );
 void hateful_chain( special_effect_t& );
 void overflowing_anima_prison( special_effect_t& );
 void sunblood_amethyst( special_effect_t& );
-void spare_meat_hook( special_effect_t& );
+// void spare_meat_hook( special_effect_t& );  no further implementation needed as of 2020-12-1
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );
