@@ -584,7 +584,6 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     // random testing stuff
-    bool unblinking_vigil_on_execute = false;
     bool brutal_projectiles_on_execute = false;
     bool serpenstalkers_triggers_wild_spirits = true;
   } options;
@@ -3344,7 +3343,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     p() -> consume_trick_shots();
 
     p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
-    if ( p() -> options.unblinking_vigil_on_execute )
+    // XXX: 2020-12-02 Be on the safe side and assume the buff doesn't get consumed
+    // only if the AiS *benefits* from LnL. It may work as Streamline though.
+    if ( ! lock_and_loaded )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
@@ -3376,15 +3377,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       et *= 1 + p() -> buffs.trueshot -> check_value();
 
     return et;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    aimed_shot_base_t::impact( s );
-
-    // XXX: gets consumed on impact for some reason
-    if ( !p() -> options.unblinking_vigil_on_execute && s -> chain_target == 0 )
-      p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -6853,7 +6845,6 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
 
-  add_option( opt_bool( "hunter.unblinking_vigil_on_execute", options.unblinking_vigil_on_execute ) );
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
   add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpenstalkers_triggers_wild_spirits ) );
 
