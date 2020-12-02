@@ -1877,7 +1877,8 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    if ( p->specialization() == WARRIOR_FURY )
+    // Signed bladestorm has no effect#4, does not give rage?
+    if ( p->specialization() == WARRIOR_FURY && spell->id() != 227847 )
     {
       energize_type     = action_energize::PER_TICK;
       energize_resource = RESOURCE_RAGE;
