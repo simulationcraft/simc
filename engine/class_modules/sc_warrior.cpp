@@ -4156,7 +4156,8 @@ struct revenge_t : public warrior_attack_t
     p()->buff.vengeance_revenge->expire();
     p()->buff.vengeance_ignore_pain->trigger();
     
-    if ( p()->legendary.seismic_reverberation->ok() && !background && execute_state->n_targets >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    if ( p()->legendary.seismic_reverberation->ok() && !background &&
+    execute_state->n_targets >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
     {
       seismic_action->set_target( target );
       seismic_action->schedule_execute();
