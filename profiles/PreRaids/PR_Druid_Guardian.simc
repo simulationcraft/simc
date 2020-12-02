@@ -4,14 +4,14 @@ spec=guardian
 level=60
 race=night_elf
 timeofday=day
-role=attack
+role=tank
 position=front
 talents=1013221
 covenant=necrolord
 soulbind=emeni:5,342156/270:4
 
 # Default consumables
-potion=spectral_agility
+potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
