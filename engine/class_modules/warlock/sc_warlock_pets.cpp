@@ -878,9 +878,12 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
 {
   action_list_str        = "travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
-  owner_coeff.ap_from_sp = 0.4;
-  // TOCHECK hotfix live as of 10-02-2018. https://us.battle.net/forums/en/wow/topic/20769527059
-  owner_coeff.ap_from_sp *= 1.15;
+  // owner_coeff.ap_from_sp = 0.4;
+  // The above is the base value that was originally used
+  // A hotfix live as of 10-02-2018 increased this by 15%. https://us.battle.net/forums/en/wow/topic/20769527059
+  // checking against beta/live on 2020-12-01 revealed that dreadstalkers were under by an additional 20%
+  // This means current value should be 0.552
+  owner_coeff.ap_from_sp = 0.552;
   owner_coeff.health = 0.4;
 }
 
