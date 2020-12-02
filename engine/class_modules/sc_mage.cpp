@@ -1702,7 +1702,7 @@ public:
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
 
-    if ( p()->runeforge.fevered_incantation->ok() )
+    if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       if ( s->result == RESULT_CRIT )
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
