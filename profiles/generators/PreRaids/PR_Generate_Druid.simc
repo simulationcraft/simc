@@ -61,9 +61,9 @@ druid="PR_Druid_Guardian"
 level="60"
 race="night_elf"
 timeofday=day
-spec="guardian"
 role="tank"
 position="front"
+spec="guardian"
 talents="1013221"
 
 covenant="necrolord"
