@@ -358,7 +358,7 @@ public:
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
     buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
-    buff_t* starsurge_lunar;  
+    buff_t* starsurge_lunar;
     buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
@@ -3206,7 +3206,7 @@ public:
       if ( s->result == RESULT_CRIT )
         attack_critical = true;
 
-      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) 
+      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
 	  && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 )
         trigger_frenzyband( s->target, s->result_amount );
 
@@ -4607,7 +4607,7 @@ struct cenarion_ward_t : public druid_heal_t
 {
   cenarion_ward_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "cenarion_ward", p, p->talent.cenarion_ward, options_str ) {}
-  
+
   void execute() override
   {
     druid_heal_t::execute();
@@ -4619,7 +4619,7 @@ struct cenarion_ward_t : public druid_heal_t
   {
     if ( candidate_target != p() )
       return false;
-  
+
     return druid_heal_t::target_ready( candidate_target );
   }
 };
@@ -5925,7 +5925,7 @@ struct prowl_t : public druid_spell_t
 
     p()->buff.jungle_stalker->expire();
     p()->buff.prowl->trigger();
-    
+
     druid_spell_t::execute();
   }
 
@@ -5938,13 +5938,13 @@ struct prowl_t : public druid_spell_t
     {
       if ( p()->buff.jungle_stalker->check() )
         return druid_spell_t::ready();
-      
+
       if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
         return druid_spell_t::ready();
-       
+
       if ( p()->sim->target_non_sleeping_list.empty() )
         return druid_spell_t::ready();
-       
+
       return false;
     }
 
@@ -6274,7 +6274,7 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.oneths_free_starsurge->up() ) 
+    if ( !free_cast && p()->buff.oneths_free_starsurge->up() )
       free_cast = free_cast_e::ONETHS;
 
     druid_spell_t::execute();
@@ -8612,7 +8612,7 @@ void druid_t::apl_guardian()
 
   action_priority_list_t* lycara_owl = get_action_priority_list( "lycarao" );
   action_priority_list_t* lycara_cat = get_action_priority_list( "lycarac" );
-	
+
   action_priority_list_t* owlconvoke = get_action_priority_list( "oconvoke" );
   action_priority_list_t* catconvoke = get_action_priority_list( "cconvoke" );
 
@@ -8630,7 +8630,7 @@ void druid_t::apl_guardian()
 
   lycara_owl->add_action( "moonkin_form" );
   lycara_cat->add_action( "cat_form" );
-	
+
   owlconvoke->add_action( "moonkin_form" );
   owlconvoke->add_action( "convoke_the_spirits" );
   catconvoke->add_action( "cat_form" );
@@ -8657,7 +8657,7 @@ void druid_t::apl_guardian()
   def->add_action(
       "run_action_list,name=oconvoke,if=((talent.balance_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))" );
   def->add_action(
-      "run_action_list,name=cconvoke,if=((talent.feral_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))" );  
+      "run_action_list,name=cconvoke,if=((talent.feral_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))" );
   def->add_action( "run_action_list,name=bear" );
 
   bear->add_action( "bear_form,if=!buff.bear_form.up" );
@@ -9088,7 +9088,7 @@ void druid_t::combat_begin()
     double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
 
     resources.current [ RESOURCE_ASTRAL_POWER] = std::min( cap, curr );
-    
+
     if ( curr > cap )
       sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
   }
@@ -9798,18 +9798,28 @@ std::string druid_t::create_profile( save_e type )
 
 role_e druid_t::primary_role() const
 {
+  // First, check for the user-specified role
+  switch ( player_t::primary_role() )
+  {
+    case ROLE_TANK:
+    case ROLE_ATTACK:
+    case ROLE_SPELL:
+      return player_t::primary_role();
+      break;
+    default:
+      break;
+  }
+
+  // Else, fall back to spec
   switch ( specialization() )
   {
-    case DRUID_BALANCE: return ROLE_SPELL; break;
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN: return ROLE_ATTACK; break;
-    case DRUID_RESTORATION:
-      if ( player_t::primary_role() == ROLE_SPELL )
-        return ROLE_SPELL;
-      else
-        return ROLE_ATTACK;
+    case DRUID_BALANCE:
+      return ROLE_SPELL; break;
+    case DRUID_GUARDIAN:
+      return ROLE_TANK; break;
+    default:
+      return ROLE_ATTACK;
       break;
-    default: return player_t::primary_role(); break;
   }
 }
 
