@@ -7,7 +7,7 @@ role=spell
 position=back
 talents=3203012
 covenant=necrolord
-soulbind=emeni:5,342156/211:4
+soulbind=emeni,lead_by_example/fatal_decimation:4
 
 # Default consumables
 potion=spectral_intellect
@@ -104,29 +104,29 @@ actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains
 actions.havoc+=/shadowburn
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-head=abominable_visage,id=178732,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=castigators_mantle,id=178859,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_stats
-wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect
-hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498
-waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
-legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498
-feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=16crit
-finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=16mastery
-trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
-trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
+head=depraved_physicians_mask,id=178759,bonus_id=1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=1498/6646
+shoulders=reanimators_mantle,id=178740,bonus_id=1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=1498/6646
+chest=sinlight_shroud,id=178813,bonus_id=1498/6646,enchant=eternal_stats,enchant_id=6230
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=1498/6646,enchant=eternal_intellect,enchant_id=6220
+hands=stonefiend_shapers_mitts,id=178833,bonus_id=1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=1498/6646
+legs=grimveiled_pants,id=173246,bonus_id=7038/6649/6648,ilevel=190
+feet=dark_stride_footwraps,id=180102,bonus_id=1498/6646
+finger1=death_gods_signet,id=179355,bonus_id=1498/6646,enchant=16haste,enchant_id=6170
+finger2=arachnid_cipher_ring,id=178933,bonus_id=1498/6646,enchant=16haste,enchant_id=6170
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=1498/6646
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=1498/6646,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=184.00
-# gear_stamina=853
-# gear_intellect=785
-# gear_crit_rating=376
-# gear_haste_rating=538
-# gear_mastery_rating=298
-# gear_versatility_rating=160
-# gear_armor=291
+# gear_ilvl=184.40
+# gear_stamina=861
+# gear_intellect=788
+# gear_crit_rating=362
+# gear_haste_rating=746
+# gear_mastery_rating=213
+# gear_versatility_rating=88
+# gear_armor=292
 default_pet=imp
