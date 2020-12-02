@@ -6279,8 +6279,15 @@ void warrior_t::init_spells()
   
   legendary.the_wall              = find_runeforge_legendary( "The Wall" );
 
+  if ( specialization() == WARRIOR_FURY )
+  {
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
-  auto_attack_multiplier *= 1.0 + spec.single_minded_fury->effectN( 4 ).percent();
+  }
+  if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
+             off_hand_weapon.group() == WEAPON_1H )
+  {
+    auto_attack_multiplier *= 1.0 + spec.single_minded_fury->effectN( 4 ).percent();
+  }
 
   if ( covenant.ancient_aftershock->ok() )
     active.ancient_aftershock_pulse = new ancient_aftershock_pulse_t( this );
