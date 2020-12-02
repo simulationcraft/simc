@@ -5,9 +5,9 @@ level=60
 race=troll
 role=spell
 position=back
-talents=3103021
-covenant=venthyr
-soulbind=theotar_the_mad_duke:9,336239/171:1/336147/204:4
+talents=3303032
+covenant=necrolord
+soulbind=emeni,lead_by_example/borne_of_blood:4
 
 # Default consumables
 potion=spectral_intellect
@@ -86,29 +86,29 @@ actions.tyrant_prep+=/shadow_bolt,if=soul_shard<5-4*buff.nether_portal.up
 actions.tyrant_prep+=/variable,name=tyrant_ready,value=1
 actions.tyrant_prep+=/hand_of_guldan
 
-head=depraved_physicians_mask,id=178759,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=soulsewn_vestments,id=178792,bonus_id=6807/1498,enchant=eternal_stats,enchant_id=6230
-wrists=necropolis_lords_shackles,id=178782,bonus_id=6807/1498,enchant=eternal_intellect,enchant_id=6220
-hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498
-waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
-legs=purge_protocol_legwraps,id=180107,bonus_id=6807/1498
-feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=16haste,enchant_id=6170
-finger2=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=16haste,enchant_id=6164
-trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498
-trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation,enchant_id=6228
+head=depraved_physicians_mask,id=178759,bonus_id=1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=1498/6646
+shoulders=grimveiled_spaulders,id=173247,bonus_id=7035/6649/6648,ilevel=190
+back=drape_of_twisted_loyalties,id=180123,bonus_id=1498/6646
+chest=sinlight_shroud,id=178813,bonus_id=1498/6646,enchant=eternal_stats,enchant_id=6230
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=1498/6646,enchant=eternal_intellect,enchant_id=6220
+hands=stonefiend_shapers_mitts,id=178833,bonus_id=1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=1498/6646
+legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=1498/6646
+feet=dark_stride_footwraps,id=180102,bonus_id=1498/6646
+finger1=death_gods_signet,id=179355,bonus_id=1498/6646,enchant=16haste,enchant_id=6170
+finger2=arachnid_cipher_ring,id=178933,bonus_id=1498/6646,enchant=16haste,enchant_id=6170
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=1498/6646
+trinket2=satchel_of_misbegotten_minions,id=178772,bonus_id=1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=1498/6646,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=184.00
-# gear_stamina=853
-# gear_intellect=785
-# gear_crit_rating=306
-# gear_haste_rating=688
-# gear_mastery_rating=337
-# gear_versatility_rating=73
-# gear_armor=291
+# gear_ilvl=184.40
+# gear_stamina=858
+# gear_intellect=788
+# gear_crit_rating=362
+# gear_haste_rating=725
+# gear_mastery_rating=166
+# gear_versatility_rating=156
+# gear_armor=292
 default_pet=felguard
