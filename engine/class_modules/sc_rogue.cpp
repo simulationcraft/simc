@@ -2340,10 +2340,11 @@ struct adrenaline_rush_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    // 6/23/2019 - Casting while a Vision of Perfection proc is up cancels the existing buff
-    //             This also means the existing Brigand's Blitz stack gets reset
+    // 2020-12-02 - Using over Celerity proc'ed AR does not extend but applies base duration.
     p()->buffs.adrenaline_rush->expire();
     p()->buffs.adrenaline_rush->trigger();
+    if ( p()->talent.loaded_dice->ok() )
+      p()->buffs.loaded_dice->trigger();
 
     if ( precombat_seconds && !p()->in_combat )
     {
@@ -5403,9 +5404,6 @@ struct adrenaline_rush_t : public buff_t
   {
     // 6/23/2019 - Vision of Perfection refresh procs trigger Loaded Dice and extend Brigand's Blitz
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    if ( rogue->talent.loaded_dice->ok() )
-      rogue->buffs.loaded_dice->trigger();
-
     rogue->buffs.brigands_blitz_driver->trigger();
   }
 
