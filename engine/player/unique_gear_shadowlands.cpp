@@ -1170,6 +1170,8 @@ void phial_of_putrefaction( special_effect_t& effect )
     putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>(
         "liquefying_ooze", effect );
 
+    effect.player->special_effects.push_back( putrefaction_proc );
+
     auto proc_object = new phial_of_putrefaction_proc_t( putrefaction_proc );
     proc_object->deactivate();
 
