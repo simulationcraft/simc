@@ -885,18 +885,8 @@ void unbound_changeling( special_effect_t& effect )
   if ( effect.spell_id > 0 && !buff )
   {
     int buff_spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
-    // driver #1 is currently bugged and applies buff #4 in game.
-    if ( !effect.player->bugs && effect.spell_id == 330765 )
-      buff_spell_id = 330764;
-
     buff = make_buff<stat_buff_t>( effect.player, "unbound_changeling", effect.player->find_spell( buff_spell_id ) );
-    // The stat buffs all seem to give amounts from Effect #2 even though the item tooltip for the
-    // single stat buffs points to Effect #1. Because buff 330764 is bugged and does not proc, it
-    // is not clear what amount of secondary stats it actually gives, but the tooltip says that it
-    // gets its amount from Effect #2.
-    double amount = effect.player->find_spell( 330747 )->effectN( 2 ).average( effect.item );
-    if ( !effect.player->bugs && buff_spell_id != 330764 )
-      amount = effect.player->find_spell( 330747 )->effectN( 1 ).average( effect.item );
+    double amount = effect.player->find_spell( 330747 )->effectN( buff_spell_id != 330764 ? 1 : 2 ).average( effect.item );
 
     for ( auto& s : buff->stats )
       s.amount = amount;
