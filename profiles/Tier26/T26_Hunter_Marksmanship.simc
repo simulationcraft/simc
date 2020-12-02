@@ -1,0 +1,120 @@
+hunter="T26_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=60
+race=orc
+role=attack
+position=ranged_back
+talents=1101032
+covenant=night_fae
+soulbind=niya,grove_invigoration/spirit_attunement:7/sharpshooters_focus:7
+
+# Default consumables
+potion=spectral_agility
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
+actions.precombat+=/double_tap,precast_time=10,if=!covenant.kyrian&(!talent.volley|active_enemies<2)
+actions.precombat+=/aimed_shot,if=active_enemies<3
+actions.precombat+=/steady_shot,if=active_enemies>2
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)
+actions+=/use_items
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
+
+actions.cds=berserking,if=buff.trueshot.up|target.time_to_die<13
+actions.cds+=/blood_fury,if=buff.trueshot.up|target.time_to_die<16
+actions.cds+=/ancestral_call,if=buff.trueshot.up|target.time_to_die<16
+actions.cds+=/fireblood,if=buff.trueshot.up|target.time_to_die<9
+actions.cds+=/lights_judgment,if=buff.trueshot.down
+actions.cds+=/bag_of_tricks,if=buff.trueshot.down
+actions.cds+=/potion,if=buff.trueshot.up&buff.bloodlust.up|buff.trueshot.up&target.health.pct<20|target.time_to_die<26
+
+actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)
+actions.st+=/kill_shot
+actions.st+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&(cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains)
+actions.st+=/flare,if=tar_trap.up&runeforge.soulforge_embers
+actions.st+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
+actions.st+=/explosive_shot
+actions.st+=/wild_spirits
+actions.st+=/flayed_shot
+actions.st+=/death_chakram,if=focus+cast_regen<focus.max
+actions.st+=/volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2
+actions.st+=/a_murder_of_crows
+actions.st+=/resonating_arrow
+actions.st+=/trueshot,if=buff.precise_shots.down|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1
+actions.st+=/aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1
+actions.st+=/rapid_fire,if=focus+cast_regen<focus.max&(buff.trueshot.down|!runeforge.eagletalons_true_focus)&(buff.double_tap.down|talent.streamline)
+actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
+actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
+actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
+actions.st+=/barrage,if=active_enemies>1
+actions.st+=/rapid_fire,if=focus+cast_regen<focus.max&(buff.double_tap.down|talent.streamline)
+actions.st+=/steady_shot
+
+actions.trickshots=steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5
+actions.trickshots+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.full_recharge_time|!(talent.streamline&runeforge.surging_shots)|!covenant.kyrian
+actions.trickshots+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
+actions.trickshots+=/flare,if=tar_trap.up&runeforge.soulforge_embers
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/wild_spirits
+actions.trickshots+=/resonating_arrow
+actions.trickshots+=/volley
+actions.trickshots+=/barrage
+actions.trickshots+=/trueshot
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&runeforge.surging_shots&buff.double_tap.down
+actions.trickshots+=/aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)
+actions.trickshots+=/death_chakram,if=focus+cast_regen<focus.max
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&focus>cost+action.aimed_shot.cost&(!talent.chimaera_shot|active_enemies>3)
+actions.trickshots+=/chimaera_shot,if=buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4
+actions.trickshots+=/kill_shot,if=buff.dead_eye.down
+actions.trickshots+=/a_murder_of_crows
+actions.trickshots+=/flayed_shot
+actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable
+actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
+actions.trickshots+=/steady_shot
+
+head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498
+shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6648/6758/7013/1532
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=bangles_of_errant_pride,id=182977,bonus_id=7187/1498
+hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
+waist=load_bearing_belt,id=183016,bonus_id=7187/1498
+legs=greaves_of_enigmatic_energies,id=183012,bonus_id=7187/1498
+feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_critical_strike
+trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=dredfang_ironspitter,id=182398,bonus_id=7187/1531,enchant=sinful_revelation
+
+# Gear Summary
+# gear_ilvl=229.40
+# gear_agility=882
+# gear_stamina=1513
+# gear_crit_rating=586
+# gear_haste_rating=660
+# gear_mastery_rating=410
+# gear_versatility_rating=191
+# gear_armor=873

@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3210021
 covenant=kyrian
-soulbind=combat_meditation/lethal_poisons:7/wellplaced_steel:7
+soulbind=pelagos,combat_meditation/lethal_poisons:7/wellplaced_steel:7
 
 # Default consumables
 potion=phantom_fire
@@ -140,19 +140,20 @@ hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
 waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
 legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6758/7117/1532
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatility
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
-trinket2=skulkers_wing,id=184016,bonus_id=7187/1498,enchant=20attackpower
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
 main_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.47
-# gear_agility=885
-# gear_stamina=1426
+# gear_ilvl=228.75
+# gear_agility=891
+# gear_stamina=1510
 # gear_attack_power=40
 # gear_crit_rating=401
 # gear_haste_rating=626
-# gear_mastery_rating=233
-# gear_versatility_rating=344
+# gear_mastery_rating=291
+# gear_versatility_rating=517
 # gear_armor=609
