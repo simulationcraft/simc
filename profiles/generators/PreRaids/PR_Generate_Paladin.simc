@@ -1,4 +1,4 @@
-paladin="PR_Paladin_Protection
+paladin=PR_Paladin_Protection
 level=60
 race=draenei
 role=tank
@@ -14,22 +14,22 @@ neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
 shoulder=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
 chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498,enchant=eternal_skirmish
-wrist=reality_shattering_vambraces,id=179354,bonus_id=6807/1498
+wrist=realityshatter_vambraces,id=179354,bonus_id=6807/1498
 hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498,enchant=eternal_strength
-waist=girldle_of_the_soulflayer,id=179326,bonus_id=6807/1498
+waist=girdle_of_the_soulflayer,id=179326,bonus_id=6807/1498
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498
 feet=shadowghast_sabatons,id=171413,bonus_id=6649/6647/7054/1487
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
 trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=decanter_of_anima_charged_winds,id=178861,bonus_id=6807/1498
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
 main_hand=engorged_worm_smasher,id=178730,bonus_id=6807/1498,enchant=lightless_force
 off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498
 
 save=PR_Paladin_Protection.simc
 
 
-paladin="PR_Paladin_Retribution"
+paladin=PR_Paladin_Retribution
 level=60
 race=dark_iron_dwarf
 spec=retribution

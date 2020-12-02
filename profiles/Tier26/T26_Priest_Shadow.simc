@@ -58,10 +58,7 @@ actions.cds=power_infusion,if=buff.voidform.up|!soulbind.combat_meditation.enabl
 actions.cds+=/silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
 # Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a voidbolt for cooldown efficiency and for hungering void uptime if talented.
 actions.cds+=/boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)
-# Use Badge inside of VF for the first use or on CD after the first use. With Night Fae hold for VF.
-actions.cds+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|time>10&(!covenant.night_fae)
-# Default fallback for usable items: Use on cooldown.
-actions.cds+=/use_items,if=buff.voidform.up|buff.power_infusion.up
+actions.cds+=/call_action_list,name=trinkets
 
 # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
 actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
@@ -69,6 +66,11 @@ actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_ni
 actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&spell_targets.mind_sear>2
 # Only_cwc makes the action only usable during channeling and not as a regular action.
 actions.cwc+=/mind_blast,only_cwc=1
+
+actions.dmg_trinkets=use_item,name=darkmoon_deck__putrescence
+actions.dmg_trinkets+=/use_item,name=sunblood_amethyst
+actions.dmg_trinkets+=/use_item,name=glyph_of_assimilation
+actions.dmg_trinkets+=/use_item,name=dreadfire_vessel
 
 actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 # Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender is on cooldown before VE.
@@ -114,6 +116,21 @@ actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&coo
 actions.main+=/shadow_word_death
 # Use SW:P as last resort if on the move and SW:D is on CD
 actions.main+=/shadow_word_pain
+
+# Use on CD ASAP to get DoT ticking and expire to line up better with Voidform
+actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption.remains>27
+# Sync IQD with Voidform
+actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10
+# Sync Sheet Music with Voidform
+actions.trinkets+=/use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10
+# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target
+actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up,target_if=min:target.health.pct
+# Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
+actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10
+# Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it.
+actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>10)
+# Default fallback for usable items: Use on cooldown in order by trinket slot.
+actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
 head=depraved_physicians_mask,id=178759,bonus_id=1540/6808
 neck=sin_stained_pendant,id=178827,bonus_id=1540/6808

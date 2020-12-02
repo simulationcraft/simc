@@ -2078,11 +2078,7 @@ std::string paladin_t::default_potion() const
   std::string retribution_pot = (true_level > 50) ? "spectral_strength" :
                                 "disabled";
 
-  std::string protection_pot = (true_level > 110) ? "potion_of_unbridled_fury" :
-                               (true_level > 100) ? "prolonged_power" :
-                               (true_level >= 90) ? "draenic_strength" :
-                               (true_level >= 85) ? "mogu_power" :
-                               (true_level >= 80) ? "mogu_power" :
+  std::string protection_pot = (true_level > 50) ? "phantom_fire" :
                                "disabled";
 
   std::string holy_dps_pot = (true_level > 100) ? "old_war" :
@@ -2108,12 +2104,8 @@ std::string paladin_t::default_food() const
   std::string retribution_food = (true_level > 50) ? "feast_of_gluttonous_hedonism" :
                                  "disabled";
 
-  std::string protection_food = (true_level > 110) ? "mechdowels_big_mech" :
-                                (true_level > 100) ? "lavish_suramar_feast" :
-                                (true_level >= 90) ? "pickled_eel" :
-                                (true_level >= 85) ? "chun_tian_spring_rolls" :
-                                (true_level >= 80) ? "seafood_magnifique_feast" :
-                                "disabled";
+  std::string protection_food =  (true_level > 50) ? "feast_of_gluttonous_hedonism" :
+                                 "disabled";
 
   std::string holy_dps_food = (true_level > 100) ? "the_hungry_magister" :
                               (true_level >= 90) ? "pickled_eel" :
@@ -2145,12 +2137,8 @@ std::string paladin_t::default_flask() const
   std::string retribution_flask = (true_level > 50) ? "spectral_flask_of_power" :
                                   "disabled";
 
-  std::string protection_flask = (true_level > 110) ? "greater_flask_of_the_undertow" :
-                                 (true_level > 100) ? "flask_of_the_countless_armies" :
-                                 (true_level >= 90) ? "greater_draenic_strength_flask" :
-                                 (true_level >= 85) ? "earth" :
-                                 (true_level >= 80) ? "steelskin" :
-                                 "disabled";
+  std::string protection_flask =  (true_level > 50) ? "spectral_flask_of_power" :
+                                  "disabled";
 
   std::string holy_dps_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
                                (true_level >= 90) ? "greater_draenic_intellect_flask" :
