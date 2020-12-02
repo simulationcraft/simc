@@ -1465,7 +1465,7 @@ action_t* eyes_of_guldan_t::create_action( util::string_view name, const std::st
 prince_malchezaar_t::prince_malchezaar_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "prince_malchezaar", PET_WARLOCK_RANDOM )
 {
-  owner_coeff.ap_from_sp = 1.15; //0.616
+  owner_coeff.ap_from_sp = 1.15;
   owner_coeff.health     = 0.75;
   action_list_str        = "travel";
 }
