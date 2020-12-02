@@ -447,6 +447,7 @@ public:
     const spell_data_t* raging_fury;
     const spell_data_t* the_great_storms_eye;
     const spell_data_t* the_wall;
+    const spell_data_t* thunderlord;
 
     legendary_t()
       : sephuzs_secret( spell_data_t::not_found() ),
@@ -460,7 +461,9 @@ public:
         weight_of_the_earth( spell_data_t::not_found() ),
         raging_fury( spell_data_t::not_found() ),
         the_great_storms_eye( spell_data_t::not_found() ),
-        the_wall( spell_data_t::not_found() )
+        the_wall( spell_data_t::not_found() ),
+        thunderlord( spell_data_t::not_found() )
+        
     {
     }
     // General
@@ -4116,16 +4119,28 @@ struct ravager_t : public warrior_attack_t
 struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
-  revenge_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "revenge", p, p->spec.revenge ),
-      shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() )
-  {
-    parse_options( options_str );
-    aoe           = -1;
-    impact_action = p->active.deep_wounds_PROT;
-    base_multiplier *= 1.0 + p -> talents.best_served_cold -> effectN( 1 ).percent();
+  action_t* seismic_action;
+  revenge_t( warrior_t* p, const std::string& options_str, bool seismic = false )
+    : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->spec.revenge ),
+      shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() ),
+      seismic_action( nullptr )
+    {
+      parse_options( options_str );
+      aoe           = -1;
+      impact_action = p->active.deep_wounds_PROT;
+      base_multiplier *= 1.0 + p -> talents.best_served_cold -> effectN( 1 ).percent();
+      if ( seismic )
+    { 
+      background = proc = true;
+      base_multiplier *= 1.0 + p -> find_spell( 335759 ) -> effectN( 1 ).percent();
+    } 
+      else if ( p -> legendary.seismic_reverberation -> ok() )
+    {
+      seismic_action = new revenge_t( p, "", true );
+      add_child( seismic_action );
+    }
   }
-
+  
   double cost() const override
   {
     double cost = warrior_attack_t::cost();
@@ -4140,7 +4155,13 @@ struct revenge_t : public warrior_attack_t
     p()->buff.revenge->expire();
     p()->buff.vengeance_revenge->expire();
     p()->buff.vengeance_ignore_pain->trigger();
-
+    
+    if ( p()->legendary.seismic_reverberation->ok() && !background && execute_state->n_targets >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      seismic_action->set_target( target );
+      seismic_action->schedule_execute();
+    }
+    
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
   }
@@ -4474,7 +4495,13 @@ struct thunder_clap_t : public warrior_attack_t
     {
       p()->cooldown.shield_slam->reset( true );
     }
-
+    
+    if ( p()->legendary.thunderlord->ok() )
+    {
+     p() -> cooldown.demoralizing_shout -> adjust( - p() -> legendary.thunderlord -> effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
+    }
+    
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
   }
 
@@ -6279,6 +6306,7 @@ void warrior_t::init_spells()
   legendary.will_of_the_berserker = find_runeforge_legendary( "Will of the Berserker" );
   
   legendary.the_wall              = find_runeforge_legendary( "The Wall" );
+  legendary.thunderlord           = find_runeforge_legendary( "Thunderlord" );
 
   if ( specialization() == WARRIOR_FURY )
   {
