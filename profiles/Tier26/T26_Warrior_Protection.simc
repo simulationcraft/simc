@@ -1,0 +1,44 @@
+warrior="T26_Warrior_Protection"
+source=default
+spec=protection
+level=60
+race=tauren
+role=tank
+position=front
+talents=3020021
+covenant=kyrian
+soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
+
+# Default consumables
+potion=potion_of_phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+
+head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498
+neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
+shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6649/6650/6758/6956/1532
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_haste
+trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=splintered_heart_of_alar,id=184018,bonus_id=7187/1498
+main_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=lightless_force
+off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
+
+# Gear Summary
+# gear_ilvl=229.63
+# gear_strength=881
+# gear_stamina=1529
+# gear_intellect=132
+# gear_crit_rating=226
+# gear_haste_rating=872
+# gear_mastery_rating=473
+# gear_versatility_rating=280
+# gear_armor=1980

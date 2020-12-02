@@ -107,8 +107,8 @@ legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498
 feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_critical_strike
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498,enchant=shadowcore_oil
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
 main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498,enchant=sinful_revelation
 
 # Gear Summary
