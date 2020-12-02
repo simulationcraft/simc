@@ -907,8 +907,8 @@ struct summon_random_demon_t : public demonology_spell_t
     wrathguards        = 5,
     vicious_hellhounds = 6,
     illidari_satyrs    = 7,
-    prince_malchezaar  = 8,
-    eyes_of_guldan     = 9,
+    eyes_of_guldan     = 8,
+    prince_malchezaar  = 9,
   };
 
   timespan_t summon_duration;
@@ -990,7 +990,7 @@ private:
    */
   random_pet_type roll_random_pet()
   {
-    int demon_int = rng().range( 10 );
+    int demon_int = rng().range( 9 ); //Malchezaar is disabled in instances. TODO: Add option to reenable?
     int rare_check;
     if ( demon_int > 7 )
     {
