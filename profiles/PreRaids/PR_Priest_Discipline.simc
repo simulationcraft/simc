@@ -41,7 +41,7 @@ actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/power_infusion
 actions+=/shadow_covenant
-actions+=/Boon of the Ascended
+actions+=/boon_of_the_ascended
 actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 actions+=/purge_the_wicked,if=!ticking
 actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
