@@ -3,11 +3,10 @@ level=60
 race=orc
 spec=arcane
 role=spell
-position=back
+position=ranged_back
 talents=1032021
-
 covenant=night_fae
-soulbind=grove_invigoration/magis_brand:4
+soulbind=niya,grove_invigoration/magis_brand:4
 
 head=abominable_visage,id=178732,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
@@ -27,6 +26,7 @@ main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498/6646,enchant=sinf
 
 save=PR_Mage_Arcane.simc
 
+
 mage="PR_Mage_Fire"
 level=60
 race=troll
@@ -34,9 +34,8 @@ spec=fire
 role=spell
 position=ranged_back
 talents=3031021
-
 covenant=night_fae
-soulbind=319210/infernal_cascade:4
+soulbind=dreamweaver,infernal_cascade:4
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
@@ -57,6 +56,7 @@ off_hand=deathwalkers_promise,id=178868,bonus_id=6807/1498/6646
 
 save=PR_Mage_Fire.simc
 
+
 mage="PR_Mage_Frost"
 level=60
 race=mechagnome
@@ -64,9 +64,8 @@ spec=frost
 role=spell
 position=ranged_back
 talents=2032021
-
 covenant=venthyr
-soulbind=nadjia,icy_propulsion:4/thrill_seeker
+soulbind=nadjia_the_mistblade,thrill_seeker/icy_propulsion:4
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646

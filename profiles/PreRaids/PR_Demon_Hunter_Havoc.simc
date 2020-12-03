@@ -115,8 +115,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=shadowcore_oil
 main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
