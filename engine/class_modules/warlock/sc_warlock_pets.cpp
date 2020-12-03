@@ -870,8 +870,11 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
     {
       p()->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
-      event_t::cancel( p()->readying );
-      p()->schedule_ready();
+      if ( p()->readying )
+      {
+        event_t::cancel( p()->readying );
+        p()->schedule_ready();
+      }
     }
   }
 };
