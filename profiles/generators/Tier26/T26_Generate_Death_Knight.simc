@@ -53,28 +53,30 @@
 # save=T26_Death_Knight_Frost.simc
 
 
-# deathknight="T26_Death_Knight_Unholy"
-# level=120
-# race=troll
-# spec=unholy
-# role=attack
-# position=back
-# talents=2203022
+deathknight="T26_Death_Knight_Unholy"
+spec=unholy
+level=60
+race=orc
+role=attack
+position=back
+talents=2303021
+covenant=necrolord
+soulbind=lead_by_example/65:7/124:7
 
-# head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4786/4775,azerite_powers=479/461/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=199/22/13
-# back=raals_bib,id=159294,bonus_id=4779/1512/4786
-# chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=479/31/13
-# wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
-# hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
-# waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-# legs=petrified_wickerplate_greaves,id=159456,bonus_id=4779/1512/4786
-# feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-# finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-# finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=darkmoon_deck_fathoms,id=159125
-# trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-# main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
+head=diadem_of_imperious_desire,id=182997,bonus_id=1498/6807,gem_id=173130
+neck=nobles_birthstone_pendant,id=183039,bonus_id=1498/6807,gem_id=173130
+shoulders=pranksters_pauldrons,id=178697,bonus_id=6807/1540
+back=dealer_xyexas_cape,id=179349,bonus_id=6807/1540
+chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1532,gem_id=173130,enchant=eternal_stats
+wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1540,gem_id=173130
+hands=fogweaver_gauntlets,id=178706,bonus_id=6807/1540,enchant=eternal_strength
+waist=binding_of_warped_desires,id=183015,bonus_id=1498/6807,gem_id=173130
+legs=gormshell_greaves,id=178701,bonus_id=6807/1540
+feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,gem_id=173130,enchant=tenet_of_mastery
+finger2=fleshfused_circle,id=178869,bonus_id=6807/1540,gem_id=173130,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1540
+trinket2=stone_legion_heraldry,id=184027,bonus_id=1498/6807
+main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=1531/6807,enchant=rune_of_the_fallen_crusader
 
-# save=T26_Death_Knight_Unholy.simc
+save=T26_Death_Knight_Unholy.simc
