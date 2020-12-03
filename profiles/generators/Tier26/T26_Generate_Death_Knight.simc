@@ -25,32 +25,34 @@
 # save=T26_Death_Knight_Blood.simc
 
 
-# deathknight="T26_Death_Knight_Frost"
-# level=120
-# race=orc
-# spec=frost
-# role=attack
-# position=back
-# talents=3302033
+deathknight="T26_Death_Knight_Frost"
+spec=frost
+level=60
+race=blood_elf
+role=attack
+position=back
+talents=3102013
+covenant=kyrian
+soulbind=pelagos,combat_meditation/accelerated_cold:7/everfrost:7
 
-# head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4786/4775,azerite_powers=461/479/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=skyscorcher_pauldrons,id=159415,bonus_id=4779/1512/4786/4775,azerite_powers=31/504/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=31/479/13
-# wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-# hands=ropescored_gauntlets,id=159429,bonus_id=4779/1512/4786
-# waist=sewer_grate_girdle,id=160215,bonus_id=4779/1512/4786
-# legs=leadplate_legguards,id=159451,bonus_id=4779/1512/4786
-# feet=gunpowderscoured_sabatons,id=159444,bonus_id=4779/1512/4786
-# finger1=charged_sandstone_band,id=158366,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-# finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-# trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
-# trinket2=darkmoon_deck_fathoms,id=159125
-# main_hand=sharkbaits_fishhook,id=159633,bonus_id=4779/1512/4786,enchant=rune_of_razorice
-# off_hand=cudgel_of_correctional_oversight,id=159658,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
+head=diadem_of_imperious_desire,id=182997,bonus_id=1498/6807,gem_id=173130
+neck=azurevenom_choker,id=180115,bonus_id=6807/1540,gem_id=173130
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=6716/6944/6647/6648/1532
+back=mantle_of_manifest_sins,id=183033,bonus_id=1498/6807,enchant=soul_vitality
+chest=rampaging_giants_chestplate,id=182999,bonus_id=1498/6807,enchant=eternal_stats,gem_id=173130
+wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1540,gem_id=173130
+hands=colossal_plate_gauntlets,id=182984,bonus_id=1498/6807,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1540
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1540
+feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,enchant=tenet_of_mastery,gem_id=173130
+finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1540,enchant=tenet_of_critical_strike,gem_id=173130
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1540
+trinket2=dreadfire_vessel,id=184030,bonus_id=1498/6807
+main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=1531/6807,enchant=rune_of_razorice
+off_hand=stoneborn_terrorblade,id=182395,bonus_id=1531/6807,enchant=rune_of_the_fallen_crusader
 
-# save=T26_Death_Knight_Frost.simc
+save=T26_Death_Knight_Frost.simc
 
 
 deathknight="T26_Death_Knight_Unholy"
