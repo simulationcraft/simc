@@ -5902,7 +5902,11 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
-    p()->buff.ascendance->extend_duration_or_trigger( timespan_t::from_seconds( 6 ), player );
+    if (background) {
+      p()->buff.ascendance->extend_duration_or_trigger( p()->legendary.deeply_rooted_elements->effectN(1).time_value(), player );
+    } else {
+      p()->buff.ascendance->trigger();
+    }
 
     if ( lvb )
     {
@@ -8815,7 +8819,7 @@ std::string shaman_t::default_food() const
 {
   std::string elemental_food =
       ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : ( true_level >= 50 ) ? "mechdowels_big_mech" : "disabled";
-                                  
+
 
   std::string enhance_food = ( true_level >= 60 )
                                  ? "feast_of_gluttonous_hedonism"
