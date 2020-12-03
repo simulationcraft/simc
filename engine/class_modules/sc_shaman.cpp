@@ -8785,7 +8785,7 @@ std::string shaman_t::generate_bloodlust_options()
 std::string shaman_t::default_potion() const
 {
   std::string elemental_pot = ( true_level >= 60 ) ? "potion_of_spectral_intellect"
-                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disable";
+                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disabled";
 
   std::string enhance_pot =
       ( true_level >= 60 )
