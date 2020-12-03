@@ -8,7 +8,7 @@ role=tank
 position=front
 talents=1013221
 covenant=necrolord
-soulbind=emeni:5,342156/270:4
+soulbind=emeni,lead_by_example/savage_combatant:4
 
 # Default consumables
 potion=spectral_agility
@@ -104,21 +104,21 @@ actions.owlweave+=/starsurge,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)
 actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
-head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
+head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498/6646
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
 chest=umbrahide_vest,id=172314,bonus_id=7092/6647/6649/1487,enchant=eternal_skirmish
-wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498,enchant=eternal_agility
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_versatility
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498
-main_hand=devoss_cacophonous_poleaxe,id=180096,bonus_id=6807/1498,enchant=sinful_revelation
+wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498/6646
+hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498/6646
+waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
+legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646
+main_hand=devoss_cacophonous_poleaxe,id=180096,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

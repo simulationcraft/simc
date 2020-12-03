@@ -10,7 +10,7 @@ soulbind=pelagos,combat_meditation/lethal_poisons:7/wellplaced_steel:7
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
-shoulder=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
@@ -40,7 +40,7 @@ soulbind=pelagos,combat_meditation/count_the_odds:7/triple_threat:7
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
-shoulder=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6758/7121/1532
+shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6758/7121/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
@@ -70,7 +70,7 @@ soulbind=pelagos,combat_meditation/planned_execution:7/stiletto_staccato:7
 
 head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
-shoulder=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498

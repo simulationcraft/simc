@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3111131
 covenant=night_fae
-soulbind=niya,322721/focused_lightning:4
+soulbind=niya,grove_invigoration/focused_lightning:4
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -113,22 +113,22 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=soulthorn_visage,id=178692,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+head=soulthorn_visage,id=178692,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6995/6716/6649/6647/1487
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=triumphant_combatants_chainmail,id=178794,bonus_id=6807/1498,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498
-hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498
-waist=clasp_of_waning_shadow,id=178700,bonus_id=6807/1498
-legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498
-feet=spatial_rift_striders,id=179345,bonus_id=6807/1498,enchant=eternal_agility
-finger1=death_gods_signet,id=179355,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=triumphant_combatants_chainmail,id=178794,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646
+hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498/6646
+waist=clasp_of_waning_shadow,id=178700,bonus_id=6807/1498/6646
+legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498/6646
+feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646,enchant=shadowcore_oil
 trinket2=darkmoon_deck_voracity,id=173087
-main_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=sinful_revelation
-off_hand=penitent_edge,id=180095,bonus_id=6807/1498,enchant=celestial_guidance
+main_hand=penitent_edge,id=180095,bonus_id=6807/1498/6646,enchant=sinful_revelation
+off_hand=penitent_edge,id=180095,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=185.38

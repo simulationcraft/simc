@@ -11,10 +11,10 @@ soulbind=emeni:5,342156/call_of_flame:7/tumbling_waves:7
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
 neck=sin_stained_pendant,id=178827,bonus_id=3535/4786/1540
-shoulder=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
+shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_insight
-wrist=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498,enchant=eternal_intellect
+wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498,enchant=eternal_intellect
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
 waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498
 legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
@@ -40,7 +40,7 @@ soulbind=niya,322721/focused_lightning:7/unruly_winds:7
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
 neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498
-shoulder=,id=172327,bonus_id=6995/6716/6649/6647/1532
+shoulders=,id=172327,bonus_id=6995/6716/6649/6647/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
 wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498

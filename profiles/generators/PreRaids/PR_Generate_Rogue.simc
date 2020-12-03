@@ -10,7 +10,7 @@ soulbind=pelagos,combat_meditation/lethal_poisons:4
 
 head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulder=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_stats
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
@@ -40,7 +40,7 @@ soulbind=pelagos,combat_meditation/count_the_odds:4
 
 head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulder=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6716/7121/1487
+shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6716/7121/1487
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_stats
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
@@ -70,7 +70,7 @@ soulbind=pelagos,combat_meditation/planned_execution:4
 
 head=umbrahide_helm,id=172317,bonus_id=7124/6647/6650/1487
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulder=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_stats
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646

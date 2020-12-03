@@ -4,10 +4,10 @@ spec=arcane
 level=60
 race=orc
 role=spell
-position=back
+position=ranged_back
 talents=1032021
 covenant=night_fae
-soulbind=grove_invigoration/magis_brand:4
+soulbind=niya,grove_invigoration/magis_brand:4
 
 # Default consumables
 potion=spectral_intellect

@@ -390,6 +390,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   const unsigned azerite_tiers = 4;
 
   unsigned whitelisted_items[] = {
+      171323, // Spiritual Alchemy Stone
       173096, 173069, 173087, 173078  // Darkmoon Decks: Indomitable, Putrescence, Voracity, Repose
   };
 

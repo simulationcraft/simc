@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=3031021
 covenant=night_fae
-soulbind=319210/infernal_cascade:4
+soulbind=niya,grove_invigoration/infernal_cascade:4
 
 # Default consumables
 potion=spectral_intellect

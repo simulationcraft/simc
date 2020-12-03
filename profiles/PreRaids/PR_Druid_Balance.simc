@@ -4,10 +4,10 @@ spec=balance
 level=60
 race=highmountain_tauren
 role=spell
-position=back
+position=ranged_back
 talents=3000231
 covenant=night_fae
-soulbind=niya:1,322721/279:4/342270
+soulbind=niya,grove_invigoration/conflux_of_elements:4
 
 # Default consumables
 potion=spectral_intellect
@@ -40,7 +40,7 @@ actions+=/variable,name=is_cleave,value=spell_targets.starfire>1
 actions+=/berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up
 actions+=/potion,if=buff.ca_inc.up
 actions+=/variable,name=convoke_desync,value=floor((interpolated_fight_remains-20-cooldown.convoke_the_spirits.remains)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(conduit.precise_alignment.time_value)-cooldown.ca_inc.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae
-actions+=/use_items,name=inscrutable_quantum_device,if=buff.ca_inc.up
+actions+=/use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up
 actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.1.cooldown.duration|fight_remains<20
 actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration|fight_remains<20
 actions+=/use_items
@@ -159,21 +159,21 @@ actions.st+=/starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|bu
 actions.st+=/wrath
 actions.st+=/run_action_list,name=fallthru
 
-head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498,enchant=eternal_insight
-wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498,enchant=eternal_intellect
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498
-legs=umbrahide_leggings,id=172318,bonus_id=7107/6716/6648/6649/1487
-feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_mastery
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
-trinket2=darkmoon_deck_putrescence,id=173069,enchant=shadowcore_oil
-main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498,enchant=sinful_revelation
+head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498/6646
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
+chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498/6646
+waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
+legs=umbrahide_leggings,id=172318,bonus_id=6648/6649/6716/7107/1487
+feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646
+finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=darkmoon_deck_putrescence,id=173069
+main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=185.47
