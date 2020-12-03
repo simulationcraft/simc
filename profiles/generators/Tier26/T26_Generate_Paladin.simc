@@ -4,9 +4,9 @@ level=60
 race=draenei
 role=tank
 position=front
-talents=2222222
+talents=2200202
 covenant=venthyr
-soulbind=theotar,336239/336147/336247/punish_the_guilty:7/hallowed_discernment:7
+soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
@@ -25,6 +25,7 @@ trinket2=stone_legion_heraldry,id=184027,bonus_id=7187/1498
 main_hand=stoneborn_terrorblade,id=182395,bonus_id=4876/1531,enchant=lightless_force
 off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
 
+save=T26_Paladin_Protection.simc
 
 paladin="T26_Paladin_Retribution"
 level=60
