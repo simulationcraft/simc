@@ -49,8 +49,8 @@ legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant_id=6200
-trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=20attackpower
 main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_razorice
 off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
@@ -78,7 +78,7 @@ legs=gormshell_greaves,id=178701,bonus_id=6807/1498/6646
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant_id=6200
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=20attackpower
 trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498/6646
 main_hand=dessias_decimating_decapitator,id=178866,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
