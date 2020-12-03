@@ -1702,7 +1702,7 @@ public:
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
 
-    if ( p()->runeforge.fevered_incantation->ok() )
+    if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       if ( s->result == RESULT_CRIT )
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
@@ -3707,13 +3707,9 @@ struct frost_nova_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    timespan_t duration = timespan_t::min();
+    p()->trigger_crowd_control( s, MECHANIC_ROOT );
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
-    {
       get_td( s->target )->debuffs.grisly_icicle->trigger();
-      duration = data().duration() + p()->spec.frost_nova_2->effectN( 1 ).time_value();
-    }
-    p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
 };
 

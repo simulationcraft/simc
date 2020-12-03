@@ -173,7 +173,7 @@ jobs:
             Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety,
             Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
-            Warrior_Arms, Warrior_Fury,
+            Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
 
     steps:

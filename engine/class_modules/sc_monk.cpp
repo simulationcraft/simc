@@ -10600,7 +10600,8 @@ void monk_t::create_buffs()
       ->add_invalidate( CACHE_SPELL_HASTE );
 
   // Brewmaster
-  buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) );
+  buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) )
+                         ->add_invalidate ( CACHE_ARMOR );
 
   // Mistweaver
 

@@ -448,7 +448,6 @@ void frost( player_t* p )
   aoe->add_action( "radiant_spark" );
   aoe->add_action( "mirrors_of_torment" );
   aoe->add_action( "shifting_power" );
-  aoe->add_action( "frost_nova,if=runeforge.grisly_icicle&target.level<=level&debuff.frozen.down" );
   aoe->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=6" );
   aoe->add_action( "ebonbolt" );
@@ -490,7 +489,6 @@ void frost( player_t* p )
   st->add_action( "radiant_spark,if=(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react" );
   st->add_action( "mirrors_of_torment" );
   st->add_action( "shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies>=2)" );
-  st->add_action( "frost_nova,if=runeforge.grisly_icicle&target.level<=level&debuff.frozen.down" );
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );

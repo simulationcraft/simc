@@ -1,15 +1,19 @@
 # PreRaids
 # Shadowlands Pre-Raids
-# * Ilvl Cap: 184 - reason: should be mythic itemlevel (ex: ",bonus_id=6807/1498/6646")
-# * 1 Ilvl 190 legendary
-# * 1 Soulbind starting trait and 1 potency conduit (rank 4)
-# * No items from World Bosses / World Quests / BoEs (craftables are allowed)
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No applied Gems (buyable for resources) - reason: pre-raid we'll be occupied spending that resource on conduits
-# * No Tertiary Stats
-# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * Must use enchant name (ex: ",enchant=binding_of_mastery") instead of id/hardcoded stats.
-# * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
+# * Mythic dungeon gear should be the default choice, item level cap is 184. ["bonus_id=6807/1498/6646"]
+# * Honor PvP gear is not permitted since its item level is too low compared to M0 gear due to renown cap.
+# * Crafted gear is permitted up to item level 184, must be BoE and without profession requirements.
+# * Alchemy Stone / Darkmoon trinkets (item level 200) are the only craftable items above item level 184 allowed.
+# * No items from World Bosses / World Quests / World Drop.
+# * No Sockets/Gems (natural / buyable).
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
+# * Renown is considered to be <= 6, so only 1 soulbind ability and 1 potency conduit.
+# * Conduits rank is limited to 4 (item level 184).
+# * One Rank 1 (item level 190) Legendary should be used, even if coming from raid / world boss / higher torghast floor. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
+# * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:7/..."") instead of ids.
+
 
 # Death Knight
 PR_Generate_Death_Knight.simc

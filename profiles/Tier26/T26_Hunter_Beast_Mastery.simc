@@ -7,7 +7,7 @@ role=attack
 position=ranged_back
 talents=2102013
 covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:7/one_with_the_beast:7
+soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
 
 # Default consumables
 potion=spectral_agility
@@ -96,7 +96,7 @@ actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapp
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6758/7005/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
@@ -115,8 +115,8 @@ main_hand=dredfang_ironspitter,id=182398,bonus_id=7187/1531,enchant=optical_targ
 # gear_ilvl=229.40
 # gear_agility=882
 # gear_stamina=1513
-# gear_crit_rating=406
-# gear_haste_rating=896
-# gear_mastery_rating=308
-# gear_versatility_rating=239
+# gear_crit_rating=550
+# gear_haste_rating=841
+# gear_mastery_rating=149
+# gear_versatility_rating=309
 # gear_armor=873

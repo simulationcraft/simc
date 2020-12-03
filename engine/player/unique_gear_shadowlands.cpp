@@ -879,7 +879,23 @@ void unbound_changeling( special_effect_t& effect )
   else if ( stat_type == "mastery" )
     effect.spell_id = 330734;
   else
-    effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+  {
+    if ( effect.spell_id == 330747 )
+    {
+      // If one of the bonus ID effects is present, bail out and let that bonus ID handle things instead.
+      for ( auto& e : effect.item->parsed.special_effects )
+      {
+        if ( e->spell_id == 330767 || e->spell_id == 330739 || e->spell_id == 330740 || e->spell_id == 330741 )
+            return;
+      }
+      // Fallback, profile does not specify a stat-giving item bonus, so default to haste.
+      effect.spell_id = 330733;
+    }
+    else
+    {
+      effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+    }
+  }
 
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "unbound_changeling" ) );
   if ( effect.spell_id > 0 && !buff )

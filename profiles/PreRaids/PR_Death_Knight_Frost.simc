@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3102013
 covenant=kyrian
-soulbind=combat_meditation/91:4
+soulbind=pelagos,combat_meditation/everfrost:4
 
 # Default consumables
 potion=potion_of_spectral_strength
@@ -162,22 +162,22 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6648/6716/6944/1487
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498
-chest=breastplate_of_brutal_dissonance,id=180099,bonus_id=6807/1498,enchant=eternal_skirmish
-wrists=thunderous_echo_vambraces,id=180113,bonus_id=6807/1498
-hands=guilewind_stone_talons,id=178840,bonus_id=6807/1498,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498
-feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498,enchant=tenet_of_mastery
-finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
-trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498
-main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498,enchant=rune_of_razorice
-off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498,enchant=rune_of_the_fallen_crusader
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
+chest=breastplate_of_brutal_dissonance,id=180099,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=thunderous_echo_vambraces,id=180113,bonus_id=6807/1498/6646
+hands=guilewind_stone_talons,id=178840,bonus_id=6807/1498/6646,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
+feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
+finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
+finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_razorice
+off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=184.38
