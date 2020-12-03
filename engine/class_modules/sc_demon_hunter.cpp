@@ -3800,34 +3800,36 @@ struct annihilation_t : public chaos_strike_base_t
   }
 };
 
+// Burning Wound Legendary ==================================================
+
+struct burning_wound_t : public demon_hunter_spell_t
+{
+  burning_wound_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->legendary.burning_wound->effectN( 1 ).trigger() )
+  {
+    dual = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s );
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->debuffs.burning_wound->trigger();
+    }
+  }
+};
+
 // Demon's Bite =============================================================
 
 struct demons_bite_t : public demon_hunter_attack_t
 {
-  struct burning_wound_t : public demon_hunter_spell_t
-  {
-    burning_wound_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->legendary.burning_wound->effectN( 1 ).trigger() )
-    {
-      dual = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_spell_t::impact( s );
-      if ( result_is_hit( s->result ) )
-      {
-        td( s->target )->debuffs.burning_wound->trigger();
-      }
-    }
-  };
-
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
 
-    if ( p->legendary.burning_wound->ok() )
+    if ( p->legendary.burning_wound->ok() && !p->talent.demon_blades->ok() )
     {
       impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
       add_child( impact_action );
@@ -3892,6 +3894,12 @@ struct demon_blades_t : public demon_hunter_attack_t
   {
     background = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
+
+    if ( p->legendary.burning_wound->ok() && p->talent.demon_blades->ok() )
+    {
+      impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
+      add_child( impact_action );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3906,7 +3914,7 @@ struct demon_blades_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-    trigger_felblade(s);
+    trigger_felblade( s );
   }
 };
 
