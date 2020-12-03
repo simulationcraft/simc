@@ -48,7 +48,7 @@ feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,enchant=tenet_of_mastery,gem_id=173130
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1540,enchant=tenet_of_critical_strike,gem_id=173130
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1540
-trinket2=dreadfire_vessel,id=184030,bonus_id=1498/6807
+trinket2=dreadfire_vessel,id=184030,bonus_id=1498/6807,enchant_id=6200
 main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=1531/6807,enchant=rune_of_razorice
 off_hand=stoneborn_terrorblade,id=182395,bonus_id=1531/6807,enchant=rune_of_the_fallen_crusader
 
@@ -78,7 +78,7 @@ feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,gem_id=173130,enchant=tenet_of_mastery
 finger2=fleshfused_circle,id=178869,bonus_id=6807/1540,gem_id=173130,enchant=tenet_of_mastery
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1540
-trinket2=stone_legion_heraldry,id=184027,bonus_id=1498/6807
+trinket2=stone_legion_heraldry,id=184027,bonus_id=1498/6807,enchant_id=6200
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=1531/6807,enchant=rune_of_the_fallen_crusader
 
 save=T26_Death_Knight_Unholy.simc
