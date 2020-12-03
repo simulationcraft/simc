@@ -46,7 +46,6 @@ actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>tra
 actions.aoe+=/radiant_spark
 actions.aoe+=/mirrors_of_torment
 actions.aoe+=/shifting_power
-actions.aoe+=/frost_nova,if=runeforge.grisly_icicle&target.level<=level&debuff.frozen.down
 actions.aoe+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down
 actions.aoe+=/arcane_explosion,if=mana.pct>30&active_enemies>=6
 actions.aoe+=/ebonbolt
@@ -88,7 +87,6 @@ actions.st+=/ebonbolt
 actions.st+=/radiant_spark,if=(!runeforge.freezing_winds|active_enemies>=2)&buff.brain_freeze.react
 actions.st+=/mirrors_of_torment
 actions.st+=/shifting_power,if=buff.rune_of_power.down&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies>=2)
-actions.st+=/frost_nova,if=runeforge.grisly_icicle&target.level<=level&debuff.frozen.down
 actions.st+=/arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down
 actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down
 actions.st+=/glacial_spike,if=buff.brain_freeze.react

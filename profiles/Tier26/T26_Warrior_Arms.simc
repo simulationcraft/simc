@@ -1,13 +1,13 @@
-warrior="PR_Warrior_Arms"
+warrior="T26_Warrior_Arms"
 source=default
 spec=arms
 level=60
 race=mechagnome
 role=attack
 position=back
-talents=3113132
+talents=3312122
 covenant=venthyr
-soulbind=theotar,soothing_shade/ashen_juggernaut:4
+soulbind=theotar,soothing_shade/ashen_juggernaut:7/crash_the_ramparts:7
 
 # Default consumables
 potion=potion_of_phantom_fire
@@ -39,6 +39,7 @@ actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.r
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
 actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
+actions+=/use_item,name=dreadfire_vessel
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&cooldown.bladestorm.remains>12
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|(target.health.pct>80&covenant.venthyr)
@@ -95,28 +96,28 @@ actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&covenant.venthyr
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
 actions.single_target+=/slam,if=rage>50
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
-shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=breastplate_of_fatal_contrivances,id=179346,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
-hands=shadowghast_gauntlets,id=171414,bonus_id=6647/6649/6716/7101/1487,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
-feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498/6646
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
-main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,enchant=sinful_revelation
+head=shadowghast_helm,id=171415,bonus_id=6647/6649/6758/6962/1532/6935,gem_id=173127
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
+feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=184.40
-# gear_strength=588
-# gear_stamina=858
-# gear_crit_rating=809
-# gear_haste_rating=173
-# gear_mastery_rating=242
-# gear_versatility_rating=144
-# gear_armor=1023
+# gear_ilvl=228.93
+# gear_strength=878
+# gear_stamina=1521
+# gear_crit_rating=510
+# gear_haste_rating=824
+# gear_mastery_rating=457
+# gear_versatility_rating=155
+# gear_armor=1296
