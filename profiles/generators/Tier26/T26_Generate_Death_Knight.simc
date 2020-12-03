@@ -61,7 +61,7 @@ role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=lead_by_example/65:7/124:7
+soulbind=emeni,lead_by_example/eternal_hunger:7/convocation_of_the_dead:7
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=1498/6807,gem_id=173130
 neck=nobles_birthstone_pendant,id=183039,bonus_id=1498/6807,gem_id=173130
