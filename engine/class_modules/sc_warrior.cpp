@@ -765,11 +765,11 @@ struct warrior_action_t : public Base
         rend( false ),
         siegebreaker( false ),
         glory( false),
+        ashen_juggernaut( false ),
         avatar( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        ashen_juggernaut( false ),
         crushing_assault( false )
     {
     }
@@ -1623,8 +1623,9 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   double mortal_combo_chance;
   mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false )
   : warrior_attack_t( name, p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
+  from_mortal_combo( mortal_combo ),
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
-  mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ), from_mortal_combo( mortal_combo )
+  mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
   {
 
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
@@ -1704,8 +1705,9 @@ struct mortal_strike_t : public warrior_attack_t
   double mortal_combo_chance;
   mortal_strike_t( warrior_t* p, const std::string& options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
-      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
-      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ), from_mortal_combo( mortal_combo )
+      from_mortal_combo( mortal_combo ),
+      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
   {
     parse_options( options_str );
 
@@ -1878,14 +1880,6 @@ struct bladestorm_t : public warrior_attack_t
     bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ), spell->effectN( 1 ).trigger() );
       bladestorm_oh->weapon = &( player->off_hand_weapon );
       add_child( bladestorm_oh );
-    }
-
-    // Signed bladestorm has no effect#4, does not give rage?
-    if ( p->specialization() == WARRIOR_FURY && spell->id() != 227847 )
-    {
-      energize_type     = action_energize::PER_TICK;
-      energize_resource = RESOURCE_RAGE;
-      energize_amount   = data().effectN( 4 ).resource( energize_resource );
     }
 
     if ( p->legendary.unhinged->ok() )
@@ -4002,7 +3996,7 @@ struct ravager_t : public warrior_attack_t
   mortal_strike_unhinged_t* mortal_strike;
   double torment_chance;
   bool torment_triggered;
-  ravager_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
+  ravager_t( warrior_t* p, const std::string& options_str, util::string_view /* n */, const spell_data_t* /* spell */, bool torment_triggered = false )
     : warrior_attack_t( "ravager", p, p->talents.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
       mortal_strike( nullptr ),
