@@ -1,4 +1,4 @@
-shaman="T26_Shaman_Elemental"
+shaman="T26_Shaman_Elemental_NF"
 source=default
 spec=elemental
 level=60
@@ -6,8 +6,8 @@ race=tauren
 role=spell
 position=back
 talents=2301032
-covenant=necrolord
-soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
+covenant=night_fae
+soulbind=niya,grove_invigoration/call_of_flame:7/niyas_tools_burrs
 
 # Default consumables
 potion=potion_of_spectral_intellect
