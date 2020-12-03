@@ -8488,7 +8488,7 @@ void druid_t::apl_balance()
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
   def->add_action( "potion,if=buff.ca_inc.up" );
   def->add_action( "variable,name=convoke_desync,value=floor((interpolated_fight_remains-20-cooldown.convoke_the_spirits.remains)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(conduit.precise_alignment.time_value)-cooldown.ca_inc.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae" );
-  def->add_action( "use_items,name=inscrutable_quantum_device,if=buff.ca_inc.up" );
+  def->add_action( "use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up" );
   def->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.1.cooldown.duration|fight_remains<20" );
   def->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration|fight_remains<20" );
   def->add_action( "use_items" );
