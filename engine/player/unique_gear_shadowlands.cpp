@@ -880,9 +880,15 @@ void unbound_changeling( special_effect_t& effect )
     effect.spell_id = 330734;
   else
   {
-    // Fallback, profile does not specify a stat-giving item bonus, so default to haste
     if ( effect.spell_id == 330747 )
     {
+      // If one of the bonus ID effects is present, bail out and let that bonus ID handle things instead.
+      for ( auto& e : effect.item->parsed.special_effects )
+      {
+        if ( e->spell_id == 330767 || e->spell_id == 330739 || e->spell_id == 330740 || e->spell_id == 330741 )
+            return;
+      }
+      // Fallback, profile does not specify a stat-giving item bonus, so default to haste.
       effect.spell_id = 330733;
     }
     else
