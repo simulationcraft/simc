@@ -7467,6 +7467,7 @@ struct the_natural_orders_will_t : public action_t
 
   void execute() override
   {
+    debug_cast<spells::druid_spell_t*>( ironfur )->free_cast = free_cast_e::NATURAL;
     ironfur->execute();
     debug_cast<heals::druid_heal_t*>( frenzied )->free_cast = free_cast_e::NATURAL;
     frenzied->execute();
