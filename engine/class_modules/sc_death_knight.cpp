@@ -8463,9 +8463,6 @@ void death_knight_t::default_apl_dps_precombat()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Precombat potion
-  precombat -> add_action( "potion" );
 }
 
 // death_knight_t::default_potion ===========================================
