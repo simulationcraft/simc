@@ -260,7 +260,7 @@ public:
     const spell_data_t* shield_block_buff;
     const spell_data_t* riposte;
     const spell_data_t* aftershock_duration;
-    
+
   } spell;
 
   // Mastery
@@ -463,7 +463,7 @@ public:
         the_great_storms_eye( spell_data_t::not_found() ),
         the_wall( spell_data_t::not_found() ),
         thunderlord( spell_data_t::not_found() )
-        
+
     {
     }
     // General
@@ -1621,9 +1621,9 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
-  mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false ) 
+  mortal_strike_unhinged_t( warrior_t* p, const std::string& name, bool mortal_combo = false )
   : warrior_attack_t( name, p, p->spec.mortal_strike ), mortal_combo_strike( nullptr ),
-  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ), 
+  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
   mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ), from_mortal_combo( mortal_combo )
   {
 
@@ -1835,11 +1835,11 @@ struct bladestorm_tick_t : public warrior_attack_t
       {
           if (!p->talents.bladestorm->ok() && p->legendary.signet_of_tormented_kings.enabled())
           {
-            return p->find_spell( 46924 ) -> effectN( 1 ).trigger(); 
+            return p->find_spell( 46924 ) -> effectN( 1 ).trigger();
           }
           else
           {
-            return p->talents.bladestorm->effectN( 1 ).trigger(); 
+            return p->talents.bladestorm->effectN( 1 ).trigger();
           }
       }
       else
@@ -3362,14 +3362,14 @@ struct raging_blow_t : public warrior_attack_t
     if (p()->talents.cruelty->ok() && p()->buff.enrage->check() )
     {
       if ( rng().roll( cruelty_reset_chance ) )
-        { 
+        {
           cooldown->reset( true );
         }
     }
-    else 
+    else
     {
       if ( rng().roll( cd_reset_chance ) )
-        { 
+        {
           cooldown->reset( true );
         }
     }
@@ -4002,7 +4002,7 @@ struct ravager_t : public warrior_attack_t
   mortal_strike_unhinged_t* mortal_strike;
   double torment_chance;
   bool torment_triggered;
-  ravager_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false ) 
+  ravager_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
     : warrior_attack_t( "ravager", p, p->talents.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
       mortal_strike( nullptr ),
@@ -4104,8 +4104,8 @@ struct ravager_t : public warrior_attack_t
       if ( torment_triggered )
       {
         p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 2.3 ) );
-      }  
-      else    
+      }
+      else
       {
         p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
       }
@@ -4140,17 +4140,17 @@ struct revenge_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_PROT;
       base_multiplier *= 1.0 + p -> talents.best_served_cold -> effectN( 1 ).percent();
       if ( seismic )
-    { 
+    {
       background = proc = true;
       base_multiplier *= 1.0 + p -> find_spell( 335759 ) -> effectN( 1 ).percent();
-    } 
+    }
       else if ( p -> legendary.seismic_reverberation -> ok() )
     {
       seismic_action = new revenge_t( p, "", true );
       add_child( seismic_action );
     }
   }
-  
+
   double cost() const override
   {
     double cost = warrior_attack_t::cost();
@@ -4165,14 +4165,14 @@ struct revenge_t : public warrior_attack_t
     p()->buff.revenge->expire();
     p()->buff.vengeance_revenge->expire();
     p()->buff.vengeance_ignore_pain->trigger();
-    
+
     if ( p()->legendary.seismic_reverberation->ok() && !background &&
     execute_state->n_targets >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
     {
       seismic_action->set_target( target );
       seismic_action->schedule_execute();
     }
-    
+
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
   }
@@ -4270,7 +4270,7 @@ struct shield_slam_t : public warrior_attack_t
     energize_type = action_energize::NONE;
     rage_gain += p->talents.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
   }
-  
+
     void init() override
   {
     warrior_attack_t::init();
@@ -4506,13 +4506,13 @@ struct thunder_clap_t : public warrior_attack_t
     {
       p()->cooldown.shield_slam->reset( true );
     }
-    
+
     if ( p()->legendary.thunderlord->ok() )
     {
      p() -> cooldown.demoralizing_shout -> adjust( - p() -> legendary.thunderlord -> effectN( 1 ).time_value() *
           std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
     }
-    
+
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
   }
 
@@ -5707,7 +5707,7 @@ struct ignore_pain_t : public warrior_spell_t
 
     base_dd_max = base_dd_min = 0;
     cooldown->duration += p->spec.ignore_pain_2->effectN( 1 ).time_value();
-    resource_current = RESOURCE_RAGE; 
+    resource_current = RESOURCE_RAGE;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -6315,7 +6315,7 @@ void warrior_t::init_spells()
   legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
   legendary.reckless_defense   = find_runeforge_legendary( "Reckless Defense" );
   legendary.will_of_the_berserker = find_runeforge_legendary( "Will of the Berserker" );
-  
+
   legendary.the_wall              = find_runeforge_legendary( "The Wall" );
   legendary.thunderlord           = find_runeforge_legendary( "Thunderlord" );
 
@@ -7501,16 +7501,6 @@ std::string warrior_t::default_rune() const
 
 void warrior_t::init_action_list()
 {
-  // Protection isn't supported atm
-  if ( !sim->allow_experimental_specializations && specialization() == WARRIOR_PROTECTION )
-  {
-    if ( !quiet )
-      sim->error( "Specialization Protection Warrior for {} is currently not supported.", *this );
-
-    quiet = true;
-    return;
-  }
-
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
