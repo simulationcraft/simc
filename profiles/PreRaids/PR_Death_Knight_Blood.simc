@@ -92,9 +92,9 @@ actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
 head=darkfrost_helmet,id=178777,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6650/6716/6941/1487
+shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
 back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
-chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+chest=shadowghast_breastplate,id=171412,bonus_id=6647/6650/6716/6953/1487,enchant=eternal_skirmish
 wrists=pit_fighters_wristguards,id=178807,bonus_id=6807/1498/6646
 hands=fleshfused_crushers,id=178775,bonus_id=6807/1498/6646,enchant=eternal_strength
 waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498/6646
@@ -109,9 +109,9 @@ main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=rune_o
 # Gear Summary
 # gear_ilvl=184.40
 # gear_strength=588
-# gear_stamina=858
-# gear_crit_rating=258
+# gear_stamina=861
+# gear_crit_rating=281
 # gear_haste_rating=322
 # gear_mastery_rating=99
-# gear_versatility_rating=691
-# gear_armor=1024
+# gear_versatility_rating=669
+# gear_armor=1025
