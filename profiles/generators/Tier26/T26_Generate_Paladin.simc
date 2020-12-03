@@ -4,24 +4,26 @@ level=60
 race=draenei
 role=tank
 position=front
-soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
+talents=2222222
+covenant=venthyr
+soulbind=theotar,336239/336147/336247/punish_the_guilty:7/hallowed_discernment:7
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
-shoulder=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=rampaging_giants_chestplate,id=182999,bonus_id=7187/1498,enchant_id=6214
-wrist=hellhound_cuffs,id=183018,bonus_id=7187/1498
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant_id=6210
+chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
 waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498
 legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=7054/6649/6647/1532
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant_id=6166
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant_id=6166
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6758/7054/1532
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_haste
 trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498
-trinket2=spare_meat_hook,id=178751,bonus_id=1537/7187
-main_hand=stoneborn_terrorblade,id=182395,bonus_id=4876/1531,enchant_id=6223
-off_hand=builwark_of_the_stone_legion,id=182425,bonus_id=7187/1498
+trinket2=stone_legion_heraldry,id=184027,bonus_id=7187/1498
+main_hand=stoneborn_terrorblade,id=182395,bonus_id=4876/1531,enchant=lightless_force
+off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
 
 
 paladin="T26_Paladin_Retribution"
