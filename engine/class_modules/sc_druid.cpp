@@ -54,8 +54,9 @@ enum free_cast_e
   NONE = 0,
   CONVOKE,   // convoke_the_spirits night_fae covenant ability
   LYCARAS,   // lycaras fleeting glimpse legendary
-  ONETHS,    // oneths clear vision legedary
+  ONETHS,    // oneths clear vision legendary
   GALACTIC,  // galactic guardian talent
+  NATURAL,   // natural orders will legendary
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -4626,7 +4627,7 @@ struct cenarion_ward_t : public druid_heal_t
 
 // Frenzied Regeneration ====================================================
 
-struct frenzied_regeneration_t : public heals::druid_heal_t
+struct frenzied_regeneration_t : public druid_heal_t
 {
   frenzied_regeneration_t( druid_t* p, util::string_view options_str )
     : druid_heal_t( "frenzied_regeneration", p, p->find_affinity_spell( "Frenzied Regeneration" ), options_str )
@@ -4642,6 +4643,11 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     druid_heal_t::init();
 
     snapshot_flags = STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_TA;
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return free_cast ? 0_ms : druid_heal_t::cooldown_duration();
   }
 
   void execute() override
@@ -7462,6 +7468,7 @@ struct the_natural_orders_will_t : public action_t
   void execute() override
   {
     ironfur->execute();
+    debug_cast<heals::druid_heal_t*>( frenzied )->free_cast = free_cast_e::NATURAL;
     frenzied->execute();
   }
 };
