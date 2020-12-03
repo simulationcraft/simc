@@ -8865,7 +8865,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_action( this, "Stormkeeper",
+  precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
   precombat->add_action( "potion" );
