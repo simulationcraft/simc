@@ -94,21 +94,21 @@ actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipli
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
-head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
-shoulders=ingra_malochs_mantle,id=178696,bonus_id=6807/1498
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498
-chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498,enchant=eternal_insight
-wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=6807/1498,enchant=eternal_intellect
-hands=tricksprite_gloves,id=178705,bonus_id=6807/1498
-waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498
-legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6716/6823/1487,ilevel=190
-feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498
-finger1=bloodoath_signet,id=178871,bonus_id=6807/1498,enchant=tenet_of_haste
-finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498,enchant=sinful_revelation
+head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
+shoulders=ingra_malochs_mantle,id=178696,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=tricksprite_gloves,id=178705,bonus_id=6807/1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
+legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6716/6823/1487
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

@@ -879,7 +879,17 @@ void unbound_changeling( special_effect_t& effect )
   else if ( stat_type == "mastery" )
     effect.spell_id = 330734;
   else
-    effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+  {
+    // Fallback, profile does not specify a stat-giving item bonus, so default to haste
+    if ( effect.spell_id == 330747 )
+    {
+      effect.spell_id = 330733;
+    }
+    else
+    {
+      effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+    }
+  }
 
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "unbound_changeling" ) );
   if ( effect.spell_id > 0 && !buff )
@@ -1169,6 +1179,8 @@ void phial_of_putrefaction( special_effect_t& effect )
     putrefaction_proc->custom_buff = putrefaction_buff;
     putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>(
         "liquefying_ooze", effect );
+
+    effect.player->special_effects.push_back( putrefaction_proc );
 
     auto proc_object = new phial_of_putrefaction_proc_t( putrefaction_proc );
     proc_object->deactivate();

@@ -1,6 +1,5 @@
 optimal_raid=1
 default_actions=1
-bfa.nazjatar=0
 
 DS_Death_Knight_Blood.simc
 DS_Death_Knight_Frost.simc
@@ -27,7 +26,7 @@ DS_Monk_Windwalker.simc
 DS_Paladin_Protection.simc
 DS_Paladin_Retribution.simc
 
-# DS_Priest_Holy.simc
+DS_Priest_Discipline.simc
 DS_Priest_Shadow.simc
 
 DS_Rogue_Assassination.simc

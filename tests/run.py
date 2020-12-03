@@ -73,7 +73,7 @@ def test_trinkets(klass: str, path: str):
     tests.append(grp)
     for trinket in trinkets:
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
-            ('trinket1', '{},id={},ilevel={}'.format(trinket.name, trinket.item_id, trinket.min_itemlevel)), ('level', 60)])
+            ('trinket1', '{},id={},ilevel={}'.format(trinket.simc_name, trinket.item_id, trinket.min_itemlevel)), ('level', 60)])
 
 
 def test_legendaries(klass: str, path: str):
@@ -85,7 +85,7 @@ def test_legendaries(klass: str, path: str):
         tests.append(grp)
         for legendary in legendaries:
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
-                ('trinket1', '{},bonus_id={}'.format(legendary.full_name, legendary.bonus_id)), ('level', 60)])
+                ('trinket1', '{},bonus_id={}'.format(legendary.simc_name, legendary.bonus_id)), ('level', 60)])
 
 
 def test_soulbinds(klass: str, path: str):

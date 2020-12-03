@@ -26,6 +26,7 @@ T26_Hunter_Survival.simc
 T26_Paladin_Protection.simc
 T26_Paladin_Retribution.simc
 
+# T26_Priest_Discipline.simc
 T26_Priest_Shadow.simc
 
 T26_Rogue_Assassination.simc
@@ -34,7 +35,6 @@ T26_Rogue_Subtlety.simc
 
 T26_Shaman_Elemental.simc
 T26_Shaman_Enhancement.simc
-# T26_Shaman_Restoration.simc
 
 # T26_Warlock_Affliction.simc
 # T26_Warlock_Demonology.simc

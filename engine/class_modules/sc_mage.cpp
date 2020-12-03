@@ -764,7 +764,6 @@ public:
   void init_benefits() override;
   void init_uptimes() override;
   void init_rng() override;
-  void init_assessors() override;
   void init_finished() override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
@@ -1702,6 +1701,14 @@ public:
 
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
+
+    if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    {
+      if ( s->result == RESULT_CRIT )
+        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
+      else
+        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
+    }
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -6321,34 +6328,6 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
-}
-
-void mage_t::init_assessors()
-{
-  player_t::init_assessors();
-
-  if ( runeforge.fevered_incantation->ok() )
-  {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ this ] ( result_amount_type, action_state_t* s )
-    {
-      // Check action state's result type to catch spells that execute directly
-      // but aren't counted as direct damage, such as Blizzard.
-      if ( s->result_type == result_amount_type::DMG_DIRECT
-        && s->result_total > 0.0
-        && s->action->callbacks )
-      {
-        make_event( *sim, [ this, r = s->result ]
-        {
-          if ( r == RESULT_CRIT )
-            buffs.fevered_incantation->trigger();
-          else
-            buffs.fevered_incantation->expire();
-        } );
-      }
-
-      return assessor::CONTINUE;
-    } );
-  }
 }
 
 void mage_t::init_finished()

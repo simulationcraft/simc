@@ -99,29 +99,29 @@ actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=tale
 actions.stealth+=/ambush
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
 shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6758/7121/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
 wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
 waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
-legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
 finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatility
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
-main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1524,enchant=celestial_guidance
-off_hand=faithful_sidearm,id=177865,bonus_id=7187/1524,enchant=sinful_revelation
+main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.31
+# gear_ilvl=228.75
 # gear_agility=886
-# gear_stamina=1495
+# gear_stamina=1509
 # gear_attack_power=40
-# gear_crit_rating=361
-# gear_haste_rating=603
-# gear_mastery_rating=385
-# gear_versatility_rating=480
+# gear_crit_rating=407
+# gear_haste_rating=658
+# gear_mastery_rating=129
+# gear_versatility_rating=640
 # gear_armor=606

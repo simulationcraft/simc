@@ -72,29 +72,29 @@ actions.normal+=/sigil_of_flame,if=!(covenant.kyrian.enabled&runeforge.razelikhs
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=vicious_surge_faceguard,id=180106,bonus_id=6805/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6805/1498
-shoulders=wicked_bladewing_pauldrons,id=178858,bonus_id=6805/1498
-back=blighted_margraves_cloak,id=178755,bonus_id=6805/1498
-chest=rainshadow_hauberk,id=178698,bonus_id=6805/1498,enchant=eternal_skirmish
-wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6805/1498
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6805/1498
-waist=sapgorger_belt,id=178699,bonus_id=6805/1498
-legs=umbrahide_leggings,id=172318,bonus_id=6649/6650/6716/7046
-feet=vanquished_usurpers_footpads,id=178797,bonus_id=6805/1498,enchant=eternal_agility
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6805/1498,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=6805/1498,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6805/1498
-trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6805/1498
-main_hand=stone_generals_edge,id=178857,bonus_id=6805/1498,enchant=lightless_force
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6805/1498,enchant=lightless_force
+head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=wicked_bladewing_pauldrons,id=178858,bonus_id=6807/1498/6646
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
+chest=rainshadow_hauberk,id=178698,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6807/1498/6646
+hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498/6646
+waist=sapgorger_belt,id=178699,bonus_id=6807/1498/6646
+legs=umbrahide_leggings,id=172318,bonus_id=6649/6650/6716/7046/1487
+feet=vanquished_usurpers_footpads,id=178797,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
+main_hand=stone_generals_edge,id=178857,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
 
 # Gear Summary
-# gear_ilvl=183.44
-# gear_agility=579
-# gear_stamina=842
+# gear_ilvl=184.38
+# gear_agility=587
+# gear_stamina=860
 # gear_crit_rating=141
-# gear_haste_rating=784
+# gear_haste_rating=789
 # gear_mastery_rating=93
-# gear_versatility_rating=342
-# gear_armor=474
+# gear_versatility_rating=347
+# gear_armor=479

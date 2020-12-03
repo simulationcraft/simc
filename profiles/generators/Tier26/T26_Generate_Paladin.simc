@@ -4,9 +4,8 @@ level=60
 race=draenei
 role=tank
 position=front
-talents=2222222
-covenant=venthyr
-soulbind=theotar,336239/336147/336247/punish_the_guilty:7/hallowed_discernment:7
+soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
+
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
 shoulder=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
@@ -49,6 +48,6 @@ finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,enchant=tenet_of_critical_strike
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=stoneborn_goliaths_cleaver,id=182415,bonus_id=7187/1524,enchant=sinful_revelation
+main_hand=stoneborn_goliaths_cleaver,id=182415,bonus_id=7187/1531,enchant=sinful_revelation
 
 save=T26_Paladin_Retribution.simc
