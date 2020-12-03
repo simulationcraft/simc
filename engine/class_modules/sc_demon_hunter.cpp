@@ -4318,7 +4318,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    const int bombardment_stacks = p()->buff.fel_bombardment->check();
+    int bombardment_stacks = p()->buff.fel_bombardment->check();
     if ( bombardment_stacks > 0 )
     {
       // Apply hidden damage debuff to the primary target before execute
@@ -4331,16 +4331,23 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // Fel Bombardment Legendary
     // In-game, this directly just triggers additional procs of the Throw Glaive spell
     // For SimC purposes, using a cloned spell for better stats tracking
-    if ( hit_any_target && fel_bombardment )
+    if ( hit_any_target && fel_bombardment && bombardment_stacks > 0 )
     {
-      // For each stack of the buff, iterate through the target list and pick a random "primary" target
+      // 12/03/2020 - Apparently hotfixed to work correctly, although it still doesn't work how it did on beta
+      // For each stack, pick a new target and trigger a glaive until we run out of targets
       const auto targets_in_range = targets_in_range_list( target_list() );
-      assert( targets_in_range.size() > 0 );
-      for ( int i = 0; i < bombardment_stacks; ++i )
+      for ( auto bombardment_target : targets_in_range )
       {
-        const size_t index = rng().range( targets_in_range.size() );
-        fel_bombardment->set_target( targets_in_range[ index ] );
+        // Does not throw an additional glaive at the primary target
+        if ( bombardment_target == target )
+          continue;
+
+        if ( bombardment_stacks < 1 )
+          break;
+
+        fel_bombardment->set_target( bombardment_target );
         fel_bombardment->execute();
+        bombardment_stacks--;
       }
     }
   }
@@ -4923,7 +4930,7 @@ void demon_hunter_t::create_buffs()
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
-    ->set_max_stack( 99 )
+    ->set_max_stack( 10 ) // 12/02/2020 - Manual hotfix, not in spell data
     ->set_duration( 20_s );
 
   buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
