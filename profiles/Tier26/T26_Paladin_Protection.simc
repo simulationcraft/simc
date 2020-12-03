@@ -7,7 +7,7 @@ role=tank
 position=front
 talents=2200202
 covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/punish_the_guilty:7/hallowed_discernment:7
+soulbind=theotar,soothing_shade/punish_the_guilty:7/hallowed_discernment:7
 
 # Default consumables
 potion=phantom_fire

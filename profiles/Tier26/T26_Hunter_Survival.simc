@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3101012
 covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:7/strength_of_the_pack:7
+soulbind=niya,grove_invigoration/strength_of_the_pack:7/niyas_tools_burrs
 
 # Default consumables
 potion=spectral_agility
@@ -176,11 +176,11 @@ actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack
 actions.st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=7187/1498
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6758/7005/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=bangles_of_errant_pride,id=182977,bonus_id=7187/1498
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
 waist=loadbearing_belt,id=183016,bonus_id=7187/1498
 legs=mementoladen_cuisses,id=182985,bonus_id=7187/1498
@@ -195,8 +195,8 @@ main_hand=rod_of_the_stone_sentinels,id=182393,bonus_id=7187/1531,enchant=sinful
 # gear_ilvl=229.40
 # gear_agility=882
 # gear_stamina=1513
-# gear_crit_rating=301
-# gear_haste_rating=896
-# gear_mastery_rating=352
-# gear_versatility_rating=299
+# gear_crit_rating=393
+# gear_haste_rating=893
+# gear_mastery_rating=166
+# gear_versatility_rating=396
 # gear_armor=873
