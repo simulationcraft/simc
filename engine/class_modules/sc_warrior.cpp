@@ -4055,8 +4055,11 @@ struct ravager_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     // the ticks do scale with haste so I turned hasted_ticks on
-    // however this made it tick more than 7 times
-    if ( d->current_tick > 6 )
+    // however this made it tick more than 6 times (2 with signet)
+    if ( torment_triggered && d->current_tick > 2 )
+      return;
+
+    else if ( d->current_tick > 6 )
       return;
 
     // the helm buff occurs before each tick
@@ -4095,7 +4098,14 @@ struct ravager_t : public warrior_attack_t
 
     if ( p()->conduit.merciless_bonegrinder->ok() )
     {
-    p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
+      if ( torment_triggered )
+      {
+        p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 2.3 ) );
+      }  
+      else    
+      {
+        p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
+      }
     }
   }
 
