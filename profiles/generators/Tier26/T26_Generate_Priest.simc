@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=1010332
 covenant=kyrian
-soulbind=pelagos,combat_meditation/dissonant_echoes:7/courageous_ascension:7
+soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
 
 head=confidants_favored_cap,id=183021,bonus_id=7187/1498
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498

@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1010332
 covenant=kyrian
-soulbind=pelagos,combat_meditation/dissonant_echoes:7/courageous_ascension:7
+soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
 
 # Default consumables
 potion=potion_of_phantom_fire
