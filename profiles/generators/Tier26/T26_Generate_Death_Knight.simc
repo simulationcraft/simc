@@ -72,7 +72,7 @@ back=dealer_xyexas_cape,id=179349,bonus_id=6807/1540
 chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1532,gem_id=173130,enchant=eternal_stats
 wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1540,gem_id=173130
 hands=fogweaver_gauntlets,id=178706,bonus_id=6807/1540,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=1498/6807,gem_id=173130
+waist=binding_of_warped_desires,id=183015,bonus_id=1498/6807
 legs=gormshell_greaves,id=178701,bonus_id=6807/1540
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,gem_id=173130,enchant=tenet_of_mastery
