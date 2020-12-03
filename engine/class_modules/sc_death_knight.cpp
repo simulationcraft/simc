@@ -6299,8 +6299,8 @@ struct scourge_strike_t : public scourge_strike_base_t
     triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
 
-    execute_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
-    add_child( execute_action );
+    impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
+    add_child( impact_action );
 
     // Disable when Clawing Shadows is talented
     if ( p -> talent.clawing_shadows -> ok() )
