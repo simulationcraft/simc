@@ -35,7 +35,7 @@ role=spell
 position=ranged_back
 talents=3031021
 covenant=night_fae
-soulbind=dreamweaver,infernal_cascade:4
+soulbind=niya,grove_invigoration/infernal_cascade:4
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
