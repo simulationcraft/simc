@@ -7886,6 +7886,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
+    may_crit   = false;
   }
 
   void execute() override
