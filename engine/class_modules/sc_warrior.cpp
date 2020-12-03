@@ -6761,9 +6761,9 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   default_list -> add_action( this, "Ignore Pain","if=buff.ignore_pain.down");
-  default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
-  default_list -> add_action( this, covenant.spear_of_bastion, "spear_of_bastion");
-  default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner");
+  default_list -> add_action( "ancient_aftershock");
+  default_list -> add_action( "spear_of_bastion");
+  default_list -> add_action( "conquerors_banner");
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_list -> add_action( "call_action_list,name=st" );
