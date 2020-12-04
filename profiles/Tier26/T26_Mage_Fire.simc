@@ -1,18 +1,19 @@
-mage="T25_Mage_Fire"
+mage="T26_Mage_Fire"
 source=default
 spec=fire
-level=50
+level=60
 race=troll
 role=spell
-position=back
-talents=3031022
-azerite_essences=27:3/4:3/5:3/35:3
+position=ranged_back
+talents=3031021
+covenant=kyrian
+soulbind=pelagos,controlled_destruction:7/combat_meditation/infernal_cascade:7/focusing_mantra
 
 # Default consumables
-potion=superior_battle_potion_of_intellect
-flask=greater_flask_of_endless_fathoms
-food=baked_port_tato
-augmentation=battle_scarred
+potion=spectral_intellect
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -186,31 +187,28 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=215/168/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=215/168/30/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=1647/4786/5448/6510/4775,azerite_powers=378/215/30/13
-wrists=hyperthread_wristwraps,id=168989,bonus_id=4779/1522/6573
-hands=emberscale_gloves,id=174125,bonus_id=4824/1517/6573
-waist=manainfused_sash,id=174124,bonus_id=4824/1517/6573
-legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/1517/6573
-feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/6573
-finger1=logic_loop_of_division,id=169157,bonus_id=4779/1522,enchant=accord_of_versatility
-finger2=overclocking_bit_band,id=169159,bonus_id=4779/1522,enchant=accord_of_haste
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=corrupted_gladiators_badge,id=172669,ilevel=460
-main_hand=shglayos_astral_malignity,id=174108,bonus_id=4824/1517,enchant=torrent_of_elements
-off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6573
+head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
+wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+hands=gory_surgeons_gloves,id=178748,bonus_id=6536/1540/6646
+waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173128
+legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
+feet=sparkling_glass_slippers,id=183023,bonus_id=7187/1498
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=ardent_sunstar_signet,id=183035,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=glyph_of_assimilation,id=184021,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=166.31
-# gear_stamina=907
-# gear_intellect=613
-# gear_crit_rating=266
-# gear_haste_rating=239
-# gear_mastery_rating=206
-# gear_versatility_rating=586
-# gear_corruption=90
-# gear_corruption_resistance=50
-# gear_armor=215
+# gear_ilvl=229.40
+# gear_stamina=1531
+# gear_intellect=1191
+# gear_crit_rating=475
+# gear_haste_rating=703
+# gear_mastery_rating=275
+# gear_versatility_rating=497
+# gear_armor=373
