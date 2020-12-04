@@ -6340,7 +6340,7 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
-  default_list -> add_action( "use_items,name=dreadfire_vessel" );
+  default_list -> add_action( "use_item,name=dreadfire_vessel" );
   default_list -> add_action( "use_items,if=buff.trueshot.up|cooldown.trueshot.remains>59|target.time_to_die<20" );
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
