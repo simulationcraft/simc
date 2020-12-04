@@ -113,18 +113,18 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
-neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498
+head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498/6935,gem_id=173127
+neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173127
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6995/6716/6649/6647/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
-wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498
+wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498/6935,gem_id=173127
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498
+waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498/6935,gem_id=173127
 legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
 feet=stoneclas_stompers,id=183006,bonus_id=4800/4786/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_critical_strike
+finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
 main_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=sinful_revelation
@@ -134,8 +134,8 @@ off_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=c
 # gear_ilvl=229.63
 # gear_agility=881
 # gear_stamina=1513
-# gear_crit_rating=381
+# gear_crit_rating=445
 # gear_haste_rating=962
 # gear_mastery_rating=308
-# gear_versatility_rating=198
+# gear_versatility_rating=230
 # gear_armor=873
