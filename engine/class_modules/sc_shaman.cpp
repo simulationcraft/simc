@@ -9208,6 +9208,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
+  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   aoe->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");
