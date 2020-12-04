@@ -105,6 +105,7 @@ void smothered_shank( special_effect_t& effect )
 
   effect.name_str = "pungent_belch";
   effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
+  effect.disable_action();
 }
 
 void surprisingly_palatable_feast( special_effect_t& effect )
