@@ -59,24 +59,24 @@ save=PR_Warrior_Fury.simc
 
 warrior="PR_Warrior_Protection"
 level=60
-race=tauren
+race=draenei
 spec=protection
 role=tank
 position=front
-talents=3020021
+talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:4
 
 head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498/6646
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6648/6716/6957/1487
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498/6646,enchant=eternal_skirmish
 wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
 hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498/6646,enchant=eternal_strength
 waist=girdle_of_the_soulflayer,id=179326,bonus_id=6807/1498/6646
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
-feet=shadowghast_sabatons,id=171413,bonus_id=6649/6650/6716/6956/1487
+feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
