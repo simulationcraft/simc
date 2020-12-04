@@ -7,7 +7,7 @@ role=attack
 position=back
 talents=3111131
 covenant=night_fae
-soulbind=niya,322721/focused_lightning:7/unruly_winds:7
+soulbind=niya,grove_invigoration/focused_lightning:7/niyas_tools_burrs
 
 # Default consumables
 potion=potion_of_spectral_agility

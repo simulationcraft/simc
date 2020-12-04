@@ -36,7 +36,7 @@ role=attack
 position=back
 talents=3111131
 covenant=night_fae
-soulbind=niya,322721/focused_lightning:7/unruly_winds:7
+soulbind=niya,grove_invigoration/focused_lightning:7/niyas_tools_burrs
 
 head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498/6935,gem_id=173127
 neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173127
