@@ -66,6 +66,8 @@ talents=2032021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/icy_propulsion:7
 
+potion=phantom_fire
+
 head=depraved_physicians_mask,id=178759,bonus_id=6536/1540/6646/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
