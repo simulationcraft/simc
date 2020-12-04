@@ -554,19 +554,67 @@ void soul_igniter( special_effect_t& effect )
     }
   };
 
+  struct soul_ignition_buff_t : public buff_t
+  {
+    special_effect_t& effect;
+    blazing_surge_t* damage_action;
+    bool is_precombat;
+
+    soul_ignition_buff_t( special_effect_t& e, action_t* d ) :
+      buff_t( e.player, "soul_ignition", e.player->find_spell( 345211 ) ),
+      effect( e ),
+      damage_action( debug_cast<blazing_surge_t*>( d ) ),
+      is_precombat()
+    {}
+
+    void expire_override( int stacks, timespan_t remaining_duration )
+    {
+      // If the trinket was used in precombat, assume that it was timed so
+      // that it will expire to deal full damage when it first expires.
+      if ( is_precombat )
+        remaining_duration = 0_ms;
+
+      buff_t::expire_override( stacks, remaining_duration );
+
+      damage_action->buff_fraction_elapsed = ( buff_duration() - remaining_duration ) / buff_duration();
+      damage_action->set_target( source->target );
+      damage_action->execute();
+      // the 60 second cooldown associated with the damage effect trigger
+      // does not appear in spell data anywhere and is just in the tooltip.
+      effect.execute_action->cooldown->start( effect.execute_action, 60_s );
+      auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
+      if ( cd_group )
+        cd_group->start( effect.cooldown_group_duration() );
+    }
+  };
+
   struct soul_ignition_t : public proc_spell_t
   {
-    buff_t* buff;
+    soul_ignition_buff_t* buff;
     const spell_data_t* second_action;
+    bool has_precombat_action;
 
     soul_ignition_t( const special_effect_t& e ) :
       proc_spell_t( "soul_ignition", e.player, e.driver() ),
-      second_action( e.player->find_spell( 345215 ) )
-    {}
+      second_action( e.player->find_spell( 345215 ) ),
+      has_precombat_action()
+    {
+      harmful = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + e.item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          has_precombat_action = true;
+          break;
+        }
+      }
+    }
 
     void init_finished() override
     {
-      buff = buff_t::find( player, "soul_ignition" );
+      buff = debug_cast<soul_ignition_buff_t*>( buff_t::find( player, "soul_ignition" ) );
     }
 
     bool ready() override
@@ -587,36 +635,17 @@ void soul_igniter( special_effect_t& effect )
         cd_group->start( second_action->category_cooldown() );
 
       if ( buff->check() )
+      {
         buff->expire();
+      }
       else
+      {
+        // The cooldown does not need to be adjusted when this is used before combat begins because
+        // the shared cooldown on other trinkets is triggered again when the buff expires and the
+        // actual cooldown of this trinket does not start until the buff expires.
+        buff->is_precombat = !player->in_combat && has_precombat_action;
         buff->trigger();
-    }
-  };
-
-  struct soul_ignition_buff_t : public buff_t
-  {
-    special_effect_t& effect;
-    blazing_surge_t* damage_action;
-
-    soul_ignition_buff_t( special_effect_t& e, action_t* d ) :
-      buff_t( e.player, "soul_ignition", e.player->find_spell( 345211 ) ),
-      effect( e ),
-      damage_action( debug_cast<blazing_surge_t*>( d ) )
-    {}
-
-    void expire_override( int stacks, timespan_t remaining_duration )
-    {
-      buff_t::expire_override( stacks, remaining_duration );
-
-      damage_action->buff_fraction_elapsed = ( buff_duration() - remaining_duration ) / buff_duration();
-      damage_action->set_target( source->target );
-      damage_action->execute();
-      // the 60 second cooldown associated with the damage effect trigger
-      // does not appear in spell data anywhere and is just in the tooltip.
-      effect.execute_action->cooldown->start( effect.execute_action, 60_s );
-      auto cd_group = player->get_cooldown( effect.cooldown_group_name() );
-      if ( cd_group )
-        cd_group->start( effect.cooldown_group_duration() );
+      }
     }
   };
 
@@ -624,7 +653,7 @@ void soul_igniter( special_effect_t& effect )
   effect.execute_action = create_proc_action<soul_ignition_t>( "soul_ignition", effect );
   auto buff = buff_t::find( effect.player, "soul_ignition" );
   if ( !buff )
-    buff = make_buff<soul_ignition_buff_t>( effect, damage_action );
+    make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
 void skulkers_wing( special_effect_t& /* effect */ )

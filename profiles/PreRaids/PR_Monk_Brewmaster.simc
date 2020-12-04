@@ -2,7 +2,8 @@ monk="PR_Monk_Brewmaster"
 source=default
 spec=brewmaster
 level=60
-race=pandaren
+race=vulpera
+vulpera_tricks=corrosive
 role=tank
 position=front
 talents=1030021
@@ -37,7 +38,7 @@ actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/gift_of_the_ox,if=health<health.max*0.65
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
-actions+=/use_item,name=inscrutable_quantum_device
+actions+=/use_item,name=bottled_flayedwing_toxin
 actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
@@ -76,29 +77,29 @@ actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remain
 actions+=/arcane_torrent,if=energy<31
 actions+=/rushing_jade_wind
 
-head=vicious_surge_faceguard,id=180106,bonus_id=6807/1498/6646
+head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646,enchant=soul_vitality
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+back=grimveiled_cape,id=173242,bonus_id=6716/7076/6647/6650/1487,enchant=soul_vitality
+chest=rainshadow_hauberk,id=178698,bonus_id=6807/1498/6646,enchant=eternal_skirmish
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
-hands=winged_hunters_gloves,id=180103,bonus_id=6807/1498/6646
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
+hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
-feet=umbrahide_treads,id=172315,bonus_id=6647/6650/6716/7076/1487,enchant=eternal_agility
-finger1=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=sinful_revelation
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=eternal_grace
 
 # Gear Summary
 # gear_ilvl=184.38
-# gear_agility=587
-# gear_stamina=887
-# gear_crit_rating=554
-# gear_haste_rating=153
-# gear_mastery_rating=153
-# gear_versatility_rating=514
-# gear_armor=479
+# gear_agility=586
+# gear_stamina=886
+# gear_crit_rating=601
+# gear_haste_rating=131
+# gear_mastery_rating=218
+# gear_versatility_rating=415
+# gear_armor=478

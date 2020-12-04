@@ -1,13 +1,13 @@
-shaman="T26_Shaman_Enhancement"
+shaman="T26_Shaman_Enhancement_VDW"
 source=default
 spec=enhancement
 level=60
 race=goblin
 role=attack
 position=back
-talents=3111131
-covenant=night_fae
-soulbind=niya,grove_invigoration/focused_lightning:7/niyas_tools_burrs
+talents=2111133
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:7/dauntless_duelist
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -113,9 +113,9 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/earth_elemental
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498/6935,gem_id=173127
+head=boneshatter_helm,id=172325,bonus_id=6993/6716/6649/6647/1532/6935,gem_id=173127
 neck=charm_of_eternal_winter,id=183040,bonus_id=4800/4786/1498/6935,gem_id=173127
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6995/6716/6649/6647/1532
+shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_skirmish
 wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498/6935,gem_id=173127
@@ -131,11 +131,11 @@ main_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=
 off_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=229.63
-# gear_agility=881
-# gear_stamina=1513
-# gear_crit_rating=445
-# gear_haste_rating=962
-# gear_mastery_rating=308
-# gear_versatility_rating=230
-# gear_armor=873
+# gear_ilvl=230.06
+# gear_agility=886
+# gear_stamina=1528
+# gear_crit_rating=464
+# gear_haste_rating=882
+# gear_mastery_rating=341
+# gear_versatility_rating=264
+# gear_armor=878

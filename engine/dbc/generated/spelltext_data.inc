@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36753
-static const std::array<spelltext_data_t, 15049> __spelltext_data { {
+static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12745,6 +12745,7 @@ static const std::array<spelltext_data_t, 15049> __spelltext_data { {
   { 314648, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
   { 314791, "Draw power from the ground beneath, dealing ${$325130s1*$d/$t} Nature damage over $d to enemies within $325130A1 yds. \r\n\r\nWhile channeling, your Mage ability cooldowns are reduced by ${-$s2/1000*$d/$t} sec over $d.", "Every $t1 sec, deal $325130s1 Nature damage to enemies within $325130A1 yds and reduce the remaining cooldown of your abilities by ${-$s2/1000} sec.", "Night Fae" },
   { 314793, "Conjure $n mirrors to torment the enemy for $d. Whenever the target attacks, casts a spell, or uses an ability, a mirror is consumed to inflict $320035s1 Shadow damage and their movement and cast speed are slowed by $320035s3%. This effect cannot be triggered more often than once per $345977d.\r\n\r\nThe final mirror will instead inflict $317589s1 Shadow damage to the enemy, Rooting and Silencing them for $317589d.\r\n\r\nWhenever a mirror is consumed $?c1[you gain $345417s1% mana][]$?c2[your Fire Blast cooldown is reduced by $s2 sec][]$?c3[you gain Brain Freeze][].", "Attacking, casting a spell or ability, consumes a mirror to inflict Shadow damage and reduce cast and movement speed by $320035s3%. \r\n\r\nYour final mirror will instead Root and Silence you for $317589d.", "Venthyr" },
+  { 314817, "Deals Physical damage to enemies around the target.", 0, 0 },
   { 314867, "Make a shadowy pact, healing the target and ${$s3-1} other injured allies within $A2 yds for $s2. For $322105d, your Shadow spells deal $322105m2% increased damage and healing, but you cannot cast Holy spells.", 0, 0 },
   { 314959, "Prepare Baked Voidfin.", 0, 0 },
   { 314960, "Prepare K'Bab.", 0, 0 },
@@ -13653,6 +13654,7 @@ static const std::array<spelltext_data_t, 15049> __spelltext_data { {
   { 330380, "Because it judged it to be useful to you, the Inscrutable Quantum Device granted you $s1 Mastery.", "Mastery, which appears to be useful for you, increased by $w1.", 0 },
   { 330382, "$@spelldesc316958", 0, 0 },
   { 330511, "$@spelldesc329778", "Chance to critical strike increased by $w%.", 0 },
+  { 330530, "Throw a kyrian Javelin at a current target inflicting Arcane damage.", 0, 0 },
   { 330542, "While Stealth is active, your attacks have a $s1% chance to apply your active Lethal and Non-Lethal Poisons.", 0, "Rank 2" },
   { 330607, "$@spelldesc330338", "Invulnerable, but unable to act.", 0 },
   { 330729, 0, "Mastery increased by $w1.", 0 },
@@ -14709,6 +14711,7 @@ static const std::array<spelltext_data_t, 15049> __spelltext_data { {
   { 342601, "Begins a ritual that sacrifices a random participant to summon a doomguard. Requires the caster and 4 additional party members to complete the ritual.", 0, 0 },
   { 342699, "Add the Prideful affix to a Mythic Keystone.", 0, 0 },
   { 342761, "$@spelldesc319191", 0, 0 },
+  { 342762, "Deals Arcane damage to enemies around the target.", 0, 0 },
   { 342774, "$@spelldesc319191", "Haste increased by $w%.", 0 },
   { 342781, "$@spelldesc319191", "Cannot benefit from the effects of Field of Blossoms.", 0 },
   { 342814, "$@spelldesc322721", "Max health increased by $w1%.\r\nMastery increased by $w2.", 0 },

@@ -124,7 +124,7 @@ actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up|
 # Sync Sheet Music with Voidform
 actions.trinkets+=/use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10
 # Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target
-actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up,target_if=min:target.health.pct
+actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target.health.pct
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10
 # Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it.

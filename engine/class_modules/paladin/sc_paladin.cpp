@@ -915,7 +915,7 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
 }
 
 judgment_t::judgment_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_class_spell("Judgment") )
+    paladin_melee_attack_t( "divine_toll_judgment", p, p -> find_class_spell("Judgment") )
 {
   do_ctor_common( p );
 }

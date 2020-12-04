@@ -1197,7 +1197,10 @@ struct rune_of_power_t final : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    debug_cast<mage_t*>( player )->distance_from_rune = 0.0;
+    auto mage = debug_cast<mage_t*>( player );
+    mage->distance_from_rune = 0.0;
+    mage->buffs.disciplinary_command_arcane->trigger();
+
     return buff_t::trigger( stacks, value, chance, duration );
   }
 };
