@@ -22,7 +22,7 @@ finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_o
 finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=ascended_vigor
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=sinful_revelation
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=eternal_grace
 
 save=PR_Monk_Brewmaster.simc
