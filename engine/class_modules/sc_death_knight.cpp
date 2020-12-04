@@ -8705,12 +8705,13 @@ void death_knight_t::default_apl_frost()
   // Breath of Sindragosa uptime rotation
   bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=60", "Breath of Sindragosa Active Rotation" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold|active_enemies>=2" );
-  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up&(runic_power.deficit<55|rune.time_to_3>=gcd|spell_targets.howling_blast>=2)" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up&(runic_power.deficit<55|rune.time_to_3<=gcd|spell_targets.howling_blast>=2)" );
   bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power.deficit>=45" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>=2&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=40&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2&(buff.deaths_due.stack=8|!death_and_decay.ticking|!covenant.night_fae)" );
   bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25&rune>3" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
   // Pooling For Obliteration: Starts 10 seconds before Pillar of Frost comes off CD
