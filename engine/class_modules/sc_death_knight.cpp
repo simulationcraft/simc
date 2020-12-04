@@ -8686,7 +8686,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Death and Decay", "if=active_enemies>5|runeforge.phearomones" );
 
   // Cold Heart
-  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|!talent.obliteration&(buff.pillar_of_frost.remains<3&buff.pillar_of_frost.up&buff.cold_heart.stack>=10|buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19&cooldown.pillar_of_frost.remains>10", "Cold Heart Conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|!talent.obliteration&(buff.pillar_of_frost.remains<3&buff.pillar_of_frost.up&buff.cold_heart.stack>=10|buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19&cooldown.pillar_of_frost.remains>10)", "Cold Heart Conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
 
   // Breath of Sindragosa pooling rotation : starts 10s before the cd becomes available
