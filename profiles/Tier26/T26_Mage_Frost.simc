@@ -2,7 +2,7 @@ mage="T26_Mage_Frost"
 source=default
 spec=frost
 level=60
-race=troll
+race=mechagnome
 role=spell
 position=back
 talents=2032021
@@ -10,7 +10,7 @@ covenant=venthyr
 soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/icy_propulsion:7
 
 # Default consumables
-potion=spectral_intellect
+potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
@@ -92,28 +92,29 @@ actions.st+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipli
 actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
-head=abominable_visage,id=178732,bonus_id=6536/1540/6646/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+head=depraved_physicians_mask,id=178759,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1540/6646
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=6536/1540/6646,gem_id=173127,enchant=eternal_intellect
 hands=supple_supplicants_gloves,id=183008,bonus_id=7187/1498
-waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173128
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173127
 legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6758/6823/1532
 feet=dark_stride_footwraps,id=180102,bonus_id=6536/1540/6646
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,gem_id=173127,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
 trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498,enchant=shadowcore_oil
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+trinket2=glyph_of_assimilation,id=184021,bonus_id=7187/1498
+main_hand=hungering_ritualists_animablade,id=182396,bonus_id=7187/1531,enchant=sinful_revelation
+off_hand=master_stonewrights_chisel,id=182400,bonus_id=7187/1531
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_stamina=1524
-# gear_intellect=1184
-# gear_crit_rating=732
-# gear_haste_rating=849
-# gear_mastery_rating=205
-# gear_versatility_rating=161
+# gear_ilvl=228.75
+# gear_stamina=1517
+# gear_intellect=1175
+# gear_crit_rating=795
+# gear_haste_rating=918
+# gear_mastery_rating=99
+# gear_versatility_rating=123
 # gear_armor=372
