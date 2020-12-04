@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36753
-static const std::array<spelltext_data_t, 15052> __spelltext_data { {
+static const std::array<spelltext_data_t, 15051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12444,7 +12444,7 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 307164, "Increases your Strength by $s1 for $d.", "Strength increased by $w1.", 0 },
   { 307165, "Cures poisons up to level $ctrmax2060 and reduces the duration of newly applied poisons by $s2% for $d. Cannot be used in instances.", "Poison duration reduced by $s2%.", 0 },
   { 307166, "Grants the effect of a flask based on your class and talents.  Lasts $92725d and persists through death.", "$pri increased by $w1.", 0 },
-  { 307185, "Increases $pri by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "$pri increased by $w1.", 0 },
+  { 307185, "Increases primary stat by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "$pri increased by $w1.", 0 },
   { 307187, "Increases Stamina by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Stamina increased by $w1.", 0 },
   { 307192, "Restores $s1 health.", 0, 0 },
   { 307193, "Restores $s1 mana.", 0, 0 },
@@ -12538,7 +12538,7 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 309621, "Permanently enchants a weapon to sometimes cause a burst of healing on the target of your helpful spells and abilities, healing for $<points> health split evenly amongst nearby allies.", 0, 0 },
   { 309622, "Permanently enchants a weapon to sometimes increase your healing received by $324226s1% for $324226d when taking damage.", 0, 0 },
   { 309623, "Permanently enchants a weapon to sometimes cause your attacks to reveal the sins of your target, causing them to suffer an additional $324260s1% damage from you for $324260d.", 0, 0 },
-  { 309627, "Permanently enchants a weapon to sometimes increase your $pri by $324748s1% when attacking, or using spells and abilities.", 0, 0 },
+  { 309627, "Permanently enchants a weapon to sometimes increase your primary stat by $324748s1% when attacking, or using spells and abilities.", 0, 0 },
   { 309658, "Increases Haste by $s1% for all party and raid members. Lasts $d.\r\n\r\nAllies receiving this effect will become Exhausted and be unable to benefit from Bloodlust, Heroism or Time Warp again for $57723d.", "Haste increased by $s1%.", 0 },
   { 310143, "Turn into $?a333206[a Toad]?a326215[a Wyvern]?a326212[a Gryphon]?a326209[a Hippogryph]?a326207[a Wolfhawk]?a326204[a Feathered Drake]?a326202[a Wolf]?a326200[a Moose]?a326197[a Bear]?a326195[a Raptor]?a326191[a Nightsaber]?a326186[an Owlcat]?a326184[a Stag]?a326181[a Dragon Turtle]?a326178[a Cobra]?a326173[a Hyena]?a326168[a Tiger]?a326165[a Lion]?a326161[a Crane]?a326157[a Teroclaw]?a326153[a Unicorn]?a326152[a Moth]?a321080[a Runestag][a Vulpin], teleporting $324701A1 yds forward and increasing your movement speed by $s3%. You may reactivate Soulshape every few sec to teleport again.$?a137010[\r\n\r\nIncreases armor by $344402s2% and Stamina by $344402s1%.][]\r\n\r\nLasts $d, or indefinitely while in a rest area.", "Transformed into your Soulshape, increasing movement speed by $w3%.$?a137010[\r\nArmor increased by $344402s2%.\r\nStamina increased by $344402s1%.][]$?a342309[\r\nRegenerating $342309s1% health every $342309t sec.][]", "Night Fae" },
   { 310362, "Your damage and healing are increased by $s1%", 0, 0 },
@@ -12640,7 +12640,6 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power. Deals reduced damage beyond $s5 targets.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -15055,7 +15054,9 @@ static const std::array<spelltext_data_t, 15052> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36753
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {  307185,  0, "Increases $pri by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Increases primary stat by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death." },
+  {  309627,  0, "Permanently enchants a weapon to sometimes increase your $pri by $324748s1% when attacking, or using spells and abilities.", "Permanently enchants a weapon to sometimes increase your primary stat by $324748s1% when attacking, or using spells and abilities." },
   {  332506,  1, "Incoming stun duration reduced by $m1%.", "Duration of incoming stuns and incapacitates reduced by $w1%." },
   {  336465,  0, "Gain an absorb shield preventing $s2% of the damage done to you in the next $d, up to a total of $s1 damage done. Any remaining absorption explodes splitting the damage between all enemies within $336850a1 yds. ", "Gain an absorb shield preventing $s2% of the damage done to you in the next $d, up to a total of $s1 damage done. $s3% of the remaining absorption explodes splitting the damage between all enemies within $336850a1 yds. " },
   {  336465,  1, "Absorb up to $w1 damage. Remaining damage is split between all enemies within $336850a1 yds.", "Absorb up to $w1 damage. $s3% of the remaining damage is split between all enemies within $336850a1 yds." },
