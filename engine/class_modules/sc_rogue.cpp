@@ -7179,7 +7179,7 @@ void rogue_t::init_action_list()
 
     // Main Rotation
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)", "Reroll single BT/GM/TB buffs when possible" );
-    def->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up" );
+    def->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50" );
     def->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def->add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def->add_action( "call_action_list,name=cds" );
@@ -7192,6 +7192,7 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
+    cds->add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition&master_assassin_remains=0&buff.deathly_shadows.down", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
     cds->add_action( "flagellation" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)" );
@@ -7202,7 +7203,6 @@ void rogue_t::init_action_list()
     cds->add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
     cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
-    cds->add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=1" );
     cds->add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
     cds->add_action( "sepsis,if=!stealthed.all" );
@@ -7232,7 +7232,7 @@ void rogue_t::init_action_list()
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
-    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)", "Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down." );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw" );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
     build->add_action( this, "Sinister Strike" );
     build->add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up" );
