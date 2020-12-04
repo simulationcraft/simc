@@ -1,6 +1,6 @@
 monk="PR_Monk_Brewmaster"
 level=60
-race=pandaren
+race=vulpera
 spec=brewmaster
 role=tank
 position=front
@@ -18,19 +18,19 @@ hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=force_multiplier
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 save=PR_Monk_Brewmaster.simc
 
 
 monk="PR_Monk_Windwalker"
 level=60
-race=pandaren
+race=mechagnome
 spec=windwalker
 role=attack
 position=back
@@ -48,19 +48,19 @@ hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=force_multiplier
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 save=PR_Monk_Windwalker.simc
 
 
 monk="PR_Monk_Windwalker_Serenity"
 level=60
-race=pandaren
+race=mechagnome
 spec=windwalker
 role=attack
 position=back
@@ -78,11 +78,11 @@ hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=force_multiplier
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 save=PR_Monk_Windwalker_Serenity.simc

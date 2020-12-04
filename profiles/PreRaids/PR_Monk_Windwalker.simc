@@ -2,7 +2,7 @@ monk="PR_Monk_Windwalker"
 source=default
 spec=windwalker
 level=60
-race=pandaren
+race=mechagnome
 role=dps
 position=back
 talents=2020012
@@ -174,19 +174,19 @@ hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=force_multiplier
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=185.38
 # gear_agility=596
 # gear_stamina=890
-# gear_crit_rating=513
-# gear_haste_rating=105
+# gear_crit_rating=481
+# gear_haste_rating=137
 # gear_mastery_rating=215
 # gear_versatility_rating=536
 # gear_armor=479
