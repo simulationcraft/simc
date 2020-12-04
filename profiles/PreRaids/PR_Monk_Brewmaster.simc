@@ -80,7 +80,7 @@ actions+=/rushing_jade_wind
 head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/7076/6647/6650/1487,enchant=soul_vitality
 chest=rainshadow_hauberk,id=178698,bonus_id=6807/1498/6646,enchant=eternal_skirmish
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
 hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
@@ -91,15 +91,15 @@ finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_o
 finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=eternal_grace
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=sinful_revelation
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=eternal_grace
 
 # Gear Summary
-# gear_ilvl=184.00
-# gear_agility=584
-# gear_stamina=882
-# gear_crit_rating=569
-# gear_haste_rating=153
+# gear_ilvl=184.38
+# gear_agility=586
+# gear_stamina=886
+# gear_crit_rating=601
+# gear_haste_rating=131
 # gear_mastery_rating=218
-# gear_versatility_rating=424
-# gear_armor=477
+# gear_versatility_rating=415
+# gear_armor=478
