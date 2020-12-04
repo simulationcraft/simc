@@ -8842,10 +8842,11 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Dark Transformation", "if=active_enemies>=2" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&(!talent.unholy_blight|conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned|runeforge.deadliest_coil)&(conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned|!runeforge.deadliest_coil)", "Use Apocalypse on cooldown if there are no CD's to sync with, or the cooldown duration is too long to be worth syncing" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&conduit.convocation_of_the_dead.rank>=5&talent.army_of_the_damned&runeforge.deadliest_coil&debuff.unholy_blight_debuff.up", "Use Apocalypse after Blight with specific setups, failsafe incase Apoc CD is lower than Blight" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&!talent.army_of_the_damned&debuff.unholy_blight_debuff.up", "Hold Apoc for Blight if using Gargoyle or Unholy Assault" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&talent.unholy_assault&conduit.convocation_of_the_dead", "Hold Apoc for Blight if using Gargoyle or Unholy Assault" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&debuff.unholy_blight_debuff.up&(talent.gargoyle|talent.unholy_assault&!conduit.convocation_of_the_dead)" );
   cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&cooldown.apocalypse.remains)" );
+  cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&buff.dark_transformation.up&!pet.army_ghoul.active)" );
   cooldowns -> add_talent( this, "Unholy Assault", "target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
