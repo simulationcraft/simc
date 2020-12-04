@@ -1743,7 +1743,8 @@ public:
     if ( affected_by.blindside )
       p()->buffs.blindside->expire();
 
-    if ( affected_by.sepsis )
+    // 12/04/2020 - Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    if ( affected_by.sepsis && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
       p()->buffs.sepsis->decrement();
   }
 
