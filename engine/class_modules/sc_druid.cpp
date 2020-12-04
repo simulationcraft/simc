@@ -8678,20 +8678,19 @@ void druid_t::apl_guardian()
   bear->add_action( "barkskin,if=(talent.brambles.enabled)&(buff.bear_form.up)" );
   bear->add_action(
        "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
-  bear->add_action( "moonfire,if=(buff.galactic_guardian.up&druid.owlweave_bear)&active_enemies<=3" );
   bear->add_action(
       "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped)|active_enemies>=4" );
+  bear->add_action( "moonfire,if=((buff.galactic_guardian.up)&active_enemies<2)|((buff.galactic_guardian.up)&!dot.moonfire.ticking&active_enemies>2)" );
+  bear->add_action( "moonfire,if=(dot.moonfire.remains<=3&(buff.galactic_guardian.up)&active_enemies>5)" );
+  bear->add_action( "moonfire,if=(refreshable&active_enemies<2)|(refreshable&!dot.moonfire.ticking&active_enemies>2)" );
   bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
   bear->add_action( "maul,if=buff.incarnation.up&active_enemies<2" );
   bear->add_action(
       "maul,if=(buff.savage_combatant.stack>=1)&(buff.tooth_and_claw.up)&buff.incarnation.up&active_enemies=2" );
   bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
-  bear->add_action( "moonfire,target_if=refreshable&active_enemies<=3" );
   bear->add_action(
       "maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3))&active_enemies<3)" );
   bear->add_action( "thrash_bear,if=active_enemies>1" );
-  bear->add_action(
-      "moonfire,if=(buff.galactic_guardian.up&druid.catweave_bear)&active_enemies<=3|(buff.galactic_guardian.up&!druid.catweave_bear&!druid.owlweave_bear)&active_enemies<=3" );
   bear->add_action( "mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)" );
   bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
   bear->add_action( "thrash_bear" );
