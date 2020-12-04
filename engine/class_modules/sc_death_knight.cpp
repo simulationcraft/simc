@@ -8830,7 +8830,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)");
 
   // Cooldowns
-  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<3&cooldown.dark_transoformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
+  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.remains|cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3))&!runeforge.deadliest_coil&!conduit.eternal_hunger&!talent.army_of_the_damned&!conduit.convocation_of_the_dead" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&((runeforge.deadliest_coil|conduit.eternal_hunger)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up))&(!talent.army_of_the_damned|!conduit.convocation_of_the_dead))" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<3" );
