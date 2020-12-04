@@ -34,7 +34,7 @@ race=mechagnome
 spec=windwalker
 role=attack
 position=back
-talents=2020012
+talents=3020012
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:4
 
@@ -64,7 +64,7 @@ race=mechagnome
 spec=windwalker
 role=attack
 position=back
-talents=2020013
+talents=3020013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:4
 
