@@ -8826,7 +8826,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.unholy_blight.remains&(pet.army_ghoul.active&talent.army_of_the_damned|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)" );
   cooldowns -> add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&rune.time_to_4<gcd&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
-  cooldowns -> add_action( "use_item,name=darkmoon_deck_verocity,if=pet.apoc_ghoul.active&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  cooldowns -> add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)");
 
   // Cooldowns
