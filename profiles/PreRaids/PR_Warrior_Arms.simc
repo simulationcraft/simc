@@ -2,12 +2,12 @@ warrior="PR_Warrior_Arms"
 source=default
 spec=arms
 level=60
-race=human
+race=mechagnome
 role=attack
 position=back
 talents=3113132
 covenant=venthyr
-soulbind=336239/11:4
+soulbind=theotar,soothing_shade/ashen_juggernaut:4
 
 # Default consumables
 potion=potion_of_phantom_fire
@@ -95,21 +95,21 @@ actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&covenant.venthyr
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
 actions.single_target+=/slam,if=rage>50
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498
-shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498
-chest=breastplate_of_fatal_contrivances,id=179346,bonus_id=6807/1498,enchant=eternal_skirmish
-wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498
+head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
+neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
+shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
+chest=breastplate_of_fatal_contrivances,id=179346,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
 hands=shadowghast_gauntlets,id=171414,bonus_id=6647/6649/6716/7101/1487,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498
-feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498,enchant=shadowcore_oil
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498
-main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498,enchant=sinful_revelation
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
+feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498/6646
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
+main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

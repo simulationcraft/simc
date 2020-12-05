@@ -24,6 +24,7 @@
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/rank_spells.hpp"
+#include "dbc/temporary_enchant.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/action_priority_list.hpp"
@@ -62,6 +63,7 @@
 #include <sstream>
 #include <cctype>
 #include <stdexcept>
+#include <iostream>
 
 namespace
 {
@@ -1697,6 +1699,36 @@ void player_t::init_initial_stats()
   sim->print_debug( "{} generic initial stats: {}", *this, initial );
 }
 
+void player_t::parse_temporary_enchants()
+{
+  if ( util::str_compare_ci( temporary_enchant_str, "disabled" ) )
+  {
+    return;
+  }
+
+  auto split = util::string_split( temporary_enchant_str, "/" );
+  for ( const auto& token : split )
+  {
+    auto token_split = util::string_split( token, ":" );
+    if ( token_split.size() != 2 )
+    {
+      sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",
+        name(), token );
+      continue;
+    }
+    auto slot = util::parse_slot_type( token_split[ 0 ] );
+    const auto& enchant = temporary_enchant_entry_t::find( token_split[ 1 ], dbc->ptr );
+    if ( slot == SLOT_INVALID || enchant.enchant_id == 0 )
+    {
+      sim->error( "Player {} unknown temporary enchant token '{}' (slot={}, enchant_id={})",
+        name(), token, util::slot_type_string( slot ), enchant.enchant_id );
+      continue;
+    }
+
+    items[ slot ].parsed.temporary_enchant_id = enchant.enchant_id;
+  }
+}
+
 void player_t::init_items()
 {
   sim->print_debug( "Initializing items for {}.", *this );
@@ -1742,6 +1774,8 @@ void player_t::init_items()
       std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
     }
   }
+
+  parse_temporary_enchants();
 
   // Once item data is initialized, initialize the parent - child relationships of each item
   range::for_each( items, [this]( item_t& i ) {
@@ -10742,6 +10776,7 @@ std::string player_t::create_profile( save_e stype )
     std::string flask_option  = flask_str.empty() ? default_flask() : flask_str;
     std::string food_option   = food_str.empty() ? default_food() : food_str;
     std::string rune_option   = rune_str.empty() ? default_rune() : rune_str;
+    std::string tench_option  = temporary_enchant_str.empty() ? default_temporary_enchant() : temporary_enchant_str;
 
     if ( !potion_option.empty() || !flask_option.empty() || !food_option.empty() || !rune_option.empty() )
     {
@@ -10756,6 +10791,8 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "food=" + food_option + term;
       if ( !rune_option.empty() )
         profile_str += "augmentation=" + rune_option + term;
+      if ( !tench_option.empty() )
+        profile_str += "temporary_enchant=" + temporary_enchant_str + term;
     }
 
     std::vector<std::string> initial_resources;
@@ -11021,6 +11058,7 @@ void player_t::copy_from( player_t* source )
   flask_str  = source->flask_str;
   food_str   = source->food_str;
   rune_str   = source->rune_str;
+  temporary_enchant_str = source->temporary_enchant_str;
 
   external_buffs = source->external_buffs;
 }
@@ -11081,6 +11119,7 @@ void player_t::create_options()
   add_option( opt_string( "flask", flask_str ) );
   add_option( opt_string( "food", food_str ) );
   add_option( opt_string( "augmentation", rune_str ) );
+  add_option( opt_string( "temporary_enchant", temporary_enchant_str ) );
 
   // Positioning
   add_option( opt_float( "x_pos", default_x_position ) );

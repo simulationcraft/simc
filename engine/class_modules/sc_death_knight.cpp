@@ -414,10 +414,11 @@ struct death_knight_td_t : public actor_target_data_t {
   {
     // Shared
     buff_t* abomination_limb; // Target-specific icd
-    buff_t* razorice;
+    // Runeforges
     buff_t* apocalypse_death; // Dummy debuff, healing reduction not implemented
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
+    buff_t* razorice;
 
     // Blood
     buff_t* mark_of_blood;
@@ -438,12 +439,11 @@ public:
   // Active
   ground_aoe_event_t* active_dnd;
 
-  // Expressions
+  // Expression warnings
   bool deprecated_dnd_expression;
   bool runeforge_expression_warning;
 
   // Counters
-  bool triggered_biting_cold;
   unsigned int km_proc_attempts;
   unsigned int festering_wounds_target_count;
 
@@ -454,22 +454,22 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    // Runeforges
     buff_t* rune_of_hysteria;
     buff_t* stoneskin_gargoyle;
     buff_t* unholy_strength;
 
     // Blood
+    absorb_buff_t* blood_shield;
     buff_t* bone_shield;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* hemostasis;
     buff_t* ossuary;
     buff_t* rune_tap;
+    buff_t* tombstone;
     buff_t* vampiric_blood;
     buff_t* voracious;
-
-    absorb_buff_t* blood_shield;
-    buff_t* tombstone;
 
     // Frost
     buff_t* breath_of_sindragosa;
@@ -482,7 +482,7 @@ public:
     buff_t* inexorable_assault;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
-    buff_t* pillar_of_frost_bonus;
+    buff_t* pillar_of_frost_bonus; // Additional strength from runes spent
     buff_t* remorseless_winter;
     buff_t* rime;
 
@@ -501,15 +501,13 @@ public:
 
     // Legendaries
     buff_t* crimson_rune_weapon;
+    buff_t* death_turf; // Phearomones buff
     buff_t* frenzied_monstrosity;
 
     // Covenants
-    buff_t* deaths_due;
-    buff_t* death_turf;
-
-    // Covenants
-    buff_t* abomination_limb;
-    buff_t* swarming_mist;
+    buff_t* abomination_limb; // Necrolord
+    buff_t* deaths_due; // Night Fae
+    buff_t* swarming_mist; // Venthyr
   } buffs;
 
   struct runeforge_t {
@@ -521,9 +519,8 @@ public:
     bool rune_of_the_stoneskin_gargoyle;
     bool rune_of_unending_thirst;
 
-    // Simpler to store Spellwarding as a double to check whether it's stacked or not
+    // Spellwarding is simpler to store as a double to check whether it's stacked or not
     double rune_of_spellwarding;
-
   } runeforge;
 
   // Cooldowns
@@ -593,7 +590,6 @@ public:
     gain_t* blood_tap;
     gain_t* drw_heart_strike;
     gain_t* heartbreaker;
-    gain_t* relish_in_blood;
     gain_t* tombstone;
 
     gain_t* bryndaors_might;
@@ -748,7 +744,7 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* unholy_pact; // The ingame implementation is a mess with multiple unholy pact buffs on the player and multiple unholy pact damage spells. The simc version is simplified
+    const spell_data_t* unholy_pact;
     const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
@@ -765,7 +761,7 @@ public:
     const spell_data_t* consumption;
 
     const spell_data_t* foul_bulwark;
-    const spell_data_t* relish_in_blood; // NYI
+    const spell_data_t* relish_in_blood;
     const spell_data_t* blood_tap;
 
     const spell_data_t* will_of_the_necropolis; // NYI
@@ -980,7 +976,6 @@ public:
     active_dnd( nullptr ),
     deprecated_dnd_expression( false ),
     runeforge_expression_warning( false ),
-    triggered_biting_cold( false ),
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
@@ -4124,6 +4119,8 @@ struct unholy_pact_damage_t : public death_knight_spell_t
   }
 };
 
+// The ingame implementation is a mess with multiple unholy pact buffs on the player and pet
+// As well as multiple unholy pact damage spells. The simc version is simplified
 struct unholy_pact_buff_t : public buff_t
 {
   action_t* damage;
@@ -4307,8 +4304,7 @@ struct deaths_due_damage_t : public death_and_decay_damage_t
   }
 };
 
-// Relish in Blood healing
-
+// Relish in Blood healing and RP generation
 struct relish_in_blood_t : public death_knight_heal_t
 {
   relish_in_blood_t( death_knight_t* p ) :
@@ -4392,9 +4388,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
       if ( p() -> buffs.bone_shield -> up() || ! p() -> bugs )
       {
-        p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                             p() -> gains.relish_in_blood );
-
+        // The heal's energize automatically handles RP generation
         p() -> active_spells.relish_in_blood -> execute();
       }
     }
@@ -6062,10 +6056,11 @@ struct raise_dead_t : public death_knight_spell_t
 struct remorseless_winter_damage_t : public death_knight_spell_t
 {
   double biting_cold_target_threshold;
+  bool triggered_biting_cold;
 
   remorseless_winter_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "remorseless_winter_damage", p, p -> spec.remorseless_winter -> effectN( 2 ).trigger() ),
-    biting_cold_target_threshold( 0 )
+    biting_cold_target_threshold( 0 ), triggered_biting_cold( false )
   {
     background = true;
     aoe = -1;
@@ -6109,10 +6104,10 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! p() -> triggered_biting_cold )
+    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! triggered_biting_cold )
     {
       p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-      p() -> triggered_biting_cold = true;
+      triggered_biting_cold = true;
     }
 
     if ( p() -> conduits.everfrost.ok() )
@@ -6137,11 +6132,19 @@ struct remorseless_winter_buff_t : public buff_t
     set_partial_tick( true );
   }
 
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    // TODO: check whether refreshing RW (with GS and high haste) lets you trigger biting cold again
+    // Move to expire override if necessary
+    debug_cast<remorseless_winter_damage_t*>( damage ) -> triggered_biting_cold = false;
+    return buff_t::trigger( s, v, c, d );
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    debug_cast<death_knight_t*>( player ) -> buffs. gathering_storm -> expire();
+    debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
   }
 };
 
@@ -6165,8 +6168,6 @@ struct remorseless_winter_t : public death_knight_spell_t
 
   void execute() override
   {
-    p() -> triggered_biting_cold = false;
-
     death_knight_spell_t::execute();
 
     p() -> buffs.remorseless_winter -> trigger();
@@ -6221,8 +6222,10 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
+  // The death and decay target cap is displayed both in scourge strike's effects
+  // And in SS and CS' max_targets data entry. Using the latter
   int n_targets() const override
-  { return p() -> in_death_and_decay() ? as<int>( p() -> spec.scourge_strike -> effectN( 4 ).base_value() ) : 0; }
+  { return p() -> in_death_and_decay() ? data().max_targets() : 0; }
 
   std::vector<player_t*>& target_list() const override // smart targeting to targets with wounds when cleaving SS
   {
@@ -6297,8 +6300,8 @@ struct scourge_strike_t : public scourge_strike_base_t
     triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
 
-    execute_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
-    add_child( execute_action );
+    impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
+    add_child( impact_action );
 
     // Disable when Clawing Shadows is talented
     if ( p -> talent.clawing_shadows -> ok() )
@@ -8296,10 +8299,10 @@ void death_knight_t::init_spells()
   talent.defile             = find_talent_spell( "Defile" );
 
   talent.army_of_the_damned = find_talent_spell( "Army of the Damned" );
-  talent.summon_gargoyle      = find_talent_spell( "Summon Gargoyle" ); // NYI
-  talent.unholy_assault    = find_talent_spell( "Unholy Assault" );
+  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
+  talent.unholy_assault     = find_talent_spell( "Unholy Assault" );
 
-                                                                     // Blood Talents
+  // Blood Talents
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
   talent.tombstone              = find_talent_spell( "Tombstone" );
@@ -8309,7 +8312,7 @@ void death_knight_t::init_spells()
   talent.consumption            = find_talent_spell( "Consumption" );
 
   talent.foul_bulwark           = find_talent_spell( "Foul Bulwark" );
-  talent.relish_in_blood        = find_talent_spell( "Relish in Blood" ); // NYI
+  talent.relish_in_blood        = find_talent_spell( "Relish in Blood" );
   talent.blood_tap              = find_talent_spell( "Blood Tap" );
 
   talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
@@ -8461,9 +8464,6 @@ void death_knight_t::default_apl_dps_precombat()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Precombat potion
-  precombat -> add_action( "potion" );
 }
 
 // death_knight_t::default_potion ===========================================
@@ -9152,7 +9152,6 @@ void death_knight_t::init_gains()
   gains.blood_tap                        = get_gain( "Blood Tap" );
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker                     = get_gain( "Heartbreaker" );
-  gains.relish_in_blood                  = get_gain( "Relish in Blood" );
   gains.tombstone                        = get_gain( "Tombstone" );
 
   gains.bryndaors_might                  = get_gain( "Bryndaor's Might" );

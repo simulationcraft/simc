@@ -1063,7 +1063,7 @@ const char* util::weapon_class_string( int weapon_class )
     case INVTYPE_RANGEDRIGHT:
       return "Ranged";
     default:
-      return nullptr;
+      return "Unknown";
   }
 }
 
@@ -1362,6 +1362,7 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE: return "azerite_essence";
     case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
+    case SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT: return "temporary_enchant";
     default: return "unknown";
   }
 }

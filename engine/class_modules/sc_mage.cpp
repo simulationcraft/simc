@@ -1197,7 +1197,10 @@ struct rune_of_power_t final : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    debug_cast<mage_t*>( player )->distance_from_rune = 0.0;
+    auto mage = debug_cast<mage_t*>( player );
+    mage->distance_from_rune = 0.0;
+    mage->buffs.disciplinary_command_arcane->trigger();
+
     return buff_t::trigger( stacks, value, chance, duration );
   }
 };
@@ -3707,13 +3710,9 @@ struct frost_nova_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    timespan_t duration = timespan_t::min();
+    p()->trigger_crowd_control( s, MECHANIC_ROOT );
     if ( result_is_hit( s->result ) && p()->runeforge.grisly_icicle.ok() )
-    {
       get_td( s->target )->debuffs.grisly_icicle->trigger();
-      duration = data().duration() + p()->spec.frost_nova_2->effectN( 1 ).time_value();
-    }
-    p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
 };
 

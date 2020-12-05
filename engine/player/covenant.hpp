@@ -199,7 +199,7 @@ struct covenant_cb_base_t
 
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
-  unsigned class_ability;
+  std::vector<unsigned> class_abilities;
   unsigned base_ability;
   auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
 

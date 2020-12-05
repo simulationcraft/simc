@@ -308,3 +308,53 @@ class TalentSet(DataSet):
             talents.append(entry)
 
         return talents
+
+class TemporaryEnchantItemSet(DataSet):
+    def _filter(self, **kwargs):
+        items = list()
+
+        for effect in self.db('ItemEffect').values():
+            if effect.parent_record().id == 0:
+                continue
+
+            spell_effects = effect.ref('id_spell').children('SpellEffect')
+
+            temporary_enchant_effects = [
+                e.type == 54 for e in spell_effects
+            ]
+
+            # Skip any temporary enchants that modify skills, they are (for our
+            # purposes) fishing temp enchants, and useless
+            if True not in temporary_enchant_effects:
+                continue
+
+            enchant_id = spell_effects[temporary_enchant_effects.index(True)].misc_value_1
+            enchant = self.db('SpellItemEnchantment')[enchant_id]
+            if enchant.id == 0:
+                continue
+
+            # Collect enchant spells
+            enchant_spells = []
+            for index in range(1, 4):
+                type_ = getattr(enchant, 'type_{}'.format(index))
+                prop_ = getattr(enchant, 'id_property_{}'.format(index))
+                if type_ in [1, 3, 7] and prop_:
+                    spell = self.db('SpellName')[prop_]
+                    if spell.id != 0:
+                        enchant_spells.append(self.db('SpellName')[prop_])
+
+            # Skip any enchant that has a spell that modifies a skill
+            mod_skill_effects = [
+                e.sub_type == 30 for s in enchant_spells for e in s.children('SpellEffect')
+            ]
+
+            if True in mod_skill_effects:
+                continue
+
+            items.append((effect.parent_record(), effect.ref('id_spell'), enchant_id))
+
+        return items
+
+    def ids(self):
+        return list(set(v[0] for v in self.get()))
+

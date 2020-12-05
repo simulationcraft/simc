@@ -363,6 +363,7 @@ struct player_t : public actor_t
 
   // Gear
   std::string items_str, meta_gem_str, potion_str, flask_str, food_str, rune_str;
+  std::string temporary_enchant_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
@@ -679,6 +680,7 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_string );
+  void parse_temporary_enchants();
 
   bool is_moving() const;
   double composite_block_dr( double extra_block ) const;
@@ -1107,6 +1109,8 @@ public:
   virtual std::string default_food() const
   { return ""; }
   virtual std::string default_rune() const
+  { return ""; }
+  virtual std::string default_temporary_enchant() const
   { return ""; }
 
   /**

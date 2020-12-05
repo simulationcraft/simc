@@ -1,19 +1,19 @@
 paladin="PR_Paladin_Protection"
 level=60
 race=draenei
+spec=protection
 role=tank
 position=front
-spec=protection
 talents=2200202
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/punish_the_guilty:4
 
 head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulder=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498/6646
+shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498/6646
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrist=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
+wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
 hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498/6646,enchant=eternal_strength
 waist=girdle_of_the_soulflayer,id=179326,bonus_id=6807/1498/6646
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
@@ -50,7 +50,7 @@ legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
 feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/7054/1487
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=viscera_of_coalesced_hatred,id=178808,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=20attackpower
 trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498/6646
 main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=sinful_revelation
 

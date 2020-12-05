@@ -4,7 +4,7 @@ spec=elemental
 level=60
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=2301032
 covenant=necrolord
 soulbind=emeni,lead_by_example/call_of_flame:4
@@ -26,6 +26,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
+# Use Stormkeeper precombat unless some adds will spawn soon.
+actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/potion
 actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
@@ -132,22 +134,22 @@ actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
-head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498
+head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
+neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6716/6991/1487
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
-chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498,enchant=eternal_insight
-wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498,enchant=eternal_intellect
-hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498
-waist=belt_of_wretched_manipulations,id=178932,bonus_id=6807/1498
-legs=lichbone_legguards,id=178778,bonus_id=6807/1498
-feet=striders_of_restless_malice,id=178745,bonus_id=6807/1498
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498,enchant=tenet_of_versatility
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=darkmoon_deck_putrescence,id=173069
-trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498
-main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498,enchant=sinful_revelation
-off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
+chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646,enchant=eternal_intellect
+hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498/6646
+waist=belt_of_wretched_manipulations,id=178932,bonus_id=6807/1498/6646
+legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
+feet=striders_of_restless_malice,id=178745,bonus_id=6807/1498/6646
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+trinket1=darkmoon_deck_putrescence,id=173069,enchant=shadowcore_oil
+trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498/6646
+main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498/6646,enchant=sinful_revelation
+off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
 
 # Gear Summary
 # gear_ilvl=185.38

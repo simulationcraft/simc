@@ -130,30 +130,30 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
 actions.stealthed+=/mutilate,if=talent.subterfuge.enabled&combo_points<=3
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
 legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6758/7117/1532
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=20attackpower
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
 main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.63
-# gear_agility=897
+# gear_ilvl=229.19
+# gear_agility=891
 # gear_stamina=1524
 # gear_attack_power=40
-# gear_crit_rating=401
-# gear_haste_rating=628
-# gear_mastery_rating=291
-# gear_versatility_rating=519
+# gear_crit_rating=717
+# gear_haste_rating=714
+# gear_mastery_rating=71
+# gear_versatility_rating=432
 # gear_armor=609

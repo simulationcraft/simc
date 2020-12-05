@@ -1961,6 +1961,7 @@ struct disrupt_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
   {
     may_miss = false;
+    is_interrupt = true;
 
     const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
     energize_type = action_energize::ON_CAST;
@@ -3800,34 +3801,36 @@ struct annihilation_t : public chaos_strike_base_t
   }
 };
 
+// Burning Wound Legendary ==================================================
+
+struct burning_wound_t : public demon_hunter_spell_t
+{
+  burning_wound_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->legendary.burning_wound->effectN( 1 ).trigger() )
+  {
+    dual = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s );
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->debuffs.burning_wound->trigger();
+    }
+  }
+};
+
 // Demon's Bite =============================================================
 
 struct demons_bite_t : public demon_hunter_attack_t
 {
-  struct burning_wound_t : public demon_hunter_spell_t
-  {
-    burning_wound_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->legendary.burning_wound->effectN( 1 ).trigger() )
-    {
-      dual = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_spell_t::impact( s );
-      if ( result_is_hit( s->result ) )
-      {
-        td( s->target )->debuffs.burning_wound->trigger();
-      }
-    }
-  };
-
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
 
-    if ( p->legendary.burning_wound->ok() )
+    if ( p->legendary.burning_wound->ok() && !p->talent.demon_blades->ok() )
     {
       impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
       add_child( impact_action );
@@ -3892,6 +3895,12 @@ struct demon_blades_t : public demon_hunter_attack_t
   {
     background = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
+
+    if ( p->legendary.burning_wound->ok() && p->talent.demon_blades->ok() )
+    {
+      impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
+      add_child( impact_action );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3906,7 +3915,7 @@ struct demon_blades_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-    trigger_felblade(s);
+    trigger_felblade( s );
   }
 };
 
@@ -4318,7 +4327,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    const int bombardment_stacks = p()->buff.fel_bombardment->check();
+    int bombardment_stacks = p()->buff.fel_bombardment->check();
     if ( bombardment_stacks > 0 )
     {
       // Apply hidden damage debuff to the primary target before execute
@@ -4331,16 +4340,23 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // Fel Bombardment Legendary
     // In-game, this directly just triggers additional procs of the Throw Glaive spell
     // For SimC purposes, using a cloned spell for better stats tracking
-    if ( hit_any_target && fel_bombardment )
+    if ( hit_any_target && fel_bombardment && bombardment_stacks > 0 )
     {
-      // For each stack of the buff, iterate through the target list and pick a random "primary" target
+      // 12/03/2020 - Apparently hotfixed to work correctly, although it still doesn't work how it did on beta
+      // For each stack, pick a new target and trigger a glaive until we run out of targets
       const auto targets_in_range = targets_in_range_list( target_list() );
-      assert( targets_in_range.size() > 0 );
-      for ( int i = 0; i < bombardment_stacks; ++i )
+      for ( auto bombardment_target : targets_in_range )
       {
-        const size_t index = rng().range( targets_in_range.size() );
-        fel_bombardment->set_target( targets_in_range[ index ] );
+        // Does not throw an additional glaive at the primary target
+        if ( bombardment_target == target )
+          continue;
+
+        if ( bombardment_stacks < 1 )
+          break;
+
+        fel_bombardment->set_target( bombardment_target );
         fel_bombardment->execute();
+        bombardment_stacks--;
       }
     }
   }
@@ -4923,7 +4939,7 @@ void demon_hunter_t::create_buffs()
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
     ->set_default_value( conduit.growing_inferno.percent() )
-    ->set_max_stack( 99 )
+    ->set_max_stack( 10 ) // 12/02/2020 - Manual hotfix, not in spell data
     ->set_duration( 20_s );
 
   buff.soul_furance = make_buff<buff_t>( this, "soul_furance", conduit.soul_furnace->effectN( 1 ).trigger() )
@@ -5779,7 +5795,7 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  apl_defensives->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
+  apl_defensives->add_action( this, "Metamorphosis", "if=!buff.metamorphosis.up&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );

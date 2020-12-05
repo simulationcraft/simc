@@ -28,14 +28,15 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/tar_trap,if=runeforge.soulforge_embers
-actions.precombat+=/double_tap,precast_time=10,if=!covenant.kyrian&(!talent.volley|active_enemies<2)
-actions.precombat+=/aimed_shot,if=active_enemies<3
-actions.precombat+=/steady_shot,if=active_enemies>2
+actions.precombat+=/double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley
+actions.precombat+=/aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)
+actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2
 
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)
-actions+=/use_items
+actions+=/use_item,name=dreadfire_vessel
+actions+=/use_items,if=buff.trueshot.up|cooldown.trueshot.remains>59|target.time_to_die<20
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
@@ -50,18 +51,18 @@ actions.cds+=/potion,if=buff.trueshot.up&buff.bloodlust.up|buff.trueshot.up&targ
 
 actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)
 actions.st+=/kill_shot
-actions.st+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&(cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains)
+actions.st+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.trueshot.remains>55)|target.time_to_die<15
 actions.st+=/flare,if=tar_trap.up&runeforge.soulforge_embers
 actions.st+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
 actions.st+=/explosive_shot
 actions.st+=/wild_spirits
 actions.st+=/flayed_shot
 actions.st+=/death_chakram,if=focus+cast_regen<focus.max
-actions.st+=/volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2
 actions.st+=/a_murder_of_crows
 actions.st+=/resonating_arrow
+actions.st+=/volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2
 actions.st+=/trueshot,if=buff.precise_shots.down|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1
-actions.st+=/aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1
 actions.st+=/rapid_fire,if=focus+cast_regen<focus.max&(buff.trueshot.down|!runeforge.eagletalons_true_focus)&(buff.double_tap.down|talent.streamline)
 actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
@@ -71,7 +72,7 @@ actions.st+=/rapid_fire,if=focus+cast_regen<focus.max&(buff.double_tap.down|tale
 actions.st+=/steady_shot
 
 actions.trickshots=steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5
-actions.trickshots+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.full_recharge_time|!(talent.streamline&runeforge.surging_shots)|!covenant.kyrian
+actions.trickshots+=/double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.trueshot.remains>55)|target.time_to_die<10
 actions.trickshots+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd
 actions.trickshots+=/flare,if=tar_trap.up&runeforge.soulforge_embers
 actions.trickshots+=/explosive_shot
@@ -81,7 +82,7 @@ actions.trickshots+=/volley
 actions.trickshots+=/barrage
 actions.trickshots+=/trueshot
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&runeforge.surging_shots&buff.double_tap.down
-actions.trickshots+=/aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)
+actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)
 actions.trickshots+=/death_chakram,if=focus+cast_regen<focus.max
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
 actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&focus>cost+action.aimed_shot.cost&(!talent.chimaera_shot|active_enemies>3)

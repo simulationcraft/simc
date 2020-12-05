@@ -55,6 +55,7 @@ dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
 dbc/spelltext_data.hpp
 dbc/talent_data.hpp
+dbc/temporary_enchant.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
@@ -242,6 +243,7 @@ dbc/spell_data.cpp
 dbc/spell_item_enchantment.cpp
 dbc/spelltext_data.cpp
 dbc/talent_data.cpp
+dbc/temporary_enchant.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp

@@ -6027,6 +6027,11 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
          rng().roll( p()->azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
       p()->resource_gain( RESOURCE_CHI, p()->azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value(),
                           p()->gain.open_palm_strikes );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
@@ -7886,6 +7891,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
+    may_crit   = false;
   }
 
   void execute() override
@@ -10600,7 +10606,8 @@ void monk_t::create_buffs()
       ->add_invalidate( CACHE_SPELL_HASTE );
 
   // Brewmaster
-  buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) );
+  buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) )
+                         ->add_invalidate ( CACHE_ARMOR );
 
   // Mistweaver
 

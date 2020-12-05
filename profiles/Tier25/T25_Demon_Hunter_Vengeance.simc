@@ -54,7 +54,7 @@ actions.cooldowns+=/elysian_decree
 
 # Defensives
 actions.defensives=demon_spikes
-actions.defensives+=/metamorphosis,if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15
+actions.defensives+=/metamorphosis,if=!buff.metamorphosis.up&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15
 actions.defensives+=/fiery_brand
 
 # Normal Rotation

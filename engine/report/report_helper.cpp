@@ -353,43 +353,46 @@ std::string report_helper::pretty_spell_text( const spell_data_t& default_spell,
 
 bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
-  int max_ilevel_allowed   = 0;
-  int legendary_ilevel     = 0;
-  int max_conduit_rank     = 0;
+  // TODO: Add renown check?
   std::string tier_name    = "";
-  int max_legendary_items  = 1;
-  int equipped_legendaries = 0; // counter
+  unsigned int max_ilevel_allowed = 0;
+  unsigned int legendary_ilevel   = 0;
+  int max_gems                    = 0;
+  int max_conduit_rank            = 0;
+  int max_legendary_items         = 1;
+  int equipped_legendaries        = 0; // counter
+  int equipped_gems               = 0; // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
+    tier_name          = "PR";
     max_ilevel_allowed = 184;
     legendary_ilevel   = 190;
     max_conduit_rank   = 4;
-    tier_name          = "PR";
   }
   // DS copies T26 ruleset as of 2020-12-01
   else if ( p.report_information.save_str.find( "DS" ) != std::string::npos )
   {
+    tier_name          = "DS";
     max_ilevel_allowed = 233;
     legendary_ilevel   = 235;
     max_conduit_rank   = 7;
-    tier_name          = "DS";
   }
   else if ( p.report_information.save_str.find( "T26" ) != std::string::npos )
   {
+    tier_name          = "T26";
     max_ilevel_allowed = 233;
     legendary_ilevel   = 235;
+    max_gems           = 6;
     max_conduit_rank   = 7;
-    tier_name          = "T26";
   }
   else
   {
     return true;
   }
 
-  const unsigned azerite_tiers = 4;
-
   unsigned whitelisted_items[] = {
+      171323, // Spiritual Alchemy Stone
       173096, 173069, 173087, 173078  // Darkmoon Decks: Indomitable, Putrescence, Voracity, Repose
   };
 
@@ -439,25 +442,16 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                    util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
     }
 
-    size_t num_gems = 0;
+    // Update equipped gems count
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
-      if ( item.parsed.data.stat_alloc[ 0 ] == 7889 && item.parsed.gem_id[ jj ] > 0 && num_gems < 1 )
-      {
-        num_gems++;
-        continue;  // 7889 seems to be the stat value for an item that comes with a socket by default,
-                   // so we will allow 1 gem there.
-      }
       if ( item.parsed.gem_id[ jj ] > 0 )
       {
-        sim.errorf(
-            "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a "
-            "slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
-            p.name(), util::slot_type_string( slot ), tier_name.c_str() );
-        break;
+        equipped_gems++;
       }
     }
 
+    // Check if an unique equipped item is equipped multiple times
     if ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_TRINKET_1 || slot == SLOT_TRINKET_2 )
     {
       for ( auto& slot2 : SLOT_DUPLICATES )
@@ -500,7 +494,14 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(), util::slot_type_string( slot ) );
   }
 
-  // Ensures that the plyer doesn't have too many legendary items equipped
+  // Ensures that the player [have enough / doesn't have too many] gems equipped
+  if ( equipped_gems != max_gems )
+  {
+    sim.error( "Player {} has {} gems equipped, gems count for {} should be {}.\n",
+                p.name(), equipped_gems, tier_name.c_str(), max_gems );
+  }
+
+  // Ensures that the player doesn't have too many legendary items equipped
   if ( equipped_legendaries != max_legendary_items )
   {
     sim.error( "Player {} has {} legendary items equipped, legendary item count for {} is {}, at item level {}.\n",
@@ -513,7 +514,10 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     p.covenant -> check_conduits( tier_name, max_conduit_rank );
   }
   else
+  {
     sim.error( "Player {} doesn't have a covenant selected!\n", p.name() );
+  }
+
   return true;
 }
 

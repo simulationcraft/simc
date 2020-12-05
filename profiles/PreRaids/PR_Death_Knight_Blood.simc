@@ -7,7 +7,7 @@ role=tank
 position=front
 talents=2221033
 covenant=kyrian
-soulbind=combat_meditation/proliferation:4
+soulbind=pelagos,combat_meditation/proliferation:4
 
 # Default consumables
 potion=potion_of_phantom_fire
@@ -27,7 +27,6 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -90,28 +89,28 @@ actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=darkfrost_helmet,id=178777,bonus_id=6807/1498
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6650/6716/6941/1487
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498
-chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498,enchant=eternal_skirmish
-wrists=pit_fighters_wristguards,id=178807,bonus_id=6807/1498
-hands=fleshfused_crushers,id=178775,bonus_id=6807/1498,enchant=eternal_strength
-waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498
-legs=halkiass_towering_pillars,id=178818,bonus_id=6807/1498
-feet=sabatons_of_the_rushing_juggernaut,id=178836,bonus_id=6807/1498
-finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_versatility
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498,enchant=tenet_of_versatility
-trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498
-trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498
-main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498,enchant=rune_of_the_fallen_crusader
+head=darkfrost_helmet,id=178777,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
+back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
+chest=shadowghast_breastplate,id=171412,bonus_id=6647/6650/6716/6953/1487,enchant=eternal_skirmish
+wrists=pit_fighters_wristguards,id=178807,bonus_id=6807/1498/6646
+hands=fleshfused_crushers,id=178775,bonus_id=6807/1498/6646,enchant=eternal_strength
+waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498/6646
+legs=halkiass_towering_pillars,id=178818,bonus_id=6807/1498/6646
+feet=sabatons_of_the_rushing_juggernaut,id=178836,bonus_id=6807/1498/6646
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=184.40
 # gear_strength=588
-# gear_stamina=858
-# gear_crit_rating=258
+# gear_stamina=861
+# gear_crit_rating=281
 # gear_haste_rating=322
 # gear_mastery_rating=99
-# gear_versatility_rating=691
-# gear_armor=1024
+# gear_versatility_rating=669
+# gear_armor=1025

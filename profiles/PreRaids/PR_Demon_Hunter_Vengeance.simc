@@ -56,7 +56,7 @@ actions.cooldowns+=/elysian_decree
 
 # Defensives
 actions.defensives=demon_spikes
-actions.defensives+=/metamorphosis,if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15
+actions.defensives+=/metamorphosis,if=!buff.metamorphosis.up&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15
 actions.defensives+=/fiery_brand
 
 # Normal Rotation
@@ -84,8 +84,8 @@ legs=umbrahide_leggings,id=172318,bonus_id=6649/6650/6716/7046/1487
 feet=vanquished_usurpers_footpads,id=178797,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
-trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646,enchant=shadowcore_oil
 main_hand=stone_generals_edge,id=178857,bonus_id=6807/1498/6646,enchant=lightless_force
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
 
