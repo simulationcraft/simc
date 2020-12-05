@@ -59,24 +59,24 @@ save=T26_Warrior_Fury.simc
 
 warrior="T26_Warrior_Protection"
 level=60
-race=tauren
+race=draenei
 spec=protection
 role=tank
 position=front
-talents=3020021
+talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=1532/6716/6957
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
 wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173128
 hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
 waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173128
 legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6649/6650/6758/6956/1532
+feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
