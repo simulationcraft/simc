@@ -11794,7 +11794,7 @@ std::string monk_t::default_temporary_enchant() const
   {
     case MONK_BREWMASTER:
       if ( true_level >= 60 )
-        return "main_hand:shadowcore_oil/off_hand:shaded_weightstone";
+        return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
       else
         return "disabled";
       break;
@@ -11806,7 +11806,7 @@ std::string monk_t::default_temporary_enchant() const
       break;
     case MONK_WINDWALKER:
       if ( true_level >= 60 )
-        return "main_hand:shadowcore_oil/off_hand:shaded_weightstone";
+        return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
         return "disabled";
       break;
