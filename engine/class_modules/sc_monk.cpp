@@ -11790,17 +11790,11 @@ std::string monk_t::default_rune() const
 // monk_t::temporary_enchant ===============================================
 std::string monk_t::default_temporary_enchant() const
 {
-  std::string enchant = "";
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
       if ( true_level >= 60 )
-      {
-        enchant = "main_hand:shadowcore_oil";
-        if ( dual_wield() )
-          enchant += "/off_hand:shaded_weightstone";
-        return enchant;
-      }
+        return "main_hand:shadowcore_oil/off_hand:shaded_weightstone";
       else
         return "disabled";
       break;
@@ -11812,12 +11806,7 @@ std::string monk_t::default_temporary_enchant() const
       break;
     case MONK_WINDWALKER:
       if ( true_level >= 60 )
-      {
-        enchant = "main_hand:shadowcore_oil";
-        if ( dual_wield() )
-          enchant += "/off_hand:shaded_weightstone";
-        return enchant;
-      }
+        return "main_hand:shadowcore_oil/off_hand:shaded_weightstone";
       else
         return "disabled";
       break;
