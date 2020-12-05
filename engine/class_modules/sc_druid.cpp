@@ -8509,6 +8509,9 @@ void druid_t::apl_balance()
   def->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up|buff.kindred_empowerment_energize.up|fight_remains<20" );
   def->add_action( "use_items" );
   def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
+  def->add_action( "run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped" );
+  def->add_action( "run_action_list,name=boat,if=runeforge.balance_of_all_things.equipped" );
+  def->add_action( "run_action_list,name=st" );
 
   st->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
   st->add_action( "convoke_the_spirits,if=(variable.convoke_desync&!cooldown.ca_inc.ready|buff.ca_inc.up)&astral_power<40&(buff.eclipse_lunar.remains>10|buff.eclipse_solar.remains>10)|fight_remains<10" );
