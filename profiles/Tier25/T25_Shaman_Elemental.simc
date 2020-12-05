@@ -13,6 +13,7 @@ potion=potion_of_unbridled_fury
 flask=greater_flask_of_endless_fathoms
 food=mechdowels_big_mech
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
