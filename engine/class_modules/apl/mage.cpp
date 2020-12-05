@@ -233,7 +233,6 @@ void arcane( player_t* p )
   aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&(runeforge.arcane_infinity|talent.amplification)&active_enemies<5" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage" );
-  aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
 
   am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
