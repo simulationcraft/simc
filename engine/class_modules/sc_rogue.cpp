@@ -743,6 +743,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
@@ -6380,6 +6381,14 @@ std::string rogue_t::default_rune() const
          ( true_level >= 45 ) ? "defiled" :
          ( true_level >= 40 ) ? "hyper" :
          "disabled";
+}
+
+// rogue_t::default_temporary_enchant =======================================
+
+std::string rogue_t::default_temporary_enchant() const
+{
+  return true_level >= 60 ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone"
+    :                       "disabled";
 }
 
 // rogue_t::init_actions ====================================================
