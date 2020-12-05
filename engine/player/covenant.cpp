@@ -600,6 +600,13 @@ covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const speci
   // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
   if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
     class_abilities.push_back( 326446 );
+  // Night Fae paladins have 4 different abilities in a cycle, but only Blessing of Summer is in __covenant_ability_data
+  if ( p -> type == PALADIN && p -> covenant -> type() == covenant_e::NIGHT_FAE )
+  {
+    class_abilities.push_back( 328622 ); // Blessing of Autumn
+    class_abilities.push_back( 328281 ); // Blessing of Winter
+    class_abilities.push_back( 328282 ); // Blessing of Spring
+  }
 }
 
 void covenant_ability_cast_cb_t::initialize()
