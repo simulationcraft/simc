@@ -61,6 +61,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\spell_query\spell_data_expr.hpp" />
 		<ClInclude Include="..\engine\dbc\spelltext_data.hpp" />
 		<ClInclude Include="..\engine\dbc\talent_data.hpp" />
+		<ClInclude Include="..\engine\dbc\temporary_enchant.hpp" />
 		<ClInclude Include="..\engine\interfaces\bcp_api.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http_curl.hpp" />
@@ -248,6 +249,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp" />
 		<ClCompile Include="..\engine\dbc\spelltext_data.cpp" />
 		<ClCompile Include="..\engine\dbc\talent_data.cpp" />
+		<ClCompile Include="..\engine\dbc\temporary_enchant.cpp" />
 		<ClCompile Include="..\engine\interfaces\bcp_api.cpp" />
 		<ClCompile Include="..\engine\interfaces\sc_http.cpp" />
 		<ClCompile Include="..\engine\interfaces\sc_http_curl.cpp" />

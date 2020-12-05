@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "player/covenant.hpp"
+#include "dbc/temporary_enchant.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
@@ -1249,6 +1250,15 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     else if ( !item.parsed.encoded_enchant.empty() )
     {
       item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
+    }
+
+    if ( item.parsed.temporary_enchant_id > 0 )
+    {
+      const auto& temp_enchant = temporary_enchant_entry_t::find_by_enchant_id(
+          item.parsed.temporary_enchant_id, item.player->dbc->ptr );
+      const auto spell = item.player->find_spell( temp_enchant.spell_id );
+      item_sim_desc += ", temporary_enchant: ";
+      item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, spell, item );
     }
 
     auto has_relics = range::find_if( item.parsed.gem_actual_ilevel, []( unsigned v ) { return v != 0; } );
