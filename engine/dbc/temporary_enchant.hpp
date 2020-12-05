@@ -25,6 +25,4 @@ struct temporary_enchant_entry_t
   static util::span<const temporary_enchant_entry_t> data( bool ptr );
 };
 
-#endif /* GEM_DATA_HPP */
-
-
+#endif /* TEMPORARY_ENCHANT_HPP */
