@@ -20,7 +20,7 @@ legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498/6646
 feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6716/6976/1487
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
@@ -49,7 +49,7 @@ legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6716/7162/1487
 feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
