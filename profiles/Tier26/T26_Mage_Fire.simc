@@ -14,6 +14,7 @@ potion=spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -199,7 +200,7 @@ legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
 feet=sparkling_glass_slippers,id=183023,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=ardent_sunstar_signet,id=183035,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=glyph_of_assimilation,id=184021,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=glyph_of_assimilation,id=184021,bonus_id=7187/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_revelation
 

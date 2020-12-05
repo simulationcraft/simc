@@ -14,6 +14,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -57,7 +58,7 @@ actions.build+=/echoing_reprimand
 actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
 # Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw
 actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled)
-actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
+actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
 actions.build+=/sinister_strike
 actions.build+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up
 
@@ -110,8 +111,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=20attackpower
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
 main_hand=gorebound_predators_gavel,id=178864,bonus_id=6807/1498/6646,enchant=celestial_guidance
 off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
