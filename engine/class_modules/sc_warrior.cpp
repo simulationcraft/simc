@@ -1625,7 +1625,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
   mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
   {
-
+    background = true;
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
     {
       mortal_combo_strike                      = new mortal_strike_unhinged_t( p, "Mortal Combo", true );
@@ -1692,6 +1692,14 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     {
       mortal_combo_strike->execute();
     }
+  }
+
+  // Override actor spec verification so it's usable with Unhinged legendary for non-Arms
+  bool verify_actor_spec() const override
+  {
+    if ( p() -> legendary.unhinged -> ok() )
+      return true;
+    return warrior_attack_t::verify_actor_spec();
   }
 };
 
@@ -6302,6 +6310,9 @@ void warrior_t::init_spells()
   legendary.enduring_blow     = find_runeforge_legendary( "Enduring Blow" );
   legendary.exploiter         = find_runeforge_legendary( "Exploiter" );
   legendary.unhinged          = find_runeforge_legendary( "Unhinged" );
+  // Bypass the spec check for Mortral Strike if Unhinged is equipped
+  if ( legendary.unhinged -> ok() && !spec.mortal_strike -> ok() )
+    spec.mortal_strike = find_spell( 12294 );
 
   legendary.cadence_of_fujieda = find_runeforge_legendary( "Cadence of Fujieda" );
   legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
