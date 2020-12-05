@@ -11,8 +11,9 @@ azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 # Default consumables
 potion=unbridled_fury
 flask=currents
-food=disabled
+food=biltong
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
