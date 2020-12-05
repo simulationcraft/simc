@@ -845,6 +845,7 @@ public:
   std::string default_potion() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
   void invalidate_cache( cache_e ) override;
   void arise() override;
   void reset() override;
@@ -8410,6 +8411,20 @@ std::string druid_t::default_rune() const
   else if ( true_level >= 50 ) return "battle_scarred";
   else if ( true_level >= 45 ) return "defiled";
   else return "disabled";
+}
+
+std::string druid_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    case DRUID_FERAL:
+      if ( true_level >= 60 ) return "main_hand:shadowcore_oil";
+    default:
+      return "disabled";
+  }
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
