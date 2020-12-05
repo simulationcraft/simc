@@ -1701,12 +1701,14 @@ void player_t::init_initial_stats()
 
 void player_t::parse_temporary_enchants()
 {
-  if ( util::str_compare_ci( temporary_enchant_str, "disabled" ) )
+  std::string tench_str = temporary_enchant_str.empty() ? default_temporary_enchant() : temporary_enchant_str;
+
+  if ( util::str_compare_ci( tench_str, "disabled" ) )
   {
     return;
   }
 
-  auto split = util::string_split( temporary_enchant_str, "/" );
+  auto split = util::string_split( tench_str, "/" );
   for ( const auto& token : split )
   {
     auto token_split = util::string_split( token, ":" );
@@ -10792,7 +10794,7 @@ std::string player_t::create_profile( save_e stype )
       if ( !rune_option.empty() )
         profile_str += "augmentation=" + rune_option + term;
       if ( !tench_option.empty() )
-        profile_str += "temporary_enchant=" + temporary_enchant_str + term;
+        profile_str += "temporary_enchant=" + tench_option + term;
     }
 
     std::vector<std::string> initial_resources;

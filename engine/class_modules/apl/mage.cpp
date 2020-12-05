@@ -31,6 +31,12 @@ std::string rune( const player_t* p )
        :                       "disabled";
 }
 
+std::string temporary_enchant( const player_t* p )
+{
+  return p->true_level >= 60 ? "main_hand:shadowcore_oil"
+       :                       "disabled";
+}
+
 //arcane_apl_start
 void arcane( player_t* p )
 {
