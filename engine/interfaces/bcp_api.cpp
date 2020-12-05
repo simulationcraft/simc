@@ -104,9 +104,13 @@ std::vector<std::string> token_paths()
 
   if ( const char* home_drive = getenv( "HOMEDRIVE" ) )
   {
-    if ( const char* home_path = getenv( "HOMEPATH" ) )
+    if ( const char* home_path_ansi = getenv( "HOMEPATH" ) )
     {
-      paths.push_back( std::string( home_drive ) + std::string( home_path ) + "/simc-apitoken" );
+      std::string home_path = std::string( home_drive ) + std::string( home_path_ansi ) + "/simc-apitoken";
+#ifdef SC_WINDOWS
+      home_path = io::ansi_to_utf8( home_path.c_str() );
+#endif
+      paths.push_back( home_path );
     }
   }
 
