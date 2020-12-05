@@ -26,6 +26,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
+# Use Stormkeeper precombat unless some adds will spawn soon.
+actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/potion
 actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
