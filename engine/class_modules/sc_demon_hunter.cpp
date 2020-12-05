@@ -1961,6 +1961,7 @@ struct disrupt_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
   {
     may_miss = false;
+    is_interrupt = true;
 
     const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
     energize_type = action_energize::ON_CAST;

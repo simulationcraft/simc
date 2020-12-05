@@ -3189,6 +3189,7 @@ struct kick_t : public rogue_attack_t
   kick_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> find_class_spell( "Kick" ), options_str )
   {
+    is_interrupt = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
