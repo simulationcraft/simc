@@ -13,8 +13,9 @@ soulbind=pelagos,combat_meditation/strike_with_clarity:4
 # Default consumables
 potion=phantom_fire
 flask=spectral_flask_of_power
-food=biltong
+food=spinefin_souffle_and_fries
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shaded_weightstone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -98,6 +99,7 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,ench
 # gear_ilvl=184.38
 # gear_agility=586
 # gear_stamina=886
+# gear_attack_power=20
 # gear_crit_rating=601
 # gear_haste_rating=131
 # gear_mastery_rating=218

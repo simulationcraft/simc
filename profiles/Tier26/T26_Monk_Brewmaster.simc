@@ -13,8 +13,9 @@ soulbind=niya,grove_invigoration/walk_with_the_ox:7/run_without_tiring/natures_s
 # Default consumables
 potion=phantom_fire
 flask=spectral_flask_of_power
-food=biltong
+food=spinefin_souffle_and_fries
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shaded_weightstone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -98,6 +99,7 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1540/6646,ench
 # gear_ilvl=227.88
 # gear_agility=868
 # gear_stamina=1520
+# gear_attack_power=20
 # gear_crit_rating=948
 # gear_haste_rating=43
 # gear_mastery_rating=216
