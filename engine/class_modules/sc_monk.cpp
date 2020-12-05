@@ -976,6 +976,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   // player_t overrides
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -11745,9 +11746,9 @@ std::string monk_t::default_food() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 60 )
+      if ( true_level >= 60 )
         return "spinefin_souffle_and_fries";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "biltong";
       else
         return "disabled";
@@ -11755,7 +11756,7 @@ std::string monk_t::default_food() const
     case MONK_MISTWEAVER:
       if ( true_level >= 60 )
         return "feast_of_gluttonous_hedonism";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
@@ -11785,6 +11786,47 @@ std::string monk_t::default_rune() const
     return "defiled";
   return "disabled";
 }
+
+// monk_t::temporary_enchant ===============================================
+std::string monk_t::default_temporary_enchant() const
+{
+  std::string enchant = "";
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level >= 60 )
+      {
+        enchant = "main_hand:shadowcore_oil";
+        if ( dual_wield() )
+          enchant += "/off_hand:shaded_weightstone";
+        return enchant;
+      }
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level >= 60 )
+      {
+        enchant = "main_hand:shadowcore_oil";
+        if ( dual_wield() )
+          enchant += "/off_hand:shaded_weightstone";
+        return enchant;
+      }
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
 
 // Brewmaster Pre-Combat Action Priority List ============================
 
