@@ -484,6 +484,9 @@ struct implosion_t : public demonology_spell_t
   {
     warlock_spell_t::execute();
 
+    p()->buffs.implosive_potential->expire();
+    p()->buffs.implosive_potential_small->expire();
+
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
 
     int launch_counter = 0;
@@ -522,6 +525,8 @@ struct implosion_t : public demonology_spell_t
 
     if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
+    else if ( p()->legendary.implosive_potential.ok() )
+      p()->buffs.implosive_potential_small->trigger( imps_consumed );
   }
 };
 
@@ -1125,6 +1130,12 @@ void warlock_t::create_buffs_demonology()
   buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
+          ->set_max_stack( 40 ); //Using the other wild imp simc max for now
+
+  //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
+  buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
           ->set_max_stack( 40 ); //Using the other wild imp simc max for now
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
