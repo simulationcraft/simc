@@ -1,7 +1,7 @@
 shaman="PR_Shaman_Elemental"
 spec=elemental
 level=60
-race=troll
+race=tauren
 role=spell
 position=ranged_back
 talents=2301032
@@ -9,21 +9,20 @@ covenant=necrolord
 soulbind=emeni,lead_by_example/call_of_flame:4
 
 head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6647/6649/6716/6991/1487
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=plagueborne_shoulderguards,id=178764,bonus_id=6807/1498/6646
 back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
 chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_insight
 wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646,enchant=eternal_intellect
-hands=grips_of_overwhelming_beatings,id=178798,bonus_id=6807/1498/6646
-waist=belt_of_wretched_manipulations,id=178932,bonus_id=6807/1498/6646
+hands=absonant_constructs_handguards,id=180105,bonus_id=6807/1498/6646
+waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498/6646
 legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
-feet=striders_of_restless_malice,id=178745,bonus_id=6807/1498/6646
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
+feet=boneshatter_treads,id=172323,bonus_id=6647/6649/6716/6992/1487
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=darkmoon_deck_putrescence,id=173069
-trinket2=soulletting_ruby,id=178809,bonus_id=6807/1498/6646
-main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498/6646,enchant=sinful_revelation
-off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+main_hand=lakalis_spire_of_knowledge,id=178714,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 save=PR_Shaman_Elemental.simc
 
