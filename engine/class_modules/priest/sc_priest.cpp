@@ -1897,6 +1897,11 @@ std::string priest_t::default_rune() const
   return ( true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
 }
 
+std::string priest_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
+}
+
 /** NO Spec Combat Action Priority List */
 void priest_t::create_apl_default()
 {
