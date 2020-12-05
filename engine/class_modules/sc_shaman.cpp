@@ -861,6 +861,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   void init_rng() override;
   void init_special_effects() override;
@@ -8856,6 +8857,22 @@ std::string shaman_t::default_rune() const
                                  : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+}
+
+// shaman_t::default_temporary_enchant ======================================
+
+std::string shaman_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+    case SHAMAN_ENHANCEMENT:
+    case SHAMAN_RESTORATION:
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::init_action_list_elemental =====================================
