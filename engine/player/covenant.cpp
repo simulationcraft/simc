@@ -619,19 +619,19 @@ void covenant_ability_cast_cb_t::trigger( action_t* a, action_state_t* s )
 {
   for ( auto class_ability : class_abilities )
   {
-    if ( a->data().id() == class_ability )
+    if ( a -> data().id() == class_ability )
     {
       for ( const auto& cb : cb_list )
-        if ( cb->trigger_on_class && a->data().id() == class_ability )
+        if ( cb -> trigger_on_class )
           cb -> trigger( a, s );
       return;
     }
   }
 
-  if ( a->data().id() != base_ability )
+  if ( a -> data().id() == base_ability )
     for ( const auto& cb : cb_list )
-      if (( cb->trigger_on_base && a->data().id() == base_ability ) )
-        cb->trigger( a, s );
+      if ( cb -> trigger_on_base )
+        cb -> trigger( a, s );
 }
 
 covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
