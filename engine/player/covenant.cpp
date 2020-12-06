@@ -756,7 +756,7 @@ namespace report_decorators
 {
 std::string decorated_conduit_name( const sim_t& sim, const conduit_data_t& conduit )
 {
-  auto rank_str = fmt::format( "rank={}", conduit.rank() );
+  auto rank_str = fmt::format( "rank={}", conduit.rank() - 1 );
   return decorated_spell_name( sim, *( conduit.operator->() ), rank_str );
 }
 } // namespace report_decorators
