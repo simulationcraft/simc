@@ -2069,7 +2069,8 @@ void paladin_t::create_buffs()
             bow_callback -> deactivate();
           }
         } );
-  buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) );
+  buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) )
+    -> add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 }
 
 // paladin_t::default_potion ================================================
