@@ -1206,7 +1206,12 @@ struct holy_power_consumer_t : public Base
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
 
     if ( p -> legendary.relentless_inquisitor -> ok() )
+    {
       p -> buffs.relentless_inquisitor -> trigger();
+      // 2020-12-06 Shining Light and Divine Purpose proc 2 stacks of Relentless Inquisitor
+      if ( p -> bugs && ( p -> buffs.divine_purpose -> up() || ( is_wog && p -> buffs.shining_light_free -> up() )))
+        p -> buffs.relentless_inquisitor -> trigger();
+    }
 
     if ( p -> buffs.crusade -> check() )
     {
