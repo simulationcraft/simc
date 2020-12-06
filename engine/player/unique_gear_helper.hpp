@@ -551,7 +551,9 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
     // from BfA onwards.
     if ( aoe_damage_increase )
     {
-      am *= 1.0 + 0.15 * ( std::min( state->n_targets, max_scaling_targets ) - 1 );
+      // For some reason, using std::min here barfs Visual Studio 2017, so use clamp
+      // instead which seems to work.
+      am *= 1.0 + 0.15 * clamp( state->n_targets -1u, 0u, max_scaling_targets );
     }
 
     return am;
