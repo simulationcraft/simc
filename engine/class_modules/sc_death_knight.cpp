@@ -8533,21 +8533,21 @@ std::string death_knight_t::default_rune() const
 
 std::string death_knight_t::default_temporary_enchant() const
 {
-  std::string temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
+  std::string frost_temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
                            "disabled";
 
-  std::string temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone" :
+  std::string unholy_temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone" :
                             "disabled";
 
-  std::string temporary_enchant =  ( true_level >= 60 ) ? "main_hand:shadowcore_oil" :
+  std::string blood_temporary_enchant =  ( true_level >= 60 ) ? "main_hand:shadowcore_oil" :
                             "disabled";
 
   switch ( specialization() )
   {
-    case DEATH_KNIGHT_BLOOD: return temporary_enchant;
-    case DEATH_KNIGHT_FROST: return temporary_enchant;
+    case DEATH_KNIGHT_BLOOD: return blood_temporary_enchant;
+    case DEATH_KNIGHT_FROST: return frost_temporary_enchant;
 
-    default:                 return temporary_enchant;
+    default:                 return unholy_temporary_enchant;
   }
 }
 
