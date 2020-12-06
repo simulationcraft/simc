@@ -2933,6 +2933,10 @@ struct killing_spree_tick_t : public rogue_attack_t
 
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
+
+  // Only procs combat potency indirectly through Main Gauche
+  bool procs_combat_potency() const override
+  { return false; }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -2950,7 +2954,7 @@ struct killing_spree_t : public rogue_attack_t
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spell.killing_spree_mh );
     add_child( attack_mh );
 
-    if ( player -> off_hand_weapon.type != WEAPON_NONE )
+    if ( player->off_hand_weapon.type != WEAPON_NONE )
     {
       attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spell.killing_spree_oh );
       add_child( attack_oh );
@@ -6424,7 +6428,7 @@ void rogue_t::init_action_list()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Potions
-  std::string potion_action = "potion,if=buff.bloodlust.react";
+  std::string potion_action = "potion,if=buff.bloodlust.react|fight_remains<30";
   if ( specialization() == ROGUE_ASSASSINATION )
     potion_action += "|debuff.vendetta.up";
   else if ( specialization() == ROGUE_OUTLAW )
@@ -6529,7 +6533,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
-    precombat->add_action( this, "Stealth", "if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
+    precombat->add_action( this, "Stealth", "if=raid_event.invulnerable.exists" );
     precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
 
