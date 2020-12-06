@@ -43,8 +43,8 @@ actions+=/berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&b
 actions+=/potion,if=buff.ca_inc.up
 actions+=/variable,name=convoke_desync,value=floor((interpolated_fight_remains-20-cooldown.convoke_the_spirits.remains)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(conduit.precise_alignment.time_value)-cooldown.ca_inc.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae
 actions+=/use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up
-actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.1.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up|buff.kindred_empowerment_energize.up|fight_remains<20
-actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up|buff.kindred_empowerment_energize.up|fight_remains<20
+actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any&(!trinket.2.has_proc.any|!trinket.2.ready_cooldown)|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.1.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up|buff.kindred_empowerment_energize.up|fight_remains<20
+actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any&(!trinket.1.has_proc.any|!trinket.1.ready_cooldown)|buff.ca_inc.up|cooldown.ca_inc.remains-10>trinket.2.cooldown.duration&!covenant.kyrian|covenant.night_fae&variable.convoke_desync&cooldown.convoke_the_spirits.up|buff.kindred_empowerment_energize.up|fight_remains<20
 actions+=/use_items
 actions+=/run_action_list,name=aoe,if=variable.is_aoe
 actions+=/run_action_list,name=dreambinder,if=runeforge.timeworn_dreambinder.equipped
@@ -172,7 +172,7 @@ legs=umbrahide_leggings,id=172318,bonus_id=6648/6649/6716/7107/1487
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_putrescence,id=173069
 main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498/6646,enchant=sinful_revelation
 

@@ -1,4 +1,4 @@
-priest="T26_Priest_Shadow"
+priest="PR_Priest_Shadow_Necrolord"
 source=default
 spec=shadow
 level=60
@@ -6,8 +6,8 @@ race=mechagnome
 role=spell
 position=ranged_back
 talents=1010332
-covenant=kyrian
-soulbind=pelagos,combat_meditation/dissonant_echoes:7/haunting_apparitions:7
+covenant=necrolord
+soulbind=emeni,lead_by_example/dissonant_echoes:4/haunting_apparitions:4
 
 # Default consumables
 potion=potion_of_phantom_fire
@@ -50,15 +50,13 @@ actions+=/ancestral_call,if=buff.voidform.up
 actions+=/call_action_list,name=cwc
 actions+=/run_action_list,name=main
 
-actions.boon=ascended_blast,if=spell_targets.mind_sear<=3
-actions.boon+=/ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1+talent.searing_nightmare.enabled
 
 # Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not be another Void Eruption this fight.
 actions.cds=power_infusion,if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_remains<cooldown.void_eruption.remains
 # Use Silence on CD to proc Sephuz's Proclamation.
 actions.cds+=/silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
-# Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a voidbolt for cooldown efficiency and for hungering void uptime if talented.
-actions.cds+=/boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&prev_gcd.1.void_bolt)|(buff.voidform.up&talent.searing_nightmare.enabled)
+# Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns.
+actions.cds+=/unholy_nova,if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)
 actions.cds+=/call_action_list,name=trinkets
 
 # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
@@ -73,9 +71,8 @@ actions.dmg_trinkets+=/use_item,name=sunblood_amethyst
 actions.dmg_trinkets+=/use_item,name=glyph_of_assimilation
 actions.dmg_trinkets+=/use_item,name=dreadfire_vessel
 
-actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 # Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity in VF. Make sure shadowfiend/mindbender is on cooldown before VE.
-actions.main+=/void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up
+actions.main=void_eruption,if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up
 actions.main+=/call_action_list,name=cds
@@ -133,29 +130,28 @@ actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
-head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=6647/6649/6758/6983/1532
-waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
-legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
-feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
-trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinstealers_sentencing_gavel,id=182391,bonus_id=7187/1531,enchant=sinful_revelation
-off_hand=stonewrights_infused_stonecarver,id=182426,bonus_id=7187/1531
+head=depraved_physicians_mask,id=178759,bonus_id=6807/1498/6646
+neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
+shoulders=reanimators_mantle,id=178740,bonus_id=6807/1498/6646
+back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
+wrists=grimveiled_bracers,id=173249,bonus_id=6647/6649/6716/6983/1487,enchant=eternal_intellect
+hands=tricksprite_gloves,id=178705,bonus_id=6807/1498/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498/6646
+feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
+finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.63
-# gear_stamina=1526
-# gear_intellect=1100
-# gear_crit_rating=385
-# gear_haste_rating=976
-# gear_mastery_rating=558
-# gear_versatility_rating=129
-# gear_armor=373
+# gear_ilvl=184.40
+# gear_stamina=857
+# gear_intellect=725
+# gear_crit_rating=263
+# gear_haste_rating=813
+# gear_mastery_rating=340
+# gear_versatility_rating=32
+# gear_armor=292
