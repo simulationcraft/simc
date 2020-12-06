@@ -1805,7 +1805,7 @@ struct rogue_poison_t : public rogue_attack_t
     if ( base_proc_chance == 0.0 )
       return 0.0;
 
-    if ( p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
+    if ( !p()->bugs && p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       return p()->spec.improved_poisons_2->effectN( 1 ).percent();
     }
