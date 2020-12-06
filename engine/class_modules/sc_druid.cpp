@@ -8861,6 +8861,7 @@ void druid_t::init_gains()
     gain.berserk                 = get_gain( "berserk" );
     gain.cateye_curio            = get_gain( "cateye_curio" );
     gain.eye_of_fearful_symmetry = get_gain( "eye_of_fearful_symmetry" );
+    gain.incessant_hunter        = get_gain( "incessant_hunter" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
