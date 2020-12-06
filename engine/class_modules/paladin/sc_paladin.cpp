@@ -1118,9 +1118,8 @@ struct divine_toll_t : public paladin_spell_t
 struct hallowed_discernment_tick_t : public paladin_spell_t
 {
   double aoe_multiplier;
-  // This should be using 340203 but I don't have its spell data.
   hallowed_discernment_tick_t( paladin_t* p ) :
-    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 317221 ) )
+    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 340203 ) )
     {
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
@@ -1137,9 +1136,8 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
 
 struct hallowed_discernment_heal_tick_t : public paladin_heal_t
 {
-  // This should be using 340214 but I don't have its spell data.
   hallowed_discernment_heal_tick_t( paladin_t* p ) :
-    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 317221 ) )
+    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 340214 ) )
     {
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
