@@ -672,6 +672,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
   void apply_affecting_auras( action_t& ) override;
 
   target_specific_t<hunter_td_t> target_data;
@@ -6183,6 +6184,12 @@ std::string hunter_t::default_rune() const
 {
   return ( true_level >= 60 ) ? "veiled" :
          ( true_level >= 50 ) ? "battle_scarred" :
+         "disabled";
+}
+
+std::string hunter_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" :
          "disabled";
 }
 
