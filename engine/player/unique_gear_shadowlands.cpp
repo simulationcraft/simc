@@ -1321,7 +1321,6 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
 
 void bloodspattered_scale( special_effect_t& effect )
 {
-  // TODO: "Damage and absorbption are increased for each enemy struck, up to 5 enemies."
   struct blood_barrier_t : public proc_spell_t
   {
     buff_t* absorb;
@@ -1331,6 +1330,18 @@ void bloodspattered_scale( special_effect_t& effect )
     {
       aoe = e.driver()->effectN( 2 ).base_value();
       split_aoe_damage = true;
+    }
+
+    // Note, not strictly correct in every single situation, since simc treats "hit
+    // rseolution" after n_targets get set, however this should work for practically every
+    // conceivable situation in ths imulator.
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( state );
+
+      m *= 1.0 + 0.15 * ( state->n_targets - 1 );
+
+      return m;
     }
 
     void execute() override
