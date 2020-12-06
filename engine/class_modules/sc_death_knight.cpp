@@ -8471,13 +8471,13 @@ void death_knight_t::default_apl_dps_precombat()
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_spectral_strength" :
+  std::string frost_potion = ( true_level >= 60 ) ? "potion_of_spectral_strength" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_spectral_strength" :
+  std::string unholy_potion = ( true_level >= 60 ) ? "potion_of_spectral_strength" :
                               "disabled";
 
-  std::string blood_potion =  ( true_level >= 50 ) ? "potion_of_phantom_fire" :
+  std::string blood_potion =  ( true_level >= 60 ) ? "potion_of_phantom_fire" :
                               "disabled";
 
   switch ( specialization() )
@@ -8492,13 +8492,13 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
+  std::string frost_food = ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
                            "disabled";
 
-  std::string unholy_food = ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
+  std::string unholy_food = ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
                             "disabled";
 
-  std::string blood_food =  ( true_level >= 50 ) ? "feast_of_gluttonous_hedonism" :
+  std::string blood_food =  ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
                             "disabled";
 
   switch ( specialization() )
@@ -8514,7 +8514,7 @@ std::string death_knight_t::default_food() const
 
 std::string death_knight_t::default_flask() const
 {
-  std::string flask_name = ( true_level >= 50 ) ? "spectral_flask_of_power" :
+  std::string flask_name = ( true_level >= 60 ) ? "spectral_flask_of_power" :
                            "disabled";
 
   // All specs use a strength flask as default
@@ -8525,7 +8525,7 @@ std::string death_knight_t::default_flask() const
 
 std::string death_knight_t::default_rune() const
 {
-  return ( true_level >= 50 ) ? "veiled" :
+  return ( true_level >= 60 ) ? "veiled" :
          "disabled";
 }
 
@@ -8533,21 +8533,21 @@ std::string death_knight_t::default_rune() const
 
 std::string death_knight_t::default_temporary_enchant() const
 {
-  std::string frost_food = ( true_level >= 50 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
+  std::string temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
                            "disabled";
 
-  std::string unholy_food = ( true_level >= 50 ) ? "main_hand:shaded_sharpening_stone" :
+  std::string temporary_enchant = ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone" :
                             "disabled";
 
-  std::string blood_food =  ( true_level >= 50 ) ? "main_hand:shadowcore_oil" :
+  std::string temporary_enchant =  ( true_level >= 60 ) ? "main_hand:shadowcore_oil" :
                             "disabled";
 
   switch ( specialization() )
   {
-    case DEATH_KNIGHT_BLOOD: return blood_food;
-    case DEATH_KNIGHT_FROST: return frost_food;
+    case DEATH_KNIGHT_BLOOD: return temporary_enchant;
+    case DEATH_KNIGHT_FROST: return temporary_enchant;
 
-    default:                 return unholy_food;
+    default:                 return temporary_enchant;
   }
 }
 
