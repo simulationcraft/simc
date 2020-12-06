@@ -371,6 +371,7 @@ public:
     buff_t* dead_eye;
     buff_t* double_tap;
     buff_t* lock_and_load;
+    buff_t* lone_wolf;
     buff_t* precise_shots;
     buff_t* steady_focus;
     buff_t* streamline;
@@ -631,6 +632,7 @@ public:
   void      init_action_list() override;
   void      reset() override;
   void      merge( player_t& other ) override;
+  void      arise() override;
   void      combat_begin() override;
 
   void datacollection_begin() override;
@@ -868,8 +870,8 @@ public:
     if ( affected_by.spirit_bond.direct )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
 
-    if ( affected_by.lone_wolf.direct && p() -> pets.main == nullptr )
-      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.direct ).percent();
+    if ( affected_by.lone_wolf.direct )
+      am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
     return am;
   }
@@ -890,8 +892,8 @@ public:
     if ( affected_by.spirit_bond.tick )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
 
-    if ( affected_by.lone_wolf.tick && p() -> pets.main == nullptr )
-      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.tick ).percent();
+    if ( affected_by.lone_wolf.tick )
+      am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
     return am;
   }
@@ -1497,6 +1499,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     }
 
     spec_passive() -> trigger();
+    o() -> buffs.lone_wolf -> expire();
   }
 
   void demise() override
@@ -1508,6 +1511,8 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       o() -> pets.main = nullptr;
 
       spec_passive() -> expire();
+      if ( ! sim -> event_mgr.canceled )
+        o() -> buffs.lone_wolf -> trigger();
     }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
@@ -5914,6 +5919,11 @@ void hunter_t::create_buffs()
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
       -> set_trigger_spell( talents.lock_and_load );
 
+  buffs.lone_wolf =
+    make_buff( this, "lone_wolf", find_spell( 164273 ) )
+      -> set_default_value( specs.lone_wolf -> effectN( 1 ).percent() )
+      -> set_chance( specs.lone_wolf.ok() );
+
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
       -> set_default_value_from_effect( 1 )
@@ -6593,6 +6603,13 @@ void hunter_t::merge( player_t& other )
   player_t::merge( other );
 
   cd_waste.merge( static_cast<hunter_t&>( other ).cd_waste );
+}
+
+void hunter_t::arise()
+{
+  player_t::arise();
+
+  buffs.lone_wolf -> trigger();
 }
 
 // hunter_t::combat_begin ==================================================
