@@ -8710,7 +8710,10 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Death and Decay", "if=active_enemies>5|runeforge.phearomones" );
 
   // Cold Heart
-  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd|buff.pillar_of_frost.remains<3&buff.cold_heart.stack=20&!talent.obliteration", "Cold Heart Conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=fight_remains<gcd", "Cold Heart Conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=!talent.obliteration&buff.pillar_of_frost.remains<3&buff.pillar_of_frost.up&buff.cold_heart.stack>=10", "Use during Pillar with Icecap/Breath" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=!talent.obliteration&death_knight.runeforge.fallen_crusader&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19&cooldown.pillar_of_frost.remains>10)", "Outside of Pillar useage with Icecap/Breath" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=!talent.obliteration&!death_knight.runeforge.fallen_crusader&buff.cold_heart.stack>=10&buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>20" );
   cold_heart -> add_action( this, "Chains of Ice", "if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=16&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)", "Prevent Cold Heart overcapping during pillar" );
 
   // Breath of Sindragosa pooling rotation : starts 10s before the cd becomes available
@@ -8721,19 +8724,19 @@ void death_knight_t::default_apl_frost()
   bos_pooling -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>5" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&runic_power.deficit>(15+talent.runic_attenuation*3)&spell_targets.frostscythe>=2&(buff.deaths_due.stack=8|!death_and_decay.ticking|!covenant.night_fae)" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=runic_power.deficit>=(35+talent.runic_attenuation*3)&spell_targets.frostscythe>=2&(buff.deaths_due.stack=8|!death_and_decay.ticking|!covenant.night_fae)" );
-  bos_pooling -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=(35+talent.runic_attenuation*3)" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&spell_targets.glacial_advance>=2" );
   bos_pooling -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power<=40", "Breath of Sindragosa Active Rotation" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>=60", "Breath of Sindragosa Active Rotation" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold|active_enemies>=2" );
-  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power<=45" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up&(runic_power.deficit<55|rune.time_to_3<=gcd|spell_targets.howling_blast>=2)" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune.time_to_4<gcd|runic_power.deficit>=45" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>=2&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=40&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2&(buff.deaths_due.stack=8|!death_and_decay.ticking|!covenant.night_fae)" );
-  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25|rune>3" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25&rune>3" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
   // Pooling For Obliteration: Starts 10 seconds before Pillar of Frost comes off CD
@@ -8840,30 +8843,33 @@ void death_knight_t::default_apl_unholy()
   // Covenant Abilities
   covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>6", "Covenant Abilities" );
   covenants -> add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
-  covenants -> add_action( "abomination_limb,if=variable.st_planning&rune.time_to_4>(3+buff.runic_corruption.remains)" );
+  covenants -> add_action( "abomination_limb,if=variable.st_planning&!soulbind.lead_by_example&cooldown.apocalypse.remains&rune.time_to_4>(3+buff.runic_corruption.remains)" );
+  covenants -> add_action( "abomination_limb,if=variable.st_planning&soulbind.lead_by_example&(cooldown.unholy_blight.remains|!talent.unholy_blight&cooldown.dark_transformation.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "shackle_the_unworthy,if=variable.st_planning&cooldown.apocalypse.remains" );
   covenants -> add_action( "shackle_the_unworthy,if=active_enemies>=2&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
 
   // Potions and Other on use
   cooldowns -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|pet.apoc_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)", "Potions and other on use"  );
-  cooldowns -> add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.unholy_blight.remains&(pet.army_ghoul.active|cooldown.apocalypse.remains<5&(cooldown.army_of_the_dead.remains|death_knight.disable_aotd))|target.time_to_pct_20<5" );
+  cooldowns -> add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)" );
   cooldowns -> add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&rune.time_to_4<gcd&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
-  cooldowns -> add_action( "use_item,name=darkmoon_deck_verocity,if=pet.apoc_ghoul.active&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  cooldowns -> add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)");
 
   // Cooldowns
-  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<5&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
-  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.ready&(debuff.festering_wound.stack>=4|rune>=3)|cooldown.apocalypse.remains)" );
+  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&(talent.unholy_assault&conduit.convocation_of_the_dead.rank<5|talent.gargoyle)", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
   cooldowns -> add_talent( this, "Unholy Blight", "if=active_enemies>=2" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&cooldown.unholy_blight.remains&(!runeforge.deadliest_coil|runeforge.deadliest_coil&(!buff.dark_transformation.up&!talent.unholy_pact|talent.unholy_pact))" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&!talent.unholy_blight" );
+  cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&(debuff.unholy_blight_debuff.up|!talent.unholy_blight)" );
   cooldowns -> add_action( this, "Dark Transformation", "if=active_enemies>=2" );
-  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&((!talent.unholy_blight|talent.army_of_the_damned|conduit.convocation_of_the_dead)|talent.unholy_blight&!talent.army_of_the_damned&dot.unholy_blight.remains)" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&talent.army_of_the_damned&runeforge.deadliest_coil&conduit.convocation_of_the_dead.rank>=5" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&conduit.convocation_of_the_dead.rank>=5&talent.army_of_the_damned&runeforge.deadliest_coil&debuff.unholy_blight_debuff.up" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|talent.unholy_assault&conduit.convocation_of_the_dead.rank>=5" );
   cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&cooldown.apocalypse.remains)" );
+  cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&buff.dark_transformation.up&!pet.army_ghoul.active)" );
   cooldowns -> add_talent( this, "Unholy Assault", "target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_pct_35<5&target.time_to_die>5" );
   cooldowns -> add_action( this, "Raise Dead", "if=!pet.ghoul.active" );
@@ -8875,11 +8881,11 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( "any_dnd,if=cooldown.apocalypse.remains&(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)" );
   generic -> add_action( "wound_spender,if=debuff.festering_wound.stack>4" );
   generic -> add_action( "wound_spender,if=debuff.festering_wound.up&cooldown.apocalypse.remains>5&(!talent.unholy_blight|talent.army_of_the_damned|conduit.convocation_of_the_dead|raid_event.adds.exists)" );
-  generic -> add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight&!talent.army_of_the_damned&!conduit.convocation_of_the_dead&!raid_event.adds.exists&(cooldown.unholy_blight.remains>5&cooldown.apocalypse.ready&!dot.unholy_blight.remains|!cooldown.apocalypse.ready)" );
+  generic -> add_action( "wound_spender,if=debuff.festering_wound.up&talent.unholy_blight&!talent.army_of_the_damned&!raid_event.adds.exists&(cooldown.unholy_blight.remains>5&cooldown.apocalypse.ready&!dot.unholy_blight.remains|!cooldown.apocalypse.ready)" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
   generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<1" );
   generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<3&(!talent.unholy_blight|talent.army_of_the_damned|conduit.convocation_of_the_dead|raid_event.adds.exists)" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&talent.unholy_blight&!talent.army_of_the_damned&!conduit.convocation_of_the_dead&!raid_event.adds.exists&cooldown.apocalypse.ready&(cooldown.unholy_blight.remains<3|dot.unholy_blight.remains)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&talent.unholy_blight&!talent.army_of_the_damned&!raid_event.adds.exists&cooldown.apocalypse.ready&(cooldown.unholy_blight.remains<3|debuff.unholy_blight_debuff.up)" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // AoE Setup Actions
