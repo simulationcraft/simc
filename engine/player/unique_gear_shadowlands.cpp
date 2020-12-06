@@ -24,6 +24,26 @@ namespace unique_gear
 {
 namespace shadowlands
 {
+struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
+{
+  shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
+                  bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, s, aoe_damage_increase_ )
+  {
+    // Default still seems to be 6, however shadowlands seems to indicate the maximum
+    // number (slightly confusingly) in the tooltip data, which is referencable directly
+    // from spell data
+    max_scaling_targets = 6;
+  }
+
+  shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
+                       bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
+  {
+    max_scaling_targets = 6;
+  }
+};
+
 // Enchants & Consumable buffs affected by 'Exacting Preparations' soulbind
 struct SL_buff_t : public buff_t
 {
@@ -515,19 +535,19 @@ void glyph_of_assimilation( special_effect_t& effect )
  */
 void soul_igniter( special_effect_t& effect )
 {
-  struct blazing_surge_t : public proc_spell_t
+  struct blazing_surge_t : public shadowlands_aoe_proc_t
   {
     double buff_fraction_elapsed;
     double max_time_multiplier;
-    unsigned max_scaling_targets;
 
-    blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
+    blazing_surge_t( const special_effect_t& e ) :
+      shadowlands_aoe_proc_t( e, "blazing_surge", 345215, true )
     {
       split_aoe_damage = true;
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
-      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() + 1 );
     }
 
     double action_multiplier() const override
@@ -537,19 +557,6 @@ void soul_igniter( special_effect_t& effect )
       // This may actually be added as flat damage using the coefficients,
       // but for a trinket like this it is difficult to verify this.
       m *= 1.0 + buff_fraction_elapsed * max_time_multiplier;
-
-      return m;
-    }
-
-    double composite_aoe_multiplier( const action_state_t* s ) const override
-    {
-      double m = proc_spell_t::composite_aoe_multiplier( s );
-
-      // The extra damage for each target appears to be a 15%
-      // multiplier that is not listed in spell data anywhere.
-      // TODO: this has been tested on 6 targets, verify that
-      // it does not continue scaling higher at 7 targets.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
 
       return m;
     }
@@ -841,29 +848,14 @@ void soulletting_ruby( special_effect_t& effect )
 
 void satchel_of_misbegotten_minions( special_effect_t& effect )
 {
-  struct abomiblast_t : public proc_spell_t
+  struct abomiblast_t : public shadowlands_aoe_proc_t
   {
-    unsigned max_scaling_targets;
-
     abomiblast_t( const special_effect_t& e ) :
-      proc_spell_t( "abomiblast", e.player, e.player->find_spell( 345638 ) )
+      shadowlands_aoe_proc_t( e, "abomiblast", 345638, true )
     {
-      split_aoe_damage = true;
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
-    }
-
-    double composite_aoe_multiplier( const action_state_t* s ) const override
-    {
-      double m = proc_spell_t::composite_aoe_multiplier( s );
-
-      // The extra damage for each target appears to be a 15%
-      // multiplier that is not listed in spell data anywhere.
-      // TODO: this has been tested above 2 target, verify the target cap.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
-
-      return m;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
   };
 
@@ -1303,13 +1295,12 @@ void anima_field_emitter( special_effect_t& effect )
 void decanter_of_animacharged_winds( special_effect_t& effect )
 {
   // TODO: "Damage is increased for each enemy struck, up to 5 enemies."
-  struct splash_of_animacharged_wind_t : public proc_spell_t
+  struct splash_of_animacharged_wind_t : public shadowlands_aoe_proc_t
   {
     splash_of_animacharged_wind_t( const special_effect_t& e ) :
-      proc_spell_t( "splash_of_animacharged_wind", e.player, e.trigger(), e.item )
+      shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
     {
-      aoe = e.driver()->effectN( 2 ).base_value();
-      split_aoe_damage = true;
+      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
     }
   };
 
@@ -1321,27 +1312,14 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
 
 void bloodspattered_scale( special_effect_t& effect )
 {
-  struct blood_barrier_t : public proc_spell_t
+  struct blood_barrier_t : public shadowlands_aoe_proc_t
   {
     buff_t* absorb;
 
     blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
-      proc_spell_t( "blood_barrier", e.player, e.trigger(), e.item ), absorb( absorb_ )
+      shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
     {
-      aoe = e.driver()->effectN( 2 ).base_value();
-      split_aoe_damage = true;
-    }
-
-    // Note, not strictly correct in every single situation, since simc treats "hit
-    // rseolution" after n_targets get set, however this should work for practically every
-    // conceivable situation in ths imulator.
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = proc_spell_t::composite_da_multiplier( state );
-
-      m *= 1.0 + 0.15 * ( state->n_targets - 1 );
-
-      return m;
+      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
     }
 
     void execute() override

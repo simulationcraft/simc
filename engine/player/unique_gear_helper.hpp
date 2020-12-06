@@ -507,6 +507,60 @@ struct proc_resource_t : public proc_action_t<spell_t>
   }
 };
 
+template <typename BASE = proc_spell_t>
+struct base_generic_proc_t : public BASE
+{
+  base_generic_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id )
+    : BASE( name, effect.player, effect.player->find_spell( spell_id ), effect.item )
+  { }
+
+  base_generic_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
+    : BASE( name, effect.player, s, effect.item )
+  { }
+};
+
+template <typename BASE = proc_spell_t>
+struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
+{
+  bool aoe_damage_increase;
+  unsigned max_scaling_targets;
+
+  base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
+                       bool aoe_damage_increase_ = false )
+    : base_generic_proc_t<BASE>( effect, name, spell_id ), aoe_damage_increase( aoe_damage_increase_ ),
+    // BFA default
+    max_scaling_targets( 6 )
+  {
+    this->aoe              = -1;
+    this->split_aoe_damage = true;
+  }
+
+  base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
+                       bool aoe_damage_increase_ = false )
+    : base_generic_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ )
+  {
+    this->aoe              = -1;
+    this->split_aoe_damage = true;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double am = base_generic_proc_t<BASE>::composite_aoe_multiplier( state );
+
+    // Blizzard" "generic" 15% damage increase per target hit, started appearing on items
+    // from BfA onwards.
+    if ( aoe_damage_increase )
+    {
+      am *= 1.0 + 0.15 * ( std::min( state->n_targets, max_scaling_targets ) - 1 );
+    }
+
+    return am;
+  }
+};
+
+using generic_aoe_proc_t = base_generic_aoe_proc_t<proc_spell_t>;
+using generic_proc_t     = base_generic_proc_t<proc_spell_t>;
+
 template <typename CLASS, typename... ARGS>
 action_t* create_proc_action( util::string_view name, const special_effect_t& effect, ARGS&&... args )
 {
