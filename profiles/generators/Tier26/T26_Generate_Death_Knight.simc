@@ -7,6 +7,7 @@ position=front
 talents=2221033
 covenant=kyrian
 soulbind=kleia,pointed_courage/proliferation:7
+temporary_enchant=main_hand:shadowcore_oil
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -20,7 +21,7 @@ legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
