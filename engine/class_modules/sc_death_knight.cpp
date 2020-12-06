@@ -1066,6 +1066,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
   void apply_affecting_auras( action_t& action ) override;
 
   double    runes_per_second() const;
@@ -8526,6 +8527,28 @@ std::string death_knight_t::default_rune() const
 {
   return ( true_level >= 50 ) ? "veiled" :
          "disabled";
+}
+
+// death_knight_t::default_temporary_enchant ================================
+
+std::string death_knight_t::default_temporary_enchant() const
+{
+  std::string frost_food = ( true_level >= 50 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
+                           "disabled";
+
+  std::string unholy_food = ( true_level >= 50 ) ? "main_hand:shaded_sharpening_stone" :
+                            "disabled";
+
+  std::string blood_food =  ( true_level >= 50 ) ? "main_hand:shadowcore_oil" :
+                            "disabled";
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD: return blood_food;
+    case DEATH_KNIGHT_FROST: return frost_food;
+
+    default:                 return unholy_food;
+  }
 }
 
 // death_knight_t::default_apl_blood ========================================
