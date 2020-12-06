@@ -8843,7 +8843,7 @@ void death_knight_t::default_apl_unholy()
   // Covenant Abilities
   covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>6", "Covenant Abilities" );
   covenants -> add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
-  covenants -> add_action( "abomination_limb,if=variable.st_planning&rune.time_to_4>(3+buff.runic_corruption.remains)&cooldown.apocalypse.remains&!soulbind.lead_by_example" );
+  covenants -> add_action( "abomination_limb,if=variable.st_planning&!soulbind.lead_by_example&cooldown.apocalypse.remains&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "abomination_limb,if=variable.st_planning&soulbind.lead_by_example&(cooldown.unholy_blight.remains|!talent.unholy_blight&cooldown.dark_transformation.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "shackle_the_unworthy,if=variable.st_planning&cooldown.apocalypse.remains" );
@@ -8851,7 +8851,7 @@ void death_knight_t::default_apl_unholy()
 
   // Potions and Other on use
   cooldowns -> add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|pet.apoc_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)", "Potions and other on use"  );
-  cooldowns -> add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.unholy_blight.remains&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)" );
+  cooldowns -> add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)" );
   cooldowns -> add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&rune.time_to_4<gcd&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
   cooldowns -> add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
@@ -8859,15 +8859,14 @@ void death_knight_t::default_apl_unholy()
 
   // Cooldowns
   cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
-  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&((runeforge.deadliest_coil|runeforge.frenzied_monstrosity|conduit.eternal_hunger|conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up))&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5))", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
-  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<3", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
+  cooldowns -> add_talent( this, "Unholy Blight", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&(talent.unholy_assault&conduit.convocation_of_the_dead.rank<5|talent.gargoyle)", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
   cooldowns -> add_talent( this, "Unholy Blight", "if=active_enemies>=2" );
   cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&(debuff.unholy_blight_debuff.up|!talent.unholy_blight)" );
   cooldowns -> add_action( this, "Dark Transformation", "if=active_enemies>=2" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&(!talent.unholy_blight|conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned|runeforge.deadliest_coil)&(!talent.unholy_blight|conduit.convocation_of_the_dead.rank<5|!talent.army_of_the_damned|!runeforge.deadliest_coil)", "Use Apocalypse on cooldown if there are no CD's to sync with, or the cooldown duration is too long to be worth syncing" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&conduit.convocation_of_the_dead.rank>=5&talent.army_of_the_damned&runeforge.deadliest_coil&debuff.unholy_blight_debuff.up", "Use Apocalypse after Blight with specific setups, failsafe incase Apoc CD is lower than Blight" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&talent.unholy_assault&conduit.convocation_of_the_dead", "Hold Apoc for Blight if using Gargoyle or Unholy Assault" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&debuff.unholy_blight_debuff.up&(talent.gargoyle|talent.unholy_assault&!conduit.convocation_of_the_dead)" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&talent.army_of_the_damned&runeforge.deadliest_coil&conduit.convocation_of_the_dead.rank>=5" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&active_enemies=1&talent.unholy_blight&conduit.convocation_of_the_dead.rank>=5&talent.army_of_the_damned&runeforge.deadliest_coil&debuff.unholy_blight_debuff.up" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|talent.unholy_assault&conduit.convocation_of_the_dead.rank>=5" );
   cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&buff.dark_transformation.up&!pet.army_ghoul.active)" );
