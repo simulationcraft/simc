@@ -20,7 +20,7 @@ legs=umbrahide_leggings,id=172318,bonus_id=6648/6649/6716/7107/1487
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_putrescence,id=173069
 main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
@@ -51,7 +51,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2="ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant_id=6164"
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
 main_hand=,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
@@ -81,7 +81,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
 finger2=Bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646
 main_hand=devoss_cacophonous_poleaxe,id=180096,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
