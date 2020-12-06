@@ -1300,6 +1300,25 @@ void anima_field_emitter( special_effect_t& effect )
   }
 }
 
+void decanter_of_animacharged_winds( special_effect_t& effect )
+{
+  // TODO: "Damage is increased for each enemy struck, up to 5 enemies."
+  struct splash_of_animacharged_wind_t : public proc_spell_t
+  {
+    splash_of_animacharged_wind_t( const special_effect_t& e ) :
+      proc_spell_t( "splash_of_animacharged_wind", e.player, e.trigger(), e.item )
+    {
+      aoe = e.driver()->effectN( 2 ).base_value();
+      split_aoe_damage = true;
+    }
+  };
+
+  effect.execute_action = create_proc_action<splash_of_animacharged_wind_t>(
+      "splash_of_animacharged_wind", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1548,6 +1567,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
     unique_gear::register_special_effect( 345739, items::grim_codex );
     unique_gear::register_special_effect( 345533, items::anima_field_emitter );
+    unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
