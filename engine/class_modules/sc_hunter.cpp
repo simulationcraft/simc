@@ -586,7 +586,7 @@ public:
     timespan_t pet_basic_attack_delay = 0.15_s;
     // random testing stuff
     bool brutal_projectiles_on_execute = false;
-    bool serpenstalkers_triggers_wild_spirits = true;
+    bool serpentstalkers_triggers_wild_spirits = true;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -3266,7 +3266,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = p -> options.serpenstalkers_triggers_wild_spirits;
+      triggers_wild_spirits = p -> options.serpentstalkers_triggers_wild_spirits;
     }
   };
 
@@ -6873,7 +6873,7 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
 
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
-  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpenstalkers_triggers_wild_spirits ) );
+  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpentstalkers_triggers_wild_spirits ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
@@ -6886,13 +6886,17 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   const options_t defaults{};
+  auto print_option = [&] ( auto ref, util::string_view name ) {
+    if ( range::invoke( ref, options ) != range::invoke( ref, defaults ) )
+      fmt::format_to( std::back_inserter( profile_str ), "{}={}\n", name, range::invoke( ref, options ) );
+  };
 
-  if ( options.summon_pet_str != defaults.summon_pet_str )
-    profile_str += "summon_pet=" + options.summon_pet_str + "\n";
-  if ( options.pet_attack_speed != defaults.pet_attack_speed )
-    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_attack_speed={}\n", options.pet_attack_speed );
-  if ( options.pet_basic_attack_delay != defaults.pet_basic_attack_delay )
-    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_basic_attack_delay={}\n", options.pet_basic_attack_delay );
+  print_option( &options_t::summon_pet_str, "summon_pet" );
+  print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
+  print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
+
+  print_option( &options_t::brutal_projectiles_on_execute, "hunter.brutal_projectiles_on_execute" );
+  print_option( &options_t::serpentstalkers_triggers_wild_spirits, "hunter.serpenstalkers_triggers_wild_spirits" );
 
   return profile_str;
 }
