@@ -20,7 +20,7 @@ variable_t::variable_t(player_t* player, util::string_view options_str) :
   condition_expression(),
   value_else_expression()
 {
-  quiet = true;
+  quiet = usable_while_casting = true;
   harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
   trigger_gcd = timespan_t::zero();
 

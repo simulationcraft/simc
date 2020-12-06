@@ -13,6 +13,7 @@ potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_currents
 food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -37,13 +38,13 @@ actions.precombat+=/slice_and_dice,precombat_seconds=2
 actions=stealth
 # Reroll single BT/GM/TB buffs when possible
 actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)
-actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up
+actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
 actions+=/call_action_list,name=stealth,if=stealthed.all
 actions+=/call_action_list,name=cds
-# Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second.
-actions+=/run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))|combo_points=animacharged_cp
+# Finish at maximum CP but avoid wasting Broadside and Quick Draw bonus combo points
+actions+=/run_action_list,name=finish,if=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*talent.quick_draw.enabled)|combo_points=animacharged_cp
 actions+=/call_action_list,name=build
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
 actions+=/arcane_pulse
@@ -54,14 +55,16 @@ actions+=/bag_of_tricks
 actions.build=shiv,if=runeforge.tiny_toxic_blade
 actions.build+=/echoing_reprimand
 actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
-# Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw and Wits is down.
-actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled&buff.keep_your_wits_about_you.down)
-actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
+# Use Pistol Shot with Opportunity if below 45 energy, or when using Quick Draw
+actions.build+=/pistol_shot,if=buff.opportunity.up&(energy<45|talent.quick_draw.enabled)
+actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
 actions.build+=/sinister_strike
 actions.build+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buff.broadside.up
 
 # Cooldowns
-actions.cds=flagellation
+# Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows
+actions.cds=vanish,if=!stealthed.all&variable.ambush_condition&master_assassin_remains=0&buff.deathly_shadows.down
+actions.cds+=/flagellation
 actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)
 actions.cds+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
@@ -74,8 +77,6 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up
 actions.cds+=/ghostly_strike,if=combo_points.deficit>=1+buff.broadside.up
 actions.cds+=/killing_spree,if=variable.blade_flurry_sync&energy.time_to_max>2
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>2
-# Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
-actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=1
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/sepsis,if=!stealthed.all

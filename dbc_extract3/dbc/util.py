@@ -1,3 +1,5 @@
+import re
+
 from dbc import constants
 
 def class_id(**kwargs):
@@ -132,3 +134,12 @@ def race_skills():
 
     return race_skills._map
 
+def tokenize(str_):
+    while len(str_) > 0 and str_[0] in ['_', '+']:
+        str_ = str_[1:]
+
+    str_ = re.sub('[^A-z0-9_\+\.% ]', '', str_)
+    str_ = str_.lower()
+    str_ = str_.replace(' ', '_')
+
+    return str_

@@ -2,10 +2,10 @@ monk="PR_Monk_Windwalker_Serenity"
 source=default
 spec=windwalker
 level=60
-race=pandaren
+race=mechagnome
 role=dps
 position=back
-talents=2020013
+talents=3020013
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:4
 
@@ -14,6 +14,7 @@ potion=potion_of_spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_weightstone/off_hand:shaded_weightstone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -75,6 +76,7 @@ actions.cd_sef+=/bonedust_brew,if=raid_event.adds.in>50|raid_event.adds.up,line_
 actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|!covenant.kyrian&((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/use_item,name=inscrutable_quantum_device
+actions.cd_sef+=/use_item,name=darkmoon_deck_voracity
 actions.cd_sef+=/touch_of_karma,if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
@@ -86,6 +88,7 @@ actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
 actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
 actions.cd_serenity+=/use_item,name=inscrutable_quantum_device
+actions.cd_serenity+=/use_item,name=darkmoon_deck_voracity
 actions.cd_serenity+=/blood_fury,if=variable.serenity_burst
 actions.cd_serenity+=/berserking,if=variable.serenity_burst
 actions.cd_serenity+=/arcane_torrent,if=chi.max-chi>=1
@@ -111,6 +114,7 @@ actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debu
 
 actions.serenity=fists_of_fury,if=buff.serenity.remains<1
 actions.serenity+=/use_item,name=inscrutable_quantum_device
+actions.serenity+=/use_item,name=darkmoon_deck_voracity
 actions.serenity+=/spinning_crane_kick,if=(!talent.hit_combo.enabled&conduit.calculated_strikes.enabled|combo_strike)&(active_enemies>=3|active_enemies>1&!cooldown.rising_sun_kick.up)
 actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 actions.serenity+=/fists_of_fury,if=active_enemies>=3
@@ -161,29 +165,30 @@ actions.weapons_of_order+=/chi_wave
 actions.weapons_of_order+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=3|buff.weapons_of_order_ww.up
 actions.weapons_of_order+=/flying_serpent_kick,interrupt=1
 
-head=umbrahide_helm,id=172317,bonus_id=6647/6650/6716/7082/1487
+head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6650/1487
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
 shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646,enchant=soul_vitality
+back=dealer_xyexas_cape,id=179349,bonus_id=6807/1498/6646,enchant=soul_vitality
 chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
-hands=winged_hunters_gloves,id=180103,bonus_id=6807/1498/6646
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=6807/1498/6646
+hands=rocket_chicken_handlers,id=179336,bonus_id=6807/1498/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
-off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket2=darkmoon_deck_voracity,id=173087
+main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=184.38
-# gear_agility=587
+# gear_ilvl=185.38
+# gear_agility=596
 # gear_stamina=890
-# gear_crit_rating=597
-# gear_haste_rating=114
-# gear_mastery_rating=153
-# gear_versatility_rating=509
+# gear_attack_power=40
+# gear_crit_rating=481
+# gear_haste_rating=137
+# gear_mastery_rating=215
+# gear_versatility_rating=536
 # gear_armor=479

@@ -13,6 +13,7 @@ potion=focused_resolve
 flask=greater_flask_of_endless_fathoms
 food=mechdowels_big_mech
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -117,17 +118,18 @@ actions.aoe+=/deathborne,if=cooldown.arcane_power.remains=0&(((cooldown.touch_of
 actions.aoe+=/touch_of_the_magi,if=buff.arcane_charge.stack<=variable.aoe_totm_max_charges&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd)
 actions.aoe+=/arcane_power,if=((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down
 actions.aoe+=/rune_of_power,if=buff.rune_of_power.down&((cooldown.touch_of_the_magi.remains>20&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)
-actions.aoe+=/shifting_power,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
+actions.aoe+=/shifting_power,if=cooldown.arcane_orb.remains>5
+actions.aoe+=/shifting_power,if=!talent.arcane_orb&buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down
 actions.aoe+=/presence_of_mind,if=buff.deathborne.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
 actions.aoe+=/arcane_blast,if=buff.deathborne.up&((talent.resonance&active_enemies<4)|active_enemies<5)&(!runeforge.arcane_bombardment|target.health.pct>35)
 actions.aoe+=/supernova
+actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack=0
 actions.aoe+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&talent.amplification&active_enemies<8
 actions.aoe+=/arcane_missiles,if=buff.clearcasting.react&(runeforge.arcane_infinity|talent.amplification)&active_enemies<5
 actions.aoe+=/arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack
 actions.aoe+=/arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage
-actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.aoe+=/evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1
 
 # Prioritize using grisly icicle with ap. Use it with totm otherwise.

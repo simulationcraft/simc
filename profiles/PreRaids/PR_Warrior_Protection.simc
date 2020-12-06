@@ -2,10 +2,10 @@ warrior="PR_Warrior_Protection"
 source=default
 spec=protection
 level=60
-race=tauren
+race=draenei
 role=tank
 position=front
-talents=3020021
+talents=3020011
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:4
 
@@ -30,6 +30,7 @@ actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/charge,if=time=0
 actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/blood_fury
 actions+=/berserking
@@ -39,54 +40,46 @@ actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/potion,if=buff.avatar.up|target.time_to_die<25
-# use Ignore Pain to avoid rage capping
-actions+=/ignore_pain,if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready
-actions+=/worldvein_resonance,if=cooldown.avatar.remains<=2
-actions+=/ripple_in_space
-actions+=/memory_of_lucid_dreams
-actions+=/concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
-actions+=/last_stand,if=cooldown.anima_of_death.remains<=2
+actions+=/ignore_pain,if=buff.ignore_pain.down
+actions+=/ancient_aftershock
+actions+=/spear_of_bastion
+actions+=/conquerors_banner
 actions+=/avatar
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
 actions+=/call_action_list,name=st
 
-actions.aoe=thunder_clap
-actions.aoe+=/memory_of_lucid_dreams,if=buff.avatar.down
-actions.aoe+=/demoralizing_shout,if=talent.booming_voice.enabled
-actions.aoe+=/anima_of_death,if=buff.last_stand.up
+actions.aoe=ravager
 actions.aoe+=/dragon_roar
+actions.aoe+=/thunder_clap
+actions.aoe+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions.aoe+=/revenge
-actions.aoe+=/use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4
-actions.aoe+=/ravager
 actions.aoe+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down
 actions.aoe+=/shield_slam
 
-actions.st=thunder_clap,if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up
+actions.st=ravager
+actions.st+=/dragon_roar
+actions.st+=/thunder_clap,if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up
 actions.st+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down
 actions.st+=/shield_slam,if=buff.shield_block.up
 actions.st+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up)
 actions.st+=/demoralizing_shout,if=talent.booming_voice.enabled
-actions.st+=/anima_of_death,if=buff.last_stand.up
 actions.st+=/shield_slam
-actions.st+=/use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0
-actions.st+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&(cooldown.avatar.remains<5|buff.avatar.up)
-actions.st+=/dragon_roar
+actions.st+=/execute
+actions.st+=/revenge,if=rage>=70
 actions.st+=/thunder_clap
 actions.st+=/revenge
-actions.st+=/use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4
-actions.st+=/ravager
 actions.st+=/devastate
 
 head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498/6646
+shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6648/6716/6957/1487
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
 chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498/6646,enchant=eternal_skirmish
 wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
 hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498/6646,enchant=eternal_strength
 waist=girdle_of_the_soulflayer,id=179326,bonus_id=6807/1498/6646
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
-feet=shadowghast_sabatons,id=171413,bonus_id=6649/6650/6716/6956/1487
+feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
@@ -99,8 +92,8 @@ off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
 # gear_strength=587
 # gear_stamina=857
 # gear_intellect=84
-# gear_crit_rating=383
-# gear_haste_rating=698
-# gear_mastery_rating=150
-# gear_versatility_rating=139
-# gear_armor=1543
+# gear_crit_rating=456
+# gear_haste_rating=653
+# gear_mastery_rating=165
+# gear_versatility_rating=96
+# gear_armor=1544

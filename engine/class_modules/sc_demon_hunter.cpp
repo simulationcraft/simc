@@ -1961,6 +1961,7 @@ struct disrupt_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
   {
     may_miss = false;
+    is_interrupt = true;
 
     const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
     energize_type = action_energize::ON_CAST;
@@ -5794,7 +5795,7 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  apl_defensives->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled)&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
+  apl_defensives->add_action( this, "Metamorphosis", "if=!buff.metamorphosis.up&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|target.time_to_die<15" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );

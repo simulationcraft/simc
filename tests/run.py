@@ -41,7 +41,7 @@ def test_talents(klass: str, path: str):
         for talents in talent_combinations(klass):
             talent_name = get_talent_name(spec, talents)
             Test('{:<40} ({})'.format(talent_name, talents),
-                 group=grp, args=[('talents', talents), ('level', 60)])
+                 group=grp, args=[('talents', talents)])
 
 
 def test_covenants(klass: str, path: str):
@@ -54,14 +54,14 @@ def test_covenants(klass: str, path: str):
             tests.append(grp)
 
             Test(covenant.full_name, group=grp,
-                 args=[('covenant', covenant.simc_name), ('level', 60)])
+                 args=[('covenant', covenant.simc_name)])
             # Add conduits specific to selected covenant
             for conduit in conduits:
                 if covenant in conduit.covenants:
                     rank = random.choice(conduit.ranks)
                     soulbind_argument = '{}:{}'.format(conduit.id, rank)
                     Test('{:<40} {:<10} Rank {:>2}'.format(conduit.full_name, "({})".format(conduit.id), rank), group=grp, args=[
-                        ('covenant', covenant.simc_name), ('level', 60), ('soulbind', soulbind_argument)])
+                        ('covenant', covenant.simc_name), ('soulbind', soulbind_argument)])
 
 
 def test_trinkets(klass: str, path: str):
@@ -73,7 +73,7 @@ def test_trinkets(klass: str, path: str):
     tests.append(grp)
     for trinket in trinkets:
         Test('{} ({})'.format(trinket.name, trinket.item_id), group=grp, args=[
-            ('trinket1', '{},id={},ilevel={}'.format(trinket.simc_name, trinket.item_id, trinket.min_itemlevel)), ('level', 60)])
+            ('trinket1', '{},id={},ilevel={}'.format(trinket.simc_name, trinket.item_id, trinket.min_itemlevel))])
 
 
 def test_legendaries(klass: str, path: str):
@@ -85,7 +85,7 @@ def test_legendaries(klass: str, path: str):
         tests.append(grp)
         for legendary in legendaries:
             Test('{} ({} / {})'.format(legendary.full_name, legendary.id, legendary.bonus_id), group=grp, args=[
-                ('trinket1', '{},bonus_id={}'.format(legendary.simc_name, legendary.bonus_id)), ('level', 60)])
+                ('trinket1', '{},bonus_id={}'.format(legendary.simc_name, legendary.bonus_id))])
 
 
 def test_soulbinds(klass: str, path: str):
@@ -100,7 +100,7 @@ def test_soulbinds(klass: str, path: str):
                     if soulbind_talent.spell_id != 0:
                         soulbind_name = '{} - {}'.format(soulbind.full_name, soulbind_talent.full_name)
                         Test('{:<60} ({})'.format(soulbind_name, soulbind_talent.spell_id), group=grp, args=[
-                            ('covenant', covenant.simc_name), ('level', 60), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
+                            ('covenant', covenant.simc_name), ('soulbind', '{},{}'.format(soulbind.simc_name, soulbind_talent.spell_id))])
 
 
 available_tests = {

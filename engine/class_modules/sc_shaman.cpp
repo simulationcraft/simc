@@ -861,6 +861,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   void init_rng() override;
   void init_special_effects() override;
@@ -5902,7 +5903,11 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
-    p()->buff.ascendance->extend_duration_or_trigger( timespan_t::from_seconds( 6 ), player );
+    if (background) {
+      p()->buff.ascendance->extend_duration_or_trigger( p()->legendary.deeply_rooted_elements->effectN(1).time_value(), player );
+    } else {
+      p()->buff.ascendance->trigger();
+    }
 
     if ( lvb )
     {
@@ -6766,7 +6771,11 @@ struct primordial_wave_t : public shaman_spell_t
     {
       cooldown->reset( true );
     }
+  }
 
+  void impact( action_state_t* s ) override
+  {
+    shaman_spell_t::impact(s);
     flame_shock->set_target( target );
     flame_shock->execute();
   }
@@ -8781,7 +8790,7 @@ std::string shaman_t::generate_bloodlust_options()
 std::string shaman_t::default_potion() const
 {
   std::string elemental_pot = ( true_level >= 60 ) ? "potion_of_spectral_intellect"
-                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disable";
+                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disabled";
 
   std::string enhance_pot =
       ( true_level >= 60 )
@@ -8815,7 +8824,7 @@ std::string shaman_t::default_food() const
 {
   std::string elemental_food =
       ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : ( true_level >= 50 ) ? "mechdowels_big_mech" : "disabled";
-                                  
+
 
   std::string enhance_food = ( true_level >= 60 )
                                  ? "feast_of_gluttonous_hedonism"
@@ -8850,6 +8859,22 @@ std::string shaman_t::default_rune() const
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
 }
 
+// shaman_t::default_temporary_enchant ======================================
+
+std::string shaman_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+    case SHAMAN_ENHANCEMENT:
+    case SHAMAN_RESTORATION:
+    default:
+      return "disabled";
+  }
+}
+
 // shaman_t::init_action_list_elemental =====================================
 
 void shaman_t::init_action_list_elemental()
@@ -8861,7 +8886,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_action( this, "Stormkeeper",
+  precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
   precombat->add_action( "potion" );
@@ -9204,6 +9229,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
+  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   aoe->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");

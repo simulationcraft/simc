@@ -14,6 +14,7 @@ potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +28,6 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -102,7 +102,7 @@ legs=halkiass_towering_pillars,id=178818,bonus_id=6807/1498/6646
 feet=sabatons_of_the_rushing_juggernaut,id=178836,bonus_id=6807/1498/6646
 finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 

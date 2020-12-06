@@ -1406,6 +1406,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         weapon_types.emplace_back( util::weapon_subclass_string( wt ) );
       }
     }
+
+    for ( auto it = INVTYPE_HEAD; it < INVTYPE_MAX; ++it )
+    {
+      if ( spell->equipped_invtype_mask() & ( 1u << static_cast<unsigned>( it ) ) )
+      {
+        weapon_types.emplace_back( util::weapon_class_string( it ) );
+      }
+    }
+
     s << "Requires weapon  : ";
     if ( weapon_types.size() > 0 )
     {

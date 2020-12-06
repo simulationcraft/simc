@@ -20,7 +20,7 @@ legs=halkiass_towering_pillars,id=178818,bonus_id=6807/1498/6646
 feet=sabatons_of_the_rushing_juggernaut,id=178836,bonus_id=6807/1498/6646
 finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
@@ -49,8 +49,8 @@ legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=20attackpower
-trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646
 main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_razorice
 off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
@@ -78,7 +78,7 @@ legs=gormshell_greaves,id=178701,bonus_id=6807/1498/6646
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498/6646
 main_hand=dessias_decimating_decapitator,id=178866,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 

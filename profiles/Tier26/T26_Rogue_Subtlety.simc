@@ -14,6 +14,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -159,20 +160,20 @@ actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.sym
 actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
 
-head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
+head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
-legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
+legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_critical_strike
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -181,8 +182,8 @@ off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 # gear_agility=886
 # gear_stamina=1511
 # gear_attack_power=40
-# gear_crit_rating=572
+# gear_crit_rating=698
 # gear_haste_rating=455
-# gear_mastery_rating=176
-# gear_versatility_rating=631
+# gear_mastery_rating=131
+# gear_versatility_rating=647
 # gear_armor=606

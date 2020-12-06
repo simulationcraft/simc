@@ -8,20 +8,20 @@ talents=3210021
 covenant=kyrian
 soulbind=pelagos,combat_meditation/lethal_poisons:7/wellplaced_steel:7
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
 legs=umbrahide_leggings,id=172318,bonus_id=6647/6649/6758/7117/1532
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
+finger1=arachnid_cipher_ring,id=178933,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -38,20 +38,20 @@ talents=2020022
 covenant=kyrian
 soulbind=pelagos,combat_meditation/count_the_odds:7/triple_threat:7
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
 shoulders=umbrahide_pauldrons,id=172319,bonus_id=6649/6650/6758/7121/1532
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173129
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173129
 legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_versatility
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=lost_soul_xiphos,id=175279,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -68,20 +68,20 @@ talents=1320031
 covenant=kyrian
 soulbind=pelagos,combat_meditation/planned_execution:7/stiletto_staccato:7
 
-head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646
+head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
 hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498
-legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
+legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=hyperlight_band,id=183038,bonus_id=7187/1498,enchant=tenet_of_critical_strike
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=20attackpower
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=20attackpower
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=faithful_sidearm,id=177865,bonus_id=7187/1531,enchant=sinful_revelation
 

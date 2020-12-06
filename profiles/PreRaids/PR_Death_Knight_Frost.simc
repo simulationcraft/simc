@@ -14,6 +14,7 @@ potion=potion_of_spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -27,7 +28,6 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -174,8 +174,8 @@ legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1498/6646
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket2=spare_meat_hook,id=178751,bonus_id=6807/1498/6646
 main_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_razorice
 off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_the_fallen_crusader
 
@@ -183,6 +183,7 @@ off_hand=gorestained_cleaver,id=178863,bonus_id=6807/1498/6646,enchant=rune_of_t
 # gear_ilvl=184.38
 # gear_strength=587
 # gear_stamina=857
+# gear_attack_power=40
 # gear_crit_rating=676
 # gear_haste_rating=35
 # gear_mastery_rating=558

@@ -13,6 +13,7 @@ potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_currents
 food=baked_port_tato
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -56,7 +57,8 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
-actions.aoe=frost_shock,if=buff.hailstorm.up
+actions.aoe=fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms
+actions.aoe+=/frost_shock,if=buff.hailstorm.up
 actions.aoe+=/windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up

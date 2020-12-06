@@ -15,6 +15,7 @@ potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -121,24 +122,24 @@ head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
 shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
 back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=vest_of_concealed_secrets,id=178795,bonus_id=6807/1498/6646,enchant=eternal_skirmish
+chest=umbrahide_vest,id=172314,bonus_id=6716/7086/6647/6648/1487,enchant_id=6214
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
 hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
 waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
 legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=shadowghast_ring,id=178926,bonus_id=6648/6649/6716/7089/1487,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant_id=6164
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
 main_hand=quarterstaff_of_discordant_ethic,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=185.47
-# gear_agility=594
-# gear_stamina=857
-# gear_crit_rating=734
-# gear_haste_rating=188
-# gear_mastery_rating=368
-# gear_versatility_rating=91
-# gear_armor=477
+# gear_agility=597
+# gear_stamina=861
+# gear_crit_rating=779
+# gear_haste_rating=70
+# gear_mastery_rating=349
+# gear_versatility_rating=181
+# gear_armor=479

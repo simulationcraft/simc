@@ -976,6 +976,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   // player_t overrides
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -6027,6 +6028,11 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
          rng().roll( p()->azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
       p()->resource_gain( RESOURCE_CHI, p()->azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value(),
                           p()->gain.open_palm_strikes );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
@@ -7886,6 +7892,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
     background = true;
+    may_crit   = false;
   }
 
   void execute() override
@@ -11739,9 +11746,9 @@ std::string monk_t::default_food() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 60 )
+      if ( true_level >= 60 )
         return "spinefin_souffle_and_fries";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "biltong";
       else
         return "disabled";
@@ -11749,7 +11756,7 @@ std::string monk_t::default_food() const
     case MONK_MISTWEAVER:
       if ( true_level >= 60 )
         return "feast_of_gluttonous_hedonism";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
@@ -11779,6 +11786,36 @@ std::string monk_t::default_rune() const
     return "defiled";
   return "disabled";
 }
+
+// monk_t::temporary_enchant ===============================================
+std::string monk_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level >= 60 )
+        return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
 
 // Brewmaster Pre-Combat Action Priority List ============================
 

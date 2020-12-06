@@ -15,7 +15,7 @@
 # * Conduits rank is limited to 7 (item level 226).
 # * One Rank 4 (item level 235) Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
-# * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
 # * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:7/..."") instead of ids.
 
 

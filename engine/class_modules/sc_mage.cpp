@@ -759,6 +759,7 @@ public:
   std::string default_flask() const override { return mage_apl::flask( this ); }
   std::string default_food() const override { return mage_apl::food( this ); }
   std::string default_rune() const override { return mage_apl::rune( this ); }
+  std::string default_temporary_enchant() const override { return mage_apl::temporary_enchant( this ); }
   void init_gains() override;
   void init_procs() override;
   void init_benefits() override;
@@ -1197,7 +1198,10 @@ struct rune_of_power_t final : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    debug_cast<mage_t*>( player )->distance_from_rune = 0.0;
+    auto mage = debug_cast<mage_t*>( player );
+    mage->distance_from_rune = 0.0;
+    mage->buffs.disciplinary_command_arcane->trigger();
+
     return buff_t::trigger( stacks, value, chance, duration );
   }
 };

@@ -14,6 +14,7 @@ potion=potion_of_spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled_augment_rune
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -41,7 +42,7 @@ actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/power_infusion
 actions+=/shadow_covenant
-actions+=/Boon of the Ascended
+actions+=/boon_of_the_ascended
 actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 actions+=/purge_the_wicked,if=!ticking
 actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
@@ -71,9 +72,9 @@ legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498/6646
 feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6716/6976/1487
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646
 trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
+main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40

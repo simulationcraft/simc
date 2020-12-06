@@ -465,8 +465,8 @@ struct implosion_t : public demonology_spell_t
   {
     parse_options( options_str );
     add_child( explosion );
-    // Travel speed is not in spell data, in game test appears to be 40 yds/sec
-    travel_speed = 40;
+    // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+    travel_speed = 65;
   }
 
   bool ready() override
@@ -484,6 +484,9 @@ struct implosion_t : public demonology_spell_t
   {
     warlock_spell_t::execute();
 
+    p()->buffs.implosive_potential->expire();
+    p()->buffs.implosive_potential_small->expire();
+
     auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
 
     int launch_counter = 0;
@@ -499,7 +502,10 @@ struct implosion_t : public demonology_spell_t
         imp->interrupt();
 
         // Imps launched with Implosion appear to be staggered and snapshot when they impact
-        make_event( sim, 100_ms * launch_counter + this->travel_time(), [ ex, tar, imp ] {
+        // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
+        // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
+        // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
+        make_event( sim, 10_ms * launch_counter + this->travel_time(), [ ex, tar, imp ] {
           if ( imp && !imp->is_sleeping() )
           {
             ex->casts_left = ( imp->resources.current[ RESOURCE_ENERGY ] / 20 );
@@ -519,6 +525,8 @@ struct implosion_t : public demonology_spell_t
 
     if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
       p()->buffs.implosive_potential->trigger( imps_consumed );
+    else if ( p()->legendary.implosive_potential.ok() )
+      p()->buffs.implosive_potential_small->trigger( imps_consumed );
   }
 };
 
@@ -1122,6 +1130,12 @@ void warlock_t::create_buffs_demonology()
   buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
+          ->set_max_stack( 40 ); //Using the other wild imp simc max for now
+
+  //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
+  buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
           ->set_max_stack( 40 ); //Using the other wild imp simc max for now
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )

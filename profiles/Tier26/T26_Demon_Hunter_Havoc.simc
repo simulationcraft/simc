@@ -1,0 +1,131 @@
+demonhunter="T26_Demon_Hunter_Havoc"
+source=default
+spec=havoc
+level=60
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=3310221
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/growing_inferno:7/dauntless_duelist
+
+# Default consumables
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-(talent.trail_of_ruin.enabled+buff.metamorphosis.up))|runeforge.chaos_theory&buff.chaos_theory.down
+actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
+actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
+actions+=/variable,name=waiting_for_essence_break,value=talent.essence_break.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.essence_break.up
+actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
+actions+=/disrupt
+actions+=/call_action_list,name=cooldown,if=gcd.remains=0
+actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0
+actions+=/pick_up_fragment,if=fury.deficit>=35
+actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
+actions+=/call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)
+actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
+actions+=/run_action_list,name=normal
+
+actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta)&cooldown.eye_beam.remains>20&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)|fight_remains<25
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max))&(!covenant.venthyr.enabled|!dot.sinful_brand.ticking)
+actions.cooldown+=/sinful_brand,if=!dot.sinful_brand.ticking
+actions.cooldown+=/the_hunt,if=!talent.demonic.enabled&!variable.waiting_for_momentum|buff.furious_gaze.up
+actions.cooldown+=/fodder_to_the_flame
+actions.cooldown+=/elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|fight_remains<60
+# Default fallback for usable items.
+actions.cooldown+=/use_items,if=buff.metamorphosis.up
+
+actions.demonic=fel_rush,if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/death_sweep,if=variable.blade_dance
+actions.demonic+=/glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10
+actions.demonic+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
+actions.demonic+=/eye_beam,if=raid_event.adds.up|raid_event.adds.in>25
+actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
+actions.demonic+=/immolation_aura
+actions.demonic+=/annihilation,if=!variable.pooling_for_blade_dance
+actions.demonic+=/felblade,if=fury.deficit>=40
+actions.demonic+=/chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam
+actions.demonic+=/fel_rush,if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/demons_bite,target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4
+actions.demonic+=/demons_bite
+actions.demonic+=/throw_glaive,if=buff.out_of_range.up
+actions.demonic+=/fel_rush,if=movement.distance>15|buff.out_of_range.up
+actions.demonic+=/vengeful_retreat,if=movement.distance>15
+actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
+
+actions.essence_break=essence_break,if=fury>=80&(cooldown.blade_dance.ready|!variable.blade_dance)
+actions.essence_break+=/death_sweep,if=variable.blade_dance&debuff.essence_break.up
+actions.essence_break+=/blade_dance,if=variable.blade_dance&debuff.essence_break.up
+actions.essence_break+=/annihilation,if=debuff.essence_break.up
+actions.essence_break+=/chaos_strike,if=debuff.essence_break.up
+
+actions.normal=vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down&time>1
+actions.normal+=/fel_rush,if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.normal+=/fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
+actions.normal+=/death_sweep,if=variable.blade_dance
+actions.normal+=/immolation_aura
+actions.normal+=/glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)
+actions.normal+=/throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up
+actions.normal+=/eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15)
+actions.normal+=/blade_dance,if=variable.blade_dance
+actions.normal+=/felblade,if=fury.deficit>=40
+actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break
+actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break
+actions.normal+=/eye_beam,if=talent.blind_fury.enabled&raid_event.adds.in>cooldown
+actions.normal+=/demons_bite,target_if=min:debuff.burning_wound.remains,if=runeforge.burning_wound&debuff.burning_wound.remains<4
+actions.normal+=/demons_bite
+actions.normal+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
+actions.normal+=/felblade,if=movement.distance>15|buff.out_of_range.up
+actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
+actions.normal+=/vengeful_retreat,if=movement.distance>15
+actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
+
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=miasmalacquered_jerkin,id=183009,bonus_id=7187/1498,enchant=eternal_stats
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173128
+hands=umbrahide_gauntlets,id=172316,bonus_id=6649/6650/6758/7050/1532
+waist=heedless_pugilists_harness,id=183005,bonus_id=7187/1498/6935,gem_id=173128
+legs=abyssal_disharmony_breeches,id=180108,bonus_id=6536/1540/6646
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=shadowcore_oil
+main_hand=claws_of_the_stone_generals,id=182416,bonus_id=7187/1531,enchant=celestial_guidance
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=3535/4786/1540,enchant=celestial_guidance
+
+# Gear Summary
+# gear_ilvl=229.19
+# gear_agility=887
+# gear_stamina=1519
+# gear_crit_rating=326
+# gear_haste_rating=946
+# gear_mastery_rating=146
+# gear_versatility_rating=526
+# gear_armor=608
