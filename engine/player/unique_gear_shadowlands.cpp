@@ -1319,6 +1319,39 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void bloodspattered_scale( special_effect_t& effect )
+{
+  // TODO: "Damage and absorbption are increased for each enemy struck, up to 5 enemies."
+  struct blood_barrier_t : public proc_spell_t
+  {
+    buff_t* absorb;
+
+    blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
+      proc_spell_t( "blood_barrier", e.player, e.trigger(), e.item ), absorb( absorb_ )
+    {
+      aoe = e.driver()->effectN( 2 ).base_value();
+      split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      absorb->trigger( 1, execute_state->result_amount * execute_state->n_targets );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "blood_barrier" );
+  if ( !buff )
+  {
+    buff = make_buff<absorb_buff_t>( effect.player, "blood_barrier",
+        effect.player->find_spell( 329849 ), effect.item )
+      ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.execute_action = create_proc_action<blood_barrier_t>( "blood_barrier", effect, buff );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1568,6 +1601,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345739, items::grim_codex );
     unique_gear::register_special_effect( 345533, items::anima_field_emitter );
     unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
+    unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
