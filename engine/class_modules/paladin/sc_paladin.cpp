@@ -1105,11 +1105,14 @@ struct divine_toll_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p() -> conduit.ringing_clarity -> ok() && rng().roll( p() -> conduit.ringing_clarity.percent() ) )
+    if ( p() -> conduit.ringing_clarity -> ok() )
       for ( int hits = 0; hits < p() -> conduit.ringing_clarity -> effectN( 2 ).base_value(); hits ++ )
       {
-        p() -> active.divine_toll -> set_target( this -> target );
-        p() -> active.divine_toll -> schedule_execute();
+        if ( rng().roll( p() -> conduit.ringing_clarity.percent() ) )
+        {
+          p() -> active.divine_toll -> set_target( this -> target );
+          p() -> active.divine_toll -> schedule_execute();
+        }
       }
   }
 
@@ -1118,9 +1121,8 @@ struct divine_toll_t : public paladin_spell_t
 struct hallowed_discernment_tick_t : public paladin_spell_t
 {
   double aoe_multiplier;
-  // This should be using 340203 but I don't have its spell data.
   hallowed_discernment_tick_t( paladin_t* p ) :
-    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 317221 ) )
+    paladin_spell_t( "hallowed_discernment", p, p -> find_spell( 340203 ) )
     {
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
@@ -1137,9 +1139,8 @@ struct hallowed_discernment_tick_t : public paladin_spell_t
 
 struct hallowed_discernment_heal_tick_t : public paladin_heal_t
 {
-  // This should be using 340214 but I don't have its spell data.
   hallowed_discernment_heal_tick_t( paladin_t* p ) :
-    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 317221 ) )
+    paladin_heal_t( "hallowed_discernment_heal", p, p -> find_spell( 340214 ) )
     {
       base_multiplier *= p -> conduit.hallowed_discernment.percent();
       background = true;
@@ -2068,7 +2069,8 @@ void paladin_t::create_buffs()
             bow_callback -> deactivate();
           }
         } );
-  buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) );
+  buffs.blessing_of_spring = make_buff( this, "blessing_of_spring", find_spell( 328282 ) )
+    -> add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 }
 
 // paladin_t::default_potion ================================================
