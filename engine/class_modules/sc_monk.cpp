@@ -11968,12 +11968,12 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
 
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind" );
 
 
 //  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
 
-//  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
 }
 
 // Windwalker Combat Action Priority List ===============================
