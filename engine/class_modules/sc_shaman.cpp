@@ -5795,6 +5795,11 @@ struct frost_shock_t : public shaman_spell_t
     maelstrom_gain = 0.0;
 
     p()->buff.strength_of_earth->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    shaman_spell_t::impact( s );
 
     if ( rng().roll( p()->conduit.chilled_to_the_core.percent() ) )
     {
