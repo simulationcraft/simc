@@ -2173,6 +2173,19 @@ std::string paladin_t::default_rune() const
          "disabled";
 }
 
+// paladin_t::default_temporary_enchant ================================
+
+std::string paladin_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case PALADIN_PROTECTION:  return "main_hand:shadowcore_oil";
+    case PALADIN_RETRIBUTION: return "main_hand:shaded_sharpening_stone";
+
+    default:                  return "main_hand:shadowcore_oil";
+  }
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
