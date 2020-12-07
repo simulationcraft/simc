@@ -83,7 +83,7 @@ legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
 feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
 finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498/6646
 trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 main_hand=engorged_worm_smasher,id=178730,bonus_id=6807/1498/6646,enchant=lightless_force
 off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646

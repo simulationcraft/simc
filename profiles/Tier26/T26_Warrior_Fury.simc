@@ -2,10 +2,10 @@ warrior="T26_Warrior_Fury"
 source=default
 spec=fury
 level=60
-race=mechagnome
+race=human
 role=attack
 position=back
-talents=2312323
+talents=2113323
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
 
