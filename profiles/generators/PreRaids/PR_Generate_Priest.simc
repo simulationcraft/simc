@@ -1,30 +1,31 @@
-priest="PR_Priest_Discipline"
-level=60
-race=mechagnome
-spec=discipline
-role=spell
-position=ranged_back
-talents=3020310
-covenant=kyrian
-soulbind=pelagos,combat_meditation/courageous_ascension:4
+# Disabled until https://github.com/simulationcraft/simc/issues/5640 is resolved
+# priest="PR_Priest_Discipline"
+# level=60
+# race=mechagnome
+# spec=discipline
+# role=spell
+# position=ranged_back
+# talents=3020310
+# covenant=kyrian
+# soulbind=pelagos,combat_meditation/courageous_ascension:4
 
-head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulders=ingra_malochs_mantle,id=178696,bonus_id=6807/1498/6646
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
-chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
-wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
-hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498/6646
-waist=cord_of_the_dark_word,id=178822,bonus_id=6807/1498/6646
-legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498/6646
-feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6716/6976/1487
-finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
-trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646
-trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
+# neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
+# shoulders=ingra_malochs_mantle,id=178696,bonus_id=6807/1498/6646
+# back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
+# chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
+# wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
+# hands=stonefiend_shapers_mitts,id=178833,bonus_id=6807/1498/6646
+# waist=cord_of_the_dark_word,id=178822,bonus_id=6807/1498/6646
+# legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=6807/1498/6646
+# feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6716/6976/1487
+# finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
+# finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498,enchant=tenet_of_haste
+# trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646
+# trinket2=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+# main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
-save=PR_Priest_Discipline.simc
+# save=PR_Priest_Discipline.simc
 
 priest="PR_Priest_Shadow"
 level=60
