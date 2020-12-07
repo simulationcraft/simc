@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-04/36753)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-07/36839, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -865,7 +865,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
+Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger, One Hand, Off Hand
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Forceful Winds (262652 effect#1), Doom Winds (335903 effect#3)
 Family Flags     : 23, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1520,7 +1520,7 @@ Resource         : 4% Base Mana (0) (id=215301)
 Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
-Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Off Hand
 Cooldown         : 18 seconds
 Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Hot Hand (215785 effects: #1, #2), Lava Lash (334033 effect#1), Primal Lava Actuators (335896 effect#1)
@@ -3789,7 +3789,7 @@ Resource         : 5.5% Base Mana (0) (id=215302)
 Spell Level      : 38
 Range            : 5 yards
 GCD              : 1.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Cooldown         : 9 seconds
 Labels           : 1183: Crash Lightning (333964 effect#1)
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm's Eye (263795 effect#1)

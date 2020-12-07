@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-04/36753)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-07/36839, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3651,7 +3651,6 @@ Effects          :
 Description      : You have a $m1% chance when you Tiger Palm to cause your next Blackout Kick to cost no Chi within $116768d.
 
 Name             : Storm, Earth, and Fire (id=137639) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Windwalker Monk
 School           : Nature
 Spell Type       : None
@@ -9790,13 +9789,14 @@ Description      : Summon an effigy of Chi-Ji that kicks up a Gust of Mist when 
 Chi-Ji's presence makes you immune to movement impairing effects.
 
 Name             : Dance of Chi-Ji (id=325201) [Scaling Spell (-1), Spell Family (53), Passive, Hidden] 
+Hotfixed         : Proc Flags (4112 -> 5136)
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, Generic Hostile Spell
+Proc Flags       : ....x... ..x.x... ........ ........ 
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 

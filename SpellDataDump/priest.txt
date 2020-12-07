@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-04/36753)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-07/36839, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9138,6 +9138,7 @@ Effects          :
 Description      : If your Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
 
 Name             : Mindgames (desc=Venthyr) (id=323673) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 Covenant         : Venthyr
 School           : Shadow
@@ -9157,7 +9158,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=812771)   : School Damage (2): shadow
@@ -10006,7 +10007,6 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Heal (2060)
                    Family Flags: 12
-Hotfixed         : Base Value (-150 -> -200)
 #2 (id=833396)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Heal (2060)

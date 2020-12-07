@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-04/36753)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-07/36839, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -4300,7 +4300,6 @@ Effects          :
 Description      : Activating Bestial Wrath grants $s1 charges of Barbed Shot.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
