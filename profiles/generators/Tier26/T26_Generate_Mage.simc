@@ -34,24 +34,24 @@ spec=fire
 role=spell
 position=ranged_back
 talents=3031021
-covenant=kyrian
-soulbind=pelagos,controlled_destruction:7/combat_meditation/infernal_cascade:7/focusing_mantra
+covenant=night_fae
+soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/controlled_destruction:7
 
 head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
-shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+neck=sin_stained_pendant,id=178827,bonus_id=1540/6646/6935,gem_id=173128
+shoulder=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
-wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=gory_surgeons_gloves,id=178748,bonus_id=6536/1540/6646
-waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173128
-legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
+wrist=deathshackle_wristwraps,id=178704,bonus_id=1540/6646/6935,gem_id=173128,enchant=eternal_intellect
+hands=mitts_of_flawless_duplication,id=178930,bonus_id=1540/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=1540/6646/6935,gem_id=173128
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1540/6646
 feet=sparkling_glass_slippers,id=183023,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=ardent_sunstar_signet,id=183035,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=glyph_of_assimilation,id=184021,bonus_id=7187/1498
+trinket1=soul_igniter,id=184019,bonus_id=1498/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_revelation
+main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/6652/1531/6646,enchant=sinful_revelation
 
 save=T26_Mage_Fire.simc
 
