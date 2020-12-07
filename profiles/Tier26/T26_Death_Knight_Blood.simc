@@ -95,15 +95,15 @@ neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=shadowghast_breastplate,id=171412,bonus_id=6647/6649/6758/6953/1532,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498,gem_id=173127
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
 hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
 waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
 legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary

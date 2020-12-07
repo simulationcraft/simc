@@ -78,18 +78,18 @@ actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remain
 actions+=/arcane_torrent,if=energy<31
 actions+=/rushing_jade_wind
 
-head=hood_of_refracted_shadows,id=178817,bonus_id=6536/1540/6646/1808,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/1808,gem_id=173127
+head=hood_of_refracted_shadows,id=178817,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=grimveiled_cape,id=173242,bonus_id=6716/7076/6647/6650/1532,enchant=soul_vitality
 chest=animasplattered_hide,id=178835,bonus_id=6536/1540/6646,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6536/1540/6646/1808,gem_id=173127
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6536/1540/6646/6935,gem_id=173127
 hands=rocket_chicken_handlers,id=179336,bonus_id=6536/1540/6646
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1540/6646/1808,gem_id=173129
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1540/6646/6935,gem_id=173129
 legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/1808,gem_id=173129,enchant=tenet_of_versatility
-finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/1808,gem_id=173129,enchant=tenet_of_critical_strike
+finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=sinful_revelation

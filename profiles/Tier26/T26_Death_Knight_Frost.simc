@@ -167,22 +167,22 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=1498/6807,gem_id=173130
-neck=azurevenom_choker,id=180115,bonus_id=6807/1540,gem_id=173130
+head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173130
 shoulders=shadowghast_pauldrons,id=171417,bonus_id=6716/6944/6647/6648/1532
-back=mantle_of_manifest_sins,id=183033,bonus_id=1498/6807,enchant=soul_vitality
-chest=rampaging_giants_chestplate,id=182999,bonus_id=1498/6807,gem_id=173130,enchant=eternal_stats
-wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1540,gem_id=173130
-hands=colossal_plate_gauntlets,id=182984,bonus_id=1498/6807,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1540
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1540
-feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6807/1540
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1498/6807,gem_id=173130,enchant=tenet_of_mastery
-finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1540,gem_id=173130,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1540
-trinket2=dreadfire_vessel,id=184030,bonus_id=1498/6807
-main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=1531/6807,enchant=rune_of_razorice
-off_hand=stoneborn_terrorblade,id=182395,bonus_id=1531/6807,enchant=rune_of_the_fallen_crusader
+back=mantle_of_manifest_sins,id=183033,bonus_id=7187/1498,enchant=soul_vitality
+chest=rampaging_giants_chestplate,id=182999,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_stats
+wrists=realityshatter_vambraces,id=179354,bonus_id=6536/1540/6646/6935,gem_id=173130
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6536/1540/6646
+legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1540/6646
+feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6536/1540/6646
+finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6536/1540/6646/6935,gem_id=173130,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=barbededge_of_the_stone_legion,id=182421,bonus_id=7187/1531,enchant=rune_of_razorice
+off_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=228.75
