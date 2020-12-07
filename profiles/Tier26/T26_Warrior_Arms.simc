@@ -14,6 +14,7 @@ potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -108,7 +109,7 @@ legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 

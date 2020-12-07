@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1010332
 covenant=necrolord
-soulbind=emeni,lead_by_example/dissonant_echoes:4/haunting_apparitions:4
+soulbind=emeni,lead_by_example/dissonant_echoes:4
 
 # Default consumables
 potion=potion_of_phantom_fire
