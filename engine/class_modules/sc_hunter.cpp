@@ -3271,6 +3271,14 @@ struct aimed_shot_t : public aimed_shot_base_t
 
       aimed_shot_base_t::schedule_execute( s );
     }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // XXX: Wild Spirits from Double Tap AiS at "close" range
+      triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
+    }
   };
 
   struct serpent_sting_sst_t final : public hunter_ranged_attack_t
