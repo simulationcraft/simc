@@ -69,7 +69,7 @@ covenant=kyrian
 soulbind=pelagos,combat_meditation/planned_execution:7/stiletto_staccato:7
 
 head=umbrahide_helm,id=172317,bonus_id=6647/6650/6758/7124/1532/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=corset_of_the_deft_duelist,id=182989,bonus_id=7187/1498,enchant=eternal_stats
