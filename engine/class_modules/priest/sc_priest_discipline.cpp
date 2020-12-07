@@ -169,6 +169,8 @@ struct power_word_solace_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    cooldown->hasted = true;
+
     travel_speed = 0.0;  // DBC has default travel taking 54seconds.....
   }
 
