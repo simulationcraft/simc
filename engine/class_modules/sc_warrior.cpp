@@ -6688,21 +6688,22 @@ void warrior_t::apl_arms()
   execute->add_talent( this, "Deadly Calm" );
   execute->add_talent( this, "Rend", "if=remains<=duration*0.3" );
   execute->add_talent( this, "Skullsplitter", "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
-  execute->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<1" );
+  execute->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
+  execute->add_talent( this, "Ravager", "if=buff.avatar.remains<18&!dot.ravager.remains" );
   execute->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
   execute->add_talent( this, "Warbreaker" );
   execute->add_action( this, "Colossus Smash" );
+  execute->add_action( this, covenant.condemn, "condemn", "if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65" );
   execute->add_action( this, "Overpower", "if=charges=2" );
   execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
-  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<gcd" );
+  execute->add_action( this, "Bladestorm", "buff.deadly_calm.down&rage<50" );
+  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd" );
   execute->add_talent( this, "Skullsplitter", "if=rage<40" );
   execute->add_action( this, "Overpower" );
   execute->add_action( this, covenant.condemn, "condemn" );
   execute->add_action( this, "Execute" );
-  execute->add_action( this, "Bladestorm", "if=rage<80" );
-  execute->add_talent( this, "Ravager", "if=rage<80" );
 
 
 
@@ -6729,27 +6730,26 @@ void warrior_t::apl_arms()
 
   single_target->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=(target.time_to_die>180|"
                                    "(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
-  single_target->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<1" );
+  single_target->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
   single_target->add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
   single_target->add_talent( this, "Warbreaker" );
   single_target->add_action( this, "Colossus Smash" );
+  single_target->add_talent( this, "Ravager", "if=buff.avatar.remains<18&!dot.ravager.remains" );
   single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
-  single_target->add_action( this, "Bladestorm", "if=debuff.colossus_smash.up&!covenant.venthyr" );
-  single_target->add_talent( this, "Ravager", "if=debuff.colossus_smash.up&!covenant.venthyr" );
   single_target->add_action( this, "Overpower", "if=charges=2" );
-  single_target->add_action( this, "Mortal Strike", "if=buff.overpower.stack>=2&buff.deadly_calm.down|dot.deep_wounds.remains<=gcd" );
+  single_target->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<70)" );
+  single_target->add_action( this, "Mortal Strike", "if=buff.overpower.stack>=2&buff.deadly_calm.down|"
+                                   "(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_talent( this, "Skullsplitter", "if=rage<60&buff.deadly_calm.down" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Bladestorm", "if=debuff.colossus_smash.up&covenant.venthyr" );
-  single_target->add_action( this, "Ravager", "if=debuff.colossus_smash.up&covenant.venthyr" );
   single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&rage>60" );
-  single_target->add_action( this, "Slam", "if=rage>50");
+  single_target->add_action( this, "Slam" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -7733,8 +7733,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
-
-  //s *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
 
   return s;
 }
