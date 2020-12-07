@@ -354,6 +354,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
       background = true;
+      may_crit = false;
 
       // spell data please
       aoe = 0;
