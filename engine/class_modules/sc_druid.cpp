@@ -5825,7 +5825,7 @@ struct sunfire_t : public druid_spell_t
         p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
       dual = background   = true;
-      aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() ? -1 : 0;
+      aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() || p->talent.balance_affinity->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
       radius              = data().effectN( 2 ).radius();
     }
