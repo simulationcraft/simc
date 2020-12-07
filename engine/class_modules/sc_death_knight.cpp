@@ -8858,7 +8858,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)");
 
   // Cooldowns
-  cooldowns -> add_action( this, "Army of the Dead", "if=debuff.festering_wound.up&cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
+  cooldowns -> add_action( this, "Army of the Dead", "if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight|!talent.unholy_blight", "Cooldowns" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
   cooldowns -> add_talent( this, "Unholy Blight", "if=variable.st_planning&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&runeforge.deadliest_coil&talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5&cooldown.apocalypse.remains<3", "Sync Blight with Apocalypse if the cooldown of Apocalypse is low enough. Requires Deadliest Coil, Convocation of the Dead and Army of the Damned together." );
   cooldowns -> add_talent( this, "Unholy Blight", "if=active_enemies>=2" );
