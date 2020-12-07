@@ -8736,7 +8736,7 @@ void druid_t::apl_guardian()
   owlweave->add_action( "starfire,if=covenant.night_fae&eclipse.any_next" );
   owlweave->add_action( "wrath,if=!covenant.night_fae&eclipse.any_next" );
   owlweave->add_action( "starsurge,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
-  owlweave->add_action( "convoke_the_spirits,if=druid.owlweave_bear" );
+  owlweave->add_action( "convoke_the_spirits,if=(buff.eclipse_solar.up|buff.eclipse_lunar.up)" );
   owlweave->add_action( "starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
   owlweave->add_action( "wrath" );
 }
