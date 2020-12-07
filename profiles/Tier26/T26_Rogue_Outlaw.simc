@@ -64,7 +64,7 @@ actions.build+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1+buf
 
 # Cooldowns
 # Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows
-actions.cds=vanish,if=!stealthed.all&variable.ambush_condition&master_assassin_remains=0&buff.deathly_shadows.down
+actions.cds=vanish,if=!stealthed.all&variable.ambush_condition&master_assassin_remains=0&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<2)
 actions.cds+=/flagellation
 actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!cooldown.killing_spree.up|!talent.killing_spree.enabled)
@@ -96,7 +96,8 @@ actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&buf
 actions.finish+=/dispatch
 
 # Stealth
-actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
+actions.stealth=dispatch,if=combo_points>=cp_max_spend
+actions.stealth+=/cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
 actions.stealth+=/ambush
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129

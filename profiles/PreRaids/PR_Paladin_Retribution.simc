@@ -14,6 +14,7 @@ potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -104,6 +105,7 @@ main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=sinful
 # gear_ilvl=184.40
 # gear_strength=588
 # gear_stamina=858
+# gear_attack_power=20
 # gear_crit_rating=276
 # gear_haste_rating=590
 # gear_mastery_rating=232
