@@ -8646,7 +8646,6 @@ void druid_t::apl_guardian()
   pre->add_action( "bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
-  pre->add_action( "starfire,if=druid.owlweave_bear&!covenant.night_fae" );
 
   def->add_action( "auto_attack,if=!buff.prowl.up" );
   def->add_action( "use_items,if=!buff.prowl.up" );
