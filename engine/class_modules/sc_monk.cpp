@@ -11954,6 +11954,7 @@ void monk_t::apl_combat_brewmaster()
   // Covenant Faeline Stomp
   def->add_action( "faeline_stomp" );
 
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( this, "Spinning Crane Kick", "if=buff.charred_passions.up" );
   def->add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))" );
@@ -11968,7 +11969,6 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
 
-  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind" );
 
 
