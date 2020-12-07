@@ -69,7 +69,7 @@ actions.cds+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_ma
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
 actions.cds+=/exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4
 actions.cds+=/shiv,if=dot.rupture.ticking|dot.sepsis.ticking
-actions.cds+=/potion,if=buff.bloodlust.react|debuff.vendetta.up
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up

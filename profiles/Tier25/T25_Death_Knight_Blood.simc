@@ -9,10 +9,11 @@ talents=2220022
 azerite_essences=12:4:1/37:4:0/32:4:0/4:4:0
 
 # Default consumables
-potion=potion_of_phantom_fire
-flask=spectral_flask_of_power
-food=feast_of_gluttonous_hedonism
-augmentation=veiled
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
