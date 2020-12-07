@@ -8891,12 +8891,14 @@ void death_knight_t::default_apl_unholy()
   // AoE Setup Actions
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
   aoe_setup -> add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
+  aoe_setup -> add_action( this, "Death Coil", "if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3" );
   aoe_setup -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<1" );
   aoe_setup -> add_action( this, "Festering Strike", "target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)" );
 
   // AoE Burst Actions
+  aoe_burst -> add_action( this, "Death Coil", "if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3" );
   aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle|buff.swarming_mist.up", "AoE Burst" );
   aoe_burst -> add_action( this, "Epidemic", "if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle" );
   aoe_burst -> add_action( this, "Epidemic", "if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle|fight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5" );
@@ -8904,6 +8906,7 @@ void death_knight_t::default_apl_unholy()
   aoe_burst -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AoE Actions
+  generic_aoe -> add_action( this, "Death Coil", "if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3" );
   generic_aoe -> add_action( this, "Epidemic", "if=buff.sudden_doom.react", "Generic AoE Priority" );
   generic_aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   generic_aoe -> add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
