@@ -127,7 +127,7 @@ legs=wind_dancers_legguards,id=178839,bonus_id=6807/1498/6646
 feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
 main_hand=penitent_edge,id=180095,bonus_id=6807/1498/6646,enchant=sinful_revelation
 off_hand=penitent_edge,id=180095,bonus_id=6807/1498/6646,enchant=celestial_guidance
