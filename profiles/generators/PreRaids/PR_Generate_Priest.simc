@@ -4,9 +4,9 @@ race=mechagnome
 spec=discipline
 role=spell
 position=ranged_back
-talents=3030113
+talents=3020310
 covenant=kyrian
-soulbind=pelagos,combat_meditation/swift_penitence:4
+soulbind=pelagos,combat_meditation/courageous_ascension:4
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646

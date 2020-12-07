@@ -4,7 +4,7 @@ race=mechagnome
 spec=discipline
 role=spell
 position=ranged_back
-talents=3030113
+talents=3020310
 covenant=kyrian
 soulbind=pelagos,combat_meditation/swift_penitence:7/courageous_ascension:7
 

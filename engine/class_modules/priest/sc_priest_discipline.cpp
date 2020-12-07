@@ -385,65 +385,59 @@ void priest_t::generate_apl_discipline_h()
 /** Discipline Damage Combat Action Priority List */
 void priest_t::generate_apl_discipline_d()
 {
-  action_priority_list_t* def  = get_action_priority_list( "default" );
-  action_priority_list_t* boon = get_action_priority_list( "boon" );
+  action_priority_list_t* def     = get_action_priority_list( "default" );
+  action_priority_list_t* boon    = get_action_priority_list( "boon" );
+  action_priority_list_t* racials = get_action_priority_list( "racials" );
 
   boon->add_action( "ascended_blast" );
   boon->add_action( "ascended_nova" );
 
   // On-Use Items
-  for ( const auto& item_action : get_item_actions() )
-  {
-    def->add_action( item_action );
-  }
-
-  // Professions
-  for ( const auto& profession_action : get_profession_actions() )
-  {
-    def->add_action( profession_action );
-  }
+  def->add_action( "use_items", "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // Potions
-  if ( sim->allow_potions && true_level >= 80 )
+  if ( sim->allow_potions )
   {
-    def->add_action( "potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    def->add_action( "potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40",
+                     "Sync potion usage with Bloodlust or Power Infusion." );
   }
 
-  if ( race == RACE_BLOOD_ELF )
-  {
-    def->add_action( "arcane_torrent,if=mana.pct<=95" );
-  }
-
-  if ( find_class_spell( "Shadowfiend" )->ok() )
-  {
-    def->add_action( "mindbender,if=talent.mindbender.enabled" );
-    def->add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  }
+  // Racials
+  racials->add_action( "arcane_torrent,if=mana.pct<=95" );
 
   if ( race != RACE_BLOOD_ELF )
   {
     for ( const auto& racial_action : get_racial_actions() )
     {
-      def->add_action( racial_action );
+      racials->add_action( racial_action );
     }
   }
 
-  def->add_action( this, "Power Infusion" );
-  def->add_talent( this, "Shadow Covenant" );
+  def->add_call_action_list( racials );
+  def->add_action( this, "Power Infusion", "",
+                   "Use Power Infusion before Shadow Covenant to make sure we don't lock out our CD." );
+  def->add_talent( this, "Divine Star" );
+  def->add_talent( this, "Halo" );
+  def->add_action( this, "Penance" );
+  def->add_talent( this, "Power Word: Solace" );
+  def->add_talent( this, "Shadow Covenant",
+                   "if=!covenant.kyrian|(!cooldown.boon_of_the_ascended.up&!buff.boon_of_the_ascended.up)",
+                   "Hold Shadow Covenant if Boon of the Ascended cooldown is up or the buff is active." );
+  def->add_talent( this, "Schism" );
+  def->add_action( this, covenant.mindgames, "mindgames" );
+  def->add_action( this, covenant.fae_guardians, "fae_guardians" );
+  def->add_action( this, covenant.unholy_nova, "unholy_nova" );
   def->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended" );
   def->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
+  def->add_action( "mindbender" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
   def->add_action( this, "Shadow Word: Death" );
-
-  def->add_talent( this, "Schism" );
   def->add_action( this, "Mind Blast" );
-  def->add_action( this, "Penance" );
-  def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
-  def->add_action( this, "Shadow Word: Pain", "if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled" );
-  def->add_talent( this, "Power Word: Solace" );
-  def->add_talent( this, "Divine Star", "if=mana.pct>80" );
-  def->add_action( this, "Smite" );
+  def->add_talent( this, "Purge the Wicked", "if=refreshable" );
+  def->add_action( this, "Shadow Word: Pain", "if=refreshable&!talent.purge_the_wicked.enabled" );
+  def->add_action( this, "Smite", "if=spell_targets.holy_nova<3", "Use Smite on up to 2 targets." );
+  def->add_action( this, "Holy Nova", "if=spell_targets.holy_nova>=3" );
   def->add_action( this, "Shadow Word: Pain" );
 }
 

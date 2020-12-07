@@ -5,9 +5,9 @@ level=60
 race=mechagnome
 role=spell
 position=ranged_back
-talents=3030113
+talents=3020310
 covenant=kyrian
-soulbind=pelagos,combat_meditation/swift_penitence:4
+soulbind=pelagos,combat_meditation/courageous_ascension:4
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -30,35 +30,45 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-actions=use_item,slot=trinket2
-actions+=/mindbender,if=talent.mindbender.enabled
-actions+=/shadowfiend,if=!talent.mindbender.enabled
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/lights_judgment
-actions+=/fireblood
-actions+=/ancestral_call
-actions+=/bag_of_tricks
+# Default fallback for usable items: Use on cooldown in order by trinket slot.
+actions=use_items
+# Sync potion usage with Bloodlust or Power Infusion.
+actions+=/potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40
+actions+=/call_action_list,name=racials
+# Use Power Infusion before Shadow Covenant to make sure we don't lock out our CD.
 actions+=/power_infusion
-actions+=/shadow_covenant
+actions+=/divine_star
+actions+=/halo
+actions+=/penance
+actions+=/power_word_solace
+# Hold Shadow Covenant if Boon of the Ascended cooldown is up or the buff is active.
+actions+=/shadow_covenant,if=!covenant.kyrian|(!cooldown.boon_of_the_ascended.up&!buff.boon_of_the_ascended.up)
+actions+=/schism
 actions+=/boon_of_the_ascended
 actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
+actions+=/mindbender
 actions+=/purge_the_wicked,if=!ticking
 actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
 actions+=/shadow_word_death
-actions+=/schism
 actions+=/mind_blast
-actions+=/penance
-actions+=/purge_the_wicked,if=remains<(duration*0.3)
-actions+=/shadow_word_pain,if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled
-actions+=/power_word_solace
-actions+=/divine_star,if=mana.pct>80
-actions+=/smite
+actions+=/purge_the_wicked,if=refreshable
+actions+=/shadow_word_pain,if=refreshable&!talent.purge_the_wicked.enabled
+# Use Smite on up to 2 targets.
+actions+=/smite,if=spell_targets.holy_nova<3
+actions+=/holy_nova,if=spell_targets.holy_nova>=3
 actions+=/shadow_word_pain
 
 actions.boon=ascended_blast
 actions.boon+=/ascended_nova
+
+actions.racials=arcane_torrent,if=mana.pct<=95
+actions.racials+=/blood_fury
+actions.racials+=/berserking
+actions.racials+=/arcane_torrent
+actions.racials+=/lights_judgment
+actions.racials+=/fireblood
+actions.racials+=/ancestral_call
+actions.racials+=/bag_of_tricks
 
 head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646

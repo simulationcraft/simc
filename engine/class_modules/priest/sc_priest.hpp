@@ -1310,6 +1310,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
     }
 
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.shadow_covenant->ok() )
+    {
+      if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
+      {
+        return false;
+      }
+    }
+
     return action_t::ready();
   }
 
