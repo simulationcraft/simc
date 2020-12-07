@@ -14,7 +14,6 @@ potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -105,7 +104,6 @@ main_hand=stoneborn_goliaths_cleaver,id=182415,bonus_id=7187/1531,enchant=sinful
 # gear_ilvl=229.87
 # gear_strength=888
 # gear_stamina=1529
-# gear_attack_power=20
 # gear_crit_rating=457
 # gear_haste_rating=788
 # gear_mastery_rating=451
