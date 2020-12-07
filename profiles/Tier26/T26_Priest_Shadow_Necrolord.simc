@@ -144,15 +144,14 @@ finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,g
 finger2=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-main_hand=sinstealers_sentencing_gavel,id=182391,bonus_id=7187/1531,enchant=sinful_revelation
-off_hand=stonewrights_infused_stonecarver,id=182426,bonus_id=7187/1531
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.63
+# gear_ilvl=229.40
 # gear_stamina=1526
-# gear_intellect=1100
-# gear_crit_rating=385
-# gear_haste_rating=976
-# gear_mastery_rating=558
+# gear_intellect=1103
+# gear_crit_rating=365
+# gear_haste_rating=918
+# gear_mastery_rating=638
 # gear_versatility_rating=129
 # gear_armor=373
