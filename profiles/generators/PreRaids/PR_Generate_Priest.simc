@@ -62,7 +62,7 @@ role=spell
 position=ranged_back
 talents=1010332
 covenant=necrolord
-soulbind=emeni,lead_by_example/dissonant_echoes:4/haunting_apparitions:4
+soulbind=emeni,lead_by_example/dissonant_echoes:4
 
 head=depraved_physicians_mask,id=178759,bonus_id=6807/1498/6646
 neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
