@@ -28,9 +28,9 @@ save=T26_Death_Knight_Blood.simc
 
 
 deathknight="T26_Death_Knight_Frost"
-spec=frost
 level=60
 race=blood_elf
+spec=frost
 role=attack
 position=back
 talents=3102013
@@ -58,9 +58,9 @@ save=T26_Death_Knight_Frost.simc
 
 
 deathknight="T26_Death_Knight_Unholy"
-spec=unholy
 level=60
 race=orc
+spec=unholy
 role=attack
 position=back
 talents=2303021

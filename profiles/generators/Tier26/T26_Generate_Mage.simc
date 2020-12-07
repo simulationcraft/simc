@@ -3,7 +3,7 @@ spec=arcane
 level=60
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=1032021
 covenant=night_fae
 soulbind=niya,grove_invigoration/niyas_tools_Poison/magis_brand:7/discipline_of_the_grove:7
@@ -57,11 +57,11 @@ save=T26_Mage_Fire.simc
 
 
 mage="T26_Mage_Frost"
-spec=frost
 level=60
 race=mechagnome
+spec=frost
 role=spell
-position=back
+position=ranged_back
 talents=2032021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/icy_propulsion:7

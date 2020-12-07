@@ -2,8 +2,8 @@ optimal_raid=1
 default_actions=1
 
 T26_Death_Knight_Blood.simc
-# T26_Death_Knight_Frost.simc
-# T26_Death_Knight_Unholy.simc
+T26_Death_Knight_Frost.simc
+T26_Death_Knight_Unholy.simc
 
 T26_Demon_Hunter_Havoc.simc
 T26_Demon_Hunter_Vengeance.simc
@@ -20,7 +20,7 @@ T26_Mage_Fire.simc
 T26_Mage_Frost.simc
 T26_Mage_Arcane.simc
 
-# T26_Monk_Brewmaster.simc
+T26_Monk_Brewmaster.simc
 T26_Monk_Windwalker.simc
 T26_Monk_Windwalker_Serenity.simc
 

@@ -6,7 +6,6 @@ spec=havoc
 role=attack
 position=back
 talents=3310221
-
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/growing_inferno:7/dauntless_duelist
 
@@ -38,7 +37,6 @@ spec=vengeance
 role=tank
 position=front
 talents=1233321
-
 covenant=kyrian
 soulbind=pelagos,combat_meditation/repeat_decree:7/growing_inferno:7
 

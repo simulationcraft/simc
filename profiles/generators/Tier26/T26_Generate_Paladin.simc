@@ -1,7 +1,7 @@
 paladin="T26_Paladin_Protection"
-spec=protection
 level=60
 race=draenei
+spec=protection
 role=tank
 position=front
 talents=2200202

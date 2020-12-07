@@ -1,7 +1,7 @@
 hunter="T26_Hunter_Beast_Mastery"
-spec=beast_mastery
 level=60
 race=orc
+spec=beast_mastery
 role=attack
 position=ranged_back
 talents=2102013
@@ -28,9 +28,9 @@ save=T26_Hunter_Beast_Mastery.simc
 
 
 hunter="T26_Hunter_Marksmanship"
-spec=marksmanship
 level=60
 race=orc
+spec=marksmanship
 role=attack
 position=ranged_back
 talents=1101032
@@ -57,11 +57,11 @@ save=T26_Hunter_Marksmanship.simc
 
 
 hunter="T26_Hunter_Survival"
-spec=survival
 level=60
 race=mechagnome
+spec=survival
 role=attack
-position=ranged_back
+position=back
 talents=3101012
 covenant=night_fae
 soulbind=niya,grove_invigoration/strength_of_the_pack:7/niyas_tools_burrs
