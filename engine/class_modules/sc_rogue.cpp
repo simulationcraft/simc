@@ -6635,7 +6635,7 @@ void rogue_t::init_action_list()
     cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle" );
     cds->add_action( "flagellation_cleanse,if=debuff.flagellation.remains<2" );
-    cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=3|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
+    cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds->add_talent( this, "Shuriken Tornado", "if=energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21|fight_remains<=5&spell_targets.shuriken_storm<3" );
@@ -6671,10 +6671,11 @@ void rogue_t::init_action_list()
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
-    stealthed->add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD)." );
+    stealthed->add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)&master_assassin_remains=0", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)" );
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
+    stealthed->add_action( this, "Shadowstrike", "if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
     stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
@@ -6902,7 +6903,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 
   // Split expressions
 
-  // stealthed.(rogue|mantle|all)
+  // stealthed.(rogue|mantle|sepsis|all)
   // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance, subterfuge)
   // mantle: all abilities that maintain Mantle of the Master Assassin aura are checked (stealth, vanish)
   // all: all abilities that allow stealth are checked (rogue + shadowmeld)
@@ -6918,6 +6919,12 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
         return stealthed( STEALTH_BASIC );
+      } );
+    }
+    else if ( util::str_compare_ci( split[ 1 ], "sepsis" ) )
+    {
+      return make_fn_expr( split[ 0 ], [ this ]() {
+        return stealthed( STEALTH_SEPSIS );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )

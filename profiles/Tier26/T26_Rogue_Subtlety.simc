@@ -80,7 +80,7 @@ actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_to
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 actions.cds+=/flagellation,if=variable.snd_condition&!stealthed.mantle
 actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
-actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=3|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
+actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
 # Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
@@ -141,14 +141,15 @@ actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&(variable.shd_th
 actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains
 
 # Stealthed Rotation
-# If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD).
-actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)
+# If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)
+actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)&master_assassin_remains=0
 # Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations.
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 # Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)
 actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
+actions.stealthed+=/shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4
 actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5
 # Up to 3 targets keep up Find Weakness by cycling Shadowstrike.
 actions.stealthed+=/shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6
