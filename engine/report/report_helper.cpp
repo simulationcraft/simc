@@ -443,6 +443,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     }
 
     // Update equipped gems count
+    // TODO: check gem count per item?
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
       if ( item.parsed.gem_id[ jj ] > 0 )
@@ -483,6 +484,25 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     // Check if the item is using stats=
     if ( !item.option_stats_str.empty() )
       sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(), util::slot_type_string( slot ) );
+
+    // Check allowed enchant slots in Shadowlands: chest/back/fingers/weapons
+    // And feet/hands/wrists depending on main stat
+    // Warns about invalid slots and kindly notices if an item is missing an enchant
+    if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND ||
+         // Make sure offhand enchants are only on regular weapons, not shields or off-hand stat sticks
+         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ) ||
+         ( slot == SLOT_WRISTS && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_INTELLECT ) ||
+         ( slot == SLOT_HANDS && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ) ||
+         ( slot == SLOT_FEET && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_AGILITY ) )
+    {
+      if ( item.option_enchant_str.empty() )
+        sim.errorf( "Player %s is missing an enchantment on %s, please add one.\n", p.name(),
+                    util::slot_type_string( slot ) );
+    }
+    // Don't enforce stamina + tertiary cloak enchants
+    else if ( !item.option_enchant_str.empty() && slot != SLOT_BACK )
+      sim.errorf( "Player %s has an invalid enchantment equipped on %s, please remove it. \n", p.name(),
+                  util::slot_type_string( slot ) );
 
     // Check if the item is using enchant_id=
     if ( !item.option_enchant_id_str.empty() )
