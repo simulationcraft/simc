@@ -20,7 +20,7 @@ legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -49,8 +49,8 @@ legs=shadowghast_greaves,id=171416,bonus_id=6648/6649/6758/6964/1532
 feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -79,7 +79,7 @@ legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=stoneborn_terrorblade,id=182395,bonus_id=7187/1531,enchant=lightless_force
 off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531

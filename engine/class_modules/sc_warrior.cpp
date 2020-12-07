@@ -566,6 +566,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, WARRIOR, name, r ),
@@ -7492,6 +7493,34 @@ std::string warrior_t::default_rune() const
 {
   return ( true_level >= 60 ) ? "veiled"
                                : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
+}
+
+// warrior_t::default_temporary_enchant =====================================
+
+std::string warrior_t::default_temporary_enchant() const
+{
+  std::string fury_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil/off_hand:shadowcore_oil"
+                              : "disabled";
+
+  std::string arms_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil"
+                              : "disabled";
+
+  std::string protection_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil"
+                              : "disabled";
+  switch ( specialization() )
+  {
+    case WARRIOR_FURY:
+      return fury_temporary_enchant;
+    case WARRIOR_ARMS:
+      return arms_temporary_enchant;
+    case WARRIOR_PROTECTION:
+      return protection_temporary_enchant;
+    default:
+      return "disabled";
+  }
 }
 
 // warrior_t::init_actions ==================================================
