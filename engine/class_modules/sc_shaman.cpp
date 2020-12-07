@@ -3760,6 +3760,13 @@ struct ice_strike_t : public shaman_attack_t
     weapon_multiplier = 0.0;
   }
 
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_stormbringer = may_proc_flametongue = false;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -9189,7 +9196,6 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
-  def->add_action( "windstrike" );
 
   // Heart of Azeroth major essence
   def->add_action( "heart_essence" );
@@ -9206,11 +9212,16 @@ void shaman_t::init_action_list_enhancement()
 
   def->add_action( this, "Feral Spirit" );
   def->add_talent( this, "Ascendance" );
+  def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
+  single->add_action("windstrike");
   single->add_action("primordial_wave,if=!buff.primordial_wave.up");
-  single->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
+  single->add_action(this, "Stormstrike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action(this, "Ice Strike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action(this, "Sundering", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_action(this, "Flame Shock", "if=!ticking");
   single->add_action("vesper_totem");
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
@@ -9234,9 +9245,9 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
+  aoe->add_action("windstrike,if=buff.crash_lightning.up");
   aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
-  aoe->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
   aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
@@ -9244,6 +9255,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)");
   aoe->add_action(this, "Crash Lightning", "if=talent.crashing_storm.enabled|buff.crash_lightning.down");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
+  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
   aoe->add_action(this, "Crash Lightning");
   aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
@@ -9253,6 +9265,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled");
   aoe->add_talent(this, "Sundering");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6");
+  aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action(this, "Lava Lash");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
