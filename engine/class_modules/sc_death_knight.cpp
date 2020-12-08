@@ -8841,8 +8841,8 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
   // Covenant Abilities
-  covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>6", "Covenant Abilities" );
-  covenants -> add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>(active_enemies*6)|active_enemies>5&runic_power.deficit>30)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
+  covenants -> add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>16", "Covenant Abilities" );
+  covenants -> add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>10+(active_enemies*6)|active_enemies>5&runic_power.deficit>40)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
   covenants -> add_action( "abomination_limb,if=variable.st_planning&!soulbind.lead_by_example&cooldown.apocalypse.remains&rune.time_to_4>(3+buff.runic_corruption.remains)" );
   covenants -> add_action( "abomination_limb,if=variable.st_planning&soulbind.lead_by_example&(cooldown.unholy_blight.remains|!talent.unholy_blight&cooldown.dark_transformation.remains)" );
   covenants -> add_action( "abomination_limb,if=active_enemies>=2&rune.time_to_4>(3+buff.runic_corruption.remains)" );
