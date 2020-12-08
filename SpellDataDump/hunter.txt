@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-07/36839, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-08/36839, git build shadowlands 0404af2, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -4227,12 +4227,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Bursting Shot (224729), Rapid Fire (257044), Volley (260247), Serpent Sting (271788), Resonating Arrow (308495), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 5, 17, 34, 70, 74, 76, 99, 118, 119
-#5 (id=873349)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 1064 (Label) | Target: Self (1)
-                   Affected Spells (Label): Wild Spirits (328757)
-#6 (id=873350)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Misc Value 2: 1064 (Label) | Target: Self (1)
-                   Affected Spells (Label): Wild Spirits (328757)
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
 Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
@@ -11616,7 +11610,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 5
-Labels           : 1064: Mastery: Sniper Training (193468 effect#5), Mastery: Sniper Training (193468 effect#6), Spirit Attunement (339109 effect#1)
+Labels           : 1064: Spirit Attunement (339109 effect#1)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Aspect of the Wild (193530 effects: #1, #3), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2)
 Family Flags     : 1, 74, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -9816,7 +9816,7 @@ static const std::array<spelltext_data_t, 15087> __spelltext_data { {
   { 269068, "Inflicts $269069s1 Fire damage to all enemies in a $a1 yard radius.", 0, 0 },
   { 269069, "$@spelldesc269068", 0, 0 },
   { 269085, "$@spelldesc267880", "Haste increased by $w1.", 0 },
-  { 269120, "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $<points> damage.", "Absorbs up to $w1 damage.", 0 },
+  { 269120, "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $s1 damage.", "Absorbs up to $w1 damage.", 0 },
   { 269123, "Permanently attaches a specialized device to your belt, which when used creates an absorb shield around the player for $269120d.\r\n\r\nOnly the engineer's belt can be modified, and doing so will cause them to become soulbound.", 0, 0 },
   { 269186, "Activate your holographic horror projector to make an enemy within melee range tremble in fear for $d.", "Feared.", 0 },
   { 269214, "$@spelldesc267671", "Dodge increased by $w1.", 0 },
@@ -14947,8 +14947,8 @@ static const std::array<spelltext_data_t, 15087> __spelltext_data { {
   { 345219, "$@spelldesc345218", "Damage taken from the Priest increased by $w1%.", 0 },
   { 345228, "Increases primary stat by $s1 for $d.\r\n", "Primary stat increased by $w1.", 0 },
   { 345229, "Your spells and abilities have a chance to grant $345230s1 primary stat for $345230d.", 0, 0 },
-  { 345230, "Increases primary stat by $s1 for $d.", "Increases primary stat by $s1.", 0 },
-  { 345231, "Increases maximum health by $s1 for $d.", "Maximum health increased by $s1.", 0 },
+  { 345230, "Increases primary stat by $s1 for $d.", "Increases primary stat by $w1.", 0 },
+  { 345231, "Increases maximum health by $s1 for $d.", "Maximum health increased by $w1.", 0 },
   { 345251, "$@spelldesc345211", 0, 0 },
   { 345256, "Conjure a spectral visage of Margrave Krexus.", "You have conjured a spectral visage of Margrave Krexus.", 0 },
   { 345257, "$@spelldesc345256\r\n", "$@spellaura345256", 0 },
@@ -15090,7 +15090,10 @@ static const std::array<spelltext_data_t, 15087> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36839
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  269120,  0, "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $<points> damage.", "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $s1 damage." },
+  {  345230,  1, "Increases primary stat by $s1.", "Increases primary stat by $w1." },
+  {  345231,  1, "Maximum health increased by $s1.", "Maximum health increased by $w1." },
 } };
 
 // Spell description variables, wow build 9.0.2.36839
