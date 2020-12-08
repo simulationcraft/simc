@@ -6686,7 +6686,7 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish->add_action( "variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets<(5-covenant.necrolord)&!covenant.kyrian", "While using Premeditation, avoid casting Slice and Dice when Shadow Dance is soon to be used, except for Kyrian" );
+    finish->add_action( "variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets.shuriken_storm<(5-covenant.necrolord)&!covenant.kyrian", "While using Premeditation, avoid casting Slice and Dice when Shadow Dance is soon to be used, except for Kyrian" );
     finish->add_action( this, "Slice and Dice", "if=!variable.premed_snd_condition&spell_targets.shuriken_storm<6&!buff.shadow_dance.up&buff.slice_and_dice.remains<fight_remains&refreshable" );
     finish->add_action( this, "Slice and Dice", "if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)" );
     finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=5", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
