@@ -527,10 +527,9 @@ public:
   struct cooldowns_t {
     // Shared
     cooldown_t* abomination_limb;
-    cooldown_t* death_and_decay;
-    cooldown_t* defile;
-    cooldown_t* deaths_due;
+    cooldown_t* death_and_decay_dynamic; // DnD/Defile/Death's due cooldown object
     cooldown_t* shackle_the_unworthy_icd;
+
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
@@ -992,22 +991,20 @@ public:
     options(),
     _runes( this )
   {
-    cooldown.abomination_limb    = get_cooldown( "abomination_limb_proc" );
-    cooldown.apocalypse          = get_cooldown( "apocalypse" );
-    cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
-    cooldown.blood_tap           = get_cooldown( "blood_tap" );
-    cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
-    cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
-    cooldown.dark_transformation = get_cooldown( "dark_transformation" );
-    cooldown.death_and_decay     = get_cooldown( "death_and_decay" );
-    cooldown.deaths_due          = get_cooldown( "deaths_due" );
-    cooldown.defile              = get_cooldown( "defile" );
-    cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
-    cooldown.icecap_icd          = get_cooldown( "icecap" );
-    cooldown.koltiras_favor_icd  = get_cooldown( "koltiras_favor_icd" );
-    cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
+    cooldown.abomination_limb         = get_cooldown( "abomination_limb_proc" );
+    cooldown.apocalypse               = get_cooldown( "apocalypse" );
+    cooldown.army_of_the_dead         = get_cooldown( "army_of_the_dead" );
+    cooldown.blood_tap                = get_cooldown( "blood_tap" );
+    cooldown.bone_shield_icd          = get_cooldown( "bone_shield_icd" );
+    cooldown.dancing_rune_weapon      = get_cooldown( "dancing_rune_weapon" );
+    cooldown.dark_transformation      = get_cooldown( "dark_transformation" );
+    cooldown.death_and_decay_dynamic  = get_cooldown( "death_and_decay" ); // Default value, changed during action construction
+    cooldown.empower_rune_weapon      = get_cooldown( "empower_rune_weapon" );
+    cooldown.icecap_icd               = get_cooldown( "icecap" );
+    cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
+    cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
-    cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
+    cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -3257,8 +3254,7 @@ struct melee_t : public death_knight_melee_attack_t
       {
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
-          p() -> cooldown.death_and_decay -> reset( true );
-          p() -> cooldown.deaths_due -> reset( true );
+          p() -> cooldown.death_and_decay_dynamic -> reset( true );
         }
       }
 
@@ -4341,6 +4337,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
+
+    // Set the player-stored death and decay cooldown to this action's cooldown
+    p -> cooldown.death_and_decay_dynamic = cooldown;
   }
 
   void init_finished() override
@@ -4604,11 +4603,7 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
-    p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
-      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
-      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
+    p() -> cooldown.death_and_decay_dynamic -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
@@ -4845,11 +4840,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       heal -> execute();
     }
 
-    p() -> cooldown.death_and_decay -> adjust( -timespan_t::from_seconds(
-      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    p() -> cooldown.defile -> adjust( -timespan_t::from_seconds(
-      p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
-    p() -> cooldown.deaths_due -> adjust( -timespan_t::from_seconds(
+    p() -> cooldown.death_and_decay_dynamic -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> buffs.hemostasis -> expire();
