@@ -8834,28 +8834,28 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food =
-      ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : ( true_level >= 50 ) ? "mechdowels_big_mech" : "disabled";
+  std::string elemental_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                               ( true_level >= 45 ) ? "mechdowels_big_mech" :
+                               "disabled";
 
+  std::string enhancement_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                                 ( true_level >= 45 ) ? "baked_port_tato" :
+                                 "disabled";
 
-  std::string enhance_food = ( true_level >= 60 )
-                                 ? "feast_of_gluttonous_hedonism"
-                                 : ( true_level >= 50 )
-                                       ? "baked_port_tato" : "disabled";
+  std::string restoration_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                                 ( true_level >= 45 ) ? "baked_port_tato" :
+                                 "disabled";
 
-  std::string restoration_food = ( true_level > 110 )
-                                     ? "baked_port_tato"
-                                     : ( true_level > 100 )
-                                           ? "lemon_herb_filet"
-                                           : ( true_level > 90 )
-                                                 ? "pickled_eel"
-                                                 : ( true_level >= 90 )
-                                                       ? "mogu_fish_stew"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
-
-  return specialization() == SHAMAN_ENHANCEMENT
-             ? enhance_food
-             : specialization() == SHAMAN_ELEMENTAL ? elemental_food : restoration_food;
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_food;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_food;
+    case SHAMAN_RESTORATION:
+      return restoration_food;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_rune ===================================================
