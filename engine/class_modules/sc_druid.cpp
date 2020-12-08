@@ -8646,6 +8646,7 @@ void druid_t::apl_guardian()
   pre->add_action( "bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))" );
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
+  pre->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
   pre->add_action( "starfire,if=druid.owlweave_bear&!covenant.night_fae" );
 
   def->add_action( "auto_attack,if=!buff.prowl.up" );
@@ -8728,6 +8729,8 @@ void druid_t::apl_guardian()
 
   owlweave->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
   owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
+  owlweave->add_action( "starsurge" );
+  owlweave->add_action( "convoke_the_spirits,if=soulbind.first_strike.enabled" );	
   owlweave->add_action( "empower_bond,if=druid.owlweave_bear" );
   owlweave->add_action(
            "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
@@ -8735,7 +8738,6 @@ void druid_t::apl_guardian()
   owlweave->add_action( "moonfire,target_if=refreshable|buff.galactic_guardian.up" );
   owlweave->add_action( "starfire,if=covenant.night_fae&eclipse.any_next" );
   owlweave->add_action( "wrath,if=!covenant.night_fae&eclipse.any_next" );
-  owlweave->add_action( "starsurge,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( "convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)" );
   owlweave->add_action( "starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)" );
   owlweave->add_action( "wrath" );
