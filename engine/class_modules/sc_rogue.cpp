@@ -6538,9 +6538,9 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
-    precombat->add_action( this, "Stealth", "if=raid_event.invulnerable.exists" );
     precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
+    precombat->add_action( this, "Stealth" );
 
     // Main Rotation
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)", "Reroll single BT/GM/TB buffs when possible" );
