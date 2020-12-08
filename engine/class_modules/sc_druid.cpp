@@ -6021,8 +6021,11 @@ struct wrath_t : public druid_spell_t
       auto it = range::find( apl, this );
       if ( it != apl.end() )
       {
-        std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
-          if ( harmful && a->harmful && a->action_ready() )
+        std::for_each( it + 1, apl.end(), [ this ]( action_t* a ) {
+          // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action
+          // first so we don't call action_ready() on possible offspec actions that will require off-spec resources to
+          // be enabled
+          if ( harmful && a->harmful && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
             harmful = false;  // another harmful action exists; set current to non-harmful so we can keep casting
 
           if ( a->name_str == name_str )
