@@ -507,7 +507,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
   {
     return make_dot_expr( "dot_tick_time_remain",
       []( dot_t* dot ) {
-        return dot->is_ticking() ? dot->tick_event->remains() : 0_ms;
+        return dot->time_to_next_tick();
       } );
   }
   else if ( name_str == "ticks_remain" )
@@ -521,12 +521,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
   {
     return make_dot_expr( "dot_ticks_remain_fractional",
       []( dot_t* dot ) {
-        if (!dot->current_action)
-          return 0.0;
-        if (!dot->is_ticking())
-          return 0.0;
-
-        return dot->remains() / dot->current_action->tick_time(dot->state);
+        return dot->ticks_left_fractional();
       } );
   }
   else if ( name_str == "ticking" )
