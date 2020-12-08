@@ -6700,7 +6700,7 @@ void warrior_t::apl_arms()
   execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
   execute->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&rage<50" );
-  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd" );
+  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<=gcd" );
   execute->add_talent( this, "Skullsplitter", "if=rage<40" );
   execute->add_action( this, "Overpower" );
   execute->add_action( this, covenant.condemn, "condemn" );
