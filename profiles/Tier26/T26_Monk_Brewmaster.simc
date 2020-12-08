@@ -68,6 +68,8 @@ actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passion
 actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/faeline_stomp
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
+actions+=/touch_of_death
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/spinning_crane_kick,if=buff.charred_passions.up
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))
