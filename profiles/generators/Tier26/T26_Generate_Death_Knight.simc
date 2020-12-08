@@ -75,7 +75,7 @@ chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1532/6935,g
 wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6536/1540/6646/6935,gem_id=173130
 hands=fogweaver_gauntlets,id=178706,bonus_id=6536/1540/6646,enchant=eternal_strength
 waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498
-legs=gormshell_greaves,id=178701,bonus_id=6536/1540/6646
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498/6935
 feet=warboots_of_ruthless_conviction,id=180101,bonus_id=6536/1540/6646
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=fleshfused_circle,id=178869,bonus_id=6536/1540/6646/6935,gem_id=173130,enchant=tenet_of_mastery
