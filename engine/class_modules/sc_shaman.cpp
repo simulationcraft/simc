@@ -8911,6 +8911,7 @@ void shaman_t::init_action_list_elemental()
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
+    def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
     def->add_action( "potion" );
     def->add_action( "use_items" );
