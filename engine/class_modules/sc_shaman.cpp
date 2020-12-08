@@ -8912,6 +8912,7 @@ void shaman_t::init_action_list_elemental()
 
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+    def->add_action( "potion" );
     def->add_action( "use_items" );
     def->add_action( this, "Flame Shock", "if=!ticking" );
     def->add_action( this, "Fire Elemental" );
