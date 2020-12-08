@@ -8801,16 +8801,28 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string elemental_pot = ( true_level >= 60 ) ? "potion_of_spectral_intellect"
-                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disabled";
+  std::string elemental_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+                                 ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                 "disabled";
 
-  std::string enhance_pot =
-      ( true_level >= 60 )
-          ? "potion_of_spectral_agility"
-          : ( true_level >= 50 )
-                ? "potion_of_unbridled_fury" : "disabled";
+  std::string enhancement_potion = ( true_level >= 51 ) ? "potion_of_spectral_agility" :
+                                   ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                   "disabled";
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
+  std::string restoration_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+                                   ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                   "disabled";
+
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_potion;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_potion;
+    case SHAMAN_RESTORATION:
+      return restoration_potion;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_flask ==================================================
