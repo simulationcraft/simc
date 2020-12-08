@@ -3978,6 +3978,26 @@ struct item_ready_expr_t : public item_effect_base_expr_t
   }
 };
 
+struct item_is_expr_t : public expr_t
+{
+  double is = 0;
+
+  item_is_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view item_name )
+    : expr_t( "item_is_expr" )
+  {
+    for ( size_t i = 0; i < slots.size(); i++ )
+    {
+      if ( player.items[ slots[ i ] ].name() == item_name )
+        is = 1;
+    }
+  }
+
+  double evaluate() override
+  {
+    return is;
+  }
+};
+
 struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
@@ -4088,6 +4108,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts '{}' < '{}'.",
         splits.size(), ptype_idx+1));
   }
+
+  if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
+    return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
