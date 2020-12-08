@@ -1932,20 +1932,18 @@ void priest_t::generate_apl_shadow()
 
   // Trinkets
   trinkets->add_action(
-      "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption."
-      "remains>27",
+      "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
-  trinkets->add_action(
-      "use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10",
-      "Sync IQD with Voidform" );
-  trinkets->add_action( "use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10",
+  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=cooldown.void_eruption.remains>10",
+                        "Sync IQD with Voidform" );
+  trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10",
                         "Sync Sheet Music with Voidform" );
   trinkets->add_action(
       "use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target."
       "health.pct",
       "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target" );
   trinkets->add_action(
-      "use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10",
+      "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
   trinkets->add_call_action_list(
@@ -1980,7 +1978,8 @@ void priest_t::generate_apl_shadow()
   cds->add_action(
       this, covenant.unholy_nova, "unholy_nova",
       "if=((!raid_event.adds.up&raid_event.adds.in>20)|raid_event.adds.remains>=15|raid_event.adds.duration<"
-      "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)",
+      "15)&(buff.power_infusion.up|cooldown.power_infusion.remains>=10|!priest.self_power_infusion)&(!talent.hungering_"
+      "void.enabled|debuff.hungering_void.up|!buff.voidform.up)",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
   cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended",
                    "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
