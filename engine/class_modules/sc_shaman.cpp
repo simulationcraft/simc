@@ -9289,36 +9289,36 @@ void shaman_t::init_action_list_restoration_dps()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
-  // Snapshot stats
+  precombat->add_action( this, "Earth Elemental" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  // Actual precombat
   precombat->add_action( "potion" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
-  precombat->add_action( this, "Lava Burst" );
 
-  // In-combat potion
-  def->add_action( "potion" );
-
-  // "Default"
-  def->add_action( this, "Wind Shear" );
+  // Default APL
   def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
-  // On-use items
-  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
+  def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+  def->add_action( "potion" );
   def->add_action( "use_items" );
-  def->add_action( "blood_fury" );
-  def->add_action( "berserking" );
-  def->add_action( "fireblood" );
-  def->add_action( "ancestral_call" );
-  def->add_action( "worldvein_resonance" );
-  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
-  def->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
-  def->add_action( "ripple_in_space" );
+  def->add_action( this, "Flame Shock", "if=!ticking" );
   def->add_action( this, "Earth Elemental" );
-  def->add_action( "bag_of_tricks" );
-  def->add_action( "fae_transfusion" );
-  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
-  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1" );
+
+  // Racials
+  def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+  def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
+
+  // Covenants
+  def->add_action( "chain_harvest,if=covenant.venthyr" );
+  def->add_action( "vesper_totem,if=covenant.kyrian" );
+
+  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+  def->add_action( "fae_transfusion,if=covenant.night_fae" );
+  def->add_action( "primordial_wave,if=covenant.necrolord" );
+  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<3" );
+  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );
   def->add_action( this, "Flame Shock", "moving=1" );
+  def->add_action( this, "Frost Shock", "moving=1" );
 }
 
 // shaman_t::init_actions ===================================================
