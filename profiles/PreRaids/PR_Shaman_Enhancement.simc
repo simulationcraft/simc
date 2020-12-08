@@ -66,12 +66,17 @@ actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_target
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/vesper_totem
 actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)
-actions.aoe+=/crash_lightning,if=talent.crashing_storm.enabled|buff.crash_lightning.down
-actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
-actions.aoe+=/stormstrike,if=buff.crash_lightning.up
-actions.aoe+=/crash_lightning
-actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
+actions.aoe+=/crash_lightning,if=talent.crashing_storm.enabled|buff.crash_lightning.down|buff.doom_winds.up
 actions.aoe+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
+actions.aoe+=/ice_strike,if=buff.hailstorm.down
+actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
+actions.aoe+=/crash_lightning
+actions.aoe+=/windfury totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
+actions.aoe+=/stormstrike,if=buff.crash_lightning.up
+actions.aoe+=/chain_lightning,if=buff.doom_winds.up
+actions.aoe+=/lava_lash,if=buff.crash_lightning.up
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
