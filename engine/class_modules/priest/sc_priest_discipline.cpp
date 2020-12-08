@@ -390,6 +390,7 @@ void priest_t::generate_apl_discipline_d()
   action_priority_list_t* def     = get_action_priority_list( "default" );
   action_priority_list_t* boon    = get_action_priority_list( "boon" );
   action_priority_list_t* racials = get_action_priority_list( "racials" );
+  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   boon->add_action( "ascended_blast" );
   boon->add_action( "ascended_nova" );
@@ -415,7 +416,11 @@ void priest_t::generate_apl_discipline_d()
     }
   }
 
+  // Aoe
+  aoe->add_action("wait,sec=100", "Only single target dps is currently supported for discipline priests.");
+
   def->add_call_action_list( racials );
+  def->add_call_action_list( aoe, "if=active_enemies>1" );
   def->add_action( this, "Power Infusion", "",
                    "Use Power Infusion before Shadow Covenant to make sure we don't lock out our CD." );
   def->add_talent( this, "Divine Star" );
