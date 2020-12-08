@@ -8862,13 +8862,11 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  std::string elemental_rune = ( true_level >= 60 ) ? "veiled" : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
-
-  std::string enhance_rune = ( true_level >= 60 )
-                                 ? "veiled"
-                                 : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
-
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+  return ( true_level >= 60 ) ? "veiled" :
+         ( true_level >= 50 ) ? "battle_scarred" :
+         ( true_level >= 45 ) ? "defiled" :
+         ( true_level >= 40 ) ? "hyper" :
+         "disabled";
 }
 
 // shaman_t::default_temporary_enchant ======================================
