@@ -8508,7 +8508,7 @@ void druid_t::apl_balance()
   precombat->add_action( "moonkin_form" );
   precombat->add_action( "wrath" );
   precombat->add_action( "wrath" );
-  precombat->add_action( "starfire,if=!runeforge.balance_of_all_things|!covenant.night_fae|!spell_targets.starfall=1" );
+  precombat->add_action( "starfire,if=!runeforge.balance_of_all_things|!covenant.night_fae|!spell_targets.starfall=1|!talent.natures_balance.enabled" );
   precombat->add_action( "starsurge,if=runeforge.balance_of_all_things&covenant.night_fae&spell_targets.starfall=1" );
 
   def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1&(!talent.starlord.enabled|talent.stellar_drift.enabled)|spell_targets.starfall>2" );
@@ -8626,7 +8626,7 @@ void druid_t::apl_balance()
   boat->add_action( "half_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   boat->add_action( "full_moon,if=(buff.eclipse_lunar.up|(charges=2&recharge_time<5)|charges=3)&ap_check" );
   boat->add_action( "warrior_of_elune" );
-  boat->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&eclipse.in_lunar|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
+  boat->add_action( "starfire,if=eclipse.in_lunar|eclipse.solar_next|eclipse.any_next|buff.warrior_of_elune.up&buff.eclipse_lunar.up|(buff.ca_inc.remains<action.wrath.execute_time&buff.ca_inc.up)" );
   boat->add_action( "wrath" );
   boat->add_action( "run_action_list,name=fallthru" );
 
