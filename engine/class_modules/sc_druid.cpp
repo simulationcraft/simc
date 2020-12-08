@@ -8705,7 +8705,7 @@ void druid_t::apl_guardian()
   bear->add_action( "berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)" );
   bear->add_action( "empower_bond,if=(!druid.catweave_bear&!druid.owlweave_bear)|active_enemies>=2" );
-  bear->add_action( "barkskin,if=(talent.brambles.enabled)" );
+  bear->add_action( "barkskin,if=talent.brambles.enabled" );
   bear->add_action(
        "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
   bear->add_action(
