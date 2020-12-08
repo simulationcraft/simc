@@ -6457,6 +6457,7 @@ void hunter_t::apl_surv()
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13" );
+  cds -> add_action( "muzzle" );
   cds -> add_action( "potion,if=target.time_to_die<60|buff.coordinated_assault.up" );
   cds -> add_action( "steel_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
   cds -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
@@ -6490,6 +6491,7 @@ void hunter_t::apl_surv()
   st -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
   st -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
+  st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets" );  
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable|buff.vipers_venom.up" );
@@ -6510,6 +6512,7 @@ void hunter_t::apl_surv()
   apst -> add_action( "a_murder_of_crows" );
   apst -> add_action( "wildfire_bomb,if=full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10" );
   apst -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
+  apst -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets" );  
   apst -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   apst -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone" );
   apst -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
