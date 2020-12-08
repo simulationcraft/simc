@@ -587,7 +587,6 @@ public:
     // random testing stuff
     bool brutal_projectiles_on_execute = false;
     bool serpentstalkers_triggers_wild_spirits = true;
-    bool wild_spirits_marksmanship_multiplier = true;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -2687,13 +2686,10 @@ struct wild_spirits_t : hunter_spell_t
       callbacks = false;
       triggers_master_marksman = false;
 
-      // XXX: A random multiplier out of nowhere
-      // 2020-12-08 hotfix: Marksmanship mastery "double dip" fixed.
-      // Turns out it was likely a tooltip error misidentified as a true double dip
-      // because the tester didn't test enough and had dangerously misleading total
-      // mastery under Grove Invigoration.
-      // Wild Spirits procs simply do 25% more damage for Marksmanship.
-      if ( p -> specialization() == HUNTER_MARKSMANSHIP && p -> options.wild_spirits_marksmanship_multiplier )
+      // 2020-12-07 hotfix:
+      //     Damage of Wild Spirits has been increased by 25% for Marksmanship Hunters.
+      // A random multiplier out of nowhere not present in the spell data
+      if ( p -> specialization() == HUNTER_MARKSMANSHIP )
         base_multiplier *= 1.25;
     }
   };
@@ -6891,7 +6887,6 @@ void hunter_t::create_options()
 
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
   add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpentstalkers_triggers_wild_spirits ) );
-  add_option( opt_bool( "hunter.wild_spirits_marksmanship_multiplier", options.wild_spirits_marksmanship_multiplier ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
@@ -6915,7 +6910,6 @@ std::string hunter_t::create_profile( save_e stype )
 
   print_option( &options_t::brutal_projectiles_on_execute, "hunter.brutal_projectiles_on_execute" );
   print_option( &options_t::serpentstalkers_triggers_wild_spirits, "hunter.serpenstalkers_triggers_wild_spirits" );
-  print_option( &options_t::wild_spirits_marksmanship_multiplier, "hunter.wild_spirits_marksmanship_multiplier" );
 
   return profile_str;
 }
