@@ -8647,7 +8647,6 @@ void druid_t::apl_guardian()
   pre->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)" );
   pre->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
   pre->add_action( "wrath,if=druid.owlweave_bear&!covenant.night_fae" );
-  pre->add_action( "starfire,if=druid.owlweave_bear&!covenant.night_fae" );
 
   def->add_action( "auto_attack,if=!buff.prowl.up" );
   def->add_action( "use_items,if=!buff.prowl.up" );
@@ -8672,8 +8671,7 @@ void druid_t::apl_guardian()
   def->add_action(
       "run_action_list,name=owlweave,if=druid.owlweave_bear&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&"
       "rage<15&buff.incarnation.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.moonkin_form.up&dot.sunfire.refreshable)|(buff."
-      "moonkin_form.up&buff.heart_of_the_wild.up)|(buff.moonkin_form.up&(buff.eclipse_lunar.up|buff.eclipse_solar.up)&!"
-      "runeforge.oath_of_the_elder_druid.equipped)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_"
+      "moonkin_form.up&buff.heart_of_the_wild.up)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_"
       "druid.up)|(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1)|(covenant.kyrian&cooldown.empower_bond."
       "remains<=1&active_enemies<2))" );
   def->add_action(
