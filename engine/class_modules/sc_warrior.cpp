@@ -1889,7 +1889,8 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    if ( p->legendary.unhinged->ok() )
+    // TODO: What happens if you have both Unhinged and Signet?
+    if ( p->legendary.unhinged->ok() && !torment_triggered )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
       add_child( mortal_strike );
