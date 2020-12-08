@@ -6010,31 +6010,6 @@ struct wrath_t : public druid_spell_t
     gcd_mul = p->query_aura_effect( p->spec.eclipse_solar, A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
-  void init_finished() override
-  {
-    druid_spell_t::init_finished();
-
-    if ( is_precombat )
-    {
-      auto apl = player->precombat_action_list;
-
-      auto it = range::find( apl, this );
-      if ( it != apl.end() )
-      {
-        std::for_each( it + 1, apl.end(), [ this ]( action_t* a ) {
-          // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action
-          // first so we don't call action_ready() on possible offspec actions that will require off-spec resources to
-          // be enabled
-          if ( harmful && a->harmful && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
-            harmful = false;  // another harmful action exists; set current to non-harmful so we can keep casting
-
-          if ( a->name_str == name_str )
-            count++;  // see how many wrath casts are left, so we can adjust travel time when combat begins
-        } );
-      }
-    }
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = druid_spell_t::composite_energize_amount( s );
@@ -8003,6 +7978,33 @@ void druid_t::init_finished()
     spec_override.spell_power = query_aura_effect( spec.guardian, A_366 )->percent();
   else if ( specialization() == DRUID_RESTORATION )
     spec_override.attack_power = query_aura_effect( spec.restoration, A_404 )->percent();
+
+  // PRECOMBAT WRATH SHENANIGANS
+  // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
+  // parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
+  // cast
+  for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
+  {
+    // we don't need to further check if we're at the final precombat action
+    auto it = pre + 1;
+    if ( it == precombat_action_list.end() )
+      break;
+
+    auto wr = dynamic_cast<spells::wrath_t*>( *pre );
+    if ( wr )
+    {
+      std::for_each( it, precombat_action_list.end(), [ wr ]( action_t* a ) {
+        // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action first
+        // so we don't call action_ready() on possible offspec actions that will require off-spec resources to be
+        // enabled
+        if ( a->harmful && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+          wr->harmful = false;  // more harmful actions exist, set current wrath to non-harmful so we can keep casting
+
+        if ( a->name_str == wr->name_str )
+          wr->count++;  // see how many wrath casts are left, so we can adjust travel time when combat begins
+      } );
+    }
+  }
 }
 
 // druid_t::init_buffs ======================================================
