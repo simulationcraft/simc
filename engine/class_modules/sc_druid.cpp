@@ -6211,6 +6211,13 @@ struct starsurge_t : public druid_spell_t
 
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
+
+    // use an explictly defined cooldown since with convoke it's possible to execute multiple versions of starsurge_t
+    if ( s->cooldown() > 0_ms )
+    {
+      cooldown = p->get_cooldown( "starsurge_affinity" );
+      cooldown->duration = s->cooldown();
+    }
   }
 
   void init() override
