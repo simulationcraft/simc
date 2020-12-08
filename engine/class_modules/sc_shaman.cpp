@@ -8829,17 +8829,28 @@ std::string shaman_t::default_potion() const
 
 std::string shaman_t::default_flask() const
 {
-  std::string elemental_flask = ( true_level >= 60 )
-                                    ? "spectral_flask_of_power"
-                                    : ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
+  std::string elemental_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
+                                "disabled";
 
-  std::string enhance_flask =
-      ( true_level >= 60 )
-          ? "spectral_flask_of_power"
-          : ( true_level >= 50 )
-                ? "greater_flask_of_the_currents" : "disabled";
+  std::string enhancement_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                  ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
+                                  "disabled";
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
+  std::string restoration_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                  ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
+                                  "disabled";
+
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_flask;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_flask;
+    case SHAMAN_RESTORATION:
+      return restoration_flask;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_food ===================================================
