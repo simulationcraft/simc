@@ -679,9 +679,37 @@ void gluttonous_spike( special_effect_t& /* effect */ )
 
 }
 
-void hateful_chain( special_effect_t& /* effect */ )
+void hateful_chain( special_effect_t& effect )
 {
+  struct hateful_rage_t : public proc_spell_t
+  {
+    hateful_rage_t( const special_effect_t& e ) :
+      proc_spell_t( "hateful_rage", e.player, e.player->find_spell( 345361 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
 
+  struct hateful_chain_callback_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target->is_sleeping() )
+        return;
+
+      // XXX: Assume the actor always has more health than the target
+      // TODO: Handle actor health < target health case?
+      proc_action->target = target( state );
+      proc_action->schedule_execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<hateful_rage_t>( "hateful_rage", effect );
+
+  new hateful_chain_callback_t( effect.player, effect );
 }
 
 void bottled_flayedwing_toxin( special_effect_t& effect )
