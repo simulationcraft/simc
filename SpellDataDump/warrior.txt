@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-08/36839, git build shadowlands 0404af2, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -10690,9 +10690,9 @@ Variables        : $rav=${7}
 $bstorm=${9}
 
 Name             : Signet of Tormented Kings (id=335266) [Spell Family (4), Passive] 
+Hotfixed         : Internal Cooldown (3000 -> 0)
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 3 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x.x... ........ ........ 
