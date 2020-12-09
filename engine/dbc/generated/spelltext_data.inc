@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36839
-static const std::array<spelltext_data_t, 15087> __spelltext_data { {
+static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14956,6 +14956,8 @@ static const std::array<spelltext_data_t, 15087> __spelltext_data { {
   { 345319, "Deal $o1 Arcane damage to an enemy over $d.\r\n\r\nIf your target dies while afflicted with Glyph of Assimilation, your Mastery is increased by $345500s1 for $s2 times the duration remaining on the Glyph.", "Suffering $w1 Arcane damage every $t1 sec.", 0 },
   { 345335, "$@spelldesc323639", "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 345357, "While you have a greater health percentage than your target, your abilities have a very high chance to deal ${$s1*(1+$@versadmg)} Physical damage.\r\n\r\nWhile you have a lower health percentage than your target, your abilities have a very high chance to heal you for ${$s2*(1+$@versadmg)}.", 0, 0 },
+  { 345361, "$@spelldesc345357", 0, 0 },
+  { 345364, "$@spelldesc345357", 0, 0 },
   { 345390, "$@spelldesc323654", 0, "Venthyr" },
   { 345417, "$@spelldesc314793", 0, 0 },
   { 345432, "Four dance partners appear in a random pattern around you. Moving to each grants you $345431s1 Haste and $345431s2 Speed for $345439d, stacking.", 0, 0 },

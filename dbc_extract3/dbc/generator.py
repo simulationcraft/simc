@@ -1260,6 +1260,8 @@ class SpellDataGenerator(DataGenerator):
          347662, 347665, # Damage Reduction bonuses
          # Anima Field for Anima Field Emitter trinket
          345535,
+         # Hateful Chain
+         345364, 345361,
         ),
 
         # Warrior:
