@@ -119,15 +119,15 @@ actions.main+=/shadow_word_death
 actions.main+=/shadow_word_pain
 
 # Use on CD ASAP to get DoT ticking and expire to line up better with Voidform
-actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|buff.voidform.up|cooldown.void_eruption.remains>27
+actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
 # Sync IQD with Voidform
-actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up|cooldown.void_eruption.remains>10
+actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=cooldown.void_eruption.remains>10
 # Sync Sheet Music with Voidform
-actions.trinkets+=/use_item,name=macabre_sheet_music,if=buff.voidform.up|cooldown.void_eruption.remains>10
+actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
 # Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target
 actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion,target_if=min:target.health.pct
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
-actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.voidform.up|cooldown.void_eruption.remains>=10
+actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
 # Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it.
 actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>10)
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
