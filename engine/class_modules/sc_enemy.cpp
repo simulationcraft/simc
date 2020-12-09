@@ -1320,16 +1320,19 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
   // Level 60 Values
+  // Defaulted to 20-man damage
+  // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
+  // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Sludgefist as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 17860, 24457, 40474 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 53580, 73371, 121422 };  // Base melee nuke damage (currently set to 3x auto damage)
-  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 714, 978, 1619 };  // Base background dot damage (currently set to 0.4x auto damage)
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35050, 48000, 66192 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105150, 144000, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
+  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1402, 1920, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + 
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.1 ) ) + ",attack_speed=1.5,aoe_tanks=1";
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.1 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
+         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
 
