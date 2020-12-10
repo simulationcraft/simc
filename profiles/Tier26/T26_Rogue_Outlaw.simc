@@ -37,6 +37,8 @@ actions.precombat+=/stealth
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
 actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
 # Reroll single BT/GM/TB buffs when possible
 actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)
 # Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away

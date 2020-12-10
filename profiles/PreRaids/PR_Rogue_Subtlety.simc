@@ -37,6 +37,8 @@ actions.precombat+=/shadow_blades,if=runeforge.mark_of_the_master_assassin
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
 actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
 # Used to determine whether cooldowns wait for SnD based on targets.
 actions+=/variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=6
 # Check CDs at first

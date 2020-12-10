@@ -36,6 +36,8 @@ actions.precombat+=/slice_and_dice,precombat_seconds=1
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
 actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
 actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
