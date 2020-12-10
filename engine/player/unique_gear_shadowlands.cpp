@@ -972,6 +972,52 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**
+ * Mistcaller Ocarina
+ * id=330067 driver #1 (versatility)
+ * id=332299 driver #2 (crit)
+ * id=332300 driver #3 (haste)
+ * id=332301 driver #4 (mastery)
+ * id=330132 buff #1 (versatility)
+ * id=332077 buff #2 (crit)
+ * id=332078 buff #3 (haste)
+ * id=332079 buff #4 (mastery)
+ */
+void mistcaller_ocarina( special_effect_t& effect )
+{
+  using id_pair_t = std::pair<unsigned, unsigned>;
+  static constexpr id_pair_t spells[] = {
+    { 330067, 330132 }, // versatility
+    { 332299, 332077 }, // crit
+    { 332300, 332078 }, // haste
+    { 332301, 332079 }, // mastery
+  };
+  auto it = range::find( spells, effect.spell_id, &id_pair_t::first );
+  if ( it == range::end( spells ) )
+    return; // Unknown driver spell, "disable" the trinket
+
+  // Assume the player keeps the buff up on its own and disable some stuff
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.cooldown_ = 0_ms;
+  effect.duration_ = 0_ms;
+
+  const spell_data_t* buff_spell = effect.player->find_spell( it->second );
+  const std::string buff_name = util::tokenize_fn( buff_spell->name_cstr() );
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, buff_name ) );
+  if ( !buff )
+  {
+    double amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+    buff = make_buff<stat_buff_t>( effect.player, buff_name, buff_spell );
+    for ( auto& s : buff->stats )
+      s.amount = amount;
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
 /**Unbound Changeling
  * id=330747 coefficients for stat amounts, and also the special effect on the base item
  * id=330767 given by bonus_id=6915
@@ -1819,6 +1865,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
     unique_gear::register_special_effect( 331523, items::shadowgrasp_totem );
     unique_gear::register_special_effect( 348135, items::hymnal_of_the_path );
+    unique_gear::register_special_effect( 330067, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332299, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332300, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
