@@ -1266,6 +1266,8 @@ class SpellDataGenerator(DataGenerator):
          331537,
          # Hymnal of the Path damage/healing spells
          348141, 348140,
+         # Mistcaller Ocarina
+         330132, 332077, 332078, 332079,
         ),
 
         # Warrior:

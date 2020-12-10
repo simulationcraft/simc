@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36839
-static const std::array<spelltext_data_t, 15093> __spelltext_data { {
+static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13760,6 +13760,8 @@ static const std::array<spelltext_data_t, 15093> __spelltext_data { {
   { 331978, "Restores $s1 mana.", 0, 0 },
   { 331993, "Increase Shadow damage dealt by $s1.", "Increase Shadow damage dealt by $w1.", 0 },
   { 332004, 0, "Damage increased by $w2%, and attack speed increased by $w3%.", 0 },
+  { 332077, "$@spelldesc332299", "Critical Strike increased by $w1.", 0 },
+  { 332078, "$@spelldesc332300", "Haste increased by $w1.", 0 },
   { 332079, "$@spelldesc332299", "Mastery increased by $w1.", 0 },
   { 332121, "Gain a shield for $d that absorbs up to $s1 Holy Damage. Only usable outdoors in the Shadowlands.", "$w1 Holy Absorption remaining. Only usable outdoors in the Shadowlands.", 0 },
   { 332134, "Break apart the stone into Sinstone Fragments.", 0, 0 },
