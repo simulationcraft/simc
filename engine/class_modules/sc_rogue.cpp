@@ -4102,9 +4102,15 @@ struct vendetta_t : public rogue_spell_t
 
 struct stealth_t : public rogue_spell_t
 {
+  double precombat_seconds;
+
   stealth_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_spell_t( name, p, p->find_class_spell( "Stealth" ), options_str )
+    rogue_spell_t( name, p, p->find_class_spell( "Stealth" ) ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     harmful = false;
   }
 
@@ -4117,6 +4123,14 @@ struct stealth_t : public rogue_spell_t
 
     p()->buffs.stealth->trigger();
     trigger_master_of_shadows();
+
+    // trigger_master_of_shadows() doesn't trigger out of combat, must be applied manually
+    if ( precombat_seconds && !p()->in_combat )
+    {
+      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
+      p()->buffs.master_of_shadows->trigger();
+      p()->buffs.master_of_shadows->extend_duration( p(), precombat_lost_seconds );
+    }
   }
 
   bool ready() override
@@ -6606,7 +6620,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
-    precombat->add_action( this, "Stealth" );
+    precombat->add_action( this, "Stealth", "precombat_seconds=1" );
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
     precombat->add_action( this, "Shadow Blades", "if=runeforge.mark_of_the_master_assassin" );
