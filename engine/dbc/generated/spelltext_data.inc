@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36839
-static const std::array<spelltext_data_t, 15091> __spelltext_data { {
+static const std::array<spelltext_data_t, 15093> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15081,6 +15081,8 @@ static const std::array<spelltext_data_t, 15091> __spelltext_data { {
   { 348135, "Your damaging abilities have a chance to deal $s1 Holy damage to your target while above $s3% health, or heal you for $s2 health while below $s3% health.", 0, 0 },
   { 348136, "Grant an ally $348137s2 Speed and heal them for ${$348137s1*($d/$t1)} health over $d.", "Healing for $w1 every $T1 sec.\r\nSpeed increased by $348137s2.", 0 },
   { 348139, "Grants you $348138s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
+  { 348140, "$@spelldesc348135", 0, 0 },
+  { 348141, "$@spelldesc348135", 0, 0 },
   { 348168, "$@spelldesc346875", 0, 0 },
   { 348169, "$@spelldesc346875", 0, 0 },
   { 348177, "$@spelldesc346835", 0, 0 },

@@ -1462,6 +1462,41 @@ void shadowgrasp_totem( special_effect_t& effect )
   }
 }
 
+// TODO: Implement healing?
+void hymnal_of_the_path( special_effect_t& effect )
+{
+  struct hymnal_of_the_path_t : public proc_spell_t
+  {
+    hymnal_of_the_path_t( const special_effect_t& e ) :
+      proc_spell_t( "hymnal_of_the_path", e.player, e.player->find_spell( 348141 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
+
+  struct hymnal_of_the_path_cb_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target->is_sleeping() )
+        return;
+
+      // XXX: Assume the actor always has more health than the target
+      // TODO: Handle actor health < target health case?
+      proc_action->set_target( target( state ) );
+      proc_action->schedule_execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<hymnal_of_the_path_t>(
+      "hymnal_of_the_path", effect );
+
+  new hymnal_of_the_path_cb_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1713,6 +1748,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
     unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
     unique_gear::register_special_effect( 331523, items::shadowgrasp_totem );
+    unique_gear::register_special_effect( 348135, items::hymnal_of_the_path );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

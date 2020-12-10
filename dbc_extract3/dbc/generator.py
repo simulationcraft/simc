@@ -1264,6 +1264,8 @@ class SpellDataGenerator(DataGenerator):
          345364, 345361,
          # Shadowgrasp Totem damage
          331537,
+         # Hymnal of the Path damage/healing spells
+         348141, 348140,
         ),
 
         # Warrior:
