@@ -11,6 +11,7 @@
 #include "player/weapon.hpp"
 #include "sim/sc_sim.hpp"
 #include "dbc/item_database.hpp"
+#include "dbc/temporary_enchant.hpp"
 #include "sc_enums.hpp"
 #include "interfaces/wowhead.hpp"
 #include "interfaces/bcp_api.hpp"
@@ -73,6 +74,7 @@ size_t parsed_item_data_t::add_effect( const item_effect_t& effect )
 item_t::parsed_input_t::parsed_input_t()
   : item_level( 0 ),
     enchant_id( 0 ),
+    temporary_enchant_id( 0 ),
     addon_id( 0 ),
     armor( 0 ),
     azerite_level( 0 ),
@@ -231,6 +233,10 @@ gear_stats_t item_t::total_stats() const
     });
 
     range::for_each( parsed.addon_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.temp_enchant_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
       if ( stat == s.stat ) total_stats.add_stat( to, s.value );
     });
   }
@@ -427,6 +433,21 @@ void format_to( const item_t& item, fmt::format_context::iterator out )
     fmt::format_to( out, " enchant={{ {} }}", item.enchant_stats_str() );
   else if ( ! item.parsed.encoded_enchant.empty() )
     fmt::format_to( out, " enchant={{ {} }}", item.parsed.encoded_enchant );
+
+  if ( item.parsed.temporary_enchant_id > 0 )
+  {
+    if ( item.parsed.temp_enchant_stats.size() )
+    {
+      fmt::format_to( out, " temporary_enchant={{ {} }}",
+          item.stat_pairs_to_str( item.parsed.temp_enchant_stats ) );
+    }
+    else
+    {
+      const auto& temp_enchant = temporary_enchant_entry_t::find_by_enchant_id(
+          item.parsed.temporary_enchant_id, item.player->dbc->ptr );
+      fmt::format_to( out, " temporary_enchant={{ {} }}", temp_enchant.tokenized_name );
+    }
+  }
 
   for ( const special_effect_t* effect : item.parsed.special_effects )
     fmt::format_to( out, " effect={{ {} }}", *effect );
@@ -1137,7 +1158,7 @@ std::string item_t::encoded_comment()
 
   if ( option_addon_str.empty() &&
        ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() ) )
-    s << "enchant=" << encoded_addon() << ",";
+    s << "addon=" << encoded_addon() << ",";
 
   if ( option_equip_str.empty() )
   {
@@ -1991,6 +2012,11 @@ bool item_t::download_item( item_t& item )
 
 void item_t::init_special_effects()
 {
+  if ( !active() )
+  {
+    return;
+  }
+
   special_effect_t proxy_effect( this );
 
   // Enchant
@@ -2002,6 +2028,10 @@ void item_t::init_special_effects()
   const item_enchantment_data_t& addon_data = player -> dbc->item_enchantment( parsed.addon_id );
   enchant::initialize_item_enchant( *this, parsed.addon_stats,
         SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
+
+  const auto& temp_enchant_data = player->dbc->item_enchantment( parsed.temporary_enchant_id );
+  enchant::initialize_item_enchant( *this, parsed.temp_enchant_stats,
+        SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT, temp_enchant_data );
 
   // On-use effects
   for ( const item_effect_t& effect : parsed.data.effects )

@@ -13,6 +13,7 @@ potion=potion_of_unbridled_fury
 flask=greater_flask_of_endless_fathoms
 food=mechdowels_big_mech
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -25,6 +26,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
+# Use Stormkeeper precombat unless some adds will spawn soon.
+actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/potion
 actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled

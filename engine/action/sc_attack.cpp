@@ -415,7 +415,8 @@ melee_attack_t::melee_attack_t( util::string_view n, player_t* p )
 melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : attack_t( n, p, s )
 {
-  may_miss = may_dodge = may_parry = may_glance = may_block = true;
+  // Dodge/parry/block handled in action_t::parse_spell_data()
+  may_miss = may_glance = true;
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 )

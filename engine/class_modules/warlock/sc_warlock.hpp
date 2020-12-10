@@ -491,6 +491,7 @@ public:
     propagate_const<buff_t*> malefic_wrath;
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> implosive_potential;
+    propagate_const<buff_t*> implosive_potential_small;
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> demonic_synergy;
   } buffs;

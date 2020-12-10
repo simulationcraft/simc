@@ -14,6 +14,7 @@ potion=spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -73,6 +74,8 @@ actions.apst+=/kill_shot
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.apst+=/a_murder_of_crows
 actions.apst+=/wildfire_bomb,if=full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10
+actions.apst+=/carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped
+actions.apst+=/butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)
 actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
 actions.apst+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone
 actions.apst+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max
@@ -117,6 +120,7 @@ actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
 actions.cds+=/bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd
 actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13
+actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<60|buff.coordinated_assault.up
 actions.cds+=/steel_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max
 actions.cds+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max
@@ -166,6 +170,8 @@ actions.st+=/wildfire_bomb,if=full_recharge_time<gcd&focus+cast_regen<focus.max|
 actions.st+=/steel_trap,if=focus+cast_regen<focus.max
 actions.st+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)
+actions.st+=/carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped
+actions.st+=/butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)
 actions.st+=/a_murder_of_crows
 actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable|buff.vipers_venom.up

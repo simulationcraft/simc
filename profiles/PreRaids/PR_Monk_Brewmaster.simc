@@ -6,15 +6,16 @@ race=vulpera
 vulpera_tricks=corrosive
 role=tank
 position=front
-talents=1030021
+talents=2020121
 covenant=kyrian
 soulbind=pelagos,combat_meditation/strike_with_clarity:4
 
 # Default consumables
 potion=phantom_fire
 flask=spectral_flask_of_power
-food=biltong
+food=spinefin_souffle_and_fries
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -67,6 +68,8 @@ actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passion
 actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/faeline_stomp
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
+actions+=/touch_of_death
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/spinning_crane_kick,if=buff.charred_passions.up
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))

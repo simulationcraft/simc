@@ -569,6 +569,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 };
 
 namespace pets
@@ -1063,6 +1064,7 @@ struct priest_action_t : public Base
     bool twist_of_fate_ta;
     bool shadow_covenant_da;
     bool shadow_covenant_ta;
+    bool schism;
   } affected_by;
 
   double vf_da_multiplier;
@@ -1109,7 +1111,8 @@ public:
                     { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
                     { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
                     { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
-                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta } };
+                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta },
+                    { priest().talents.schism->effectN( 2 ), affected_by.schism } };
 
     for ( const auto& a : affects )
     {
@@ -1153,6 +1156,19 @@ public:
     double c = ab::cost();
 
     return c;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = ab::composite_target_multiplier( target );
+
+    auto target_data = find_td( target );
+    if ( target_data && target_data->buffs.schism->check() )
+    {
+      m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
   double action_da_multiplier() const override
@@ -1229,7 +1245,7 @@ protected:
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;
-};
+};  // namespace actions
 
 struct priest_absorb_t : public priest_action_t<absorb_t>
 {
@@ -1304,6 +1320,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( priest().specialization() == PRIEST_SHADOW && priest().talents.surrender_to_madness->ok() )
     {
       if ( priest().buffs.surrender_to_madness_death->check() )
+      {
+        return false;
+      }
+    }
+
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.shadow_covenant->ok() )
+    {
+      if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
       {
         return false;
       }

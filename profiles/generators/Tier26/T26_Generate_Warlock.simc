@@ -1,83 +1,85 @@
-# warlock="T26_Warlock_Affliction"
-# level=120
-# race=troll
-# spec=affliction
-# role=spell
-# position=ranged_back
-# talents=3302023
-# default_pet=imp
+warlock="T26_Warlock_Affliction"
+level=60
+spec=affliction
+race=mechagnome
+role=spell
+position=ranged_back
+talents=3302023
+covenant=night_fae
+soulbind=niya,grove_invigoration/focused_malignancy:7/niyas_tools_burrs
 
-# head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/13
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-# chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/13
-# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-# hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
-# waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
-# legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
-# feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
-# finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=quick_navigation
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173130
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173130
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
+wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173130
+legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
+feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173130,bonus_id=7187/1498,enchant=tenet_of_mastery
+trinket1=soul_igniter,id=184019,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 
-# save=T26_Warlock_Affliction.simc
-
-
-# warlock="T26_Warlock_Demonology"
-# level=120
-# race=troll
-# spec=demonology
-# role=spell
-# position=ranged_back
-# talents=2303031
-# default_pet=felguard
-
-# head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=30/428/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
-# back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-# chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
-# wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
-# hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
-# waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
-# legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
-# feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
-# finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# main_hand=wand_of_zealous_purification,id=158321,bonus_id=4779/1512/4786,enchant=quick_navigation
-# off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
-
-# save=T26_Warlock_Demonology.simc
+save=T26_Warlock_Affliction.simc
 
 
-# warlock="T26_Warlock_Destruction"
-# level=120
-# race=troll
-# spec=destruction
-# role=spell
-# position=ranged_back
-# talents=1203023
-# default_pet=imp
+warlock="T26_Warlock_Demonology"
+level=60
+race=troll
+spec=demonology
+role=spell
+position=ranged_back
+talents=3303032
+covenant=night_fae
+soulbind=niya,grove_invigoration/borne_of_blood:7/niyas_tools_burrs
 
-# head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-# shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/13
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-# chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/13
-# wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-# hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
-# waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
-# legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
-# feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
-# finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-# trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-# trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-# main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=quick_navigation
+head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
+shoulders=grimveiled_spaulders,id=173247,bonus_id=6647/6649/6758/7035/1532
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
+wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
+legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
+feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173128,bonus_id=7187/1498,enchant=tenet_of_haste
+trinket1=soul_igniter,id=184019,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 
-# save=T26_Warlock_Destruction.simc
+save=T26_Warlock_Demonology.simc
+
+
+warlock="T26_Warlock_Destruction"
+level=60
+race=mechagnome
+spec=destruction
+role=spell
+position=ranged_back
+talents=3203012
+covenant=night_fae
+soulbind=niya,grove_invigoration/ashen_remains:7/niyas_tools_burrs
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6758/7027/1532/6935,gem_id=173128
+neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
+shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
+wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
+legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
+feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173128,bonus_id=7187/1498,enchant=tenet_of_haste
+trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+
+save=T26_Warlock_Destruction.simc

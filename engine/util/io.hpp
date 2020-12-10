@@ -108,6 +108,8 @@ public:
 #ifndef SC_WINDOWS
 inline FILE* fopen( const std::string& filename, const char* mode )
 { return std::fopen( filename.c_str(), mode ); }
+#else
+std::string ansi_to_utf8( const char* src );
 #endif
 
 inline int fclose( cfile& file ) { file.close(); return 0; }

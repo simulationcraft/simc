@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-03/36753, git build shadowlands 7bce0a5, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -8588,9 +8588,10 @@ Attributes       : .......x ........ ........ x..x.x..   .....x.. ..x..... .....
                  : Hidden (7), Does not break stealth (37), Disable player procs (112), Disable target procs (113), Always hits (114), Disable weapon procs (151)
 Effects          :
 #1 (id=816838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc304971
 
 Name             : Hammer of Wrath (desc=Rank 2) (id=326730) [Spell Family (10), Passive] 
@@ -10171,7 +10172,7 @@ Tooltip          : Suffering $w1% more Holy damage.
 Name             : Punish the Guilty (id=340012) [Spell Family (10), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 196 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
+Conduit Id       : 196 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10513,9 +10514,10 @@ Effects          :
 #2 (id=845754)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=845757)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Templar's Verdict (339538)
                    Family Flags: 44, 49, 52, 88
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the target area and causing them to take $s3% increased damage from your Holy Power abilities for $d.
 
 |cFFFFFFFFPassive:|r $@spelldesc343723

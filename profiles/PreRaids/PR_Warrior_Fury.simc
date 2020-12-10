@@ -5,7 +5,7 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=2213323
+talents=2113323
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:4
 
@@ -14,6 +14,7 @@ potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -79,8 +80,8 @@ legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
 feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646
+trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation
 off_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=celestial_guidance
 

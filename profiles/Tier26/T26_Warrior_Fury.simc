@@ -2,10 +2,10 @@ warrior="T26_Warrior_Fury"
 source=default
 spec=fury
 level=60
-race=mechagnome
+race=human
 role=attack
 position=back
-talents=2312323
+talents=2113323
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
 
@@ -14,6 +14,7 @@ potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -68,29 +69,29 @@ actions.single_target+=/raging_blow
 actions.single_target+=/crushing_blow
 actions.single_target+=/whirlwind
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
-neck=charm_of_eternal_winter,id=183040,bonus_id=7187/1498/6935,gem_id=173128
+head=wrathbark_greathelm,id=178694,bonus_id=1540/6807,gem_id=173130
+neck=sin_stained_pendant,id=178827,bonus_id=1540/6807,gem_id=173128
 shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173128
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498,gem_id=173128
 hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173129
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498,gem_id=173128
 legs=shadowghast_greaves,id=171416,bonus_id=6648/6649/6758/6964/1532
 feet=errant_crusaders_greaves,id=183027,bonus_id=7187/1498
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498,enchant=shadowcore_oil
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_mastery
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+trinket1=phial_of_putrefaction,id=178771,bonus_id=1540/6807
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.19
-# gear_strength=965
-# gear_stamina=1683
-# gear_crit_rating=258
-# gear_haste_rating=1039
-# gear_mastery_rating=724
-# gear_versatility_rating=72
-# gear_armor=1296
+# gear_ilvl=228.75
+# gear_strength=960
+# gear_stamina=1670
+# gear_crit_rating=226
+# gear_haste_rating=1203
+# gear_mastery_rating=606
+# gear_versatility_rating=56
+# gear_armor=1289

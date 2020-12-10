@@ -13,6 +13,7 @@ potion=unbridled_fury
 flask=greater_flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -78,7 +79,7 @@ actions.st+=/bloodshed
 actions.st+=/wild_spirits
 actions.st+=/flayed_shot
 actions.st+=/kill_shot,if=buff.flayers_mark.remains<5|target.health.pct<=20
-actions.st+=/barbed_shot,if=(cooldown.wild_spirits.remains>full_recharge_time|!covenant.night_fae)&(cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains)|target.time_to_die<9
+actions.st+=/barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9
 actions.st+=/death_chakram,if=focus+cast_regen<focus.max
 actions.st+=/stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15
 actions.st+=/a_murder_of_crows

@@ -1,4 +1,4 @@
-// Item effects, wow build 9.0.2.36753
+// Item effects, wow build 9.0.2.36839
 static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7342,7 +7342,7 @@ static const std::array<item_effect_t, 7491> __item_effect_data { {
   { 117368, 324375, 177906,   0,   1,    0,      -1,      -1 }, // Alchemical Longevity
   { 117369, 324376, 177907,   0,   1,    0,      -1,      -1 }, // Culinary Longevity
   { 117493, 124353, 178263,   0,   5,    0,      -1,      -1 }, // +10 Herbalism
-  { 136019, 277182, 178298,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 136019, 345229, 178298,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
   { 136020, 345231, 178334,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
   { 136016, 345229, 178386,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
   { 136017, 345231, 178447,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem

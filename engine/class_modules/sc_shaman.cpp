@@ -861,6 +861,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   void init_rng() override;
   void init_special_effects() override;
@@ -3759,6 +3760,13 @@ struct ice_strike_t : public shaman_attack_t
     weapon_multiplier = 0.0;
   }
 
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_stormbringer = may_proc_flametongue = false;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -5794,6 +5802,11 @@ struct frost_shock_t : public shaman_spell_t
     maelstrom_gain = 0.0;
 
     p()->buff.strength_of_earth->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    shaman_spell_t::impact( s );
 
     if ( rng().roll( p()->conduit.chilled_to_the_core.percent() ) )
     {
@@ -6770,7 +6783,11 @@ struct primordial_wave_t : public shaman_spell_t
     {
       cooldown->reset( true );
     }
+  }
 
+  void impact( action_state_t* s ) override
+  {
+    shaman_spell_t::impact(s);
     flame_shock->set_target( target );
     flame_shock->execute();
   }
@@ -8784,74 +8801,113 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string elemental_pot = ( true_level >= 60 ) ? "potion_of_spectral_intellect"
-                                                   : ( true_level >= 50 ) ? "potion_of_unbridled_fury" : "disabled";
+  std::string elemental_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+                                 ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                 "disabled";
 
-  std::string enhance_pot =
-      ( true_level >= 60 )
-          ? "potion_of_spectral_agility"
-          : ( true_level >= 50 )
-                ? "potion_of_unbridled_fury" : "disabled";
+  std::string enhancement_potion = ( true_level >= 51 ) ? "potion_of_spectral_agility" :
+                                   ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                   "disabled";
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
+  std::string restoration_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+                                   ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
+                                   "disabled";
+
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_potion;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_potion;
+    case SHAMAN_RESTORATION:
+      return restoration_potion;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_flask ==================================================
 
 std::string shaman_t::default_flask() const
 {
-  std::string elemental_flask = ( true_level >= 60 )
-                                    ? "spectral_flask_of_power"
-                                    : ( true_level >= 50 ) ? "greater_flask_of_endless_fathoms" : "disabled";
+  std::string elemental_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
+                                "disabled";
 
-  std::string enhance_flask =
-      ( true_level >= 60 )
-          ? "spectral_flask_of_power"
-          : ( true_level >= 50 )
-                ? "greater_flask_of_the_currents" : "disabled";
+  std::string enhancement_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                  ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
+                                  "disabled";
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
+  std::string restoration_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+                                  ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
+                                  "disabled";
+
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_flask;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_flask;
+    case SHAMAN_RESTORATION:
+      return restoration_flask;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_food ===================================================
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food =
-      ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : ( true_level >= 50 ) ? "mechdowels_big_mech" : "disabled";
+  std::string elemental_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                               ( true_level >= 45 ) ? "mechdowels_big_mech" :
+                               "disabled";
 
+  std::string enhancement_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                                 ( true_level >= 45 ) ? "baked_port_tato" :
+                                 "disabled";
 
-  std::string enhance_food = ( true_level >= 60 )
-                                 ? "feast_of_gluttonous_hedonism"
-                                 : ( true_level >= 50 )
-                                       ? "baked_port_tato" : "disabled";
+  std::string restoration_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+                                 ( true_level >= 45 ) ? "baked_port_tato" :
+                                 "disabled";
 
-  std::string restoration_food = ( true_level > 110 )
-                                     ? "baked_port_tato"
-                                     : ( true_level > 100 )
-                                           ? "lemon_herb_filet"
-                                           : ( true_level > 90 )
-                                                 ? "pickled_eel"
-                                                 : ( true_level >= 90 )
-                                                       ? "mogu_fish_stew"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
-
-  return specialization() == SHAMAN_ENHANCEMENT
-             ? enhance_food
-             : specialization() == SHAMAN_ELEMENTAL ? elemental_food : restoration_food;
+  switch(specialization()) {
+    case SHAMAN_ELEMENTAL:
+      return elemental_food;
+    case SHAMAN_ENHANCEMENT:
+      return enhancement_food;
+    case SHAMAN_RESTORATION:
+      return restoration_food;
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::default_rune ===================================================
 
 std::string shaman_t::default_rune() const
 {
-  std::string elemental_rune = ( true_level >= 60 ) ? "veiled" : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
+  return ( true_level >= 60 ) ? "veiled" :
+         ( true_level >= 50 ) ? "battle_scarred" :
+         ( true_level >= 45 ) ? "defiled" :
+         ( true_level >= 40 ) ? "hyper" :
+         "disabled";
+}
 
-  std::string enhance_rune = ( true_level >= 60 )
-                                 ? "veiled"
-                                 : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
+// shaman_t::default_temporary_enchant ======================================
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+std::string shaman_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+    case SHAMAN_ENHANCEMENT:
+    case SHAMAN_RESTORATION:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+    default:
+      return "disabled";
+  }
 }
 
 // shaman_t::init_action_list_elemental =====================================
@@ -8868,7 +8924,6 @@ void shaman_t::init_action_list_elemental()
   precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
-  precombat->add_action( "potion" );
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
@@ -8881,7 +8936,9 @@ void shaman_t::init_action_list_elemental()
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
+    def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
     def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+    def->add_action( "potion" );
     def->add_action( "use_items" );
     def->add_action( this, "Flame Shock", "if=!ticking" );
     def->add_action( this, "Fire Elemental" );
@@ -9163,7 +9220,6 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
-  def->add_action( "windstrike" );
 
   // Heart of Azeroth major essence
   def->add_action( "heart_essence" );
@@ -9180,11 +9236,16 @@ void shaman_t::init_action_list_enhancement()
 
   def->add_action( this, "Feral Spirit" );
   def->add_talent( this, "Ascendance" );
+  def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
+  single->add_action("windstrike");
   single->add_action("primordial_wave,if=!buff.primordial_wave.up");
-  single->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
+  single->add_action(this, "Stormstrike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_talent(this, "Ice Strike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action(this, "Sundering", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_action(this, "Flame Shock", "if=!ticking");
   single->add_action("vesper_totem");
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
@@ -9208,8 +9269,9 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Earth Elemental");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
+  aoe->add_action("windstrike,if=buff.crash_lightning.up");
+  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
-  aoe->add_action(this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
   aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
@@ -9217,6 +9279,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&(buff.stormkeeper.up|buff.maelstrom_weapon.stack>=5)");
   aoe->add_action(this, "Crash Lightning", "if=talent.crashing_storm.enabled|buff.crash_lightning.down");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
+  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
   aoe->add_action(this, "Crash Lightning");
   aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
@@ -9226,6 +9289,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled");
   aoe->add_talent(this, "Sundering");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6");
+  aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action(this, "Lava Lash");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
@@ -9251,36 +9315,36 @@ void shaman_t::init_action_list_restoration_dps()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
-  // Snapshot stats
+  precombat->add_action( this, "Earth Elemental" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  // Actual precombat
   precombat->add_action( "potion" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
-  precombat->add_action( this, "Lava Burst" );
 
-  // In-combat potion
-  def->add_action( "potion" );
-
-  // "Default"
-  def->add_action( this, "Wind Shear" );
+  // Default APL
   def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
-  // On-use items
-  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
+  def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+  def->add_action( "potion" );
   def->add_action( "use_items" );
-  def->add_action( "blood_fury" );
-  def->add_action( "berserking" );
-  def->add_action( "fireblood" );
-  def->add_action( "ancestral_call" );
-  def->add_action( "worldvein_resonance" );
-  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
-  def->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
-  def->add_action( "ripple_in_space" );
+  def->add_action( this, "Flame Shock", "if=!ticking" );
   def->add_action( this, "Earth Elemental" );
-  def->add_action( "bag_of_tricks" );
-  def->add_action( "fae_transfusion" );
-  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
-  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1" );
+
+  // Racials
+  def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+  def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
+
+  // Covenants
+  def->add_action( "chain_harvest,if=covenant.venthyr" );
+  def->add_action( "vesper_totem,if=covenant.kyrian" );
+
+  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+  def->add_action( "fae_transfusion,if=covenant.night_fae" );
+  def->add_action( "primordial_wave,if=covenant.necrolord" );
+  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<3" );
+  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );
   def->add_action( this, "Flame Shock", "moving=1" );
+  def->add_action( this, "Frost Shock", "moving=1" );
 }
 
 // shaman_t::init_actions ===================================================

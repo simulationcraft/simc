@@ -81,6 +81,7 @@ struct holy_word_serenity_t final : public priest_heal_t
 };
 
 // TODO Fix targeting to start from the priest and not the target
+// TODO Implement 3+ targets hit extra spawn of Holy Nova
 struct holy_nova_t final : public priest_spell_t
 {
   const spell_data_t* holy_fire_rank2;

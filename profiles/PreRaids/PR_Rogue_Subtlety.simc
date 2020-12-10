@@ -14,6 +14,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -79,7 +80,7 @@ actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_to
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 actions.cds+=/flagellation,if=variable.snd_condition&!stealthed.mantle
 actions.cds+=/flagellation_cleanse,if=debuff.flagellation.remains<2
-actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=3|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
+actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
 # Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
@@ -97,7 +98,7 @@ actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=
 # With SF, if not already done, use Tornado with SoD up.
 actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled
-actions.cds+=/potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
@@ -107,7 +108,7 @@ actions.cds+=/use_items,if=buff.symbols_of_death.up|fight_remains<20
 
 # Finishers
 # While using Premeditation, avoid casting Slice and Dice when Shadow Dance is soon to be used, except for Kyrian
-actions.finish=variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets<(5-covenant.necrolord)&!covenant.kyrian
+actions.finish=variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets.shuriken_storm<(5-covenant.necrolord)&!covenant.kyrian
 actions.finish+=/slice_and_dice,if=!variable.premed_snd_condition&spell_targets.shuriken_storm<6&!buff.shadow_dance.up&buff.slice_and_dice.remains<fight_remains&refreshable
 actions.finish+=/slice_and_dice,if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)
 # Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker.
@@ -140,14 +141,15 @@ actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&(variable.shd_th
 actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains
 
 # Stealthed Rotation
-# If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD).
-actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)
+# If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)
+actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)&master_assassin_remains=0
 # Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations.
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 # Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)
 actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&combo_points>=4
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
+actions.stealthed+=/shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4
 actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5
 # Up to 3 targets keep up Find Weakness by cycling Shadowstrike.
 actions.stealthed+=/shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6
@@ -171,8 +173,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=20attackpower
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=20attackpower
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
 main_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=celestial_guidance
 off_hand=tanglewood_thorn,id=178710,bonus_id=6807/1498/6646,enchant=sinful_revelation
 

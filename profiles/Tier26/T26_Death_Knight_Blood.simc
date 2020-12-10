@@ -1,0 +1,117 @@
+deathknight="T26_Death_Knight_Blood"
+source=default
+spec=blood
+level=60
+race=undead
+role=tank
+position=front
+talents=2221033
+covenant=kyrian
+soulbind=kleia,pointed_courage/proliferation:7
+
+# Default consumables
+potion=potion_of_phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions+=/berserking
+actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
+actions+=/lights_judgment,if=buff.unholy_strength.up
+actions+=/ancestral_call
+actions+=/fireblood
+actions+=/bag_of_tricks
+# Since the potion cooldown has changed, we'll sync with DRW
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/use_items
+actions+=/raise_dead
+actions+=/blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|buff.deaths_due.remains>7)
+actions+=/blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up)
+actions+=/raise_dead
+actions+=/death_strike,if=fight_remains<3
+actions+=/call_action_list,name=covenants
+actions+=/call_action_list,name=standard
+
+# Burn RP if we have time between DD refreshes
+actions.covenants=death_strike,if=covenant.night_fae&buff.deaths_due.remains>6&runic_power>70
+# Make sure we never lose that buff
+actions.covenants+=/heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<6)
+# And that we always cast DD as high prio when we actually need it
+actions.covenants+=/deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
+# Attempt to sacrifice the ghoul if we predictably will not do much in the near future
+actions.covenants+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<10|target.time_to_die<gcd)
+# Burn RP off just before swarming comes back off CD
+actions.covenants+=/death_strike,if=covenant.venthyr&runic_power>70&cooldown.swarming_mist.remains<3
+# And swarming as long as we're not < 3s off DRW
+actions.covenants+=/swarming_mist,if=!buff.dancing_rune_weapon.up
+# Pre-AL marrow on pull in order to guarantee ossuary during the first DRW
+actions.covenants+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
+# And we cast AL
+actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
+# We just don't cast this during DRW
+actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
+
+# Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it
+actions.standard=blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8
+actions.standard+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
+actions.standard+=/tombstone,if=buff.bone_shield.stack>=7&rune>=2
+actions.standard+=/marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/death_strike,if=runic_power.deficit<=70
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15&(!covenant.night_fae|buff.deaths_due.remains>5)
+actions.standard+=/heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10
+actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/blood_tap,if=rune.time_to_3>gcd
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/consumption
+actions.standard+=/blood_boil,if=charges_fractional>=1.1
+actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
+actions.standard+=/arcane_torrent,if=runic_power.deficit>20
+
+head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=shadowghast_breastplate,id=171412,bonus_id=6647/6649/6758/6953/1532,enchant=eternal_skirmish
+wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
+hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
+waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
+feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=guarding_cudgel_of_the_goliath,id=180312,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=229.40
+# gear_strength=883
+# gear_stamina=1534
+# gear_crit_rating=511
+# gear_haste_rating=827
+# gear_mastery_rating=359
+# gear_versatility_rating=254
+# gear_armor=1306

@@ -3,7 +3,7 @@ spec=arcane
 level=60
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=1032021
 covenant=night_fae
 soulbind=niya,grove_invigoration/niyas_tools_Poison/magis_brand:7/discipline_of_the_grove:7
@@ -14,13 +14,13 @@ shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=mantle_of_manifest_sins,id=183033,bonus_id=7187/1498
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
 wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173130,enchant=eternal_intellect
-hands=,id=178748,bonus_id=6536/1540/6646
+hands=gory_surgeons_gloves,id=178748,bonus_id=6536/1540/6646
 waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173130
 legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=shadowghast_ring,id=178926,bonus_id=6648/6650/6758/6834/1532/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498
 trinket2=empyreal_ordnance,id=180117,bonus_id=6536/1540/6646
 main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -34,52 +34,55 @@ spec=fire
 role=spell
 position=ranged_back
 talents=3031021
-covenant=kyrian
-soulbind=pelagos,controlled_destruction:7/combat_meditation/infernal_cascade:7/focusing_mantra
+covenant=night_fae
+soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/controlled_destruction:7
 
 head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+neck=sin_stained_pendant,id=178827,bonus_id=1540/6646/6935,gem_id=173128
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
-wrists=acolytes_velvet_bindings,id=183017,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
-hands=gory_surgeons_gloves,id=178748,bonus_id=6536/1540/6646
-waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173128
-legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
+wrist=deathshackle_wristwraps,id=178704,bonus_id=1540/6646/6935,gem_id=173128,enchant=eternal_intellect
+hands=mitts_of_flawless_duplication,id=178930,bonus_id=1540/6646
+waist=kintaras_baleful_cord,id=180109,bonus_id=1540/6646/6935,gem_id=173128
+legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1540/6646
 feet=sparkling_glass_slippers,id=183023,bonus_id=7187/1498
 finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=ardent_sunstar_signet,id=183035,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=glyph_of_assimilation,id=184021,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=soul_igniter,id=184019,bonus_id=1498/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/1531,enchant=sinful_revelation
+main_hand=spire_of_the_long_dark,id=180002,bonus_id=7187/6652/1531/6646,enchant=sinful_revelation
 
 save=T26_Mage_Fire.simc
 
 
 mage="T26_Mage_Frost"
-spec=frost
 level=60
-race=troll
+race=mechagnome
+spec=frost
 role=spell
-position=back
+position=ranged_back
 talents=2032021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,dauntless_duelist/thrill_seeker/icy_propulsion:7
 
-head=abominable_visage,id=178732,bonus_id=6536/1540/6646/6935,gem_id=173128
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173128
+potion=phantom_fire
+
+head=depraved_physicians_mask,id=178759,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
 shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
 back=drape_of_twisted_loyalties,id=180123,bonus_id=6536/1540/6646
 chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_insight
-wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=6536/1540/6646,gem_id=173127,enchant=eternal_intellect
 hands=supple_supplicants_gloves,id=183008,bonus_id=7187/1498
-waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173128
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173127
 legs=grimveiled_pants,id=173246,bonus_id=6647/6649/6758/6823/1532
 feet=dark_stride_footwraps,id=180102,bonus_id=6536/1540/6646
-finger1=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=6536/1540/6646/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498,enchant=shadowcore_oil
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498,gem_id=173127,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
+trinket1=cabalists_hymnal,id=184028,bonus_id=7187/1498
+trinket2=glyph_of_assimilation,id=184021,bonus_id=7187/1498
+main_hand=hungering_ritualists_animablade,id=182396,bonus_id=7187/1531,enchant=sinful_revelation
+off_hand=master_stonewrights_chisel,id=182400,bonus_id=7187/1531
 
 save=T26_Mage_Frost.simc

@@ -69,7 +69,10 @@ struct item_t
   struct parsed_input_t
   {
     int                                              item_level;
+    // Note, temporary enchant is parsed outside of item option parsing. This is due to
+    // coming from player-scope option, instead of being tied to individual items
     unsigned                                         enchant_id;
+    unsigned                                         temporary_enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
     unsigned                                         azerite_level;
@@ -83,6 +86,7 @@ struct item_t
     std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
     std::string                                      encoded_enchant;
     std::vector<stat_pair_t>                         enchant_stats;
+    std::vector<stat_pair_t>                         temp_enchant_stats;
     std::string                                      encoded_addon;
     std::vector<stat_pair_t>                         addon_stats;
     parsed_item_data_t                               data;

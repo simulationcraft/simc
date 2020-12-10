@@ -256,6 +256,13 @@ namespace {
                       fmt::join(m_item->parsed.azerite_ids, ":")));
       }
 
+      if (!m_item->parsed.crafted_stat_mod.empty())
+      {
+        params.push_back(
+            fmt::format("crafted-stats={}",
+              fmt::join(m_item->parsed.crafted_stat_mod, ":")));
+      }
+
       params.push_back(fmt::format("ilvl={}", m_item->item_level()));
     }
 

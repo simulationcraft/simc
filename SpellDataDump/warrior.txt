@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-03/36753, git build shadowlands 7bce0a5, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -751,7 +751,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Raid Members (56)
 #2 (id=728517)   : Apply Aura (6) | Modify Ranged Attack Power% (167)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Raid Members (56)
-Hotfixed         : Base Value (10 -> 5)
 Description      : Increases the attack power of all raid and party members within $a1 yards by $s1% for $d.
 Tooltip          : Attack power increased by $w1%.
 
@@ -1860,7 +1859,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
@@ -2060,7 +2059,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Main Hand
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
@@ -3258,7 +3257,7 @@ Spell Type       : Melee
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Execute (5308), Execute (280735)
 Family Flags     : 9, 29, 115
@@ -3432,7 +3431,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Rampage (184367)
@@ -3457,7 +3456,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Rampage (184367)
@@ -3885,7 +3884,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Rampage (184367)
@@ -3910,7 +3909,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Rampage (184367)
@@ -8093,7 +8092,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 8
 Range            : 5 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Main Hand
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Execute (5308), Execute (280735)
 Family Flags     : 8, 9, 29, 116
@@ -10406,7 +10405,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Affecting spells : Rend (772 effect#3), Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1)
 Triggered by     : Crushing Blow (335097)
 Family Flags     : 9, 45
@@ -10691,9 +10690,9 @@ Variables        : $rav=${7}
 $bstorm=${9}
 
 Name             : Signet of Tormented Kings (id=335266) [Spell Family (4), Passive] 
+Hotfixed         : Internal Cooldown (3000 -> 0)
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 3 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x.x... ........ ........ 

@@ -24,6 +24,26 @@ namespace unique_gear
 {
 namespace shadowlands
 {
+struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
+{
+  shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
+                  bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, s, aoe_damage_increase_ )
+  {
+    // Default still seems to be 6, however shadowlands seems to indicate the maximum
+    // number (slightly confusingly) in the tooltip data, which is referencable directly
+    // from spell data
+    max_scaling_targets = 6;
+  }
+
+  shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
+                       bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
+  {
+    max_scaling_targets = 6;
+  }
+};
+
 // Enchants & Consumable buffs affected by 'Exacting Preparations' soulbind
 struct SL_buff_t : public buff_t
 {
@@ -105,6 +125,7 @@ void smothered_shank( special_effect_t& effect )
 
   effect.name_str = "pungent_belch";
   effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
+  effect.disable_action();
 }
 
 void surprisingly_palatable_feast( special_effect_t& effect )
@@ -514,19 +535,19 @@ void glyph_of_assimilation( special_effect_t& effect )
  */
 void soul_igniter( special_effect_t& effect )
 {
-  struct blazing_surge_t : public proc_spell_t
+  struct blazing_surge_t : public shadowlands_aoe_proc_t
   {
     double buff_fraction_elapsed;
     double max_time_multiplier;
-    unsigned max_scaling_targets;
 
-    blazing_surge_t( const special_effect_t& e ) : proc_spell_t( "blazing_surge", e.player, e.player->find_spell( 345215 ) )
+    blazing_surge_t( const special_effect_t& e ) :
+      shadowlands_aoe_proc_t( e, "blazing_surge", 345215, true )
     {
       split_aoe_damage = true;
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
-      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() + 1 );
     }
 
     double action_multiplier() const override
@@ -536,19 +557,6 @@ void soul_igniter( special_effect_t& effect )
       // This may actually be added as flat damage using the coefficients,
       // but for a trinket like this it is difficult to verify this.
       m *= 1.0 + buff_fraction_elapsed * max_time_multiplier;
-
-      return m;
-    }
-
-    double composite_aoe_multiplier( const action_state_t* s ) const override
-    {
-      double m = proc_spell_t::composite_aoe_multiplier( s );
-
-      // The extra damage for each target appears to be a 15%
-      // multiplier that is not listed in spell data anywhere.
-      // TODO: this has been tested on 6 targets, verify that
-      // it does not continue scaling higher at 7 targets.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
 
       return m;
     }
@@ -671,9 +679,37 @@ void gluttonous_spike( special_effect_t& /* effect */ )
 
 }
 
-void hateful_chain( special_effect_t& /* effect */ )
+void hateful_chain( special_effect_t& effect )
 {
+  struct hateful_rage_t : public proc_spell_t
+  {
+    hateful_rage_t( const special_effect_t& e ) :
+      proc_spell_t( "hateful_rage", e.player, e.player->find_spell( 345361 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
 
+  struct hateful_chain_callback_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target->is_sleeping() )
+        return;
+
+      // XXX: Assume the actor always has more health than the target
+      // TODO: Handle actor health < target health case?
+      proc_action->target = target( state );
+      proc_action->schedule_execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<hateful_rage_t>( "hateful_rage", effect );
+
+  new hateful_chain_callback_t( effect.player, effect );
 }
 
 void bottled_flayedwing_toxin( special_effect_t& effect )
@@ -840,29 +876,14 @@ void soulletting_ruby( special_effect_t& effect )
 
 void satchel_of_misbegotten_minions( special_effect_t& effect )
 {
-  struct abomiblast_t : public proc_spell_t
+  struct abomiblast_t : public shadowlands_aoe_proc_t
   {
-    unsigned max_scaling_targets;
-
     abomiblast_t( const special_effect_t& e ) :
-      proc_spell_t( "abomiblast", e.player, e.player->find_spell( 345638 ) )
+      shadowlands_aoe_proc_t( e, "abomiblast", 345638, true )
     {
-      split_aoe_damage = true;
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
-    }
-
-    double composite_aoe_multiplier( const action_state_t* s ) const override
-    {
-      double m = proc_spell_t::composite_aoe_multiplier( s );
-
-      // The extra damage for each target appears to be a 15%
-      // multiplier that is not listed in spell data anywhere.
-      // TODO: this has been tested above 2 target, verify the target cap.
-      m *= 1.0 + 0.15 * std::min( s->n_targets - 1, max_scaling_targets );
-
-      return m;
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
     }
   };
 
@@ -1299,6 +1320,55 @@ void anima_field_emitter( special_effect_t& effect )
   }
 }
 
+void decanter_of_animacharged_winds( special_effect_t& effect )
+{
+  // TODO: "Damage is increased for each enemy struck, up to 5 enemies."
+  struct splash_of_animacharged_wind_t : public shadowlands_aoe_proc_t
+  {
+    splash_of_animacharged_wind_t( const special_effect_t& e ) :
+      shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
+    {
+      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+    }
+  };
+
+  effect.execute_action = create_proc_action<splash_of_animacharged_wind_t>(
+      "splash_of_animacharged_wind", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void bloodspattered_scale( special_effect_t& effect )
+{
+  struct blood_barrier_t : public shadowlands_aoe_proc_t
+  {
+    buff_t* absorb;
+
+    blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
+      shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
+    {
+      max_scaling_targets = e.driver()->effectN( 2 ).base_value() + 1;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      absorb->trigger( 1, execute_state->result_amount * execute_state->n_targets );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "blood_barrier" );
+  if ( !buff )
+  {
+    buff = make_buff<absorb_buff_t>( effect.player, "blood_barrier",
+        effect.player->find_spell( 329849 ), effect.item )
+      ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    effect.execute_action = create_proc_action<blood_barrier_t>( "blood_barrier", effect, buff );
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1547,6 +1617,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
     unique_gear::register_special_effect( 345739, items::grim_codex );
     unique_gear::register_special_effect( 345533, items::anima_field_emitter );
+    unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
+    unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

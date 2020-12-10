@@ -282,7 +282,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     parse_options( options_str );
     is_divine_storm = true;
 
-    aoe = data().effectN( 2 ).base_value();
+    aoe = as<int>( data().effectN( 2 ).base_value() );
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
@@ -292,7 +292,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     is_divine_storm = true;
-    aoe = data().effectN( 2 ).base_value();
+    aoe = as<int>( data().effectN( 2 ).base_value() );
 
     background = is_free;
     base_multiplier *= mul;
@@ -354,6 +354,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
       background = true;
+      may_crit = false;
 
       // spell data please
       aoe = 0;

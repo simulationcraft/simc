@@ -976,6 +976,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   // player_t overrides
   action_t* create_action( util::string_view name, const std::string& options ) override;
@@ -11745,9 +11746,9 @@ std::string monk_t::default_food() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 60 )
+      if ( true_level >= 60 )
         return "spinefin_souffle_and_fries";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "biltong";
       else
         return "disabled";
@@ -11755,7 +11756,7 @@ std::string monk_t::default_food() const
     case MONK_MISTWEAVER:
       if ( true_level >= 60 )
         return "feast_of_gluttonous_hedonism";
-      else if ( true_level > 50 )
+      else if ( true_level >= 50 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
@@ -11785,6 +11786,36 @@ std::string monk_t::default_rune() const
     return "defiled";
   return "disabled";
 }
+
+// monk_t::temporary_enchant ===============================================
+std::string monk_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level >= 60 )
+        return "main_hand:shadowcore_oil";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level >= 60 )
+        return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
 
 // Brewmaster Pre-Combat Action Priority List ============================
 
@@ -11923,6 +11954,8 @@ void monk_t::apl_combat_brewmaster()
   // Covenant Faeline Stomp
   def->add_action( "faeline_stomp" );
 
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
+  def->add_action( this, "Touch of Death" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( this, "Spinning Crane Kick", "if=buff.charred_passions.up" );
   def->add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))" );
@@ -11942,7 +11975,6 @@ void monk_t::apl_combat_brewmaster()
 
 //  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
 
-//  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
 }
 
 // Windwalker Combat Action Priority List ===============================

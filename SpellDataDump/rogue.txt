@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-03/36753, git build shadowlands 7bce0a5, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -968,6 +968,7 @@ Your Nature damage done against the target is increased by $319504s1% for $31950
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Sap (id=6770) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -986,9 +987,9 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........
 Affecting spells : Dirty Tricks (108216 effect#1), Shadow Dance (185313 effect#6), Rushed Setup (341534 effect#1), Sepsis (347037 effect#1)
 Family Flags     : 7
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
-                 : ........ ........ ........ ........   xx...... ........ xx...... ........ 
+                 : ........ ........ ........ ........   xx...... ........ xx...... ..x..... 
                  : ........ ........ .......x ........   .....x.. ........ ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ......x. 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
@@ -7236,13 +7237,14 @@ Description      : $@spelldesc278681
 Tooltip          : Haste increased by $w1.
 
 Name             : Shadow Blades (id=279043) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10261,9 +10263,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=841560)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.70000 | Target: Self (1)
                    Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560)
                    Family Flags: 82
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : Echoing Reprimand's damage is increased by |cFFFFFFFF$s1%|r.
 
 Name             : Sudden Fractures (id=341272) [Spell Family (8), Passive, Hidden] 

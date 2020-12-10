@@ -31,6 +31,12 @@ std::string rune( const player_t* p )
        :                       "disabled";
 }
 
+std::string temporary_enchant( const player_t* p )
+{
+  return p->true_level >= 60 ? "main_hand:shadowcore_oil"
+       :                       "disabled";
+}
+
 //arcane_apl_start
 void arcane( player_t* p )
 {
@@ -163,20 +169,20 @@ void arcane( player_t* p )
   cooldowns->add_action( "radiant_spark,if=cooldown.touch_of_the_magi.remains>variable.rs_max_delay_for_totm&cooldown.arcane_power.remains>variable.rs_max_delay_for_ap&(talent.rune_of_power&(cooldown.rune_of_power.remains<execute_time|cooldown.rune_of_power.remains>variable.rs_max_delay_for_rop)|!talent.rune_of_power)&buff.arcane_charge.stack>2&debuff.touch_of_the_magi.down&buff.rune_of_power.down&buff.arcane_power.down", "Use spark if totm and ap are on cd and won't be up for longer than the max delay, making sure we have at least two arcane charges and that totm wasn't just used." );
   cooldowns->add_action( "radiant_spark,if=cooldown.touch_of_the_magi.remains<execute_time&buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<(execute_time+action.touch_of_the_magi.execute_time)", "Use spark with ap when possible. If totm is ready as well, make sure to cast it before totm." );
   cooldowns->add_action( "radiant_spark,if=cooldown.arcane_power.remains<execute_time&((!talent.enlightened|(talent.enlightened&mana.pct>=70))&((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack=0))&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct)" );
-  cooldowns->add_action( "touch_of_the_magi,if=buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time", "Use totm with ap if it's within the max delay. If not, use with rop if the talent is taken, and it's within the max delay." );
+  cooldowns->add_action( "touch_of_the_magi,if=buff.arcane_charge.stack<=variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time&mana.pct>variable.ap_minimum_mana_pct&buff.rune_of_power.down", "Use totm with ap if it's within the max delay. If not, use with rop if the talent is taken, and it's within the max delay." );
   cooldowns->add_action( "touch_of_the_magi,if=buff.arcane_charge.stack<=variable.totm_max_charges&talent.rune_of_power&cooldown.rune_of_power.remains<=execute_time&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap" );
   cooldowns->add_action( "touch_of_the_magi,if=buff.arcane_charge.stack<=variable.totm_max_charges&(!talent.rune_of_power|cooldown.rune_of_power.remains>variable.totm_max_delay_for_rop)&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap" );
   cooldowns->add_action( "arcane_power,if=cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&mana.pct>=variable.ap_minimum_mana_pct", "Use ap if totm is on cd and won't be up for longer than the max delay, making sure that we have enough mana and that there is not already a rune of power down." );
-  cooldowns->add_action( "rune_of_power,if=buff.arcane_power.down&cooldown.touch_of_the_magi.remains>variable.rop_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)", "Use rop if totm is on cd and won't be up for longer than the max delay, making sure there isn't already a rune down and that ap won't become available during rune." );
+  cooldowns->add_action( "rune_of_power,if=buff.arcane_power.down&(cooldown.touch_of_the_magi.remains>variable.rop_max_delay_for_totm|cooldown.arcane_power.remains<=variable.totm_max_delay_for_ap)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&cooldown.arcane_power.remains>12", "Use rop if totm is on cd and won't be up for longer than the max delay, making sure there isn't already a rune down and that ap won't become available during rune." );
   cooldowns->add_action( "shifting_power,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   cooldowns->add_action( "presence_of_mind,if=talent.rune_of_power&buff.arcane_power.up&buff.rune_of_power.remains<gcd.max", "Use pom to squeeze an extra ab in the next cooldown window, unless kyrian then only during arcane power due to how mana hungry radiant spark is" );
   cooldowns->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<action.arcane_missiles.execute_time&!covenant.kyrian" );
-  cooldowns->add_action( "presence_of_mind,if=buff.rune_of_power.up&buff.rune_of_power.remains<gcd.max&cooldown.evocation.ready&!covenant.kyrian" );
+  cooldowns->add_action( "presence_of_mind,if=buff.rune_of_power.up&buff.rune_of_power.remains<gcd.max&cooldown.evocation.ready&cooldown.touch_of_the_magi.remains&!covenant.kyrian" );
 
   rotation->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95&(!runeforge.siphon_storm|buff.siphon_storm.stack=buff.siphon_storm.max_stack)" );
-  rotation->add_action( "evocation,if=mana.pct<=variable.evo_pct&(cooldown.touch_of_the_magi.remains<=action.evocation.execute_time|cooldown.arcane_power.remains<=action.evocation.execute_time|(talent.rune_of_power&cooldown.rune_of_power.remains<=action.evocation.execute_time))&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down" );
+  rotation->add_action( "evocation,if=mana.pct<=variable.evo_pct&(cooldown.touch_of_the_magi.remains<=action.evocation.execute_time|cooldown.arcane_power.remains<=action.evocation.execute_time|(talent.rune_of_power&cooldown.rune_of_power.remains<=action.evocation.execute_time))&buff.rune_of_power.down&buff.arcane_power.down&debuff.touch_of_the_magi.down&!prev_gcd.1.touch_of_the_magi" );
   rotation->add_action( "evocation,if=runeforge.siphon_storm&cooldown.arcane_power.remains<=action.evocation.execute_time" );
-  rotation->add_action( "arcane_barrage,if=cooldown.touch_of_the_magi.ready&(buff.arcane_charge.stack>variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time)", "Barrage if it's time to use totm and we have too many charges" );
+  rotation->add_action( "arcane_barrage,if=cooldown.touch_of_the_magi.ready&(buff.arcane_charge.stack>variable.totm_max_charges&cooldown.arcane_power.remains<=execute_time&mana.pct>variable.ap_minimum_mana_pct&buff.rune_of_power.down)", "Barrage if it's time to use totm and we have too many charges" );
   rotation->add_action( "arcane_barrage,if=cooldown.touch_of_the_magi.ready&(buff.arcane_charge.stack>variable.totm_max_charges&talent.rune_of_power&cooldown.rune_of_power.remains<=execute_time&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)" );
   rotation->add_action( "arcane_barrage,if=cooldown.touch_of_the_magi.ready&(buff.arcane_charge.stack>variable.totm_max_charges&(!talent.rune_of_power|cooldown.rune_of_power.remains>variable.totm_max_delay_for_rop)&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)" );
   rotation->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack&(buff.arcane_power.down|buff.arcane_power.remains<=gcd)&(buff.rune_of_power.down|buff.rune_of_power.remains<=gcd)" );
@@ -221,17 +227,18 @@ void arcane( player_t* p )
   aoe->add_action( "touch_of_the_magi,if=buff.arcane_charge.stack<=variable.aoe_totm_max_charges&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd)" );
   aoe->add_action( "arcane_power,if=((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down" );
   aoe->add_action( "rune_of_power,if=buff.rune_of_power.down&((cooldown.touch_of_the_magi.remains>20&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&(cooldown.arcane_power.remains>12|debuff.touch_of_the_magi.up)" );
-  aoe->add_action( "shifting_power,if=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
+  aoe->add_action( "shifting_power,if=cooldown.arcane_orb.remains>5|!talent.arcane_orb" );
   aoe->add_action( "presence_of_mind,if=buff.deathborne.up&debuff.touch_of_the_magi.up&debuff.touch_of_the_magi.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
   aoe->add_action( "arcane_blast,if=buff.deathborne.up&((talent.resonance&active_enemies<4)|active_enemies<5)&(!runeforge.arcane_bombardment|target.health.pct>35)" );
   aoe->add_action( "supernova" );
+  aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack=0" );
   aoe->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&talent.amplification&active_enemies<8" );
-  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&(runeforge.arcane_infinity|talent.amplification)&active_enemies<5" );
+  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&runeforge.arcane_infinity&((talent.amplification&active_enemies<8)|active_enemies<5)" );
+  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.arcane_echo&debuff.touch_of_the_magi.up&(talent.amplification|active_enemies<9)" );
+  aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&talent.amplification&active_enemies<4" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   aoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&prev_gcd.1.arcane_barrage" );
-  aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe->add_action( "evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1" );
 
   am_spam->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
@@ -303,7 +310,7 @@ void fire( player_t* p )
   default_->add_action( "variable,name=time_to_combustion,op=max,value=buff.rune_of_power.remains,if=talent.rune_of_power&buff.combustion.down" );
   default_->add_action( "variable,name=time_to_combustion,op=max,value=cooldown.rune_of_power.remains+buff.rune_of_power.duration,if=talent.rune_of_power&buff.combustion.down&cooldown.rune_of_power.remains+5<variable.time_to_combustion" );
   default_->add_action( "variable,name=time_to_combustion,op=max,value=cooldown.buff_disciplinary_command.remains,if=runeforge.disciplinary_command&buff.disciplinary_command.down" );
-  default_->add_action( "shifting_power,if=buff.combustion.down&variable.time_to_combustion>full_reduction&(cooldown.rune_of_power.remains>full_reduction|!talent.rune_of_power)&!(buff.infernal_cascade.up&buff.hot_streak.react)" );
+  default_->add_action( "shifting_power,if=buff.combustion.down&variable.time_to_combustion>full_reduction&(cooldown.rune_of_power.remains>full_reduction|!talent.rune_of_power)&!(buff.infernal_cascade.up&buff.hot_streak.react)&(active_enemies<variable.combustion_shifting_power|active_enemies<variable.combustion_flamestrike|variable.time_to_combustion-full_reduction>cooldown)" );
   default_->add_action( "radiant_spark,if=(buff.combustion.down&buff.rune_of_power.down&(variable.time_to_combustion<execute_time|variable.time_to_combustion>cooldown.radiant_spark.duration))|(buff.rune_of_power.up&variable.time_to_combustion>30)" );
   default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<execute_time" );
   default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion<=3&buff.combustion.down" );
@@ -357,7 +364,7 @@ void fire( player_t* p )
   combustion_phase->add_action( "frostbolt,if=runeforge.disciplinary_command&buff.disciplinary_command.down&buff.disciplinary_command_frost.down" );
   combustion_phase->add_action( "frost_nova,if=runeforge.grisly_icicle&buff.combustion.down" );
   combustion_phase->add_action( "call_action_list,name=active_talents" );
-  combustion_phase->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.6|action.scorch.executing&action.scorch.execute_remains<0.6|action.fireball.executing&action.fireball.execute_remains<0.6|action.pyroblast.executing&action.pyroblast.execute_remains<0.6)" );
+  combustion_phase->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.6|action.scorch.executing&action.scorch.execute_remains<0.6|action.fireball.executing&action.fireball.execute_remains<0.6|action.pyroblast.executing&action.pyroblast.execute_remains<0.6|action.flamestrike.executing&action.flamestrike.execute_remains<0.6)" );
   combustion_phase->add_action( "call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used", "Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc." );
   combustion_phase->add_action( "flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike" );
   combustion_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
@@ -367,6 +374,7 @@ void fire( player_t* p )
   combustion_phase->add_action( "pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&active_enemies<variable.combustion_flamestrike" );
   combustion_phase->add_action( "shifting_power,if=buff.combustion.up&!action.fire_blast.charges&active_enemies>=variable.combustion_shifting_power&action.phoenix_flames.full_recharge_time>full_reduction,interrupt_if=action.fire_blast.charges=action.fire_blast.max_charges", "Using Shifting Power during Combustion to restore Fire Blast and Phoenix Flame charges can be beneficial, but usually only on AoE." );
   combustion_phase->add_action( "phoenix_flames,if=buff.combustion.up&((action.fire_blast.charges<1&talent.pyroclasm&active_enemies=1)|!talent.pyroclasm|active_enemies>1)&buff.heating_up.react+hot_streak_spells_in_flight<2" );
+  combustion_phase->add_action( "flamestrike,if=buff.combustion.down&cooldown.combustion.remains<cast_time&active_enemies>=variable.combustion_flamestrike" );
   combustion_phase->add_action( "fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&!conduit.flame_accretion" );
   combustion_phase->add_action( "scorch,if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down&cooldown.combustion.remains<cast_time" );
   combustion_phase->add_action( "living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1" );

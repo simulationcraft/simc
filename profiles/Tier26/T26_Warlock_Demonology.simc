@@ -1,0 +1,114 @@
+warlock="T26_Warlock_Demonology"
+source=default
+spec=demonology
+level=60
+race=troll
+role=spell
+position=ranged_back
+talents=3303032
+covenant=night_fae
+soulbind=niya,grove_invigoration/borne_of_blood:7/niyas_tools_burrs
+
+# Default consumables
+potion=spectral_intellect
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/inner_demons,if=talent.inner_demons.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/demonbolt
+actions.precombat+=/variable,name=tyrant_ready,value=0
+
+# Executed every time the actor is available.
+actions=call_action_list,name=off_gcd
+actions+=/run_action_list,name=tyrant_prep,if=cooldown.summon_demonic_tyrant.remains<4&!variable.tyrant_ready
+actions+=/run_action_list,name=summon_tyrant,if=variable.tyrant_ready
+actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|time_to_die<cooldown.summon_demonic_tyrant.remains+25
+actions+=/call_dreadstalkers
+actions+=/doom,if=refreshable
+actions+=/demonic_strength
+actions+=/bilescourge_bombers
+actions+=/implosion,if=active_enemies>1&!talent.sacrificed_souls.enabled&buff.wild_imps.stack>=8&buff.tyrant.down&cooldown.summon_demonic_tyrant.remains>5
+actions+=/implosion,if=active_enemies>2&buff.wild_imps.stack>=8&buff.tyrant.down
+actions+=/hand_of_guldan,if=soul_shard=5|buff.nether_portal.up
+actions+=/hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>20&(cooldown.summon_vilefiend.remains>5|!talent.summon_vilefiend.enabled)&cooldown.call_dreadstalkers.remains>2
+actions+=/call_action_list,name=covenant,if=(covenant.necrolord|covenant.night_fae)&!talent.nether_portal.enabled
+actions+=/demonbolt,if=buff.demonic_core.react&soul_shard<4
+actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains+cooldown.summon_demonic_tyrant.duration>time_to_die|time_to_die<cooldown.summon_demonic_tyrant.remains+15
+actions+=/use_items
+actions+=/power_siphon,if=buff.wild_imps.stack>1&buff.demonic_core.stack<3
+actions+=/soul_strike
+actions+=/call_action_list,name=covenant
+actions+=/shadow_bolt
+
+actions.covenant=impending_catastrophe,if=!talent.sacrificed_souls.enabled|active_enemies>1
+actions.covenant+=/scouring_tithe,if=talent.sacrificed_souls.enabled&active_enemies=1
+actions.covenant+=/scouring_tithe,if=!talent.sacrificed_souls.enabled&active_enemies<4
+actions.covenant+=/soul_rot
+actions.covenant+=/decimating_bolt
+
+actions.off_gcd=berserking,if=pet.demonic_tyrant.active
+actions.off_gcd+=/potion,if=buff.berserking.up|pet.demonic_tyrant.active&!race.troll
+actions.off_gcd+=/blood_fury,if=pet.demonic_tyrant.active
+actions.off_gcd+=/fireblood,if=pet.demonic_tyrant.active
+
+actions.summon_tyrant=hand_of_guldan,if=soul_shard=5,line_cd=20
+actions.summon_tyrant+=/demonbolt,if=buff.demonic_core.up&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20
+actions.summon_tyrant+=/shadow_bolt,if=buff.wild_imps.stack+incoming_imps<4&(talent.demonic_consumption.enabled|buff.nether_portal.down),line_cd=20
+actions.summon_tyrant+=/call_dreadstalkers
+actions.summon_tyrant+=/hand_of_guldan
+actions.summon_tyrant+=/demonbolt,if=buff.demonic_core.up&buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))
+actions.summon_tyrant+=/shadow_bolt,if=buff.nether_portal.up&((buff.vilefiend.remains>5|!talent.summon_vilefiend.enabled)&(buff.grimoire_felguard.remains>5|buff.grimoire_felguard.down))
+actions.summon_tyrant+=/variable,name=tyrant_ready,value=!cooldown.summon_demonic_tyrant.ready
+actions.summon_tyrant+=/summon_demonic_tyrant
+actions.summon_tyrant+=/shadow_bolt
+
+actions.tyrant_prep=doom,line_cd=30
+actions.tyrant_prep+=/demonic_strength,if=!talent.demonic_consumption.enabled
+actions.tyrant_prep+=/nether_portal
+actions.tyrant_prep+=/grimoire_felguard
+actions.tyrant_prep+=/summon_vilefiend
+actions.tyrant_prep+=/call_dreadstalkers
+actions.tyrant_prep+=/demonbolt,if=buff.demonic_core.up&soul_shard<4&(talent.demonic_consumption.enabled|buff.nether_portal.down)
+actions.tyrant_prep+=/shadow_bolt,if=soul_shard<5-4*buff.nether_portal.up
+actions.tyrant_prep+=/variable,name=tyrant_ready,value=1
+actions.tyrant_prep+=/hand_of_guldan
+
+head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173128
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
+shoulders=grimveiled_spaulders,id=173247,bonus_id=6647/6649/6758/7035/1532
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=robes_of_the_cursed_commando,id=182998,bonus_id=7187/1498,enchant=eternal_stats
+wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173128,enchant=eternal_intellect
+hands=impossibly_oversized_mitts,id=183022,bonus_id=7187/1498
+waist=shadewarped_sash,id=183004,bonus_id=7187/1498/6935,gem_id=173128
+legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
+feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
+finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_haste
+trinket1=soul_igniter,id=184019,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
+
+# Gear Summary
+# gear_ilvl=228.93
+# gear_stamina=1516
+# gear_intellect=1186
+# gear_crit_rating=283
+# gear_haste_rating=708
+# gear_mastery_rating=670
+# gear_versatility_rating=286
+# gear_armor=371
+default_pet=felguard

@@ -16,59 +16,22 @@ namespace
 namespace bfa
 {  // YaN - Yet another namespace - to resolve conflicts with global namespaces.
 
-template <typename BASE = proc_spell_t>
-struct base_bfa_proc_t : public BASE
+struct bfa_aoe_proc_t : public generic_aoe_proc_t
 {
-  base_bfa_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id )
-    : BASE( name, effect.player, effect.player->find_spell( spell_id ), effect.item )
+  bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
+                  bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, s, aoe_damage_increase_ )
   {
+    max_scaling_targets = 6;
   }
 
-  base_bfa_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
-    : BASE( name, effect.player, s, effect.item )
+  bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
+                       bool aoe_damage_increase_ = false ) :
+    generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
   {
+    max_scaling_targets = 6;
   }
 };
-
-template <typename BASE = proc_spell_t>
-struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
-{
-  bool aoe_damage_increase;
-
-  base_bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
-                       bool aoe_damage_increase_ = false )
-    : base_bfa_proc_t<BASE>( effect, name, spell_id ), aoe_damage_increase( aoe_damage_increase_ )
-  {
-    this->aoe              = -1;
-    this->split_aoe_damage = true;
-  }
-
-  base_bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
-                       bool aoe_damage_increase_ = false )
-    : base_bfa_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ )
-  {
-    this->aoe              = -1;
-    this->split_aoe_damage = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_bfa_proc_t<BASE>::action_multiplier();
-
-    if ( aoe_damage_increase )
-    {
-      // 15% extra damage per target hit, up to 6 targets. Hidden somewhere on
-      // the server side.
-      // TODO: Check if the target limit is the same for all these trinkets.
-      am *= 1.0 + 0.15 * ( std::min( as<int>( this->target_list().size() ), 6 ) - 1 );
-    }
-
-    return am;
-  }
-};
-
-using aoe_proc_t = base_bfa_aoe_proc_t<proc_spell_t>;
-using proc_t     = base_bfa_proc_t<proc_spell_t>;
 
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
@@ -337,7 +300,7 @@ void consumables::potion_of_bursting_blood( special_effect_t& effect )
   secondary->spell_id  = effect.spell_id;
   secondary->cooldown_ = timespan_t::zero();
   secondary->execute_action =
-      create_proc_action<aoe_proc_t>( "potion_bursting_blood", effect, "potion_of_bursting_blood", effect.trigger() );
+      create_proc_action<bfa_aoe_proc_t>( "potion_bursting_blood", effect, "potion_of_bursting_blood", effect.trigger() );
   effect.player->special_effects.push_back( secondary );
 
   auto proc = new dbc_proc_callback_t( effect.player, *secondary );
@@ -800,7 +763,7 @@ void enchants::force_multiplier( special_effect_t& effect )
 
 void items::kajafied_banana( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "kajafied_banana", effect, "kajafied_banana", 274575 );
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "kajafied_banana", effect, "kajafied_banana", 274575 );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -845,7 +808,7 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
 void items::snowpelt_mangler( special_effect_t& effect )
 {
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "sharpened_claws", effect, "sharpened_claws", effect.trigger() );
+      create_proc_action<bfa_aoe_proc_t>( "sharpened_claws", effect, "sharpened_claws", effect.trigger() );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -855,7 +818,7 @@ void items::snowpelt_mangler( special_effect_t& effect )
 void items::vial_of_storms( special_effect_t& effect )
 {
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "bottled_lightning", effect, "bottled_lightning", effect.trigger() );
+      create_proc_action<bfa_aoe_proc_t>( "bottled_lightning", effect, "bottled_lightning", effect.trigger() );
 }
 
 // Landoi's Scrutiny ========================================================
@@ -1133,7 +1096,7 @@ void items::jes_howler( special_effect_t& effect )
 
 void items::razdunks_big_red_button( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect, "razdunks_big_red_button",
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "razdunks_big_red_button", effect, "razdunks_big_red_button",
                                                           effect.trigger(), true );
 }
 
@@ -1141,9 +1104,10 @@ void items::razdunks_big_red_button( special_effect_t& effect )
 
 void items::merekthas_fang( special_effect_t& effect )
 {
-  struct noxious_venom_dot_t : public proc_t
+  struct noxious_venom_dot_t : public generic_proc_t
   {
-    noxious_venom_dot_t( const special_effect_t& effect ) : proc_t( effect, "noxious_venom", 267410 )
+    noxious_venom_dot_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "noxious_venom", 267410 )
     {
       tick_may_crit = hasted_ticks = true;
       dot_max_stack = data().max_stacks();
@@ -1175,12 +1139,12 @@ void items::merekthas_fang( special_effect_t& effect )
     }
   };
 
-  struct noxious_venom_gland_t : public proc_t
+  struct noxious_venom_gland_t : public generic_proc_t
   {
     action_t* driver;
 
     noxious_venom_gland_t( const special_effect_t& effect )
-      : proc_t( effect, "noxious_venom_gland", effect.driver() ),
+      : generic_proc_t( effect, "noxious_venom_gland", effect.driver() ),
         driver( new noxious_venom_gland_aoe_driver_t( effect ) )
     {
       channeled = hasted_ticks = true;
@@ -1189,14 +1153,14 @@ void items::merekthas_fang( special_effect_t& effect )
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
       event_t::cancel( player->readying );
       player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void tick( dot_t* d ) override
     {
-      proc_t::tick( d );
+      generic_proc_t::tick( d );
 
       driver->set_target( d->target );
       driver->execute();
@@ -1204,7 +1168,7 @@ void items::merekthas_fang( special_effect_t& effect )
 
     void last_tick( dot_t* d ) override
     {
-      proc_t::last_tick( d );
+      generic_proc_t::last_tick( d );
 
       if ( !player->readying )
       {
@@ -1405,7 +1369,7 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<aoe_proc_t>( "kul_tiran_cannonball_runner", effect,
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "kul_tiran_cannonball_runner", effect,
                                                           "kul_tiran_cannonball_runner", 271197, true );
 
   new cannonball_cb_t( effect );
@@ -1416,7 +1380,7 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
 void items::vessel_of_skittering_shadows( special_effect_t& effect )
 {
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "webweavers_soul_gem", effect, "webweavers_soul_gem", 270827, true );
+      create_proc_action<bfa_aoe_proc_t>( "webweavers_soul_gem", effect, "webweavers_soul_gem", 270827, true );
   effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -1427,7 +1391,7 @@ void items::vessel_of_skittering_shadows( special_effect_t& effect )
 void items::vigilants_bloodshaper( special_effect_t& effect )
 {
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "volatile_blood_explosion", effect, "volatile_blood_explosion", 278057, true );
+      create_proc_action<bfa_aoe_proc_t>( "volatile_blood_explosion", effect, "volatile_blood_explosion", 278057, true );
   effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -1610,16 +1574,16 @@ struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
 
 void items::briny_barnacle( special_effect_t& effect )
 {
-  struct choking_brine_damage_t : public proc_t
+  struct choking_brine_damage_t : public generic_proc_t
   {
     choking_brine_damage_t( const special_effect_t& effect )
-      : proc_t( effect, "choking_brine", effect.driver()->effectN( 1 ).trigger() )
+      : generic_proc_t( effect, "choking_brine", effect.driver()->effectN( 1 ).trigger() )
     {
     }
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
 
       auto td = player->get_target_data( execute_state->target );
       assert( td );
@@ -1628,19 +1592,19 @@ void items::briny_barnacle( special_effect_t& effect )
     }
   };
 
-  struct choking_brine_spreader_t : public proc_t
+  struct choking_brine_spreader_t : public generic_proc_t
   {
     action_t* damage;
 
     choking_brine_spreader_t( const special_effect_t& effect, action_t* damage_action )
-      : proc_t( effect, "choking_brine_explosion", effect.driver() ), damage( damage_action )
+      : generic_proc_t( effect, "choking_brine_explosion", effect.driver() ), damage( damage_action )
     {
       aoe = -1;
     }
 
     void impact( action_state_t* s ) override
     {
-      proc_t::impact( s );
+      generic_proc_t::impact( s );
       damage->set_target( s->target );
       damage->execute();
     }
@@ -1739,7 +1703,7 @@ void items::hadals_nautilus( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<aoe_proc_t>( "waterspout", effect, "waterspout", 270925, true );
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "waterspout", effect, "waterspout", 270925, true );
 
   new nautilus_cb_t( effect );
 }
@@ -1753,9 +1717,9 @@ void items::lingering_sporepods( special_effect_t& effect )
   {
     // TODO 8.1: Now deals increased damage with more targets.
     auto damage =
-        create_proc_action<aoe_proc_t>( "lingering_spore_pods_damage", effect, "lingering_spore_pods_damage", 268068 );
+        create_proc_action<bfa_aoe_proc_t>( "lingering_spore_pods_damage", effect, "lingering_spore_pods_damage", 268068 );
 
-    auto heal = create_proc_action<base_bfa_proc_t<proc_heal_t>>( "lingering_spore_pods_heal", effect,
+    auto heal = create_proc_action<base_generic_proc_t<proc_heal_t>>( "lingering_spore_pods_heal", effect,
                                                                   "lingering_spore_pods_heal", 278708 );
 
     effect.custom_buff = make_buff( effect.player, "lingering_spore_pods", effect.trigger() )
@@ -1774,9 +1738,10 @@ void items::lingering_sporepods( special_effect_t& effect )
 }
 
 // Lady Waycrest's Music Box ================================================
-struct waycrest_legacy_damage_t : public proc_t
+struct waycrest_legacy_damage_t : public generic_proc_t
 {
-  waycrest_legacy_damage_t( const special_effect_t& effect ) : proc_t( effect, "waycrest_legacy_damage", 271671 )
+  waycrest_legacy_damage_t( const special_effect_t& effect ) :
+    generic_proc_t( effect, "waycrest_legacy_damage", 271671 )
   {
     aoe                = 0;
     base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
@@ -1786,14 +1751,14 @@ struct waycrest_legacy_damage_t : public proc_t
     size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
     set_target( target_list()[ target_index ] );
 
-    proc_t::execute();
+    generic_proc_t::execute();
   }
 };
 
-struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
+struct waycrest_legacy_heal_t : public base_generic_proc_t<proc_heal_t>
 {
   waycrest_legacy_heal_t( const special_effect_t& effect )
-    : base_bfa_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
+    : base_generic_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
   {
     aoe                = 0;
     base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
@@ -1803,24 +1768,25 @@ struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
     size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
     set_target( sim->player_list.data()[ target_index ] );
 
-    base_bfa_proc_t<proc_heal_t>::execute();
+    base_generic_proc_t<proc_heal_t>::execute();
   }
 };
 
 void items::lady_waycrests_music_box( special_effect_t& effect )
 {
-  struct cacaphonous_chord_t : public proc_t
+  struct cacaphonous_chord_t : public generic_proc_t
   {
     const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
     action_t* waycrests_legacy_heal;
-    cacaphonous_chord_t( const special_effect_t& effect ) : proc_t( effect, "cacaphonous_chord", 271671 )
+    cacaphonous_chord_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "cacaphonous_chord", 271671 )
     {
       aoe = 0;
     }
 
     void init() override
     {
-      proc_t::init();
+      generic_proc_t::init();
       waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
     }
 
@@ -1830,7 +1796,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
       set_target( target_list()[ target_index ] );
 
-      proc_t::execute();
+      generic_proc_t::execute();
       if ( waycrests_legacy_heal != nullptr )
       {
         if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
@@ -1848,12 +1814,12 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
 
 void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 {
-  struct harmonious_chord_t : public base_bfa_proc_t<proc_heal_t>
+  struct harmonious_chord_t : public base_generic_proc_t<proc_heal_t>
   {
     const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
     action_t* waycrests_legacy_damage;
     harmonious_chord_t( const special_effect_t& effect )
-      : base_bfa_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
+      : base_generic_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
     {
       aoe = 0;
     }
@@ -1870,7 +1836,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
           static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
       set_target( sim->player_list.data()[ target_index ] );
 
-      base_bfa_proc_t<proc_heal_t>::execute();
+      base_generic_proc_t<proc_heal_t>::execute();
 
       if ( waycrests_legacy_damage != nullptr )
       {
@@ -1905,7 +1871,7 @@ void items::frenetic_corpuscle( special_effect_t& effect )
 
     frenetic_corpuscle_cb_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.item, effect ),
-        damage( create_proc_action<proc_t>( "frenetic_blow", effect, "frentic_blow", 278148 ) )
+        damage( create_proc_action<generic_proc_t>( "frenetic_blow", effect, "frentic_blow", 278148 ) )
     {
     }
 
@@ -2100,7 +2066,7 @@ void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
 
 void items::disc_of_systematic_regression( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "voided_sectors", effect, "voided_sectors", 278153, true );
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "voided_sectors", effect, "voided_sectors", 278153, true );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2195,9 +2161,9 @@ void items::incandescent_sliver( special_effect_t& effect )
 
 void items::tidestorm_codex( special_effect_t& effect )
 {
-  struct surging_burst_t : public aoe_proc_t
+  struct surging_burst_t : public bfa_aoe_proc_t
   {
-    surging_burst_t( const special_effect_t& effect ) : aoe_proc_t( effect, "surging_burst", 288086, true )
+    surging_burst_t( const special_effect_t& effect ) : bfa_aoe_proc_t( effect, "surging_burst", 288086, true )
     {
       // Damage values are in a different spell, which isn't linked from the driver.
       base_dd_min = base_dd_max = player->find_spell( 288046 )->effectN( 1 ).average( effect.item );
@@ -2207,11 +2173,12 @@ void items::tidestorm_codex( special_effect_t& effect )
     }
   };
 
-  struct surging_waters_t : public proc_t
+  struct surging_waters_t : public generic_proc_t
   {
     action_t* damage;
 
-    surging_waters_t( const special_effect_t& effect ) : proc_t( effect, "surging_waters", effect.driver() )
+    surging_waters_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "surging_waters", effect.driver() )
     {
       channeled = true;
 
@@ -2247,7 +2214,7 @@ void items::tidestorm_codex( special_effect_t& effect )
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
 
       // This action is a background channel. use_item_t has already scheduled player ready event,
       // so we need to remove it to prevent the player from channeling and doing something else at
@@ -2257,7 +2224,7 @@ void items::tidestorm_codex( special_effect_t& effect )
 
     void tick( dot_t* d ) override
     {
-      proc_t::tick( d );
+      generic_proc_t::tick( d );
       // Spawn up to six elementals, see the bug note above.
       if ( d->current_tick <= as<int>( data().effectN( 3 ).base_value() ) )
       {
@@ -2269,7 +2236,7 @@ void items::tidestorm_codex( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      proc_t::last_tick( d );
+      generic_proc_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
       {
@@ -2296,7 +2263,7 @@ void items::tidestorm_codex( special_effect_t& effect )
 
 void items::invocation_of_yulon( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "yulons_fury", effect, "yulons_fury", 288282, true );
+  effect.execute_action = create_proc_action<bfa_aoe_proc_t>( "yulons_fury", effect, "yulons_fury", 288282, true );
   effect.execute_action->travel_speed = effect.driver()->missile_speed();
 }
 
@@ -2732,7 +2699,7 @@ void items::grongs_primal_rage( special_effect_t& effect )
       channeled = hasted_ticks = true;
       interrupt_auto_attack = tick_zero = tick_on_application = false;
 
-      tick_action = create_proc_action<aoe_proc_t>( "primal_rage_damage", effect, "primal_rage_damage",
+      tick_action = create_proc_action<bfa_aoe_proc_t>( "primal_rage_damage", effect, "primal_rage_damage",
                                                     effect.player->find_spell( 288269 ), true );
     }
 
@@ -2784,19 +2751,20 @@ void items::grongs_primal_rage( special_effect_t& effect )
 
 void items::harbingers_inscrutable_will( special_effect_t& effect )
 {
-  struct oblivion_spear_t : public proc_t
+  struct oblivion_spear_t : public generic_proc_t
   {
     timespan_t silence_duration;
 
-    oblivion_spear_t( const special_effect_t& effect )
-      : proc_t( effect, "oblivion_spear", 295393 ), silence_duration( effect.player->find_spell( 295395 )->duration() )
+    oblivion_spear_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "oblivion_spear", 295393 ),
+      silence_duration( effect.player->find_spell( 295395 )->duration() )
     {
       travel_speed = effect.player->find_spell( 295392 )->missile_speed();
     }
 
     void impact( action_state_t* s ) override
     {
-      proc_t::impact( s );
+      generic_proc_t::impact( s );
 
       make_event( player->sim, time_to_travel, [this] {
         double roll    = rng().real();
@@ -2842,9 +2810,10 @@ void items::harbingers_inscrutable_will( special_effect_t& effect )
 void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
 {
   // actual damage spell
-  struct nimbus_bolt_t : public proc_t
+  struct nimbus_bolt_t : public generic_proc_t
   {
-    nimbus_bolt_t( const special_effect_t& effect ) : proc_t( effect, "nimbus_bolt", 295811 )
+    nimbus_bolt_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "nimbus_bolt", 295811 )
     {
       // damage data comes from the driver
       base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
@@ -2859,8 +2828,7 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
     storm_nimbus_proc_callback_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.item, effect ),
         damage( create_proc_action<nimbus_bolt_t>( "storm_nimbus", effect ) )
-    {
-    }
+    { }
 
     void execute( action_t*, action_state_t* state ) override
     {
@@ -2888,9 +2856,10 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
 void items::fathuuls_floodguards( special_effect_t& effect )
 {
   // damage spell is same as driver unlike aberrant leggings above
-  struct drowning_tide_damage_t : public proc_t
+  struct drowning_tide_damage_t : public generic_proc_t
   {
-    drowning_tide_damage_t( const special_effect_t& effect ) : proc_t( effect, "drowning_tide", 295257 )
+    drowning_tide_damage_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "drowning_tide", 295257 )
     {
       // damage data comes from the driver
       base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
@@ -2975,10 +2944,10 @@ void items::stormglide_steps( special_effect_t& effect )
 void items::idol_of_indiscriminate_consumption( special_effect_t& effect )
 {
   // Healing isn't implemented
-  struct indiscriminate_consumption_t : public proc_t
+  struct indiscriminate_consumption_t : public generic_proc_t
   {
     indiscriminate_consumption_t( const special_effect_t& effect )
-      : proc_t( effect, "indiscriminate_consumption", 295962 )
+      : generic_proc_t( effect, "indiscriminate_consumption", 295962 )
     {
       aoe = 7;
     }
@@ -3149,7 +3118,7 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
 
   // TODO: wait for spelldata regen and change ID to 295428
 
-  action_t* unbound_anguish_damage = create_proc_action<proc_t>( "unbound_anguish", effect, "unbound_anguish", 295427 );
+  action_t* unbound_anguish_damage = create_proc_action<generic_proc_t>( "unbound_anguish", effect, "unbound_anguish", 295427 );
 
   unbound_anguish_damage->base_dd_min = unbound_anguish_damage->base_dd_max =
       unbound_anguish_damage->data().effectN( 1 ).average( effect.item );
@@ -3214,7 +3183,7 @@ void items::exploding_pufferfish( special_effect_t& effect )
   };
 
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "exploding_pufferfish", effect, "exploding_pufferfish", 305315, true );
+      create_proc_action<bfa_aoe_proc_t>( "exploding_pufferfish", effect, "exploding_pufferfish", 305315, true );
   effect.execute_action->aoe         = -1;
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
       effect.driver()->effectN( 1 ).average( effect.item );
@@ -3263,10 +3232,10 @@ void items::nazjatar_proc_check( special_effect_t& effect )
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
-  struct sote_arcane_damage_t : public proc_t
+  struct sote_arcane_damage_t : public generic_proc_t
   {
     sote_arcane_damage_t( const special_effect_t& e )
-      : proc_t( e, "storm_of_the_eternal", e.player->find_spell( 303725 ) )
+      : generic_proc_t( e, "storm_of_the_eternal", e.player->find_spell( 303725 ) )
     {
       aoe         = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
@@ -3277,7 +3246,7 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
       size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
       set_target( target_list()[ index ] );
 
-      proc_t::execute();
+      generic_proc_t::execute();
     }
   };
 
@@ -3427,9 +3396,10 @@ void items::neural_synapse_enhancer( special_effect_t& effect )
  */
 void items::shiver_venom_relic_onuse( special_effect_t& effect )
 {
-  struct venomous_shivers_t : public proc_t
+  struct venomous_shivers_t : public generic_proc_t
   {
-    venomous_shivers_t( const special_effect_t& e ) : proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
+    venomous_shivers_t( const special_effect_t& e ) :
+      generic_proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
     {
       aoe         = -1;
       base_dd_max = base_dd_min = e.player->find_spell( 301576 )->effectN( 1 ).average( e.item );
@@ -3437,7 +3407,7 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
     bool ready() override
     {
-      if ( !target || !proc_t::ready() )
+      if ( !target || !generic_proc_t::ready() )
         return false;
 
       dot_t* sv_dot;
@@ -3456,12 +3426,12 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
       if ( !sv_dot )
         sim->print_debug( "venomous_shivers->action_multiplier() cannot find shiver_venom dot on {}", target->name() );
 
-      return proc_t::action_multiplier() * ( sv_dot ? sv_dot->current_stack() : 0.0 );
+      return generic_proc_t::action_multiplier() * ( sv_dot ? sv_dot->current_stack() : 0.0 );
     }
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
 
       dot_t* sv_dot = target->find_dot( "shiver_venom", player );
       if ( !sv_dot )
@@ -3476,12 +3446,13 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
 void items::shiver_venom_relic_equip( special_effect_t& effect )
 {
-  struct shiver_venom_t : proc_t
+  struct shiver_venom_t : generic_proc_t
   {
     action_t* onuse;
 
-    shiver_venom_t( const special_effect_t& e )
-      : proc_t( e, "shiver_venom", e.trigger() ), onuse( e.player->find_action( "venomous_shivers" ) )
+    shiver_venom_t( const special_effect_t& e ) :
+      generic_proc_t( e, "shiver_venom", e.trigger() ),
+      onuse( e.player->find_action( "venomous_shivers" ) )
     {
       if ( onuse )
         add_child( onuse );
@@ -3597,7 +3568,7 @@ void items::leviathans_lure( special_effect_t& effect )
   new luminous_algae_cb_t( *second );
 
   // primary (leviathan chomp) proc
-  auto action           = create_proc_action<proc_t>( "leviathan_chomp", effect, "leviathan_chomp", 302763 );
+  auto action           = create_proc_action<generic_proc_t>( "leviathan_chomp", effect, "leviathan_chomp", 302763 );
   action->base_dd_min   = effect.driver()->effectN( 1 ).average( effect.item );
   action->base_dd_max   = effect.driver()->effectN( 1 ).average( effect.item );
   effect.execute_action = action;
@@ -3619,14 +3590,14 @@ void items::leviathans_lure( special_effect_t& effect )
  */
 void items::aquipotent_nautilus( special_effect_t& effect )
 {
-  struct surging_flood_dot_t : public proc_t
+  struct surging_flood_dot_t : public generic_proc_t
   {
     cooldown_t* cd;
     cooldown_t* cdgrp;
     timespan_t reduction;
 
     surging_flood_dot_t( const special_effect_t& e )
-      : proc_t( e, "surging_flood", e.player->find_spell( 302580 ) ),
+      : generic_proc_t( e, "surging_flood", e.player->find_spell( 302580 ) ),
         cd( e.player->get_cooldown( e.cooldown_name() ) ),
         cdgrp( e.player->get_cooldown( e.cooldown_group_name() ) ),
         reduction( timespan_t::from_seconds( e.player->find_spell( 302579 )->effectN( 2 ).base_value() ) )
@@ -3640,7 +3611,7 @@ void items::aquipotent_nautilus( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      proc_t::impact( s );
+      generic_proc_t::impact( s );
 
       if ( s->chain_target == 0 )
       {
@@ -3767,13 +3738,13 @@ void items::vision_of_demise( special_effect_t& effect )
  */
 void items::azsharas_font_of_power( special_effect_t& effect )
 {
-  struct latent_arcana_channel_t : public proc_t
+  struct latent_arcana_channel_t : public generic_proc_t
   {
     buff_t* buff;
     action_t* use_action;  // if this exists, then we're prechanneling via the APL
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b )
-      : proc_t( e, "latent_arcana", e.driver() ), buff( b ), use_action( nullptr )
+      : generic_proc_t( e, "latent_arcana", e.driver() ), buff( b ), use_action( nullptr )
     {
       effect    = &e;
       channeled = true;
@@ -3899,13 +3870,13 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       if ( player->in_combat )  // only trigger channel 'dot' in combat
       {
-        proc_t::trigger_dot( s );
+        generic_proc_t::trigger_dot( s );
       }
     }
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
 
       if ( player->in_combat )  // only channel in-combat
       {
@@ -3923,7 +3894,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
     void tick( dot_t* d ) override
     {
-      proc_t::tick( d );
+      generic_proc_t::tick( d );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
                      ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time ) + buff->buff_duration() );
@@ -3932,7 +3903,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      proc_t::last_tick( d );
+      generic_proc_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
       {
@@ -4038,26 +4009,26 @@ void items::arcane_tempest( special_effect_t& effect )
  */
 void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 {
-  struct prodigys_potency_unleash_t : public proc_t
+  struct prodigys_potency_unleash_t : public generic_proc_t
   {
     buff_t* buff;
     buff_t* lockout;
 
     prodigys_potency_unleash_t( const special_effect_t& e, buff_t* b, buff_t* lock )
-      : proc_t( e, "prodigys_potency", e.player->find_spell( 302995 ) ), buff( b ), lockout( lock )
+      : generic_proc_t( e, "prodigys_potency", e.player->find_spell( 302995 ) ), buff( b ), lockout( lock )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
 
     double action_multiplier() const override
     {
-      return proc_t::action_multiplier() * buff->stack();
+      return generic_proc_t::action_multiplier() * buff->stack();
     }
 
     void execute() override
     {
       lockout->trigger();
-      proc_t::execute();
+      generic_proc_t::execute();
       sim->print_debug( "anu-azshara potency unleashed at {} stacks!", buff->stack() );
       buff->expire();
     }
@@ -4067,9 +4038,9 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
   {
     buff_t* lockout;
 
-    prodigys_potency_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), lockout( b )
-    {
-    }
+    prodigys_potency_cb_t( const special_effect_t& e, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ), lockout( b )
+    { }
 
     void trigger( action_t* a, action_state_t* s ) override
     {
@@ -4234,28 +4205,29 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
           td->source->buffs.razor_coral->trigger( old_ * buff_stacks );
         }
       } );
-    
+
     td->debuff.razor_coral->reset();
   }
 };
 
 void items::ashvanes_razor_coral( special_effect_t& effect )
 {
-  struct razor_coral_t : public proc_t
+  struct razor_coral_t : public generic_proc_t
   {
-    razor_coral_t( const special_effect_t& e ) : proc_t( e, "razor_coral", e.player->find_spell( 303572 ) )
+    razor_coral_t( const special_effect_t& e ) :
+      generic_proc_t( e, "razor_coral", e.player->find_spell( 303572 ) )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 304877 )->effectN( 1 ).average( e.item );
     }
   };
 
-  struct ashvanes_razor_coral_t : public proc_t
+  struct ashvanes_razor_coral_t : public generic_proc_t
   {
     action_t* action;
     buff_t* debuff;  // there can be only one target with the debuff at a time
 
     ashvanes_razor_coral_t( const special_effect_t& e, action_t* a )
-      : proc_t( e, "ashvanes_razor_coral", e.driver() ), action( a ), debuff( nullptr )
+      : generic_proc_t( e, "ashvanes_razor_coral", e.driver() ), action( a ), debuff( nullptr )
     {
     }
 
@@ -4266,7 +4238,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
 
     void execute() override
     {
-      proc_t::execute();  // no damage, but sets up execute_state
+      generic_proc_t::execute();  // no damage, but sets up execute_state
 
       if ( !debuff )  // first use
       {
@@ -4448,10 +4420,10 @@ void items::dribbling_inkpod( special_effect_t& effect )
     }
   };
 
-  struct conductive_ink_t : public proc_t
+  struct conductive_ink_t : public generic_proc_t
   {
     conductive_ink_t( const special_effect_t& e, const special_effect_t& primary )
-      : proc_t( e, "conductive_ink", e.driver() )
+      : generic_proc_t( e, "conductive_ink", e.driver() )
     {
       base_dd_min = base_dd_max = primary.driver()->effectN( 1 ).average( primary.item );
     }
@@ -4462,7 +4434,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
       assert( td );
       assert( td->debuff.conductive_ink );
 
-      return proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
+      return generic_proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
     }
 
     void impact( action_state_t* s ) override
@@ -4470,7 +4442,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
       auto td = player->get_target_data( s->target );
       td->debuff.conductive_ink->expire();
 
-      proc_t::impact( s );
+      generic_proc_t::impact( s );
     }
   };
 
@@ -4613,7 +4585,7 @@ void items::divers_folly( special_effect_t& effect )
   second->spell_id = 303621;
 
   // discharge action, executed by secondary proc
-  auto action2 = create_proc_action<proc_t>( "bioelectric_charge", effect, "bioelectric_charge", 303583 );
+  auto action2 = create_proc_action<generic_proc_t>( "bioelectric_charge", effect, "bioelectric_charge", 303583 );
   action2->aoe = static_cast<int>( effect.driver()->effectN( 2 ).base_value() );
 
   second->execute_action = action2;
@@ -4657,12 +4629,12 @@ void items::divers_folly( special_effect_t& effect )
 
 void items::remote_guidance_device( special_effect_t& effect )
 {
-  struct remote_guidance_device_t : public proc_t
+  struct remote_guidance_device_t : public generic_proc_t
   {
     action_t* area;
 
     remote_guidance_device_t( const special_effect_t& e, action_t* a )
-      : proc_t( e, "remote_guidance_device", e.player->find_spell( 302311 ) ), area( a )
+      : generic_proc_t( e, "remote_guidance_device", e.player->find_spell( 302311 ) ), area( a )
     {
       aoe          = 0;
       travel_speed = 10.0;  // TODO: find actual travel speed (either from data or testing) and update
@@ -4672,16 +4644,16 @@ void items::remote_guidance_device( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      proc_t::impact( s );
+      generic_proc_t::impact( s );
       area->set_target( s->target );
       area->execute();
     }
   };
 
-  struct remote_guidance_device_aoe_t : public proc_t
+  struct remote_guidance_device_aoe_t : public generic_proc_t
   {
     remote_guidance_device_aoe_t( const special_effect_t& e )
-      : proc_t( e, "remote_guidance_device_aoe", e.player->find_spell( 302312 ) )
+      : generic_proc_t( e, "remote_guidance_device_aoe", e.player->find_spell( 302312 ) )
     {
       aoe         = -1;
       base_dd_min = base_dd_max = e.player->find_spell( 302308 )->effectN( 2 ).average( e.item );
@@ -5196,9 +5168,10 @@ void items::harmonic_dematerializer( special_effect_t& effect )
 
 void items::cyclotronic_blast( special_effect_t& effect )
 {
-  struct cyclotronic_blast_t : public proc_t
+  struct cyclotronic_blast_t : public generic_proc_t
   {
-    cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
+    cyclotronic_blast_t( const special_effect_t& e ) :
+      generic_proc_t( e, "cyclotronic_blast", e.driver() )
     {
       channeled = true;
     }
@@ -5210,7 +5183,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
 
     void execute() override
     {
-      proc_t::execute();
+      generic_proc_t::execute();
       event_t::cancel( player->readying );
       player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
@@ -5218,7 +5191,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      proc_t::last_tick( d );
+      generic_proc_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
       {
@@ -5408,9 +5381,10 @@ void items::overclocking_bit_band( special_effect_t& effect )
 
 void items::shorting_bit_band( special_effect_t& effect )
 {
-  struct shorting_bit_band_t : public proc_t
+  struct shorting_bit_band_t : public generic_proc_t
   {
-    shorting_bit_band_t( const special_effect_t& e ) : proc_t( e, "shorting_bit_band", e.player->find_spell( 301887 ) )
+    shorting_bit_band_t( const special_effect_t& e ) :
+      generic_proc_t( e, "shorting_bit_band", e.player->find_spell( 301887 ) )
     {
       aoe         = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
@@ -5426,7 +5400,7 @@ void items::shorting_bit_band( special_effect_t& effect )
         size_t index = rng().range( numTargets );
         set_target( targets_in_range_list( target_list() )[ index ] );
 
-        proc_t::execute();
+        generic_proc_t::execute();
       }
     }
   };
@@ -5552,7 +5526,7 @@ void items::anodized_deflectors( special_effect_t& effect )
 
   if ( !anodized_deflectors_buff )
   {
-    auto damage = create_proc_action<aoe_proc_t>( "anodized_deflection", effect, "anodized_deflection", 301554 );
+    auto damage = create_proc_action<bfa_aoe_proc_t>( "anodized_deflection", effect, "anodized_deflection", 301554 );
     // Manually set the damage because it's stored in the driver spell
     // The damaging spell has a value with a another -much higher- coefficient that doesn't seem to be used in-game
     damage -> base_dd_min = damage -> base_dd_max = effect.driver() -> effectN( 3 ).average( effect.item );
@@ -5710,9 +5684,10 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
   }
 };
 
-struct shredded_psyche_t : public proc_t
+struct shredded_psyche_t : public generic_proc_t
 {
-  shredded_psyche_t( const special_effect_t& e ) : proc_t( e, "shredded_psyche", 316019 )
+  shredded_psyche_t( const special_effect_t& e ) :
+    generic_proc_t( e, "shredded_psyche", 316019 )
   {
     base_dd_min = e.player->find_spell( 313640 )->effectN( 2 ).min( e.item );
     base_dd_max = e.player->find_spell( 313640 )->effectN( 2 ).max( e.item );
@@ -5754,15 +5729,15 @@ struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
 
 void items::psyche_shredder( special_effect_t& effect )
 {
-  struct psyche_shredder_t : public proc_t
+  struct psyche_shredder_t : public generic_proc_t
   {
-    psyche_shredder_t( const special_effect_t& e ) : proc_t( e, "psyche_shredder", 313663 )
-    {
-    }
+    psyche_shredder_t( const special_effect_t& e ) :
+      generic_proc_t( e, "psyche_shredder", 313663 )
+    { }
 
     void impact( action_state_t* state ) override
     {
-      proc_t::impact( state );
+      generic_proc_t::impact( state );
       auto td = player->get_target_data( state->target );
       td->debuff.psyche_shredder->trigger();
     }
@@ -5786,13 +5761,13 @@ void items::psyche_shredder( special_effect_t& effect )
 // id=313089 aoe proc at 12 stacks
 void items::torment_in_a_jar( special_effect_t& effect )
 {
-  struct unleashed_agony_t : public proc_t
+  struct unleashed_agony_t : public generic_proc_t
   {
     double dmg_mod;
     buff_t* buff;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
-      : proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
+      : generic_proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
@@ -5835,7 +5810,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
   }
   effect.custom_buff = buff;
 
-  effect.execute_action = create_proc_action<proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089 );
+  effect.execute_action = create_proc_action<generic_proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089 );
 
   new unleashed_agony_cb_t( effect );
 }
@@ -5843,7 +5818,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
 void items::writhing_segment_of_drestagath( special_effect_t& effect )
 {
   effect.execute_action =
-      create_proc_action<aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
+      create_proc_action<bfa_aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
 }
 
 /**Draconic Empowerment

@@ -13,6 +13,7 @@ potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_currents
 food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -56,22 +57,15 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration
 # Vendetta logical conditionals based on current spec
 actions.cds+=/variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled
 actions.cds+=/vendetta,if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition
-# Vanish with Exsg + Nightstalker: Maximum CP and Exsg ready for next GCD
-actions.cds+=/vanish,if=talent.exsanguinate.enabled&talent.nightstalker.enabled&effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
-# Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up
-actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&effective_combo_points>=cp_max_spend&debuff.vendetta.up
-actions.cds+=/pool_resource,for_next=1,extra_amount=45
-actions.cds+=/vanish,if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)&raid_event.adds.in>12
-# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB
-actions.cds+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&debuff.shiv.up
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
 actions.cds+=/exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4
 actions.cds+=/shiv,if=dot.rupture.ticking|dot.sepsis.ticking
-actions.cds+=/potion,if=buff.bloodlust.react|debuff.vendetta.up
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
+actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 actions.cds+=/use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up
 actions.cds+=/use_item,effect_name=gladiators_badge,if=debuff.vendetta.up
 # Default fallback for usable items: Use on cooldown.
@@ -128,6 +122,18 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&(
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
 actions.stealthed+=/mutilate,if=talent.subterfuge.enabled&combo_points<=3
+
+# Vanish
+# Finish with max CP for Nightstalker, unless using Deathly Shadows
+actions.vanish=variable,name=nightstalker_cp_condition,value=(!runeforge.deathly_shadows&effective_combo_points>=cp_max_spend)|(runeforge.deathly_shadows&combo_points<2)
+# Vanish with Exsg + Nightstalker: Maximum CP and Exsg ready for next GCD
+actions.vanish+=/vanish,if=talent.exsanguinate.enabled&talent.nightstalker.enabled&variable.nightstalker_cp_condition&cooldown.exsanguinate.remains<1
+# Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up
+actions.vanish+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&variable.nightstalker_cp_condition&debuff.vendetta.up
+actions.vanish+=/pool_resource,for_next=1,extra_amount=45
+actions.vanish+=/vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)&raid_event.adds.in>12
+# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB
+actions.vanish+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&debuff.shiv.up
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=136/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,ilevel=145,azerite_level=80

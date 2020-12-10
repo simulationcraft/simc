@@ -5,7 +5,7 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=3113132
+talents=3113323
 covenant=venthyr
 soulbind=theotar,soothing_shade/ashen_juggernaut:4
 
@@ -14,6 +14,7 @@ potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -47,18 +48,19 @@ actions+=/run_action_list,name=single_target
 actions.execute=deadly_calm
 actions.execute+=/rend,if=remains<=duration*0.3
 actions.execute+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
-actions.execute+=/avatar,if=cooldown.colossus_smash.remains<1
+actions.execute+=/avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
+actions.execute+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
 actions.execute+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
 actions.execute+=/warbreaker
 actions.execute+=/colossus_smash
+actions.execute+=/condemn,if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65
 actions.execute+=/overpower,if=charges=2
-actions.execute+=/mortal_strike,if=dot.deep_wounds.remains<gcd
+actions.execute+=/bladestorm,if=buff.deadly_calm.down&rage<50
+actions.execute+=/mortal_strike,if=dot.deep_wounds.remains<=gcd
 actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/overpower
 actions.execute+=/condemn
 actions.execute+=/execute
-actions.execute+=/bladestorm,if=rage<80
-actions.execute+=/ravager,if=rage<80
 
 actions.hac=skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.hac+=/avatar,if=cooldown.colossus_smash.remains<1
@@ -76,47 +78,46 @@ actions.hac+=/execute,if=buff.sweeping_strikes.up
 actions.hac+=/overpower
 actions.hac+=/whirlwind
 
-actions.single_target=avatar,if=cooldown.colossus_smash.remains<1
+actions.single_target=avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
 actions.single_target+=/rend,if=remains<=duration*0.3
 actions.single_target+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
 actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
-actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&!covenant.venthyr
-actions.single_target+=/ravager,if=debuff.colossus_smash.up&!covenant.venthyr
+actions.single_target+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
 actions.single_target+=/overpower,if=charges=2
-actions.single_target+=/mortal_strike,if=buff.overpower.stack>=2&buff.deadly_calm.down|dot.deep_wounds.remains<=gcd
+actions.single_target+=/bladestorm,if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<70)
+actions.single_target+=/mortal_strike,if=buff.overpower.stack>=2&buff.deadly_calm.down|(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)
 actions.single_target+=/deadly_calm
 actions.single_target+=/skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.single_target+=/overpower
 actions.single_target+=/condemn,if=buff.sudden_death.react
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
-actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&covenant.venthyr
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
-actions.single_target+=/slam,if=rage>50
+actions.single_target+=/slam
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
 shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
 back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
 chest=breastplate_of_fatal_contrivances,id=179346,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
-hands=shadowghast_gauntlets,id=171414,bonus_id=6647/6649/6716/7101/1487,enchant=eternal_strength
+wrists=shadowghast_armguards,id=171419,bonus_id=6647/6649/6716/1487/6959
+hands=guilewind_stone_talons,id=178840,bonus_id=6807/1498,enchant=eternal_strength
 waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
 legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
 feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498/6646
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646
 trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
 main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=184.40
-# gear_strength=588
-# gear_stamina=858
-# gear_crit_rating=809
-# gear_haste_rating=173
+# gear_strength=587
+# gear_stamina=857
+# gear_crit_rating=810
+# gear_haste_rating=197
 # gear_mastery_rating=242
-# gear_versatility_rating=144
-# gear_armor=1023
+# gear_versatility_rating=119
+# gear_armor=1022

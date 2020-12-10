@@ -259,7 +259,7 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
   {
     if ( item.player->profession[ profession ] < static_cast<int>( enchant.req_skill_value ) )
     {
-      item.sim->errorf( "Player %s attempting to use %s '%s' without %s skill level of %d (has %d), disabling enchant.",
+      item.sim->error( "Player {} attempting to use {) '{}' without {} skill level of {} (has {}), disabling enchant.",
                         item.player->name(), util::special_effect_source_string( source ), enchant.name,
                         util::profession_type_string( profession ), enchant.req_skill_value,
                         item.player->profession[ profession ] );
@@ -267,6 +267,18 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
       // initialization process.
       return;
     }
+  }
+
+  if ( enchant.min_ilevel > 0 && item.item_level() < enchant.min_ilevel )
+  {
+    item.sim->error( "Player {} enchant '{}' requires a minimum ilevel of {}, item '{}' has {}",
+      item.player->name(), enchant.name, enchant.min_ilevel, item.name(), item.item_level() );
+  }
+
+  if ( enchant.max_ilevel > 0 && item.item_level() > enchant.max_ilevel )
+  {
+    item.sim->error( "Player {} enchant '{}' requires a maximum ilevel of {}, item '{}' has {}",
+      item.player->name(), enchant.name, enchant.max_ilevel, item.name(), item.item_level() );
   }
 
   for ( size_t i = 0; i < range::size( enchant.ench_prop ); i++ )

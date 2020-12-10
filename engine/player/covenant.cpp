@@ -591,13 +591,22 @@ covenant_cb_base_t::covenant_cb_base_t( bool on_class, bool on_base )
 
 covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
   : dbc_proc_callback_t( p, e ),
-    class_ability( p->covenant->get_covenant_ability_spell_id() ),
+    class_abilities(),
     base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
     cb_list()
 {
+  class_abilities.push_back( p->covenant->get_covenant_ability_spell_id() );
+
   // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
   if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
-    class_ability = 326446;
+    class_abilities.push_back( 326446 );
+  // Night Fae paladins have 4 different abilities in a cycle, but only Blessing of Summer is in __covenant_ability_data
+  if ( p -> type == PALADIN && p -> covenant -> type() == covenant_e::NIGHT_FAE )
+  {
+    class_abilities.push_back( 328622 ); // Blessing of Autumn
+    class_abilities.push_back( 328281 ); // Blessing of Winter
+    class_abilities.push_back( 328282 ); // Blessing of Spring
+  }
 }
 
 void covenant_ability_cast_cb_t::initialize()
@@ -608,15 +617,21 @@ void covenant_ability_cast_cb_t::initialize()
 
 void covenant_ability_cast_cb_t::trigger( action_t* a, action_state_t* s )
 {
-  if ( a->data().id() != class_ability && a->data().id() != base_ability )
-    return;
-
-  for ( const auto& cb : cb_list )
+  for ( auto class_ability : class_abilities )
   {
-    if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
-         ( cb->trigger_on_base && a->data().id() == base_ability ) )
-      cb->trigger( a, s );
+    if ( a -> data().id() == class_ability )
+    {
+      for ( const auto& cb : cb_list )
+        if ( cb -> trigger_on_class )
+          cb -> trigger( a, s );
+      return;
+    }
   }
+
+  if ( a -> data().id() == base_ability )
+    for ( const auto& cb : cb_list )
+      if ( cb -> trigger_on_base )
+        cb -> trigger( a, s );
 }
 
 covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
@@ -741,7 +756,7 @@ namespace report_decorators
 {
 std::string decorated_conduit_name( const sim_t& sim, const conduit_data_t& conduit )
 {
-  auto rank_str = fmt::format( "rank={}", conduit.rank() );
+  auto rank_str = fmt::format( "rank={}", conduit.rank() - 1 );
   return decorated_spell_name( sim, *( conduit.operator->() ), rank_str );
 }
 } // namespace report_decorators

@@ -13,6 +13,7 @@ potion=unbridled_fury
 flask=greater_flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
+temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -72,6 +73,7 @@ actions.apst+=/kill_shot
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.apst+=/a_murder_of_crows
 actions.apst+=/wildfire_bomb,if=full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10
+actions.apst+=/carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped
 actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
 actions.apst+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone
 actions.apst+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max
@@ -165,6 +167,7 @@ actions.st+=/wildfire_bomb,if=full_recharge_time<gcd&focus+cast_regen<focus.max|
 actions.st+=/steel_trap,if=focus+cast_regen<focus.max
 actions.st+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)
+actions.st+=/carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped
 actions.st+=/a_murder_of_crows
 actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable|buff.vipers_venom.up

@@ -4,16 +4,17 @@ spec=elemental
 level=60
 race=tauren
 role=spell
-position=back
+position=ranged_back
 talents=2301032
 covenant=necrolord
-soulbind=emeni:5,342156/call_of_flame:7/tumbling_waves:7
+soulbind=bonesmith_heirmir,forgeborne_reveries/call_of_flame:7/heirmirs_arsenal_marrowed_gemstone
 
 # Default consumables
 potion=potion_of_spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -26,7 +27,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
-actions.precombat+=/potion
+# Use Stormkeeper precombat unless some adds will spawn soon.
+actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -34,8 +36,10 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
+actions=spiritwalkers_grace,moving=1,if=movement.distance>6
 # Interrupt of casts.
-actions=wind_shear
+actions+=/wind_shear
+actions+=/potion
 actions+=/use_items
 actions+=/flame_shock,if=!ticking
 actions+=/fire_elemental
@@ -132,28 +136,30 @@ actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
-head=helm_of_insatiable_appetite,id=183001,bonus_id=4800/4786/1498
-neck=sin_stained_pendant,id=178827,bonus_id=3535/4786/1540
+head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
 shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=4800/4786/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=4800/4786/1498
 chest=consumptive_chainmail_carapace,id=183000,bonus_id=4800/4786/1498,enchant=eternal_insight
-wrists=bangles_of_errant_pride,id=182977,bonus_id=4800/4786/1498,enchant=eternal_intellect
+wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6536/1540/6646,gem_id=173129,enchant=eternal_intellect
 hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
-waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498
+waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
 legs=mementoladen_cuisses,id=182985,bonus_id=4800/4786/1498
-feet=boneshatter_treads,id=172323,bonus_id=6716/6992/6647/6650/1532
-finger1=hyperlight_band,id=183038,bonus_id=4800/4786/1498,enchant=tenet_of_mastery
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,enchant=tenet_of_mastery
+feet=boneshatter_treads,id=172323,bonus_id=6716/6992/6649/6650/1532
+finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,gem_id=173129,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498,gem_id=173129,enchant=tenet_of_haste
 trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=torch_of_fiery_atonement,id=182418,bonus_id=4800/4786/1531,enchant=sinful_revelation
+main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
+off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
 
 # Gear Summary
-# gear_ilvl=229.40
+# gear_ilvl=229.63
+# gear_strength=43
 # gear_stamina=1523
-# gear_intellect=1179
-# gear_crit_rating=228
-# gear_haste_rating=743
-# gear_mastery_rating=346
-# gear_versatility_rating=539
-# gear_armor=877
+# gear_intellect=1176
+# gear_crit_rating=366
+# gear_haste_rating=678
+# gear_mastery_rating=146
+# gear_versatility_rating=760
+# gear_armor=1556

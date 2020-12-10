@@ -566,6 +566,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, WARRIOR, name, r ),
@@ -1216,9 +1217,7 @@ public:
       else if ( p()->specialization() == WARRIOR_PROTECTION )
       {
         cd_time_reduction /= p()->talents.anger_management->effectN( 2 ).base_value();
-        p()->cooldown.last_stand->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.shield_wall->adjust( timespan_t::from_seconds( cd_time_reduction ) );
-        p()->cooldown.demoralizing_shout->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
@@ -1627,7 +1626,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
   mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
   {
-
+    background = true;
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
     {
       mortal_combo_strike                      = new mortal_strike_unhinged_t( p, "Mortal Combo", true );
@@ -1694,6 +1693,14 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     {
       mortal_combo_strike->execute();
     }
+  }
+
+  // Override actor spec verification so it's usable with Unhinged legendary for non-Arms
+  bool verify_actor_spec() const override
+  {
+    if ( p() -> legendary.unhinged -> ok() )
+      return true;
+    return warrior_attack_t::verify_actor_spec();
   }
 };
 
@@ -1882,7 +1889,8 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    if ( p->legendary.unhinged->ok() )
+    // TODO: What happens if you have both Unhinged and Signet?
+    if ( p->legendary.unhinged->ok() && !torment_triggered )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
       add_child( mortal_strike );
@@ -6304,6 +6312,9 @@ void warrior_t::init_spells()
   legendary.enduring_blow     = find_runeforge_legendary( "Enduring Blow" );
   legendary.exploiter         = find_runeforge_legendary( "Exploiter" );
   legendary.unhinged          = find_runeforge_legendary( "Unhinged" );
+  // Bypass the spec check for Mortral Strike if Unhinged is equipped
+  if ( legendary.unhinged -> ok() && !spec.mortal_strike -> ok() )
+    spec.mortal_strike = find_spell( 12294 );
 
   legendary.cadence_of_fujieda = find_runeforge_legendary( "Cadence of Fujieda" );
   legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
@@ -6678,21 +6689,22 @@ void warrior_t::apl_arms()
   execute->add_talent( this, "Deadly Calm" );
   execute->add_talent( this, "Rend", "if=remains<=duration*0.3" );
   execute->add_talent( this, "Skullsplitter", "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
-  execute->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<1" );
+  execute->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
+  execute->add_talent( this, "Ravager", "if=buff.avatar.remains<18&!dot.ravager.remains" );
   execute->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
   execute->add_talent( this, "Warbreaker" );
   execute->add_action( this, "Colossus Smash" );
+  execute->add_action( this, covenant.condemn, "condemn", "if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65" );
   execute->add_action( this, "Overpower", "if=charges=2" );
   execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
-  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<gcd" );
+  execute->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&rage<50" );
+  execute->add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<=gcd" );
   execute->add_talent( this, "Skullsplitter", "if=rage<40" );
   execute->add_action( this, "Overpower" );
   execute->add_action( this, covenant.condemn, "condemn" );
   execute->add_action( this, "Execute" );
-  execute->add_action( this, "Bladestorm", "if=rage<80" );
-  execute->add_talent( this, "Ravager", "if=rage<80" );
 
 
 
@@ -6719,27 +6731,26 @@ void warrior_t::apl_arms()
 
   single_target->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=(target.time_to_die>180|"
                                    "(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
-  single_target->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<1" );
+  single_target->add_talent( this, "Avatar", "if=cooldown.colossus_smash.remains<8&gcd.remains=0" );
   single_target->add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
   single_target->add_talent( this, "Warbreaker" );
   single_target->add_action( this, "Colossus Smash" );
+  single_target->add_talent( this, "Ravager", "if=buff.avatar.remains<18&!dot.ravager.remains" );
   single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
-  single_target->add_action( this, "Bladestorm", "if=debuff.colossus_smash.up&!covenant.venthyr" );
-  single_target->add_talent( this, "Ravager", "if=debuff.colossus_smash.up&!covenant.venthyr" );
   single_target->add_action( this, "Overpower", "if=charges=2" );
-  single_target->add_action( this, "Mortal Strike", "if=buff.overpower.stack>=2&buff.deadly_calm.down|dot.deep_wounds.remains<=gcd" );
+  single_target->add_action( this, "Bladestorm", "if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<70)" );
+  single_target->add_action( this, "Mortal Strike", "if=buff.overpower.stack>=2&buff.deadly_calm.down|"
+                                   "(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_talent( this, "Skullsplitter", "if=rage<60&buff.deadly_calm.down" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Bladestorm", "if=debuff.colossus_smash.up&covenant.venthyr" );
-  single_target->add_action( this, "Ravager", "if=debuff.colossus_smash.up&covenant.venthyr" );
   single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&rage>60" );
-  single_target->add_action( this, "Slam", "if=rage>50");
+  single_target->add_action( this, "Slam" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -6755,48 +6766,42 @@ void warrior_t::apl_prot()
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Intercept", "if=time=0" );
+  default_list -> add_action( this, "Charge", "if=time=0" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready", "use Ignore Pain to avoid rage capping" );
-  default_list -> add_action( "worldvein_resonance,if=cooldown.avatar.remains<=2");
-  default_list -> add_action( "ripple_in_space" );
-  default_list -> add_action( "memory_of_lucid_dreams" );
-  default_list -> add_action( "concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3");
-  default_list -> add_action( this, "Last Stand", "if=cooldown.anima_of_death.remains<=2" );
+  default_list -> add_action( this, "Ignore Pain","if=buff.ignore_pain.down");
+  default_list -> add_action( "ancient_aftershock");
+  default_list -> add_action( "spear_of_bastion");
+  default_list -> add_action( "conquerors_banner");
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_list -> add_action( "call_action_list,name=st" );
 
+  st -> add_talent( this, "Ravager" );
+  st -> add_talent( this, "Dragon Roar" );
   st -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up" );
   st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
   st -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
   st -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
   st -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  st -> add_action( "anima_of_death,if=buff.last_stand.up" );
   st -> add_action( this, "Shield Slam" );
-  st -> add_action( "use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0" );
-  st -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&(cooldown.avatar.remains<5|buff.avatar.up)" );
-  st -> add_talent( this, "Dragon Roar" );
+  st -> add_action( this, covenant.condemn, "condemn");
+  st -> add_action( this, "Execute");
+  st -> add_action( this, "Revenge", "if=rage>=70" );
   st -> add_action( this, "Thunder Clap" );
   st -> add_action( this, "Revenge" );
-  st -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4" );
-  st -> add_talent( this, "Ravager" );
   st -> add_action( this, "Devastate" );
   st -> add_action( this, "Storm Bolt");
 
-  aoe -> add_action( this, "Thunder Clap" );
-  aoe -> add_action( "memory_of_lucid_dreams,if=buff.avatar.down");
-  aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  aoe -> add_action( "anima_of_death,if=buff.last_stand.up");
-  aoe -> add_talent( this, "Dragon Roar" );
-  aoe -> add_action( this, "Revenge" );
-  aoe -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4" );
   aoe -> add_talent( this, "Ravager" );
+  aoe -> add_talent( this, "Dragon Roar" );
+  aoe -> add_action( this, "Thunder Clap" );
+  aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  aoe -> add_action( this, "Revenge" );
   aoe -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
   aoe -> add_action( this, "Shield Slam" );
 
@@ -7491,6 +7496,34 @@ std::string warrior_t::default_rune() const
                                : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
 }
 
+// warrior_t::default_temporary_enchant =====================================
+
+std::string warrior_t::default_temporary_enchant() const
+{
+  std::string fury_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil/off_hand:shadowcore_oil"
+                              : "disabled";
+
+  std::string arms_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil"
+                              : "disabled";
+
+  std::string protection_temporary_enchant = ( true_level >= 60 )
+                              ? "main_hand:shadowcore_oil"
+                              : "disabled";
+  switch ( specialization() )
+  {
+    case WARRIOR_FURY:
+      return fury_temporary_enchant;
+    case WARRIOR_ARMS:
+      return arms_temporary_enchant;
+    case WARRIOR_PROTECTION:
+      return protection_temporary_enchant;
+    default:
+      return "disabled";
+  }
+}
+
 // warrior_t::init_actions ==================================================
 
 void warrior_t::init_action_list()
@@ -7701,8 +7734,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
-
-  //s *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
 
   return s;
 }

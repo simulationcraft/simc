@@ -1,0 +1,108 @@
+monk="T26_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=60
+race=vulpera
+vulpera_tricks=corrosive
+role=tank
+position=front
+talents=2020121
+covenant=night_fae
+soulbind=niya,grove_invigoration/walk_with_the_ox:7/run_without_tiring/natures_splendor/harm_denial:7/celestial_effervescence:7/niyas_tools_burrs
+
+# Default consumables
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=spinefin_souffle_and_fries
+augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil/off_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/chi_burst
+actions.precombat+=/chi_wave
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/gift_of_the_ox,if=health<health.max*0.65
+actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
+actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
+actions+=/use_item,name=dreadfire_vessel
+actions+=/potion
+actions+=/blood_fury
+actions+=/berserking
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
+actions+=/touch_of_death,if=target.health.pct<=15
+actions+=/weapons_of_order
+actions+=/fallen_order
+actions+=/bonedust_brew
+actions+=/purifying_brew
+# Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
+actions+=/black_ox_brew,if=cooldown.purifying_brew.charges_fractional<0.5
+actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
+# Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below
+actions+=/keg_smash,if=spell_targets>=2
+actions+=/faeline_stomp,if=spell_targets>=2
+# cast KS at top prio during WoO buff
+actions+=/keg_smash,if=buff.weapons_of_order.up
+# Celestial Brew priority whenever it took significant damage (adjust the health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB.
+actions+=/celestial_brew,if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2
+actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
+actions+=/breath_of_fire,if=buff.charred_passions.down&runeforge.charred_passions.equipped
+actions+=/blackout_kick
+actions+=/keg_smash
+actions+=/faeline_stomp
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
+actions+=/touch_of_death
+actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
+actions+=/spinning_crane_kick,if=buff.charred_passions.up
+actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))
+actions+=/chi_burst
+actions+=/chi_wave
+actions+=/spinning_crane_kick,if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)
+actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
+actions+=/arcane_torrent,if=energy<31
+actions+=/rushing_jade_wind
+
+head=hood_of_refracted_shadows,id=178817,bonus_id=6536/1540/6646/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=grimveiled_cape,id=173242,bonus_id=6716/7076/6647/6650/1532,enchant=soul_vitality
+chest=animasplattered_hide,id=178835,bonus_id=6536/1540/6646,enchant=eternal_skirmish
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6536/1540/6646/6935,gem_id=173127
+hands=rocket_chicken_handlers,id=179336,bonus_id=6536/1540/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6536/1540/6646/6935,gem_id=173129
+legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=decanter_of_animacharged_winds,id=178861,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=jaws_of_the_hungerer,id=179579,bonus_id=7187/1531,enchant=sinful_revelation
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1540/6646,enchant=celestial_guidance
+
+# Gear Summary
+# gear_ilvl=227.88
+# gear_agility=868
+# gear_stamina=1520
+# gear_crit_rating=948
+# gear_haste_rating=43
+# gear_mastery_rating=216
+# gear_versatility_rating=717
+# gear_armor=602

@@ -16,6 +16,8 @@ struct item_enchantment_data_t
   int         id_scaling;
   unsigned    min_scaling_level;   // need to verify these
   unsigned    max_scaling_level;
+  unsigned    min_ilevel;
+  unsigned    max_ilevel;
   unsigned    req_skill;
   unsigned    req_skill_value;
   unsigned    ench_type[3];        // item_enchantment

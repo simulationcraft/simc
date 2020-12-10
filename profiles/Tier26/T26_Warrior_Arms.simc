@@ -5,15 +5,16 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=3312122
+talents=3113123
 covenant=venthyr
-soulbind=theotar,soothing_shade/ashen_juggernaut:7/crash_the_ramparts:7
+soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
 
 # Default consumables
 potion=potion_of_phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -39,6 +40,7 @@ actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.r
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
 actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
+actions+=/use_item,name=inscrutable_quantum_device
 actions+=/use_item,name=dreadfire_vessel
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&cooldown.bladestorm.remains>12
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
@@ -48,18 +50,19 @@ actions+=/run_action_list,name=single_target
 actions.execute=deadly_calm
 actions.execute+=/rend,if=remains<=duration*0.3
 actions.execute+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
-actions.execute+=/avatar,if=cooldown.colossus_smash.remains<1
+actions.execute+=/avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
+actions.execute+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
 actions.execute+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
 actions.execute+=/warbreaker
 actions.execute+=/colossus_smash
+actions.execute+=/condemn,if=debuff.colossus_smash.up|buff.sudden_death.react|rage>65
 actions.execute+=/overpower,if=charges=2
-actions.execute+=/mortal_strike,if=dot.deep_wounds.remains<gcd
+actions.execute+=/bladestorm,if=buff.deadly_calm.down&rage<50
+actions.execute+=/mortal_strike,if=dot.deep_wounds.remains<=gcd
 actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/overpower
 actions.execute+=/condemn
 actions.execute+=/execute
-actions.execute+=/bladestorm,if=rage<80
-actions.execute+=/ravager,if=rage<80
 
 actions.hac=skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.hac+=/avatar,if=cooldown.colossus_smash.remains<1
@@ -77,47 +80,46 @@ actions.hac+=/execute,if=buff.sweeping_strikes.up
 actions.hac+=/overpower
 actions.hac+=/whirlwind
 
-actions.single_target=avatar,if=cooldown.colossus_smash.remains<1
+actions.single_target=avatar,if=cooldown.colossus_smash.remains<8&gcd.remains=0
 actions.single_target+=/rend,if=remains<=duration*0.3
 actions.single_target+=/cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd
 actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
-actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&!covenant.venthyr
-actions.single_target+=/ravager,if=debuff.colossus_smash.up&!covenant.venthyr
+actions.single_target+=/ravager,if=buff.avatar.remains<18&!dot.ravager.remains
 actions.single_target+=/overpower,if=charges=2
-actions.single_target+=/mortal_strike,if=buff.overpower.stack>=2&buff.deadly_calm.down|dot.deep_wounds.remains<=gcd
+actions.single_target+=/bladestorm,if=buff.deadly_calm.down&(debuff.colossus_smash.up&rage<30|rage<70)
+actions.single_target+=/mortal_strike,if=buff.overpower.stack>=2&buff.deadly_calm.down|(dot.deep_wounds.remains<=gcd&cooldown.colossus_smash.remains>gcd)
 actions.single_target+=/deadly_calm
 actions.single_target+=/skullsplitter,if=rage<60&buff.deadly_calm.down
 actions.single_target+=/overpower
 actions.single_target+=/condemn,if=buff.sudden_death.react
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
-actions.single_target+=/bladestorm,if=debuff.colossus_smash.up&covenant.venthyr
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
-actions.single_target+=/slam,if=rage>50
+actions.single_target+=/slam
 
-head=shadowghast_helm,id=171415,bonus_id=6647/6649/6758/6962/1532/6935,gem_id=173127
+head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
 back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
 chest=breastplate_of_cautious_calculation,id=182987,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
+wrists=shadowghast_armguards,id=171419,bonus_id=6716/6959/6647/6649/1532/6935
 hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
 waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
+legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498,gem_id=173128
 feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646,enchant=shadowcore_oil
+finger1=entwined_gorger_tendril,id=178848,bonus_id=1540/6807,gem_id=173128,enchant=tenet_of_haste
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=1540/6807
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=228.93
-# gear_strength=878
-# gear_stamina=1521
-# gear_crit_rating=510
-# gear_haste_rating=824
-# gear_mastery_rating=457
-# gear_versatility_rating=155
-# gear_armor=1296
+# gear_ilvl=229.40
+# gear_strength=881
+# gear_stamina=1527
+# gear_crit_rating=447
+# gear_haste_rating=697
+# gear_mastery_rating=559
+# gear_versatility_rating=244
+# gear_armor=1300

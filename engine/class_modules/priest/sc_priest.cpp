@@ -1470,12 +1470,6 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
 {
   double m = player_t::composite_player_target_multiplier( t, school );
 
-  auto target_data = find_target_data( t );
-  if ( target_data && target_data->buffs.schism->check() )
-  {
-    m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
-  }
-
   if ( hungering_void_active( t ) )
   {
     m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
@@ -1895,6 +1889,11 @@ std::string priest_t::default_food() const
 std::string priest_t::default_rune() const
 {
   return ( true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
+}
+
+std::string priest_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
 }
 
 /** NO Spec Combat Action Priority List */

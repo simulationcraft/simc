@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.0.2.36753
+// Covenant abilities, wow build 9.0.2.36839
 static const std::array<covenant_ability_entry_t, 64> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -66,7 +66,7 @@ static const std::array<covenant_ability_entry_t, 64> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.0.2.36753
+// Soulbind abilities, wow build 9.0.2.36839
 static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
@@ -162,7 +162,7 @@ static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { 
   { 342270, 3,  863, "Run Without Tiring"                 },
 } };
 
-// Conduits, wow build 9.0.2.36753
+// Conduits, wow build 9.0.2.36839
 static const std::array<conduit_entry_t, 274> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -478,7 +478,7 @@ static const std::array<uint16_t, 274> __conduit_spell_id_index { {
     273,     4,
 } };
 
-// Conduit ranks, wow build 9.0.2.36753
+// Conduit ranks, wow build 9.0.2.36839
 static const std::array<conduit_rank_entry_t, 4110> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -3285,21 +3285,21 @@ static const std::array<conduit_rank_entry_t, 4110> __conduit_rank_data { {
   { 195, 12, 340006, 6.600000 },
   { 195, 13, 340006, 6.900000 },
   { 195, 14, 340006, 7.200000 },
-  { 196,  0, 340012, 50.000000 },
-  { 196,  1, 340012, 55.000000 },
-  { 196,  2, 340012, 60.000000 },
-  { 196,  3, 340012, 65.000000 },
-  { 196,  4, 340012, 70.000000 },
-  { 196,  5, 340012, 75.000000 },
-  { 196,  6, 340012, 80.000000 },
-  { 196,  7, 340012, 85.000000 },
-  { 196,  8, 340012, 90.000000 },
-  { 196,  9, 340012, 95.000000 },
-  { 196, 10, 340012, 100.000000 },
-  { 196, 11, 340012, 105.000000 },
-  { 196, 12, 340012, 110.000000 },
-  { 196, 13, 340012, 115.000000 },
-  { 196, 14, 340012, 120.000000 },
+  { 196,  0, 340012, 15.000000 },
+  { 196,  1, 340012, 16.500000 },
+  { 196,  2, 340012, 18.000000 },
+  { 196,  3, 340012, 19.500000 },
+  { 196,  4, 340012, 21.000000 },
+  { 196,  5, 340012, 22.500000 },
+  { 196,  6, 340012, 24.000000 },
+  { 196,  7, 340012, 25.500000 },
+  { 196,  8, 340012, 27.000000 },
+  { 196,  9, 340012, 28.500000 },
+  { 196, 10, 340012, 30.000000 },
+  { 196, 11, 340012, 31.500000 },
+  { 196, 12, 340012, 33.000000 },
+  { 196, 13, 340012, 34.500000 },
+  { 196, 14, 340012, 36.000000 },
   { 197,  0, 340023, 1.000000 },
   { 197,  1, 340023, 1.100000 },
   { 197,  2, 340023, 1.200000 },

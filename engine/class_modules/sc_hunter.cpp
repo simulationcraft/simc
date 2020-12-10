@@ -371,6 +371,7 @@ public:
     buff_t* dead_eye;
     buff_t* double_tap;
     buff_t* lock_and_load;
+    buff_t* lone_wolf;
     buff_t* precise_shots;
     buff_t* steady_focus;
     buff_t* streamline;
@@ -585,7 +586,7 @@ public:
     timespan_t pet_basic_attack_delay = 0.15_s;
     // random testing stuff
     bool brutal_projectiles_on_execute = false;
-    bool serpenstalkers_triggers_wild_spirits = true;
+    bool serpentstalkers_triggers_wild_spirits = true;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -631,6 +632,7 @@ public:
   void      init_action_list() override;
   void      reset() override;
   void      merge( player_t& other ) override;
+  void      arise() override;
   void      combat_begin() override;
 
   void datacollection_begin() override;
@@ -670,6 +672,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
   void apply_affecting_auras( action_t& ) override;
 
   target_specific_t<hunter_td_t> target_data;
@@ -868,8 +871,8 @@ public:
     if ( affected_by.spirit_bond.direct )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
 
-    if ( affected_by.lone_wolf.direct && p() -> pets.main == nullptr )
-      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.direct ).percent();
+    if ( affected_by.lone_wolf.direct )
+      am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
     return am;
   }
@@ -890,8 +893,8 @@ public:
     if ( affected_by.spirit_bond.tick )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
 
-    if ( affected_by.lone_wolf.tick && p() -> pets.main == nullptr )
-      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.tick ).percent();
+    if ( affected_by.lone_wolf.tick )
+      am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
     return am;
   }
@@ -1497,6 +1500,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     }
 
     spec_passive() -> trigger();
+    o() -> buffs.lone_wolf -> expire();
   }
 
   void demise() override
@@ -1508,6 +1512,8 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       o() -> pets.main = nullptr;
 
       spec_passive() -> expire();
+      if ( ! sim -> event_mgr.canceled )
+        o() -> buffs.lone_wolf -> trigger();
     }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
@@ -2678,8 +2684,13 @@ struct wild_spirits_t : hunter_spell_t
     {
       proc = true;
       callbacks = false;
-      may_parry = true;
       triggers_master_marksman = false;
+
+      // 2020-12-07 hotfix:
+      //     Damage of Wild Spirits has been increased by 25% for Marksmanship Hunters.
+      // A random multiplier out of nowhere not present in the spell data
+      if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+        base_multiplier *= 1.25;
     }
   };
 
@@ -3251,6 +3262,14 @@ struct aimed_shot_t : public aimed_shot_base_t
 
       aimed_shot_base_t::schedule_execute( s );
     }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // XXX: Wild Spirits from Double Tap AiS at "close" range
+      triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
+    }
   };
 
   struct serpent_sting_sst_t final : public hunter_ranged_attack_t
@@ -3260,7 +3279,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = p -> options.serpenstalkers_triggers_wild_spirits;
+      triggers_wild_spirits = p -> options.serpentstalkers_triggers_wild_spirits;
     }
   };
 
@@ -5914,6 +5933,11 @@ void hunter_t::create_buffs()
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
       -> set_trigger_spell( talents.lock_and_load );
 
+  buffs.lone_wolf =
+    make_buff( this, "lone_wolf", find_spell( 164273 ) )
+      -> set_default_value( specs.lone_wolf -> effectN( 1 ).percent() )
+      -> set_chance( specs.lone_wolf.ok() );
+
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
       -> set_default_value_from_effect( 1 )
@@ -6176,6 +6200,12 @@ std::string hunter_t::default_rune() const
          "disabled";
 }
 
+std::string hunter_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" :
+         "disabled";
+}
+
 void hunter_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras(action);
@@ -6334,13 +6364,16 @@ void hunter_t::apl_mm()
   action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
   precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers" );
-  precombat -> add_action( "double_tap,precast_time=10,if=!covenant.kyrian&(!talent.volley|active_enemies<2)" );
-  precombat -> add_action( "aimed_shot,if=active_enemies<3" );
-  precombat -> add_action( "steady_shot,if=active_enemies>2" );
+  precombat -> add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley" );
+  precombat -> add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)" );
+  precombat -> add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
-  default_list -> add_action( "use_items" );
+  default_list -> add_action( "use_item,name=dreadfire_vessel,if=trinket.1.has_cooldown+trinket.2.has_cooldown<2|trinket.1.cooldown.remains+trinket.2.cooldown.remains>0|trinket.1.cooldown.duration+trinket.2.cooldown.duration<=cooldown*2", "Use this on cooldown if it's the only on-use. If you have another on-use with a longer cooldown, stack that with Trueshot when their cooldowns conflict, so wait until it's on cooldown to use this, otherwise continue to use on cooldown." );
+  default_list -> add_action( "use_items,slots=trinket1,if=buff.trueshot.up&(trinket.1.cooldown.duration>trinket.2.cooldown.duration|trinket.2.cooldown.remains)|buff.trueshot.down&cooldown.trueshot.remains>20&trinket.2.cooldown.duration>trinket.1.cooldown.duration&trinket.2.cooldown.remains-5<cooldown.trueshot.remains&!trinket.2.is.dreadfire_vessel|(trinket.1.cooldown.duration-5<cooldown.trueshot.remains&(trinket.1.cooldown.duration>trinket.2.cooldown.duration|trinket.2.cooldown.remains))|target.time_to_die<cooldown.trueshot.remains",
+    "If two on-uses are ready and competing for a Trueshot sync, assume the longer cd has a stronger effect and prefer that unless it's already on cooldown, otherwise use the one that's off cooldown. If a trinket is ready and another stronger (assumed from longer cooldown) on-use will also be ready by the time Trueshot comes back off cooldown, then use it trinket if the shared 20 second cd it triggers won't interfere with the upcoming Trueshot sync'd on-use. If a trinket could be used and still come back off cooldown for a future Trueshot, it's safe to use, preferring the longest cooldown if two are ready. If the fight is going to end before your next Trueshot, just start using trinkets to make sure they get used." );
+  default_list -> add_action( "use_items,slots=trinket2,if=buff.trueshot.up&(trinket.2.cooldown.duration>trinket.1.cooldown.duration|trinket.1.cooldown.remains)|buff.trueshot.down&cooldown.trueshot.remains>20&trinket.1.cooldown.duration>trinket.2.cooldown.duration&trinket.1.cooldown.remains-5<cooldown.trueshot.remains&!trinket.1.is.dreadfire_vessel|(trinket.2.cooldown.duration-5<cooldown.trueshot.remains&(trinket.2.cooldown.duration>trinket.1.cooldown.duration|trinket.1.cooldown.remains))|target.time_to_die<cooldown.trueshot.remains" );
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
@@ -6358,7 +6391,7 @@ void hunter_t::apl_mm()
     * - check why Explo can't be executed in precombat (throws while it *should* have travel time)
     */
   trickshots -> add_action( "steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5" );
-  trickshots -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.full_recharge_time|!(talent.streamline&runeforge.surging_shots)|!covenant.kyrian" );
+  trickshots -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.trueshot.remains>55)|target.time_to_die<10" );
   trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   trickshots -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   trickshots -> add_action( "explosive_shot" );
@@ -6368,7 +6401,7 @@ void hunter_t::apl_mm()
   trickshots -> add_action( "barrage" );
   trickshots -> add_action( "trueshot" );
   trickshots -> add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&runeforge.surging_shots&buff.double_tap.down" );
-  trickshots -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
+  trickshots -> add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up)" );
   trickshots -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   trickshots -> add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
   trickshots -> add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up&focus>cost+action.aimed_shot.cost&(!talent.chimaera_shot|active_enemies>3)" );
@@ -6382,18 +6415,18 @@ void hunter_t::apl_mm()
 
   st -> add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)" );
   st -> add_action( "kill_shot" );
-  st -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&(cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains)" );
+  st -> add_action( "double_tap,if=covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.trueshot.remains>55)|target.time_to_die<15" );
   st -> add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   st -> add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   st -> add_action( "explosive_shot" );
   st -> add_action( "wild_spirits" );
   st -> add_action( "flayed_shot" );
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-  st -> add_action( "volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2" );
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "resonating_arrow" );
+  st -> add_action( "volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2" );
   st -> add_action( "trueshot,if=buff.precise_shots.down|buff.resonating_arrow.up|buff.wild_spirits.up|buff.volley.up&active_enemies>1" );
-  st -> add_action( "aimed_shot,target_if=min:(dot.serpent_sting.remains<?action.serpent_sting.in_flight_to_target*dot.serpent_sting.duration),if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
+  st -> add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
   st -> add_action( "rapid_fire,if=focus+cast_regen<focus.max&(buff.trueshot.down|!runeforge.eagletalons_true_focus)&(buff.double_tap.down|talent.streamline)" );
   st -> add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st -> add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
@@ -6426,6 +6459,7 @@ void hunter_t::apl_surv()
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13" );
+  cds -> add_action( "muzzle" );
   cds -> add_action( "potion,if=target.time_to_die<60|buff.coordinated_assault.up" );
   cds -> add_action( "steel_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
   cds -> add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus+cast_regen<focus.max" );
@@ -6458,6 +6492,8 @@ void hunter_t::apl_surv()
   st -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   st -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
+  st -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
+  st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );  
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable|buff.vipers_venom.up" );
@@ -6477,6 +6513,8 @@ void hunter_t::apl_surv()
   apst -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   apst -> add_action( "a_murder_of_crows" );
   apst -> add_action( "wildfire_bomb,if=full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10" );
+  apst -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
+  apst -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );  
   apst -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   apst -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(action.mongoose_bite.cost-cast_regen)*gcd&!buff.wild_spirits.remains|buff.mongoose_fury.remains&next_wi_bomb.pheromone" );
   apst -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
@@ -6590,6 +6628,13 @@ void hunter_t::merge( player_t& other )
   player_t::merge( other );
 
   cd_waste.merge( static_cast<hunter_t&>( other ).cd_waste );
+}
+
+void hunter_t::arise()
+{
+  player_t::arise();
+
+  buffs.lone_wolf -> trigger();
 }
 
 // hunter_t::combat_begin ==================================================
@@ -6846,7 +6891,7 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
 
   add_option( opt_bool( "hunter.brutal_projectiles_on_execute", options.brutal_projectiles_on_execute ) );
-  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpenstalkers_triggers_wild_spirits ) );
+  add_option( opt_bool( "hunter.serpenstalkers_triggers_wild_spirits", options.serpentstalkers_triggers_wild_spirits ) );
 
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
   add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
@@ -6859,13 +6904,17 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   const options_t defaults{};
+  auto print_option = [&] ( auto ref, util::string_view name ) {
+    if ( range::invoke( ref, options ) != range::invoke( ref, defaults ) )
+      fmt::format_to( std::back_inserter( profile_str ), "{}={}\n", name, range::invoke( ref, options ) );
+  };
 
-  if ( options.summon_pet_str != defaults.summon_pet_str )
-    profile_str += "summon_pet=" + options.summon_pet_str + "\n";
-  if ( options.pet_attack_speed != defaults.pet_attack_speed )
-    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_attack_speed={}\n", options.pet_attack_speed );
-  if ( options.pet_basic_attack_delay != defaults.pet_basic_attack_delay )
-    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_basic_attack_delay={}\n", options.pet_basic_attack_delay );
+  print_option( &options_t::summon_pet_str, "summon_pet" );
+  print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
+  print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
+
+  print_option( &options_t::brutal_projectiles_on_execute, "hunter.brutal_projectiles_on_execute" );
+  print_option( &options_t::serpentstalkers_triggers_wild_spirits, "hunter.serpenstalkers_triggers_wild_spirits" );
 
   return profile_str;
 }

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36753 Live (hotfix 2020-12-03/36753, git build shadowlands 7bce0a5, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1118,7 +1118,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
 Range            : 10 yards
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Family Flags     : 43, 104, 120
 Attributes       : ....x... .....x.. ..x..x.. ........   ........ ........ ........ ........ 
@@ -1381,6 +1381,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 20 seconds
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ ........ ........ 
@@ -1525,7 +1526,8 @@ Spell Type       : None
 Spell Level      : 10
 Range            : 40 yards
 Duration         : 15 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
+                 : 962: Exacting Preparation (331580 effect#5)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Veteran of the Third War (48263 effect#2), Veteran of the Fourth War (319278 effect#2)
@@ -2004,7 +2006,8 @@ Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
+                 : 962: Exacting Preparation (331580 effect#5)
 Attributes       : ....x.xx x....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13462,7 +13465,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Triggered by     : Rune of Sanguination (326801)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -13560,7 +13563,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Rune of Spellwarding (326864)
@@ -13587,7 +13590,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13634,6 +13637,7 @@ Name             : Rune of Hysteria (id=326913) [Spell Family (15), Passive, Hid
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Labels           : 962: Exacting Preparation (331580 effect#5)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ..x.x... ....x... ........ ........ 
@@ -13662,7 +13666,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Rune of Hysteria (326913)
@@ -13711,6 +13715,7 @@ Name             : Unending Thirst (id=326982) [Spell Family (15), Passive, Hidd
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Labels           : 962: Exacting Preparation (331580 effect#5)
 Proc Chance      : 101%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -13735,7 +13740,9 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4)
+                 : 962: Exacting Preparation (331580 effect#5)
+                 : 963: Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Unending Thirst (326982)
