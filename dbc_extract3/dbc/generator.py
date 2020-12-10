@@ -1471,6 +1471,7 @@ class SpellDataGenerator(DataGenerator):
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
           ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
           ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
+          ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
 
         ),
 
