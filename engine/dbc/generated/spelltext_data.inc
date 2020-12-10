@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36839
-static const std::array<spelltext_data_t, 15089> __spelltext_data { {
+static const std::array<spelltext_data_t, 15091> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7500,6 +7500,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 220499, "Summons and dismisses an Ebon Blade Deathcharger that can be ridden while in combat.\r\n\r\nOnly usable on the Broken Isles and Argus.", 0, 0 },
   { 220508, "Summons and dismisses a Silver Hand Charger that can be ridden while in combat.\r\n\r\nOnly usable on the Broken Isles and Argus.", 0, 0 },
   { 220637, "$@spelldesc20271", 0, 0 },
+  { 220890, "Grants the Death Knight $s2 runic power.", 0, 0 },
   { 220971, "Dig through the salvage to look for hidden treasure. Only available at your Salvage Yard.", 0, 0 },
   { 220972, "Dig through the salvage to look for hidden treasure. Only available at your Salvage Yard.", 0, 0 },
   { 220973, "Dig through the salvage to look for hidden treasure. Only available at your Salvage Yard.", 0, 0 },
@@ -13728,6 +13729,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 331497, "You cannot benefit from Darkest Hour again for $d.", "You have recently benefited from Darkest Hour and cannot benefit from it again.", 0 },
   { 331523, "Drop a Shadowgrasp Totem at your feet for $d that harvests your target, inflicting $329878s1 Shadow damage every $331532t1 sec. Each time a target dies while affected by Shadowgrasp Totem, you are healed for $329878s2 and this cooldown is reduced by $329878s3 sec.", 0, 0 },
   { 331532, "$@spelldesc331523", 0, 0 },
+  { 331537, "$@spelldesc331523", 0, 0 },
   { 331576, "Door of Shadows disorients all nearby enemies at the target location for $331866d when you appear.", 0, 0 },
   { 331577, "Door of Shadows increases your movement speed by $331868s1%, decaying over $331868d.", 0, 0 },
   { 331579, "You loot $s1% more Infused Rubies, and dredgers throughout Revendreth offer you an expanded selection of goods.", 0, 0 },

@@ -1262,6 +1262,8 @@ class SpellDataGenerator(DataGenerator):
          345535,
          # Hateful Chain
          345364, 345361,
+         # Shadowgrasp Totem damage
+         331537,
         ),
 
         # Warrior:

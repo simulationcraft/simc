@@ -1369,6 +1369,99 @@ void bloodspattered_scale( special_effect_t& effect )
   }
 }
 
+void shadowgrasp_totem( special_effect_t& effect )
+{
+  struct shadowgrasp_totem_damage_t : public generic_proc_t
+  {
+    action_t* parent;
+
+    shadowgrasp_totem_damage_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "shadowgrasp_totem", 331537 ), parent( nullptr )
+    {
+      dot_duration = 0_s;
+      base_dd_min = base_dd_max = player->find_spell( 329878 )->effectN( 1 ).average( effect.item );
+    }
+
+    void init_finished() override
+    {
+      generic_proc_t::init_finished();
+
+      parent = player->find_action( "use_item_shadowgrasp_totem" );
+    }
+  };
+
+  struct shadowgrasp_totem_buff_t : public buff_t
+  {
+    event_t* retarget_event;
+    shadowgrasp_totem_damage_t* action;
+    cooldown_t* item_cd;
+    timespan_t cd_adjust;
+
+    shadowgrasp_totem_buff_t( const special_effect_t& effect ) :
+      buff_t( effect.player, "shadowgrasp_totem", effect.player->find_spell( 331537 ) ),
+      retarget_event( nullptr ), action( new shadowgrasp_totem_damage_t( effect ) )
+    {
+      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+        action->set_target( action->parent->target );
+        action->execute();
+      } );
+
+      item_cd = effect.player->get_cooldown( effect.cooldown_name() );
+      cd_adjust = timespan_t::from_seconds(
+          -source->find_spell( 329878 )->effectN( 3 ).base_value() );
+
+      range::for_each( effect.player->sim->actor_list, [this]( player_t* t ) {
+        t->register_on_demise_callback( source, [this]( player_t* actor ) {
+          trigger_target_death( actor );
+        } );
+      } );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+
+      retarget_event = nullptr;
+    }
+
+    void trigger_target_death( const player_t* actor )
+    {
+      if ( !check() || !actor->is_enemy() || action->parent->target != actor )
+      {
+        return;
+      }
+
+      item_cd->adjust( cd_adjust );
+
+      if ( !retarget_event && sim->shadowlands_opts.retarget_shadowgrasp_totem > 0_s )
+      {
+        retarget_event = make_event( sim, sim->shadowlands_opts.retarget_shadowgrasp_totem, [this]() {
+          retarget_event = nullptr;
+
+          // Retarget parent action to emulate player "retargeting" during Shadowgrasp
+          // Totem duration to grab more 15 second cooldown reductions
+          {
+            auto new_target = action->parent->select_target_if_target();
+            if ( new_target )
+            {
+              sim->print_debug( "{} action {} retargeting to a new target: {}",
+                source->name(), action->parent->name(), new_target->name() );
+              action->parent->set_target( new_target );
+            }
+          }
+        } );
+      }
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "shadowgrasp_totem" );
+  if ( !buff )
+  {
+    buff = make_buff<shadowgrasp_totem_buff_t>( effect );
+    effect.custom_buff = buff;
+  }
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1619,6 +1712,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 345533, items::anima_field_emitter );
     unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
     unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
+    unique_gear::register_special_effect( 331523, items::shadowgrasp_totem );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );

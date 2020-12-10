@@ -372,6 +372,9 @@ struct sim_t : private sc_thread_t
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
     double anima_field_emitter_mean = std::numeric_limits<double>::max(),
            anima_field_emitter_stddev = 0.0;
+
+    /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
+    timespan_t retarget_shadowgrasp_totem = 0_s;
   } shadowlands_opts;
 
   // Auras and De-Buffs
