@@ -1399,6 +1399,7 @@ public:
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_grand_melee( const action_state_t* state );
   void trigger_master_of_shadows();
+  void trigger_master_of_shadows( timespan_t precombat_seconds_lost );
   void trigger_akaaris_soul_fragment( const action_state_t* state );
   void trigger_bloodfang( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
@@ -4122,15 +4123,10 @@ struct stealth_t : public rogue_spell_t
       sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
 
     p()->buffs.stealth->trigger();
-    trigger_master_of_shadows();
-
-    // trigger_master_of_shadows() doesn't trigger out of combat, must be applied manually
-    if ( precombat_seconds && !p()->in_combat )
-    {
-      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
-      p()->buffs.master_of_shadows->trigger();
-      p()->buffs.master_of_shadows->extend_duration( p(), precombat_lost_seconds );
-    }
+    if ( precombat_seconds )
+      trigger_master_of_shadows( -timespan_t::from_seconds( precombat_seconds ) );
+    else
+      trigger_master_of_shadows();
   }
 
   bool ready() override
@@ -6016,6 +6012,16 @@ void actions::rogue_action_t<Base>::trigger_master_of_shadows()
   if ( p()->in_combat && p()->talent.master_of_shadows->ok() )
   {
     p()->buffs.master_of_shadows->trigger();
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_master_of_shadows( timespan_t precombat_seconds_lost )
+{
+  if ( !p()->in_combat && p()->talent.master_of_shadows->ok() )
+  {
+    p()->buffs.master_of_shadows->trigger();
+    p()->buffs.master_of_shadows->extend_duration( p(), precombat_seconds_lost );
   }
 }
 
