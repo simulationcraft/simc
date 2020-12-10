@@ -4344,6 +4344,12 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     target_cache.is_valid = false;
   }
 
+  // Don't swap targets if the action's current target is still alive
+  if ( !target->is_sleeping() )
+  {
+    return;
+  }
+
   // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
   if ( target && candidate_target && target->is_enemy() != candidate_target->is_enemy() )
   {
