@@ -549,14 +549,10 @@ public:
   // Active Spells
   struct active_spells_t {
     // Shared
-    action_t* death_coil_damage;
     action_t* razorice_mh;
     action_t* razorice_oh;
     action_t* runeforge_pestilence;
-    absorb_t* runeforge_spellwarding;
     action_t* rune_of_sanguination;
-    action_t* sacrificial_pact_damage;
-    action_t* unholy_strength;
 
     // Blood
     spell_t* blood_plague;
@@ -781,7 +777,6 @@ public:
     // Shared
     const spell_data_t* dnd_buff;
     const spell_data_t* razorice_debuff;
-    const spell_data_t* sacrificial_pact_damage;
     const spell_data_t* deaths_due;
 
     // Blood
@@ -798,7 +793,6 @@ public:
     const spell_data_t* rage_of_the_frozen_champion;
 
     // Unholy
-    const spell_data_t* death_coil_damage;
     const spell_data_t* bursting_sores;
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* festering_wound_damage;
@@ -2299,7 +2293,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
-
   struct drw_td_t : public actor_target_data_t
   {
     dot_t* blood_plague;
@@ -2336,20 +2329,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       background = true;
     }
 
+    // Override verify actor spec, the pet's abilities are blood's abilities and require blood spec in spelldata
+    // The pet can only be spawned in blood spec and all the method does is set the ability to background=true
+    // Which doesn't stop us from using DRW abilities anyway (they're called directly with -> execute())
     bool verify_actor_spec() const override
     {
-      std::vector<specialization_e> spec_list;
-      auto _s = p() -> o() -> specialization();
-
-      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
-           range::find( spec_list, _s ) == spec_list.end() )
-      {
-        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
-            player -> name(), name() );
-
-        return false;
-      }
-
       return true;
     }
   };
@@ -2360,23 +2344,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       super( p, name, s )
     {
       background = true;
-      normalize_weapon_speed = false; // DRW weapon-based abilities use non-normalized speed
+      weapon = &( p -> main_hand_weapon );
     }
 
+    // Override verify actor spec, the pet's abilities are blood's abilities and require blood spec in spelldata
+    // The pet can only be spawned in blood spec and all the method does is set the ability to background=true
+    // Which doesn't stop us from using DRW abilities anyway (they're called directly with -> execute())
     bool verify_actor_spec() const override
     {
-      std::vector<specialization_e> spec_list;
-      auto _s = p() -> o() -> specialization();
-
-      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
-           range::find( spec_list, _s ) == spec_list.end() )
-      {
-        sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
-            player -> name(), name() );
-
-        return false;
-      }
-
       return true;
     }
   };
@@ -2400,17 +2375,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      drw_spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p() -> ability.blood_plague -> set_target( s -> target );
-        p() -> ability.blood_plague -> execute();
-      }
+      impact_action = p -> ability.blood_plague;
     }
   };
 
@@ -2419,17 +2384,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( p, "deaths_caress", p -> o() -> spec.deaths_caress )
     {
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      drw_spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p() -> ability.blood_plague -> set_target( s -> target );
-        p() -> ability.blood_plague -> execute();
-      }
+      impact_action = p -> ability.blood_plague;
     }
   };
 
@@ -2437,9 +2392,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     death_strike_t( dancing_rune_weapon_pet_t* p ) :
       drw_attack_t( p, "death_strike", p -> o() -> spec.death_strike )
-    {
-      weapon = &( p -> main_hand_weapon );
-    }
+    { }
 
     double action_multiplier() const override
     {
@@ -2455,12 +2408,18 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct heart_strike_t : public drw_attack_t
   {
+    double blood_strike_rp_generation;
+
     heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( p, "heart_strike", p -> o() -> spec.heart_strike )
+      drw_attack_t( p, "heart_strike", p -> o() -> spec.heart_strike ),
+      blood_strike_rp_generation( p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
-      weapon = &( p -> main_hand_weapon );
-      aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.heart_strike_3 -> effectN( 1 ).percent();
+      const spell_data_t* blood_strike = p -> find_spell( 220890 );
+
+      // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
+      blood_strike_rp_generation = blood_strike -> ok() ? blood_strike -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) :
+        p -> o() -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     int n_targets() const override
@@ -2481,18 +2440,13 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     void execute( ) override
     {
       drw_attack_t::execute();
+
       if ( p() -> o() -> legendary.gorefiends_domination.ok() )
       {
         p() -> o() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( p() -> o() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
       }
-    }
 
-    void impact( action_state_t* s ) override
-    {
-      drw_attack_t::impact( s );
-      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> o() -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                                  p() -> o() -> gains.drw_heart_strike,
-                                  this );
+      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, blood_strike_rp_generation, p() -> o() -> gains.drw_heart_strike, this );
     }
   };
 
@@ -2500,9 +2454,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     marrowrend_t( dancing_rune_weapon_pet_t* p ) :
       drw_attack_t( p, "marrowrend", p -> o() -> spec.marrowrend )
-    {
-      weapon = &( p -> main_hand_weapon );
-    }
+    { }
 
     void impact( action_state_t* state ) override
     {
@@ -4543,8 +4495,8 @@ struct deaths_caress_t : public death_knight_spell_t
 
 struct death_coil_damage_t : public death_knight_spell_t
 {
-  death_coil_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "death_coil", p, p -> spell.death_coil_damage )
+  death_coil_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 47632 ) )
   {
     background = dual = true;
   }
@@ -4570,7 +4522,8 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    impact_action = p -> active_spells.death_coil_damage;
+    execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    execute_action -> stats = stats;
   }
 
   double cost() const override
@@ -6170,8 +6123,8 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct sacrificial_pact_damage_t : public death_knight_spell_t
 {
-  sacrificial_pact_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "sacrificial_pact", p, p -> spell.sacrificial_pact_damage )
+  sacrificial_pact_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 327611 ) )
   {
     background = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -6181,12 +6134,12 @@ struct sacrificial_pact_damage_t : public death_knight_spell_t
 struct sacrificial_pact_t : public death_knight_heal_t
 {
   sacrificial_pact_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_heal_t( "sacrificial_pact_heal", p, p -> spec.sacrificial_pact )
+    death_knight_heal_t( "sacrificial_pact", p, p -> spec.sacrificial_pact )
   {
     target = p;
     base_pct_heal = data().effectN( 1 ).percent();
     parse_options( options_str );
-    execute_action = p -> active_spells.sacrificial_pact_damage;
+    execute_action = get_action<sacrificial_pact_damage_t>( "sacrificial_pact_damage", p );
   }
 
   void execute() override
@@ -6886,6 +6839,26 @@ struct runic_corruption_buff_t : public buff_t
 
 void runeforge::fallen_crusader( special_effect_t& effect )
 {
+  struct fallen_crusader_heal_t : public death_knight_heal_t
+  {
+    fallen_crusader_heal_t( util::string_view name, death_knight_t* p, const spell_data_t* data ) :
+      death_knight_heal_t( name, p, data )
+    {
+      background = true;
+      target = player;
+      callbacks = may_crit = false;
+      base_pct_heal = data -> effectN( 2 ).percent();
+    }
+
+    // Procs by default target the target of the action that procced them.
+    void execute() override
+    {
+      target = player;
+
+      death_knight_heal_t::execute();
+    }
+  };
+
   if ( effect.player->type != DEATH_KNIGHT )
   {
     effect.type = SPECIAL_EFFECT_NONE;
@@ -6895,36 +6868,10 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
 
   // Create unholy strength heal if necessary, buff is always created for APL support
-  if ( ! p -> runeforge.rune_of_the_fallen_crusader )
-  {
-    p -> runeforge.rune_of_the_fallen_crusader = true;
-
-    struct fallen_crusader_heal_t : public death_knight_heal_t
-    {
-      fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
-        death_knight_heal_t( "unholy_strength", dk, data )
-      {
-        background = true;
-        target = player;
-        callbacks = may_crit = false;
-        base_pct_heal = data -> effectN( 2 ).percent();
-      }
-
-      // Procs by default target the target of the action that procced them.
-      void execute() override
-      {
-        target = player;
-
-        death_knight_heal_t::execute();
-      }
-    };
-
-    p -> active_spells.unholy_strength = new fallen_crusader_heal_t( p, p -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() );
-  }
-
+  p -> runeforge.rune_of_the_fallen_crusader = true;
 
   effect.custom_buff = p -> buffs.unholy_strength;
-  effect.execute_action = p -> active_spells.unholy_strength;
+  effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", p, effect.driver() -> effectN( 1 ).trigger() );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -6991,7 +6938,7 @@ void runeforge::apocalypse( special_effect_t& effect )
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
   // Nothing happens if the runeforge is applied on both weapons
-  if ( p -> active_spells.runeforge_pestilence )
+  if ( p -> runeforge.rune_of_apocalypse )
     return;
 
   // Everything is handled in pet_melee_attack_t
@@ -7069,6 +7016,27 @@ void runeforge::sanguination( special_effect_t& effect )
 
 void runeforge::spellwarding( special_effect_t& effect )
 {
+  struct spellwarding_absorb_t : public absorb_t
+  {
+    double health_percentage;
+    spellwarding_absorb_t( util::string_view name, death_knight_t* p, const spell_data_t* data ) :
+      absorb_t( name, p, data ),
+      health_percentage( p -> find_spell( 326855 ) -> effectN( 2 ).percent() )
+      // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
+    {
+      target = p;
+      background = true;
+      harmful = false;
+    }
+
+    void execute() override
+    {
+      base_dd_min = base_dd_max = health_percentage * player -> resources.max[ RESOURCE_HEALTH ];
+
+      absorb_t::execute();
+    }
+  };
+
   if ( effect.player -> type != DEATH_KNIGHT )
   {
     effect.type = SPECIAL_EFFECT_NONE;
@@ -7076,35 +7044,10 @@ void runeforge::spellwarding( special_effect_t& effect )
   }
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  if ( ! p -> runeforge.rune_of_spellwarding )
-  {
-    struct spellwarding_absorb_t : public absorb_t
-    {
-      double health_percentage;
-      spellwarding_absorb_t( special_effect_t& effect ) :
-        absorb_t( "rune_of_spellwarding", static_cast<death_knight_t*>( effect.player ),
-                             effect.driver() -> effectN( 1 ).trigger() ),
-        health_percentage( effect.player -> find_spell( 326855 ) -> effectN( 2 ).percent() )
-        // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
-      {
-        target = player;
-        background = true;
-      }
-
-      void execute() override
-      {
-        base_dd_min = base_dd_max = health_percentage * player -> resources.max[ RESOURCE_HEALTH ];
-
-        absorb_t::execute();
-      }
-    };
-
-    p -> active_spells.runeforge_spellwarding = new spellwarding_absorb_t( effect );
-  }
 
   // Stacking the rune doubles the damage reduction, and seems to create a second proc
   p -> runeforge.rune_of_spellwarding += effect.driver() -> effectN( 2 ).percent();
-  effect.execute_action = p -> active_spells.runeforge_spellwarding;
+  effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", p, effect.driver() -> effectN( 1 ).trigger() );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -7672,16 +7615,6 @@ void death_knight_t::start_cold_heart()
 
 void death_knight_t::create_actions()
 {
-  if ( spec.death_coil -> ok() )
-  {
-    active_spells.death_coil_damage = new death_coil_damage_t( this );
-  }
-
-  if ( spec.sacrificial_pact -> ok() )
-  {
-    active_spells.sacrificial_pact_damage = new sacrificial_pact_damage_t( this );
-  }
-
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -8323,7 +8256,6 @@ void death_knight_t::init_spells()
   // Shared
   spell.dnd_buff        = find_spell( 188290 );
   spell.razorice_debuff = find_spell( 51714 );
-  spell.sacrificial_pact_damage = find_spell( 327611 );
   spell.deaths_due      = find_spell( 315442 );
   // Raise Dead abilities, used for both rank 1 and rank 2
   spell.pet_ghoul_claw         = find_spell( 91776 );
@@ -8344,7 +8276,6 @@ void death_knight_t::init_spells()
 
   // Unholy
   spell.bursting_sores         = find_spell( 207267 );
-  spell.death_coil_damage      = find_spell( 47632 );
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.festering_wound_damage = find_spell( 194311 );
   spell.runic_corruption       = find_spell( 51460 );
