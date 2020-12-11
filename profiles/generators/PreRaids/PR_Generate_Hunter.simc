@@ -20,7 +20,7 @@ legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
 feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
 main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=optical_target_embiggener
 
@@ -49,7 +49,7 @@ legs=blightborne_chain_legguards,id=178762,bonus_id=6807/1498/6646
 feet=shardskin_sabatons,id=178830,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
 finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
 main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
@@ -78,7 +78,7 @@ legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
 feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
 main_hand=halberd_of_the_aranakk,id=178929,bonus_id=6807/1498/6646,enchant=sinful_revelation
 

@@ -193,7 +193,7 @@ legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
 feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
 main_hand=halberd_of_the_aranakk,id=178929,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
