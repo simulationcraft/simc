@@ -436,8 +436,6 @@ public:
 
     // Enhancement
     buff_t* maelstrom_weapon;
-    buff_t* flametongue_weapon;
-    buff_t* windfury_weapon;
     buff_t* feral_spirit_maelstrom;
 
     buff_t* crash_lightning;     // Buffs stormstrike and lava lash after using crash lightning
@@ -3797,42 +3795,80 @@ struct sundering_t : public shaman_attack_t
   }
 };
 
-// Windfury Imbue =========================================================
-struct windfury_weapon_t : public shaman_spell_t
+// Weapon imbues
+
+struct weapon_imbue_t : public shaman_spell_t
 {
-  windfury_weapon_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "windfury_weapon", player, player->find_specialization_spell( "Windfury Weapon" ) )
+  slot_e slot;
+  imbue_e imbue;
+
+  weapon_imbue_t( const std::string& name, shaman_t* player, const spell_data_t* spell ) :
+    shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), imbue( IMBUE_NONE )
   {
-    parse_options( options_str );
-
     harmful = false;
-
-    add_child( player->windfury_mh );
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    if ( player->main_hand_weapon.type != WEAPON_NONE )
-      player->main_hand_weapon.buff_type = WINDFURY_IMBUE;
+    if ( slot == SLOT_MAIN_HAND && player->main_hand_weapon.type != WEAPON_NONE )
+    {
+      player->main_hand_weapon.buff_type = imbue;
+    }
+    else if ( slot == SLOT_OFF_HAND && player->off_hand_weapon.type != WEAPON_NONE )
+    {
+      player->off_hand_weapon.buff_type = imbue;
+    }
+  }
 
-    p()->buff.windfury_weapon->trigger();
+  bool ready() override
+  {
+    if ( slot == SLOT_INVALID )
+    {
+      return false;
+    }
+
+    if ( player->items[ slot ].active() &&
+         player->items[ slot ].parsed.temporary_enchant_id > 0 )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
+};
+
+// Windfury Imbue =========================================================
+struct windfury_weapon_t : public weapon_imbue_t
+{
+  windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
+    weapon_imbue_t( "windfury_weapon", player, player->find_specialization_spell( "Windfury Weapon" ) )
+  {
+    parse_options( options_str );
+
+    slot = SLOT_MAIN_HAND;
+    imbue = WINDFURY_IMBUE;
+
+    add_child( player->windfury_mh );
   }
 };
 
 // Flametongue Imbue =========================================================
-struct flametongue_weapon_t : public shaman_spell_t
+struct flametongue_weapon_t : public weapon_imbue_t
 {
-  slot_e slot;
-
   flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flametongue_weapon", player, player->find_spell( "Flametongue Weapon" ) ),
-    slot( SLOT_INVALID )
+    weapon_imbue_t( "flametongue_weapon", player, player->find_spell( "Flametongue Weapon" ) )
   {
-    harmful = false;
     std::string slot_str;
 
+    add_option( opt_string( "slot", slot_str ) );
+
+    parse_options( options_str );
+
+    imbue = FLAMETONGUE_IMBUE;
+
+    /*
     std::array<std::unique_ptr<option_t>, 1> options { {
       opt_string( "slot", slot_str )
     } };
@@ -3841,6 +3877,7 @@ struct flametongue_weapon_t : public shaman_spell_t
       []( opts::parse_status, util::string_view, util::string_view ) {
         return opts::parse_status::OK;
     } );
+    */
 
     if ( slot_str.empty() )
     {
@@ -3870,34 +3907,6 @@ struct flametongue_weapon_t : public shaman_spell_t
     shaman_spell_t::init();
 
     may_proc_strength_of_earth = true;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( slot == SLOT_OFF_HAND )
-    {
-      if ( player->off_hand_weapon.type != WEAPON_NONE )
-        player->off_hand_weapon.buff_type = FLAMETONGUE_IMBUE;
-    }
-    else if ( slot == SLOT_MAIN_HAND )
-    {
-      if ( player->main_hand_weapon.type != WEAPON_NONE )
-        player->main_hand_weapon.buff_type = FLAMETONGUE_IMBUE;
-    }
-
-    p()->buff.flametongue_weapon->trigger();
-  }
-
-  bool ready() override
-  {
-    if ( slot == SLOT_INVALID )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
   }
 };
 
@@ -7185,28 +7194,6 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
-struct flametongue_buff_t : public buff_t
-{
-  shaman_t* p;
-
-  flametongue_buff_t( shaman_t* p )
-    : buff_t( p, "flametongue", p->find_class_spell( "Flametongue" )->effectN( 3 ).trigger() ), p( p )
-  {
-    set_period( timespan_t::zero() );
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-
-  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    buff_t::execute( stacks, value, duration );
-  }
-};
-
 // ==========================================================================
 // Shaman Character Definition
 // ==========================================================================
@@ -8120,7 +8107,8 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
     return;
   }
 
-  if ( !buff.flametongue_weapon->up() )
+  if ( main_hand_weapon.buff_type != FLAMETONGUE_IMBUE &&
+       off_hand_weapon.buff_type != FLAMETONGUE_IMBUE )
   {
     return;
   }
@@ -8291,7 +8279,7 @@ void shaman_t::trigger_primal_primer( const action_state_t* state )
     return;
   }
 
-  if ( !buff.flametongue_weapon->up() )
+  if ( main_hand_weapon.buff_type != WINDFURY_IMBUE )
   {
     return;
   }
@@ -8452,8 +8440,10 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     return;
   }
 
-  if ( !buff.windfury_weapon->up() )
+  if ( main_hand_weapon.buff_type != WINDFURY_IMBUE )
+  {
     return;
+  }
 
   double proc_chance = spell.windfury_weapon->proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
@@ -8543,13 +8533,20 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
           "Flametongue Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_flametongue )
+  {
     return;
+  }
 
-  if ( !buff.flametongue_weapon->up() )
+  if ( main_hand_weapon.buff_type != FLAMETONGUE_IMBUE &&
+       off_hand_weapon.buff_type != FLAMETONGUE_IMBUE )
+  {
     return;
+  }
 
   if ( buff.ghost_wolf->check() )
+  {
     return;
+  }
 
   if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
   {
@@ -8702,8 +8699,6 @@ void shaman_t::create_buffs()
   //
   // Enhancement
   //
-  buff.windfury_weapon    = make_buff( this, "windfury_weapon", find_spell( 33757 ) );
-  buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 318038 ) );
   buff.lightning_shield = new lightning_shield_buff_t( this );
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -9000,6 +8995,7 @@ std::string shaman_t::default_temporary_enchant() const
       if ( true_level >= 60 )
         return "main_hand:shadowcore_oil";
     case SHAMAN_ENHANCEMENT:
+      return "disabled";
     case SHAMAN_RESTORATION:
       if ( true_level >= 60 )
         return "main_hand:shadowcore_oil";
