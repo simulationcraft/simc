@@ -4219,7 +4219,9 @@ struct defile_damage_t : public death_and_decay_damage_base_t
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
     defile_tick_multiplier( 1.06 )
-  { }
+  {
+    base_multiplier *= 1.0 + p -> conduits.withering_ground.percent();
+  }
 
   double action_multiplier() const override
   {
