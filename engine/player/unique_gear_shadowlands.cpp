@@ -669,9 +669,79 @@ void skulkers_wing( special_effect_t& /* effect */ )
 
 }
 
-void memory_of_past_sins( special_effect_t& /* effect */ )
+/** Memory of Past Sins
+ * id=344662 driver buff proc stacks, effect 1: damage amp %
+ * id=344663 target debuff damage amp stacks
+ * id=344664 proc damage, effect 1: shadow damage
+ */
+void memory_of_past_sins( special_effect_t& effect )
 {
+  struct shattered_psyche_damage_t : public generic_proc_t
+  {
+    double damage_amp = 0;
 
+    shattered_psyche_damage_t( const special_effect_t& e)
+      : generic_proc_t( e, "shattered_psyche", 344664 )
+    {
+      callbacks = false;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = proc_spell_t::action_multiplier();
+      m *= 1.0 + damage_amp;
+      return m;
+    }
+  };
+
+  struct shattered_psyche_cb_t : public dbc_proc_callback_t
+  {
+    shattered_psyche_damage_t* damage;
+    buff_t* buff;
+
+    shattered_psyche_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( debug_cast<shattered_psyche_damage_t*>( d ) ), buff( b )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* trigger_state ) override
+    {
+      auto td = a->player->get_target_data( trigger_state->target );
+      damage->damage_amp = td->debuff.shattered_psyche->stack_value();
+      damage->target = trigger_state->target;
+      damage->execute();
+      buff->decrement();
+      td->debuff.shattered_psyche->trigger();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "shattered_psyche" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "shattered_psyche", effect.player->find_spell( 344662 ) );
+    buff->set_initial_stack( buff->max_stack() );
+  }
+
+  action_t* damage = create_proc_action<shattered_psyche_damage_t>( "shattered_psyche", effect );
+
+  effect.custom_buff = buff;
+  effect.disable_action();
+
+  auto cb_driver = new special_effect_t( effect.player );
+  cb_driver->name_str = "shattered_psyche_driver";
+  cb_driver->spell_id = 344662;
+  cb_driver->cooldown_ = 0_s;
+  effect.player->special_effects.push_back( cb_driver );
+
+  auto callback = new shattered_psyche_cb_t( *cb_driver, damage, buff );
+  callback->initialize();
+  callback->deactivate();
+  buff->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
+    if ( old == 0 )
+      callback->activate();
+    else if ( new_ == 0 )
+      callback->deactivate();
+  } );
 }
 
 void gluttonous_spike( special_effect_t& /* effect */ )
@@ -1793,6 +1863,21 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
+  } );
+
+  // Memory of Past Sins
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 344662 ) )
+    {
+      assert( !td->debuff.shattered_psyche );
+
+      td->debuff.shattered_psyche =
+          make_buff<buff_t>( *td, "shattered_psyche_debuff", td->source->find_spell( 344663 ) )
+              ->set_default_value( td->source->find_spell( 344662 )->effectN( 1 ).percent() );
+      td->debuff.shattered_psyche->reset();
+    }
+    else
+      td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
   } );
 }
 
