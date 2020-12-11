@@ -678,19 +678,26 @@ void memory_of_past_sins( special_effect_t& effect )
 {
   struct shattered_psyche_damage_t : public generic_proc_t
   {
-    double damage_amp = 0;
-
     shattered_psyche_damage_t( const special_effect_t& e)
       : generic_proc_t( e, "shattered_psyche", 344664 )
     {
       callbacks = false;
     }
 
-    double action_multiplier() const override
+    double composite_target_da_multiplier( player_t* t ) const override
     {
-      double m = proc_spell_t::action_multiplier();
-      m *= 1.0 + damage_amp;
+      double m = proc_spell_t::composite_target_da_multiplier( t );
+      auto td = player->get_target_data( t );
+      m *= 1.0 + td->debuff.shattered_psyche->stack_value();
       return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+      td->debuff.shattered_psyche->trigger();
     }
   };
 
@@ -706,12 +713,9 @@ void memory_of_past_sins( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* trigger_state ) override
     {
-      auto td = a->player->get_target_data( trigger_state->target );
-      damage->damage_amp = td->debuff.shattered_psyche->stack_value();
       damage->target = trigger_state->target;
       damage->execute();
       buff->decrement();
-      td->debuff.shattered_psyche->trigger();
     }
   };
 
@@ -736,6 +740,7 @@ void memory_of_past_sins( special_effect_t& effect )
   auto callback = new shattered_psyche_cb_t( *cb_driver, damage, buff );
   callback->initialize();
   callback->deactivate();
+
   buff->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
     if ( old == 0 )
       callback->activate();
