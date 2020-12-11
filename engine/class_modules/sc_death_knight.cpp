@@ -8787,8 +8787,8 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&(dot.unholy_blight_dot.remains|!talent.unholy_blight)" );
   cooldowns -> add_action( this, "Dark Transformation", "if=active_enemies>=2" );
   cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&talent.army_of_the_damned&runeforge.deadliest_coil&conduit.convocation_of_the_dead.rank>=5&dot.unholy_blight_dot.remains" );
-  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&dot.unholy_blight_dot.remains>10&(talent.unholy_assault&conduit.convocation_of_the_dead.rank<5|talent.gargoyle)" );
-  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&(!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|talent.unholy_assault&conduit.convocation_of_the_dead.rank>=5)" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&dot.unholy_blight_dot.remains>10&!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&(!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)" );
   cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14&(cooldown.unholy_blight.remains<10|dot.unholy_blight_dot.remains)" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&buff.dark_transformation.up&!pet.army_ghoul.active)" );
