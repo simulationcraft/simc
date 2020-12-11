@@ -6676,7 +6676,7 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&cooldown.bladestorm.remains>12" );
+  default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15|talent.ravager.enabled)" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
 //  default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
