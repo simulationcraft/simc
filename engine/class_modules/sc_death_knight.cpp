@@ -8686,7 +8686,7 @@ void death_knight_t::default_apl_frost()
   // Standard rotation
   standard -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold", "Standard single-target rotation" );
   standard -> add_talent( this, "Glacial Advance", "if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<7)" );
-  standard -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  standard -> add_action( this, "Obliterate", "if=buff.killing_machine.react|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack>8" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard -> add_action( this, "Frost Strike", "if=conduit.eradicating_blow&buff.eradicating_blow.stack=2|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3&buff.unleashed_frenzy.up" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
@@ -8702,6 +8702,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
+  aoe -> add_action( this, "Obliterate", "if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack>8" );
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
