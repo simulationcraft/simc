@@ -38,18 +38,24 @@ actions.precombat+=/variable,name=4cp_bite,value=0
 # Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4
 actions.precombat+=/variable,name=filler,value=0
 actions.precombat+=/variable,name=rip_ticks,value=7
-actions.precombat+=/variable,name=thrash_ticks,value=1
+actions.precombat+=/variable,name=thrash_ticks,value=8
+actions.precombat+=/variable,name=thrash_ticks,value=1,if=talent.bloodtalons.enabled|conduit.taste_for_blood.enabled
+actions.precombat+=/variable,name=owlweave,value=druid.owlweave_cat
 actions.precombat+=/snapshot_stats
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 
 # Executed every time the actor is available.
 # Balance weaving investigation
-actions=tigers_fury,if=buff.cat_form.down
+actions=starsurge,if=buff.heart_of_the_wild.up
+actions+=/sunfire,if=!prev_gcd.1.sunfire
+actions+=/tigers_fury,if=buff.cat_form.down
 actions+=/cat_form,if=buff.cat_form.down
 # Prowl whenever possible
 actions+=/prowl
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+actions+=/heart_of_the_wild,if=energy<40&dot.rake.remains>4.5&(dot.rip.remains>4.5|combo_points<5)&cooldown.tigers_fury.remains>=4.5&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!cooldown.convoke_the_spirits.up&variable.owlweave=1
+actions+=/moonkin_form,if=energy<40&dot.rake.remains>4.5&(dot.rip.remains>4.5|combo_points<5)&cooldown.tigers_fury.remains>=4.5&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!cooldown.convoke_the_spirits.up&variable.owlweave=1
 actions+=/variable,name=shortest_ttd,value=target.time_to_die,if=variable.shortest_ttd=0
 actions+=/cycling_variable,name=shortest_ttd,op=min,value=target.time_to_die
 # One shot stealth
@@ -57,20 +63,20 @@ actions+=/run_action_list,name=stealth,if=buff.shadowmeld.up|buff.prowl.up
 actions+=/call_action_list,name=cooldown
 actions+=/run_action_list,name=finisher,if=combo_points>=(5-variable.4cp_bite)
 # Multi-gcd stealth
-actions+=/run_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up
+actions+=/call_action_list,name=stealth,if=buff.bs_inc.up|buff.sudden_ambush.up
 # The most expensive BT cycle (Thresh Shred Swipe cost 115 energy, make sure we can make that in 4 globals)
 actions+=/pool_resource,if=talent.bloodtalons.enabled&buff.bloodtalons.down&(energy+3.5*energy.regen+(40*buff.clearcasting.up))<(115-23*buff.incarnation_king_of_the_jungle.up)&active_bt_triggers=0
-actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&(buff.bloodtalons.down|active_bt_triggers=2)
+actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(!talent.bloodtalons.enabled|buff.bloodtalons.up)
-actions+=/feral_frenzy,if=combo_points=0
+actions+=/feral_frenzy,if=combo_points<3
 actions+=/pool_resource,for_next=1
 actions+=/rake,target_if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
 actions+=/moonfire_cat,target_if=refreshable&druid.moonfire.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>variable.thrash_ticks
-actions+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))&(spell_targets.brutal_slash*action.brutal_slash.damage%action.brutal_slash.cost)>(action.shred.damage%action.shred.cost)
-actions+=/swipe_cat,if=spell_targets.swipe_cat>1
+actions+=/brutal_slash,if=(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time)&(spell_targets.brutal_slash*action.brutal_slash.damage%action.brutal_slash.cost)>(action.shred.damage%action.shred.cost)
+actions+=/swipe_cat,if=spell_targets.swipe_cat>1+buff.bs_inc.up*2
 actions+=/shred,if=buff.clearcasting.up
+actions+=/rake,target_if=buff.bs_inc.up&druid.rake.ticks_gained_on_refresh>2
 actions+=/call_action_list,name=filler
 
 actions.bloodtalons=rake,target_if=(!ticking|(refreshable&persistent_multiplier>dot.rake.pmultiplier))&buff.bt_rake.down&druid.rake.ticks_gained_on_refresh>=2
@@ -83,17 +89,17 @@ actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down
 actions.bloodtalons+=/thrash_cat,if=buff.bt_thrash.down
 
 # TODO: Need to sync with with ravenous frenzy when we run frenzyband, or atleast check if its worth it
-actions.cooldown=berserk
-actions.cooldown+=/incarnation
+actions.cooldown=berserk,if=combo_points>=3
+actions.cooldown+=/incarnation,if=combo_points>=3
 # Try and not waste TF energy, but also just use it for zerk and incarns
-actions.cooldown+=/tigers_fury,if=energy.deficit>55|(buff.bs_inc.up&buff.bs_inc.remains<13)|(talent.predator.enabled&variable.shortest_ttd<3)
+actions.cooldown+=/tigers_fury,if=energy.deficit>55|buff.bs_inc.up|(talent.predator.enabled&variable.shortest_ttd<3)
 # Might be wrong to use Smeld on Rake in very very niche situations, but very rarely
 actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&dot.rake.pmultiplier<1.6&energy>40
 actions.cooldown+=/berserking,if=buff.tigers_fury.up|buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up
 actions.cooldown+=/ravenous_frenzy,if=buff.bs_inc.up|fight_remains<21
 # TODO: Check moonkin hotw and stuff like this, and maybe better combat remain resync
-actions.cooldown+=/convoke_the_spirits,if=(dot.rip.remains>4&(buff.tigers_fury.down|buff.tigers_fury.remains<4)&combo_points=0&dot.thrash_cat.ticking&dot.rake.ticking)|fight_remains<5
+actions.cooldown+=/convoke_the_spirits,if=(dot.rip.remains>4&combo_points<3&dot.rake.ticking)|fight_remains<5
 # Maybe there should be more conditions on the conduit
 actions.cooldown+=/kindred_spirits,if=buff.tigers_fury.up|(conduit.deep_allegiance.enabled)
 actions.cooldown+=/adaptive_swarm,target_if=max:time_to_die*(combo_points=5&!dot.adaptive_swarm_damage.ticking)
@@ -110,13 +116,18 @@ actions.finisher=savage_roar,if=buff.savage_roar.down|buff.savage_roar.remains<(
 actions.finisher+=/variable,name=best_rip,value=0,if=talent.primal_wrath.enabled
 actions.finisher+=/cycling_variable,name=best_rip,op=max,value=druid.rip.ticks_gained_on_refresh,if=talent.primal_wrath.enabled
 actions.finisher+=/primal_wrath,if=druid.primal_wrath.ticks_gained_on_refresh>(variable.rip_ticks>?variable.best_rip)|spell_targets.primal_wrath>(3+1*talent.sabertooth.enabled)
-actions.finisher+=/rip,target_if=(!ticking|(remains+combo_points*talent.sabertooth.enabled)<duration*0.3|dot.rip.pmultiplier<persistent_multiplier)&druid.rip.ticks_gained_on_refresh>variable.rip_ticks
+actions.finisher+=/rip,target_if=refreshable&druid.rip.ticks_gained_on_refresh>variable.rip_ticks&((buff.tigers_fury.up|cooldown.tigers_fury.remains>5)&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rip.pmultiplier<=persistent_multiplier|!talent.sabertooth.enabled)
 actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:time_to_die
 
 # Rake needs roughly 50% of its length at a minimum to surpass shreds dpe
 actions.stealth=run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bloodtalons.down
-actions.stealth+=/rake,target_if=dot.rake.pmultiplier<1.5&druid.rake.ticks_gained_on_refresh>2
-actions.stealth+=/shred
+actions.stealth+=/pool_resource,for_next=1
+actions.stealth+=/rake,target_if=(dot.rake.pmultiplier<1.5|refreshable)&druid.rake.ticks_gained_on_refresh>2
+# Brutal Slash is better than stealth Shred at 3 targets
+actions.stealth+=/brutal_slash,if=spell_targets.brutal_slash>2
+actions.stealth+=/pool_resource,for_next=1
+# Shred for faster CP generation
+actions.stealth+=/shred,if=combo_points<4
 
 head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
