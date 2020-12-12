@@ -555,18 +555,15 @@ public:
     action_t* rune_of_sanguination;
 
     // Blood
-    spell_t* blood_plague;
     action_t* mark_of_blood;
     action_t* relish_in_blood;
 
     // Frost
-    spell_t* frost_fever;
     action_t* breath_of_sindragosa;
     action_t* cold_heart;
     action_t* inexorable_assault;
 
     // Unholy
-    spell_t* virulent_plague;
     action_t* bursting_sores;
     action_t* dark_transformation_damage;
     action_t* festering_wound;
@@ -625,6 +622,7 @@ public:
     const spell_data_t* death_and_decay_2;
     const spell_data_t* death_strike;
     const spell_data_t* death_strike_2;
+    const spell_data_t* frost_fever; // RP generation spell
     const spell_data_t* icebound_fortitude;
     const spell_data_t* raise_dead;
     const spell_data_t* sacrificial_pact;
@@ -652,7 +650,6 @@ public:
     // Frost
     const spell_data_t* empower_rune_weapon;
     const spell_data_t* empower_rune_weapon_2;
-    const spell_data_t* frost_fever;
     const spell_data_t* frost_strike;
     const spell_data_t* frost_strike_2;
     const spell_data_t* frostwyrms_fury;
@@ -779,15 +776,18 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* deaths_due;
 
-    // Blood
+    // Diseases
     const spell_data_t* blood_plague;
+    const spell_data_t* frost_fever;
+    const spell_data_t* virulent_plague;
+
+    // Blood
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
     const spell_data_t* relish_in_blood;
 
     // Frost
     const spell_data_t* cold_heart_damage;
-    const spell_data_t* frost_fever;
     const spell_data_t* inexorable_assault_damage;
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion;
@@ -799,7 +799,6 @@ public:
     const spell_data_t* runic_corruption;
     const spell_data_t* soul_reaper_execute;
     const spell_data_t* virulent_eruption;
-    const spell_data_t* virulent_plague;
 
     // Unholy pets abilities
     const spell_data_t* pet_ghoul_claw;
@@ -1025,7 +1024,7 @@ public:
   double    composite_dodge() const override;
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
-  // double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_crit_avoidance() const override;
@@ -1925,9 +1924,9 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   }
 };
 
-// ==========================================================================
-// Unholy's permanent ghoul pet
-// ==========================================================================
+// ===============================================================================
+// Raise Dead ghoul (both temporary blood/frost ghouls and permanent unholy ghoul)
+// ===============================================================================
 
 struct ghoul_pet_t : public base_ghoul_pet_t
 {
@@ -1997,6 +1996,22 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     if ( o() -> buffs.frenzied_monstrosity->up() )
     {
       m *= 1.0 + o() -> buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_player_target_multiplier( player_t* target, school_e s ) const override
+  {
+    double m = base_ghoul_pet_t::composite_player_target_multiplier( target, s );
+
+    death_knight_td_t* td = o() -> get_target_data( target );
+
+    // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
+    // Does not use a whitelist, affects all damage sources
+    if ( o() -> runeforge.rune_of_apocalypse )
+    {
+      m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
     }
 
     return m;
@@ -2362,8 +2377,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_spell_t( p, "blood_plague", p -> o() -> spell.blood_plague )
     {
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/240
-      // Arma Nov 18, 2020 - The linked issue has been closed, as such, I am removing the bugs check
       base_tick_time *= 1.0 + p -> o() -> talent.rapid_decomposition -> effectN( 1 ).percent();
     }
   };
@@ -2879,13 +2892,6 @@ struct death_knight_action_t : public Base
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
 
-    // Going by the tooltip and only increasing damage done directly by the death knight
-    // 2020-27-08: Doesn't seem to affect pets' damage
-    if ( p() -> runeforge.rune_of_apocalypse )
-    {
-      m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
-    }
-
     return m;
   }
 
@@ -3025,6 +3031,199 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
+};
+
+// ==========================================================================
+// Death Knight Diseases
+// ==========================================================================
+
+// Forward declarations because superstrain zzz
+struct blood_plague_t;
+struct frost_fever_t;
+struct virulent_plague_t;
+
+// Common diseases code
+
+struct death_knight_disease_t : public death_knight_spell_t
+{
+  std::vector<action_t*> superstrain_diseases;
+
+  death_knight_disease_t( util::string_view n, death_knight_t* p, const spell_data_t* s ) :
+    death_knight_spell_t( n, p, s ),
+    superstrain_diseases()
+  { }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    for ( auto disease : superstrain_diseases )
+    {
+      disease -> set_target( s -> target );
+      disease -> execute();
+    }
+  }
+};
+
+// Blood Plague ============================================
+
+struct blood_plague_heal_t : public death_knight_heal_t
+{
+  blood_plague_heal_t( util::string_view name, death_knight_t* p ) :
+    death_knight_heal_t( name, p, p -> spell.blood_plague )
+  {
+    background = true;
+    callbacks = may_crit = may_miss = false;
+    target = p;
+    // Tick time, duration and healing amount handled by the damage
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+    dot_duration = base_tick_time = 0_ms;
+  }
+};
+
+struct blood_plague_t : public death_knight_disease_t
+{
+  action_t* heal;
+
+  blood_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
+    death_knight_disease_t( name, p, p -> spell.blood_plague )
+  {
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+
+    heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
+
+    base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
+
+    // The "reduced effectiveness" mentionned in the tooltip is handled server side
+    // Value calculated from testing, may change without notice
+    if ( superstrain )
+      base_multiplier *= .75;
+    // Create superstrain-triggered spells if needed
+    else if ( p -> legendary.superstrain -> ok() )
+    {
+      superstrain_diseases.push_back( get_action<frost_fever_t>(
+        "frost_fever_superstrain", p, true ) );
+      superstrain_diseases.push_back( get_action<virulent_plague_t>(
+        "virulent_plague_superstrain", p, true ) );
+    }
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( t );
+
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.debilitating_malady -> check_stack_value();
+
+    return m;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    if ( d -> state -> result_amount > 0 )
+    {
+      // Healing is based off damage done, increased by Rapid Decomposition if talented
+      heal -> base_dd_min = heal -> base_dd_max =
+        d -> state -> result_amount * ( 1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent() );
+      heal -> execute();
+    }
+  }
+};
+
+// Frost Fever =======================================================
+
+struct frost_fever_t : public death_knight_disease_t
+{
+  frost_fever_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
+    death_knight_disease_t( name, p, p -> spell.frost_fever )
+  {
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
+
+    // The "reduced effectiveness" mentionned in the tooltip is handled server side
+    // Value calculated from testing, may change without notice
+    if ( superstrain )
+      base_multiplier *= .375;
+    // Create superstrain-triggered spells if needed
+    else if ( p -> legendary.superstrain -> ok() )
+    {
+      superstrain_diseases.push_back( get_action<blood_plague_t>(
+        "blood_plague_superstrain", p, true ) );
+      superstrain_diseases.push_back( get_action<virulent_plague_t>(
+        "virulent_plague_superstrain", p, true ) );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
+    // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
+    // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
+
+    // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
+    unsigned ff_count = p() -> get_active_dots( internal_id );
+    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
+
+    if ( rng().roll( chance ) )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> gains.frost_fever,
+                            this );
+    }
+  }
+};
+
+// Virulent Plague ====================================================
+
+struct virulent_plague_t : public death_knight_disease_t
+{
+  virulent_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
+    death_knight_disease_t( name, p, p -> spell.virulent_plague )
+  {
+    // TODO: Does VP also apply in aoe with superstrain? Keep at one target for now
+    aoe = superstrain ? 0 : -1;
+
+    base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
+
+    // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
+    // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
+    // Tested Oct 21 2020 in beta build 36294
+    dot_duration += p -> conduits.lingering_plague -> effectN( 2 ).time_value();
+    dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+
+    base_multiplier *= 1.0 + p -> conduits.lingering_plague.percent();
+    base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
+
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+
+    // The "reduced effectiveness" mentionned in the tooltip is handled server side
+    // Value calculated from testing, may change without notice
+    if ( superstrain )
+      base_multiplier *= .375;
+    // Create superstrain-triggered spells if needed
+    else if ( p -> legendary.superstrain -> ok() )
+    {
+      superstrain_diseases.push_back( get_action<blood_plague_t>(
+        "blood_plague_superstrain", p, true ) );
+      superstrain_diseases.push_back( get_action<frost_fever_t>(
+        "frost_fever_superstrain", p, true ) );
+    }
+  }
 };
 
 // ==========================================================================
@@ -3554,65 +3753,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   }
 };
 
-// Blood Boil and Blood Plague ==============================================
-
-struct blood_plague_heal_t : public death_knight_heal_t
-{
-  blood_plague_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "blood_plague_heal", p, p -> spell.blood_plague )
-  {
-    background = true;
-    callbacks = may_crit = may_miss = false;
-    target = p;
-    // Tick time, duration and healing amount handled by the damage
-    attack_power_mod.direct = attack_power_mod.tick = 0;
-    dot_duration = base_tick_time = 0_ms;
-  }
-};
-
-struct blood_plague_t : public death_knight_spell_t
-{
-  blood_plague_heal_t* heal;
-
-  blood_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "blood_plague", p, p -> spell.blood_plague ),
-    heal( new blood_plague_heal_t( p ) )
-  {
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-
-    base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
-
-    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_BLOOD )
-    {
-      // the "reduced effectiveness" from the tooltip is handled server side
-      // we calculated the current value but it is subject to changing without us knowing
-      base_multiplier *= .75;
-    }
-
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_spell_t::composite_target_multiplier( t );
-
-    m *= 1.0 + p() -> get_target_data( t ) -> debuff.debilitating_malady -> check_stack_value();
-
-    return m;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    death_knight_spell_t::tick( d );
-
-    if ( d -> state -> result_amount > 0 )
-    {
-      heal -> base_dd_min = heal -> base_dd_max = d -> state -> result_amount * (1.0 + p() -> talent.rapid_decomposition -> effectN( 3 ).percent());
-      heal -> execute();
-    }
-  }
-
-};
+// Blood Boil ===============================================================
 
 struct blood_boil_t : public death_knight_spell_t
 {
@@ -3624,6 +3765,7 @@ struct blood_boil_t : public death_knight_spell_t
     aoe = -1;
     cooldown -> hasted = true;
     cooldown -> charges += as<int>( p -> spec.blood_boil_2 -> effectN( 1 ).base_value() );
+    impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
   void execute() override
@@ -3640,20 +3782,6 @@ struct blood_boil_t : public death_knight_spell_t
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
-    {
-      p() -> active_spells.blood_plague -> set_target( state -> target );
-      p() -> active_spells.blood_plague -> execute();
-
-      if ( p() -> legendary.superstrain -> ok() )
-      {
-        p() -> active_spells.frost_fever -> set_target( state -> target );
-        p() -> active_spells.frost_fever -> execute();
-        p() -> active_spells.virulent_plague -> set_target( state -> target );
-        p() -> active_spells.virulent_plague -> execute();
-      }
-    }
 
     if ( p() -> conduits.debilitating_malady.ok() )
       td( state -> target ) -> debuff.debilitating_malady -> trigger();
@@ -4460,6 +4588,7 @@ struct deaths_caress_t : public death_knight_spell_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
+    impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
   void execute() override
@@ -4470,25 +4599,6 @@ struct deaths_caress_t : public death_knight_spell_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute();
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && p() -> active_spells.blood_plague )
-    {
-      p() -> active_spells.blood_plague -> set_target( state -> target );
-      p() -> active_spells.blood_plague -> execute();
-
-      if ( p() -> legendary.superstrain -> ok() )
-      {
-        p() -> active_spells.frost_fever -> set_target( state -> target );
-        p() -> active_spells.frost_fever -> execute();
-        p() -> active_spells.virulent_plague -> set_target( state -> target );
-        p() -> active_spells.virulent_plague -> execute();
-      }
     }
   }
 };
@@ -5348,7 +5458,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   }
 };
 
-// Howling Blast and Frost Fever ============================================
+// Howling Blast ============================================================
 
 struct avalanche_t : public death_knight_spell_t
 {
@@ -5360,61 +5470,12 @@ struct avalanche_t : public death_knight_spell_t
   }
 };
 
-struct frost_fever_t : public death_knight_spell_t
-{
-  frost_fever_t( death_knight_t* p ) :
-    death_knight_spell_t( "frost_fever", p, p -> spell.frost_fever )
-  {
-    ap_type = attack_power_type::WEAPON_BOTH;
-
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      ap_type = attack_power_type::WEAPON_MAINHAND;
-      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
-      base_multiplier *= 0.98;
-    }
-
-    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_FROST )
-    {
-      // the "reduced effectiveness" from the tooltip is handled server side
-      // we calculated the current value but it is subject to changing without us knowing
-      base_multiplier *= .375;
-    }
-  }
-
-  void tick( dot_t* d ) override
-  {
-    death_knight_spell_t::tick( d );
-
-    // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
-    // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
-    // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
-
-    // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
-    unsigned ff_count = p() -> get_active_dots( internal_id );
-    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
-
-    if ( rng().roll( chance ) )
-    {
-      p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                            p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                            p() -> gains.frost_fever,
-                            this );
-    }
-  }
-};
-
 struct howling_blast_t : public death_knight_spell_t
 {
-  frost_fever_t* frost_fever;
   action_t* avalanche;
 
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", p, p -> spec.howling_blast ),
-    frost_fever( new frost_fever_t( p ) )
+    death_knight_spell_t( "howling_blast", p, p -> spec.howling_blast )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -5422,7 +5483,7 @@ struct howling_blast_t : public death_knight_spell_t
     aoe = -1;
     reduced_aoe_damage = true;
 
-    add_child( frost_fever );
+    impact_action = get_action<frost_fever_t>( "frost_fever", p );
 
     ap_type = attack_power_type::WEAPON_BOTH;
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
@@ -5510,25 +5571,6 @@ struct howling_blast_t : public death_knight_spell_t
     }
 
     p() -> buffs.rime -> decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      frost_fever -> set_target( s -> target );
-      frost_fever -> execute();
-
-      if ( p() -> legendary.superstrain -> ok() )
-      {
-        p() -> active_spells.blood_plague -> set_target( s -> target );
-        p() -> active_spells.blood_plague -> execute();
-        p() -> active_spells.virulent_plague -> set_target( s -> target );
-        p() -> active_spells.virulent_plague -> execute();
-      }
-    }
   }
 };
 
@@ -5807,7 +5849,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   }
 };
 
-// Outbreak and Virulent Plague =============================================
+// Outbreak and Virulent Eruption ===========================================
 
 struct virulent_eruption_t : public death_knight_spell_t
 {
@@ -5819,72 +5861,14 @@ struct virulent_eruption_t : public death_knight_spell_t
   }
 };
 
-struct virulent_plague_t : public death_knight_spell_t
-{
-  virulent_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague )
-  {
-    aoe = -1;
-
-    base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
-
-    // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
-    // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
-    // Tested Oct 21 2020 in beta build 36294
-    dot_duration += p -> conduits.lingering_plague -> effectN( 2 ).time_value();
-    dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
-
-    base_multiplier *= 1.0 + p -> conduits.lingering_plague.percent();
-    base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
-
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-
-    // when taking superstrain out, set the spell data back to spec.outbreak -> effectN( 2 ).trigger()
-    if ( p -> legendary.superstrain -> ok() && p -> specialization() != DEATH_KNIGHT_UNHOLY )
-    {
-      // the "reduced effectiveness" from the tooltip is handled server side
-      // we calculated the current value but it is subject to changing without us knowing
-      base_multiplier *= .375;
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( p() -> legendary.superstrain -> ok() && p() -> specialization() == DEATH_KNIGHT_UNHOLY)
-    {
-      p() -> active_spells.frost_fever -> set_target( state -> target );
-      p() -> active_spells.frost_fever -> execute();
-      p() -> active_spells.blood_plague -> set_target( state -> target );
-      p() -> active_spells.blood_plague -> execute();
-    }
-  }
-};
-
 struct outbreak_t : public death_knight_spell_t
 {
-  virulent_plague_t* vp;
-
   outbreak_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "outbreak" ,p , p -> spec.outbreak ),
-    vp( new virulent_plague_t( p ) )
+    death_knight_spell_t( "outbreak" ,p , p -> spec.outbreak )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    add_child( vp );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      vp -> set_target( s -> target );
-      vp -> execute();
-    }
+    impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 };
 
@@ -6458,6 +6442,7 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
     aoe = -1;
+    impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -6466,14 +6451,11 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     return triggered_duration;
   }
 
-  void impact(action_state_t* state) override
+  void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
     td( state->target ) -> debuff.unholy_blight -> trigger();
-
-    p() -> active_spells.virulent_plague -> set_target( state -> target );
-    p() -> active_spells.virulent_plague -> execute();
   }
 };
 
@@ -6943,8 +6925,9 @@ void runeforge::apocalypse( special_effect_t& effect )
   if ( p -> runeforge.rune_of_apocalypse )
     return;
 
-  // Everything is handled in pet_melee_attack_t
+  // Triggering the effects is handled in pet_melee_attack_t::impact()
   p -> runeforge.rune_of_apocalypse = true;
+  // Even though a pet procs it, the damage from Pestilence belongs directly to the player in logs
   p -> active_spells.runeforge_pestilence = new death_knight_spell_t( "Pestilence", p, p -> find_spell( 327093 ) );
 }
 
@@ -7620,11 +7603,6 @@ void death_knight_t::create_actions()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    if ( spell.blood_plague -> ok() && ( spec.blood_boil -> ok() || spec.deaths_caress -> ok() ) )
-    {
-      active_spells.blood_plague = new blood_plague_t( this );
-    }
-
     if ( talent.mark_of_blood -> ok() )
     {
       active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
@@ -7670,32 +7648,11 @@ void death_knight_t::create_actions()
     {
       active_spells.bursting_sores = new bursting_sores_t( this );
     }
-
-    if ( spec.outbreak -> ok() )
-    {
-      active_spells.virulent_plague = new virulent_plague_t(this);
-      active_spells.virulent_eruption = new virulent_eruption_t( this );
-    }
   }
 
-  if ( legendary.superstrain -> ok() )
-  {
-    if ( spell.frost_fever -> ok() )
-    {
-      active_spells.frost_fever = new frost_fever_t( this );
-    }
+  if ( spec.outbreak -> ok() || talent.unholy_blight -> ok() || legendary.superstrain -> ok() )
+    active_spells.virulent_eruption = new virulent_eruption_t( this );
 
-    if ( spell.virulent_plague -> ok() )
-    {
-      active_spells.virulent_plague = new virulent_plague_t( this );
-      active_spells.virulent_eruption = new virulent_eruption_t( this );
-    }
-
-    if ( spell.blood_plague -> ok() )
-    {
-      active_spells.blood_plague = new blood_plague_t( this );
-    }
-  }
 
   player_t::create_actions();
 }
@@ -8114,6 +8071,7 @@ void death_knight_t::init_spells()
   spec.death_coil         = find_class_spell( "Death Coil" );
   spec.death_strike       = find_class_spell( "Death Strike" );
   spec.death_strike_2     = find_specialization_spell( "Death Strike", "Rank 2" );
+  spec.frost_fever        = find_specialization_spell( "Frost Fever" ); // RP generation only
   spec.icebound_fortitude = find_class_spell( "Icebound Fortitude" );
   spec.raise_dead         = find_class_spell( "Raise Dead" );
   spec.sacrificial_pact   = find_class_spell( "Sacrificial Pact" );
@@ -8140,7 +8098,6 @@ void death_knight_t::init_spells()
 
   // Frost
   spec.frost_death_knight    = find_specialization_spell( "Frost Death Knight" );
-  spec.frost_fever           = find_specialization_spell( "Frost Fever" );
   spec.frost_strike          = find_specialization_spell( "Frost Strike" );
   spec.frost_strike_2        = find_specialization_spell( "Frost Strike", "Rank 2" );
   spec.frostwyrms_fury       = find_specialization_spell( "Frostwyrm's Fury" );
@@ -8259,19 +8216,23 @@ void death_knight_t::init_spells()
   spell.dnd_buff        = find_spell( 188290 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
+
   // Raise Dead abilities, used for both rank 1 and rank 2
   spell.pet_ghoul_claw         = find_spell( 91776 );
   spell.pet_gnaw               = find_spell( 91800 );
 
+  // DIseases
+  spell.blood_plague    = find_spell( 55078 );
+  spell.frost_fever     = find_spell( 55095 );
+  spell.virulent_plague = find_spell( 191587 );
+
   // Blood
   spell.blood_shield        = find_spell( 77535 );
-  spell.blood_plague        = find_spell( 55078 );
   spell.bone_shield         = find_spell( 195181 );
   spell.relish_in_blood     = find_spell( 317614 );
 
   // Frost
   spell.cold_heart_damage         = find_spell( 281210 );
-  spell.frost_fever               = find_spell( 55095 );
   spell.inexorable_assault_damage = find_spell( 253597 );
   spell.murderous_efficiency_gain = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
@@ -8283,7 +8244,6 @@ void death_knight_t::init_spells()
   spell.runic_corruption       = find_spell( 51460 );
   spell.soul_reaper_execute    = find_spell( 343295 );
   spell.virulent_eruption      = find_spell( 191685 );
-  spell.virulent_plague        = find_spell( 191587 );
 
   // DT ghoul abilities
   spell.pet_sweeping_claws     = find_spell( 91778 );
@@ -9214,19 +9174,11 @@ void death_knight_t::activate()
       {
         target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_festering_wound_death( t ); } );
       }
-
-      if ( spec.outbreak->ok() )
-      {
-        target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_virulent_plague_death( t ); } );
-      }
     }
 
-    else
+    if ( spec.outbreak -> ok() || talent.unholy_blight -> ok() || legendary.superstrain -> ok() )
     {
-      if ( legendary.superstrain -> ok() )
-      {
-        target -> register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
-      }
+      target -> register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
     }
   } );
 }
@@ -9326,7 +9278,7 @@ void death_knight_t::do_damage( action_state_t* state )
 
   if ( runeforge.rune_of_sanguination )
   {
-    // Health threshold and internal cooldown handled in ready()
+    // Health threshold and internal cooldown are both handled in ready()
     if ( active_spells.rune_of_sanguination -> ready() )
       active_spells.rune_of_sanguination -> execute();
   }
@@ -9478,6 +9430,24 @@ double death_knight_t::composite_dodge() const
   }
 
   return dodge;
+}
+
+// Player multipliers
+
+double death_knight_t::composite_player_target_multiplier( player_t* target, school_e s ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, s );
+
+  death_knight_td_t* td = get_target_data( target );
+
+  // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
+  // Does not use a whitelist, affects all damage sources
+  if ( runeforge.rune_of_apocalypse )
+  {
+    m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
+  }
+
+  return m;
 }
 
 double death_knight_t::composite_player_multiplier( school_e school ) const
