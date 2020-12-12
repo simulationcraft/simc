@@ -3703,11 +3703,13 @@ struct black_powder_t: public rogue_attack_t
     // Deeper Daggers triggers before bonus damage which makes it self-affecting.
     p()->buffs.deeper_daggers->trigger();
 
-    // BUG: Finality BP triggers after physical instant attack before scheduling the shadow damage and is immediately consumes by that.
+    // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
     // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
-    if ( p()->legendary.finality.ok() )
+    bool triggered_finality = false;
+    if ( p()->legendary.finality.ok() && !p()->buffs.finality_black_powder->check() )
     {
       p()->buffs.finality_black_powder->trigger();
+      triggered_finality = true;
     }
 
     if ( bonus_attack )
@@ -3718,7 +3720,8 @@ struct black_powder_t: public rogue_attack_t
     }
 
     // See bug above.
-    p()->buffs.finality_black_powder->expire();
+    if ( !triggered_finality )
+      p()->buffs.finality_black_powder->expire();
   }
 
   bool procs_poison() const override
