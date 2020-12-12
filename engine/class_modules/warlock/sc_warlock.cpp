@@ -1791,6 +1791,12 @@ struct warlock_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 11.0 )
       .verification_value( 43.0 );
+
+    hotfix::register_effect("Warlock","2020-12-11","Upcoming Class Tuning: Chaos Bolt damage buffed by 22%", 132079)
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.464 )
+      .verification_value( 1.2 );
   }
 
   bool valid() const override
