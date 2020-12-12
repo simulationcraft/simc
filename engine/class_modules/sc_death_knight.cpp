@@ -9815,6 +9815,48 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3000 )
       .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Unholy Mastery (direct)", 68129 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.85 )
+      .verification_value( 2.25 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Unholy Mastery (periodic)", 90623 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.85 )
+      .verification_value( 2.25 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Unholy Mastery (pet)", 800836 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.85 )
+      .verification_value( 2.25 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Blood Boil", 43101 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.387 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Heart Strike", 306040 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 0.31230 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Marrowrend", 286508 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.48450 );
+
+    hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Death Strike", 42113 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 0.46426 );
   }
 
   void init( player_t* ) const override {}
