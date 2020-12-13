@@ -100,7 +100,6 @@ actions.finish+=/dispatch
 
 # Stealth
 actions.stealth=dispatch,if=combo_points>=cp_max_spend
-actions.stealth+=/cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
 actions.stealth+=/ambush
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173129

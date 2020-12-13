@@ -286,6 +286,7 @@ public:
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* premeditation;
+    buff_t* shot_in_the_dark;
     buff_t* master_of_shadows;
     buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
@@ -526,6 +527,8 @@ public:
     const spell_data_t* shadow_focus;
 
     const spell_data_t* soothing_darkness;
+
+    const spell_data_t* shot_in_the_dark;
 
     const spell_data_t* enveloping_shadows;
     const spell_data_t* dark_shadow;
@@ -4216,7 +4219,8 @@ struct cheap_shot_t : public rogue_attack_t
   double cost() const override
   {
     double c = rogue_attack_t::cost();
-    // TODO: Shot in the Dark talent reduces cost to free
+    if ( p()->buffs.shot_in_the_dark->up() )
+      return 0.0;
     return c;
   }
 
@@ -4975,6 +4979,9 @@ struct stealth_like_buff_t : public BuffBase
 
     if ( rogue->talent.premeditation->ok() && rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       rogue->buffs.premeditation->trigger();
+
+    if ( rogue->talent.shot_in_the_dark->ok() && rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      rogue->buffs.shot_in_the_dark->trigger();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6588,7 +6595,6 @@ void rogue_t::init_action_list()
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
     stealth->add_action( this, "Dispatch", "if=combo_points>=cp_max_spend" );
-    stealth->add_action( this, "Cheap Shot", "target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss" );
     stealth->add_action( this, "Ambush" );
 
     // Finishers
@@ -6687,6 +6693,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
     stealthed->add_talent( this, "Gloomblade", "if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
     stealthed->add_action( this, "Shadowstrike" );
+    stealthed->add_action( this, "Cheap Shot", "if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -7327,6 +7334,8 @@ void rogue_t::init_spells()
 
   talent.soothing_darkness  = find_talent_spell( "Soothing Darkness" );
 
+  talent.shot_in_the_dark   = find_talent_spell( "Shot in the Dark" );
+
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
@@ -7734,6 +7743,8 @@ void rogue_t::create_buffs()
     } );
 
   buffs.premeditation = make_buff( this, "premeditation", find_spell( 343173 ) );
+
+  buffs.shot_in_the_dark = make_buff( this, "shot_in_the_dark", find_spell( 257506 ) );
 
   buffs.secret_technique = make_buff( this, "secret_technique", talent.secret_technique )
     ->set_cooldown( timespan_t::zero() )

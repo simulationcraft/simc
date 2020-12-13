@@ -162,6 +162,7 @@ actions.stealthed+=/shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runef
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
 actions.stealthed+=/gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13
 actions.stealthed+=/shadowstrike
+actions.stealthed+=/cheap_shot,if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max
 
 head=umbrahide_helm,id=172317,bonus_id=7124/6647/6650/1487
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
