@@ -2247,13 +2247,13 @@ struct auto_melee_attack_t : public action_t
 
 struct adrenaline_rush_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   adrenaline_rush_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p->spec.adrenaline_rush ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = false;
@@ -2269,12 +2269,11 @@ struct adrenaline_rush_t : public rogue_spell_t
     if ( p()->talent.loaded_dice->ok() )
       p()->buffs.loaded_dice->trigger();
 
-    if ( precombat_seconds && !p()->in_combat )
+    if ( precombat_seconds > 0_s && !p()->in_combat )
     {
-      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
-      p()->cooldowns.adrenaline_rush->adjust( precombat_lost_seconds, false );
-      p()->buffs.adrenaline_rush->extend_duration( p(), precombat_lost_seconds );
-      p()->buffs.loaded_dice->extend_duration( p(), precombat_lost_seconds );
+      p()->cooldowns.adrenaline_rush->adjust( -precombat_seconds, false );
+      p()->buffs.adrenaline_rush->extend_duration( p(), -precombat_seconds );
+      p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
     }
   }
 
@@ -3254,13 +3253,13 @@ struct mutilate_t : public rogue_attack_t
 
 struct roll_the_bones_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   roll_the_bones_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p -> spec.roll_the_bones ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = false;
@@ -3272,8 +3271,8 @@ struct roll_the_bones_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     timespan_t d = p() -> buffs.roll_the_bones -> data().duration();
-    if ( precombat_seconds && ! p() -> in_combat )
-      d -= timespan_t::from_seconds( precombat_seconds );
+    if ( precombat_seconds > 0_s && ! p() -> in_combat )
+      d -= precombat_seconds;
 
     p()->buffs.roll_the_bones->trigger( d );
   }
@@ -3445,13 +3444,13 @@ struct shadow_blades_attack_t : public rogue_attack_t
 
 struct shadow_blades_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   shadow_blades_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p -> find_specialization_spell( "Shadow Blades" ) ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = false;
@@ -3467,10 +3466,9 @@ struct shadow_blades_t : public rogue_spell_t
 
     p() -> buffs.shadow_blades -> trigger();
 
-    if ( precombat_seconds && ! p() -> in_combat ) {
-      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
-      p() -> cooldowns.shadow_blades -> adjust( precombat_lost_seconds, false );
-      p() -> buffs.shadow_blades -> extend_duration( p(), precombat_lost_seconds );
+    if ( precombat_seconds > 0_s && ! p() -> in_combat ) {
+      p() -> cooldowns.shadow_blades -> adjust( -precombat_seconds, false );
+      p() -> buffs.shadow_blades -> extend_duration( p(), -precombat_seconds );
     }
   }
 };
@@ -3922,13 +3920,13 @@ struct sinister_strike_t : public rogue_attack_t
 
 struct slice_and_dice_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   slice_and_dice_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p -> spell.slice_and_dice ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = false;
@@ -3949,8 +3947,8 @@ struct slice_and_dice_t : public rogue_spell_t
     int cp = cast_state( execute_state )->get_combo_points();
     timespan_t snd_duration = get_triggered_duration( cp );
 
-    if ( precombat_seconds && ! p() -> in_combat )
-      snd_duration -= timespan_t::from_seconds( precombat_seconds );
+    if ( precombat_seconds > 0_s && ! p() -> in_combat )
+      snd_duration -= precombat_seconds;
 
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
@@ -4072,13 +4070,13 @@ struct vanish_t : public rogue_spell_t
 
 struct vendetta_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   vendetta_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p->spec.vendetta, options_str ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
@@ -4094,12 +4092,11 @@ struct vendetta_t : public rogue_spell_t
     td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
-    if ( precombat_seconds && !p()->in_combat )
+    if ( precombat_seconds > 0_s && !p()->in_combat )
     {
-      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
-      p()->cooldowns.vendetta->adjust( precombat_lost_seconds, false );
-      p()->buffs.vendetta->extend_duration( p(), precombat_lost_seconds );
-      td->debuffs.vendetta->extend_duration( p(), precombat_lost_seconds );
+      p()->cooldowns.vendetta->adjust( -precombat_seconds, false );
+      p()->buffs.vendetta->extend_duration( p(), -precombat_seconds );
+      td->debuffs.vendetta->extend_duration( p(), -precombat_seconds );
     }
   }
 };
