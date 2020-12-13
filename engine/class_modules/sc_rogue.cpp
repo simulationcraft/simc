@@ -2847,6 +2847,14 @@ struct gouge_t : public rogue_attack_t
     if ( p -> talent.dirty_tricks -> ok() )
       base_costs[ RESOURCE_ENERGY ] = 0;
   }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( candidate_target->type != ENEMY_ADD )
+      return false;
+
+    return rogue_attack_t::target_ready( candidate_target );
+  }
 };
 
 // Ghostly Strike ===========================================================
