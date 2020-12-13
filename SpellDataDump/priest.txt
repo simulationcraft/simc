@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-12/36839, git build shadowlands f2728acc92)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -10538,7 +10538,7 @@ Description      : Mindgames lasts an additional ${$s3/1000}.1 sec, deals an add
 Name             : Haunting Apparitions (id=338319) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 107 (values=31, 34.099998, 37.200001, 40.299999, 35, 46.5, 49.599998, 52.700001, 55.799999, 58.900002, 62, 65.099998, 68.199997, 71.300003, 74.400002)
+Conduit Id       : 107 (values=31, 34.099998, 37.200001, 40.299999, 43.400002, 46.5, 49.599998, 52.700001, 55.799999, 58.900002, 62, 65.099998, 68.199997, 71.300003, 74.400002)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-12/36839, git build shadowlands f2728acc92)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -827,6 +827,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
+Hotfixed         : Attributes
 Class            : Brewmaster Death Knight, Monk
 School           : Physical
 Spell Type       : Melee
@@ -835,7 +836,7 @@ GCD              : 1 seconds
 Category         : 47
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Shuffle (215479 effect#1), Stagger (322522 effect#1)
 Family Flags     : 34
-Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
+Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ......x. ........   ........ ........ ........ ....x.x. 

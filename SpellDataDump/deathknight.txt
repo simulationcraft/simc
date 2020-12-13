@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-12/36839, git build shadowlands f2728acc92)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1104,7 +1104,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=42113)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46426 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48747 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 #3 (id=287354)   : Dummy (3)
@@ -1178,7 +1178,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38700 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42570 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
@@ -2322,15 +2322,15 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.91250 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Swarming Mist (311730), Unholy Pact (319236), Abomination Limb (323710), Abomination Limb (323798), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955)
                    Family Flags: 78
 #2 (id=90623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.91250 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Swarming Mist (311730), Unholy Pact (319236), Abomination Limb (323710), Abomination Limb (323798), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955)
                    Family Flags: 78
 #3 (id=800836)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.91250 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of your Minions and Shadow damage abilities by ${$s1}.1%.
 
 Name             : Blood Shield (id=77535) [Spell Family (15)] 
@@ -3234,6 +3234,7 @@ Description      : An unholy pact that prevents fatal damage, instead absorbing 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
+Hotfixed         : Attributes
 Class            : Brewmaster Death Knight, Monk
 School           : Physical
 Spell Type       : Melee
@@ -3242,7 +3243,7 @@ GCD              : 1 seconds
 Category         : 47
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Shuffle (215479 effect#1), Stagger (322522 effect#1)
 Family Flags     : 34
-Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
+Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ......x. ........   ........ ........ ........ ....x.x. 
@@ -5583,6 +5584,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 1080: Withering Ground (341344 effect#1)
 Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78, 114
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -6302,7 +6304,7 @@ Effects          :
 #1 (id=286507)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=286508)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48450 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53295 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=286519)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Smash the target, dealing $s2 Physical damage and generating $s3 charges of Bone Shield.
@@ -6973,7 +6975,7 @@ Effects          :
 #1 (id=306039)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=306040)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31230 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35914 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #4 (id=312174)   : Dummy (3)
@@ -8142,6 +8144,29 @@ Effects          :
 #4 (id=363441)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
 Description      : Strikes the enemy, dealing $sw1 Physical damage and bursting up to $s3 Festering Wounds on the target, summoning a member of your Army of the Dead for $221180d for each burst Festering Wound.
+
+Name             : Blood Strike (id=220890) 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Melee
+Spell Level      : 23
+Range            : 50000 yards
+Proc Chance      : 101%
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ .......x ....x..x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Always hits (114), Disable weapon procs (151)
+Effects          :
+#1 (id=329462)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+#2 (id=329463)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Grants the Death Knight $s2 runic power.
 
 Name             : Army of the Dead (id=221180) [Spell Family (15)] 
 Class            : Death Knight
@@ -14847,7 +14872,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841683)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 1080 (Label) | Target: Self (1)
-                   Affected Spells (Label): Death's Due (341340)
+                   Affected Spells (Label): Defile (156000), Death's Due (341340)
 Description      : Death's Due deals |cFFFFFFFF${$s1}.1%|r increased damage.
 
 Name             : Rage of the Frozen Champion (id=341724) [Spell Family (15), Passive] 
