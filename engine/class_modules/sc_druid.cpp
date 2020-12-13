@@ -6220,6 +6220,12 @@ struct starsurge_t : public druid_spell_t
       cooldown = p->get_cooldown( "starsurge_affinity" );
       cooldown->duration = s->cooldown();
     }
+
+    if ( p->talent.balance_affinity->ok() )
+    {
+      form_mask = MOONKIN_FORM;
+    }
+
   }
 
   void init() override
