@@ -664,9 +664,27 @@ void soul_igniter( special_effect_t& effect )
     make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
-void skulkers_wing( special_effect_t& /* effect */ )
+/** Skulker's Wing
+ * id=345019 driver speed buff, effect 1: 8y area trigger create
+ * id=345113 dummy damage container spell
+ * id=345020 actual triggered leap+damage spell
+ */
+void skulkers_wing( special_effect_t& effect )
 {
+  struct skulking_predator_t : public proc_spell_t
+  {
+    skulking_predator_t( const special_effect_t& e ) :
+      proc_spell_t( "skulking_predator", e.player, e.player->find_spell( 345020 ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 345113 )->effectN( 1 ).average( e.item );
+    }
+  };
 
+  // Speed buff is only present until the damage trigger happens, this within 100ms if you are already in range
+  // For now assume we are nearest to the primary target and just trigger the damage immediately
+  // TODO: Speed buff + range-based target selection?
+
+  effect.execute_action = create_proc_action<skulking_predator_t>( "skulking_predator", effect );
 }
 
 /** Memory of Past Sins
