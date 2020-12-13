@@ -1268,6 +1268,8 @@ class SpellDataGenerator(DataGenerator):
          348141, 348140,
          # Mistcaller Ocarina
          330132, 332077, 332078, 332079,
+         # Skulking Predator leap/damage
+         345020,
         ),
 
         # Warrior:
