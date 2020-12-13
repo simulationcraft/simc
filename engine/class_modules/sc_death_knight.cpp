@@ -8651,7 +8651,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard -> add_action( this, "Frost Strike", "if=conduit.eradicating_blow&buff.eradicating_blow.stack=2|conduit.unleashed_frenzy&buff.unleashed_frenzy.remains<3&buff.unleashed_frenzy.up" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse" );
+  standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse|buff.killing_machine.react|death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack>8|rune.time_to_4<=gcd" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   standard -> add_action( this, "Obliterate", "if=runic_power.deficit>(25+talent.runic_attenuation*3)" );
   standard -> add_action( this, "Frost Strike" );
@@ -8663,6 +8663,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   aoe -> add_action( this, "Howling Blast", "if=buff.rime.up" );
+  aoe -> add_action( this, "Obliterate", "if=death_and_decay.ticking&covenant.night_fae&buff.deaths_due.stack>8" );
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&(!death_and_decay.ticking&covenant.night_fae|!covenant.night_fae)" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*3)" );
@@ -8749,8 +8750,8 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Dark Transformation", "if=variable.st_planning&(dot.unholy_blight_dot.remains|!talent.unholy_blight)" );
   cooldowns -> add_action( this, "Dark Transformation", "if=active_enemies>=2" );
   cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&talent.army_of_the_damned&runeforge.deadliest_coil&conduit.convocation_of_the_dead.rank>=5&dot.unholy_blight_dot.remains" );
-  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&dot.unholy_blight_dot.remains>10&(talent.unholy_assault&conduit.convocation_of_the_dead.rank<5|talent.gargoyle)" );
-  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&(!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|talent.unholy_assault&conduit.convocation_of_the_dead.rank>=5)" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&talent.unholy_blight&dot.unholy_blight_dot.remains>10&!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5" );
+  cooldowns -> add_action( this, "Apocalypse", "if=active_enemies=1&debuff.festering_wound.stack>=4&(!talent.unholy_blight|talent.army_of_the_damned&(!runeforge.deadliest_coil|conduit.convocation_of_the_dead.rank<5)|!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)" );
   cooldowns -> add_action( this, "Apocalypse", "target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14&(cooldown.unholy_blight.remains<10|dot.unholy_blight_dot.remains)" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|conduit.convocation_of_the_dead&buff.dark_transformation.up&!pet.army_ghoul.active)" );
