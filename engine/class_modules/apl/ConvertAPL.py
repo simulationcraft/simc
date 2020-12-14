@@ -98,7 +98,7 @@ def main(argv):
     inputFilePath = ''
     outputFilePath = ''
     specString = ''
-    specList = ['arcane', 'fire', 'frost'] #Add spec names here; these will be used to find the method in the apl file so should match your method name not necessarily tokenized spec name
+    specList = [ 'arcane', 'blood', 'fire', 'frost', 'unholy' ] #Add spec names here; these will be used to find the method in the apl file so should match your method name not necessarily tokenized spec name
     try:
         opts, args = getopt.getopt(argv,"hi:o:s:",["input=","output=","spec="])
     except getopt.GetoptError:
