@@ -8332,6 +8332,7 @@ void death_knight_t::init_spells()
 }
 
 
+
 // death_knight_t::init_action_list =========================================
 
 void death_knight_t::init_action_list()
