@@ -698,7 +698,7 @@ bool parse_blizzard_covenant_information( player_t*               player,
 
   // The rest of the code cannot be run because Blizzard API does not indicate the active
   // path.
-  return true;
+  //return true;
 
   if ( !covenant_data.HasMember( "soulbinds" ) || !covenant_data[ "soulbinds" ].IsArray() )
   {
