@@ -3,12 +3,6 @@ import getopt
 import os
 import shutil
 
-# Simple HowTo
-# Usage: >python ConvertAPL.py -i path/to/input/file -o path/to/output/file -s spec
-# Input file can be any type and location, but must only contain APL commands (actions=..., actions+=/..., etc.) and comments
-# Output file has to be an already existing file, with //spec_apl_start and //spec_apl_end comments around the APL method that you want to update
-# spec has to be a member of specList
-
 ignored_comments = [
     '# This default action priority list is automatically created based on your character.',
     '# It is a attempt to provide you with a action list that is both simple and practicable,',
