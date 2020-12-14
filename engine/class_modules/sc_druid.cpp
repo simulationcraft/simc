@@ -538,7 +538,6 @@ public:
     const spell_data_t* berserk_cat;
     const spell_data_t* rake_dmg;
     const spell_data_t* tigers_fury;
-    const spell_data_t* tigers_fury_2;  // +30 energize
     const spell_data_t* savage_roar;  // talent buff spell, holds composite_multiplier data
     const spell_data_t* bloodtalons;  // talent buff spell, holds composite_multiplier data
 
@@ -4200,7 +4199,8 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
-    energize_type         = action_energize::ON_CAST;
+    energize_type = action_energize::ON_CAST;
+    energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
 
     if ( p->talent.predator->ok() )
       duration += p->talent.predator->effectN( 1 ).time_value();
@@ -7860,7 +7860,6 @@ void druid_t::init_spells()
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
   spec.rake_dmg                = find_spell( 1822 )->effectN( 3 ).trigger();
   spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
-  spec.tigers_fury_2           = find_rank_spell( "Tiger's Fury", "Rank 2" );
   spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
   spec.bloodtalons             = check_id( talent.bloodtalons->ok(), 145152 );
 
@@ -10543,7 +10542,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Rank spells
   action.apply_affecting_aura( spec.moonfire_2 );
   action.apply_affecting_aura( spec.moonfire_3 );
-  action.apply_affecting_aura( spec.tigers_fury_2 );
   action.apply_affecting_aura( spec.frenzied_regeneration_2 );
   action.apply_affecting_aura( spec.stampeding_roar_2 );
   action.apply_affecting_aura( spec.survival_instincts_2 );
