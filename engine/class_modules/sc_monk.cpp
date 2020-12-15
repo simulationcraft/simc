@@ -2697,7 +2697,7 @@ private:
       // summon duration, for example)
       dot_duration = p->o()->spec.invoke_niuzao->duration();
       hasted_ticks = may_miss = false;
-      tick_zero = dynamic_tick_action = true;                                      // trigger tick when t == 0
+      dynamic_tick_action = true;
       base_tick_time                  = p->o()->passives.stomp->cooldown();        // trigger a tick every second
       cooldown->duration              = p->o()->spec.invoke_niuzao->duration();  // we're done after 45 seconds
       attack_power_mod.direct         = 0.0;
@@ -10602,6 +10602,8 @@ void monk_t::create_buffs()
   // General
   buff.charred_passions    = make_buff( this, "charred_passions", find_spell( 338140 ) );
   buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       ->add_invalidate( CACHE_ATTACK_HASTE )
       ->add_invalidate( CACHE_HASTE )
       ->add_invalidate( CACHE_SPELL_HASTE );
@@ -10995,9 +10997,6 @@ double shared_composite_haste_modifiers( const monk_t& p, double h )
       ++effect_index;
     }
   }
-
-  if ( p.buff.invokers_delight->up() )
-    h *= 1.0 / ( 1.0 + p.buff.invokers_delight->data().effectN( 1 ).percent() );
 
   return h;
 }
