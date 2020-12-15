@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-14/36839, git build shadowlands 6fa8c8aa5d)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-15/36949, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -827,7 +827,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Class            : Brewmaster Death Knight, Monk
 School           : Physical
 Spell Type       : Melee
@@ -3460,7 +3459,8 @@ Effects          :
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (400 -> 450)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -9793,7 +9793,6 @@ Description      : Summon an effigy of Chi-Ji that kicks up a Gust of Mist when 
 Chi-Ji's presence makes you immune to movement impairing effects.
 
 Name             : Dance of Chi-Ji (id=325201) [Scaling Spell (-1), Spell Family (53), Passive, Hidden] 
-Hotfixed         : Proc Flags (4112 -> 5136)
 Class            : Monk
 School           : Physical
 Spell Type       : None

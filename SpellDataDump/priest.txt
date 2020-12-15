@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-14/36839, git build shadowlands 6fa8c8aa5d)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-15/36949, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9138,7 +9138,6 @@ Effects          :
 Description      : If your Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
 
 Name             : Mindgames (desc=Venthyr) (id=323673) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 Covenant         : Venthyr
 School           : Shadow

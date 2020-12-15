@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-14/36839, git build shadowlands 6fa8c8aa5d)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-15/36949, no-networking)
 
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
@@ -1413,11 +1413,9 @@ Effects          :
 #5 (id=826366)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
                    Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984)
-Hotfixed         : Misc Value (3 -> 12), Misc Value 2 (961 -> 962)
 #6 (id=826367)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
                    Affected Spells (Label): Rune of Unending Thirst (326984)
-Hotfixed         : Misc Value (3 -> 23), Misc Value 2 (961 -> 963)
 Description      : The benefits of Well Fed, Flask, $?a137005[weapon enchant, and Runeforge][and weapon enchant] effects are increased by $s1%.
 
 Name             : Familiar Predicaments (id=331582) [Passive, Hidden] 

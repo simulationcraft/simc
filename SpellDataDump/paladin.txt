@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-14/36839, git build shadowlands 6fa8c8aa5d)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-15/36949, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -610,7 +610,8 @@ Attributes       : ......xx ........ x.x..... ........   ........ ..x..... .x...
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (400 -> 450)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -8591,7 +8592,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc304971
 
 Name             : Hammer of Wrath (desc=Rank 2) (id=326730) [Spell Family (10), Passive] 
@@ -10517,7 +10517,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Templar's Verdict (339538)
                    Family Flags: 44, 49, 52, 88
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the target area and causing them to take $s3% increased damage from your Holy Power abilities for $d.
 
 |cFFFFFFFFPassive:|r $@spelldesc343723
