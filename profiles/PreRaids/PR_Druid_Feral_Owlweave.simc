@@ -1,4 +1,4 @@
-druid="PR_Druid_Feral"
+druid="PR_Druid_Feral_Owlweave"
 source=default
 spec=feral
 level=60
@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2331122
+talents=2313122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:4
 

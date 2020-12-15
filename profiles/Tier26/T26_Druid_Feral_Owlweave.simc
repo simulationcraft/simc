@@ -1,4 +1,4 @@
-druid="PR_Druid_Feral"
+druid="T26_Druid_Feral_Owlweave"
 source=default
 spec=feral
 level=60
@@ -6,9 +6,9 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2331122
+talents=2313122
 covenant=night_fae
-soulbind=niya,grove_invigoration/taste_for_blood:4
+soulbind=niya,grove_invigoration/taste_for_blood:7/born_of_the_wilds:7/niyas_tools_burrs
 
 # Default consumables
 potion=spectral_agility
@@ -129,28 +129,28 @@ actions.stealth+=/pool_resource,for_next=1
 # Shred for faster CP generation
 actions.stealth+=/shred,if=combo_points<4
 
-head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=umbrahide_vest,id=172314,bonus_id=6716/7086/6647/6648/1487,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=darkmoon_deck_voracity,id=173087
-main_hand=quarterstaff_of_discordant_ethic,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=umbrahide_vest,id=172314,bonus_id=6647/6648/6758/7086/1532,enchant=eternal_skirmish
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
+hands=gloves_of_phantom_shadows,id=183026,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
+legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=nathrian_torchbearers_stave,id=182419,bonus_id=7187/1524,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=185.47
-# gear_agility=597
-# gear_stamina=861
-# gear_crit_rating=779
-# gear_haste_rating=70
-# gear_mastery_rating=349
-# gear_versatility_rating=181
-# gear_armor=479
+# gear_ilvl=228.93
+# gear_agility=877
+# gear_stamina=1518
+# gear_crit_rating=608
+# gear_haste_rating=499
+# gear_mastery_rating=617
+# gear_versatility_rating=220
+# gear_armor=611
