@@ -2819,7 +2819,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
-    weapon_multiplier = 1.0;
     school = SCHOOL_PHYSICAL;
 
     base_multiplier *= 1.0 + p()->talent.elemental_assault->effectN( 1 ).percent();
