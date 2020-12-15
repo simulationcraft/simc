@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36294 shadowlands-BETA (hotfix 2020-10-24/36294, git build shadowlands a6ecfc4ad5)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-14/36839, git build shadowlands 6fa8c8aa5d)
 
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -2545,10 +2545,6 @@ bonus_id={ 4794 }, quality={ rare }, ilevel={ 4 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 4795 }, quality={ epic }, ilevel={ 8 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 4796 }, ilevel={ 50 @plvl 45 - 56 @plvl 50 }
 bonus_id={ 4797 }, ilevel_adjust={ -30 }
-bonus_id={ 4798 }, base_ilevel={ 880 }
-bonus_id={ 4799 }, base_ilevel={ 895 }, desc={ Heroic }
-bonus_id={ 4800 }, base_ilevel={ 910 }, desc={ Mythic }
-bonus_id={ 4801 }, base_ilevel={ 865 }, desc={ Raid Finder }
 bonus_id={ 4802 }, socket={ 1 }
 bonus_id={ 4804 }, ilevel={ 60 @plvl 40 - 60 @plvl 80 }
 bonus_id={ 4805 }, ilevel={ 60 @plvl 40 - 60 @plvl 80 }
@@ -3931,7 +3927,6 @@ bonus_id={ 6935 }, socket={ 1 }
 bonus_id={ 6936 }, quality={ legendary }, effects={ Triune Ward (id=333373, index=0, type=equip) }
 bonus_id={ 6937 }, quality={ legendary }, effects={ Grisly Icicle (id=333393, index=0, type=equip) }
 bonus_id={ 6938 }, ilevel={ 138 @plvl 1 - 138 @plvl 138 }
-bonus_id={ 6939 }, quality={ legendary }
 bonus_id={ 6940 }, quality={ legendary }, effects={ Bryndaor's Might (id=334501, index=0, type=equip) }
 bonus_id={ 6941 }, quality={ legendary }, effects={ Crimson Rune Weapon (id=334525, index=0, type=equip) }
 bonus_id={ 6942 }, quality={ legendary }, effects={ Vampiric Aura (id=334547, index=0, type=equip) }
@@ -4041,7 +4036,7 @@ bonus_id={ 7051 }, quality={ legendary }, effects={ Erratic Fel Core (id=337685,
 bonus_id={ 7052 }, quality={ legendary }, effects={ Fel Bombardment (id=337775, index=0, type=equip) }
 bonus_id={ 7053 }, quality={ legendary }, effects={ Uther's Devotion (id=337600, index=0, type=equip) }
 bonus_id={ 7054 }, quality={ legendary }, effects={ The Mad Paragon (id=337594, index=0, type=equip) }
-bonus_id={ 7055 }, quality={ legendary }, effects={ From Dusk till Dawn (id=337746, index=0, type=equip) }
+bonus_id={ 7055 }, quality={ legendary }, effects={ Of Dusk and Dawn (id=337746, index=0, type=equip) }
 bonus_id={ 7056 }, quality={ legendary }, effects={ The Magistrate's Judgment (id=337681, index=0, type=equip) }
 bonus_id={ 7057 }, quality={ legendary }, effects={ Shadowbreaker, Dawn of the Sun (id=337812, index=0, type=equip) }
 bonus_id={ 7058 }, quality={ legendary }, effects={ Inflorescence of the Sunwell (id=337777, index=0, type=equip) }
@@ -4068,7 +4063,7 @@ bonus_id={ 7078 }, quality={ legendary }, effects={ Mighty Pour (id=337290, inde
 bonus_id={ 7079 }, quality={ legendary }, effects={ Shaohao's Might (id=337570, index=0, type=equip) }
 bonus_id={ 7080 }, quality={ legendary }, effects={ Roll Out (id=337294, index=0, type=equip) }
 bonus_id={ 7081 }, quality={ legendary }, effects={ Fatal Touch (id=337296, index=0, type=equip) }
-bonus_id={ 7082 }, quality={ legendary }, effects={ Escape from Reality (id=343250, index=0, type=equip) }
+bonus_id={ 7082 }, quality={ legendary }, effects={ Invoker's Delight (id=337298, index=0, type=equip) }
 bonus_id={ 7083 }, quality={ legendary }, effects={ Unknown Effect (id=0) }
 bonus_id={ 7084 }, quality={ legendary }, effects={ Oath of the Elder Druid (id=338608, index=0, type=equip) }
 bonus_id={ 7085 }, quality={ legendary }, effects={ Circle of Life and Death (id=338657, index=0, type=equip) }
@@ -4153,3 +4148,13 @@ bonus_id={ 7219 }, quality={ legendary }, effects={ Burning Wound (id=346279, in
 bonus_id={ 7220 }, ilevel={ 1 @plvl 1 - 58 @plvl 70 }
 bonus_id={ 7222 }, ilevel={ 15 @plvl 10 - 58 @plvl 40 }
 bonus_id={ 7223 }, ilevel={ 150 @plvl 1 - 150 @plvl 150 }
+bonus_id={ 7224 }, ilevel={ 87 @plvl 0 - 87 @plvl 0 }
+bonus_id={ 7238 }, ilevel={ 164 @plvl 0 - 164 @plvl 1 }
+bonus_id={ 7239 }, ilevel={ 181 @plvl 0 - 181 @plvl 1 }
+bonus_id={ 7240 }, ilevel={ 200 @plvl 0 - 200 @plvl 1 }
+bonus_id={ 7241 }, ilevel={ 180 @plvl 1 - 180 @plvl 180 }
+bonus_id={ 7242 }, quality={ common }
+bonus_id={ 7243 }, quality={ uncommon }
+bonus_id={ 7244 }, quality={ rare }
+bonus_id={ 7245 }, quality={ epic }
+bonus_id={ 7246 }, quality={ legendary }
