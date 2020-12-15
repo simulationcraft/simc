@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.2.36839
-static const std::array<spelltext_data_t, 15096> __spelltext_data { {
+// Spell text, wow build 9.0.2.36949
+static const std::array<spelltext_data_t, 15092> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14573,9 +14573,7 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 340193, "$@spelldesc340192", 0, 0 },
   { 340197, "Killing an enemy has a high chance to summon an Explosive Mawrat at the corpses location. After $340201d the mawrat will explode, dealing $341617s1 Nature damage to all nearby enemies, poisoning them and decreasing their damage done by $341617s2% for $341617d.", 0, 0 },
   { 340201, "$@spelldesc340197", 0, 0 },
-  { 340202, "When Obtained: The Curse of Renagal's Pact leaves the chalice and you begin to attract the attention of foes from further away than before. ", "Attracting enemies to you from further away than normal. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispell the curse.", 0 },
   { 340203, "$@spelldesc316958", 0, 0 },
-  { 340206, "When Obtained: The Curse of Teramanik's Legacy leaves the reins and prevents you from calling on your mounts. ", "The curse prevents you from mounting. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispel the curse.", 0 },
   { 340212, "Ashen Hallow strikes the lowest health ally and enemy within it an additional time for |cFFFFFFFF${$s1}.1%|r of its effect.", 0, 0 },
   { 340214, "$@spelldesc316958", 0, 0 },
   { 340218, "Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast $s2 extra $ltime:times; on the main target.", 0, 0 },
@@ -14587,8 +14585,6 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 340284, "Invoke the Cypher of Dampening, tuning out the Otherworldly Screeching of the beasts in The Beastwarrens.", 0, 0 },
   { 340316, "Impending Catastrophe's damage over time and the inflicted Curse last |cFFFFFFFF${$s1}.1%|r longer against your primary target.", 0, 0 },
   { 340348, "Soul Rot's damage and radius is increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
-  { 340361, "When Obtained: The Curse of Demoltrov's Rites is transfered from the dagger to you, and your kills cause you to wither reducing your max health.", "Kills while this curse is active reduces your maximum health by $340363s1% stacking up to $340363u times. Seek out an ally or Cursebreaker Arnon at the Absolution Crypt to dispell the curse.", 0 },
-  { 340363, 0, "Maximum health reduced by ${-$s1}%.", 0 },
   { 340424, "$@spelldesc340079", "Bleeding for $w1, and healing the Rogue for ${$340424e1*100}% of the damage dealt.", 0 },
   { 340426, "$@spelldesc340081", 0, 0 },
   { 340431, "$@spelldesc340082", "Bleeding for $w1 damage every $t sec.", 0 },
@@ -15098,16 +15094,11 @@ static const std::array<spelltext_data_t, 15096> __spelltext_data { {
   { 348439, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.2.36839
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
-  {  269120,  0, "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $<points> damage.", "Activate your miniaturized plasma shield to project a bubble around you for $d that absorbs up to $s1 damage." },
-  {  323762,  0, "Permanently enchants a chest piece to increase all stats by $ec1.", "Permanently enchants a chest piece to increase primary stats by $ec1." },
-  {  324773,  0, "Permanently enchants a chest piece to increase all stats by $ec1.", "Permanently enchants a chest piece to increase primary stats by $ec1." },
-  {  345230,  1, "Increases primary stat by $s1.", "Increases primary stat by $w1." },
-  {  345231,  1, "Maximum health increased by $s1.", "Maximum health increased by $w1." },
+// spelltext hotfix entries, wow build 9.0.2.36949
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.2.36839
+// Spell description variables, wow build 9.0.2.36949
 static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15406,7 +15397,7 @@ static const std::array<spelldesc_vars_data_t, 295> __spelldesc_vars_data { {
   {  345549, "$phylacteryhealth=$s2*15" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.2.36839
+// spelldesc_vars hotfix entries, wow build 9.0.2.36949
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
