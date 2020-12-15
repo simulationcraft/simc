@@ -9329,13 +9329,13 @@ struct death_knight_module_t : public module_t {
     hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Unholy Mastery (periodic)", 90623 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.85 )
+      .modifier( 0.8 )
       .verification_value( 2.25 );
 
     hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Unholy Mastery (pet)", 800836 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.85 )
+      .modifier( 0.8 )
       .verification_value( 2.25 );
 
     hotfix::register_effect( "Death Knight", "2020-12-12", "Upcoming hotfix for Blood Boil", 43101 )
