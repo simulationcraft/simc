@@ -1293,6 +1293,7 @@ struct eternal_call_to_the_void_t final : public priest_spell_t
   eternal_call_to_the_void_t( priest_t& p )
     : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( p.legendary.eternal_call_to_the_void->id() ) )
   {
+    background = true;
   }
 };
 
