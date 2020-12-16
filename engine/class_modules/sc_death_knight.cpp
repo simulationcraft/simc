@@ -566,7 +566,6 @@ public:
 
     // Unholy
     action_t* bursting_sores;
-    action_t* dark_transformation_damage;
     action_t* festering_wound;
     action_t* virulent_eruption;
   } active_spells;
@@ -3949,7 +3948,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled by the action
 
-    // Extract the cost per tick from spelldata
+                                 // Extract the cost per tick from spelldata
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
@@ -4228,8 +4227,8 @@ struct unholy_pact_buff_t : public buff_t
 
 struct dark_transformation_damage_t : public death_knight_spell_t
 {
-  dark_transformation_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "dark_transformation", p, p -> find_spell( 344955 ) )
+  dark_transformation_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 344955 ) )
   {
     background = dual = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -4242,8 +4241,8 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_spell_t( "dark_transformation", p, p -> spec.dark_transformation )
   {
     parse_options( options_str );
-    impact_action = p -> active_spells.dark_transformation_damage;
-    add_child( p -> active_spells.dark_transformation_damage );
+    execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
+    execute_action -> stats = stats;
   }
 
   void execute() override
@@ -7632,11 +7631,6 @@ void death_knight_t::create_actions()
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    if ( spec.dark_transformation -> ok() )
-    {
-      active_spells.dark_transformation_damage = new dark_transformation_damage_t( this );
-    }
-
     if ( spec.festering_wound -> ok() )
     {
       active_spells.festering_wound = new festering_wound_t( this );
@@ -7918,10 +7912,8 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 
 void death_knight_t::create_pets()
 {
-  if ( spec.raise_dead -> ok() )
-  {
-    pets.ghoul_pet = new pets::ghoul_pet_t( this );
-  }
+  // Created unconditionally for APL purpose
+  pets.ghoul_pet = new pets::ghoul_pet_t( this );
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
@@ -8519,7 +8511,7 @@ void death_knight_t::create_buffs()
   buffs.sudden_doom = make_buff( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
         -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", spec.sudden_doom ) -> get_frequency(), 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent())
         -> set_trigger_spell( spec.sudden_doom )
-        -> set_max_stack( specialization() == DEATH_KNIGHT_UNHOLY ?
+        -> set_max_stack( spec.sudden_doom -> ok() ?
                    as<unsigned int>( spec.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() ):
                    1 );
 
