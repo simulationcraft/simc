@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36949
-static const std::array<spelltext_data_t, 15092> __spelltext_data { {
+static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6122,11 +6122,13 @@ static const std::array<spelltext_data_t, 15092> __spelltext_data { {
   { 193357, "Increases the critical ctrike chance of Between the Eyes by  ${$s1+$s2}% and the critical strike chance of all other abilities by $s1% for the duration of Roll the Bones.", "Critical strike chance of Between the Eyes increased by ${$s1+$s2}%.\r\nCritical strike chance of all other abilities increased by $s1%.", 0 },
   { 193358, "Finishing moves grant $s1 sec. of Slice and Dice per combo point spent.\r\n\r\nIncreases your Leech by $s2% for the duration of Roll the Bones.", "Gaining $s1 sec of Slice and Dice per combo point spent.\r\nLeech increased by $s2%.", 0 },
   { 193359, "Finishing moves reduce the remaining cooldown of many of your abilities by an additional $<cdr> sec per combo point.", "Finishing moves reduce the remaining cooldown of many of your abilities by an additional $<cdr> sec per combo point.", 0 },
+  { 193371, "$?s73510[Mind Spike][Mind Flay] has a chance to spawn a Void Tendril that channels Mind Flay at your target for $193470d.", 0, 0 },
   { 193397, "Restores $192002o1 health and $192002o2 mana over $192002d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and while out of combat heal for $201695s1 every $201695t1 sec for $201695d.", 0, 0 },
   { 193407, 0, "Tethered to a friend!", 0 },
   { 193455, "A quick shot causing ${$s2*$<mult>} Physical damage.\r\n\r\nReduces the cooldown of Kill Command by $s3 sec.", 0, 0 },
   { 193456, "Increases Agility and Stamina by $s1 for $d.  Counts as both a Battle and Guardian elixir.", "Agility and Stamina increased by $s1.", 0 },
   { 193468, "Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.", "Range increased by $w1%.\r\nFocus spending abilites deal $s2% increased damage.", "Mastery" },
+  { 193470, "$@spelldesc193371", 0, 0 },
   { 193473, "Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.", "$?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.", 0 },
   { 193530, "Grants you and your pet $s2 Focus per sec and $s1% increased critical strike chance for $d.", "Gaining $s2 Focus per sec.\r\nCritical Strike chance increased by $s1%.", 0 },
   { 193531, "You may have a maximum of $s3 combo points, your finishing moves consume up to $s3 combo points, and your finishing moves deal $s4% increased damage.", 0, 0 },
@@ -14918,6 +14920,7 @@ static const std::array<spelltext_data_t, 15092> __spelltext_data { {
   { 344732, "Unleash incendiary flames at your target inflicting $s1 Fire damage.", 0, 0 },
   { 344748, "$@spelldesc336143", 0, 0 },
   { 344752, "$@spelldesc336214", 0, 0 },
+  { 344753, "$@spelldesc193371", 0, 0 },
   { 344754, "Corrosive shadow energy radiates from the target, dealing ${$49821s2*$s2} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.$?s137033[\r\n\r\n|cFFFFFFFFGenerates ${$s2*$208232s1/100} Insanity over the duration per target hit.|r][]", "Causing Shadow damage to all targets within $49821a2 yards every $t1 sec.", 0 },
   { 344785, "Place the Vulgarity Arbiter on the ground so you and your allies can atone for their vulgarity. ", 0, 0 },
   { 344802, "Increases a mortals Agility by $s1 for $d.", "Agility increase by $w1.", 0 },
