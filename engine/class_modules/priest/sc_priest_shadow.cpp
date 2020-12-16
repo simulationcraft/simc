@@ -1286,6 +1286,18 @@ struct psychic_horror_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Eternal Call to the Void (Shadowlands Legendary)
+// ==========================================================================
+struct eternal_call_to_the_void_t final : public priest_spell_t
+{
+  eternal_call_to_the_void_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( 344753 ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+// ==========================================================================
 // Void Torrent
 // ==========================================================================
 struct void_torrent_t final : public priest_spell_t
