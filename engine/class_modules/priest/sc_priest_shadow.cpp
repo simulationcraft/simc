@@ -1290,10 +1290,8 @@ struct psychic_horror_t final : public priest_spell_t
 // ==========================================================================
 struct eternal_call_to_the_void_t final : public priest_spell_t
 {
-  eternal_call_to_the_void_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( 344753 ) )
+  eternal_call_to_the_void_t( priest_t& p ) : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( 344753 ) )
   {
-    parse_options( options_str );
   }
 };
 
@@ -2119,6 +2117,11 @@ void priest_t::init_background_actions_shadow()
   if ( talents.psychic_link->ok() )
   {
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
+  }
+
+  if ( legendary.eternal_call_to_the_void->ok() )
+  {
+    background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
   }
 }
 
