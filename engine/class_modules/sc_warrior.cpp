@@ -7417,7 +7417,7 @@ std::string warrior_t::default_potion() const
 
   std::string arms_pot =
       ( true_level > 50 )
-          ? "potion_of_phantom_fire"
+          ? "spectral_strength"
           : ( true_level > 40 )
                 ? "potion_of_unbridled_fury"
                 : "disabled";
@@ -7505,7 +7505,7 @@ std::string warrior_t::default_temporary_enchant() const
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shadowcore_oil"
+                              ? "main_hand:shaded_sharpening_stone"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
