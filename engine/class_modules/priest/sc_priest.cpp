@@ -1004,10 +1004,10 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
         if ( stats == first_pet_action->stats )
         {
           // This is the first pet created. Add its stat as a child to priest mind_flay
-          auto owner_mind_flay_action = p.o().find_action( "mind_flay" );
-          if ( owner_mind_flay_action )
+          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
+          if ( owner_ecttv_action )
           {
-            owner_mind_flay_action->add_child( this );
+            owner_ecttv_action->add_child( this );
           }
         }
         if ( !sim->report_pets_separately )
@@ -1103,10 +1103,10 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
         if ( stats == first_pet_action->stats )
         {
           // This is the first pet created. Add its stat as a child to priest mind_sear
-          auto owner_mind_sear_action = p.o().find_action( "mind_sear" );
-          if ( owner_mind_sear_action )
+          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
+          if ( owner_ecttv_action )
           {
-            owner_mind_sear_action->add_child( this );
+            owner_ecttv_action->add_child( this );
           }
         }
         if ( !sim->report_pets_separately )
