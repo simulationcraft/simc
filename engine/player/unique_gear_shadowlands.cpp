@@ -637,11 +637,6 @@ void soul_igniter( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      // Need to trigger the category cooldown that this trinket does not have on other trinkets.
-      auto cd_group = player->get_cooldown( "item_cd_" + util::to_string( second_action->category() ) );
-      if ( cd_group )
-        cd_group->start( second_action->category_cooldown() );
-
       if ( buff->check() )
       {
         buff->expire();
