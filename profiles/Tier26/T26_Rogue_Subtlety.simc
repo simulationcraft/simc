@@ -116,7 +116,7 @@ actions.finish+=/slice_and_dice,if=variable.premed_snd_condition&cooldown.shadow
 # Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker.
 actions.finish+=/variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=5
 # Keep up Rupture if it is about to run out.
-actions.finish+=/rupture,if=!variable.skip_rupture&target.time_to_die-remains>6&refreshable
+actions.finish+=/rupture,if=(!variable.skip_rupture|variable.use_priority_rotation)&target.time_to_die-remains>6&refreshable
 actions.finish+=/secret_technique
 # Multidotting targets that will live for the duration of Rupture, refresh during pandemic.
 actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable
@@ -153,8 +153,8 @@ actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
 actions.stealthed+=/shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4
 actions.stealthed+=/shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5
-# Up to 3 targets keep up Find Weakness by cycling Shadowstrike.
-actions.stealthed+=/shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6
+# Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike.
+actions.stealthed+=/shadowstrike,cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6
 # For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)
 actions.stealthed+=/shadowstrike,if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment&conduit.deeper_daggers.rank>=7)&(buff.symbols_of_death_autocrit.up|!buff.premeditation.up|spell_targets>=5)

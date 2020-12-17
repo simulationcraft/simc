@@ -134,15 +134,15 @@ finger1=ritualists_treasured_ring,id=183037,bonus_id=4800/4786/1498/6935,gem_id=
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=4800/4786/1498/6935,gem_id=173127,enchant=tenet_of_versatility
 trinket1=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
-main_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=sinful_revelation
-off_hand=claws_of_the_stone_generals,id=182416,bonus_id=4800/4786/1531,enchant=celestial_guidance
+main_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=sinful_revelation
+off_hand=talons_of_the_legion_generals,id=182390,bonus_id=7187/1531,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=229.63
 # gear_agility=881
 # gear_stamina=1513
-# gear_crit_rating=445
-# gear_haste_rating=962
-# gear_mastery_rating=308
-# gear_versatility_rating=230
+# gear_crit_rating=397
+# gear_haste_rating=864
+# gear_mastery_rating=352
+# gear_versatility_rating=330
 # gear_armor=873
