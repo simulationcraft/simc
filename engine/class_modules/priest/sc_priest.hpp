@@ -39,6 +39,7 @@ struct ascended_eruption_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
+struct eternal_call_to_the_void_t;
 }  // namespace spells
 namespace heals
 {
@@ -374,6 +375,7 @@ public:
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+    propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
   } background_actions;
 
   // Items
