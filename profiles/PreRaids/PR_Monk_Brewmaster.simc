@@ -76,7 +76,7 @@ actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.
 actions+=/chi_burst
 actions+=/chi_wave
 actions+=/spinning_crane_kick,if=active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)
-actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
+actions+=/tiger_palm,if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
 actions+=/arcane_torrent,if=energy<31
 actions+=/rushing_jade_wind
 
