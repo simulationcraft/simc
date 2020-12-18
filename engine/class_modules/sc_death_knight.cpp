@@ -556,11 +556,9 @@ public:
     action_t* rune_of_sanguination;
 
     // Blood
-    action_t* mark_of_blood;
-    action_t* relish_in_blood;
+    action_t* mark_of_blood_heal;
 
     // Frost
-    action_t* breath_of_sindragosa;
     action_t* cold_heart;
     action_t* inexorable_assault;
 
@@ -784,7 +782,6 @@ public:
     // Blood
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
-    const spell_data_t* relish_in_blood;
 
     // Frost
     const spell_data_t* cold_heart_damage;
@@ -2587,11 +2584,6 @@ struct magus_pet_t : public death_knight_pet_t
     return td;
   }
 
-  // Magus of the dead has a special AI:
-  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata
-  // It also applies a 4s snare on non-boss targets hit, and can't target an enemy affected by said snare
-  // Frostbolt is used on cooldown, and shadow bolt is used the rest of the time
-
   struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
   {
     magus_spell_t( magus_pet_t* player, util::string_view name , const spell_data_t* spell, util::string_view options_str ) :
@@ -2610,7 +2602,8 @@ struct magus_pet_t : public death_knight_pet_t
     frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
       magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 317792 ), options_str )
     {
-      // Frostbolt has a 3s cooldown, set in a manual hotfix
+      // If the target is immune to slows, frostbolt seems to be used at most every 3 seconds
+      cooldown -> duration = 3_s;
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -2665,12 +2658,15 @@ struct magus_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap *= 1.06;
   }
 
+  // Magus of the dead Action Priority List:
+  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata, and applies a 4s snare on non-boss enemies
+  // Frostbolt is used on cooldown and if the target isn't slowed by the debuff, and shadow bolt is used the rest of the time
   void init_action_list() override
   {
     death_knight_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "frostbolt" );
+    def -> add_action( "frostbolt" ); // Cooldown and debuff are handled in the action
     def -> add_action( "shadow_bolt" );
   }
 
@@ -3916,8 +3912,8 @@ struct bonestorm_t : public death_knight_spell_t
 
 struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 {
-  breath_of_sindragosa_tick_t( death_knight_t* p ):
-    death_knight_spell_t( "breath_of_sindragosa_tick", p, p -> talent.breath_of_sindragosa -> effectN( 1 ).trigger() )
+  breath_of_sindragosa_tick_t( util::string_view name, death_knight_t* p ):
+    death_knight_spell_t( name, p, p -> talent.breath_of_sindragosa -> effectN( 1 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -3932,6 +3928,12 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
       base_multiplier *= 0.98;
     }
   }
+
+  // Resource cost/loss handled by buff
+  double cost() const override
+  {
+    return 0;
+  }
 };
 
 struct breath_of_sindragosa_buff_t : public buff_t
@@ -3939,11 +3941,12 @@ struct breath_of_sindragosa_buff_t : public buff_t
   double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
+  action_t* bos_damage;
 
-  breath_of_sindragosa_buff_t( death_knight_t* player ) :
-    buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
-    tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
-    rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
+  breath_of_sindragosa_buff_t( death_knight_t* p ) :
+    buff_t( p, "breath_of_sindragosa", p -> talent.breath_of_sindragosa ),
+    tick_period( p -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
+    rune_gen( as<int>( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled by the action
@@ -3954,33 +3957,38 @@ struct breath_of_sindragosa_buff_t : public buff_t
       const spellpower_data_t& power = data().powerN( idx );
       if ( power.aura_id() == 0 || player -> dbc->spec_by_spell( power.aura_id() ) == player -> specialization() )
       {
-        this -> ticking_cost = power.cost_per_tick();
+        ticking_cost = power.cost_per_tick();
       }
     }
 
+    bos_damage = get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p );
+    // Store the ticking cost in bos_damage too so resource_loss can fetch the base ability cost
+    // cost() is overriden because the actual cost and resources spent are handled by the buff
+    bos_damage -> base_costs[ RESOURCE_RUNIC_POWER ] =  ticking_cost;
+
     set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
     {
-      death_knight_t* player = debug_cast< death_knight_t* >( this -> player );
+      death_knight_t* p = debug_cast< death_knight_t* >( this -> player );
 
       // TODO: Target the last enemy targeted by the player's foreground abilities
       // Currently use the player's target which is the first non invulnerable, active enemy found.
-      player_t* bos_target = player -> target;
+      player_t* bos_target = p -> target;
 
       // On cast, generate two runes and execute damage for no cost
       if ( this -> current_tick == 0 )
       {
-        player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
-        player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
-        player -> active_spells.breath_of_sindragosa -> execute();
+        p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
+        bos_damage -> set_target( bos_target );
+        bos_damage -> execute();
         return;
       }
 
       // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
       // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
-      if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
+      if ( ! p -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
       {
         sim -> print_log( "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
-                          player -> name_str, this -> ticking_cost );
+                          p -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
         make_event( *sim, 0_ms, [ this ]() { this -> expire(); } );
@@ -3988,16 +3996,16 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // Else, consume the resource and update the damage tick's resource stats
-      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, player -> active_spells.breath_of_sindragosa );
-      player -> active_spells.breath_of_sindragosa -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
+      p -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, bos_damage );
+      bos_damage -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
       // This is the normal BoS expiration scenario
-      if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost  ) )
+      if ( ! p -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost  ) )
       {
         sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
-                          player -> name_str, this -> ticking_cost );
+                          p -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
         make_event( *sim, 0_ms, [ this ]() { this -> expire(); } );
@@ -4005,8 +4013,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If there's enough resources for another tick, deal damage
-      player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
-      player -> active_spells.breath_of_sindragosa -> execute();
+      bos_damage -> set_target( bos_target );
+      bos_damage -> execute();
     } );
   }
 
@@ -4037,6 +4045,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   {
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
+    add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p ) );
   }
 
   void execute() override
@@ -4383,8 +4392,8 @@ struct deaths_due_damage_t : public death_and_decay_damage_t
 // Relish in Blood healing and RP generation
 struct relish_in_blood_t : public death_knight_heal_t
 {
-  relish_in_blood_t( death_knight_t* p ) :
-    death_knight_heal_t( "relish_in_blood", p, p -> spell.relish_in_blood )
+  relish_in_blood_t( util::string_view name, death_knight_t* p ) :
+    death_knight_heal_t( name, p, p -> find_spell( 317614 ) )
   {
     background = true;
     target = p;
@@ -4405,6 +4414,7 @@ struct relish_in_blood_t : public death_knight_heal_t
 struct death_and_decay_base_t : public death_knight_spell_t
 {
   action_t* damage;
+  action_t* relish_in_blood;
 
   death_and_decay_base_t( death_knight_t* p, const std::string& name, const spell_data_t* spell ) :
     death_knight_spell_t( name, p, spell ),
@@ -4419,6 +4429,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     // Set the player-stored death and decay cooldown to this action's cooldown
     p -> cooldown.death_and_decay_dynamic = cooldown;
+
+    if ( p -> talent.relish_in_blood -> ok() )
+      relish_in_blood = get_action<relish_in_blood_t>( "relish_in_blood", p );
   }
 
   void init_finished() override
@@ -4461,15 +4474,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.relish_in_blood -> ok() )
+    // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
+    if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.relish_in_blood -> ok() && p() -> buffs.bone_shield -> up() )
     {
-      // Melekus - 2020-09-27: Bug? If bone shield isn't up, there's no RP generation at all
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
-      if ( p() -> buffs.bone_shield -> up() || ! p() -> bugs )
-      {
-        // The heal's energize automatically handles RP generation
-        p() -> active_spells.relish_in_blood -> execute();
-      }
+      // The heal's energize data automatically handles RP generation
+      relish_in_blood -> execute();
     }
 
     p() -> buffs.crimson_scourge -> decrement();
@@ -6686,7 +6695,7 @@ struct icebound_fortitude_t : public death_knight_spell_t
 struct mark_of_blood_heal_t : public death_knight_heal_t
 {
   mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
-    death_knight_heal_t( "mark_of_blood", p, p -> talent.mark_of_blood )
+    death_knight_heal_t( "mark_of_blood_heal", p, p -> talent.mark_of_blood )
   {
     may_crit = callbacks = false;
     background = dual = true;
@@ -7142,12 +7151,12 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
-    // BoS cost is handled in the buff, not in the action
-    if ( action && action -> name_str != "breath_of_sindragosa_tick" )
+    // If an action is linked, fetch its base cost
+    if ( action )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
-    // 2020-10-03 - Melekus: After some limited testing (around 200 Frost Strike casts during Hypothermic Presence)
-    // It looks like Runic Empowerment proc chance is based on the ability's base rune cost rather than the actual amount of RP spent
+    // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
+    // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
@@ -7602,12 +7611,7 @@ void death_knight_t::create_actions()
   {
     if ( talent.mark_of_blood -> ok() )
     {
-      active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
-    }
-
-    if ( talent.relish_in_blood -> ok() )
-    {
-      active_spells.relish_in_blood = new relish_in_blood_t( this );
+      active_spells.mark_of_blood_heal = new mark_of_blood_heal_t( this );
     }
   }
   // Frost
@@ -7621,11 +7625,6 @@ void death_knight_t::create_actions()
     if ( talent.inexorable_assault -> ok() )
     {
       active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
-    }
-
-    if ( talent.breath_of_sindragosa -> ok() )
-    {
-      active_spells.breath_of_sindragosa = new breath_of_sindragosa_tick_t( this );
     }
   }
   // Unholy
@@ -8219,7 +8218,6 @@ void death_knight_t::init_spells()
   // Blood
   spell.blood_shield        = find_spell( 77535 );
   spell.bone_shield         = find_spell( 195181 );
-  spell.relish_in_blood     = find_spell( 317614 );
 
   // Frost
   spell.cold_heart_damage         = find_spell( 281210 );
@@ -8799,7 +8797,7 @@ void death_knight_t::do_damage( action_state_t* state )
   if ( state -> result_amount > 0 && talent.mark_of_blood -> ok() && ! state -> action -> special &&
        get_target_data( state -> action -> player ) -> debuff.mark_of_blood -> up() )
   {
-    active_spells.mark_of_blood -> execute();
+    active_spells.mark_of_blood_heal -> execute();
   }
 
   if ( runeforge.rune_of_sanguination )
@@ -9304,14 +9302,11 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
+  /*
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Death Knight", "2020-09-20", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 317792 )
-      .field( "cooldown" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3000 )
-      .verification_value( 0 );
-  }
+
+  }*/
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
