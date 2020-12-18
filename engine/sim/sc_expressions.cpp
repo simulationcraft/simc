@@ -1092,7 +1092,6 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens )
       {
         if ( stack.empty() )
         {
-          printf( "rpar stack empty\n" );
           return false;
         }
         expr_token_t& s = stack.back();
@@ -1131,7 +1130,6 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens )
     expr_token_t& s = stack.back();
     if ( s.type == TOK_LPAR )
     {
-      printf( "stack lpar\n" );
       return false;
     }
     rpn.push_back( s );
