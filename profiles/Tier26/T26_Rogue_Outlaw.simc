@@ -79,8 +79,8 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration
 # Blade Flurry on 2+ enemies
 actions.cds+=/blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up
 actions.cds+=/ghostly_strike,if=combo_points.deficit>=1+buff.broadside.up
-actions.cds+=/killing_spree,if=variable.blade_flurry_sync&energy.time_to_max>2
-actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>2
+actions.cds+=/killing_spree,if=variable.blade_flurry_sync&(energy.time_to_max>2|spell_targets>2)
+actions.cds+=/blade_rush,if=variable.blade_flurry_sync&(energy.time_to_max>2|spell_targets>2)
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=1
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/sepsis,if=!stealthed.all
@@ -90,7 +90,7 @@ actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 # Default fallback for usable items.
-actions.cds+=/use_items,if=buff.bloodlust.react|fight_remains<=20|combo_points.deficit<=2
+actions.cds+=/use_items,if=debuff.between_the_eyes.up&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)|fight_remains<=20
 
 # Finishers
 # BtE on cooldown to keep the Crit debuff up
