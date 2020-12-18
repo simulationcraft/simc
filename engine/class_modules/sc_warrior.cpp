@@ -1168,7 +1168,7 @@ public:
         double glory_threshold = p()->specialization() == WARRIOR_FURY ? 30 : 20;
         if (p()->covenant.glory_counter >= glory_threshold)
         {
-          int stacks = floor( p()->covenant.glory_counter / glory_threshold );
+          int stacks = as<int>( floor( p()->covenant.glory_counter / glory_threshold ) );
           p()->buff.glory->trigger( stacks );
           p()->covenant.glory_counter -= stacks * glory_threshold;
         }
@@ -1630,7 +1630,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
     {
       mortal_combo_strike                      = new mortal_strike_unhinged_t( p, "Mortal Combo", true );
-      add_child(mortal_combo_strike);
       mortal_combo_strike->background          = true;
     }
     cooldown->duration = timespan_t::zero();
@@ -5282,7 +5281,11 @@ struct spear_of_bastion_t : public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
-    execute_action = p->active.spear_of_bastion_attack;
+    if ( p->active.spear_of_bastion_attack )
+    {
+      execute_action = p->active.spear_of_bastion_attack;
+      add_child( execute_action );
+    }
     if ( p->conduit.piercing_verdict->ok() )
       {
         energize_amount = p->conduit.piercing_verdict.percent() * (1 + p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0 );
