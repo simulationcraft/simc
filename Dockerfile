@@ -4,6 +4,7 @@
 #   Available build-arg:
 #     - THREADS=[int] Default 1, provide a value for -j
 #     - NONETWORKING=[0|1] Default 0, 0 - armory can be used if an api-key is provided, 1 - no import capabilities
+#     - APIKEY=[str] Default '' (empty)
 #
 #   Example usage:
 #   - creating the image (note the dot!)
@@ -26,6 +27,7 @@ FROM alpine:latest AS build
 
 ARG THREADS=1
 ARG NONETWORKING=0
+ARG APIKEY=''
 
 COPY . /app/SimulationCraft/
 
@@ -38,10 +40,10 @@ RUN apk --no-cache add --virtual build_dependencies \
     make && \
     if [ $NONETWORKING -eq 0 ] ; then \
         echo "Building networking version" && \
-        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 OPTS+="-Os -mtune=native" ;  \
+        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ;  \
     else \
         echo "Building no-networking version" && \
-        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 SC_NO_NETWORKING=1 OPTS+="-Os -mtune=native" ; \
+        make -C /app/SimulationCraft/engine optimized -j $THREADS LTO_THIN=1 SC_NO_NETWORKING=1 OPTS+="-Os -mtune=native" SC_DEFAULT_APIKEY=${APIKEY} ; \
     fi && \
     apk del build_dependencies
 
