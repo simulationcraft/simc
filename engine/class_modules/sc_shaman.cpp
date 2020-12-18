@@ -8871,8 +8871,8 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   def->add_action( this, "Feral Spirit" );
-  def->add_talent( this, "Ascendance" );
-  def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down");
+  def->add_talent( this, "Ascendance", "if=raid_event.adds.in>=90|active_enemies>1" );
+  def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)");
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
@@ -8899,7 +8899,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Flame Shock", "target_if=refreshable");
   single->add_action(this, "Frost Shock");
   single->add_talent(this, "Ice Strike");
-  single->add_talent(this, "Sundering");
+  single->add_talent(this, "Sundering", "if=raid_event.adds.in>=40");
   single->add_talent(this, "Fire Nova", "if=active_dot.flame_shock");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action(this, "Earth Elemental");
@@ -8908,6 +8908,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action("windstrike,if=buff.crash_lightning.up");
   aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
+  aoe->add_talent(this, "Sundering");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
   aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
@@ -8923,8 +8924,8 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
   aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled");
-  aoe->add_talent(this, "Sundering");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6");
+  aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5&active_enemies>=3");
   aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action(this, "Lava Lash");
