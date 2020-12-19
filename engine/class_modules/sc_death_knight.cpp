@@ -558,10 +558,6 @@ public:
     // Blood
     action_t* mark_of_blood_heal;
 
-    // Frost
-    action_t* cold_heart;
-    action_t* inexorable_assault;
-
     // Unholy
     action_t* bursting_sores;
     action_t* festering_wound;
@@ -784,8 +780,6 @@ public:
     const spell_data_t* bone_shield;
 
     // Frost
-    const spell_data_t* cold_heart_damage;
-    const spell_data_t* inexorable_assault_damage;
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion;
 
@@ -3305,8 +3299,8 @@ struct frozen_pulse_t : public death_knight_spell_t
 
 struct inexorable_assault_damage_t : public death_knight_spell_t
 {
-  inexorable_assault_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "inexorable_assault", p, p -> spell.inexorable_assault_damage )
+  inexorable_assault_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 253597 ) )
   {
     background = true;
   }
@@ -4070,8 +4064,8 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 // Cold Heart damage
 struct cold_heart_damage_t : public death_knight_spell_t
 {
-  cold_heart_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "cold_heart", p, p -> spell.cold_heart_damage )
+  cold_heart_damage_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 281210 ) )
   {
     background = true;
   }
@@ -4088,10 +4082,13 @@ struct cold_heart_damage_t : public death_knight_spell_t
 
 struct chains_of_ice_t : public death_knight_spell_t
 {
+  action_t* cold_heart;
+
   chains_of_ice_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "chains_of_ice", p, p -> spec.chains_of_ice )
   {
     parse_options( options_str );
+    cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
   }
 
   void execute() override
@@ -4100,8 +4097,8 @@ struct chains_of_ice_t : public death_knight_spell_t
 
     if ( p() -> buffs.cold_heart -> check() > 0 )
     {
-      p() -> active_spells.cold_heart -> set_target( target );
-      p() -> active_spells.cold_heart -> execute();
+      cold_heart -> set_target( target );
+      cold_heart -> execute();
       p() -> buffs.cold_heart -> expire();
     }
   }
@@ -5153,10 +5150,14 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
 struct frostscythe_t : public death_knight_melee_attack_t
 {
+  action_t* inexorable_assault;
+
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe )
   {
     parse_options( options_str );
+
+    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
 
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
@@ -5172,8 +5173,8 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.inexorable_assault -> up() )
     {
-      p() -> active_spells.inexorable_assault -> set_target( target );
-      p() -> active_spells.inexorable_assault -> schedule_execute();
+      inexorable_assault -> set_target( target );
+      inexorable_assault -> schedule_execute();
       p() -> buffs.inexorable_assault -> decrement();
     }
 
@@ -5765,6 +5766,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 struct obliterate_t : public death_knight_melee_attack_t
 {
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
+  action_t* inexorable_assault;
 
   obliterate_t( death_knight_t* p, const std::string& options_str = std::string() ) :
     death_knight_melee_attack_t( "obliterate", p, p -> spec.obliterate ),
@@ -5773,6 +5775,8 @@ struct obliterate_t : public death_knight_melee_attack_t
     parse_options( options_str );
     dual = true;
     triggers_shackle_the_unworthy = true;
+
+    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
@@ -5831,8 +5835,8 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       if ( p() -> buffs.inexorable_assault -> up() )
       {
-        p() -> active_spells.inexorable_assault -> set_target( target );
-        p() -> active_spells.inexorable_assault -> schedule_execute();
+        inexorable_assault -> set_target( target );
+        inexorable_assault -> schedule_execute();
         p() -> buffs.inexorable_assault -> decrement();
       }
 
@@ -7561,10 +7565,9 @@ void death_knight_t::start_inexorable_assault()
   buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
 
   // Inexorable assault keeps ticking out of combat and when it's at max stacks
-  // We solvee that by chosing a random number between 0 and the delay between each tick
-
-  timespan_t first = timespan_t::from_seconds(
-    rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_seconds() ) );
+  // We solve that by picking a random point at which the buff starts ticking
+  timespan_t first = timespan_t::from_millis(
+    rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_millis() ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.inexorable_assault -> trigger();
@@ -7585,10 +7588,9 @@ void death_knight_t::start_cold_heart()
   buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
 
   // Cold Heart keeps ticking out of combat and when it's at max stacks
-  // We solvee that by chosing a random number between 0 and the delay between each tick
-
-  timespan_t first = timespan_t::from_seconds(
-    rng().range( 0, talent.cold_heart -> effectN( 1 ).period().total_seconds() ) );
+  // We solve that by picking a random point at which the buff starts ticking
+  timespan_t first = timespan_t::from_millis(
+    rng().range( 0, talent.cold_heart -> effectN( 1 ).period().total_millis() ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.cold_heart -> trigger();
@@ -7614,19 +7616,7 @@ void death_knight_t::create_actions()
       active_spells.mark_of_blood_heal = new mark_of_blood_heal_t( this );
     }
   }
-  // Frost
-  else if ( specialization() == DEATH_KNIGHT_FROST )
-  {
-    if ( talent.cold_heart -> ok() )
-    {
-      active_spells.cold_heart = new cold_heart_damage_t( this );
-    }
 
-    if ( talent.inexorable_assault -> ok() )
-    {
-      active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
-    }
-  }
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
@@ -8220,8 +8210,6 @@ void death_knight_t::init_spells()
   spell.bone_shield         = find_spell( 195181 );
 
   // Frost
-  spell.cold_heart_damage         = find_spell( 281210 );
-  spell.inexorable_assault_damage = find_spell( 253597 );
   spell.murderous_efficiency_gain = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
 
@@ -8462,8 +8450,7 @@ void death_knight_t::create_buffs()
   // Frost
   buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
 
-  buffs.cold_heart = make_buff( this, "cold_heart", talent.cold_heart -> effectN( 1 ).trigger() )
-        -> set_trigger_spell( talent.cold_heart );
+  buffs.cold_heart = make_buff( this, "cold_heart", talent.cold_heart -> effectN( 1 ).trigger() );
 
   buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
 
@@ -8482,8 +8469,7 @@ void death_knight_t::create_buffs()
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
-  buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) )
-        -> set_trigger_spell( talent.inexorable_assault );
+  buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) );
 
   buffs.killing_machine = make_buff( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
         -> set_trigger_spell( spec.killing_machine )
