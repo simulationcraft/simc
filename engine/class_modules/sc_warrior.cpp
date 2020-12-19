@@ -4826,7 +4826,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c = warrior_attack_t::cost();
 
     if ( p()->buff.deadly_calm->check() )
     {
@@ -6752,8 +6752,8 @@ void warrior_t::apl_arms()
   single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&rage>60" );
-  single_target->add_action( this, "Slam" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled" );
 }
 
 // Protection Warrior Action Priority List ========================================
