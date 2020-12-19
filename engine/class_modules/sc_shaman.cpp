@@ -8871,6 +8871,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   def->add_action( this, "Feral Spirit" );
+  def->add_action("fae_transfusion,if=(talent.ascendance.enabled|runeforge.doom_winds.equipped)&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1)");
   def->add_talent( this, "Ascendance", "if=raid_event.adds.in>=90|active_enemies>1" );
   def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)");
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
