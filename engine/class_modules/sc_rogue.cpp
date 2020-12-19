@@ -6455,7 +6455,7 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>15" );
   if ( specialization() == ROGUE_OUTLAW )
-    precombat->add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
+    precombat->add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>25" );
 
   // Make restealth first action in the default list.
   def->add_action( this, "Stealth", "", "Restealth if possible (no vulnerable enemies in combat)" );
@@ -6562,7 +6562,7 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.buried_treasure.up|buff.grand_melee.up|buff.true_bearing.up)", "Reroll single BT/GM/TB buffs when possible" );
     def->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50&(!conduit.count_the_odds|buff.roll_the_bones.remains>=10)", "Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away" );
     def->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
-    def->add_action( "call_action_list,name=stealth,if=stealthed.all" );
+    def->add_action( "run_action_list,name=stealth,if=stealthed.all" );
     def->add_action( "call_action_list,name=cds" );
     def->add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*talent.quick_draw.enabled)|combo_points=animacharged_cp", "Finish at maximum CP but avoid wasting Broadside and Quick Draw bonus combo points" );
     def->add_action( "call_action_list,name=build" );
@@ -6581,12 +6581,10 @@ void rogue_t::init_action_list()
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up", "Blade Flurry on 2+ enemies" );
-    cds->add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
     cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>2|spell_targets>2)" );
     cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&(energy.time_to_max>2|spell_targets>2)" );
     cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=1" );
     cds->add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
-    cds->add_action( "sepsis,if=!stealthed.all" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
@@ -6605,11 +6603,13 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( this, "Between the Eyes", "", "BtE on cooldown to keep the Crit debuff up" );
-    finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
+    finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&refreshable" );
     finish->add_action( this, "Dispatch" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build->add_action( "sepsis" );
+    build->add_talent( this, "Ghostly Strike" );
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand" );
     build->add_action( "serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75" );
