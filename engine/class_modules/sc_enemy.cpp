@@ -412,6 +412,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_dd_min       = 1040;
     base_execute_time = timespan_t::from_seconds( 1.5 );
     may_crit = background = repeating = true;
+    may_dodge = may_parry = may_block = true;
     special                           = false;
 
     parse_options( options_str );
