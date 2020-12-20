@@ -35,7 +35,7 @@ role=spell
 position=ranged_back
 talents=3031021
 covenant=night_fae
-soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/controlled_destruction:7
+soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/discipline_of_the_grove:7
 
 head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
 neck=sin_stained_pendant,id=178827,bonus_id=1540/6646/6935,gem_id=173128
