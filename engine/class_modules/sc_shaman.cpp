@@ -8908,6 +8908,7 @@ void shaman_t::init_action_list_enhancement()
 
   aoe->add_action("windstrike,if=buff.crash_lightning.up");
   aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
+  aoe->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   aoe->add_talent(this, "Sundering");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord");
