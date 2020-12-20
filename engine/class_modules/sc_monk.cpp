@@ -2631,15 +2631,14 @@ private:
     }
   };
 
-  struct stomp_tick_t : public melee_attack_t
+  struct stomp_t : public melee_attack_t
   {
-    stomp_tick_t( niuzao_pet_t* p ) : melee_attack_t( "stomp_tick", p, p->o()->passives.stomp )
+    stomp_t( niuzao_pet_t* p, const std::string& options_str ) : melee_attack_t( "stomp", p, p->o()->passives.stomp )
     {
-      aoe  = -1;
-      dual = direct_tick = background = may_crit = may_miss = true;
-      range                                                 = radius;
-      radius                                                = 0;
-      cooldown->duration                                    = timespan_t::zero();
+      parse_options( options_str );
+
+      aoe          = -1;
+      may_crit     = true;
       // technically the base damage doesn't split. practically, the base damage
       // is ass and totally irrelevant. the r2 hot trub effect (which does
       // split) is by far the dominating factor in any aoe sim.
@@ -2659,16 +2658,17 @@ private:
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
 
       auto purify_amount = p->o()->buff.recent_purifies->value();
-      auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN(1).percent();
+      auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
       b += actual_damage;
-      p->o()->sim->print_debug("applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage);
+      p->o()->sim->print_debug( "applying bonus purify damage (original: {}, reduced: {})", purify_amount,
+                                actual_damage );
 
       return b;
     }
 
     double action_multiplier() const override
     {
-      double am = melee_attack_t::action_multiplier();
+      double am       = melee_attack_t::action_multiplier();
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
 
       if ( p->o()->conduit.walk_with_the_ox->ok() )
@@ -2677,33 +2677,14 @@ private:
       return am;
     }
 
-    void execute() override {
+    void execute() override
+    {
       melee_attack_t::execute();
       // canceling the purify buff goes here so that in aoe all hits see the
       // purified damage that needs to be split. this occurs after all damage
       // has been dealt
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
       p->o()->buff.recent_purifies->cancel();
-    }
-  };
-
-  struct stomp_t : public spell_t
-  {
-    stomp_t( niuzao_pet_t* p, const std::string& options_str ) : spell_t( "stomp", p, p->o()->passives.stomp )
-    {
-      parse_options( options_str );
-
-      // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao
-      // summon duration, for example)
-      dot_duration = p->o()->spec.invoke_niuzao->duration();
-      hasted_ticks = may_miss = false;
-      dynamic_tick_action = true;
-      base_tick_time                  = p->o()->passives.stomp->cooldown();        // trigger a tick every second
-      cooldown->duration              = p->o()->spec.invoke_niuzao->duration();  // we're done after 45 seconds
-      attack_power_mod.direct         = 0.0;
-      attack_power_mod.tick           = 0.0;
-
-      tick_action = new stomp_tick_t( p );
     }
   };
 
@@ -12148,7 +12129,7 @@ void monk_t::apl_combat_windwalker()
   // Serenity
   serenity->add_action( this, "Fists of Fury", "if=buff.serenity.remains<1" );
 
-  // Storm, Earth, and Fire on-use trinkets
+  // Serenity on-use trinkets
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
