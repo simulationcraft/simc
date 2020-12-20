@@ -648,6 +648,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   // overridden player_t stat functions
   double composite_armor() const override;
@@ -5657,6 +5658,14 @@ std::string demon_hunter_t::default_rune() const
          ( true_level >= 50 ) ? "battle_scarred" :
          ( true_level >= 45 ) ? "defiled" :
          ( true_level >= 40 ) ? "hyper" :
+         "disabled";
+}
+
+// demon_hunter_t::default_temporary_enchant =======================================
+
+std::string demon_hunter_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
          "disabled";
 }
 
