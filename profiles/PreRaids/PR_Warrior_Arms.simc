@@ -10,11 +10,11 @@ covenant=venthyr
 soulbind=theotar,soothing_shade/ashen_juggernaut:4
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -93,8 +93,8 @@ actions.single_target+=/overpower
 actions.single_target+=/condemn,if=buff.sudden_death.react
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
-actions.single_target+=/slam
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
 
 head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
 neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
@@ -116,6 +116,7 @@ main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,ench
 # gear_ilvl=184.40
 # gear_strength=587
 # gear_stamina=857
+# gear_attack_power=20
 # gear_crit_rating=810
 # gear_haste_rating=197
 # gear_mastery_rating=242

@@ -10,11 +10,11 @@ covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:7/dauntless_duelist
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -95,8 +95,8 @@ actions.single_target+=/overpower
 actions.single_target+=/condemn,if=buff.sudden_death.react
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&rage>60
-actions.single_target+=/slam
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173128
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -118,6 +118,7 @@ main_hand=nathrian_crusaders_bastard_sword,id=182389,bonus_id=7187/1531,enchant=
 # gear_ilvl=229.40
 # gear_strength=881
 # gear_stamina=1527
+# gear_attack_power=20
 # gear_crit_rating=447
 # gear_haste_rating=697
 # gear_mastery_rating=559

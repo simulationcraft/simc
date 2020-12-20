@@ -50,6 +50,7 @@ actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.as
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
 actions+=/feral_spirit
+actions+=/fae_transfusion,if=(talent.ascendance.enabled|runeforge.doom_winds.equipped)&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1)
 actions+=/ascendance,if=raid_event.adds.in>=90|active_enemies>1
 actions+=/windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)
 # If only one enemy, priority follows the 'single' action list.
