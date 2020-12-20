@@ -8523,7 +8523,7 @@ void druid_t::apl_balance()
   def->add_action( "berserking,if=(!covenant.night_fae|!cooldown.convoke_the_spirits.up)&buff.ca_inc.up" );
   def->add_action( "potion,if=buff.ca_inc.up" );
   def->add_action( "variable,name=convoke_desync,value=floor((interpolated_fight_remains-20-cooldown.convoke_the_spirits.remains)%120)>floor((interpolated_fight_remains-25-(10*talent.incarnation.enabled)-(conduit.precise_alignment.time_value)-cooldown.ca_inc.remains)%180)|cooldown.ca_inc.remains>interpolated_fight_remains|cooldown.convoke_the_spirits.remains>interpolated_fight_remains|!covenant.night_fae" );
-  def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)&(!equipped.soulletting_ruby|cooldown.soul_infusion.remains<100&!cooldown.soul_infusion.ready)|covenant.kyrian" );
+  def->add_action( "variable,name=cd_condition,value=(!equipped.empyreal_ordnance|cooldown.empyreal_ordnance.remains<160&!cooldown.empyreal_ordnance.ready)&(!equipped.soulletting_ruby|cooldown.soulletting_ruby_345801.remains<100&!cooldown.soulletting_ruby_345801.ready)|covenant.kyrian" );
   def->add_action( "use_item,name=empyreal_ordnance,if=cooldown.ca_inc.remains<20&variable.convoke_desync|cooldown.convoke_the_spirits.remains<20" );
   def->add_action( "use_item,name=soulletting_ruby,if=cooldown.ca_inc.remains<20&variable.convoke_desync|cooldown.convoke_the_spirits.remains<20|equipped.empyreal_ordnance" );
   def->add_action( "use_item,name=inscrutable_quantum_device,if=buff.ca_inc.up" );
