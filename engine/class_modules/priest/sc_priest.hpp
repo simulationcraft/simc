@@ -121,6 +121,7 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> spirit_shell;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -185,9 +186,9 @@ public:
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
-    const spell_data_t* lights_caress;     // NYI
-    const spell_data_t* luminous_barrier;  // NYI
-    const spell_data_t* evangelism;        // NYI
+    const spell_data_t* lenience;     // not fully implemented
+    const spell_data_t* spirit_shell;     // not fully implemented
+    const spell_data_t* evangelism;     // not fully implemented
 
     // Holy
     // T15

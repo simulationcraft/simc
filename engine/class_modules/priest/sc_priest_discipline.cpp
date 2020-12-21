@@ -256,6 +256,26 @@ struct shadow_covenant_t final : public priest_spell_t
     priest().buffs.shadow_covenant->trigger();
   }
 };
+
+// Implemented as a dummy effect, without providing absorbs
+struct spirit_shell_t final : public priest_spell_t
+{
+  spirit_shell_t( priest_t& player, util::string_view options_str )
+    : priest_spell_t( "spirit_shell", player, player.talents.spirit_shell )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.spirit_shell->trigger();
+  }
+};
+
 }  // namespace spells
 
 }  // namespace actions
@@ -276,6 +296,8 @@ void priest_t::create_buffs_discipline()
 
   buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.shadow_covenant->effectN( 4 ).trigger() )
                               ->set_trigger_spell( talents.shadow_covenant );
+
+  buffs.spirit_shell = make_buff( this, "spirit_shell", talents.spirit_shell );
 }
 
 void priest_t::init_rng_discipline()
@@ -310,9 +332,9 @@ void priest_t::init_spells_discipline()
   talents.divine_star      = find_talent_spell( "Divine Star" );
   talents.halo             = find_talent_spell( "Halo" );
   // T50
-  talents.lights_caress    = find_talent_spell( "Light's Caress" );
-  talents.luminous_barrier = find_talent_spell( "Luminous Barrier" );
-  talents.evangelism       = find_talent_spell( "Evangelism" );
+  talents.lenience     = find_talent_spell( "Lenience" );
+  talents.spirit_shell = find_talent_spell( "Spirit Shell" );
+  talents.evangelism   = find_talent_spell( "Evangelism" );
 
   // Passive spell data
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
@@ -347,6 +369,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "shadow_covenant" )
   {
     return new shadow_covenant_t( *this, options_str );
+  }
+  if ( name == "spirit_shell" )
+  {
+    return new spirit_shell_t( *this, options_str );
   }
 
   return nullptr;
@@ -432,6 +458,7 @@ void priest_t::generate_apl_discipline_d()
   def->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended" );
   def->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   def->add_action( "mindbender" );
+  def->add_talent( this, "Spirit Shell" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
   def->add_action( this, "Shadow Word: Death" );
