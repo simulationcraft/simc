@@ -4618,6 +4618,9 @@ struct storm_earth_and_fire_t : public monk_spell_t
     if ( p()->talent.serenity->ok() )
       return false;
 
+    if ( p()->buff.storm_earth_and_fire->up() && (p()->pets.sef[ SEF_EARTH ]->sticky_target == false || p()->pets.sef[ SEF_FIRE ]->sticky_target == false))
+      return true;
+
     return monk_spell_t::ready();
   }
 
