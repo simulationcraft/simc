@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-16/36949)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-22/36949, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -40,8 +40,6 @@ Attributes       : ....x... ........ x.x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 60068 | Scaled Value: 60068 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=826697)   : Apply Raid Aura (65) | Increase Speed% (31)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Self (1)
 Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.
 
 Usable while mounted, but being attacked or damaged will cancel the effect.
@@ -12961,7 +12959,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
 Duration         : 4 seconds
-Cooldown         : 3 seconds
 Stance Mask      : 0x00000040
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 

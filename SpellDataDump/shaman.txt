@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-16/36949)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-22/36949, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1171,6 +1171,7 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Scaling Spell (-1), Spell Family (11)] 
+Hotfixed         : Proc Flags (40 -> 8)
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1180,8 +1181,8 @@ Duration         : 3600 seconds
 Internal Cooldown: 3 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken
+Proc Flags       : ...x.... ........ ........ ........ 
+                 : White Melee Taken
 Family Flags     : 37
 Attributes       : ........ ...x.... x.x..... ........   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ xx..x... ........ 
