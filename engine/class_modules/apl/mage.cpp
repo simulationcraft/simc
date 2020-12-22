@@ -368,6 +368,7 @@ void fire( player_t* p )
   combustion_phase->add_action( "call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used", "Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc." );
   combustion_phase->add_action( "flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike" );
   combustion_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
+  combustion_phase->add_action( "flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch" );
   combustion_phase->add_action( "pyroblast,if=buff.firestorm.react" );
   combustion_phase->add_action( "pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike" );
   combustion_phase->add_action( "pyroblast,if=buff.hot_streak.react&buff.combustion.up" );
@@ -383,6 +384,7 @@ void fire( player_t* p )
 
   rop_phase->add_action( "flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)" );
   rop_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
+  rop_phase->add_action( "flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch" );
   rop_phase->add_action( "pyroblast,if=buff.firestorm.react" );
   rop_phase->add_action( "pyroblast,if=buff.hot_streak.react" );
   rop_phase->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&buff.sun_kings_blessing_ready.down&active_enemies<variable.hard_cast_flamestrike&!firestarter.active&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(talent.alexstraszas_fury&cooldown.dragons_breath.ready)|(talent.searing_touch&target.health.pct<=30)))", "Use one Fire Blast early in RoP if you don't have either Heating Up or Hot Streak yet and either: (a) have more than two already, (b) have Alexstrasza's Fury ready to use, or (c) Searing Touch is active. Don't do this while hard casting Flametrikes or when Sun King's Blessing is ready." );
@@ -398,6 +400,7 @@ void fire( player_t* p )
   rop_phase->add_action( "fireball" );
 
   standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)" );
+  standard_rotation->add_action( "flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch" );
   standard_rotation->add_action( "pyroblast,if=buff.firestorm.react" );
   standard_rotation->add_action( "pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time" );
   standard_rotation->add_action( "pyroblast,if=buff.hot_streak.react&(prev_gcd.1.fireball|firestarter.active|action.pyroblast.in_flight)" );
