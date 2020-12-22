@@ -1505,6 +1505,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
               }
             }
             */
+
+      if ( o()->conduit.coordinated_offensive->ok() && p()->sticky_target )
+      {
+         if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
+           state->da_multiplier += o()->conduit.coordinated_offensive.percent();
+
+         if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
+           state->ta_multiplier += o()->conduit.coordinated_offensive.percent();
+      }
+
+
     }
   };
 
@@ -4410,9 +4421,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
       {
         double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 
-        if ( p()->conduit.coordinated_offensive->ok() && p()->pets.sef[ SEF_EARTH ]->sticky_target )
-          sef_multiplier += p()->conduit.coordinated_offensive.percent();
-
         am *= 1 + sef_multiplier;
       }
     }
@@ -4656,6 +4664,55 @@ struct storm_earth_and_fire_t : public monk_spell_t
     {
       sticky_targeting();
     }
+  }
+};
+
+struct storm_earth_and_fire_fixate_t : public monk_spell_t
+{
+  storm_earth_and_fire_fixate_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "storm_earth_and_fire_fixate", p, p->spec.storm_earth_and_fire->effectN( 5 ).trigger() )
+  {
+    parse_options( options_str );
+
+    callbacks = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown->duration = timespan_t::zero();
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.storm_earth_and_fire->up() )
+    {
+      if ( p()->pets.sef[ SEF_EARTH ]->sticky_target == true || p()->pets.sef[ SEF_FIRE ]->sticky_target == true ) 
+      {
+        if (p()->pets.sef[ SEF_EARTH ]->target != target )
+          return true;
+        else if ( p()->pets.sef[ SEF_FIRE ]->target != target )
+          return true;
+      } 
+      else if ( p()->pets.sef[ SEF_EARTH ]->sticky_target == false ||
+                p()->pets.sef[ SEF_FIRE ]->sticky_target == false )
+        return true;
+    }
+
+    return false;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
+                      p()->pets.sef[ SEF_EARTH ]->name(), target->name(), p()->pets.sef[ SEF_EARTH ]->target->name() );
+
+    p()->pets.sef[ SEF_EARTH ]->target        = target;
+    p()->pets.sef[ SEF_EARTH ]->sticky_target = true;
+
+    sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
+                      p()->pets.sef[ SEF_FIRE ]->name(), target->name(), p()->pets.sef[ SEF_FIRE ]->target->name() );
+
+    p()->pets.sef[ SEF_FIRE ]->target        = target;
+    p()->pets.sef[ SEF_FIRE ]->sticky_target = true;
   }
 };
 
@@ -9596,6 +9653,8 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new touch_of_death_t( *this, options_str );
   if ( name == "storm_earth_and_fire" )
     return new storm_earth_and_fire_t( this, options_str );
+  if ( name == "storm_earth_and_fire_fixate" )
+    return new storm_earth_and_fire_fixate_t( this, options_str );
 
   // Talents
   if ( name == "chi_burst" )
@@ -12094,7 +12153,7 @@ void monk_t::apl_combat_windwalker()
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
   cd_sef->add_action( "bonedust_brew,if=raid_event.adds.in>50|raid_event.adds.up,line_cd=60" );
 
-  cd_sef->add_action( this, "Storm, Earth, and Fire", "if=conduit.coordinated_offensive&buff.storm_earth_and_fire.up" );
+  cd_sef->add_action( "storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled" );
   cd_sef->add_action( this, "Storm, Earth, and Fire", "if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|!covenant.kyrian&"
       "((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&"
       "(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&"
