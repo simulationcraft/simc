@@ -2416,11 +2416,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       blood_strike_rp_generation( p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
       base_multiplier *= 1.0 + p -> o() -> spec.heart_strike_3 -> effectN( 1 ).percent();
-      const spell_data_t* blood_strike = p -> find_spell( 220890 );
 
       // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
-      blood_strike_rp_generation = blood_strike -> ok() ? blood_strike -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) :
-        p -> o() -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+      blood_strike_rp_generation = p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     int n_targets() const override
@@ -3123,8 +3121,12 @@ struct blood_plague_t : public death_knight_disease_t
 
 struct frost_fever_t : public death_knight_disease_t
 {
+  int rp_generation;
+
   frost_fever_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
-    death_knight_disease_t( name, p, p -> spell.frost_fever )
+    death_knight_disease_t( name, p, p -> spell.frost_fever ),
+    rp_generation( ( as<int>( p -> spec.frost_fever -> effectN( 1 ).trigger()
+                     -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ) ) )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -3166,10 +3168,7 @@ struct frost_fever_t : public death_knight_disease_t
 
     if ( rng().roll( chance ) )
     {
-      p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                            p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                            p() -> gains.frost_fever,
-                            this );
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p() -> gains.frost_fever, this );
     }
   }
 };
@@ -4742,6 +4741,8 @@ struct death_strike_heal_t : public death_knight_heal_t
     {
       minimum_healing = std::floor( (minimum_healing * (1.0 + p -> talent.voracious -> effectN( 3 ).percent())) * 100 ) / 100;
     }
+
+    // TODO: Implement Death Strike rank 2 healing increase for dps specs
   }
 
   void init() override
@@ -4844,8 +4845,8 @@ struct death_strike_t : public death_knight_melee_attack_t
       add_child( oh_attack );
     }
 
-    // 2019-03-01: On 8.1.5 PTR, Death Strike is fixed with regards to procs on RP spent
-    // RE/RC/Gargoyle now behave as if Death Strike costed 35RP for dps specs.
+    // 2019-03-01: Since 8.1.5, Death Strike has a rank 2 reducing RP costs for dps specs
+    // RE/RC/Gargoyle behave as if Death Strike costed 35RP, unlike other cost reduction mechanics
     // We model that by directly changing the base RP cost from spelldata, rather than manipulating cost()
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
   }
@@ -4926,7 +4927,6 @@ struct empower_rune_weapon_buff_t : public buff_t
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled in the action
     set_period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() );
-    set_trigger_spell( p -> spec.empower_rune_weapon );
     set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() + p -> conduits.accelerated_cold.percent());
     add_invalidate( CACHE_HASTE );
     set_refresh_behavior( buff_refresh_behavior::EXTEND);
@@ -5162,7 +5162,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
     triggers_shackle_the_unworthy = triggers_icecap = true;
-    // The crit multipier is now handled by the apply_affecting_auras( spec.death_knight ) call
+    // Crit multipier handled in death_knight_t::apply_affecting_aura()
   }
 
   void execute() override
@@ -5666,12 +5666,16 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     triggers_icecap = true;
 
-    deaths_due_cleave_targets = as<int>(p -> spell.deaths_due -> effectN( 2 ).base_value()) +
-                                  data().effectN ( 1 ).chain_target() +
-                                  as<int>(p -> spell.dnd_buff -> effectN ( 4 ).base_value());
+    // To support Death's Due affecting Obliterate in shadowlands:
+    // - obliterate damage spells have gained a value of 1 in their chain target data
+    // - the death and decay buff now has an effect that modifies obliterate's chain target with a value of 0
+    // - death's due increases the aforementionned death and decay buff effect by 1
+    deaths_due_cleave_targets = data().effectN ( 1 ).chain_target() +
+                                as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
+                                as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() );
 
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
-    // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
+    // Rank 2 validates the 2H bonus that is contained in rank 1 data
     if ( p -> spec.might_of_the_frozen_wastes_2 -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
     {
       base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
@@ -5905,7 +5909,8 @@ struct pillar_of_frost_buff_t : public buff_t
     buff_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
   {
     cooldown -> duration = 0_ms;
-    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() + p -> spec.pillar_of_frost_2 -> effectN( 1 ).percent() );
+    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() +
+                       p -> spec.pillar_of_frost_2 -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
   }
 
@@ -5968,7 +5973,7 @@ struct raise_dead_t : public death_knight_spell_t
 
     // If the action is done in precombat and the pet is permanent
     // Assume that the player used it long enough before pull that the cooldown is ready again
-    if ( is_precombat && data().duration() == 0_ms )
+    if ( is_precombat && p() -> spec.raise_dead_2 )
     {
       cooldown -> reset( false );
     }
@@ -5976,7 +5981,7 @@ struct raise_dead_t : public death_knight_spell_t
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
     p() -> pets.ghoul_pet -> summon( data().duration() );
 
-    // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up
+    // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up before spawning it
     if ( p() -> talent.all_will_serve -> ok() && p() -> pets.risen_skulker -> is_sleeping() )
     {
       p() -> pets.risen_skulker -> summon( 0_ms );
@@ -6212,23 +6217,13 @@ struct clawing_shadows_t : public scourge_strike_base_t
 
 struct scourge_strike_shadow_t : public death_knight_melee_attack_t
 {
-  const spell_data_t* scourge_base;
-
   scourge_strike_shadow_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> spec.scourge_strike -> effectN( 3 ).trigger() ),
-    scourge_base( p -> spec.scourge_strike )
+    death_knight_melee_attack_t( name, p, p -> spec.scourge_strike -> effectN( 3 ).trigger() )
   {
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
-  }
-
-  // Fix the different level req in spell data between scourge strike and its shadow damage component
-  bool verify_actor_level() const override
-  {
-    return scourge_base -> id() && scourge_base -> is_level( player -> true_level ) &&
-      scourge_base -> level() <= MAX_LEVEL;
   }
 };
 
@@ -6818,12 +6813,22 @@ struct runic_corruption_buff_t : public buff_t
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( p, "runic_corruption", p -> spell.runic_corruption )
   {
-    set_trigger_spell( p -> spec.runic_corruption );
+    // Runic Corruption refreshes to remaining time + buff duration
+    refresh_behavior = buff_refresh_behavior::EXTEND;
     set_affects_regen( true );
     set_stack_change_callback( [ p ]( buff_t*, int, int )
     {
       p -> _runes.update_coefficient();
     } );
+  }
+
+  // Runic Corruption duration is reduced by haste so it always regenerates
+  // the equivalent of 0.9 of a rune ( 3 / 10 seconds on 3 regenerating runes )
+  timespan_t buff_duration() const override
+  {
+    timespan_t initial_duration = buff_t::buff_duration();
+
+    return initial_duration * player -> cache.attack_haste();
   }
 };
 
@@ -6905,7 +6910,7 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 
   p -> runeforge.rune_of_the_stoneskin_gargoyle = true;
 
-  p -> buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", p -> find_spell( effect.spell_id ) )
+  p -> buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", effect.driver() )
     -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
     -> set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
@@ -6986,8 +6991,8 @@ void runeforge::sanguination( special_effect_t& effect )
     double health_threshold;
     sanguination_heal_t( special_effect_t& effect ) :
       death_knight_heal_t( "rune_of_sanguination", static_cast<death_knight_t*>( effect.player ),
-                           effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() ),
-      health_threshold( effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).base_value() )
+                           effect.driver() -> effectN( 1 ).trigger() ),
+      health_threshold( effect.driver() -> effectN( 1 ).base_value() )
     {
       background = true;
       tick_pct_heal = data().effectN( 1 ).percent();
@@ -7445,32 +7450,14 @@ void death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
     return;
 
   double proc_chance = 0.0;
-  // Check whether the proc is from a special effect, or from RP consumption
-  if ( rpcost == 0 && override_chance != -1.0 )
-  {
-    proc_chance = override_chance;
-  }
-  else
-  {
-    proc_chance = spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0 ;
-  }
+  // Use the overriden chance if there's one and RP cost is 0
+  proc_chance = ( !rpcost && override_chance != 1.0 ) ? override_chance :
+    // Else, use the general proc chance ( 1.6 per RP * RP / 100 )
+    spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0;
 
-  // If the roll fails, return
-  if ( ! rng().roll( proc_chance ) )
-    return;
-
-  // Runic Corruption duration is reduced by haste
-  // It always regenerates 0.9 (3 times 3/10) of a rune
-  timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
-  // A refresh adds the full buff duration
-  if ( buffs.runic_corruption -> check() == 0 )
-    buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  else
-    buffs.runic_corruption -> extend_duration( this, duration );
-
-  proc -> occur();
-
-  return;
+  // Buff duration handled in runic_corruption_buff_t::buff_duration()
+  if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) )
+    proc -> occur();
 }
 
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
@@ -7567,7 +7554,7 @@ void death_knight_t::start_inexorable_assault()
   // Inexorable assault keeps ticking out of combat and when it's at max stacks
   // We solve that by picking a random point at which the buff starts ticking
   timespan_t first = timespan_t::from_millis(
-    rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_millis() ) );
+    rng().range( 0, as<int>( talent.inexorable_assault -> effectN( 1 ).period().total_millis() ) ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.inexorable_assault -> trigger();
@@ -7590,7 +7577,7 @@ void death_knight_t::start_cold_heart()
   // Cold Heart keeps ticking out of combat and when it's at max stacks
   // We solve that by picking a random point at which the buff starts ticking
   timespan_t first = timespan_t::from_millis(
-    rng().range( 0, talent.cold_heart -> effectN( 1 ).period().total_millis() ) );
+    rng().range( 0, as<int>( talent.cold_heart -> effectN( 1 ).period().total_millis() ) ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.cold_heart -> trigger();
@@ -8427,7 +8414,7 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1, 0.1 );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
-        -> set_trigger_spell( spec.crimson_scourge );
+    -> set_trigger_spell( spec.crimson_scourge );
 
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
 
@@ -8472,7 +8459,6 @@ void death_knight_t::create_buffs()
   buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) );
 
   buffs.killing_machine = make_buff( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
-        -> set_trigger_spell( spec.killing_machine )
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 );
 
