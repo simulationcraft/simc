@@ -283,10 +283,10 @@ static const std::array<item_effect_t, 7495> __item_effect_data { {
   { 116816, 318293,      0,   2,   1,    0,      -1,      -1 }, // Searing Flames
   { 116817, 316651,      0,   2,   1,    0,      -1,      -1 }, // Obsidian Skin
   { 116818, 318272,      0,   2,   1,    0,      -1,      -1 }, // Gushing Wound
-  { 125523, 330767,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
-  { 125525, 330739,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
-  { 125526, 330740,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
-  { 125527, 330741,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125523, 330765,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125525, 330080,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125526, 330733,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
+  { 125527, 330734,      0,   2,   1,    0,      -1,      -1 }, // Unbound Changeling
   { 125657, 332299,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
   { 125658, 332300,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina
   { 125659, 332301,      0,   2,   0,    0,      -1,      -1 }, // Mistcaller Ocarina

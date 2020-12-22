@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36949
-static const std::array<spelltext_data_t, 15095> __spelltext_data { {
+static const std::array<spelltext_data_t, 15091> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5828,7 +5828,7 @@ static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   { 188019, "Chug it.", 0, 0 },
   { 188020, "Transform into a tree.  You and any players that rest in your shade become Well-Rested, increasing all stats by $222116s1%.", "Transformed into a tree.  Players that rest in your shade will become Well-Rested.", 0 },
   { 188021, "Falling a great distance will cause you to transform into an avalanche. When you land, deal $188416m1 damage to all enemies within $188416A1 yards.", "Falling a great distance will cause you to transform into an avalanche.", 0 },
-  { 188023, "Enter the spirit realm, giving the imbiber invisibility for $d. Ineffective above level $maxcast.", "Invisible.", 0 },
+  { 188023, "Enter the spirit realm, giving the imbiber invisibility for $d. Ineffective above level $188024maxcast.", "Invisible.", 0 },
   { 188024, "Increases movement speed by $s1% and allows the imbiber to hover.  Lasts $d. Ineffective above level $maxcast.", "Grants hovering and a movement speed increase.", 0 },
   { 188026, "When you heal or deal damage you have a chance to increase your Strength, Agility, or Intellect by $s1 for $60229d.  Your highest stat is always chosen.", 0, 0 },
   { 188027, "Grants your attacks a chance to unleash a bolt of energy at your target.\r\n\r\nStaying away from enemies for the entire duration of the effect will extend the effect by an additional 5 seconds.", "Your attacks have a chance to unleash a bolt of energy at your target.", 0 },
@@ -13700,15 +13700,11 @@ static const std::array<spelltext_data_t, 15095> __spelltext_data { {
   { 330730, 0, "Critical Strike increased by $w1.", 0 },
   { 330733, "Your abilities have a chance to grant you $330747s1 Haste for $330131d.", 0, 0 },
   { 330734, "Your abilities have a chance to grant you $330747s1 Mastery for $330131d.", 0, 0 },
-  { 330739, "$@spelldesc330080", 0, 0 },
-  { 330740, "$@spelldesc330733", 0, 0 },
-  { 330741, "$@spelldesc330734", 0, 0 },
   { 330744, "Destabilizes gravity around a target location, hindering nearby enemies' movement for $339672d, launching them in random directions, or throwing them up in the air.\r\n\r\n... Unless it backfires.", 0, 0 },
   { 330749, "$@spelldesc329777", "Healing for $s1% of your maximum health every $t1 sec.", 0 },
   { 330752, "$@spelldesc329776", "Immune to Curse, Disease, Poison, and Bleed effects.", 0 },
   { 330764, 0, "Critical Strike, Haste, and Mastery increased by $w1.", 0 },
   { 330765, "Your abilities have a chance to grant you $330747s2 Critical Strike, Haste, and Mastery for $330131d.", 0, 0 },
-  { 330767, "$@spelldesc330765", 0, 0 },
   { 330859, "$@spelldesc329781", "Healing for $w1 every $t sec.", 0 },
   { 330898, "$@spelldesc113656", "$w3 damage every $t3 sec.", 0 },
   { 330901, "Spin while kicking in the air, dealing $?s137025[${4*$107270s1*$<CAP>/$AP}][${4*$107270s1}] Physical damage over $d to up to $s1 enemies within $107270A1 yds.$?c3[\r\n\r\nSpinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]", "Attacking nearby enemies for Physical damage every $101546t1 sec.", 0 },
@@ -15098,7 +15094,8 @@ static const std::array<spelltext_data_t, 15095> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.36949
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  188023,  0, "Enter the spirit realm, giving the imbiber invisibility for $d. Ineffective above level $maxcast.", "Enter the spirit realm, giving the imbiber invisibility for $d. Ineffective above level $188024maxcast." },
 } };
 
 // Spell description variables, wow build 9.0.2.36949
