@@ -2240,6 +2240,8 @@ public:
 
     if ( o()->buff.rushing_jade_wind->up() )
       buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
+
+    sticky_target = false;
   }
 
   void dismiss( bool expired = false ) override
@@ -4618,8 +4620,8 @@ struct storm_earth_and_fire_t : public monk_spell_t
     if ( p()->talent.serenity->ok() )
       return false;
 
-    if ( p()->buff.storm_earth_and_fire->up() && (p()->pets.sef[ SEF_EARTH ]->sticky_target == false || p()->pets.sef[ SEF_FIRE ]->sticky_target == false))
-      return true;
+//    if ( p()->buff.storm_earth_and_fire->up() && (p()->pets.sef[ SEF_EARTH ]->sticky_target == false || p()->pets.sef[ SEF_FIRE ]->sticky_target == false))
+//      return true;
 
     return monk_spell_t::ready();
   }
@@ -10748,12 +10750,14 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
   // Start targeting logic from "owner" always
   pets.sef[ SEF_EARTH ]->reset_targeting();
   pets.sef[ SEF_EARTH ]->target = target;
+  pets.sef[ SEF_EARTH ]->sticky_target = false;
   retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
   pets.sef[ SEF_EARTH ]->summon( duration );
 
   // Start targeting logic from "owner" always
   pets.sef[ SEF_FIRE ]->reset_targeting();
   pets.sef[ SEF_FIRE ]->target = target;
+  pets.sef[ SEF_FIRE ]->sticky_target = false;
   retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
   pets.sef[ SEF_FIRE ]->summon( duration );
 }
@@ -12090,6 +12094,7 @@ void monk_t::apl_combat_windwalker()
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
   cd_sef->add_action( "bonedust_brew,if=raid_event.adds.in>50|raid_event.adds.up,line_cd=60" );
 
+  cd_sef->add_action( this, "Storm, Earth, and Fire", "if=conduit.coordinated_offensive&buff.storm_earth_and_fire.up" );
   cd_sef->add_action( this, "Storm, Earth, and Fire", "if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|!covenant.kyrian&"
       "((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&"
       "(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&"
