@@ -664,12 +664,13 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
 
   #ifndef SC_NO_NETWORKING
   // Try to import the API key from the GUI options
-  if (import_sim->apikey == "") {
-    QSettings settings;
-    std::string apikey = settings.value("options/api_client_id").toString().toStdString() +
-      ":" + settings.value("options/api_client_secret").toString().toStdString();
+  if (import_sim->apikey.empty()) {
+    std::string id = optionsTab->api_client_id->text().toStdString();
+    std::string secret = optionsTab->api_client_secret->text().toStdString();
 
-    // TODO use sc_sim's validate_api_key
+    std::string apikey = id + ":" + secret;
+
+    // 65 = 32 + 1 + 32
     if (apikey.size() == 65) {
       import_sim->apikey = apikey;
     }
@@ -677,35 +678,6 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   #endif
 
   importThread->start( import_sim, region, realm, character, specialization );
-  simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
-}
-
-void SC_MainWindow::startImport( int tab, const QString& url )
-{
-  if ( importRunning() )
-  {
-    stopImport();
-    return;
-  }
-  simProgress = 0;
-  import_sim  = initSim();
-
-  #ifndef SC_NO_NETWORKING
-  // Try to import the API key from the GUI options
-  if (import_sim->apikey == "") {
-    QSettings settings;
-    std::string apikey = settings.value("options/api_client_id").toString().toStdString() +
-      ":" + settings.value("options/api_client_secret").toString().toStdString();
-
-    // TODO use sc_sim's validate_api_key
-    if (apikey.size() == 65) {
-      import_sim->apikey = apikey;
-    }
-  }
-  #endif
-
-  importThread->start( import_sim, tab, url, optionsTab->get_db_order(), optionsTab->get_active_spec(),
-                       optionsTab->get_player_role(), optionsTab->get_api_key() );
   simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
 }
 
