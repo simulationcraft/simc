@@ -9,6 +9,7 @@
 #include "WebView.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
+#include "engine/interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
 #include "report/reports.hpp"
@@ -661,21 +662,19 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   }
   simProgress = 0;
   import_sim  = initSim();
-  importThread->start( import_sim, region, realm, character, specialization );
-  simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
-}
 
-void SC_MainWindow::startImport( int tab, const QString& url )
-{
-  if ( importRunning() )
-  {
-    stopImport();
-    return;
+  #ifndef SC_NO_NETWORKING
+  // Try to import the API key from the GUI options
+  if (import_sim->apikey.empty()) {
+    std::string apikey = optionsTab->get_api_key().toStdString();
+
+    if (bcp_api::validate_api_key(apikey)) {
+      import_sim->apikey = apikey;
+    }
   }
-  simProgress = 0;
-  import_sim  = initSim();
-  importThread->start( import_sim, tab, url, optionsTab->get_db_order(), optionsTab->get_active_spec(),
-                       optionsTab->get_player_role(), optionsTab->get_api_key() );
+  #endif
+
+  importThread->start( import_sim, region, realm, character, specialization );
   simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
 }
 
