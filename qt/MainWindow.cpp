@@ -9,7 +9,7 @@
 #include "WebView.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
-#include "engine/interfaces/bcp_api.hpp"
+#include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
 #include "report/reports.hpp"
