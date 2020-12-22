@@ -1148,12 +1148,6 @@ std::vector<std::string> get_api_key_locations()
   return key_locations;
 }
 
-/// Check if api key is valid
-bool validate_api_key( const std::string& key )
-{
-  // no better check for now than to measure its length.
-  return key.size() == 65;
-}
 
 /**
  * @brief Try to get user-supplied api key
@@ -1179,7 +1173,7 @@ std::string get_api_key()
 
     std::string line;
     std::getline( myfile,line );
-    if ( validate_api_key( line ) )
+    if ( bcp_api::validate_api_key( line ) )
     {
       return line;
     }

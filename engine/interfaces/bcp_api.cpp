@@ -1413,3 +1413,10 @@ void bcp_api::token_save()
   }
 }
 #endif
+
+/// Check if api key is valid
+bool bcp_api::validate_api_key( const std::string& key )
+{
+  // no better check for now than to measure its length.
+  return key.size() == 65;
+}
