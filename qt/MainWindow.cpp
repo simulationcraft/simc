@@ -13,8 +13,6 @@
 #include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
 #include "report/reports.hpp"
-#include "sim/sc_sim.hpp"
-#include "util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
 #include "sc_SampleProfilesTab.hpp"
@@ -22,7 +20,9 @@
 #include "sc_SimulationThread.hpp"
 #include "sc_SpellQueryTab.hpp"
 #include "sc_WelcomeTab.hpp"
+#include "sim/sc_sim.hpp"
 #include "simulationcraftqt.hpp"
+#include "util/git_info.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include <QString>
@@ -663,16 +663,18 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   simProgress = 0;
   import_sim  = initSim();
 
-  #ifndef SC_NO_NETWORKING
+#ifndef SC_NO_NETWORKING
   // Try to import the API key from the GUI options
-  if (import_sim->apikey.empty()) {
+  if ( import_sim->apikey.empty() )
+  {
     std::string apikey = optionsTab->get_api_key().toStdString();
 
-    if (bcp_api::validate_api_key(apikey)) {
+    if ( bcp_api::validate_api_key( apikey ) )
+    {
       import_sim->apikey = apikey;
     }
   }
-  #endif
+#endif
 
   importThread->start( import_sim, region, realm, character, specialization );
   simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
