@@ -25,7 +25,6 @@
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include <QString>
-#include <QDebug>
 #include <sstream>
 #include <string>
 
