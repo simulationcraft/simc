@@ -1141,6 +1141,11 @@ std::string warlock_t::default_rune() const
   return ( true_level >= 60 ) ? "veiled" : "disabled";
 }
 
+std::string warlock_t::default_temporary_enchant() const
+{
+  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
+}
+
 void warlock_t::apl_global_filler()
 {
 }

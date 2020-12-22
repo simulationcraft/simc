@@ -14,6 +14,7 @@ potion=spectral_intellect
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -98,7 +99,7 @@ legs=beryllias_leggings_of_endless_torment,id=178838,bonus_id=6807/1498/6646
 feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498/6646
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 

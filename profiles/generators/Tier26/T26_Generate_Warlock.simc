@@ -20,7 +20,7 @@ legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
 finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173130,bonus_id=7187/1498,enchant=tenet_of_mastery
-trinket1=soul_igniter,id=184019,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=soul_igniter,id=184019,bonus_id=7187/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -49,7 +49,7 @@ legs=courtiers_costume_trousers,id=183011,bonus_id=7187/1498
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
 finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173128,bonus_id=7187/1498,enchant=tenet_of_haste
-trinket1=soul_igniter,id=184019,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=soul_igniter,id=184019,bonus_id=7187/1498
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
 main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 
@@ -78,7 +78,7 @@ legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
 feet=slippers_of_the_forgotten_heretic,id=182979,bonus_id=7187/1498
 finger1=hyperlight_band,id=183038,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036/6935,gem_id=173128,bonus_id=7187/1498,enchant=tenet_of_haste
-trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
 trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
 main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinful_revelation
 

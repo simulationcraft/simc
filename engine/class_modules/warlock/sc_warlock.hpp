@@ -642,6 +642,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
   void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_td_t> target_data;
