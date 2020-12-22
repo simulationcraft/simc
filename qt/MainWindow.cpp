@@ -13,6 +13,7 @@
 #include "player/sc_player.hpp"
 #include "report/reports.hpp"
 #include "sim/sc_sim.hpp"
+#include "engine/interfaces/bcp_api.hpp"
 #include "util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
@@ -667,8 +668,7 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   if (import_sim->apikey.empty()) {
     std::string apikey = optionsTab->get_api_key().toStdString();
 
-    // 65 = 32 + 1 + 32
-    if (apikey.size() == 65) {
+    if (bcp_api::validate_api_key(apikey)) {
       import_sim->apikey = apikey;
     }
   }
