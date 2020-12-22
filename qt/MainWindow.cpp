@@ -665,10 +665,7 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   #ifndef SC_NO_NETWORKING
   // Try to import the API key from the GUI options
   if (import_sim->apikey.empty()) {
-    std::string id = optionsTab->api_client_id->text().toStdString();
-    std::string secret = optionsTab->api_client_secret->text().toStdString();
-
-    std::string apikey = id + ":" + secret;
+    std::string apikey = optionsTab->get_api_key().toStdString();
 
     // 65 = 32 + 1 + 32
     if (apikey.size() == 65) {
