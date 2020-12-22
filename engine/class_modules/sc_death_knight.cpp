@@ -1056,7 +1056,7 @@ public:
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      consume_killing_machine( proc_t* proc );
   void      trigger_runic_empowerment( double rpcost );
-  void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
+  void      trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0 );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( player_t* target, unsigned n = 1 );
   void      bone_shield_handler( const action_state_t* ) const;
@@ -3499,7 +3499,7 @@ struct abomination_limb_damage_t : public death_knight_spell_t
           p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
           break;
         case DEATH_KNIGHT_UNHOLY:
-          p() -> trigger_runic_corruption( 0, 1.0, p() -> procs.al_runic_corruption );
+          p() -> trigger_runic_corruption( p() -> procs.al_runic_corruption, 0, 1.0 );
           break;
         default:
           break;
@@ -7167,7 +7167,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
-    trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
+    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
     {
@@ -7249,7 +7249,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                       target -> name(), name() );
 
-    trigger_runic_corruption( 0, -1.0, procs.sr_runic_corruption );
+    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
   }
 }
 
@@ -7279,7 +7279,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( talent.pestilent_pustules -> ok() )
   {
-    trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds, procs.pp_runic_corruption );
+    trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds );
   }
 
   // Triggers a bursting sores explosion for each wound on the target
@@ -7444,19 +7444,19 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   }
 }
 
-void death_knight_t::trigger_runic_corruption( double rpcost, double override_chance, proc_t* proc )
+void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance )
 {
   if ( ! spec.runic_corruption -> ok() )
     return;
 
   double proc_chance = 0.0;
   // Use the overriden chance if there's one and RP cost is 0
-  proc_chance = ( !rpcost && override_chance != 1.0 ) ? override_chance :
-    // Else, use the general proc chance ( 1.6 per RP * RP / 100 )
+  proc_chance = ( !rpcost && override_chance != -1.0 ) ? override_chance :
+    // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
     spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0;
 
-  // Buff duration handled in runic_corruption_buff_t::buff_duration()
-  if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) )
+  // Buff duration and refresh behavior handled in runic_corruption_buff_t
+  if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
     proc -> occur();
 }
 
@@ -7521,7 +7521,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
       if ( dk -> talent.pestilent_pustules -> ok() )
       {
-        dk -> trigger_runic_corruption( 0, dk -> talent.pestilent_pustules -> effectN( 1 ).percent() * n, dk -> procs.pp_runic_corruption );
+        dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.pestilent_pustules -> effectN( 1 ).percent() * n );
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
