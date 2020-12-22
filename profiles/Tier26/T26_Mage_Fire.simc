@@ -137,6 +137,7 @@ actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used
 actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike
 actions.combustion_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
+actions.combustion_phase+=/flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch
 actions.combustion_phase+=/pyroblast,if=buff.firestorm.react
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react&buff.combustion.up
@@ -152,6 +153,7 @@ actions.combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max&buf
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&talent.searing_touch
 
 actions.rop_phase=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)
+actions.rop_phase+=/flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch
 actions.rop_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.rop_phase+=/pyroblast,if=buff.firestorm.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
@@ -170,6 +172,7 @@ actions.rop_phase+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrik
 actions.rop_phase+=/fireball
 
 actions.standard_rotation=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.firestorm.react)
+actions.standard_rotation+=/flamestrike,if=buff.firestorm.react&active_enemies>=2&talent.flame_patch
 actions.standard_rotation+=/pyroblast,if=buff.firestorm.react
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(prev_gcd.1.fireball|firestarter.active|action.pyroblast.in_flight)
