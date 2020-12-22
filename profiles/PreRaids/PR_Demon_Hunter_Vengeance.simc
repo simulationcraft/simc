@@ -15,6 +15,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -93,6 +94,7 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,ench
 # gear_ilvl=184.38
 # gear_agility=587
 # gear_stamina=860
+# gear_attack_power=40
 # gear_crit_rating=141
 # gear_haste_rating=789
 # gear_mastery_rating=93
