@@ -5315,6 +5315,9 @@ void player_t::trigger_ready()
 
 void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 {
+  if ( delta_time < 0_ms )
+    delta_time = rng().gauss( 100_ms, 10_ms );
+
   if ( active_off_gcd_list == nullptr )
   {
     return;
@@ -5361,6 +5364,9 @@ void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 
 void player_t::schedule_cwc_ready( timespan_t delta_time )
 {
+  if ( delta_time < 0_ms )
+    delta_time = rng().gauss( 100_ms, 10_ms );
+
   if ( active_cast_while_casting_list == nullptr )
   {
     return;

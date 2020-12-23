@@ -990,8 +990,8 @@ public:
   virtual void clear_debuffs();
   virtual void trigger_ready();
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false );
-  virtual void schedule_off_gcd_ready( timespan_t delta_time = timespan_t::from_millis( 100 ) );
-  virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::from_millis( 100 ) );
+  virtual void schedule_off_gcd_ready( timespan_t delta_time = timespan_t::min() );
+  virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::min() );
   virtual void arise();
   virtual void demise();
   virtual timespan_t available() const
