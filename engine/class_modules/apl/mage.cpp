@@ -315,7 +315,7 @@ void fire( player_t* p )
   default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<execute_time" );
   default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion<=3&buff.combustion.down" );
   default_->add_action( "fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react", "For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges if Infernal Cascade is not selected." );
-  default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down" );
+  default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down&buff.rune_of_power.down" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay" );
   default_->add_action( "use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff" );
