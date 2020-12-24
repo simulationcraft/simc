@@ -3110,6 +3110,24 @@ private:
       else
         attack_t::execute();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct auto_attack_t : public attack_t
@@ -3287,6 +3305,24 @@ public:
 
       return am;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct fallen_monk_fists_of_fury_t : public melee_attack_t
@@ -3357,6 +3393,24 @@ public:
     double cost() const override
     {
       return 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
@@ -3435,6 +3489,24 @@ private:
       }
       else
         attack_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
@@ -3608,6 +3680,19 @@ public:
 
     void impact( action_state_t* s ) override
     {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
       melee_attack_t::impact( s );
 
       owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -3652,6 +3737,24 @@ public:
           return cam / std::sqrt( state->n_targets );
 
         return cam;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        if ( owner->spec.invoke_xuen_2->ok() )
+        {
+          // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+          if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+          {
+            if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+              owner->get_target_data( s->target )
+                  ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+            owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+          }
+        }
+
+        spell_t::impact( s );
       }
     };
 
@@ -3809,6 +3912,24 @@ private:
       }
       else
         attack_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
