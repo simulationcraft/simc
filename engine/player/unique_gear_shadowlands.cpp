@@ -1112,19 +1112,9 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       if ( ta && ta->find_action( "noxious_bolt" ) )
         stats = ta->find_action( "noxious_bolt" )->stats;
 
-      may_crit = false;
+      may_crit = true;
       base_dd_min = p->find_spell( 345490 )->effectN( 1 ).min( e.item );
       base_dd_max = p->find_spell( 345490 )->effectN( 1 ).max( e.item );
-    }
-
-    double composite_haste() const override
-    {
-      return 1.0;
-    }
-
-    double composite_versatility( const action_state_t* ) const override
-    {
-      return 1.0;
     }
 
     void execute() override
