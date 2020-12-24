@@ -198,6 +198,7 @@ public:
 
     // Windwalker
     action_t* sunrise_technique;
+    action_t* empowered_tiger_lightning;
 
     // Azerite Traits
     action_t* fit_to_burst;
@@ -5813,7 +5814,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->conduit.calculated_strikes->ok() )
       motc_multiplier += p()->conduit.calculated_strikes.percent();
 
-    am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+    am *= ( 1 + motc_multiplier ) * mark_of_the_crane_counter();
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
       am *= 1 + p()->buff.dance_of_chiji_hidden->value();
@@ -7769,6 +7770,23 @@ struct xuen_spell_t : public monk_spell_t
 
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
+  }
+};
+
+struct empowered_tiger_lightning_t : public monk_spell_t
+{
+  empowered_tiger_lightning_t( monk_t& p ) 
+      : monk_spell_t( "empowered_tiger_lightning", &p, p.passives.empowered_tiger_lightning )
+  {
+      background = true;
+  }
+
+  bool ready() override
+  {
+    if ( p()->spec.invoke_xuen_2->ok() )
+      return true;
+
+    return false;
   }
 };
 
@@ -10302,6 +10320,7 @@ void monk_t::init_spells()
 
   // Windwalker
   active_actions.sunrise_technique      = new actions::sunrise_technique_t( this );
+  active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
   windwalking_aura                      = new actions::windwalking_aura_t( this );
 
   // Azerite Traits
