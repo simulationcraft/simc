@@ -3577,6 +3577,18 @@ struct weapon_imbue_t : public shaman_spell_t
     harmful = false;
   }
 
+  void init_finished() override
+  {
+    shaman_spell_t::init_finished();
+
+    if ( player->items[ slot ].active() &&
+         player->items[ slot ].parsed.temporary_enchant_id > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant on slot {}, disabling {}",
+        player->name(), util::slot_type_string( slot ), name() );
+    }
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
