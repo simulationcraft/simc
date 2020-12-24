@@ -871,6 +871,14 @@ void download_item_data( item_t& item, cache::behavior_e caching )
   download_item( item.sim, js, item.player -> region_str, item.parsed.data.id, caching );
   if ( js.HasParseError() )
   {
+    if ( js.GetParseError() == rapidjson::kParseErrorDocumentEmpty )
+    {
+      item.player->sim->error( "Player {} unable to download item id={} information from Blizzard, reason: {}",
+          item.player->name(), item.parsed.data.id,
+          rapidjson::GetParseError_En( js.GetParseError() ) );
+      return;
+    }
+
     throw std::runtime_error(fmt::format("Item JSON data has parse error: {}", rapidjson::GetParseError_En(js.GetParseError())));
   }
 
