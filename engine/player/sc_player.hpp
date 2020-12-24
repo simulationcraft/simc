@@ -995,7 +995,7 @@ public:
   virtual void arise();
   virtual void demise();
   virtual timespan_t available() const
-  { return timespan_t::from_seconds( 0.1 ); }
+  { return rng().gauss( 100_ms, 10_ms ); }
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
 

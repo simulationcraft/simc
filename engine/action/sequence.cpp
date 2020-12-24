@@ -64,9 +64,10 @@ void sequence_t::schedule_execute( action_state_t* execute_state )
 
   if ( waiting )
   {
+    timespan_t available = player -> available();
     if ( sim -> log )
-      sim -> out_log.printf( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), player -> available().total_seconds(), current_action, sub_actions[ current_action ] -> name() );
-    player -> schedule_ready( player -> available(), true );
+      sim -> out_log.printf( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), available.total_seconds(), current_action, sub_actions[ current_action ] -> name() );
+    player -> schedule_ready( available, true );
     waiting = false;
     return;
   }
