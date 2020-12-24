@@ -136,10 +136,14 @@ public:
 
   struct buffs_t
   {
-    buff_t* mark_of_the_crane;
+    // Brewmaster
     buff_t* exploding_keg;
-    buff_t* flying_serpent_kick;
     buff_t* keg_smash;
+
+    // Windwalker
+    buff_t* flying_serpent_kick;
+    buff_t* empowered_tiger_lightning;
+    buff_t* mark_of_the_crane;
     buff_t* storm_earth_and_fire;
     buff_t* touch_of_karma;
 
@@ -278,6 +282,7 @@ public:
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
     buff_t* inner_stength;
+    buff_t* invoke_xuen;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
@@ -1076,6 +1081,7 @@ public:
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
+  void trigger_empower_tiger_lightning( action_state_t*);
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -4310,6 +4316,8 @@ public:
       }
     }
 
+    trigger_empowered_tiger_lightning( s );
+
     trigger_bonedust_brew( s );
 
     ab::impact( s );
@@ -4317,7 +4325,9 @@ public:
 
   void trigger_bonedust_brew( action_state_t* s )
   {
-    if ( p()->covenant.necrolord->ok() && s->result_total > 0 )
+    // Make sure it is not triggering from its self
+    if ( p()->covenant.necrolord->ok() && s->result_total > 0 &&
+         ( s->action->id != 325217 || s->action->id != 325218 ) )
     {
       if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
       {
@@ -4328,6 +4338,20 @@ public:
         p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
         p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
         p()->active_actions.bonedust_brew_dmg->execute();
+      }
+    }
+  }
+
+  void trigger_empowered_tiger_lightning( action_state_t* s )
+  {
+    if ( p()->spec.invoke_xuen_2->ok() )
+    {
+      if ( p()->buff.invoke_xuen->up() )
+      {
+        if ( !td( s->target )->debuff.empowered_tiger_lightning->up() )
+          td( s->target )->debuff.empowered_tiger_lightning->trigger( p()->buff.invoke_xuen->remains() );
+
+        td( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
       }
     }
   }
@@ -7274,7 +7298,7 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -7606,7 +7630,7 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -7768,6 +7792,8 @@ struct xuen_spell_t : public monk_spell_t
 
     p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
 
+    p()->buff.invoke_xuen->trigger();
+
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
   }
@@ -7778,7 +7804,8 @@ struct empowered_tiger_lightning_t : public monk_spell_t
   empowered_tiger_lightning_t( monk_t& p ) 
       : monk_spell_t( "empowered_tiger_lightning", &p, p.passives.empowered_tiger_lightning )
   {
-      background = true;
+    background = true;
+    may_crit   = false;
   }
 
   bool ready() override
@@ -9100,7 +9127,7 @@ struct celestial_brew_t : public monk_absorb_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -9373,6 +9400,51 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
+// Xuen Rank 2 Empowered Tiger Lightning Buff
+// ===============================================================================
+struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
+{
+  static void invoke_xuen_callback( buff_t* b, int, timespan_t )
+  {
+    monk_t* p = debug_cast<monk_t*>( b->player );
+    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
+
+    for ( auto target : p->sim->target_non_sleeping_list )
+    {
+      if ( p->get_target_data( target )->debuff.empowered_tiger_lightning->up() )
+      {
+        double value = p->get_target_data( target )->debuff.empowered_tiger_lightning->value();
+        p->get_target_data( target )->debuff.empowered_tiger_lightning->current_value = 0;
+        if ( value > 0 )
+        {
+          p->active_actions.empowered_tiger_lightning->set_target( target );
+          p->active_actions.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.empowered_tiger_lightning->execute();
+        }
+      }
+    }
+  }
+
+  invoke_xuen_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
+      : monk_buff_t( p, n, s )
+  {
+    // set_quiet (true );
+    set_cooldown( timespan_t::zero() );
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+
+    set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
+
+    set_tick_callback( invoke_xuen_callback );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
 // Niuzao Rank 2 Purifying Buff
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
@@ -9380,12 +9452,13 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
   std::deque<double> values;
   // tracking variable for debug code
   bool ignore_empty;
-  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
+      : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
     set_quiet (true );
     set_cooldown( timespan_t::zero() );
-    stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -9522,17 +9595,23 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 {
   if ( p->specialization() == MONK_WINDWALKER )
   {
+    debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
+                                     ->set_default_value_from_effect( 2 );
+    debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
+                                           //->set_quiet( true )
+                                           ->set_cooldown( timespan_t::zero() )
+                                           ->set_refresh_behavior( buff_refresh_behavior::NONE )
+                                           ->set_max_stack( 1 )
+                                           ->set_default_value( 0 );
+
     debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                    ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-    debuff.flying_serpent_kick =
-        make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-            ->set_default_value_from_effect( 2 );
-    debuff.touch_of_karma =
-        make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
-            // set the percent of the max hp as the default value.
-            ->set_default_value_from_effect( 3 )
-            ->modify_default_value( ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
+    debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
+                                // set the percent of the max hp as the default value.
+                                ->set_default_value_from_effect( 3 );
+    debuff.touch_of_karma->default_value_effect_multiplier *=
+        1 + ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 );
   }
 
   if ( p->specialization() == MONK_BREWMASTER )
@@ -10566,6 +10645,8 @@ void monk_t::create_buffs()
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buff.invoke_xuen = new buffs::invoke_xuen_buff_t( *this, "invoke_xuen", spec.invoke_xuen );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
