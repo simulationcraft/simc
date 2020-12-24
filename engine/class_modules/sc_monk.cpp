@@ -136,10 +136,14 @@ public:
 
   struct buffs_t
   {
-    buff_t* mark_of_the_crane;
+    // Brewmaster
     buff_t* exploding_keg;
-    buff_t* flying_serpent_kick;
     buff_t* keg_smash;
+
+    // Windwalker
+    buff_t* flying_serpent_kick;
+    buff_t* empowered_tiger_lightning;
+    buff_t* mark_of_the_crane;
     buff_t* storm_earth_and_fire;
     buff_t* touch_of_karma;
 
@@ -198,6 +202,7 @@ public:
 
     // Windwalker
     action_t* sunrise_technique;
+    action_t* empowered_tiger_lightning;
 
     // Azerite Traits
     action_t* fit_to_burst;
@@ -277,6 +282,7 @@ public:
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
     buff_t* inner_stength;
+    buff_t* invoke_xuen;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
@@ -1075,6 +1081,7 @@ public:
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
+  void trigger_empower_tiger_lightning( action_state_t*);
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1466,12 +1473,26 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void impact( action_state_t* s ) override
     {
-      if ( o()->covenant.necrolord->ok() && s->result_total > 0 )
+      if ( o()->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( o()->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->trigger( o()->buff.invoke_xuen->remains() );
+
+          o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( o()->covenant.necrolord->ok() && s->result_total > 0 &&
+         ( s->action->id != 325217 || s->action->id != 325218 ) )
       {
         if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() &&
              o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
         {
           double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
 //          if ( o()->conduit.bone_marrow_hops->ok() )
 //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
 
@@ -2324,7 +2345,9 @@ struct xuen_pet_t : public pet_t
 private:
   struct melee_t : public melee_attack_t
   {
-    melee_t( util::string_view n, xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    monk_t* owner;
+    melee_t( util::string_view n, xuen_pet_t* player ) : 
+        melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -2347,14 +2370,86 @@ private:
       else
         attack_t::execute();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct crackling_tiger_lightning_tick_t : public spell_t
   {
+    monk_t* owner;
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
-      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
+      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning ), 
+        owner( p->o() )
     {
       dual = direct_tick = background = may_crit = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      spell_t::impact( s );
     }
   };
 
@@ -3015,6 +3110,24 @@ private:
       else
         attack_t::execute();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct auto_attack_t : public attack_t
@@ -3192,6 +3305,24 @@ public:
 
       return am;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct fallen_monk_fists_of_fury_t : public melee_attack_t
@@ -3262,6 +3393,24 @@ public:
     double cost() const override
     {
       return 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
@@ -3340,6 +3489,24 @@ private:
       }
       else
         attack_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
@@ -3513,6 +3680,19 @@ public:
 
     void impact( action_state_t* s ) override
     {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
       melee_attack_t::impact( s );
 
       owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
@@ -3557,6 +3737,24 @@ public:
           return cam / std::sqrt( state->n_targets );
 
         return cam;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        if ( owner->spec.invoke_xuen_2->ok() )
+        {
+          // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+          if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+          {
+            if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+              owner->get_target_data( s->target )
+                  ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+            owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+          }
+        }
+
+        spell_t::impact( s );
       }
     };
 
@@ -3714,6 +3912,24 @@ private:
       }
       else
         attack_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
@@ -4309,6 +4525,8 @@ public:
       }
     }
 
+    trigger_empowered_tiger_lightning( s );
+
     trigger_bonedust_brew( s );
 
     ab::impact( s );
@@ -4316,7 +4534,9 @@ public:
 
   void trigger_bonedust_brew( action_state_t* s )
   {
-    if ( p()->covenant.necrolord->ok() && s->result_total > 0 )
+    // Make sure it is not triggering from its self
+    if ( p()->covenant.necrolord->ok() && s->result_total > 0 &&
+         ( s->action->id != 325217 || s->action->id != 325218 ) )
     {
       if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
       {
@@ -4327,6 +4547,23 @@ public:
         p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
         p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
         p()->active_actions.bonedust_brew_dmg->execute();
+      }
+    }
+  }
+
+  void trigger_empowered_tiger_lightning( action_state_t* s )
+  {
+    if ( p()->spec.invoke_xuen_2->ok() )
+    {
+      // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+      // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
+      if ( p()->buff.invoke_xuen->up() && s->result_total > 0 
+          && (s->action->id != 335913 || s->action->id != 124280 ) )
+      {
+        if ( !td( s->target )->debuff.empowered_tiger_lightning->up() )
+          td( s->target )->debuff.empowered_tiger_lightning->trigger( p()->buff.invoke_xuen->remains() );
+
+        td( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
       }
     }
   }
@@ -7273,7 +7510,7 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -7605,7 +7842,7 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -7767,8 +8004,28 @@ struct xuen_spell_t : public monk_spell_t
 
     p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
 
+    p()->buff.invoke_xuen->trigger();
+
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
+  }
+};
+
+struct empowered_tiger_lightning_t : public monk_spell_t
+{
+  empowered_tiger_lightning_t( monk_t& p ) 
+      : monk_spell_t( "empowered_tiger_lightning", &p, p.passives.empowered_tiger_lightning )
+  {
+    background = true;
+    may_crit   = false;
+  }
+
+  bool ready() override
+  {
+    if ( p()->spec.invoke_xuen_2->ok() )
+      return true;
+
+    return false;
   }
 };
 
@@ -9082,7 +9339,7 @@ struct celestial_brew_t : public monk_absorb_t
 
     if ( p()->talent.special_delivery->ok() )
     {
-      delivery->target = target;
+      delivery->set_target( target );
       delivery->execute();
     }
 
@@ -9355,6 +9612,51 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
+// Xuen Rank 2 Empowered Tiger Lightning Buff
+// ===============================================================================
+struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
+{
+  static void invoke_xuen_callback( buff_t* b, int, timespan_t )
+  {
+    monk_t* p = debug_cast<monk_t*>( b->player );
+    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
+
+    for ( auto target : p->sim->target_non_sleeping_list )
+    {
+      if ( p->get_target_data( target )->debuff.empowered_tiger_lightning->up() )
+      {
+        double value = p->get_target_data( target )->debuff.empowered_tiger_lightning->value();
+        p->get_target_data( target )->debuff.empowered_tiger_lightning->current_value = 0;
+        if ( value > 0 )
+        {
+          p->active_actions.empowered_tiger_lightning->set_target( target );
+          p->active_actions.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
+          p->active_actions.empowered_tiger_lightning->execute();
+        }
+      }
+    }
+  }
+
+  invoke_xuen_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
+      : monk_buff_t( p, n, s )
+  {
+    // set_quiet (true );
+    set_cooldown( timespan_t::zero() );
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+
+    set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
+
+    set_tick_callback( invoke_xuen_callback );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
 // Niuzao Rank 2 Purifying Buff
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
@@ -9362,12 +9664,13 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
   std::deque<double> values;
   // tracking variable for debug code
   bool ignore_empty;
-  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
+      : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
     set_quiet (true );
     set_cooldown( timespan_t::zero() );
-    stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -9504,17 +9807,23 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 {
   if ( p->specialization() == MONK_WINDWALKER )
   {
+    debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
+                                     ->set_default_value_from_effect( 2 );
+    debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
+                                           //->set_quiet( true )
+                                           ->set_cooldown( timespan_t::zero() )
+                                           ->set_refresh_behavior( buff_refresh_behavior::NONE )
+                                           ->set_max_stack( 1 )
+                                           ->set_default_value( 0 );
+
     debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                    ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-    debuff.flying_serpent_kick =
-        make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-            ->set_default_value_from_effect( 2 );
-    debuff.touch_of_karma =
-        make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
-            // set the percent of the max hp as the default value.
-            ->set_default_value_from_effect( 3 )
-            ->modify_default_value( ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
+    debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
+                                // set the percent of the max hp as the default value.
+                                ->set_default_value_from_effect( 3 );
+    debuff.touch_of_karma->default_value_effect_multiplier *=
+        1 + ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 );
   }
 
   if ( p->specialization() == MONK_BREWMASTER )
@@ -10302,6 +10611,7 @@ void monk_t::init_spells()
 
   // Windwalker
   active_actions.sunrise_technique      = new actions::sunrise_technique_t( this );
+  active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
   windwalking_aura                      = new actions::windwalking_aura_t( this );
 
   // Azerite Traits
@@ -10547,6 +10857,8 @@ void monk_t::create_buffs()
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buff.invoke_xuen = new buffs::invoke_xuen_buff_t( *this, "invoke_xuen", spec.invoke_xuen );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
