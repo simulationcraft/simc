@@ -23,6 +23,11 @@
 // - Test Frost's damage with atypical weapon setups (single 1H/OH, etc.)
 //     on abilities with the 2H penalty or combined AP type
 // - Figure out what to do with Obliterate/Frost Strike strikes, reporting, etc.
+// TOCHECK: accurate spawn/travel delay timers for all dynamic pets
+// - DRW, Magus of the dead, Bloodworms have no delay at all
+// - Army ghoul, Apoc ghoul, Raise dead ghoul have a different delay (currently estimated at 4.5s with a 0.1 stddev)
+//   TODO: even more variable travel time for apoc/army based on distance from boss on spawn?
+// - Gargoyle and Reanimated Shambler have their own delays too
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -1561,10 +1566,12 @@ namespace pets {
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack;
+  bool use_auto_attack, precombat_spawn;
+  double spawn_travel_duration, spawn_travel_stddev, precombat_spawn_adjust;
 
   death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
-    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack )
+    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack ),
+    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), precombat_spawn( false ), precombat_spawn_adjust( 0 )
   {
     if ( auto_attack )
     {
@@ -1574,19 +1581,6 @@ struct death_knight_pet_t : public pet_t
 
   death_knight_t* o() const
   { return debug_cast<death_knight_t*>( owner ); }
-
-  void init_action_list() override
-  {
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( use_auto_attack )
-    {
-      def -> add_action( "auto_attack" );
-    }
-
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 
   // DK pets have their own base attack speed
   double composite_melee_speed() const override
@@ -1640,6 +1634,96 @@ struct death_knight_pet_t : public pet_t
     }
 
     return haste;
+  }
+
+  // Standard Death Knight pet actions
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( death_knight_pet_t* player ) : melee_attack_t( "auto_attack", player )
+    {
+      assert( player -> main_hand_weapon.type != WEAPON_NONE );
+      player -> main_hand_attack = player -> create_auto_attack();
+      trigger_gcd = 0_ms;
+    }
+
+    void execute() override
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+      return ( player -> main_hand_attack -> execute_event == nullptr );
+    }
+  };
+
+  struct spawn_travel_t : public action_t
+  {
+    bool executed;
+
+    spawn_travel_t( death_knight_pet_t* p ) : action_t( ACTION_OTHER, "spawn_travel", p ),
+      executed( false )
+    {
+      may_miss = false;
+      quiet    = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    { return RESULT_HIT; }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    { return BLOCK_RESULT_UNBLOCKED; }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+      debug_cast<death_knight_pet_t*>( player ) -> precombat_spawn = false;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    timespan_t execute_time() const override
+    {
+      death_knight_pet_t* p = debug_cast<death_knight_pet_t*>( player );
+      double mean_duration = p -> spawn_travel_duration;
+
+      if ( p -> precombat_spawn )
+        mean_duration -= p -> precombat_spawn_adjust;
+      // Don't bother gaussing null delays
+      if ( mean_duration <= 0 )
+        return 0_ms;
+
+      return timespan_t::from_seconds( rng().gauss( mean_duration, p -> spawn_travel_stddev ) );
+    }
+
+    bool ready() override
+    {
+      return !executed;
+    }
+  };
+
+  action_t* create_action( util::string_view name, const std::string& options_str )
+  {
+    if ( name == "auto_attack" ) return new auto_attack_t( this );
+    if ( name == "spawn_travel" ) return new spawn_travel_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( spawn_travel_duration )
+      def -> add_action( "spawn_travel" );
+    if ( use_auto_attack )
+      def -> add_action( "auto_attack" );
+
+    pet_t::init_action_list();
   }
 };
 
@@ -1749,29 +1833,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 };
 
 // ==========================================================================
-// Generalized Auto Attack Action
-// ==========================================================================
-
-struct auto_attack_t : public melee_attack_t
-{
-  auto_attack_t( death_knight_pet_t* player ) : melee_attack_t( "auto_attack", player )
-  {
-    assert( player -> main_hand_weapon.type != WEAPON_NONE );
-    player -> main_hand_attack = player -> create_auto_attack();
-    trigger_gcd = 0_ms;
-  }
-
-  void execute() override
-  { player -> main_hand_attack -> schedule_execute(); }
-
-  bool ready() override
-  {
-    if ( player -> is_moving() ) return false;
-    return ( player -> main_hand_attack -> execute_event == nullptr );
-  }
-};
-
-// ==========================================================================
 // Base Death Knight Pet Spell
 // ==========================================================================
 
@@ -1788,18 +1849,6 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
     this -> hasted_ticks  = false;
   }
 };
-
-// ==========================================================================
-// Base Death Knight Pet Method Definitions
-// ==========================================================================
-
-action_t* death_knight_pet_t::create_action( util::string_view name,
-                                       const std::string& options_str )
-{
-  if ( name == "auto_attack" ) return new auto_attack_t( this );
-
-  return pet_t::create_action( name, options_str );
-}
 
 // ==========================================================================
 // Specialized Death Knight Pet Actions
@@ -1881,6 +1930,10 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
+
+    // Army ghouls, apoc ghouls and raise dead ghoul all share the same spawn/travel animation lock
+    spawn_travel_duration = 4.5;
+    spawn_travel_stddev = 0.1;
   }
 
   attack_t* create_auto_attack() override
@@ -1967,6 +2020,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> spell.pet_gnaw -> cooldown();
+
+    // With a permanent pet, make sure that the precombat spawn ignores the spawn/travel delay
+    if ( owner -> spec.raise_dead_2 )
+      precombat_spawn_adjust = spawn_travel_duration;
   }
 
   attack_t* create_auto_attack() override
@@ -2120,45 +2177,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
 
-  struct travel_t : public action_t
-  {
-    bool executed;
-
-    travel_t( player_t* player ) :
-      action_t( ACTION_OTHER, "travel", player ),
-      executed( false )
-    {
-      may_miss = false;
-      dual = true;
-    }
-
-    result_e calculate_result( action_state_t* /* s */ ) const override
-    { return RESULT_HIT; }
-
-    block_result_e calculate_block_result( action_state_t* ) const override
-    { return BLOCK_RESULT_UNBLOCKED; }
-
-    void execute() override
-    {
-      action_t::execute();
-      executed = true;
-    }
-
-    void cancel() override
-    {
-      action_t::cancel();
-      executed = false;
-    }
-
-    // ~3 seconds seems to be the optimal initial delay
-    // FIXME: Verify if behavior still exists on 5.3 PTR
-    timespan_t execute_time() const override
-    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
-
-    bool ready() override
-    { return ! executed; }
-  };
-
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
     gargoyle_strike_t( gargoyle_pet_t* player, util::string_view options_str ) :
@@ -2172,6 +2190,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
+
+    spawn_travel_duration = 2.9;
+    spawn_travel_stddev = 0.2;
   }
 
   void init_base_stats() override
@@ -2195,7 +2216,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "travel" );
     def -> add_action( "Gargoyle Strike" );
   }
 
@@ -2209,7 +2229,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
-    if ( name == "travel"          ) return new travel_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -2671,14 +2690,17 @@ struct magus_pet_t : public death_knight_pet_t
   }
 };
 
+// ==========================================================================
+// Reanimated Shambler (legendary)
+// ==========================================================================
+
 struct reanimated_shambler_pet_t : public death_knight_pet_t
 {
   struct necroblast_t : public pet_action_t<reanimated_shambler_pet_t, melee_attack_t>
   {
     necroblast_t( reanimated_shambler_pet_t* player ) :
       pet_action_t( player, "necroblast", player -> find_spell( 334851 ) )
-    {
-    }
+    { }
 
     void execute() override
     {
@@ -2695,53 +2717,13 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
 
   };
 
-  struct travel_t : public action_t
-  {
-    bool executed;
-
-    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ), executed( false )
-    {
-      may_miss = false;
-      dual     = true;
-    }
-
-    result_e calculate_result( action_state_t* /* s */ ) const override
-    {
-      return RESULT_HIT;
-    }
-
-    block_result_e calculate_block_result( action_state_t* ) const override
-    {
-      return BLOCK_RESULT_UNBLOCKED;
-    }
-
-    void execute() override
-    {
-      action_t::execute();
-      executed = true;
-    }
-
-    void cancel() override
-    {
-      action_t::cancel();
-      executed = false;
-    }
-
-    timespan_t execute_time() const override
-    {
-      return timespan_t::from_seconds( const_cast<travel_t*>( this )->rng().gauss( 4.597, 0.3399 ) );
-    }
-
-    bool ready() override
-    {
-      return !executed;
-    }
-  };
-
   reanimated_shambler_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "reanimated_shambler", true, false )
   {
     resource_regeneration = regen_type::DISABLED;
+
+    spawn_travel_duration = 4.597;
+    spawn_travel_stddev = 0.3399;
   }
 
   void init_base_stats() override
@@ -2756,7 +2738,6 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "travel" );
     def->add_action( "necroblast" );
   }
 
@@ -2764,8 +2745,6 @@ struct reanimated_shambler_pet_t : public death_knight_pet_t
   {
     if ( name == "necroblast" )
       return new necroblast_t( this );
-    if ( name == "travel" )
-      return new travel_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -3709,7 +3688,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
       double duration_penalty = precombat_time - summon_interval;
       while ( duration_penalty >= 0 && n_ghoul < 8 )
       {
-        p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 );
+        auto pet = p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 ).front();
+        pet -> precombat_spawn_adjust = duration_penalty;
+        pet -> precombat_spawn = true;
         duration_penalty -= summon_interval;
         n_ghoul++;
       }
@@ -3734,7 +3715,10 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( p() -> talent.army_of_the_damned -> ok() )
     {
-      p() -> pets.magus_of_the_dead.spawn( magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
+      // Bug? Magus of the dead is summoned for the same duration as Army of the Dead even though Army of the Damned's tooltip states 15s.
+      timespan_t actual_magus_duration = p() -> bugs ? summon_duration : magus_duration;
+
+      p() -> pets.magus_of_the_dead.spawn( actual_magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
     }
   }
 };
@@ -5976,6 +5960,7 @@ struct raise_dead_t : public death_knight_spell_t
     if ( is_precombat && p() -> spec.raise_dead_2 )
     {
       cooldown -> reset( false );
+      p() -> pets.ghoul_pet -> precombat_spawn = true;
     }
 
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
