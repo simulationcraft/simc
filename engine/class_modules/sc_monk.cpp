@@ -1492,8 +1492,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
              o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
         {
           double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
-          if ( o()->conduit.bone_marrow_hops->ok() )
-            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+//          if ( o()->conduit.bone_marrow_hops->ok() )
+//            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
 
           o()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
           o()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
