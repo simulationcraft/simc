@@ -1473,14 +1473,27 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void impact( action_state_t* s ) override
     {
-      if ( o()->covenant.necrolord->ok() && s->result_total > 0 )
+      if ( o()->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( o()->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->trigger( o()->buff.invoke_xuen->remains() );
+
+          o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( o()->covenant.necrolord->ok() && s->result_total > 0 &&
+         ( s->action->id != 325217 || s->action->id != 325218 ) )
       {
         if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() &&
              o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
         {
           double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
-//          if ( o()->conduit.bone_marrow_hops->ok() )
-//            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+          if ( o()->conduit.bone_marrow_hops->ok() )
+            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
 
           o()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
           o()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
@@ -4346,7 +4359,8 @@ public:
   {
     if ( p()->spec.invoke_xuen_2->ok() )
     {
-      if ( p()->buff.invoke_xuen->up() )
+      // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+      if ( p()->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
       {
         if ( !td( s->target )->debuff.empowered_tiger_lightning->up() )
           td( s->target )->debuff.empowered_tiger_lightning->trigger( p()->buff.invoke_xuen->remains() );
