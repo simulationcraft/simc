@@ -1038,10 +1038,6 @@ void mistcaller_ocarina( special_effect_t& effect )
 
 /**Unbound Changeling
  * id=330747 coefficients for stat amounts, and also the special effect on the base item
- * id=330767 given by bonus_id=6915
- * id=330739 given by bonus_id=6916
- * id=330740 given by bonus_id=6917
- * id=330741 given by bonus_id=6918
  * id=330765 driver #1 (crit, haste, and mastery)
  * id=330080 driver #2 (crit)
  * id=330733 driver #3 (haste)
@@ -1069,15 +1065,11 @@ void unbound_changeling( special_effect_t& effect )
       // If one of the bonus ID effects is present, bail out and let that bonus ID handle things instead.
       for ( auto& e : effect.item->parsed.special_effects )
       {
-        if ( e->spell_id == 330767 || e->spell_id == 330739 || e->spell_id == 330740 || e->spell_id == 330741 )
+        if ( e->spell_id == 330765 || e->spell_id == 330080 || e->spell_id == 330733 || e->spell_id == 330734 )
             return;
       }
       // Fallback, profile does not specify a stat-giving item bonus, so default to haste.
       effect.spell_id = 330733;
-    }
-    else
-    {
-      effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
     }
   }
 
@@ -1860,10 +1852,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
     unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
     unique_gear::register_special_effect( 330747, items::unbound_changeling );
-    unique_gear::register_special_effect( 330767, items::unbound_changeling );
-    unique_gear::register_special_effect( 330739, items::unbound_changeling );
-    unique_gear::register_special_effect( 330740, items::unbound_changeling );
-    unique_gear::register_special_effect( 330741, items::unbound_changeling );
+    unique_gear::register_special_effect( 330765, items::unbound_changeling );
+    unique_gear::register_special_effect( 330080, items::unbound_changeling );
+    unique_gear::register_special_effect( 330733, items::unbound_changeling );
+    unique_gear::register_special_effect( 330734, items::unbound_changeling );
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
