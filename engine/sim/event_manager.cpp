@@ -7,7 +7,7 @@
 #include "event.hpp"
 #include "util/util.hpp"
 #include "sim/sc_sim.hpp"
-#include "player/actor.hpp"
+#include "player/sc_player.hpp"
 
 
 event_manager_t::event_manager_t( sim_t* s )
@@ -202,8 +202,26 @@ void event_manager_t::reschedule_event( event_t* e )
 
 bool event_manager_t::execute()
 {
+  unsigned n_events = 0u;
+
+  static const unsigned MAX_EVENTS = 500u * (
+    sim->single_actor_batch ? 1u : sim->player_no_pet_list.size()
+  );
+
   while ( event_t* e = next_event() )
   {
+    if ( e->time == current_time )
+    {
+      if ( ++n_events == MAX_EVENTS )
+      {
+        cancel_stuck();
+      }
+    }
+    else
+    {
+      n_events = 0u;
+    }
+
     current_time = e->time;
 
 #ifdef ACTOR_EVENT_BOOKKEEPING
@@ -407,3 +425,39 @@ void event_manager_t::merge( event_manager_t& other )
 
 #endif
 }
+
+// event_manager_t::cancel_stuck ============================================
+
+void event_manager_t::cancel_stuck()
+{
+  std::string player_str { "(unknown)" };
+
+  if ( sim->player_no_pet_list.size() == 1 )
+  {
+    player_str = sim->player_no_pet_list[ 0 ]->name();
+  }
+  else if ( sim->single_actor_batch )
+  {
+    player_str = sim->player_no_pet_list[ sim->current_index ]->name();
+  }
+
+  fmt::print( stderr,
+        "Simulator likely stuck on "
+        "thread={}, iteration={}, seed={}, player={}, canceling ...\n", sim->thread_index,
+        sim->current_iteration, sim->seed, player_str );
+
+  if ( sim->parent )
+  {
+    sim->parent->event_mgr.cancel_stuck();
+  }
+  // Parent (thread 0) processing
+  else
+  {
+    sim->cancel();
+    range::for_each( sim->relatives, []( sim_t* relative ) {
+      relative->cancel_iteration();
+    } );
+    sim->cancel_iteration();
+  }
+}
+
