@@ -2345,7 +2345,9 @@ struct xuen_pet_t : public pet_t
 private:
   struct melee_t : public melee_attack_t
   {
-    melee_t( util::string_view n, xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    monk_t* owner;
+    melee_t( util::string_view n, xuen_pet_t* player ) : 
+        melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -2368,14 +2370,86 @@ private:
       else
         attack_t::execute();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct crackling_tiger_lightning_tick_t : public spell_t
   {
+    monk_t* owner;
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
-      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
+      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning ), 
+        owner( p->o() )
     {
       dual = direct_tick = background = may_crit = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->spec.invoke_xuen_2->ok() )
+      {
+        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
+        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+        {
+          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
+            owner->get_target_data( s->target )
+                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+
+          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
+        }
+      }
+
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      spell_t::impact( s );
     }
   };
 
