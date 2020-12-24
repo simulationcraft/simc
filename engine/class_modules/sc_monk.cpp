@@ -4556,7 +4556,9 @@ public:
     if ( p()->spec.invoke_xuen_2->ok() )
     {
       // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-      if ( p()->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
+      // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
+      if ( p()->buff.invoke_xuen->up() && s->result_total > 0 
+          && (s->action->id != 335913 || s->action->id != 124280 ) )
       {
         if ( !td( s->target )->debuff.empowered_tiger_lightning->up() )
           td( s->target )->debuff.empowered_tiger_lightning->trigger( p()->buff.invoke_xuen->remains() );
