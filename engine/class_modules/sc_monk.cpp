@@ -35,6 +35,7 @@ BREWMASTER:
 - Not Modeled:
 */
 #include "simulationcraft.hpp"
+#include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 
 // ==========================================================================
@@ -1273,14 +1274,10 @@ struct pet_heal_t : public pet_action_base_t<heal_t>
   }
 };
 
-// ==========================================================================
-// Monk Statues
-// ==========================================================================
-
-struct statue_t : public pet_t
+struct monk_pet_t : public pet_t
 {
-  statue_t( sim_t* sim, monk_t* owner, const std::string& n, pet_e pt, bool guardian = false )
-    : pet_t( sim, owner, n, pt, guardian )
+  monk_pet_t( monk_t* owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
+    : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
   {
   }
 
@@ -1288,11 +1285,28 @@ struct statue_t : public pet_t
   {
     return static_cast<monk_t*>( owner );
   }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+};
+
+// ==========================================================================
+// Monk Statues
+// ==========================================================================
+
+struct statue_t : public monk_pet_t
+{
+  statue_t( monk_t* owner, util::string_view n, pet_e pt, bool guardian = false )
+    : monk_pet_t( owner, n, pt, guardian, false )
+  {
+  }
 };
 
 struct jade_serpent_statue_t : public statue_t
 {
-  jade_serpent_statue_t( sim_t* sim, monk_t* owner, const std::string& n ) : statue_t( sim, owner, n, PET_NONE, true )
+  jade_serpent_statue_t( monk_t* owner, util::string_view n ) : statue_t( owner, n, PET_NONE, true )
   {
   }
 };
@@ -1301,7 +1315,7 @@ struct jade_serpent_statue_t : public statue_t
 // Storm Earth and Fire
 // ==========================================================================
 
-struct storm_earth_and_fire_pet_t : public pet_t
+struct storm_earth_and_fire_pet_t : public monk_pet_t
 {
   struct sef_td_t : public actor_target_data_t
   {
@@ -2147,9 +2161,9 @@ public:
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
 
-  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield,
+  storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield,
                               weapon_e weapon_type )
-    : pet_t( sim, owner, name, true, true ),
+    : monk_pet_t( owner, name, PET_NONE, true, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
       sticky_target( false ),
@@ -2188,16 +2202,6 @@ public:
   timespan_t available() const override
   {
     return sim->expected_iteration_time * 2;
-  }
-
-  monk_t* o()
-  {
-    return debug_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return debug_cast<const monk_t*>( owner );
   }
 
   const sef_td_t* find_target_data( const player_t* target ) const override
@@ -2330,7 +2334,7 @@ public:
 // ==========================================================================
 // Xuen Pet
 // ==========================================================================
-struct xuen_pet_t : public pet_t
+struct xuen_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -2476,7 +2480,7 @@ private:
   };
 
 public:
-  xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
+  xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
     npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2485,16 +2489,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2530,7 +2524,7 @@ public:
 // ==========================================================================
 // Fury of Xuen Pet
 // ==========================================================================
-struct fury_of_xuen_pet_t : public pet_t
+struct fury_of_xuen_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -2624,7 +2618,7 @@ private:
   };
 
 public:
-  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
+  fury_of_xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
     npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2633,16 +2627,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.sp_from_ap      = 1.00;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2678,7 +2662,7 @@ public:
 // ==========================================================================
 // Niuzao Pet
 // ==========================================================================
-struct niuzao_pet_t : public pet_t
+struct niuzao_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -2844,7 +2828,7 @@ private:
   };
 
 public:
-  niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
+  niuzao_pet_t( monk_t* owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
     npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2853,16 +2837,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap      = 1;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2897,7 +2871,7 @@ public:
 // ==========================================================================
 // Chi-Ji Pet
 // ==========================================================================
-struct chiji_pet_t : public pet_t
+struct chiji_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -2958,7 +2932,7 @@ private:
   };
 
 public:
-  chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
+  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
     npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2967,16 +2941,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3005,12 +2969,12 @@ public:
 // ==========================================================================
 // Yu'lon Pet
 // ==========================================================================
-struct yulon_pet_t : public pet_t
+struct yulon_pet_t : public monk_pet_t
 {
 private:
 
 public:
-  yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
+  yulon_pet_t( monk_t* owner ) : monk_pet_t( owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
     npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3019,16 +2983,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3052,7 +3006,7 @@ public:
 // ==========================================================================
 // Fallen Monk - Windwalker (Venthyr)
 // ==========================================================================
-struct fallen_monk_ww_pet_t : public pet_t
+struct fallen_monk_ww_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -3190,7 +3144,7 @@ public:
   } buff;
 
   fallen_monk_ww_pet_t( monk_t* owner ) :
-      pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+      monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -3221,16 +3175,6 @@ public:
       default:
         break;
     }
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3427,7 +3371,7 @@ public:
 // ==========================================================================
 // Fallen Monk - Brewmaster (Venthyr)
 // ==========================================================================
-struct fallen_monk_brm_pet_t : public pet_t
+struct fallen_monk_brm_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -3537,7 +3481,7 @@ public:
   } buff;
 
   fallen_monk_brm_pet_t( monk_t* owner )
-    : pet_t( owner->sim, owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
@@ -3562,16 +3506,6 @@ public:
       default:
         break;
     }
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3817,7 +3751,7 @@ public:
 // ==========================================================================
 // Fallen Monk - Mistweaver (Venthyr)
 // ==========================================================================
-struct fallen_monk_mw_pet_t : public pet_t
+struct fallen_monk_mw_pet_t : public monk_pet_t
 {
 private:
   struct melee_t : public melee_attack_t
@@ -3922,7 +3856,7 @@ private:
 
 public:
   fallen_monk_mw_pet_t( monk_t* owner )
-    : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -3933,16 +3867,6 @@ public:
 
     owner_coeff.sp_from_ap = 0.98;
     owner_coeff.ap_from_ap = 0.98;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -10096,10 +10020,10 @@ void monk_t::create_pets()
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p->sim, p, true, WEAPON_SWORD );
+    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p->sim, p, true, WEAPON_MACE );
+    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p, true, WEAPON_MACE );
   }
 
   if ( covenant.venthyr->ok() )
