@@ -9614,7 +9614,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Xuen Rank 2 Empowered Tiger Lightning Buff
 // ===============================================================================
-struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
+struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
 {
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
@@ -9638,7 +9638,7 @@ struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
     }
   }
 
-  invoke_xuen_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
+  invoke_xuen_the_white_tiger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
       : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
@@ -10771,7 +10771,7 @@ void monk_t::create_buffs()
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
-  buff.invoke_niuzao = make_buff( this, "invoke_niuzao", spec.invoke_niuzao )
+  buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", spec.invoke_niuzao )
                            ->set_default_value_from_effect( 2 );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
@@ -10857,7 +10857,7 @@ void monk_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buff.invoke_xuen = new buffs::invoke_xuen_buff_t( *this, "invoke_xuen_the_white_tiger", spec.invoke_xuen );
+  buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_the_white_tiger", spec.invoke_xuen );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
