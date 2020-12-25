@@ -8667,7 +8667,8 @@ void shaman_t::init_action_list_elemental()
                                   "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)" );
     se_single_target->add_action(
         this, "Earth Shock",
-        "if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)" );
+        "if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)|(runeforge.echoes_of_"
+        "great_sundering.equipped&!buff.echoes_of_great_sundering.up)" );
     se_single_target->add_action( this, "Lightning Bolt",
                                "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff."
                                "master_of_the_elements.up)" );
