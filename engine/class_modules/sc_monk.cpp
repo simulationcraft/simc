@@ -1229,6 +1229,36 @@ struct pet_action_base_t : public BASE
   }
 };
 
+struct pet_melee_t : pet_melee_attack_t
+{
+  pet_melee_t( util::string_view name, monk_pet_t* player, const spell_data_t* data = spell_data_t::nil(),
+               weapon_t* weapon = nullptr )
+    : pet_melee_attack_t( name, player, data, weapon )
+  {
+    background = repeating = may_crit = may_glance = true;
+    school                                         = SCHOOL_PHYSICAL;
+    weapon_multiplier                              = 1.0;
+    // Use damage numbers from the level-scaled weapon
+    weapon            = &( player->main_hand_weapon );
+    base_execute_time = weapon->swing_time;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+
+    // TODO: check if there should be a dual wield hit malus here.
+  }
+
+  void execute() override
+  {
+    if ( time_to_execute > timespan_t::zero() && player->executing )
+    {
+      sim->print_debug( "Executing {} during melee ({}).", *player->executing, weapon->slot );
+      schedule_execute();
+    }
+    else
+      pet_melee_attack_t::execute();
+  }
+};
+
 // ==========================================================================
 // Generalized Auto Attack Action
 // ==========================================================================
@@ -1317,7 +1347,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     const action_t* source_action;
 
-    sef_action_base_t( const std::string& n, storm_earth_and_fire_pet_t* p,
+    sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() )
       : super_t( n, p, data ), source_action( nullptr )
     {
@@ -1487,7 +1517,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   {
     bool main_hand, off_hand;
 
-    sef_melee_attack_t( const std::string& n, storm_earth_and_fire_pet_t* p,
+    sef_melee_attack_t( util::string_view n, storm_earth_and_fire_pet_t* p,
                         const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
       : base_t( n, p, data ),
         // For special attacks, the SEF pets always use the owner's weapons.
@@ -1519,7 +1549,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
   {
-    sef_spell_t( const std::string& n, storm_earth_and_fire_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    sef_spell_t( util::string_view n, storm_earth_and_fire_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
       : base_t( n, p, data )
     {
     }
@@ -1529,7 +1559,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct melee_t : public sef_melee_attack_t
   {
-    melee_t( const std::string& n, storm_earth_and_fire_pet_t* player, weapon_t* w )
+    melee_t( util::string_view n, storm_earth_and_fire_pet_t* player, weapon_t* w )
       : sef_melee_attack_t( n, player, spell_data_t::nil(), w )
     {
       background = repeating = may_crit = may_glance = true;
@@ -1566,24 +1596,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         sim->error( "{} has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.", *o() );
       }
     }
-
-    /*    double action_multiplier() const override
-        {
-          double am = sef_melee_attack_t::action_multiplier();
-
-          am *= 1.0 + o()->spec.storm_earth_and_fire->effectN( 1 ).percent();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            // Remove owner's Hit Combo
-            am /= 1 + o()->buff.hit_combo->stack_value();
-            // .. aand add Pet's Hit Combo
-            am *= 1 + p()->buff.hit_combo_sef->stack_value();
-          }
-
-          return am;
-        }
-        */
 
     // A wild equation appears
     double composite_attack_power() const override
@@ -1629,7 +1641,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
-// TODO: check if this should inherit from sef_action_base
   struct auto_attack_t : public pet_auto_attack_t
   {
     auto_attack_t( storm_earth_and_fire_pet_t* player, util::string_view options_str )
@@ -1752,18 +1763,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
-    sef_rising_sun_kick_dmg_t* trigger;
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick ),
-        trigger( new sef_rising_sun_kick_dmg_t( player ) )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick )
     {
-    }
-
-    void execute() override
-    {
-      sef_melee_attack_t::execute();
-
-      trigger->execute();
+      execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
   };
 
@@ -1843,7 +1846,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
     {
-      aoe = (int)p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      aoe = as<int>( p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value() );
     }
   };
 
@@ -2089,7 +2092,7 @@ public:
 
   void init_spells() override
   {
-    pet_t::init_spells();
+    monk_pet_t::init_spells();
 
     attacks.at( SEF_TIGER_PALM )                 = new sef_tiger_palm_t( this );
     attacks.at( SEF_BLACKOUT_KICK )              = new sef_blackout_kick_t( this );
@@ -2109,7 +2112,7 @@ public:
   {
     action_list_str = "auto_attack";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -2117,12 +2120,12 @@ public:
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-    pet_t::summon( duration );
+    monk_pet_t::summon( duration );
 
     o()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, duration );
 
@@ -2140,14 +2143,14 @@ public:
 
   void dismiss( bool expired = false ) override
   {
-    pet_t::dismiss( expired );
+    monk_pet_t::dismiss( expired );
 
     o()->buff.storm_earth_and_fire->decrement();
   }
 
   void create_buffs() override
   {
-    pet_t::create_buffs();
+    monk_pet_t::create_buffs();
 
     buff.bok_proc_sef =
         make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
@@ -2205,31 +2208,10 @@ public:
 struct xuen_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, xuen_pet_t* player ) : 
-        pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, xuen_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
@@ -2375,30 +2357,10 @@ public:
 struct fury_of_xuen_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fury_of_xuen_pet_t* player ) : pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fury_of_xuen_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
   };
 
@@ -2495,31 +2457,10 @@ public:
 struct niuzao_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, niuzao_pet_t* player )
-      : pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, niuzao_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
@@ -2542,7 +2483,7 @@ private:
         }
       }
 
-      pet_melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
@@ -2686,30 +2627,10 @@ public:
 struct chiji_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, chiji_pet_t* player ) : pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, chiji_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
   };
 
@@ -2784,26 +2705,17 @@ public:
 struct fallen_monk_ww_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_ww_pet_t* player ) :
-        pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fallen_monk_ww_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-      base_hit          -= 0.19;
+      base_hit -= 0.19;
     }
 
     // Copy melee code from Storm, Earth and Fire
     double composite_attack_power() const override
     {
-      double ap = pet_melee_attack_t::composite_attack_power();
+      double ap = pet_melee_t::composite_attack_power();
       auto owner = o();
 
       if ( owner->main_hand_weapon.group() == WEAPON_2H )
@@ -2828,24 +2740,11 @@ private:
       return ap;
     }
 
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
-    }
-
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
 
-      pet_melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
@@ -3337,38 +3236,17 @@ public:
 struct fallen_monk_mw_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_mw_pet_t* player ) : pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fallen_monk_mw_pet_t* player ) : pet_melee_t( n, player, spell_data_t::nil() )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
 
-      pet_melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
