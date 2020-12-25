@@ -1222,13 +1222,13 @@ struct pet_action_base_t : public BASE
 
 struct pet_melee_t : pet_melee_attack_t
 {
-  pet_melee_t( util::string_view name, monk_pet_t* player, weapon_t* weapon)
-    : pet_melee_attack_t( name, player, spell_data_t::nil()  )
+  pet_melee_t( util::string_view name, monk_pet_t* player, weapon_t* weapon )
+    : pet_melee_attack_t( name, player, spell_data_t::nil() )
   {
     background = repeating = may_crit = may_glance = true;
     school                                         = SCHOOL_PHYSICAL;
     weapon_multiplier                              = 1.0;
-    weapon                                         = weapon;
+    this->weapon                                   = weapon;
     // Use damage numbers from the level-scaled weapon
     base_execute_time = weapon->swing_time;
     trigger_gcd       = timespan_t::zero();
