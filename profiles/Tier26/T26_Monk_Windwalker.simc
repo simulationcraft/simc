@@ -7,7 +7,7 @@ role=dps
 position=back
 talents=3020012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/xuens_bond:7/let_go_of_the_past
+soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/coordinated_offensive:7/let_go_of_the_past
 
 # Default consumables
 potion=potion_of_spectral_agility
@@ -76,7 +76,6 @@ actions.cd_sef+=/bonedust_brew,if=raid_event.adds.in>50|raid_event.adds.up,line_
 actions.cd_sef+=/storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled
 actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|!covenant.kyrian&((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
-actions.cd_sef+=/use_item,name=inscrutable_quantum_device
 actions.cd_sef+=/use_item,name=dreadfire_vessel
 actions.cd_sef+=/touch_of_karma,if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
@@ -88,7 +87,6 @@ actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
 
 actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
-actions.cd_serenity+=/use_item,name=inscrutable_quantum_device
 actions.cd_serenity+=/use_item,name=dreadfire_vessel
 actions.cd_serenity+=/blood_fury,if=variable.serenity_burst
 actions.cd_serenity+=/berserking,if=variable.serenity_burst
@@ -114,7 +112,6 @@ actions.opener+=/expel_harm
 actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.recently_rushing_tiger_palm.up*20),if=chi.max-chi>=2
 
 actions.serenity=fists_of_fury,if=buff.serenity.remains<1
-actions.serenity+=/use_item,name=inscrutable_quantum_device
 actions.serenity+=/use_item,name=dreadfire_vessel
 actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>=3|active_enemies>1&!cooldown.rising_sun_kick.up)
 actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
@@ -178,7 +175,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6536/1540/6646,enchant=eternal_agility
 finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=labrys_of_the_loyal_larion,id=174302,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1540/6646,enchant=sinful_revelation

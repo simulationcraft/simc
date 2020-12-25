@@ -35,7 +35,7 @@ role=attack
 position=back
 talents=3020012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/xuens_bond:7/let_go_of_the_past
+soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/coordinated_offensive:7/let_go_of_the_past
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6648/1532/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
@@ -49,7 +49,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6536/1540/6646,enchant=eternal_agility
 finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=labrys_of_the_loyal_larion,id=174302,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1540/6646,enchant=sinful_revelation
@@ -64,7 +64,7 @@ role=attack
 position=back
 talents=3020013
 covenant=kyrian
-soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/xuens_bond:7/let_go_of_the_past
+soulbind=pelagos,combat_meditation/strike_with_clarity:7/focusing_mantra/harm_denial:7/cleansed_vestments/coordinated_offensive:7/let_go_of_the_past
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6648/1532/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173129
@@ -78,7 +78,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6536/1540/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6536/1540/6646,enchant=eternal_agility
 finger1=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_versatility
 finger2=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=labrys_of_the_loyal_larion,id=174302,bonus_id=7187/1531,enchant=celestial_guidance
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6536/1540/6646,enchant=sinful_revelation

@@ -36,7 +36,7 @@ role=attack
 position=back
 talents=3020012
 covenant=kyrian
-soulbind=pelagos,combat_meditation/strike_with_clarity:4
+soulbind=pelagos,combat_meditation/coordinated_offensive:4/focusing_mantra
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6650/1487
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
@@ -50,7 +50,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
 main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
@@ -66,7 +66,7 @@ role=attack
 position=back
 talents=3020013
 covenant=kyrian
-soulbind=pelagos,combat_meditation/strike_with_clarity:4
+soulbind=pelagos,combat_meditation/coordinated_offensive:4/focusing_mantra
 
 head=umbrahide_helm,id=172317,bonus_id=6716/7082/6647/6650/1487
 neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
@@ -80,7 +80,7 @@ legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
 feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=ritual_commanders_ring,id=178781,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
 trinket2=darkmoon_deck_voracity,id=173087
 main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=lightless_force
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
