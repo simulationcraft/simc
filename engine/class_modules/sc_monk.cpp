@@ -1259,6 +1259,9 @@ struct pet_auto_attack_t : public melee_attack_t
   void execute() override
   {
     player->main_hand_attack->schedule_execute();
+
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
   }
 
   bool ready() override
@@ -1514,24 +1517,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       super_t::snapshot_internal( state, flags, rt );
 
-      // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
-      // multipliers in the first place.
-      /*      if ( o() -> talent.hit_combo -> ok() )
-            {
-              if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-              {
-                state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
-
-              if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-              {
-                state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
-            }
-            */
-
       if ( o()->conduit.coordinated_offensive->ok() && p()->sticky_target )
       {
          if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
@@ -1577,24 +1562,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         return base_t::amount_type( state, periodic );
       }
     }
-
-    /*    double action_multiplier() const override
-        {
-          double am = base_t::action_multiplier();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
-            {
-              // Remove owner's Hit Combo
-              am /= 1 + o()->buff.hit_combo->stack_value();
-              // .. aand add Pet's Hit Combo
-              am *= 1 + p()->buff.hit_combo_sef->stack_value();
-            }
-          }
-          return am;
-        }
-        */
   };
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
@@ -1603,24 +1570,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : base_t( n, p, data )
     {
     }
-
-    /*    double action_multiplier() const override
-        {
-          double am = base_t::action_multiplier();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
-            {
-              // Remove owner's Hit Combo
-              am /= 1 + o()->buff.hit_combo->stack_value();
-              // .. aand add Pet's Hit Combo
-              am *= 1 + p()->buff.hit_combo_sef->stack_value();
-            }
-          }
-          return am;
-        }
-        */
   };
 
   // Auto attack ============================================================
@@ -1727,14 +1676,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
-  struct auto_attack_t : public attack_t
+// TODO: check if this should inherit from sef_action_base
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( storm_earth_and_fire_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( storm_earth_and_fire_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
-
-      trigger_gcd = timespan_t::zero();
 
       melee_t* mh = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
       if ( !mh->source_action )
@@ -1748,22 +1696,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       {
         player->off_hand_attack = new melee_t( "auto_attack_oh", player, &( player->off_hand_weapon ) );
       }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -2448,33 +2380,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( xuen_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( xuen_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -2586,33 +2500,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fury_of_xuen_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( fury_of_xuen_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -2796,33 +2692,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( niuzao_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( niuzao_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -2900,33 +2778,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( chiji_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( chiji_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -3054,34 +2914,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
-    auto_attack_t( fallen_monk_ww_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player -> o() )
+    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -3323,50 +3164,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
-    auto_attack_t( fallen_monk_brm_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
+    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    void init() override
-    {
-      attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -3631,50 +3437,15 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
     auto_attack_t( fallen_monk_mw_pet_t* player, util::string_view options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
       player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    void init() override
-    {
-      attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
