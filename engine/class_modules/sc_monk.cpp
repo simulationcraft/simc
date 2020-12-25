@@ -1083,6 +1083,7 @@ public:
   void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   void trigger_empowered_tiger_lightning( action_state_t*);
+  void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1470,24 +1471,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     void impact( action_state_t* s ) override
     {
       auto owner = this->o();
+
       owner->trigger_empowered_tiger_lightning( s );
-
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-         ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-//          if ( o()->conduit.bone_marrow_hops->ok() )
-//            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      owner->trigger_bonedust_brew( s );
 
       super_t::impact( s );
     }
@@ -2202,24 +2188,7 @@ private:
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
-
-      auto owner = o();
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      o()->trigger_bonedust_brew( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -2237,23 +2206,7 @@ private:
     {
       auto owner = o();
       owner->trigger_empowered_tiger_lightning( s );
-
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      owner->trigger_bonedust_brew( s );
 
       pet_spell_t::impact( s );
     }
@@ -2450,23 +2403,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      auto owner = o();
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      o()->trigger_bonedust_brew( s );
 
       pet_melee_t::impact( s );
     }
@@ -2531,23 +2468,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      auto owner = o();
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      o()->trigger_bonedust_brew( s );
 
       pet_melee_attack_t::impact( s );
     }
@@ -3729,28 +3650,9 @@ public:
 
     p()->trigger_empowered_tiger_lightning( s );
 
-    trigger_bonedust_brew( s );
+    p()->trigger_bonedust_brew( s );
 
     ab::impact( s );
-  }
-
-  void trigger_bonedust_brew( action_state_t* s )
-  {
-    // Make sure it is not triggering from its self
-    if ( p()->covenant.necrolord->ok() && s->result_total > 0 &&
-         ( s->action->id != 325217 || s->action->id != 325218 ) )
-    {
-      if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
-      {
-        double damage = s->result_total * p()->covenant.necrolord->effectN( 1 ).percent();
-        if ( p()->conduit.bone_marrow_hops->ok() )
-          damage *= 1 + p()->conduit.bone_marrow_hops.percent();
-
-        p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-        p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-        p()->active_actions.bonedust_brew_dmg->execute();
-      }
-    }
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -12068,6 +11970,27 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
       auto new_value = previous_value + s->result_total;
       
       td->debuff.empowered_tiger_lightning->trigger( -1, new_value , -1, buff.invoke_xuen->remains());
+    }
+  }
+}
+
+void monk_t::trigger_bonedust_brew( action_state_t* s )
+{
+  if ( covenant.necrolord->ok() && s->result_total > 0 && s->action->id != 325217 && s->action->id != 325218 )
+  {
+    if ( auto td = find_target_data( s->target ) )
+    {
+      if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
+      {
+        double damage = s->result_total * covenant.necrolord->effectN( 1 ).percent();
+        // Bone Marrow Hops DOES NOT work with SEF or pets
+        //          if ( o()->conduit.bone_marrow_hops->ok() )
+        //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+        active_actions.bonedust_brew_dmg->base_dd_min = damage;
+        active_actions.bonedust_brew_dmg->base_dd_max = damage;
+        active_actions.bonedust_brew_dmg->execute();
+      }
     }
   }
 }
