@@ -5092,6 +5092,12 @@ struct festering_wound_t : public death_knight_spell_t
     background = true;
 
     base_multiplier *= 1.0 + p -> talent.bursting_sores -> effectN( 1 ).percent();
+
+    // "Festering Strike - Upgrade - Rank 2 - Increases damage done by 20%" does not actually increase FS damage by 20%
+    // Instead it increases Festering Wound damage by 20% according to spelldata and ingame testing.
+    // 2020-12-25 - Melekus: gonna consider this a bug for now.
+    if ( p -> bugs )
+      base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5111,7 +5117,11 @@ struct festering_strike_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
+    // "Festering Strike - Upgrade - Rank 2 - Increases damage done by 20%" does not actually increase FS damage by 20%
+    // Instead it increases Festering Wound damage by 20% according to spelldata and ingame testing.
+    // 2020-12-25 - Melekus: gonna consider this a bug for now.
+    if ( ! p -> bugs )
+      base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
