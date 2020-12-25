@@ -1168,7 +1168,7 @@ public:
         double glory_threshold = p()->specialization() == WARRIOR_FURY ? 30 : 20;
         if (p()->covenant.glory_counter >= glory_threshold)
         {
-          int stacks = floor( p()->covenant.glory_counter / glory_threshold );
+          int stacks = as<int>( floor( p()->covenant.glory_counter / glory_threshold ) );
           p()->buff.glory->trigger( stacks );
           p()->covenant.glory_counter -= stacks * glory_threshold;
         }
@@ -1630,7 +1630,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
     {
       mortal_combo_strike                      = new mortal_strike_unhinged_t( p, "Mortal Combo", true );
-      add_child(mortal_combo_strike);
       mortal_combo_strike->background          = true;
     }
     cooldown->duration = timespan_t::zero();
@@ -4689,7 +4688,13 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
 
-    p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
+    if ( p()->talents.meat_cleaver->ok() )
+    {
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() + 
+      ( p()->talents.meat_cleaver->effectN( 2 ).base_value() ) );
+    }
+    else
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
   }
 
   void execute() override
@@ -4827,7 +4832,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = max_rage;
+    double c = warrior_attack_t::cost();
 
     if ( p()->buff.deadly_calm->check() )
     {
@@ -5282,7 +5287,11 @@ struct spear_of_bastion_t : public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
-    execute_action = p->active.spear_of_bastion_attack;
+    if ( p->active.spear_of_bastion_attack )
+    {
+      execute_action = p->active.spear_of_bastion_attack;
+      add_child( execute_action );
+    }
     if ( p->conduit.piercing_verdict->ok() )
       {
         energize_amount = p->conduit.piercing_verdict.percent() * (1 + p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0 );
@@ -6676,7 +6685,7 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&cooldown.bladestorm.remains>12" );
+  default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15|talent.ravager.enabled)" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
 //  default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
@@ -6749,8 +6758,8 @@ void warrior_t::apl_arms()
   single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&rage>60" );
-  single_target->add_action( this, "Slam" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -7417,7 +7426,7 @@ std::string warrior_t::default_potion() const
 
   std::string arms_pot =
       ( true_level > 50 )
-          ? "potion_of_phantom_fire"
+          ? "spectral_strength"
           : ( true_level > 40 )
                 ? "potion_of_unbridled_fury"
                 : "disabled";
@@ -7505,7 +7514,7 @@ std::string warrior_t::default_temporary_enchant() const
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shadowcore_oil"
+                              ? "main_hand:shaded_sharpening_stone"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )

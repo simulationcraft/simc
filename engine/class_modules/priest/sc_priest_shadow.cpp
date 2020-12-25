@@ -508,7 +508,9 @@ struct silence_t final : public priest_spell_t
   {
     priest_spell_t::impact( state );
 
-    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    // Currently you can just cast Silence on anything and proc Sephuz, even if immune
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/776
+    if ( priest().bugs || target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
     {
       if ( priest().legendary.sephuzs_proclamation->ok() && priest().buffs.sephuzs_proclamation )
       {
@@ -519,6 +521,11 @@ struct silence_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
+    // Currently you can just cast Silence on anything and proc Sephuz, even if immune
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/776
+    if ( priest().bugs )
+      return true;
+
     if ( !priest_spell_t::target_ready( candidate_target ) )
       return false;
 
@@ -1286,6 +1293,18 @@ struct psychic_horror_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Eternal Call to the Void (Shadowlands Legendary)
+// ==========================================================================
+struct eternal_call_to_the_void_t final : public priest_spell_t
+{
+  eternal_call_to_the_void_t( priest_t& p )
+    : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( p.legendary.eternal_call_to_the_void->id() ) )
+  {
+    background = true;
+  }
+};
+
+// ==========================================================================
 // Void Torrent
 // ==========================================================================
 struct void_torrent_t final : public priest_spell_t
@@ -1955,15 +1974,26 @@ void priest_t::generate_apl_shadow()
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // CDs
-  cds->add_action( this, "Power Infusion",
-                   "if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_"
-                   "remains<cooldown.void_eruption.remains",
-                   "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
-                   "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
-                   "be another Void Eruption this fight." );
-  cds->add_action( this, "Silence",
-                   "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
-                   "Use Silence on CD to proc Sephuz's Proclamation." );
+  if ( options.priest_self_power_infusion )
+  {
+    cds->add_action( this, "Power Infusion",
+                     "if=buff.voidform.up|!soulbind.combat_meditation.enabled&cooldown.void_eruption.remains>=10|fight_"
+                     "remains<cooldown.void_eruption.remains",
+                     "Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds "
+                     "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
+                     "be another Void Eruption this fight." );
+  }
+  if ( bugs )
+  {
+    cds->add_action( this, "Silence", "target_if=runeforge.sephuzs_proclamation.equipped",
+                     "Use Silence on CD to proc Sephuz's Proclamation." );
+  }
+  else
+  {
+    cds->add_action( this, "Silence",
+                     "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
+                     "Use Silence on CD to proc Sephuz's Proclamation." );
+  }
   cds->add_action( this, covenant.fae_guardians, "fae_guardians",
                    "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
                    "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
@@ -2107,6 +2137,11 @@ void priest_t::init_background_actions_shadow()
   if ( talents.psychic_link->ok() )
   {
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
+  }
+
+  if ( legendary.eternal_call_to_the_void->ok() )
+  {
+    background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
   }
 }
 

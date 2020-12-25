@@ -637,11 +637,6 @@ void soul_igniter( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      // Need to trigger the category cooldown that this trinket does not have on other trinkets.
-      auto cd_group = player->get_cooldown( "item_cd_" + util::to_string( second_action->category() ) );
-      if ( cd_group )
-        cd_group->start( second_action->category_cooldown() );
-
       if ( buff->check() )
       {
         buff->expire();
@@ -664,14 +659,107 @@ void soul_igniter( special_effect_t& effect )
     make_buff<soul_ignition_buff_t>( effect, damage_action );
 }
 
-void skulkers_wing( special_effect_t& /* effect */ )
+/** Skulker's Wing
+ * id=345019 driver speed buff, effect 1: 8y area trigger create
+ * id=345113 dummy damage container spell
+ * id=345020 actual triggered leap+damage spell
+ */
+void skulkers_wing( special_effect_t& effect )
 {
+  struct skulking_predator_t : public proc_spell_t
+  {
+    skulking_predator_t( const special_effect_t& e ) :
+      proc_spell_t( "skulking_predator", e.player, e.player->find_spell( 345020 ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 345113 )->effectN( 1 ).average( e.item );
+    }
+  };
 
+  // Speed buff is only present until the damage trigger happens, this within 100ms if you are already in range
+  // For now assume we are nearest to the primary target and just trigger the damage immediately
+  // TODO: Speed buff + range-based target selection?
+
+  effect.execute_action = create_proc_action<skulking_predator_t>( "skulking_predator", effect );
 }
 
-void memory_of_past_sins( special_effect_t& /* effect */ )
+/** Memory of Past Sins
+ * id=344662 driver buff proc stacks, effect 1: damage amp %
+ * id=344663 target debuff damage amp stacks
+ * id=344664 proc damage, effect 1: shadow damage
+ */
+void memory_of_past_sins( special_effect_t& effect )
 {
+  struct shattered_psyche_damage_t : public generic_proc_t
+  {
+    shattered_psyche_damage_t( const special_effect_t& e)
+      : generic_proc_t( e, "shattered_psyche", 344664 )
+    {
+      callbacks = false;
+    }
 
+    double composite_target_da_multiplier( player_t* t ) const override
+    {
+      double m = proc_spell_t::composite_target_da_multiplier( t );
+      auto td = player->get_target_data( t );
+      m *= 1.0 + td->debuff.shattered_psyche->stack_value();
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+      td->debuff.shattered_psyche->trigger();
+    }
+  };
+
+  struct shattered_psyche_cb_t : public dbc_proc_callback_t
+  {
+    shattered_psyche_damage_t* damage;
+    buff_t* buff;
+
+    shattered_psyche_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( debug_cast<shattered_psyche_damage_t*>( d ) ), buff( b )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* trigger_state ) override
+    {
+      damage->target = trigger_state->target;
+      damage->execute();
+      buff->decrement();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "shattered_psyche" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "shattered_psyche", effect.player->find_spell( 344662 ) );
+    buff->set_initial_stack( buff->max_stack() );
+  }
+
+  action_t* damage = create_proc_action<shattered_psyche_damage_t>( "shattered_psyche", effect );
+
+  effect.custom_buff = buff;
+  effect.disable_action();
+
+  auto cb_driver = new special_effect_t( effect.player );
+  cb_driver->name_str = "shattered_psyche_driver";
+  cb_driver->spell_id = 344662;
+  cb_driver->cooldown_ = 0_s;
+  effect.player->special_effects.push_back( cb_driver );
+
+  auto callback = new shattered_psyche_cb_t( *cb_driver, damage, buff );
+  callback->initialize();
+  callback->deactivate();
+
+  buff->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
+    if ( old == 0 )
+      callback->activate();
+    else if ( new_ == 0 )
+      callback->deactivate();
+  } );
 }
 
 void gluttonous_spike( special_effect_t& /* effect */ )
@@ -902,12 +990,54 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**
+ * Mistcaller Ocarina
+ * id=330067 driver #1 (versatility)
+ * id=332299 driver #2 (crit)
+ * id=332300 driver #3 (haste)
+ * id=332301 driver #4 (mastery)
+ * id=330132 buff #1 (versatility)
+ * id=332077 buff #2 (crit)
+ * id=332078 buff #3 (haste)
+ * id=332079 buff #4 (mastery)
+ */
+void mistcaller_ocarina( special_effect_t& effect )
+{
+  using id_pair_t = std::pair<unsigned, unsigned>;
+  static constexpr id_pair_t spells[] = {
+    { 330067, 330132 }, // versatility
+    { 332299, 332077 }, // crit
+    { 332300, 332078 }, // haste
+    { 332301, 332079 }, // mastery
+  };
+  auto it = range::find( spells, effect.spell_id, &id_pair_t::first );
+  if ( it == range::end( spells ) )
+    return; // Unknown driver spell, "disable" the trinket
+
+  // Assume the player keeps the buff up on its own and disable some stuff
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.cooldown_ = 0_ms;
+  effect.duration_ = 0_ms;
+
+  const spell_data_t* buff_spell = effect.player->find_spell( it->second );
+  const std::string buff_name = util::tokenize_fn( buff_spell->name_cstr() );
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, buff_name ) );
+  if ( !buff )
+  {
+    double amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+    buff = make_buff<stat_buff_t>( effect.player, buff_name, buff_spell );
+    for ( auto& s : buff->stats )
+      s.amount = amount;
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
 /**Unbound Changeling
  * id=330747 coefficients for stat amounts, and also the special effect on the base item
- * id=330767 given by bonus_id=6915
- * id=330739 given by bonus_id=6916
- * id=330740 given by bonus_id=6917
- * id=330741 given by bonus_id=6918
  * id=330765 driver #1 (crit, haste, and mastery)
  * id=330080 driver #2 (crit)
  * id=330733 driver #3 (haste)
@@ -935,15 +1065,11 @@ void unbound_changeling( special_effect_t& effect )
       // If one of the bonus ID effects is present, bail out and let that bonus ID handle things instead.
       for ( auto& e : effect.item->parsed.special_effects )
       {
-        if ( e->spell_id == 330767 || e->spell_id == 330739 || e->spell_id == 330740 || e->spell_id == 330741 )
+        if ( e->spell_id == 330765 || e->spell_id == 330080 || e->spell_id == 330733 || e->spell_id == 330734 )
             return;
       }
       // Fallback, profile does not specify a stat-giving item bonus, so default to haste.
       effect.spell_id = 330733;
-    }
-    else
-    {
-      effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
     }
   }
 
@@ -978,19 +1104,9 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       if ( ta && ta->find_action( "noxious_bolt" ) )
         stats = ta->find_action( "noxious_bolt" )->stats;
 
-      may_crit = false;
+      may_crit = true;
       base_dd_min = p->find_spell( 345490 )->effectN( 1 ).min( e.item );
       base_dd_max = p->find_spell( 345490 )->effectN( 1 ).max( e.item );
-    }
-
-    double composite_haste() const override
-    {
-      return 1.0;
-    }
-
-    double composite_versatility( const action_state_t* ) const override
-    {
-      return 1.0;
     }
 
     void execute() override
@@ -1369,6 +1485,134 @@ void bloodspattered_scale( special_effect_t& effect )
   }
 }
 
+void shadowgrasp_totem( special_effect_t& effect )
+{
+  struct shadowgrasp_totem_damage_t : public generic_proc_t
+  {
+    action_t* parent;
+
+    shadowgrasp_totem_damage_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "shadowgrasp_totem", 331537 ), parent( nullptr )
+    {
+      dot_duration = 0_s;
+      base_dd_min = base_dd_max = player->find_spell( 329878 )->effectN( 1 ).average( effect.item );
+    }
+
+    void init_finished() override
+    {
+      generic_proc_t::init_finished();
+
+      parent = player->find_action( "use_item_shadowgrasp_totem" );
+    }
+  };
+
+  struct shadowgrasp_totem_buff_t : public buff_t
+  {
+    event_t* retarget_event;
+    shadowgrasp_totem_damage_t* action;
+    cooldown_t* item_cd;
+    timespan_t cd_adjust;
+
+    shadowgrasp_totem_buff_t( const special_effect_t& effect ) :
+      buff_t( effect.player, "shadowgrasp_totem", effect.player->find_spell( 331537 ) ),
+      retarget_event( nullptr ), action( new shadowgrasp_totem_damage_t( effect ) )
+    {
+      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+        action->set_target( action->parent->target );
+        action->execute();
+      } );
+
+      item_cd = effect.player->get_cooldown( effect.cooldown_name() );
+      cd_adjust = timespan_t::from_seconds(
+          -source->find_spell( 329878 )->effectN( 3 ).base_value() );
+
+      range::for_each( effect.player->sim->actor_list, [this]( player_t* t ) {
+        t->register_on_demise_callback( source, [this]( player_t* actor ) {
+          trigger_target_death( actor );
+        } );
+      } );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+
+      retarget_event = nullptr;
+    }
+
+    void trigger_target_death( const player_t* actor )
+    {
+      if ( !check() || !actor->is_enemy() || action->parent->target != actor )
+      {
+        return;
+      }
+
+      item_cd->adjust( cd_adjust );
+
+      if ( !retarget_event && sim->shadowlands_opts.retarget_shadowgrasp_totem > 0_s )
+      {
+        retarget_event = make_event( sim, sim->shadowlands_opts.retarget_shadowgrasp_totem, [this]() {
+          retarget_event = nullptr;
+
+          // Retarget parent action to emulate player "retargeting" during Shadowgrasp
+          // Totem duration to grab more 15 second cooldown reductions
+          {
+            auto new_target = action->parent->select_target_if_target();
+            if ( new_target )
+            {
+              sim->print_debug( "{} action {} retargeting to a new target: {}",
+                source->name(), action->parent->name(), new_target->name() );
+              action->parent->set_target( new_target );
+            }
+          }
+        } );
+      }
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "shadowgrasp_totem" );
+  if ( !buff )
+  {
+    buff = make_buff<shadowgrasp_totem_buff_t>( effect );
+    effect.custom_buff = buff;
+  }
+}
+
+// TODO: Implement healing?
+void hymnal_of_the_path( special_effect_t& effect )
+{
+  struct hymnal_of_the_path_t : public proc_spell_t
+  {
+    hymnal_of_the_path_t( const special_effect_t& e ) :
+      proc_spell_t( "hymnal_of_the_path", e.player, e.player->find_spell( 348141 ) )
+    {
+      base_dd_min = e.driver()->effectN( 1 ).min( e.item );
+      base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+    }
+  };
+
+  struct hymnal_of_the_path_cb_t : public dbc_proc_callback_t
+  {
+    using dbc_proc_callback_t::dbc_proc_callback_t;
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target->is_sleeping() )
+        return;
+
+      // XXX: Assume the actor always has more health than the target
+      // TODO: Handle actor health < target health case?
+      proc_action->set_target( target( state ) );
+      proc_action->schedule_execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<hymnal_of_the_path_t>(
+      "hymnal_of_the_path", effect );
+
+  new hymnal_of_the_path_cb_t( effect.player, effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1608,10 +1852,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 345801, items::soulletting_ruby );
     unique_gear::register_special_effect( 345567, items::satchel_of_misbegotten_minions );
     unique_gear::register_special_effect( 330747, items::unbound_changeling );
-    unique_gear::register_special_effect( 330767, items::unbound_changeling );
-    unique_gear::register_special_effect( 330739, items::unbound_changeling );
-    unique_gear::register_special_effect( 330740, items::unbound_changeling );
-    unique_gear::register_special_effect( 330741, items::unbound_changeling );
+    unique_gear::register_special_effect( 330765, items::unbound_changeling );
+    unique_gear::register_special_effect( 330080, items::unbound_changeling );
+    unique_gear::register_special_effect( 330733, items::unbound_changeling );
+    unique_gear::register_special_effect( 330734, items::unbound_changeling );
     unique_gear::register_special_effect( 345490, items::infinitely_divisible_ooze );
     unique_gear::register_special_effect( 330323, items::inscrutable_quantum_device );
     unique_gear::register_special_effect( 345465, items::phial_of_putrefaction );
@@ -1619,6 +1863,12 @@ void register_special_effects()
     unique_gear::register_special_effect( 345533, items::anima_field_emitter );
     unique_gear::register_special_effect( 342427, items::decanter_of_animacharged_winds );
     unique_gear::register_special_effect( 329840, items::bloodspattered_scale );
+    unique_gear::register_special_effect( 331523, items::shadowgrasp_totem );
+    unique_gear::register_special_effect( 348135, items::hymnal_of_the_path );
+    unique_gear::register_special_effect( 330067, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332299, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332300, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
@@ -1663,6 +1913,21 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
+  } );
+
+  // Memory of Past Sins
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 344662 ) )
+    {
+      assert( !td->debuff.shattered_psyche );
+
+      td->debuff.shattered_psyche =
+          make_buff<buff_t>( *td, "shattered_psyche_debuff", td->source->find_spell( 344663 ) )
+              ->set_default_value( td->source->find_spell( 344662 )->effectN( 1 ).percent() );
+      td->debuff.shattered_psyche->reset();
+    }
+    else
+      td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
   } );
 }
 

@@ -1,0 +1,83 @@
+shaman="T26_Shaman_Restoration"
+source=default
+spec=restoration
+level=60
+race=tauren
+role=spell
+position=ranged_back
+talents=0100200
+covenant=night_fae
+soulbind=niya,grove_invigoration/essential_extraction:7/niyas_tools_burrs
+
+# Default consumables
+potion=potion_of_spectral_intellect
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/earth_elemental
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=spiritwalkers_grace,moving=1,if=movement.distance>6
+# Interrupt of casts.
+actions+=/wind_shear
+actions+=/potion
+actions+=/use_items
+actions+=/flame_shock,if=!ticking
+actions+=/earth_elemental
+actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
+actions+=/chain_harvest,if=covenant.venthyr
+actions+=/vesper_totem,if=covenant.kyrian
+actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
+actions+=/fae_transfusion,if=covenant.night_fae
+actions+=/primordial_wave,if=covenant.necrolord
+actions+=/lightning_bolt,if=spell_targets.chain_lightning<3
+actions+=/chain_lightning,if=spell_targets.chain_lightning>2
+actions+=/flame_shock,moving=1
+actions+=/frost_shock,moving=1
+
+head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
+neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
+shoulders=plagueborne_shoulderguards,id=178764,bonus_id=6536/1540/6646
+back=blighted_margraves_cloak,id=178755,bonus_id=6536/1540/6646
+chest=forsworn_stalkers_hauberk,id=180100,bonus_id=6536/1540/6646,enchant=eternal_insight
+wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646,gem_id=173129,enchant=eternal_intellect
+hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
+legs=lichbone_legguards,id=178778,bonus_id=6536/1540/6646
+feet=boneshatter_treads,id=172323,bonus_id=6716/6986/6649/6650/1532
+finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,gem_id=173129,enchant=tenet_of_versatility
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1540/6646,gem_id=173129,enchant=tenet_of_versatility
+trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
+trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
+off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+
+# Gear Summary
+# gear_ilvl=228.31
+# gear_strength=43
+# gear_stamina=1499
+# gear_intellect=1169
+# gear_crit_rating=438
+# gear_haste_rating=542
+# gear_mastery_rating=22
+# gear_versatility_rating=928
+# gear_armor=1550

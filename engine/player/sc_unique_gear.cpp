@@ -3675,6 +3675,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
   // This is mostly relevant for "simple looking" legendary effects such as Recurrent Ritual that
   // gets automatically inferred to affect all (warlock) spells globally.
   if ( effect.custom_init_object.size() == 0 && effect.item &&
+       effect.source == SPECIAL_EFFECT_SOURCE_ITEM &&
        effect.item->parsed.data.quality == ITEM_QUALITY_LEGENDARY )
   {
     if ( p -> sim -> debug )

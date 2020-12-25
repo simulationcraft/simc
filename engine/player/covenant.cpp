@@ -607,6 +607,10 @@ covenant_ability_cast_cb_t::covenant_ability_cast_cb_t( player_t* p, const speci
     class_abilities.push_back( 328281 ); // Blessing of Winter
     class_abilities.push_back( 328282 ); // Blessing of Spring
   }
+  if ( p -> type == DEATH_KNIGHT && p -> covenant -> type() == covenant_e::NIGHT_FAE )
+  {
+    class_abilities.push_back( 152280 );  // Defile
+  }
 }
 
 void covenant_ability_cast_cb_t::initialize()
@@ -694,7 +698,7 @@ bool parse_blizzard_covenant_information( player_t*               player,
 
   // The rest of the code cannot be run because Blizzard API does not indicate the active
   // path.
-  return true;
+  //return true;
 
   if ( !covenant_data.HasMember( "soulbinds" ) || !covenant_data[ "soulbinds" ].IsArray() )
   {

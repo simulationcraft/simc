@@ -27,7 +27,7 @@ main_hand=sinbearers_absolution_staff,id=182392,bonus_id=7187/1531,enchant=sinfu
 save=T26_Druid_Balance.simc
 
 
-druid="T26_Druid_Feral"
+druid="T26_Druid_Feral_Owlweave"
 level=60
 race=night_elf
 timeofday=day
@@ -36,7 +36,38 @@ role=attack
 position=back
 talents=2313122
 covenant=night_fae
+soulbind=niya,grove_invigoration/taste_for_blood:7/born_of_the_wilds:7/niyas_tools_burrs
+owlweave_cat=1
+
+head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
+neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
+shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+chest=umbrahide_vest,id=172314,bonus_id=6647/6648/6758/7086/1532,enchant=eternal_skirmish
+wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173127
+hands=gloves_of_phantom_shadows,id=183026,bonus_id=7187/1498
+waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173127
+legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
+feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
+finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
+trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
+main_hand=nathrian_torchbearers_stave,id=182419,bonus_id=7187/1524,enchant=sinful_revelation
+
+save=T26_Druid_Feral_Owlweave.simc
+
+druid="T26_Druid_Feral"
+level=60
+race=night_elf
+timeofday=day
+spec=feral
+role=attack
+position=back
+talents=2331122
+covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:7/niyas_tools_burrs
+owlweave_cat=0
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127

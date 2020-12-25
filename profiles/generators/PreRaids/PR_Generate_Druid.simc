@@ -34,7 +34,7 @@ timeofday=day
 spec=feral
 role=attack
 position=back
-talents=2313122
+talents=2331122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:4
 
@@ -56,6 +56,36 @@ trinket2=darkmoon_deck_voracity,id=173087
 main_hand=,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
 save=PR_Druid_Feral.simc
+
+druid="PR_Druid_Feral_Owlweave"
+level=60
+race=night_elf
+timeofday=day
+spec=feral
+role=attack
+position=back
+talents=2313122
+covenant=night_fae
+soulbind=niya,grove_invigoration/taste_for_blood:4
+
+
+head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
+neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
+shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
+chest=umbrahide_vest,id=172314,bonus_id=6716/7086/6647/6648/1487,enchant=eternal_skirmish
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
+hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
+waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
+legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
+feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
+finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
+finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
+trinket2=darkmoon_deck_voracity,id=173087
+main_hand=,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
+
+save=PR_Druid_Feral_Owlweave.simc
 
 
 druid="PR_Druid_Guardian"

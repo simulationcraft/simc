@@ -328,11 +328,11 @@ struct proc_action_t : public T_ACTION
 
   void init() override
   {
-    super::init();
     if ( effect )
     {
       override_data( *effect );
     }
+    super::init();
   }
 
   proc_action_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr )

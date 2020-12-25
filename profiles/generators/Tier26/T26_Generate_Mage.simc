@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=1032021
 covenant=night_fae
-soulbind=niya,grove_invigoration/niyas_tools_Poison/magis_brand:7/discipline_of_the_grove:7
+soulbind=niya,grove_invigoration/niyas_tools_poison/magis_brand:7/discipline_of_the_grove:7
 
 head=confidants_favored_cap,id=183021,bonus_id=7187/1498/6935,gem_id=173130
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173130
@@ -35,7 +35,7 @@ role=spell
 position=ranged_back
 talents=3031021
 covenant=night_fae
-soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/controlled_destruction:7
+soulbind=korayn,wild_hunt_tactics/infernal_cascade:7/discipline_of_the_grove:7
 
 head=grimveiled_hood,id=173245,bonus_id=6649/6647/6758/6931/1532/6935,gem_id=173128
 neck=sin_stained_pendant,id=178827,bonus_id=1540/6646/6935,gem_id=173128

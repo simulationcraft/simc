@@ -56,4 +56,5 @@ struct event_manager_t
   void init();
   void reset();
   void merge( event_manager_t& other );
+  void cancel_stuck();
 };

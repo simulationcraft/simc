@@ -20,7 +20,7 @@ legs=purge_protocol_legwraps,id=180107,bonus_id=6807/1498/6646
 feet=stradamas_misplaced_slippers,id=178756,bonus_id=6807/1498/6646
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 
@@ -49,7 +49,7 @@ legs=beryllias_leggings_of_endless_torment,id=178838,bonus_id=6807/1498/6646
 feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498/6646
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=satchel_of_misbegotten_minions,id=178772,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
@@ -78,7 +78,7 @@ legs=grimveiled_pants,id=173246,bonus_id=6648/6649/6716/7038/1487
 feet=dark_stride_footwraps,id=180102,bonus_id=6807/1498/6646
 finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
 trinket2=infinitely_divisible_ooze,id=178769,bonus_id=6807/1498/6646
 main_hand=nathrian_ferula,id=178829,bonus_id=6807/1498/6646,enchant=sinful_revelation
 

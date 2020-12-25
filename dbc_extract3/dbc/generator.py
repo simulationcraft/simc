@@ -1262,6 +1262,14 @@ class SpellDataGenerator(DataGenerator):
          345535,
          # Hateful Chain
          345364, 345361,
+         # Shadowgrasp Totem damage
+         331537,
+         # Hymnal of the Path damage/healing spells
+         348141, 348140,
+         # Mistcaller Ocarina
+         330132, 332077, 332078, 332079,
+         # Skulking Predator leap/damage
+         345020,
         ),
 
         # Warrior:
@@ -1430,6 +1438,7 @@ class SpellDataGenerator(DataGenerator):
             ( 346112, 0 ),          # Shadow Weaving Mastery Pet Proc spell
             ( 336167, 0 ),          # Painbreaker Psalm Insanity generation
             ( 341207, 0 ),          # Dark Thoughts Buff
+            ( 344753, 0 ),          # Eternal Call to the Void Parent spell
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1472,7 +1481,7 @@ class SpellDataGenerator(DataGenerator):
           ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
           ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
           ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
-
+          ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
         ),
 
         # Shaman:

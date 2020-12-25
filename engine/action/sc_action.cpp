@@ -4364,6 +4364,12 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     return;
   }
 
+  // Don't swap targets if the action's current target is still alive
+  if ( !target->is_sleeping() && !target->debuffs.invulnerable->check() )
+  {
+    return;
+  }
+
   if ( target != candidate_target )
   {
     if ( sim->debug )

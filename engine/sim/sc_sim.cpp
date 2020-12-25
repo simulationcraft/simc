@@ -1148,12 +1148,6 @@ std::vector<std::string> get_api_key_locations()
   return key_locations;
 }
 
-/// Check if api key is valid
-bool validate_api_key( const std::string& key )
-{
-  // no better check for now than to measure its length.
-  return key.size() == 65;
-}
 
 /**
  * @brief Try to get user-supplied api key
@@ -1179,7 +1173,7 @@ std::string get_api_key()
 
     std::string line;
     std::getline( myfile,line );
-    if ( validate_api_key( line ) )
+    if ( bcp_api::validate_api_key( line ) )
     {
       return line;
     }
@@ -3809,6 +3803,7 @@ void sim_t::create_options()
     shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "shadowlands.anima_field_emitter_stddev",
     shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_timespan( "shadowlands.retarget_shadowgrasp_totem", shadowlands_opts.retarget_shadowgrasp_totem ) );
 }
 
 // sim_t::parse_option ======================================================

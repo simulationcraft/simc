@@ -46,4 +46,5 @@ namespace bcp_api
   void token_save();
 
   slot_e translate_api_slot(const std::string& slot_str);
+  bool validate_api_key( const std::string& key );
 }

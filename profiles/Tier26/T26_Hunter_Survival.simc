@@ -193,7 +193,7 @@ legs=mementoladen_cuisses,id=182985,bonus_id=7187/1498
 feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
 finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
 finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498,enchant=shadowcore_oil
+trinket1=stone_legion_heraldry,id=184027,bonus_id=7187/1498
 trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
 main_hand=rod_of_the_stone_sentinels,id=182393,bonus_id=7187/1531,enchant=sinful_revelation
 

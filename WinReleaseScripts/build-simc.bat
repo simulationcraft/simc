@@ -109,7 +109,7 @@ if "%1" == "Release" (
 )
 
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
-robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
+robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_cn.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft.exe  /NJH /NJS
 %QTDIR%\bin\windeployqt.exe --force --no-translations --compiler-runtime %WINDEPLOYQTARGS% %INSTALLDIR%\Simulationcraft.exe --verbose 2

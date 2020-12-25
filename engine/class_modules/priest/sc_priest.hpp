@@ -39,6 +39,7 @@ struct ascended_eruption_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
+struct eternal_call_to_the_void_t;
 }  // namespace spells
 namespace heals
 {
@@ -120,6 +121,7 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> spirit_shell;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -184,9 +186,9 @@ public:
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
-    const spell_data_t* lights_caress;     // NYI
-    const spell_data_t* luminous_barrier;  // NYI
-    const spell_data_t* evangelism;        // NYI
+    const spell_data_t* lenience;     // not fully implemented
+    const spell_data_t* spirit_shell;     // not fully implemented
+    const spell_data_t* evangelism;     // not fully implemented
 
     // Holy
     // T15
@@ -374,6 +376,7 @@ public:
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
+    propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
   } background_actions;
 
   // Items
@@ -1350,8 +1353,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT &&
-           s->result_amount > 0 )
+      // Wrathful Faerie works for any direct attacks by anyone, bugging this for now
+      // TODO: maybe rework this to just be a buff that gives insanity every tick instead?
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/777
+      if ( priest().specialization() == PRIEST_SHADOW &&
+           ( s->result_type == result_amount_type::DMG_DIRECT || priest().bugs ) && s->result_amount > 0 )
       {
         const priest_td_t* td = find_td( s->target );
         if ( td && td->buffs.wrathful_faerie->check() )

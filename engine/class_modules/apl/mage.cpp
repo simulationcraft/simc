@@ -299,7 +299,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20+variable.empyreal_ordnance_delay,if=equipped.empyreal_ordnance" );
   precombat->add_action( "variable,name=combustion_shifting_power,default=2,op=reset", "The number of targets Shifting Power should be used on during Combustion." );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "use_item,name=soul_igniter,if=!variable.combustion_on_use" );
+  precombat->add_action( "use_item,name=soul_igniter" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "pyroblast" );
 
@@ -315,14 +315,14 @@ void fire( player_t* p )
   default_->add_action( "deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.time_to_combustion<execute_time" );
   default_->add_action( "mirrors_of_torment,if=variable.time_to_combustion<=3&buff.combustion.down" );
   default_->add_action( "fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react", "For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges if Infernal Cascade is not selected." );
-  default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down" );
+  default_->add_action( "mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down&buff.rune_of_power.down" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay" );
   default_->add_action( "use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=variable.time_to_combustion<=5" );
-  default_->add_action( "use_item,name=dreadfire_vessel,if=variable.time_to_combustion>=variable.on_use_cutoff&(buff.infernal_cascade.stack=2|!conduit.infernal_cascade|variable.combustion_on_use|variable.time_to_combustion+5>fight_remains%%cooldown)", "If using a steroid on-use item, always use Dreadfire Vessel outside of Combustion. Otherwise, prioritze using Dreadfire Vessel with Combustion only if Infernal Cascade is enabled and a usage won't be lost over the duration of the fight." );
-  default_->add_action( "use_item,name=soul_igniter,if=variable.time_to_combustion>=variable.on_use_cutoff+15*(variable.on_use_cutoff>0)&(!equipped.dreadfire_vessel|cooldown.dreadfire_vessel_344732.remains>5)", "Soul Igniter should be used in a way that doesn't interfere with other on-use trinkets. Other trinkets do not trigger a shared ICD on it, so it can be used right after any other on-use trinket." );
-  default_->add_action( "cancel_buff,name=soul_ignition,if=!conduit.infernal_cascade&time<5|buff.infernal_cascade.stack=buff.infernal_cascade.max_stack", "Trigger Soul Igiter early with Infernal Cascade or when it was precast." );
+  default_->add_action( "use_item,name=dreadfire_vessel,if=variable.time_to_combustion>=variable.on_use_cutoff&(buff.infernal_cascade.stack=buff.infernal_cascade.max_stack|!conduit.infernal_cascade|variable.combustion_on_use|variable.time_to_combustion+5>fight_remains%%cooldown)", "If using a steroid on-use item, always use Dreadfire Vessel outside of Combustion. Otherwise, prioritze using Dreadfire Vessel with Combustion only if Infernal Cascade is enabled and a usage won't be lost over the duration of the fight." );
+  default_->add_action( "use_item,name=soul_igniter,if=variable.time_to_combustion>=variable.on_use_cutoff+15*(variable.on_use_cutoff>0)|variable.time_to_combustion<10", "Soul Igniter should be used in a way that doesn't interfere with other on-use trinkets. Other trinkets do not trigger a shared ICD on it, so it can be used right after any other on-use trinket." );
+  default_->add_action( "cancel_buff,name=soul_ignition,if=variable.time_to_combustion>=variable.on_use_cutoff&variable.time_to_combustion>=15*equipped.dreadfire_vessel&time<5&!conduit.infernal_cascade|buff.infernal_cascade.stack=buff.infernal_cascade.max_stack", "Trigger Soul Igiter early with Infernal Cascade or when it was precast." );
   default_->add_action( "counterspell,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&variable.time_to_combustion>25", "Get the disciplinary_command buff up, unless combustion is soon." );
   default_->add_action( "arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down&!buff.disciplinary_command.up&variable.time_to_combustion>25" );
   default_->add_action( "frostbolt,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_frost.down&!buff.disciplinary_command.up&variable.time_to_combustion>25" );
@@ -366,7 +366,7 @@ void fire( player_t* p )
   combustion_phase->add_action( "call_action_list,name=active_talents" );
   combustion_phase->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.6|action.scorch.executing&action.scorch.execute_remains<0.6|action.fireball.executing&action.fireball.execute_remains<0.6|action.pyroblast.executing&action.pyroblast.execute_remains<0.6|action.flamestrike.executing&action.flamestrike.execute_remains<0.6)" );
   combustion_phase->add_action( "call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used", "Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc." );
-  combustion_phase->add_action( "flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike" );
+  combustion_phase->add_action( "flamestrike,if=(buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike)|(buff.firestorm.react&active_enemies>=variable.combustion_flamestrike-runeforge.firestorm)" );
   combustion_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time" );
   combustion_phase->add_action( "pyroblast,if=buff.firestorm.react" );
   combustion_phase->add_action( "pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike" );
@@ -450,7 +450,7 @@ void frost( player_t* p )
   aoe->add_action( "mirrors_of_torment" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
-  aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=6" );
+  aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=6&!runeforge.glacial_fragments" );
   aoe->add_action( "ebonbolt" );
   aoe->add_action( "ice_lance,if=runeforge.glacial_fragments&talent.splitting_ice&travel_time<ground_aoe.blizzard.remains" );
   aoe->add_action( "wait,sec=0.1,if=runeforge.glacial_fragments&talent.splitting_ice" );
@@ -478,7 +478,7 @@ void frost( player_t* p )
 
   st->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!conduit.ire_of_the_ascended|cooldown.radiant_spark.remains|runeforge.freezing_winds)|prev_gcd.1.radiant_spark|buff.fingers_of_frost.react=0&(debuff.mirrors_of_torment.up|buff.freezing_winds.up|buff.expanded_potential.react)))" );
   st->add_action( "frozen_orb" );
-  st->add_action( "blizzard,if=buff.freezing_rain.up|active_enemies>=2" );
+  st->add_action( "blizzard,if=buff.freezing_rain.up|active_enemies>=2|runeforge.glacial_fragments&remaining_winters_chill=2" );
   st->add_action( "ray_of_frost,if=remaining_winters_chill=1&debuff.winters_chill.remains" );
   st->add_action( "glacial_spike,if=remaining_winters_chill&debuff.winters_chill.remains>cast_time+travel_time" );
   st->add_action( "ice_lance,if=remaining_winters_chill&remaining_winters_chill>buff.fingers_of_frost.react&debuff.winters_chill.remains>travel_time" );

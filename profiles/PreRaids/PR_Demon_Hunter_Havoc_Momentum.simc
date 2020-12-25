@@ -15,6 +15,7 @@ potion=phantom_fire
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -115,8 +116,8 @@ legs=abyssal_disharmony_breeches,id=180108,bonus_id=6807/1498/6646
 feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
 finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646,enchant=shadowcore_oil
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646,enchant=shadowcore_oil
+trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
+trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
 main_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,enchant=celestial_guidance
 
@@ -124,6 +125,7 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=6807/1498/6646,ench
 # gear_ilvl=184.38
 # gear_agility=597
 # gear_stamina=857
+# gear_attack_power=40
 # gear_crit_rating=516
 # gear_haste_rating=355
 # gear_mastery_rating=42

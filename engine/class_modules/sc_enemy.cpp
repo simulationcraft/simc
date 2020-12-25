@@ -412,6 +412,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_dd_min       = 1040;
     base_execute_time = timespan_t::from_seconds( 1.5 );
     may_crit = background = repeating = true;
+    may_dodge = may_parry = may_block = true;
     special                           = false;
 
     parse_options( options_str );
@@ -1324,9 +1325,9 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Sludgefist as a baseline
-  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 35050, 48000, 66192 };     // Base auto attack damage
-  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 105150, 144000, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
-  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1402, 1920, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
+  int aa_damage[ numTankDummies ]               = { 0, 6415, 11378, 29703, 40678, 66192 };     // Base auto attack damage
+  int dummy_strike_damage[ numTankDummies ]     = { 0, 19245, 34134, 89109, 122034, 198576 };  // Base melee nuke damage (currently set to 3x auto damage)
+  int background_spell_damage[ numTankDummies ] = { 0, 257, 455, 1188, 1627, 2648 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) + 

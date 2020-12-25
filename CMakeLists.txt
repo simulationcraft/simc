@@ -10,6 +10,7 @@ project(simc)
 
 # switch on/off different build targets
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
+option(SC_TO_INSTALL "Enable Linux install mode" OFF)
 
 # disable various features that may be anvailable or unneeded
 option(SC_NO_THREADING "Disable all dependencies on pthreads" OFF)
@@ -42,6 +43,11 @@ if (MSVC)
     target_compile_options(engine PUBLIC /W4)
 else()
     target_compile_options(engine PUBLIC -Wall -Wextra)
+endif()
+
+# enable SC_TO_INSTALL mode
+if (SC_TO_INSTALL)
+    target_compile_definitions(engine PUBLIC SC_TO_INSTALL)
 endif()
 
 # 'simc' command line interface target

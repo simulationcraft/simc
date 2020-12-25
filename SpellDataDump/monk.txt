@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36839 Live (hotfix 2020-12-09/36839, git build shadowlands ae3fd4fbe9)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-22/36949, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -835,7 +835,7 @@ GCD              : 1 seconds
 Category         : 47
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Shuffle (215479 effect#1), Stagger (322522 effect#1)
 Family Flags     : 34
-Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
+Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ......x. ........   ........ ........ ........ ....x.x. 
@@ -3459,7 +3459,8 @@ Effects          :
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (400 -> 450)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -9792,7 +9793,6 @@ Description      : Summon an effigy of Chi-Ji that kicks up a Gust of Mist when 
 Chi-Ji's presence makes you immune to movement impairing effects.
 
 Name             : Dance of Chi-Ji (id=325201) [Scaling Spell (-1), Spell Family (53), Passive, Hidden] 
-Hotfixed         : Proc Flags (4112 -> 5136)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9962,13 +9962,14 @@ $?s137024[Gust of Mists heals targets with your Bonedust Brew active for an addi
 Tooltip          : The Monk's abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.
 
 Name             : Bonedust Brew (id=325217) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9981,6 +9982,7 @@ Effects          :
 Description      : $@spelldesc325216
 
 Name             : Bonedust Brew (id=325218) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Shadow
 Spell Type       : Melee
@@ -9988,7 +9990,7 @@ Range            : 50000 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x.x..   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -11186,10 +11188,6 @@ Effects          :
 Name             : Clouded Focus (id=337343) [Spell Family (53), Passive] 
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 0.1 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -11200,8 +11198,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=835312)   : Apply Aura (6) | Proc Trigger Spell (42): Clouded Focus
+#1 (id=835312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 337476 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 Description      : Healing with Enveloping Mists or Vivify while channeling Soothing Mists increases their healing done by $337476m1% and reduces their mana cost by $337476m2%. Stacks up to $337476u times.
 
 When your Soothing Mists channel ends, this effect is cancelled.

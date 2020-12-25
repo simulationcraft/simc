@@ -1878,6 +1878,8 @@ void paladin_t::reset()
   active_consecration = nullptr;
   active_hallow = nullptr;
   active_aura = nullptr;
+
+  next_season = SUMMER;
 }
 
 // paladin_t::init_gains ====================================================

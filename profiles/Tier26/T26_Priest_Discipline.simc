@@ -47,6 +47,7 @@ actions+=/schism
 actions+=/boon_of_the_ascended
 actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 actions+=/mindbender
+actions+=/spirit_shell
 actions+=/purge_the_wicked,if=!ticking
 actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
 actions+=/shadow_word_death
