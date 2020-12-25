@@ -4688,7 +4688,13 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
 
-    p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
+    if ( p()->talents.meat_cleaver->ok() )
+    {
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() + 
+      ( p()->talents.meat_cleaver->effectN( 2 ).base_value() ) );
+    }
+    else
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
   }
 
   void execute() override
