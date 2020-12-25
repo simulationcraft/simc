@@ -708,7 +708,7 @@ bool parse_blizzard_covenant_information( player_t*               player,
   for ( auto i = 0u; i < covenant_data[ "soulbinds" ].Size(); ++i )
   {
     const auto& soulbind = covenant_data[ "soulbinds" ][ i ];
-    if ( !soulbind[ "is_active" ].GetBool() )
+    if ( !soulbind.HasMember( "is_active" ) || !soulbind[ "is_active" ].GetBool() )
     {
       continue;
     }
