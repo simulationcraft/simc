@@ -9641,7 +9641,7 @@ struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
       : monk_buff_t( p, n, s )
   {
-    // set_quiet (true );
+    set_quiet (true );
     set_cooldown( timespan_t::zero() );
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
