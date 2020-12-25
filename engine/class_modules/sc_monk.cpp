@@ -9641,7 +9641,6 @@ struct invoke_xuen_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) 
       : monk_buff_t( p, n, s )
   {
-    set_quiet (true );
     set_cooldown( timespan_t::zero() );
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -9810,7 +9809,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
     debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
                                      ->set_default_value_from_effect( 2 );
     debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
-                                           //->set_quiet( true )
+                                           ->set_quiet( true )
                                            ->set_cooldown( timespan_t::zero() )
                                            ->set_refresh_behavior( buff_refresh_behavior::NONE )
                                            ->set_max_stack( 1 )
@@ -10858,7 +10857,7 @@ void monk_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buff.invoke_xuen = new buffs::invoke_xuen_buff_t( *this, "invoke_xuen", spec.invoke_xuen );
+  buff.invoke_xuen = new buffs::invoke_xuen_buff_t( *this, "invoke_xuen_the_white_tiger", spec.invoke_xuen );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
