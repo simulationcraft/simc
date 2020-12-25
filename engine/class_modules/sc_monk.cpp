@@ -2962,39 +2962,17 @@ public:
 struct fallen_monk_brm_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public pet_melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_brm_pet_t* player )
-      : pet_melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fallen_monk_brm_pet_t* player ) : pet_melee_t( n, player )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
       o()->trigger_empowered_tiger_lightning( s );
 
-      pet_melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
