@@ -2714,7 +2714,9 @@ struct niuzao_pet_t : public pet_t
 private:
   struct melee_t : public melee_attack_t
   {
-    melee_t( const std::string& n, niuzao_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    monk_t* owner;
+    melee_t( const std::string& n, niuzao_pet_t* player )
+      : melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -2737,11 +2739,35 @@ private:
       else
         attack_t::execute();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      melee_attack_t::impact( s );
+    }
   };
 
   struct stomp_t : public melee_attack_t
   {
-    stomp_t( niuzao_pet_t* p, const std::string& options_str ) : melee_attack_t( "stomp", p, p->o()->passives.stomp )
+    monk_t* owner;
+    stomp_t( niuzao_pet_t* p, const std::string& options_str )
+      : melee_attack_t( "stomp", p, p->o()->passives.stomp ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -2793,6 +2819,28 @@ private:
       // has been dealt
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
       p->o()->buff.recent_purifies->cancel();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
+           ( s->action->id != 325217 || s->action->id != 325218 ) )
+      {
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
+        {
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
+          // Bone Marrow Hops DOES NOT work with SEF or pets
+          //          if ( o()->conduit.bone_marrow_hops->ok() )
+          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
+        }
+      }
+
+      melee_attack_t::impact( s );
     }
   };
 
