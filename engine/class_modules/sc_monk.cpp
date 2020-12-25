@@ -1198,20 +1198,10 @@ struct pet_action_base_t : public BASE
 
   struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
-  bool main_hand, off_hand;
-
   pet_melee_attack_t( util::string_view n, monk_pet_t* p,
-                      const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
-    : base_t( n, p, data ),
-      main_hand( !w ? true : false ),
-      off_hand( !w ? true : false )
+                      const spell_data_t* data = spell_data_t::nil() )
+    : base_t( n, p, data )
   {
-    school = SCHOOL_PHYSICAL;
-
-    if ( w )
-    {
-      weapon = w;
-    }
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -1231,15 +1221,14 @@ struct pet_action_base_t : public BASE
 
 struct pet_melee_t : pet_melee_attack_t
 {
-  pet_melee_t( util::string_view name, monk_pet_t* player, const spell_data_t* data = spell_data_t::nil(),
-               weapon_t* weapon = nullptr )
-    : pet_melee_attack_t( name, player, data, weapon )
+  pet_melee_t( util::string_view name, monk_pet_t* player, weapon_t* weapon)
+    : pet_melee_attack_t( name, player, spell_data_t::nil()  )
   {
     background = repeating = may_crit = may_glance = true;
     school                                         = SCHOOL_PHYSICAL;
     weapon_multiplier                              = 1.0;
+    weapon                                         = weapon;
     // Use damage numbers from the level-scaled weapon
-    weapon            = &( player->main_hand_weapon );
     base_execute_time = weapon->swing_time;
     trigger_gcd       = timespan_t::zero();
     special           = false;
@@ -1270,6 +1259,13 @@ struct pet_auto_attack_t : public melee_attack_t
     assert( player->main_hand_weapon.type != WEAPON_NONE );
     player->main_hand_attack = nullptr;
     trigger_gcd              = 0_ms;
+  }
+
+  void init() override
+  {
+    melee_attack_t::init();
+
+    assert( player->main_hand_attack && "Pet auto attack created without main hand attack" );
   }
 
   void execute() override
@@ -1332,7 +1328,7 @@ struct jade_serpent_statue_t : public statue_t
 };
 
 // ==========================================================================
-// Storm Earth and Fire
+// Storm Earth and Fire (SEF)
 // ==========================================================================
 
 struct storm_earth_and_fire_pet_t : public monk_pet_t
@@ -1508,28 +1504,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
          if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
            state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
       }
-
-
     }
   };
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
-    bool main_hand, off_hand;
-
     sef_melee_attack_t( util::string_view n, storm_earth_and_fire_pet_t* p,
-                        const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
-      : base_t( n, p, data ),
-        // For special attacks, the SEF pets always use the owner's weapons.
-        main_hand( !w ? true : false ),
-        off_hand( !w ? true : false )
+                        const spell_data_t* data = spell_data_t::nil() )
+      : base_t( n, p, data )
     {
       school = SCHOOL_PHYSICAL;
-
-      if ( w )
-      {
-        weapon = w;
-      }
     }
 
     // Physical tick_action abilities need amount_type() override, so the
@@ -1560,9 +1544,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct melee_t : public sef_melee_attack_t
   {
     melee_t( util::string_view n, storm_earth_and_fire_pet_t* player, weapon_t* w )
-      : sef_melee_attack_t( n, player, spell_data_t::nil(), w )
+      : sef_melee_attack_t( n, player, spell_data_t::nil() )
     {
       background = repeating = may_crit = may_glance = true;
+      weapon                                         = w;
       school                                         = SCHOOL_PHYSICAL;
       weapon_multiplier                              = 1.0;
       base_execute_time                              = w->swing_time;
@@ -1630,7 +1615,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       {
         sim->print_debug( "{} Executing {} during melee ({}).", *player,
                                  player->executing ? *player->executing : *player->channeling,
-                                 util::slot_type_string( weapon->slot ) );
+                                 weapon->slot );
 
         schedule_execute();
       }
@@ -2210,7 +2195,7 @@ struct xuen_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, xuen_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, xuen_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
 
@@ -2304,7 +2289,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -2359,7 +2344,7 @@ struct fury_of_xuen_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fury_of_xuen_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, fury_of_xuen_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
   };
@@ -2404,7 +2389,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -2459,7 +2444,7 @@ struct niuzao_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, niuzao_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, niuzao_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
 
@@ -2575,7 +2560,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -2629,7 +2614,7 @@ struct chiji_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, chiji_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, chiji_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
   };
@@ -2641,7 +2626,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -2707,8 +2692,9 @@ struct fallen_monk_ww_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_ww_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, fallen_monk_ww_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
+      // TODO: check why this is here
       base_hit -= 0.19;
     }
 
@@ -2755,7 +2741,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -2964,7 +2950,7 @@ struct fallen_monk_brm_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_brm_pet_t* player ) : pet_melee_t( n, player )
+    melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
 
@@ -2983,7 +2969,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -3216,7 +3202,7 @@ struct fallen_monk_mw_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, fallen_monk_mw_pet_t* player ) : pet_melee_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fallen_monk_mw_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
 
@@ -3235,7 +3221,7 @@ private:
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
