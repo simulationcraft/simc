@@ -1133,13 +1133,6 @@ struct monk_pet_t : public pet_t
   }
 };
 
-struct pet_td_t : public actor_target_data_t
-{
-  pet_td_t( player_t* target, monk_pet_t* source ) : actor_target_data_t( target, source )
-  {
-  }
-};
-
 template <typename BASE>
 struct pet_action_base_t : public BASE
 {
@@ -1171,11 +1164,6 @@ struct pet_action_base_t : public BASE
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
-  }
-
-  pet_td_t* td( player_t* t ) const
-  {
-    return this->p()->get_target_data( t );
   }
 
   monk_t* o()
