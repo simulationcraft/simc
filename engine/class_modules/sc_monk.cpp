@@ -35,6 +35,7 @@ BREWMASTER:
 - Not Modeled:
 */
 #include "simulationcraft.hpp"
+#include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 
 // ==========================================================================
@@ -1081,7 +1082,8 @@ public:
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empower_tiger_lightning( action_state_t*);
+  void trigger_empowered_tiger_lightning( action_state_t*);
+  void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1114,23 +1116,32 @@ namespace pets
 // Base Monk Pet Action
 // ==========================================================================
 
-struct pet_td_t : public actor_target_data_t
+struct monk_pet_t : public pet_t
 {
-  pet_td_t( player_t* target, pet_t* source ) : actor_target_data_t( target, source )
+  monk_pet_t( monk_t* owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
+    : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
   {
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
   }
 };
 
-template <typename BASE>
+template <typename BASE, typename PET_TYPE = monk_pet_t>
 struct pet_action_base_t : public BASE
 {
   using super_t = BASE;
   using base_t  = pet_action_base_t<BASE>;
 
-  const action_t* source_action;
-
-  pet_action_base_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() )
-    : BASE( n, p, data ), source_action( nullptr )
+  pet_action_base_t( util::string_view n, PET_TYPE* p, const spell_data_t* data = spell_data_t::nil() )
+    : BASE( n, p, data )
   {
     // No costs are needed either
     this->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -1154,29 +1165,24 @@ struct pet_action_base_t : public BASE
     }
   }
 
-  pet_td_t* td( player_t* t ) const
-  {
-    return this->p()->get_target_data( t );
-  }
-
   monk_t* o()
   {
-    return debug_cast<monk_t*>( this->player->cast_pet()->owner );
+    return p()->o();
   }
 
   const monk_t* o() const
   {
-    return debug_cast<const monk_t*>( this->player->cast_pet()->owner );
+    return p()->o();
   }
 
-  const pet_t* p() const
+  const PET_TYPE* p() const
   {
-    return debug_cast<pet_t*>( this->player );
+    return debug_cast<const PET_TYPE*>( this->player );
   }
 
-  pet_t* p()
+  PET_TYPE* p()
   {
-    return debug_cast<pet_t*>( this->player );
+    return debug_cast<PET_TYPE*>( this->player );
   }
 
   void execute() override
@@ -1193,20 +1199,10 @@ struct pet_action_base_t : public BASE
 
   struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
-  bool main_hand, off_hand;
-
-  pet_melee_attack_t( const std::string& n, pet_t* p,
-                      const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
-    : base_t( n, p, data ),
-      main_hand( !w ? true : false ),
-      off_hand( !w ? true : false )
+  pet_melee_attack_t( util::string_view n, monk_pet_t* p,
+                      const spell_data_t* data = spell_data_t::nil() )
+    : base_t( n, p, data )
   {
-    school = SCHOOL_PHYSICAL;
-
-    if ( w )
-    {
-      weapon = w;
-    }
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -1224,22 +1220,61 @@ struct pet_action_base_t : public BASE
   }
 };
 
+struct pet_melee_t : pet_melee_attack_t
+{
+  pet_melee_t( util::string_view name, monk_pet_t* player, weapon_t* weapon)
+    : pet_melee_attack_t( name, player, spell_data_t::nil()  )
+  {
+    background = repeating = may_crit = may_glance = true;
+    school                                         = SCHOOL_PHYSICAL;
+    weapon_multiplier                              = 1.0;
+    weapon                                         = weapon;
+    // Use damage numbers from the level-scaled weapon
+    base_execute_time = weapon->swing_time;
+    trigger_gcd       = timespan_t::zero();
+    special           = false;
+
+    // TODO: check if there should be a dual wield hit malus here.
+  }
+
+  void execute() override
+  {
+    if ( time_to_execute > timespan_t::zero() && player->executing )
+    {
+      sim->print_debug( "Executing {} during melee ({}).", *player->executing, weapon->slot );
+      schedule_execute();
+    }
+    else
+      pet_melee_attack_t::execute();
+  }
+};
+
 // ==========================================================================
 // Generalized Auto Attack Action
 // ==========================================================================
 
 struct pet_auto_attack_t : public melee_attack_t
 {
-  pet_auto_attack_t( pet_t* player ) : melee_attack_t( "auto_attack", player )
+  pet_auto_attack_t( monk_pet_t* player ) : melee_attack_t( "auto_attack", player )
   {
     assert( player->main_hand_weapon.type != WEAPON_NONE );
     player->main_hand_attack = nullptr;
     trigger_gcd              = 0_ms;
   }
 
+  void init() override
+  {
+    melee_attack_t::init();
+
+    assert( player->main_hand_attack && "Pet auto attack created without main hand attack" );
+  }
+
   void execute() override
   {
     player->main_hand_attack->schedule_execute();
+
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
   }
 
   bool ready() override
@@ -1256,7 +1291,7 @@ struct pet_auto_attack_t : public melee_attack_t
 
 struct pet_spell_t : public pet_action_base_t<spell_t>
 {
-  pet_spell_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+  pet_spell_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
     : base_t( n, p, data )
   {
   }
@@ -1268,61 +1303,50 @@ struct pet_spell_t : public pet_action_base_t<spell_t>
 
 struct pet_heal_t : public pet_action_base_t<heal_t>
 {
-  pet_heal_t( const std::string& n, pet_t* p, const spell_data_t* data = spell_data_t::nil() ) : base_t( n, p, data )
+  pet_heal_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() ) : base_t( n, p, data )
   {
   }
 };
+
 
 // ==========================================================================
 // Monk Statues
 // ==========================================================================
 
-struct statue_t : public pet_t
+struct statue_t : public monk_pet_t
 {
-  statue_t( sim_t* sim, monk_t* owner, const std::string& n, pet_e pt, bool guardian = false )
-    : pet_t( sim, owner, n, pt, guardian )
+  statue_t( monk_t* owner, util::string_view n, pet_e pt, bool guardian = false )
+    : monk_pet_t( owner, n, pt, guardian, false )
   {
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
   }
 };
 
 struct jade_serpent_statue_t : public statue_t
 {
-  jade_serpent_statue_t( sim_t* sim, monk_t* owner, const std::string& n ) : statue_t( sim, owner, n, PET_NONE, true )
+  jade_serpent_statue_t( monk_t* owner, util::string_view n ) : statue_t( owner, n, PET_NONE, true )
   {
   }
 };
 
 // ==========================================================================
-// Storm Earth and Fire
+// Storm Earth and Fire (SEF)
 // ==========================================================================
 
-struct storm_earth_and_fire_pet_t : public pet_t
+struct storm_earth_and_fire_pet_t : public monk_pet_t
 {
-  struct sef_td_t : public actor_target_data_t
-  {
-    sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) : actor_target_data_t( target, source )
-    {
-    }
-  };
-
   // Storm, Earth, and Fire abilities begin =================================
 
   template <typename BASE>
-  struct sef_action_base_t : public BASE
+  struct sef_action_base_t : public pet_action_base_t<BASE, storm_earth_and_fire_pet_t>
   {
-    using super_t = BASE;
+    using super_t = pet_action_base_t<BASE, storm_earth_and_fire_pet_t>;
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t* source_action;
 
-    sef_action_base_t( const std::string& n, storm_earth_and_fire_pet_t* p,
+    sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() )
-      : BASE( n, p, data ), source_action( nullptr )
+      : super_t( n, p, data ), source_action( nullptr )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
@@ -1346,10 +1370,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       // spell-data driven ability with 1:1 mapping of name/spell id will
       // always be chosen as the source action. In some cases this needs to be
       // overridden (see sef_zen_sphere_t for example).
-      for ( size_t i = 0, end = o()->action_list.size(); i < end; i++ )
+      for ( const action_t* a : this->o()->action_list )
       {
-        action_t* a = o()->action_list[ i ];
-
         if ( ( this->id > 0 && this->id == a->id ) || util::str_compare_ci( this->name_str, a->name_str ) )
         {
           source_action = a;
@@ -1362,31 +1384,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
         this->update_flags   = source_action->update_flags;
         this->snapshot_flags = source_action->snapshot_flags;
       }
-    }
-
-    sef_td_t* td( player_t* t ) const
-    {
-      return this->p()->get_target_data( t );
-    }
-
-    monk_t* o()
-    {
-      return debug_cast<monk_t*>( this->player->cast_pet()->owner );
-    }
-
-    const monk_t* o() const
-    {
-      return debug_cast<const monk_t*>( this->player->cast_pet()->owner );
-    }
-
-    const storm_earth_and_fire_pet_t* p() const
-    {
-      return debug_cast<storm_earth_and_fire_pet_t*>( this->player );
-    }
-
-    storm_earth_and_fire_pet_t* p()
-    {
-      return debug_cast<storm_earth_and_fire_pet_t*>( this->player );
     }
 
     // Use SEF-specific override methods for target related multipliers as the
@@ -1473,34 +1470,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void impact( action_state_t* s ) override
     {
-      if ( o()->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( o()->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->trigger( o()->buff.invoke_xuen->remains() );
+      auto owner = this->o();
 
-          o()->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      if ( o()->covenant.necrolord->ok() && s->result_total > 0 &&
-         ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-//          if ( o()->conduit.bone_marrow_hops->ok() )
-//            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          o()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          o()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          o()->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
+      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_bonedust_brew( s );
 
       super_t::impact( s );
     }
@@ -1509,54 +1482,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       super_t::snapshot_internal( state, flags, rt );
 
-      // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
-      // multipliers in the first place.
-      /*      if ( o() -> talent.hit_combo -> ok() )
-            {
-              if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-              {
-                state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
-
-              if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-              {
-                state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
-            }
-            */
-
-      if ( o()->conduit.coordinated_offensive->ok() && p()->sticky_target )
+      if ( this->o()->conduit.coordinated_offensive->ok() && this->p()->sticky_target )
       {
          if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-           state->da_multiplier += o()->conduit.coordinated_offensive.percent();
+           state->da_multiplier += this->o()->conduit.coordinated_offensive.percent();
 
          if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-           state->ta_multiplier += o()->conduit.coordinated_offensive.percent();
+           state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
       }
-
-
     }
   };
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
-    bool main_hand, off_hand;
-
-    sef_melee_attack_t( const std::string& n, storm_earth_and_fire_pet_t* p,
-                        const spell_data_t* data = spell_data_t::nil(), weapon_t* w = nullptr )
-      : base_t( n, p, data ),
-        // For special attacks, the SEF pets always use the owner's weapons.
-        main_hand( !w ? true : false ),
-        off_hand( !w ? true : false )
+    sef_melee_attack_t( util::string_view n, storm_earth_and_fire_pet_t* p,
+                        const spell_data_t* data = spell_data_t::nil() )
+      : base_t( n, p, data )
     {
       school = SCHOOL_PHYSICAL;
-
-      if ( w )
-      {
-        weapon = w;
-      }
     }
 
     // Physical tick_action abilities need amount_type() override, so the
@@ -1572,60 +1515,25 @@ struct storm_earth_and_fire_pet_t : public pet_t
         return base_t::amount_type( state, periodic );
       }
     }
-
-    /*    double action_multiplier() const override
-        {
-          double am = base_t::action_multiplier();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
-            {
-              // Remove owner's Hit Combo
-              am /= 1 + o()->buff.hit_combo->stack_value();
-              // .. aand add Pet's Hit Combo
-              am *= 1 + p()->buff.hit_combo_sef->stack_value();
-            }
-          }
-          return am;
-        }
-        */
   };
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
   {
-    sef_spell_t( const std::string& n, storm_earth_and_fire_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    sef_spell_t( util::string_view n, storm_earth_and_fire_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
       : base_t( n, p, data )
     {
     }
-
-    /*    double action_multiplier() const override
-        {
-          double am = base_t::action_multiplier();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
-            {
-              // Remove owner's Hit Combo
-              am /= 1 + o()->buff.hit_combo->stack_value();
-              // .. aand add Pet's Hit Combo
-              am *= 1 + p()->buff.hit_combo_sef->stack_value();
-            }
-          }
-          return am;
-        }
-        */
   };
 
   // Auto attack ============================================================
 
   struct melee_t : public sef_melee_attack_t
   {
-    melee_t( const std::string& n, storm_earth_and_fire_pet_t* player, weapon_t* w )
-      : sef_melee_attack_t( n, player, spell_data_t::nil(), w )
+    melee_t( util::string_view n, storm_earth_and_fire_pet_t* player, weapon_t* w )
+      : sef_melee_attack_t( n, player, spell_data_t::nil() )
     {
       background = repeating = may_crit = may_glance = true;
+      weapon                                         = w;
       school                                         = SCHOOL_PHYSICAL;
       weapon_multiplier                              = 1.0;
       base_execute_time                              = w->swing_time;
@@ -1660,24 +1568,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
-    /*    double action_multiplier() const override
-        {
-          double am = sef_melee_attack_t::action_multiplier();
-
-          am *= 1.0 + o()->spec.storm_earth_and_fire->effectN( 1 ).percent();
-
-          if (p()->buff.hit_combo_sef->up())
-          {
-            // Remove owner's Hit Combo
-            am /= 1 + o()->buff.hit_combo->stack_value();
-            // .. aand add Pet's Hit Combo
-            am *= 1 + p()->buff.hit_combo_sef->stack_value();
-          }
-
-          return am;
-        }
-        */
-
     // A wild equation appears
     double composite_attack_power() const override
     {
@@ -1711,7 +1601,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         sim->print_debug( "{} Executing {} during melee ({}).", *player,
                                  player->executing ? *player->executing : *player->channeling,
-                                 util::slot_type_string( weapon->slot ) );
+                                 weapon->slot );
 
         schedule_execute();
       }
@@ -1722,14 +1612,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( storm_earth_and_fire_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( storm_earth_and_fire_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
-
-      trigger_gcd = timespan_t::zero();
 
       melee_t* mh = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
       if ( !mh->source_action )
@@ -1743,22 +1631,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         player->off_hand_attack = new melee_t( "auto_attack_oh", player, &( player->off_hand_weapon ) );
       }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -1862,18 +1734,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
-    sef_rising_sun_kick_dmg_t* trigger;
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick ),
-        trigger( new sef_rising_sun_kick_dmg_t( player ) )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick )
     {
-    }
-
-    void execute() override
-    {
-      sef_melee_attack_t::execute();
-
-      trigger->execute();
+      execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
   };
 
@@ -1953,7 +1817,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
     {
-      aoe = (int)p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
+      aoe = as<int>( p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value() );
     }
   };
 
@@ -2136,9 +2000,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
   std::vector<sef_melee_attack_t*> attacks;
   std::vector<sef_spell_t*> spells;
 
-private:
-  target_specific_t<sef_td_t> target_data;
-
 public:
   // SEF applies the Cyclone Strike debuff as well
 
@@ -2157,9 +2018,9 @@ public:
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
 
-  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield,
+  storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield,
                               weapon_e weapon_type )
-    : pet_t( sim, owner, name, true, true ),
+    : monk_pet_t( owner, name, PET_NONE, true, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
       sticky_target( false ),
@@ -2200,34 +2061,9 @@ public:
     return sim->expected_iteration_time * 2;
   }
 
-  monk_t* o()
-  {
-    return debug_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return debug_cast<const monk_t*>( owner );
-  }
-
-  const sef_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
-
-  sef_td_t* get_target_data( player_t* target ) const override
-  {
-    sef_td_t*& td = target_data[ target ];
-    if ( !td )
-    {
-      td = new sef_td_t( target, const_cast<storm_earth_and_fire_pet_t*>( this ) );
-    }
-    return td;
-  }
-
   void init_spells() override
   {
-    pet_t::init_spells();
+    monk_pet_t::init_spells();
 
     attacks.at( SEF_TIGER_PALM )                 = new sef_tiger_palm_t( this );
     attacks.at( SEF_BLACKOUT_KICK )              = new sef_blackout_kick_t( this );
@@ -2247,7 +2083,7 @@ public:
   {
     action_list_str = "auto_attack";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -2255,12 +2091,12 @@ public:
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-    pet_t::summon( duration );
+    monk_pet_t::summon( duration );
 
     o()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, duration );
 
@@ -2278,14 +2114,14 @@ public:
 
   void dismiss( bool expired = false ) override
   {
-    pet_t::dismiss( expired );
+    monk_pet_t::dismiss( expired );
 
     o()->buff.storm_earth_and_fire->decrement();
   }
 
   void create_buffs() override
   {
-    pet_t::create_buffs();
+    monk_pet_t::create_buffs();
 
     buff.bok_proc_sef =
         make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
@@ -2340,123 +2176,46 @@ public:
 // ==========================================================================
 // Xuen Pet
 // ==========================================================================
-struct xuen_pet_t : public pet_t
+struct xuen_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    monk_t* owner;
-    melee_t( util::string_view n, xuen_pet_t* player ) : 
-        melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
+    melee_t( util::string_view n, xuen_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
+      o()->trigger_bonedust_brew( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_attack_t::impact( s );
     }
   };
 
-  struct crackling_tiger_lightning_tick_t : public spell_t
+  struct crackling_tiger_lightning_tick_t : public pet_spell_t
   {
-    monk_t* owner;
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
-      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning ), 
-        owner( p->o() )
+      : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
       dual = direct_tick = background = may_crit = true;
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      auto owner = o();
+      owner->trigger_empowered_tiger_lightning( s );
+      owner->trigger_bonedust_brew( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
-
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
-
-      spell_t::impact( s );
+      pet_spell_t::impact( s );
     }
   };
 
-  struct crackling_tiger_lightning_t : public spell_t
+  struct crackling_tiger_lightning_t : public pet_spell_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* p, const std::string& options_str )
-      : spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
+    crackling_tiger_lightning_t( xuen_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
     {
       parse_options( options_str );
 
@@ -2476,38 +2235,20 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( xuen_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( xuen_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
 public:
-  xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
+  xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
     npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2516,16 +2257,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2561,49 +2292,29 @@ public:
 // ==========================================================================
 // Fury of Xuen Pet
 // ==========================================================================
-struct fury_of_xuen_pet_t : public pet_t
+struct fury_of_xuen_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( const std::string& n, fury_of_xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fury_of_xuen_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
   };
 
-  struct crackling_tiger_lightning_tick_t : public spell_t
+  struct crackling_tiger_lightning_tick_t : public pet_spell_t
   {
     crackling_tiger_lightning_tick_t( fury_of_xuen_pet_t* p )
-      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
     }
   };
 
-  struct crackling_tiger_lightning_t : public spell_t
+  struct crackling_tiger_lightning_t : public pet_spell_t
   {
     crackling_tiger_lightning_t( fury_of_xuen_pet_t* p, const std::string& options_str )
-      : spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
     {
       parse_options( options_str );
 
@@ -2624,38 +2335,20 @@ private:
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fury_of_xuen_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( fury_of_xuen_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
 public:
-  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
+  fury_of_xuen_pet_t( monk_t* owner ) : monk_pet_t( owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
     npc_id                      = 63508;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2664,16 +2357,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.sp_from_ap      = 1.00;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2709,65 +2392,27 @@ public:
 // ==========================================================================
 // Niuzao Pet
 // ==========================================================================
-struct niuzao_pet_t : public pet_t
+struct niuzao_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    monk_t* owner;
-    melee_t( const std::string& n, niuzao_pet_t* player )
-      : melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
+    melee_t( util::string_view n, niuzao_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                                 util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+      o()->trigger_bonedust_brew( s );
 
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
-  struct stomp_t : public melee_attack_t
+  struct stomp_t : public pet_melee_attack_t
   {
-    monk_t* owner;
-    stomp_t( niuzao_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "stomp", p, p->o()->passives.stomp ), owner( p->o() )
+    stomp_t( niuzao_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
     {
       parse_options( options_str );
 
@@ -2787,7 +2432,7 @@ private:
 
     double bonus_da( const action_state_t* s ) const override
     {
-      double b = melee_attack_t::bonus_da( s );
+      double b = pet_melee_attack_t::bonus_da( s );
 
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
 
@@ -2802,7 +2447,7 @@ private:
 
     double action_multiplier() const override
     {
-      double am       = melee_attack_t::action_multiplier();
+      double am       = pet_melee_attack_t::action_multiplier();
       niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
 
       if ( p->o()->conduit.walk_with_the_ox->ok() )
@@ -2813,7 +2458,7 @@ private:
 
     void execute() override
     {
-      melee_attack_t::execute();
+      pet_melee_attack_t::execute();
       // canceling the purify buff goes here so that in aoe all hits see the
       // purified damage that needs to be split. this occurs after all damage
       // has been dealt
@@ -2823,59 +2468,26 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
-           ( s->action->id != 325217 || s->action->id != 325218 ) )
-      {
-        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
-        {
-          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
-          // Bone Marrow Hops DOES NOT work with SEF or pets
-          //          if ( o()->conduit.bone_marrow_hops->ok() )
-          //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+      o()->trigger_bonedust_brew( s );
 
-          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          owner->active_actions.bonedust_brew_dmg->execute();
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_attack_t::impact( s );
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( niuzao_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( niuzao_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
 public:
-  niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
+  niuzao_pet_t( monk_t* owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
     npc_id                      = 73967;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2884,16 +2496,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap      = 1;
-  }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2928,68 +2530,30 @@ public:
 // ==========================================================================
 // Chi-Ji Pet
 // ==========================================================================
-struct chiji_pet_t : public pet_t
+struct chiji_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    melee_t( const std::string& n, chiji_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, chiji_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( chiji_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    auto_attack_t( chiji_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
 public:
-  chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
+  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
     npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3000,19 +2564,9 @@ public:
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
   }
 
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = pet_t::composite_player_multiplier( school );
+    double cpm = monk_pet_t::composite_player_multiplier( school );
 
     return cpm;
   }
@@ -3021,7 +2575,7 @@ public:
   {
     action_list_str = "auto_attack";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -3029,19 +2583,17 @@ public:
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
 // Yu'lon Pet
 // ==========================================================================
-struct yulon_pet_t : public pet_t
+struct yulon_pet_t : public monk_pet_t
 {
-private:
-
 public:
-  yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
+  yulon_pet_t( monk_t* owner ) : monk_pet_t( owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
     npc_id                      = 165374;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3051,78 +2603,27 @@ public:
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
   }
-
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double cpm = pet_t::composite_player_multiplier( school );
-
-    return cpm;
-  }
-
-  void init_action_list() override
-  {
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( util::string_view name, const std::string& options_str ) override
-  {
-    return pet_t::create_action( name, options_str );
-  }
 };
 
 // ==========================================================================
 // Fallen Monk - Windwalker (Venthyr)
 // ==========================================================================
-struct fallen_monk_ww_pet_t : public pet_t
+struct fallen_monk_ww_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    monk_t* owner;
-    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) :
-        melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
+    melee_t( util::string_view n, fallen_monk_ww_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-      base_hit          -= 0.19;
-    }
-
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
+      // TODO: check why this is here
+      base_hit -= 0.19;
     }
 
     // Copy melee code from Storm, Earth and Fire
     double composite_attack_power() const override
     {
-      double ap = melee_attack_t::composite_attack_power();
+      double ap = pet_melee_t::composite_attack_power();
+      auto owner = o();
 
       if ( owner->main_hand_weapon.group() == WEAPON_2H )
       {
@@ -3146,82 +2647,23 @@ private:
       return ap;
     }
 
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
-    }
-
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
-    auto_attack_t( fallen_monk_ww_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player -> o() )
+    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    void init() override
-    {
-      attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -3232,7 +2674,7 @@ public:
   } buff;
 
   fallen_monk_ww_pet_t( monk_t* owner ) :
-      pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+      monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -3265,16 +2707,6 @@ public:
     }
   }
 
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
@@ -3287,7 +2719,7 @@ public:
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-    pet_t::summon( duration );
+    monk_pet_t::summon( duration );
 
     if ( o()->buff.hit_combo->up() )
       buff.hit_combo_fm_ww->trigger( o()->buff.hit_combo->stack() );
@@ -3295,7 +2727,7 @@ public:
 
   void create_buffs() override
   {
-    pet_t::create_buffs();
+    monk_pet_t::create_buffs();
 
     buff.hit_combo_fm_ww = make_buff( this, "hit_combo_fo_ww", o()->passives.hit_combo )
                            ->set_default_value_from_effect( 1 )
@@ -3303,81 +2735,53 @@ public:
                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  struct fallen_monk_fists_of_fury_tick_t : public melee_attack_t
+  struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
   {
-    monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick_fo", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
+      : pet_melee_attack_t( "fists_of_fury_tick_fo", p, p->o()->passives.fallen_monk_fists_of_fury_tick )
     {
       background              = true;
-      aoe                     = 1 + (int)owner->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
-      attack_power_mod.direct = owner->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
+      aoe                     = 1 + (int)o()->passives.fallen_monk_fists_of_fury->effectN( 1 ).base_value();
+      attack_power_mod.direct = o()->passives.fallen_monk_fists_of_fury->effectN( 5 ).ap_coeff();
       ap_type                 = attack_power_type::WEAPON_MAINHAND;
       dot_duration            = timespan_t::zero();
       trigger_gcd             = timespan_t::zero();
     }
 
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
-      double cam = melee_attack_t::composite_aoe_multiplier( state );
+      double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->target != target )
-        return cam *= owner->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
+        return cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
 
       return cam;
     }
 
     double action_multiplier() const override
     {
-      double am = melee_attack_t::action_multiplier();
+      double am = pet_melee_attack_t::action_multiplier();
 
       // monk_t* o = static_cast<monk_t*>( player );
-      if ( owner->conduit.inner_fury->ok() )
-        am *= 1 + owner->conduit.inner_fury.percent();
+      if ( o()->conduit.inner_fury->ok() )
+        am *= 1 + o()->conduit.inner_fury.percent();
 
       return am;
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_attack_t::impact( s );
     }
   };
 
-  struct fallen_monk_fists_of_fury_t : public melee_attack_t
+  struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
   {
     monk_t* owner;
-    fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "fists_of_fury_fo", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
+    fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "fists_of_fury_fo", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3397,45 +2801,27 @@ public:
 
     double action_multiplier() const override
     {
-      double am = melee_attack_t::action_multiplier();
+      double am = pet_melee_attack_t::action_multiplier();
 
       return 0;
     }
   };
 
-  struct fallen_monk_tiger_palm_t : public melee_attack_t
+  struct fallen_monk_tiger_palm_t : public pet_melee_attack_t
   {
-    monk_t* owner;
     fallen_monk_tiger_palm_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "tiger_palm_fo", p, p->o()->passives.fallen_monk_tiger_palm )
+      : pet_melee_attack_t( "tiger_palm_fo", p, p->o()->passives.fallen_monk_tiger_palm )
     {
       parse_options( options_str );
 
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      owner = p->o();
 
       // We only want the monk to cast Tiger Palm 2 times during the duration.
       // Increase the cooldown for non-windwalkers so that it only casts 2 times.
-      if ( owner->specialization() == MONK_WINDWALKER )
+      if ( o()->specialization() == MONK_WINDWALKER )
         cooldown->duration = timespan_t::from_seconds( 2.5 );
       else
         cooldown->duration = timespan_t::from_seconds( 3.1 );
-    }
-
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
     }
 
     double cost() const override
@@ -3445,20 +2831,9 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_attack_t::impact( s );
     }
   };
 
@@ -3491,117 +2866,32 @@ public:
 // ==========================================================================
 // Fallen Monk - Brewmaster (Venthyr)
 // ==========================================================================
-struct fallen_monk_brm_pet_t : public pet_t
+struct fallen_monk_brm_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    monk_t* owner;
-    melee_t( const std::string& n, fallen_monk_brm_pet_t* player )
-      : melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
+    melee_t( util::string_view n, fallen_monk_brm_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-    }
-
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
-    auto_attack_t( fallen_monk_brm_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
+    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    void init() override
-    {
-      attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
@@ -3612,7 +2902,7 @@ public:
   } buff;
 
   fallen_monk_brm_pet_t( monk_t* owner )
-    : pet_t( owner->sim, owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+    : monk_pet_t( owner, "fallen_monk_brewmaster", PET_FALLEN_MONK, true, true ), buff()
   {
     npc_id                      = 168073;
     main_hand_weapon.type       = WEAPON_2H;
@@ -3639,16 +2929,6 @@ public:
     }
   }
 
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
@@ -3659,11 +2939,10 @@ public:
     return cpm;
   }
 
-  struct fallen_monk_keg_smash_t : public melee_attack_t
+  struct fallen_monk_keg_smash_t : public pet_melee_attack_t
   {
-    monk_t* owner;
-    fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : melee_attack_t( "keg_smash_fo", p, p->o()->passives.fallen_monk_keg_smash )
+    fallen_monk_keg_smash_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( "keg_smash_fo", p, p->o()->passives.fallen_monk_keg_smash )
     {
       parse_options( options_str );
 
@@ -3671,36 +2950,19 @@ public:
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
 
-      owner = p->o();
-      if ( owner->specialization() == MONK_BREWMASTER )
+      if ( o()->specialization() == MONK_BREWMASTER )
         cooldown->duration = timespan_t::from_seconds( 6.0 );
       else
         cooldown->duration = timespan_t::from_seconds( 9.0 );
       trigger_gcd             = timespan_t::from_seconds( 1.5 );
     }
 
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
     // For more than 5 targets damage is based on a Sqrt(5/x)
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
-      double cam = melee_attack_t::composite_aoe_multiplier( state );
+      double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
 
-      if ( state->n_targets > owner->spec.keg_smash->effectN( 7 ).base_value() )
+      if ( state->n_targets > o()->spec.keg_smash->effectN( 7 ).base_value() )
         // this is the closest we can come up without Blizzard flat out giving us the function
         // Primary takes the 100% damage
         // Secondary targets get reduced damage
@@ -3712,15 +2974,15 @@ public:
 
     double action_multiplier() const override
     {
-      double am = melee_attack_t::action_multiplier();
+      double am = pet_melee_attack_t::action_multiplier();
 
-      if ( owner->legendary.stormstouts_last_keg->ok() )
-        am *= 1 + owner->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+      if ( o()->legendary.stormstouts_last_keg->ok() )
+        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( owner->conduit.scalding_brew->ok() )
+      if ( o()->conduit.scalding_brew->ok() )
         {
-          if ( owner->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
-            am *= 1 + owner->conduit.scalding_brew.percent();
+          if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+            am *= 1 + o()->conduit.scalding_brew.percent();
         }
 
       return am;
@@ -3728,58 +2990,30 @@ public:
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
+      pet_melee_attack_t::impact( s );
 
-      melee_attack_t::impact( s );
-
-      owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
+      o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->trigger();
     }
   };
 
-  struct fallen_monk_breath_of_fire_t : public spell_t
+  struct fallen_monk_breath_of_fire_t : public pet_spell_t
   {
-    struct fallen_monk_breath_of_fire_tick_t : public spell_t
+    struct fallen_monk_breath_of_fire_tick_t : public pet_spell_t
     {
-      monk_t* owner;
       fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
+        : pet_spell_t( "breath_of_fire_dot_fo", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
         tick_may_crit = may_crit = true;
         hasted_ticks  = false;
       }
 
-      void init() override
-      {
-        spell_t::init();
-
-        if ( !this->player->sim->report_pets_separately )
-        {
-          auto it = range::find_if( owner->pet_list,
-                                    [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-          if ( it != owner->pet_list.end() && this->player != *it )
-          {
-            this->stats = ( *it )->get_stats( this->name(), this );
-          }
-        }
-      }
-
       // Initial damage does Square Root damage
       double composite_aoe_multiplier( const action_state_t* state ) const override
       {
-        double cam = spell_t::composite_aoe_multiplier( state );
+        double cam = pet_spell_t::composite_aoe_multiplier( state );
 
         if ( state->target != target )
           return cam / std::sqrt( state->n_targets );
@@ -3789,29 +3023,16 @@ public:
 
       void impact( action_state_t* s ) override
       {
-        if ( owner->spec.invoke_xuen_2->ok() )
-        {
-          // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-          if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-          {
-            if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-              owner->get_target_data( s->target )
-                  ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+        o()->trigger_empowered_tiger_lightning( s );
 
-            owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-          }
-        }
-
-        spell_t::impact( s );
+        pet_spell_t::impact( s );
       }
     };
 
     fallen_monk_breath_of_fire_tick_t* dot_action;
-    monk_t* owner;
-    fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "breath_of_fire_fo", p, p->o()->passives.fallen_monk_breath_of_fire ),
-        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) ),
-        owner( p->o() )
+    fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "breath_of_fire_fo", p, p->o()->passives.fallen_monk_breath_of_fire ),
+        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) )
     {
       parse_options( options_str );
       cooldown->duration = timespan_t::from_seconds( 9 );
@@ -3820,28 +3041,12 @@ public:
       add_child( dot_action );
     }
 
-    void init() override
-    {
-      spell_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
     void impact( action_state_t* s ) override
     {
-      spell_t::impact( s );
+      pet_spell_t::impact( s );
 
-      if ( owner->get_target_data( s->target )->debuff.keg_smash->up() ||
-           owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
+      if ( o()->get_target_data( s->target )->debuff.keg_smash->up() ||
+           o()->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
       {
         dot_action->target = s->target;
         dot_action->execute();
@@ -3849,11 +3054,10 @@ public:
     }
   };
 
-  struct fallen_monk_clash_t : public spell_t
+  struct fallen_monk_clash_t : public pet_spell_t
   {
-    monk_t* owner;
-    fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "clash_fo", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
+    fallen_monk_clash_t( fallen_monk_brm_pet_t* p, util::string_view options_str )
+      : pet_spell_t( "clash_fo", p, p->o()->passives.fallen_monk_clash )
     {
       parse_options( options_str );
       gcd_type           = gcd_haste_type::NONE;
@@ -3872,12 +3076,12 @@ public:
     if ( o()->specialization() == MONK_BREWMASTER )
       action_list_str += "/breath_of_fire";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-    pet_t::summon( duration );
+    monk_pet_t::summon( duration );
 
     if ( o()->buff.hit_combo->up() )
       buff.hit_combo_fm_brm->trigger( o()->buff.hit_combo->stack() );
@@ -3885,7 +3089,7 @@ public:
 
   void create_buffs() override
   {
-    pet_t::create_buffs();
+    monk_pet_t::create_buffs();
 
     buff.hit_combo_fm_brm = make_buff( this, "hit_combo_fo_brm", o()->passives.hit_combo )
                             ->set_default_value_from_effect( 1 )
@@ -3907,130 +3111,45 @@ public:
     if ( name == "breath_of_fire" )
       return new fallen_monk_breath_of_fire_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 };
 
 // ==========================================================================
 // Fallen Monk - Mistweaver (Venthyr)
 // ==========================================================================
-struct fallen_monk_mw_pet_t : public pet_t
+struct fallen_monk_mw_pet_t : public monk_pet_t
 {
 private:
-  struct melee_t : public melee_attack_t
+  struct melee_t : public pet_melee_t
   {
-    monk_t* owner;
-    melee_t( const std::string& n, fallen_monk_mw_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, fallen_monk_mw_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
-      background = repeating = may_crit = may_glance = true;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      // Use damage numbers from the level-scaled weapon
-      weapon            = &( player->main_hand_weapon );
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
-      owner             = player->o();
-    }
-
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    void execute() override
-    {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
-      {
-        sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                          player->executing ? *player->executing : *player->channeling,
-                          util::slot_type_string( weapon->slot ) );
-        schedule_execute();
-      }
-      else
-        attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
-      if ( owner->spec.invoke_xuen_2->ok() )
-      {
-        // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-        if ( owner->buff.invoke_xuen->up() && s->result_total > 0 && s->action->id != 335913 )
-        {
-          if ( !owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->up() )
-            owner->get_target_data( s->target )
-                ->debuff.empowered_tiger_lightning->trigger( owner->buff.invoke_xuen->remains() );
+      o()->trigger_empowered_tiger_lightning( s );
 
-          owner->get_target_data( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-        }
-      }
-
-      melee_attack_t::impact( s );
+      pet_melee_t::impact( s );
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_attack_t : public pet_auto_attack_t
   {
-    monk_t* owner;
-    auto_attack_t( fallen_monk_mw_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
+    auto_attack_t( fallen_monk_mw_pet_t* player, util::string_view options_str )
+      : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    void init() override
-    {
-      attack_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-
-      if ( player->off_hand_attack )
-        player->off_hand_attack->schedule_execute();
     }
   };
 
 public:
   fallen_monk_mw_pet_t( monk_t* owner )
-    : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+    : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -4043,16 +3162,6 @@ public:
     owner_coeff.ap_from_ap = 0.98;
   }
 
-  monk_t* o()
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
-  const monk_t* o() const
-  {
-    return static_cast<monk_t*>( owner );
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = o()->cache.player_multiplier( school );
@@ -4063,11 +3172,10 @@ public:
     return cpm;
   }
 
-  struct fallen_monk_enveloping_mist_t : public heal_t
+  struct fallen_monk_enveloping_mist_t : public pet_heal_t
   {
-    monk_t* owner;
-    fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "enveloping_mist_fo", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
+    fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, util::string_view options_str )
+      : pet_heal_t( "enveloping_mist_fo", p, p->o()->passives.fallen_monk_enveloping_mist )
     {
       parse_options( options_str );
 
@@ -4077,33 +3185,16 @@ public:
       target       = p->o();
     }
 
-    void init() override
-    {
-      heal_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
-
     double cost() const override
     {
       return 0;
     }
   };
 
-  struct fallen_monk_soothing_mist_t : public heal_t
+  struct fallen_monk_soothing_mist_t : public pet_heal_t
   {
-    monk_t* owner;
-    fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "soothing_mist_fo", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
+    fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, util::string_view options_str )
+      : pet_heal_t( "soothing_mist_fo", p, p->o()->passives.fallen_monk_soothing_mist )
     {
       parse_options( options_str );
 
@@ -4117,22 +3208,6 @@ public:
       cooldown->hasted   = true;
       target             = p->o();
     }
-
-    void init() override
-    {
-      heal_t::init();
-
-      if ( !this->player->sim->report_pets_separately )
-      {
-        auto it = range::find_if( owner->pet_list,
-                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
-
-        if ( it != owner->pet_list.end() && this->player != *it )
-        {
-          this->stats = ( *it )->get_stats( this->name(), this );
-        }
-      }
-    }
   };
 
   void init_action_list() override
@@ -4143,7 +3218,7 @@ public:
       action_list_str += "/enveloping_mist";
     action_list_str += "/soothing_mist";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -4157,7 +3232,7 @@ public:
     if ( name == "soothing_mist" )
       return new fallen_monk_soothing_mist_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 };
 }  // end namespace pets
@@ -4573,47 +3648,11 @@ public:
       }
     }
 
-    trigger_empowered_tiger_lightning( s );
+    p()->trigger_empowered_tiger_lightning( s );
 
-    trigger_bonedust_brew( s );
+    p()->trigger_bonedust_brew( s );
 
     ab::impact( s );
-  }
-
-  void trigger_bonedust_brew( action_state_t* s )
-  {
-    // Make sure it is not triggering from its self
-    if ( p()->covenant.necrolord->ok() && s->result_total > 0 &&
-         ( s->action->id != 325217 || s->action->id != 325218 ) )
-    {
-      if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
-      {
-        double damage = s->result_total * p()->covenant.necrolord->effectN( 1 ).percent();
-        if ( p()->conduit.bone_marrow_hops->ok() )
-          damage *= 1 + p()->conduit.bone_marrow_hops.percent();
-
-        p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-        p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-        p()->active_actions.bonedust_brew_dmg->execute();
-      }
-    }
-  }
-
-  void trigger_empowered_tiger_lightning( action_state_t* s )
-  {
-    if ( p()->spec.invoke_xuen_2->ok() )
-    {
-      // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself
-      // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-      if ( p()->buff.invoke_xuen->up() && s->result_total > 0 
-          && (s->action->id != 335913 || s->action->id != 124280 ) )
-      {
-        if ( !td( s->target )->debuff.empowered_tiger_lightning->up() )
-          td( s->target )->debuff.empowered_tiger_lightning->trigger( p()->buff.invoke_xuen->remains() );
-
-        td( s->target )->debuff.empowered_tiger_lightning->current_value += s->result_total;
-      }
-    }
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -10221,10 +9260,10 @@ void monk_t::create_pets()
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p->sim, p, true, WEAPON_SWORD );
+    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p->sim, p, true, WEAPON_MACE );
+    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p, true, WEAPON_MACE );
   }
 
   if ( covenant.venthyr->ok() )
@@ -12915,6 +11954,45 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
   }
 
   return amount;
+}
+
+void monk_t::trigger_empowered_tiger_lightning( action_state_t* s )
+{
+  if ( spec.invoke_xuen_2->ok() )
+  {
+    // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913)
+    // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
+    if ( buff.invoke_xuen->check() && s->result_total > 0 && s->action->id != 335913 && s->action->id != 124280 )
+    {
+      auto td = get_target_data( s-> target);
+
+      auto previous_value = td->debuff.empowered_tiger_lightning->check() ? td->debuff.empowered_tiger_lightning->current_value : 0;
+      auto new_value = previous_value + s->result_total;
+      
+      td->debuff.empowered_tiger_lightning->trigger( -1, new_value , -1, buff.invoke_xuen->remains());
+    }
+  }
+}
+
+void monk_t::trigger_bonedust_brew( action_state_t* s )
+{
+  if ( covenant.necrolord->ok() && s->result_total > 0 && s->action->id != 325217 && s->action->id != 325218 )
+  {
+    if ( auto td = find_target_data( s->target ) )
+    {
+      if ( td->debuff.bonedust_brew->up() && rng().roll( covenant.necrolord->proc_chance() ) )
+      {
+        double damage = s->result_total * covenant.necrolord->effectN( 1 ).percent();
+        // Bone Marrow Hops DOES NOT work with SEF or pets
+        //          if ( o()->conduit.bone_marrow_hops->ok() )
+        //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
+
+        active_actions.bonedust_brew_dmg->base_dd_min = damage;
+        active_actions.bonedust_brew_dmg->base_dd_max = damage;
+        active_actions.bonedust_brew_dmg->execute();
+      }
+    }
+  }
 }
 
 // monk_t::create_expression ==================================================
