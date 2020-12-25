@@ -1133,16 +1133,14 @@ struct monk_pet_t : public pet_t
   }
 };
 
-template <typename BASE>
+template <typename BASE, typename PET_TYPE = monk_pet_t>
 struct pet_action_base_t : public BASE
 {
   using super_t = BASE;
   using base_t  = pet_action_base_t<BASE>;
 
-  const action_t* source_action;
-
-  pet_action_base_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
-    : BASE( n, p, data ), source_action( nullptr )
+  pet_action_base_t( util::string_view n, PET_TYPE* p, const spell_data_t* data = spell_data_t::nil() )
+    : BASE( n, p, data )
   {
     // No costs are needed either
     this->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -1176,14 +1174,14 @@ struct pet_action_base_t : public BASE
     return p()->o();
   }
 
-  const monk_pet_t* p() const
+  const PET_TYPE* p() const
   {
-    return debug_cast<const monk_pet_t*>( this->player );
+    return debug_cast<const PET_TYPE*>( this->player );
   }
 
-  monk_pet_t* p()
+  PET_TYPE* p()
   {
-    return debug_cast<monk_pet_t*>( this->player );
+    return debug_cast<PET_TYPE*>( this->player );
   }
 
   void execute() override
@@ -1309,26 +1307,19 @@ struct jade_serpent_statue_t : public statue_t
 
 struct storm_earth_and_fire_pet_t : public monk_pet_t
 {
-  struct sef_td_t : public actor_target_data_t
-  {
-    sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) : actor_target_data_t( target, source )
-    {
-    }
-  };
-
   // Storm, Earth, and Fire abilities begin =================================
 
   template <typename BASE>
-  struct sef_action_base_t : public BASE
+  struct sef_action_base_t : public pet_action_base_t<BASE, storm_earth_and_fire_pet_t>
   {
-    using super_t = BASE;
+    using super_t = pet_action_base_t<BASE, storm_earth_and_fire_pet_t>;
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t* source_action;
 
     sef_action_base_t( const std::string& n, storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() )
-      : BASE( n, p, data ), source_action( nullptr )
+      : super_t( n, p, data ), source_action( nullptr )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
@@ -1352,10 +1343,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       // spell-data driven ability with 1:1 mapping of name/spell id will
       // always be chosen as the source action. In some cases this needs to be
       // overridden (see sef_zen_sphere_t for example).
-      for ( size_t i = 0, end = o()->action_list.size(); i < end; i++ )
+      for ( const action_t* a : this->o()->action_list )
       {
-        action_t* a = o()->action_list[ i ];
-
         if ( ( this->id > 0 && this->id == a->id ) || util::str_compare_ci( this->name_str, a->name_str ) )
         {
           source_action = a;
@@ -1368,31 +1357,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         this->update_flags   = source_action->update_flags;
         this->snapshot_flags = source_action->snapshot_flags;
       }
-    }
-
-    sef_td_t* td( player_t* t ) const
-    {
-      return this->p()->get_target_data( t );
-    }
-
-    monk_t* o()
-    {
-      return debug_cast<monk_t*>( this->player->cast_pet()->owner );
-    }
-
-    const monk_t* o() const
-    {
-      return debug_cast<const monk_t*>( this->player->cast_pet()->owner );
-    }
-
-    const storm_earth_and_fire_pet_t* p() const
-    {
-      return debug_cast<storm_earth_and_fire_pet_t*>( this->player );
-    }
-
-    storm_earth_and_fire_pet_t* p()
-    {
-      return debug_cast<storm_earth_and_fire_pet_t*>( this->player );
     }
 
     // Use SEF-specific override methods for target related multipliers as the
@@ -1479,22 +1443,23 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s );
+      auto owner = this->o();
+      owner->trigger_empowered_tiger_lightning( s );
 
-      if ( o()->covenant.necrolord->ok() && s->result_total > 0 &&
+      if ( owner->covenant.necrolord->ok() && s->result_total > 0 &&
          ( s->action->id != 325217 || s->action->id != 325218 ) )
       {
-        if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() &&
-             o()->rng().roll( o()->covenant.necrolord->proc_chance() ) )
+        if ( owner->get_target_data( s->target )->debuff.bonedust_brew->up() &&
+             owner->rng().roll( owner->covenant.necrolord->proc_chance() ) )
         {
-          double damage = s->result_total * o()->covenant.necrolord->effectN( 1 ).percent();
+          double damage = s->result_total * owner->covenant.necrolord->effectN( 1 ).percent();
           // Bone Marrow Hops DOES NOT work with SEF or pets
 //          if ( o()->conduit.bone_marrow_hops->ok() )
 //            damage *= 1 + o()->conduit.bone_marrow_hops.percent();
 
-          o()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
-          o()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
-          o()->active_actions.bonedust_brew_dmg->execute();
+          owner->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+          owner->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+          owner->active_actions.bonedust_brew_dmg->execute();
         }
       }
 
@@ -1505,13 +1470,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       super_t::snapshot_internal( state, flags, rt );
 
-      if ( o()->conduit.coordinated_offensive->ok() && p()->sticky_target )
+      if ( this->o()->conduit.coordinated_offensive->ok() && this->p()->sticky_target )
       {
          if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-           state->da_multiplier += o()->conduit.coordinated_offensive.percent();
+           state->da_multiplier += this->o()->conduit.coordinated_offensive.percent();
 
          if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-           state->ta_multiplier += o()->conduit.coordinated_offensive.percent();
+           state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
       }
 
 
@@ -2061,9 +2026,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   std::vector<sef_melee_attack_t*> attacks;
   std::vector<sef_spell_t*> spells;
 
-private:
-  target_specific_t<sef_td_t> target_data;
-
 public:
   // SEF applies the Cyclone Strike debuff as well
 
@@ -2123,21 +2085,6 @@ public:
   timespan_t available() const override
   {
     return sim->expected_iteration_time * 2;
-  }
-
-  const sef_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
-
-  sef_td_t* get_target_data( player_t* target ) const override
-  {
-    sef_td_t*& td = target_data[ target ];
-    if ( !td )
-    {
-      td = new sef_td_t( target, const_cast<storm_earth_and_fire_pet_t*>( this ) );
-    }
-    return td;
   }
 
   void init_spells() override
