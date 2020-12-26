@@ -72,7 +72,7 @@ actions+=/deathborne,if=buff.combustion.down&buff.rune_of_power.down&variable.ti
 actions+=/mirrors_of_torment,if=variable.time_to_combustion<=3&buff.combustion.down
 # For Venthyr, use a Fire Blast charge during Mirrors of Torment cast to avoid capping charges if Infernal Cascade is not selected.
 actions+=/fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&full_recharge_time-action.mirrors_of_torment.execute_remains<4&!hot_streak_spells_in_flight&!buff.hot_streak.react
-actions+=/mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down
+actions+=/mirror_image,if=buff.combustion.down&debuff.radiant_spark_vulnerability.down&buff.rune_of_power.down
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
 actions+=/use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay
 actions+=/use_item,name=glyph_of_assimilation,if=variable.time_to_combustion>=variable.on_use_cutoff
@@ -135,7 +135,7 @@ actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&(!runeforge.disciplinary_command|buff.disciplinary_command.up|buff.disciplinary_command_frost.up&talent.rune_of_power&cooldown.buff_disciplinary_command.ready)&(!runeforge.grisly_icicle|debuff.grisly_icicle.up)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.6|action.scorch.executing&action.scorch.execute_remains<0.6|action.fireball.executing&action.fireball.execute_remains<0.6|action.pyroblast.executing&action.pyroblast.execute_remains<0.6|action.flamestrike.executing&action.flamestrike.execute_remains<0.6)
 # Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc.
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.last_expire<=action.combustion.last_used
-actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react|buff.firestorm.react)&active_enemies>=variable.combustion_flamestrike
+actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike)|(buff.firestorm.react&active_enemies>=variable.combustion_flamestrike-runeforge.firestorm)
 actions.combustion_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.firestorm.react
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&(buff.combustion.remains>cast_time|buff.combustion.down)&active_enemies<variable.combustion_flamestrike
