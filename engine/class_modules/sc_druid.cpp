@@ -276,6 +276,7 @@ public:
   bool catweave_bear;
   bool owlweave_bear;
   bool owlweave_cat;
+  bool no_cds;
 
   bool affinity_resources;  // activate resources tied to affinities
   double kindred_spirits_partner_dps;
@@ -775,6 +776,7 @@ public:
       catweave_bear( false ),
       owlweave_bear( false ),
       owlweave_cat( true ),
+      no_cds( false ),
       affinity_resources( false ),
       kindred_spirits_partner_dps( 1.0 ),
       kindred_spirits_hide_partner( false ),
@@ -9536,14 +9538,16 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
-  if ( util::str_compare_ci( splits[ 0 ], "druid" ) && splits.size() > 1 )
+  if ( util::str_compare_ci( splits[0], "druid" ) && splits.size() > 1 )
   {
-    if ( util::str_compare_ci( splits[ 1 ], "catweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "catweave_bear", [ this ]() { return catweave_bear && talent.feral_affinity->ok(); } );
-    if ( util::str_compare_ci( splits[ 1 ], "owlweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "owlweave_bear", [ this ]() { return owlweave_bear && talent.balance_affinity->ok(); } );
-    if (util::str_compare_ci(splits[1], "owlweave_cat") && splits.size() == 2)
-      return make_fn_expr( "owlweave_cat", [this]() { return owlweave_cat && talent.balance_affinity->ok(); });
+    if ( util::str_compare_ci( splits[1], "catweave_bear" ) && splits.size() == 2 )
+      return make_fn_expr( "catweave_bear", [this]() { return catweave_bear && talent.feral_affinity->ok(); } );
+    if ( util::str_compare_ci( splits[1], "owlweave_bear" ) && splits.size() == 2 )
+      return make_fn_expr( "owlweave_bear", [this]() { return owlweave_bear && talent.balance_affinity->ok(); } );
+    if ( util::str_compare_ci( splits[1], "owlweave_cat" ) && splits.size() == 2 )
+      return make_fn_expr( "owlweave_cat", [this]() { return owlweave_cat && talent.balance_affinity->ok(); } );
+    if ( util::str_compare_ci( splits[1], "no_cds" ) && splits.size() == 2 )
+      return make_fn_expr( "no_cds", [this]() { return no_cds; } );
   }
   if ( splits[ 0 ] == "druid" &&
        ( splits[ 2 ] == "ticks_gained_on_refresh" || splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" ) )
@@ -9844,6 +9848,7 @@ void druid_t::create_options()
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
   add_option( opt_bool( "owlweave_cat", owlweave_cat ) );
+  add_option( opt_bool( "no_cds", no_cds ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
@@ -10455,6 +10460,7 @@ void druid_t::copy_from( player_t* source )
   owlweave_bear                = p->owlweave_bear;
   catweave_bear                = p->catweave_bear;
   owlweave_cat                 = p->owlweave_cat;
+  no_cds                        = p->no_cds;
   kindred_spirits_partner_dps  = p->kindred_spirits_partner_dps;
   kindred_spirits_hide_partner = p->kindred_spirits_hide_partner;
   kindred_spirits_absorbed     = p->kindred_spirits_absorbed;
