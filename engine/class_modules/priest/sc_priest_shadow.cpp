@@ -508,9 +508,7 @@ struct silence_t final : public priest_spell_t
   {
     priest_spell_t::impact( state );
 
-    // Currently you can just cast Silence on anything and proc Sephuz, even if immune
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/776
-    if ( priest().bugs || target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
     {
       if ( priest().legendary.sephuzs_proclamation->ok() && priest().buffs.sephuzs_proclamation )
       {
@@ -521,11 +519,6 @@ struct silence_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    // Currently you can just cast Silence on anything and proc Sephuz, even if immune
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/776
-    if ( priest().bugs )
-      return true;
-
     if ( !priest_spell_t::target_ready( candidate_target ) )
       return false;
 
@@ -1983,17 +1976,9 @@ void priest_t::generate_apl_shadow()
                      "otherwise use on cd unless the Pelagos Trait Combat Meditation is talented, or if there will not "
                      "be another Void Eruption this fight." );
   }
-  if ( bugs )
-  {
-    cds->add_action( this, "Silence", "target_if=runeforge.sephuzs_proclamation.equipped",
-                     "Use Silence on CD to proc Sephuz's Proclamation." );
-  }
-  else
-  {
-    cds->add_action( this, "Silence",
-                     "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
-                     "Use Silence on CD to proc Sephuz's Proclamation." );
-  }
+  cds->add_action( this, "Silence",
+                   "target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)",
+                   "Use Silence on CD to proc Sephuz's Proclamation." );
   cds->add_action( this, covenant.fae_guardians, "fae_guardians",
                    "if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)|buff.voidform.up&("
                    "soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)",
