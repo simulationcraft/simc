@@ -3120,33 +3120,6 @@ public:
 // ==========================================================================
 struct fallen_monk_mw_pet_t : public monk_pet_t
 {
-private:
-  struct melee_t : public pet_melee_t
-  {
-    melee_t( util::string_view n, fallen_monk_mw_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
-    {
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_empowered_tiger_lightning( s );
-
-      pet_melee_t::impact( s );
-    }
-  };
-
-  struct auto_attack_t : public pet_auto_attack_t
-  {
-    auto_attack_t( fallen_monk_mw_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
-    {
-      parse_options( options_str );
-
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
-      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-    }
-  };
-
 public:
   fallen_monk_mw_pet_t( monk_t* owner )
     : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
@@ -3223,9 +3196,6 @@ public:
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this, options_str );
-
     if ( name == "enveloping_mist" )
       return new fallen_monk_enveloping_mist_t( this, options_str );
 
