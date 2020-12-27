@@ -1809,6 +1809,11 @@ void sunblood_amethyst( special_effect_t& effect )
   effect.execute_action   = create_proc_action<tear_anima_proc_t>( "tear_anima", effect );
 }
 
+void flame_of_battle( special_effect_t& effect )
+{
+  debug_cast<stat_buff_t*>( effect.create_buff() )->stats[ 0 ].amount = effect.player->find_spell( 346746 )->effectN( 1 ).average( effect.item );
+}
+
 }  // namespace items
 
 void register_hotfixes()
@@ -1871,6 +1876,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 332299, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 332300, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
+    unique_gear::register_special_effect( 336841, items::flame_of_battle );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
