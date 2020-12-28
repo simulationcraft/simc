@@ -5748,15 +5748,21 @@ struct ironfur_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  starfire_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "starfire", player, player->find_affinity_spell( "Starfire" ), options_str )
+  starfire_t( druid_t* p, util::string_view opt )
+    : druid_spell_t( "starfire", p, p->find_affinity_spell( "Starfire" ), opt )
   {
     aoe = -1;
 
-    if ( player->specialization() == DRUID_BALANCE )
+    if ( p->specialization() == DRUID_BALANCE )
       base_aoe_multiplier = data().effectN( 3 ).percent();
     else
       base_aoe_multiplier = data().effectN( 2 ).percent();
+
+    if ( p->specialization() != DRUID_BALANCE )
+    {
+      form_mask = MOONKIN_FORM;  // not in spell data for affinity version (id=197630)
+      base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
+    }
   }
 
   void init_finished() override
