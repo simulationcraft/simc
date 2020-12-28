@@ -1316,10 +1316,14 @@ struct mage_spell_state_t : public action_state_t
   // Damage multiplier that is in efffect only for frozen targets.
   double frozen_multiplier;
 
+  // Damage multiplier that must be factored out when storing Touch of the Magi damage.
+  double totm_factor;
+
   mage_spell_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
     frozen(),
-    frozen_multiplier( 1.0 )
+    frozen_multiplier( 1.0 ),
+    totm_factor( 1.0 )
   { }
 
   void initialize() override
@@ -1327,6 +1331,7 @@ struct mage_spell_state_t : public action_state_t
     action_state_t::initialize();
     frozen = 0u;
     frozen_multiplier = 1.0;
+    totm_factor = 1.0;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -1375,6 +1380,7 @@ struct mage_spell_state_t : public action_state_t
     auto mss = debug_cast<const mage_spell_state_t*>( s );
     frozen            = mss->frozen;
     frozen_multiplier = mss->frozen_multiplier;
+    totm_factor       = mss->totm_factor;
   }
 
   virtual double composite_frozen_multiplier() const
@@ -1623,6 +1629,9 @@ public:
 
     if ( flags & STATE_FROZEN_MUL )
       cast_state( s )->frozen_multiplier = frozen_multiplier( s );
+
+    if ( flags & ( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ) && p()->spec.touch_of_the_magi->ok() )
+      cast_state( s )->totm_factor = composite_target_damage_vulnerability( s->target );
   }
 
   double cost() const override
@@ -1743,7 +1752,10 @@ public:
       auto totm = td->debuffs.touch_of_the_magi;
       if ( totm->check() )
       {
-        totm->current_value += s->result_total;
+        // Touch of the Magi factors out debuffs with effect subtype 87 (Modify Damage Taken%), but only
+        // if they increase damage taken. It does not factor out debuffs with effect subtype 270
+        // (Modify Damage Taken% from Caster) or 271 (Modify Damage Taken% from Caster's Spells).
+        totm->current_value += s->result_total / std::max( cast_state( s )->totm_factor, 1.0 );
 
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
@@ -4972,15 +4984,14 @@ struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_da_multiplier( player_t* target ) const override
   {
-    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+    // Touch of the Magi explosion ignores debuffs with effect subtype 270 (Modify
+    // Damage Taken% from Caster) or 271 (Modify Damage Taken% from Caster's Spells).
+    double m = composite_target_damage_vulnerability( target );
 
-    // It seems that TotM explosion only double dips on target based damage reductions
-    // and not target based damage increases.
-    m = std::min( m, 1.0 );
-
-    return m;
+    // For some reason, Touch of the Magi triple dips damage reductions.
+    return m * std::min( m, 1.0 );
   }
 };
 
