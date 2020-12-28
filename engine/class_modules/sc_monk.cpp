@@ -11412,13 +11412,19 @@ void monk_t::apl_combat_windwalker()
       "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains<120&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10" );
   if ( sim->allow_potions )
   {
+    if ( spec.invoke_xuen->ok() )
       def->add_action(
           "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60" );
+    else
+      def->add_action( "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&fight_remains<=60" );
   }
 
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
   def->add_action( "call_action_list,name=weapons_of_order,if=buff.weapons_of_order.up" );
-  def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active" );
+  if ( spec.invoke_xuen->ok() )
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active" );
+  else
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5" );
   def->add_talent( this, "Fist of the White Tiger",
       "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)" );
   def->add_action( this, "Expel Harm",
@@ -11460,7 +11466,10 @@ void monk_t::apl_combat_windwalker()
       "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo&prev_gcd.1.tiger_palm&chi=2&cooldown.fists_of_fury.remains<3|chi.max-chi<=1&prev_gcd.1.spinning_crane_kick&energy.time_to_max<3)" );
 
   // Serenity Cooldowns
-  cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20" );
+  if ( spec.invoke_xuen->ok() )
+    cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20" );
+  else
+    cd_serenity->add_action( "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|cooldown.serenity.remains>30|fight_remains<20" );
   cd_serenity->add_action( this, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen|fight_remains<25" );
 
   // Serenity On-use items
@@ -11492,8 +11501,17 @@ void monk_t::apl_combat_windwalker()
       cd_serenity->add_action( racial_actions[ i ] );
   }
 
-  cd_serenity->add_action( this, "Touch of Death", "if=fight_remains>180|pet.xuen_the_white_tiger.active|fight_remains<10" );
-  cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
+  if ( spec.invoke_xuen->ok() )
+  {
+    cd_serenity->add_action( this, "Touch of Death", "if=fight_remains>180|pet.xuen_the_white_tiger.active|fight_remains<10" );
+    cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
+  }
+  else
+  {
+    cd_serenity->add_action( this, "Touch of Death", "if=fight_remains>180|fight_remains<10" );
+    cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>90|fight_remains<10" );
+  }
+   
 
   // Serenity Covenant Abilities
   cd_serenity->add_action( "weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time" );
@@ -11514,8 +11532,11 @@ void monk_t::apl_combat_windwalker()
       cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1" );
   }
 
-  cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10|fight_remains>180" );
-
+  if ( spec.invoke_xuen->ok() )
+    cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active|fight_remains<10|fight_remains>180" );
+  else
+    cd_sef->add_action( this, "Touch of Death", "if=buff.storm_earth_and_fire.down|fight_remains<10|fight_remains>180" );
+  
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action( "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time" );
   cd_sef->add_action( "faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)" );
@@ -11540,7 +11561,10 @@ void monk_t::apl_combat_windwalker()
     }
   }
 
-  cd_sef->add_action( this, "Touch of Karma", "if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen" );
+  if ( spec.invoke_xuen->ok() )
+    cd_sef->add_action( this, "Touch of Karma", "if=fight_remains>159|pet.xuen_the_white_tiger.active|variable.hold_xuen" );
+  else
+    cd_sef->add_action( this, "Touch of Karma", "if=fight_remains>159|variable.hold_xuen" );
 
   // Storm, Earth and Fire Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
