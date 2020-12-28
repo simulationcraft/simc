@@ -20,7 +20,7 @@ precombat->add_action( "snapshot_stats" );
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
-def->add_action( "call_action_list,name=cooldown,if=variable.owlweave=1", "Balance weaving investigation" );
+def->add_action( "call_action_list,name=owlweave,if=variable.owlweave=1", "Balance weaving investigation" );
 def->add_action( "prowl", "Prowl whenever possible" );
 def->add_action( "tigers_fury,if=buff.cat_form.down" );
 def->add_action( "cat_form,if=buff.cat_form.down" );
