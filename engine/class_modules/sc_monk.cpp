@@ -3185,7 +3185,7 @@ public:
 
   void init_action_list() override
   {
-    action_list_str = "auto_attack";
+    action_list_str = "";
     // Only cast Enveloping Mist for Mistweaver specialization
     if ( o()->specialization() == MONK_MISTWEAVER )
       action_list_str += "/enveloping_mist";
