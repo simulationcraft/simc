@@ -2499,7 +2499,7 @@ public:
 
   void execute() override
   {
-    if ( ab::time_to_execute > timespan_t::zero() && !ab::proc && !ab::background && reset_melee_swing )
+    if ( ab::trigger_gcd > 0_ms && !ab::proc && !ab::background && reset_melee_swing )
     {
       if ( ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event )
         ab::p()->main_hand_attack->execute_event->reschedule( ab::p()->main_hand_weapon.swing_time );
@@ -2832,7 +2832,10 @@ struct moonfire_t : public druid_spell_t
   moonfire_t( druid_t* p, util::string_view options_str )
     : druid_spell_t( "moonfire", p, p->find_class_spell( "Moonfire" ), options_str )
   {
-    may_miss = may_crit = triggers_galactic_guardian = false;
+    may_miss = may_crit = false;
+
+    triggers_galactic_guardian = false;
+    reset_melee_swing = false;
 
     damage = p->get_secondary_action<moonfire_damage_t>( "moonfire_dmg" );
     damage->stats = stats;
