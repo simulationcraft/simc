@@ -6669,7 +6669,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, util
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
       if ( !talents.searing_touch->ok() )
-        return expr_t::create_constant( name_str, 0.0 );
+        return expr_t::create_constant( name_str, std::numeric_limits<double>::max() );
 
       return make_fn_expr( name_str, [ &action, searing_touch_pct ]
       { return action.target->time_to_percent( searing_touch_pct ).total_seconds(); } );
