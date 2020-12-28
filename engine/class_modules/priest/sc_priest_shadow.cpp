@@ -693,6 +693,9 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
+    if ( priest().specialization() != PRIEST_DISCIPLINE )
+      return;
+
     if ( d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
