@@ -6602,8 +6602,8 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish->add_action( this, "Between the Eyes", "", "BtE on cooldown to keep the Crit debuff up" );
     finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&refreshable" );
+    finish->add_action( this, "Between the Eyes", "", "BtE on cooldown to keep the Crit debuff up" );
     finish->add_action( this, "Dispatch" );
 
     // Builders
