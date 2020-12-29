@@ -3580,6 +3580,17 @@ struct feral_frenzy_driver_t : public cat_attack_t
     tick_action->stats = stats;
     dynamic_tick_action = true;
   }
+
+  void tick( dot_t* d ) override
+  {
+    auto f = get_state_free_cast( d->state );
+    if ( f )
+      stats = get_free_cast_stats( f );
+    else
+      stats = orig_stats;
+
+    cat_attack_t::tick( d );
+  }
 };
 
 // Ferocious Bite ===========================================================
@@ -3753,6 +3764,17 @@ struct lunar_inspiration_t : public cat_attack_t
 
     if ( hit_any_target )
       p()->buff.bt_moonfire->trigger();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    auto f = get_state_free_cast( d->state );
+    if ( f )
+      stats = get_free_cast_stats( f );
+    else
+      stats = orig_stats;
+
+    cat_attack_t::tick( d );
   }
 
   bool ready() override
@@ -4257,6 +4279,17 @@ struct thrash_cat_t : public cat_attack_t
     cat_attack_t::execute();
 
     p()->buff.bt_thrash->trigger();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    auto f = get_state_free_cast( d->state );
+    if ( f )
+      stats = get_free_cast_stats( f );
+    else
+      stats = orig_stats;
+
+    cat_attack_t::tick( d );
   }
 };
 
