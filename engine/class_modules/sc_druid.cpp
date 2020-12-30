@@ -5024,6 +5024,83 @@ struct auto_attack_t : public melee_attack_t
   }
 };
 
+// Form Spells ==============================================================
+
+struct druid_form_t : public druid_spell_t
+{
+  form_e form;
+  const spell_data_t* affinity;
+
+  druid_form_t( util::string_view n, druid_t* p, const spell_data_t* s, util::string_view opt, form_e f )
+    : druid_spell_t( n, p, s, opt ), form( f ), affinity( spell_data_t::nil() )
+  {
+    harmful               = false;
+    min_gcd               = 1.5_s;
+    ignore_false_positive = true;
+
+    form_mask         = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
+    may_autounshift   = false;
+    reset_melee_swing = false;
+
+    switch ( form )
+    {
+      case BEAR_FORM: affinity = p->talent.guardian_affinity; break;
+      case CAT_FORM: affinity = p->talent.feral_affinity; break;
+      case MOONKIN_FORM: affinity = p->talent.balance_affinity; break;
+      default: break;
+    }
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->shapeshift( form );
+
+    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() && affinity->ok() )
+    {
+      p()->buff.oath_of_the_elder_druid->trigger();
+      p()->buff.heart_of_the_wild->trigger(
+          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
+    }
+  }
+};
+
+// Bear Form Spell ==========================================================
+
+struct bear_form_t : public druid_form_t
+{
+  bear_form_t( druid_t* p, util::string_view opt )
+    : druid_form_t( "bear_form", p, p->find_class_spell( "Bear Form" ), opt, BEAR_FORM )
+  {}
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p()->conduit.ursine_vigor->ok() )
+      p()->buff.ursine_vigor->trigger();
+  }
+};
+
+// Cat Form Spell ===========================================================
+
+struct cat_form_t : public druid_form_t
+{
+  cat_form_t( druid_t* p, util::string_view opt )
+    : druid_form_t( "cat_form", p, p->find_class_spell( "Cat Form" ), opt, CAT_FORM )
+  {}
+};
+
+// Moonkin Form Spell =======================================================
+
+struct moonkin_form_t : public druid_form_t
+{
+  moonkin_form_t( druid_t* p, util::string_view opt )
+    : druid_form_t( "moonkin_form", p, p->spec.moonkin_form, opt, MOONKIN_FORM )
+  {}
+};
+
 // Barkskin =================================================================
 
 struct barkskin_t : public druid_spell_t
@@ -5052,39 +5129,6 @@ struct barkskin_t : public druid_spell_t
   }
 };
 
-// Bear Form Spell ==========================================================
-
-struct bear_form_t : public druid_spell_t
-{
-  bear_form_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "bear_form", player, player->find_class_spell( "Bear Form" ), options_str )
-  {
-    form_mask       = NO_FORM | CAT_FORM | MOONKIN_FORM;
-    may_autounshift = false;
-
-    harmful               = false;
-    min_gcd               = timespan_t::from_seconds( 1.5 );
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->shapeshift( BEAR_FORM );
-
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
-         p()->talent.guardian_affinity->ok() )
-    {
-      p()->buff.oath_of_the_elder_druid->trigger();
-      p()->buff.heart_of_the_wild->trigger(
-          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
-    }
-
-    if ( p()->conduit.ursine_vigor->ok() )
-      p()->buff.ursine_vigor->trigger();
-  }
-};
 // Brambles =================================================================
 
 struct brambles_t : public druid_spell_t
@@ -5122,37 +5166,6 @@ struct bristling_fur_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.bristling_fur->trigger();
-  }
-};
-
-// Cat Form Spell ===========================================================
-
-struct cat_form_t : public druid_spell_t
-{
-  cat_form_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "cat_form", player, player->find_class_spell( "Cat Form" ), options_str )
-  {
-    form_mask       = NO_FORM | BEAR_FORM | MOONKIN_FORM;
-    may_autounshift = false;
-
-    harmful               = false;
-    min_gcd               = timespan_t::from_seconds( 1.5 );
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->shapeshift( CAT_FORM );
-
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
-         p()->talent.feral_affinity->ok() )
-    {
-      p()->buff.oath_of_the_elder_druid->trigger();
-      p()->buff.heart_of_the_wild->trigger(
-          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
-    }
   }
 };
 
@@ -5923,36 +5936,6 @@ struct sunfire_t : public druid_spell_t
 
     damage->target = execute_state->target;
     damage->schedule_execute();
-  }
-};
-
-// Moonkin Form Spell =======================================================
-
-struct moonkin_form_t : public druid_spell_t
-{
-  moonkin_form_t( druid_t* player, util::string_view options_str )
-    : druid_spell_t( "moonkin_form", player, player->spec.moonkin_form, options_str )
-  {
-    form_mask       = NO_FORM | CAT_FORM | BEAR_FORM;
-    may_autounshift = false;
-
-    harmful               = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->shapeshift( MOONKIN_FORM );
-
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
-         p()->talent.balance_affinity->ok() )
-    {
-      p()->buff.oath_of_the_elder_druid->trigger();
-      p()->buff.heart_of_the_wild->trigger(
-          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
-    }
   }
 };
 
