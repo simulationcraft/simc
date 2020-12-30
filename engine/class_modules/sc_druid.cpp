@@ -2499,11 +2499,11 @@ public:
 
   void execute() override
   {
-    if ( ab::trigger_gcd > 0_ms && !ab::proc && !ab::background && reset_melee_swing )
+    if ( ab::trigger_gcd > 0_ms && !ab::proc && !ab::background && reset_melee_swing &&
+         ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event )
     {
-      if ( ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event )
-        ab::p()->main_hand_attack->execute_event->reschedule( ab::p()->main_hand_weapon.swing_time );
-      // Nothing for OH, as druids don't DW
+      ab::p()->main_hand_attack->execute_event->reschedule( ab::p()->main_hand_weapon.swing_time *
+                                                            ab::p()->cache.attack_speed() );
     }
 
     ab::execute();
