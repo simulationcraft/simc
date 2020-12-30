@@ -1854,48 +1854,6 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Specialized Death Knight Pet Actions
 // ==========================================================================
 
-// Generic Dark Transformation pet ability
-template <typename T>
-struct dt_melee_ability_t : public pet_melee_attack_t<T>
-{
-  using super = dt_melee_ability_t<T>;
-
-  bool usable_in_dt;
-  bool triggers_infected_claws;
-
-  dt_melee_ability_t( T* pet, util::string_view name,
-      const spell_data_t* spell = spell_data_t::nil(),
-      bool usable_in_dt = true ) :
-    pet_melee_attack_t<T>( pet, name, spell ),
-    usable_in_dt( usable_in_dt ),
-    triggers_infected_claws( false )
-  { }
-
-  void impact( action_state_t* state ) override
-  {
-    pet_melee_attack_t<T>::impact( state );
-
-    if ( triggers_infected_claws &&
-         this -> p() -> o() -> talent.infected_claws -> ok() &&
-         this -> rng().roll( this -> p() -> o() -> talent.infected_claws -> effectN( 1 ).percent() ) )
-    {
-      this -> p() -> o() -> trigger_festering_wound( state, 1, this -> p() -> o() -> procs.fw_infected_claws );
-    }
-  }
-
-  bool ready() override
-  {
-    bool dt_state = this -> p() -> o() -> buffs.dark_transformation -> check() > 0;
-
-    if ( usable_in_dt != dt_state )
-    {
-      return false;
-    }
-
-    return pet_melee_attack_t<T>::ready();
-  }
-};
-
 // Generic auto attack for meleeing pets
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
@@ -1973,21 +1931,61 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 {
   cooldown_t* gnaw_cd; // shared cd between gnaw/monstrous_blow
   gain_t* dark_transformation_gain;
+  buff_t* frenzied_monstrosity;
 
-  struct claw_t : public dt_melee_ability_t<ghoul_pet_t>
+  // Ghoul Pet Abilities ======================================================
+
+  // Generic Dark Transformation pet ability
+  struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
+  {
+    bool usable_in_dt;
+    bool triggers_infected_claws;
+
+    dt_melee_ability_t( ghoul_pet_t* pet, util::string_view name,
+                        const spell_data_t* spell = spell_data_t::nil(),
+                        bool usable_in_dt = true ) :
+      pet_melee_attack_t( pet, name, spell ),
+      usable_in_dt( usable_in_dt ),
+      triggers_infected_claws( false )
+    { }
+
+    void impact( action_state_t* state ) override
+    {
+      pet_melee_attack_t::impact( state );
+
+      if ( triggers_infected_claws &&
+           this -> p() -> o() -> talent.infected_claws -> ok() &&
+           this -> rng().roll( this -> p() -> o() -> talent.infected_claws -> effectN( 1 ).percent() ) )
+      {
+        this -> p() -> o() -> trigger_festering_wound( state, 1, this -> p() -> o() -> procs.fw_infected_claws );
+      }
+    }
+
+    bool ready() override
+    {
+      if ( usable_in_dt != p() -> o() -> buffs.dark_transformation -> check() > 0 )
+      {
+        return false;
+      }
+
+      return pet_melee_attack_t::ready();
+    }
+  };
+
+  struct claw_t : public dt_melee_ability_t
   {
     claw_t( ghoul_pet_t* player, util::string_view options_str ) :
-      super( player, "claw", player -> o() -> spell.pet_ghoul_claw, false )
+      dt_melee_ability_t( player, "claw", player -> o() -> spell.pet_ghoul_claw, false )
     {
       parse_options( options_str );
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
     }
   };
 
-  struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
+  struct sweeping_claws_t : public dt_melee_ability_t
   {
     sweeping_claws_t( ghoul_pet_t* player, util::string_view options_str ) :
-      super( player, "sweeping_claws", player -> o() -> spell.pet_sweeping_claws )
+      dt_melee_ability_t( player, "sweeping_claws", player -> o() -> spell.pet_sweeping_claws )
     {
       parse_options( options_str );
       aoe = -1;
@@ -1995,20 +1993,20 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
+  struct gnaw_t : public dt_melee_ability_t
   {
     gnaw_t( ghoul_pet_t* player, util::string_view options_str ) :
-      super( player, "gnaw", player -> o() -> spell.pet_gnaw, false )
+      dt_melee_ability_t( player, "gnaw", player -> o() -> spell.pet_gnaw, false )
     {
       parse_options( options_str );
       cooldown = player -> get_cooldown( "gnaw" );
     }
   };
 
-  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  struct monstrous_blow_t : public dt_melee_ability_t
   {
     monstrous_blow_t( ghoul_pet_t* player, util::string_view options_str ):
-      super( player, "monstrous_blow", player -> o() -> spell.pet_monstrous_blow )
+      dt_melee_ability_t( player, "monstrous_blow", player -> o() -> spell.pet_monstrous_blow )
     {
       parse_options( options_str );
       cooldown = player -> get_cooldown( "gnaw" );
@@ -2033,15 +2031,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( school );
 
-    if ( o() -> buffs.dark_transformation -> up() )
-    {
-      m *= 1.0 + o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-    }
+    m *= 1.0 + o() -> buffs.dark_transformation -> value();
 
-    if ( o() -> buffs.frenzied_monstrosity->up() )
-    {
-      m *= 1.0 + o() -> buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
-    }
+    if ( frenzied_monstrosity -> up() )
+      m *= 1.0 + frenzied_monstrosity -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -2066,10 +2059,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     double haste = base_ghoul_pet_t::composite_melee_speed();
 
-    if ( o() -> buffs.frenzied_monstrosity->up() )
-    {
-      haste *= 1.0 / ( 1.0 + o() -> buffs.frenzied_monstrosity->data().effectN( 1 ).percent() );
-    }
+    if ( frenzied_monstrosity->up() )
+      haste *= 1.0 / ( 1.0 + frenzied_monstrosity -> data().effectN( 2 ).percent() );
 
     return haste;
   }
@@ -2109,6 +2100,15 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
 
     return base_ghoul_pet_t::create_action( name, options_str );
+  }
+
+  void create_buffs() override
+  {
+    base_ghoul_pet_t::create_buffs();
+
+    // TODO: change spellID to 334895 once data is regenerated
+    frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
+      -> set_duration( 0_s ); // Buff is handled by DT buff
   }
 };
 
@@ -4165,7 +4165,7 @@ struct dark_command_t: public death_knight_spell_t
   }
 };
 
-// Dark Transformation ======================================================
+// Dark Transformation and Unholy Pact ======================================
 
 struct unholy_pact_damage_t : public death_knight_spell_t
 {
@@ -4224,36 +4224,99 @@ struct dark_transformation_damage_t : public death_knight_spell_t
   }
 };
 
+// Even though the buff is tied to the pet ingame, it's simpler to add it to the player
+struct dark_transformation_buff_t : public buff_t
+{
+  dark_transformation_buff_t( death_knight_t* p ) :
+    buff_t( p, "dark_transformation", p -> spec.dark_transformation )
+  {
+    base_buff_duration += p -> conduits.eternal_hunger -> effectN( 2 ).time_value();
+    set_default_value_from_effect( 1 );
+    cooldown -> duration = 0_ms; // Handled by the player ability
+  }
+
+  // Unlike the player buff, Frenzied Monstrosity follows Dark Trasnformation uptime on the pet
+  // even with effects that increase the buff's duration
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> legendary.frenzied_monstrosity -> ok() )
+      debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> frenzied_monstrosity -> trigger();
+
+    return buff_t::trigger( s, v, c, d );
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
+    debug_cast<pets::ghoul_pet_t*>( debug_cast<death_knight_t*>( player )
+        -> pets.ghoul_pet ) -> frenzied_monstrosity -> expire();
+  }
+};
+
 struct dark_transformation_t : public death_knight_spell_t
 {
+  bool precombat_frenzy;
+
   dark_transformation_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dark_transformation", p, p -> spec.dark_transformation )
+    death_knight_spell_t( "dark_transformation", p, p -> spec.dark_transformation ),
+    precombat_frenzy( false )
   {
+    add_option( opt_bool( "precombat_frenzy", precombat_frenzy ) );
+    harmful = false;
+
+    // Don't create and use the damage if the spell is used for precombat frenzy
+    if ( ! precombat_frenzy )
+    {
+      execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
+      execute_action -> stats = stats;
+    }
+
     parse_options( options_str );
-    execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
-    execute_action -> stats = stats;
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.dark_transformation -> trigger();
-
-    if ( p() -> spec.dark_transformation_2 -> ok() )
+    // If used during precombat and the precombat frenzy option is selected, trigger all the related buffs with a 2s penalty
+    // As well as Frenzied Monstrosity regardless of legendary to model using DT with legendary equipped, then switching to another one before combat starts
+    // NOTE: THIS IS A HACK
+    if ( precombat_frenzy && is_precombat )
     {
-      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
-                                              p() -> pets.ghoul_pet -> dark_transformation_gain, this );
+      p() -> buffs.dark_transformation -> trigger(
+        p() -> buffs.dark_transformation -> buff_duration() - 2_s );
+
+      if ( p() -> talent.unholy_pact -> ok() )
+      {
+        p() -> buffs.unholy_pact -> trigger( p() -> buffs.unholy_pact -> buff_duration() - 2_s );
+      }
+
+      p() -> buffs.frenzied_monstrosity -> trigger( p() -> buffs.frenzied_monstrosity -> buff_duration() - 2_s );
+      p() -> pets.ghoul_pet -> frenzied_monstrosity -> trigger();
+
+      p() -> cooldown.dark_transformation -> adjust( -2_s, false );
     }
 
-    if ( p() -> talent.unholy_pact -> ok() )
+    else
     {
-      p() -> buffs.unholy_pact -> trigger();
-    }
+      p() -> buffs.dark_transformation -> trigger();
 
-    if ( p() -> legendary.frenzied_monstrosity.ok() )
-    {
-      p() -> buffs.frenzied_monstrosity -> trigger();
+      if ( p() -> spec.dark_transformation_2 -> ok() )
+      {
+        p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
+                                                p() -> pets.ghoul_pet -> dark_transformation_gain, this );
+      }
+
+      if ( p() -> talent.unholy_pact -> ok() )
+      {
+        p() -> buffs.unholy_pact -> trigger();
+      }
+
+      // Unlike the pet's buff, the player's frenzied monstrosity buff has a flat duration that doesn't necessarily follow DT's
+      if ( p() -> legendary.frenzied_monstrosity.ok() )
+      {
+        p() -> buffs.frenzied_monstrosity -> trigger();
+      }
     }
   }
 
@@ -4659,7 +4722,8 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dark_transformation -> up() && p() -> legendary.deadliest_coil.ok() )
     {
-      p() -> buffs.dark_transformation->extend_duration( p(), timespan_t::from_seconds(p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
+      p() -> buffs.dark_transformation -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
     }
 
     p() -> buffs.sudden_doom -> decrement();
@@ -6129,18 +6193,23 @@ struct sacrificial_pact_damage_t : public death_knight_spell_t
 
 struct sacrificial_pact_t : public death_knight_heal_t
 {
+  action_t* damage;
   sacrificial_pact_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_heal_t( "sacrificial_pact", p, p -> spec.sacrificial_pact )
   {
     target = p;
     base_pct_heal = data().effectN( 1 ).percent();
     parse_options( options_str );
-    execute_action = get_action<sacrificial_pact_damage_t>( "sacrificial_pact_damage", p );
+    damage = get_action<sacrificial_pact_damage_t>( "sacrificial_pact_damage", p );
   }
 
   void execute() override
   {
     death_knight_heal_t::execute();
+
+    damage -> set_target( player -> target );
+    damage -> execute();
+
     p() -> pets.ghoul_pet -> dismiss();
   }
 
@@ -8467,9 +8536,7 @@ void death_knight_t::create_buffs()
         -> set_chance( spec.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
 
   // Unholy
-  buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
-        -> set_duration( spec.dark_transformation->duration() + conduits.eternal_hunger -> effectN( 2 ).time_value() )
-        -> set_cooldown( 0_ms ); // Handled by the ability
+  buffs.dark_transformation = new dark_transformation_buff_t( this );
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
 
@@ -8522,7 +8589,6 @@ void death_knight_t::create_buffs()
   buffs.frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334896 ) )
     -> add_invalidate( CACHE_ATTACK_SPEED )
     -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
 
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
@@ -8999,7 +9065,7 @@ double death_knight_t::composite_melee_speed() const
     haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
   }
 
-  if (buffs.frenzied_monstrosity -> up())
+  if ( buffs.frenzied_monstrosity -> up() )
   {
     haste *= 1.0 / ( 1.0 + buffs.frenzied_monstrosity -> data().effectN( 1 ).percent() );
   }
