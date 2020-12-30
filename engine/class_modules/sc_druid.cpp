@@ -5696,6 +5696,9 @@ struct heart_of_the_wild_t : public druid_spell_t
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
   {
     harmful = may_crit = may_miss = false;
+
+    reset_melee_swing = false;
+
     // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
     // effect in-game works as a percent reduction.
     cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
