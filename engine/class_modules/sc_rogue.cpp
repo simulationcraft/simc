@@ -4390,6 +4390,13 @@ struct sepsis_t : public rogue_attack_t
       affected_by.shadow_blades = true;
     }
 
+    void impact( action_state_t* state ) override
+    {
+      // 12/30/2020 - Due to flagging as a generator, the final hit can trigger Seal Fate
+      rogue_attack_t::impact( state );
+      trigger_seal_fate( state );
+    }
+
     // 11/29/2020 - Does not proc Blade Flurry on live
     bool procs_blade_flurry() const override
     { return false; }
