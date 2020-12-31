@@ -1079,7 +1079,6 @@ public:
   double stagger_pct( int target_level );
   double stagger_total();
   void trigger_celestial_fortune( action_state_t* );
-  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   void trigger_empowered_tiger_lightning( action_state_t*);
@@ -9087,33 +9086,6 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
     active_actions.celestial_fortune->base_dd_max = active_actions.celestial_fortune->base_dd_min = s->result_amount;
     active_actions.celestial_fortune->schedule_execute();
   }
-}
-
-void monk_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double override_proc_chance )
-{
-  switch ( mechanic )
-  {
-    // Interrupts will always trigger sephuz
-    case MECHANIC_INTERRUPT:
-      break;
-    default:
-      // By default, proc sephuz on persistent enemies if they are below the "boss level"
-      // (playerlevel + 3), and on any kind of transient adds.
-      if ( state->target->type != ENEMY_ADD && ( state->target->level() >= sim->max_player_level + 3 ) )
-      {
-        return;
-      }
-      break;
-  }
-
-  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
-  // proc chance of 0 (disabled) will be created
-  //if ( buff.sephuzs_secret->default_chance == 0 )
-  //{
-  //  return;
-  //}
-
-  //buff.sephuzs_secret->trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
 }
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )

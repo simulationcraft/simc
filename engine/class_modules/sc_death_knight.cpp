@@ -1570,8 +1570,8 @@ struct death_knight_pet_t : public pet_t
   double spawn_travel_duration, spawn_travel_stddev, precombat_spawn_adjust;
 
   death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
-    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack ),
-    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), precombat_spawn( false ), precombat_spawn_adjust( 0 )
+    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack ), precombat_spawn( false ),
+    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ),  precombat_spawn_adjust( 0 )
   {
     if ( auto_attack )
     {
@@ -1963,7 +1963,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     bool ready() override
     {
-      if ( usable_in_dt != p() -> o() -> buffs.dark_transformation -> check() > 0 )
+      if ( usable_in_dt != ( p() -> o() -> buffs.dark_transformation -> check() > 0 ) )
       {
         return false;
       }
@@ -6514,7 +6514,7 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const override
   {
     // No longer pandemics
     return triggered_duration;

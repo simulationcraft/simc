@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "config.hpp"
 #include "simulationcraft.hpp"
 #include "player/covenant.hpp"
 
@@ -5330,7 +5331,7 @@ struct moon_base_t : public druid_spell_t
       }
       cooldown->duration = s->charge_cooldown();
 
-      if ( cooldown->charges != 1 && cooldown->charges != s->charges() )
+      if ( cooldown->charges != 1 && cooldown->charges != as<int>( s->charges() ) )
       {
         sim->error( "Moon CD: {} ({}) charges of {} doesn't match existing charges of {}",
                     n, s->id(), s->charges(), cooldown->charges );
@@ -8437,10 +8438,12 @@ std::string druid_t::default_potion() const
     case DRUID_RESTORATION:
       if      ( true_level >= 60 ) return "spectral_intellect";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
+      SC_FALLTHROUGH;
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
       if      ( true_level >= 60 ) return "spectral_agility";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
+      SC_FALLTHROUGH;
     default:
       return "disabled";
   }
@@ -8471,6 +8474,7 @@ std::string druid_t::default_temporary_enchant() const
     case DRUID_GUARDIAN:
     case DRUID_FERAL:
       if ( true_level >= 60 ) return "main_hand:shadowcore_oil";
+      SC_FALLTHROUGH;
     default:
       return "disabled";
   }

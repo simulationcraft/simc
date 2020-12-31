@@ -1011,7 +1011,7 @@ struct demonic_synergy_callback_t : public dbc_proc_callback_t
   {
   }
 
-  void execute( action_t* /* a */, action_state_t* state ) override
+  void execute( action_t* /* a */, action_state_t* ) override
   {
     if ( owner->warlock_pet_list.active )
     {

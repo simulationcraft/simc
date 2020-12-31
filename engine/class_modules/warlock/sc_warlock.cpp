@@ -45,7 +45,7 @@ struct drain_life_t : public warlock_spell_t
       return ta;
     }
 
-    double cost_per_tick( resource_e r ) const override
+    double cost_per_tick( resource_e ) const override
     {
       return 0.0;
     }
@@ -213,8 +213,8 @@ struct impending_catastrophe_impact_t : public warlock_spell_t
 
 struct impending_catastrophe_t : public warlock_spell_t
 {
-  action_t* impending_catastrophe_dot;
   action_t* impending_catastrophe_impact;
+  action_t* impending_catastrophe_dot;
 
   impending_catastrophe_t( warlock_t* p, util::string_view options_str ) : 
     warlock_spell_t( "impending_catastrophe", p, p->covenant.impending_catastrophe ),

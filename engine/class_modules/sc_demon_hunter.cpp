@@ -5045,7 +5045,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       demon_hunter_t* dh;
       soul_fragment type;
 
-      soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t, bool require_demon )
+      soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t )
         : expr_t( n ), dh( p ), type( t )
       {
       }
@@ -5057,7 +5057,6 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
     };
 
     soul_fragment type = soul_fragment::LESSER;
-    bool require_demon = false;
 
     if ( name_str == "soul_fragments" )
     {
@@ -5072,7 +5071,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       type = soul_fragment::ANY_DEMON;
     }
 
-    return std::make_unique<soul_fragments_expr_t>( this, name_str, type, require_demon );
+    return std::make_unique<soul_fragments_expr_t>( this, name_str, type );
   }
   else if ( name_str == "cooldown.metamorphosis.adjusted_remains" )
   {

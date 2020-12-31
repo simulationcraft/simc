@@ -159,7 +159,7 @@ public:
   report::sc_html_stream& generate_report( report::sc_html_stream& root ) const;
 
   /// Conduit checking helper function for default profile generation
-  void check_conduits( util::string_view tier_name, int max_conduit_rank ) const;
+  void check_conduits( util::string_view tier_name, unsigned max_conduit_rank ) const;
 
   /// Option string for the soulbinds on this actor
   std::string soulbind_option_str() const;

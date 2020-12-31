@@ -852,7 +852,7 @@ void paladin_t::create_buffs_protection()
         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
         -> set_cooldown( 0_ms )
-        -> set_stack_change_callback( [ this ] ( buff_t*, int old, int curr )
+        -> set_stack_change_callback( [ this ] ( buff_t*, int /*old*/, int curr )
         {
           if ( curr == 1 && conduit.royal_decree -> ok() )
             this -> buffs.royal_decree -> trigger();
