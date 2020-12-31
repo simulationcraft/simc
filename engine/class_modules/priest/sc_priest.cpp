@@ -1701,8 +1701,9 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Generic Spells
-  specs.mind_flay = find_specialization_spell( "Mind Flay" );
   specs.mind_sear = find_class_spell( "Mind Sear" );
+  specs.mind_blast = find_class_spell( "Mind Blast" );
+  specs.shadow_word_death = find_class_spell( "Shadow Word: Death" );
 
   // Class passives
   specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
@@ -1727,18 +1728,18 @@ void priest_t::init_spells()
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
   // Shadow Legendaries
+  legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
   legendary.painbreaker_psalm        = find_runeforge_legendary( "Painbreaker Psalm" );
   legendary.shadowflame_prism        = find_runeforge_legendary( "Shadowflame Prism" );
-  legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
   legendary.talbadars_stratagem      = find_runeforge_legendary( "Talbadar's Stratagem" );
 
   // Generic Conduits
   conduits.power_unto_others = find_conduit_spell( "Power Unto Others" );
   // Shadow Conduits
   conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
+  conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
   conduits.mind_devourer        = find_conduit_spell( "Mind Devourer" );
   conduits.rabid_shadows        = find_conduit_spell( "Rabid Shadows" );
-  conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
   // Covenant Conduits
   conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
   conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
@@ -1746,10 +1747,10 @@ void priest_t::init_spells()
   conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
-  covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
-  covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
-  covenant.mindgames            = find_covenant_spell( "Mindgames" );
   covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
+  covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
+  covenant.mindgames            = find_covenant_spell( "Mindgames" );
+  covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
 }
 
 void priest_t::create_buffs()

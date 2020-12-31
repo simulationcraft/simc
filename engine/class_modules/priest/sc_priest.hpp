@@ -186,9 +186,9 @@ public:
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
-    const spell_data_t* lenience;     // not fully implemented
-    const spell_data_t* spirit_shell;     // not fully implemented
-    const spell_data_t* evangelism;     // not fully implemented
+    const spell_data_t* lenience;      // not fully implemented
+    const spell_data_t* spirit_shell;  // not fully implemented
+    const spell_data_t* evangelism;    // not fully implemented
 
     // Holy
     // T15
@@ -218,6 +218,7 @@ public:
     // T15
     const spell_data_t* fortress_of_the_mind;
     const spell_data_t* death_and_madness;
+    const spell_data_t* death_and_madness_insanity;
     const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;        // NYI
@@ -246,8 +247,10 @@ public:
   // Specialization Spells
   struct
   {
-    const spell_data_t* priest;  // General priest data
+    const spell_data_t* mind_blast;
     const spell_data_t* mind_sear;
+    const spell_data_t* priest;  // General priest data
+    const spell_data_t* shadow_word_death;
 
     // Discipline
     const spell_data_t* discipline;  // General discipline data
@@ -275,8 +278,11 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
-    const spell_data_t* dark_thoughts;
+    const spell_data_t* dark_thought;   // Actual buff, holds proc rate
+    const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* mind_flay;
+    const spell_data_t* shadowform;
+    const spell_data_t* vampiric_embrace;
   } specs;
 
   // DoT Spells
