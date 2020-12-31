@@ -213,13 +213,6 @@ struct mind_sear_t final : public priest_spell_t
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    auto mind_sear_tick_action = debug_cast<mind_sear_tick_t*>( tick_action );
-  }
 };
 
 // ==========================================================================

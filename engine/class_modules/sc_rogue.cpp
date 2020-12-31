@@ -1268,9 +1268,9 @@ public:
     // Apply and Snapshot Echoing Reprimand Buffs
     if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
     {
-      if ( consume_cp == 2 && p()->buffs.echoing_reprimand_2->up() || 
-           consume_cp == 3 && p()->buffs.echoing_reprimand_3->up() || 
-           consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() )
+      if ( ( consume_cp == 2 && p()->buffs.echoing_reprimand_2->up() ) || 
+           ( consume_cp == 3 && p()->buffs.echoing_reprimand_3->up() ) || 
+           ( consume_cp == 4 && p()->buffs.echoing_reprimand_4->up() ) )
       {
         effective_cp = as<int>( p()->covenant.echoing_reprimand->effectN( 2 ).base_value() );
       }

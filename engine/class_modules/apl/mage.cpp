@@ -1,5 +1,7 @@
-#include "simulationcraft.hpp"
 #include "class_modules/apl/mage.hpp"
+
+#include "player/action_priority_list.hpp"
+#include "player/sc_player.hpp"
 
 namespace mage_apl {
 

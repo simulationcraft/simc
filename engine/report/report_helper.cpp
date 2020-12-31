@@ -358,7 +358,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
   int max_gems                    = 0;
-  int max_conduit_rank            = 0;
+  unsigned int max_conduit_rank   = 0;
   int max_legendary_items         = 1;
   int equipped_legendaries        = 0; // counter
   int equipped_gems               = 0; // counter

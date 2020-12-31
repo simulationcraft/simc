@@ -8548,11 +8548,13 @@ std::string shaman_t::default_temporary_enchant() const
     case SHAMAN_ELEMENTAL:
       if ( true_level >= 60 )
         return "main_hand:shadowcore_oil";
+      SC_FALLTHROUGH;
     case SHAMAN_ENHANCEMENT:
       return "disabled";
     case SHAMAN_RESTORATION:
       if ( true_level >= 60 )
         return "main_hand:shadowcore_oil";
+      SC_FALLTHROUGH;
     default:
       return "disabled";
   }

@@ -726,7 +726,7 @@ void memory_of_past_sins( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* trigger_state ) override
+    void execute( action_t*, action_state_t* trigger_state ) override
     {
       damage->target = trigger_state->target;
       damage->execute();
