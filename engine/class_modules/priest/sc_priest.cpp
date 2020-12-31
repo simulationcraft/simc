@@ -1701,9 +1701,10 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Generic Spells
-  specs.mind_sear = find_class_spell( "Mind Sear" );
-  specs.mind_blast = find_class_spell( "Mind Blast" );
-  specs.shadow_word_death = find_class_spell( "Shadow Word: Death" );
+  specs.mind_blast         = find_class_spell( "Mind Blast" );
+  specs.mind_sear          = find_class_spell( "Mind Sear" );
+  specs.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
+  specs.shadow_word_death  = find_class_spell( "Shadow Word: Death" );
 
   // Class passives
   specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
@@ -1712,9 +1713,9 @@ void priest_t::init_spells()
   specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
   // DoT Spells
+  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
   dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
   dot_spells.vampiric_touch   = find_class_spell( "Vampiric Touch" );
-  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -1749,6 +1750,7 @@ void priest_t::init_spells()
   // Covenant Abilities
   covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
   covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
+  covenant.benevolent_faerie    = find_spell( 327710 );
   covenant.mindgames            = find_covenant_spell( "Mindgames" );
   covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
 }
