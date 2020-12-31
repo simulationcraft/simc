@@ -3136,7 +3136,7 @@ struct the_hunt_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->covenant.the_hunt->effectN( 1 ).trigger() )
     {
       dual = true;
-      execute_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
+      impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
     }
   };
 
@@ -3144,9 +3144,9 @@ struct the_hunt_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "the_hunt", p, p->covenant.the_hunt, options_str )
   {
     movement_directionality = movement_direction_type::TOWARDS;
-    execute_action = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
-    execute_action->stats = stats;
-    execute_action->execute_action->stats = stats;
+    impact_action = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
+    impact_action->stats = stats;
+    impact_action->impact_action->stats = stats;
   }
 
   void execute() override
@@ -3154,6 +3154,9 @@ struct the_hunt_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
   }
+
+  timespan_t travel_time() const
+  { return 100_ms; }
 };
 
 }  // end namespace spells
