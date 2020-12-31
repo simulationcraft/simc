@@ -1226,6 +1226,12 @@ void inscrutable_quantum_device ( special_effect_t& effect )
     {
       cooldown->duration = 0_ms;
     }
+    double composite_crit_chance() const override
+    {
+      double cc = proc_spell_t::composite_crit_chance() + 1;
+
+      return cc;
+    }
   };
 
   struct inscrutable_quantum_device_t : public proc_spell_t
