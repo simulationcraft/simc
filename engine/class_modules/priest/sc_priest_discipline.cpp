@@ -383,35 +383,8 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, util:
   return {};
 }
 
-void priest_t::generate_apl_discipline_h()
-{
-  action_priority_list_t* def = get_action_priority_list( "default" );
-
-  // DEFAULT
-  if ( sim->allow_potions )
-  {
-    def->add_action( "mana_potion,if=mana.pct<=75" );
-  }
-
-  if ( find_class_spell( "Shadowfiend" )->ok() )
-  {
-    def->add_action( this, "Shadowfiend" );
-  }
-
-  if ( race == RACE_TROLL )
-  {
-    def->add_action( "berserking" );
-  }
-  if ( race == RACE_BLOOD_ELF )
-  {
-    def->add_action( "arcane_torrent,if=mana.pct<=90" );
-  }
-  def->add_action( this, "Penance" );
-  def->add_action( this, "Shadow Mend" );
-}
-
 /** Discipline Damage Combat Action Priority List */
-void priest_t::generate_apl_discipline_d()
+void priest_t::generate_apl_discipline()
 {
   action_priority_list_t* def     = get_action_priority_list( "default" );
   action_priority_list_t* boon    = get_action_priority_list( "boon" );
@@ -424,11 +397,8 @@ void priest_t::generate_apl_discipline_d()
   def->add_action( "use_items", "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // Potions
-  if ( sim->allow_potions )
-  {
-    def->add_action( "potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40",
+  def->add_action( "potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40",
                      "Sync potion usage with Bloodlust or Power Infusion." );
-  }
 
   // Racials
   racials->add_action( "arcane_torrent,if=mana.pct<=95" );
