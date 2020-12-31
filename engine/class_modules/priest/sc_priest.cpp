@@ -947,189 +947,6 @@ void init()
 
 }  // namespace items
 
-namespace pets
-{
-namespace fiend
-{
-void base_fiend_pet_t::init_action_list()
-{
-  main_hand_attack = new actions::fiend_melee_t( *this );
-
-  if ( action_list_str.empty() )
-  {
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    precombat->add_action( "snapshot_stats",
-                           "Snapshot raid buffed stats before combat begins and "
-                           "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "wait" );
-  }
-
-  priest_pet_t::init_action_list();
-}
-
-void base_fiend_pet_t::init_background_actions()
-{
-  priest_pet_t::init_background_actions();
-
-  shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
-}
-
-action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
-{
-  return priest_pet_t::create_action( name, options_str );
-}
-}  // namespace fiend
-
-struct void_tendril_mind_flay_t final : public priest_pet_spell_t
-{
-  const spell_data_t* void_tendril_insanity;
-
-  void_tendril_mind_flay_t( void_tendril_t& p )
-    : priest_pet_spell_t( "mind_flay", &p, p.o().find_spell( 193473 ) ),
-      void_tendril_insanity( p.o().find_spell( 336214 ) )
-  {
-    channeled                  = true;
-    hasted_ticks               = false;
-    affected_by_shadow_weaving = true;
-
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_flay
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_pet_spell_t::tick( d );
-
-    p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, d->state->action );
-  }
-};
-
-action_t* void_tendril_t::create_action( util::string_view name, const std::string& options_str )
-{
-  if ( name == "mind_flay" )
-  {
-    return new void_tendril_mind_flay_t( *this );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
-struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
-{
-  const double void_lasher_insanity;
-
-  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "mind_sear_tick", &p, s ),
-      void_lasher_insanity( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
-  {
-    background = true;
-    dual       = true;
-    aoe        = -1;
-    radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
-    affected_by_shadow_weaving = true;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                               s->action );
-  }
-};
-
-struct void_lasher_mind_sear_t final : public priest_pet_spell_t
-{
-  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344754 ) )
-  {
-    channeled    = true;
-    hasted_ticks = false;
-    tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
-
-    // Merge the stats object with other instances of the pet
-    auto first_pet = p.o().find_pet( p.name_str );
-    if ( first_pet )
-    {
-      auto first_pet_action = first_pet->find_action( name_str );
-      if ( first_pet_action )
-      {
-        if ( stats == first_pet_action->stats )
-        {
-          // This is the first pet created. Add its stat as a child to priest mind_sear
-          auto owner_ecttv_action = p.o().find_action( "eternal_call_to_the_void" );
-          if ( owner_ecttv_action )
-          {
-            owner_ecttv_action->add_child( this );
-          }
-        }
-        if ( !sim->report_pets_separately )
-        {
-          stats = first_pet_action->stats;
-        }
-      }
-    }
-  }
-};
-
-action_t* void_lasher_t::create_action( util::string_view name, const std::string& options_str )
-{
-  if ( name == "mind_sear" )
-  {
-    return new void_lasher_mind_sear_t( *this );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
-}  // namespace pets
-
 // ==========================================================================
 // Priest Targetdata Definitions
 // ==========================================================================
@@ -1318,55 +1135,15 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
   }
 
   auto splits = util::string_split<util::string_view>( expression_str, "." );
-  // pet.fiend.X refers to either shadowfiend or mindbender
+
+  if ( auto pet_expr = create_pet_expression( expression_str, splits ) )
+  {
+    return pet_expr;
+  }
+
   if ( splits.size() >= 2 )
   {
-    if ( splits[ 0 ] == "pet" )
-    {
-      if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
-      {
-        pet_t* pet = get_current_main_pet();
-        if ( !pet )
-        {
-          throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
-        }
-        if ( splits.size() == 2 )
-        {
-          return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
-        }
-        // pet.foo.blah
-        else
-        {
-          if ( splits[ 2 ] == "active" )
-          {
-            return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
-          }
-          else if ( splits[ 2 ] == "remains" )
-          {
-            return make_fn_expr( expression_str, [ pet ] {
-              if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
-              {
-                return pet->expiration->remains().total_seconds();
-              }
-              else
-              {
-                return 0.0;
-              };
-            } );
-          }
-
-          // build player/pet expression from the tail of the expression string.
-          auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
-          if ( auto e = pet->create_expression( tail ) )
-          {
-            return e;
-          }
-
-          throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
-        }
-      }
-    }
-    else if ( util::str_compare_ci( splits[ 0 ], "priest" ) )
+    if ( util::str_compare_ci( splits[ 0 ], "priest" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
       {
@@ -1374,27 +1151,10 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
       }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
-    else if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) && splits.size() == 3 )
-    {
-      if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
-           util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
-      {
-        pet_t* pet = get_current_main_pet();
-        if ( !pet )
-        {
-          throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet." );
-        }
-        if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
-        {
-          return cooldown->create_expression( splits[ 2 ] );
-        }
-        throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.", pet->name_str ) );
-      }
-    }
   }
 
   return player_t::create_expression( expression_str );
-}
+}  // namespace priestspace
 
 void priest_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
@@ -1590,24 +1350,6 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
   return base_t::create_action( name, options_str );
 }
 
-pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
-{
-  // pet_t* p = find_pet( pet_name );
-
-  if ( pet_name == "shadowfiend" )
-  {
-    return new pets::fiend::shadowfiend_pet_t( sim, *this );
-  }
-  if ( pet_name == "mindbender" )
-  {
-    return new pets::fiend::mindbender_pet_t( sim, *this );
-  }
-
-  sim->error( "{} Tried to create unknown priest pet {}.", *this, pet_name );
-
-  return nullptr;
-}
-
 void priest_t::create_pets()
 {
   base_t::create_pets();
@@ -1795,14 +1537,6 @@ void priest_t::init_background_actions()
   background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
 
   init_background_actions_shadow();
-}
-
-// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
-// summoned through the action list, so please check for null.
-pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
-{
-  pet_t* current_main_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
-  return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
 void priest_t::do_dynamic_regen( bool forced )
@@ -2063,17 +1797,6 @@ void priest_t::arise()
   base_t::arise();
 }
 
-void priest_t::trigger_shadowflame_prism( player_t* target )
-{
-  auto current_pet = get_current_main_pet();
-  if ( current_pet && !current_pet->is_sleeping() )
-  {
-    assert( current_pet->shadowflame_prism );
-    current_pet->shadowflame_prism->set_target( target );
-    current_pet->shadowflame_prism->execute();
-  }
-}
-
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
@@ -2178,18 +1901,6 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   }
 
   return multiplier;
-}
-
-priest_t::priest_pets_t::priest_pets_t( priest_t& p )
-  : shadowfiend(), mindbender(), void_tendril( "void_tendril", &p ), void_lasher( "void_lasher", &p )
-{
-  auto void_tendril_spell = p.find_spell( 193473 );
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
-
-  auto void_lasher_spell = p.find_spell( 336216 );
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
 }
 
 buffs::dispersion_t::dispersion_t( priest_t& p )
