@@ -29,10 +29,10 @@ private:
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_blast", p, p.find_class_spell( "Mind Blast" ) ),
-      mind_blast_insanity( priest().find_spell( 137033 )->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
-      mind_flay_spell( p.find_specialization_spell( "Mind Flay" ) ),
-      mind_sear_spell( p.find_class_spell( "Mind Sear" ) ),
+    : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
+      mind_blast_insanity( priest().specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
+      mind_flay_spell( p.specs.mind_flay ),
+      mind_sear_spell( p.specs.mind_sear ),
       only_cwc( false )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );
@@ -172,7 +172,7 @@ struct mind_sear_tick_t final : public priest_spell_t
   double insanity_gain;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
-    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
+    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.specs.mind_sear_insanity->effectN( 1 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -200,8 +200,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
 struct mind_sear_t final : public priest_spell_t
 {
-  mind_sear_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_sear", p, p.find_class_spell( ( "Mind Sear" ) ) )
+  mind_sear_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_sear", p, p.specs.mind_sear )
   {
     parse_options( options_str );
     channeled           = true;
@@ -221,8 +220,7 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 struct mind_flay_t final : public priest_spell_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) )
+  mind_flay_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_flay", p, p.specs.mind_flay )
   {
     parse_options( options_str );
 
@@ -317,10 +315,10 @@ struct shadow_word_death_t final : public priest_spell_t
   double insanity_per_dot;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
+    : priest_spell_t( "shadow_word_death", p, p.specs.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      insanity_per_dot( p.find_spell( 336167 )->effectN( 2 ).base_value() /
+      insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
                         10 )  // Spell Data stores this as 100 not 1000 or 10
   {
     parse_options( options_str );
@@ -417,8 +415,7 @@ struct shadow_word_death_t final : public priest_spell_t
 // ==========================================================================
 struct dispersion_t final : public priest_spell_t
 {
-  dispersion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dispersion", p, p.find_class_spell( "Dispersion" ) )
+  dispersion_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "dispersion", p, p.specs.dispersion )
   {
     parse_options( options_str );
 
@@ -457,8 +454,7 @@ struct dispersion_t final : public priest_spell_t
 // ==========================================================================
 struct shadowform_t final : public priest_spell_t
 {
-  shadowform_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadowform", p, p.find_class_spell( "Shadowform" ) )
+  shadowform_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "shadowform", p, p.specs.shadowform )
   {
     parse_options( options_str );
     harmful = false;
@@ -477,8 +473,7 @@ struct shadowform_t final : public priest_spell_t
 // ==========================================================================
 struct silence_t final : public priest_spell_t
 {
-  silence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "silence", p, p.find_class_spell( "Silence" ) )
+  silence_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "silence", p, p.specs.silence )
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
@@ -535,7 +530,7 @@ struct silence_t final : public priest_spell_t
 struct vampiric_embrace_t final : public priest_spell_t
 {
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "vampiric_embrace", p, p.find_class_spell( "Vampiric Embrace" ) )
+    : priest_spell_t( "vampiric_embrace", p, p.specs.vampiric_embrace )
   {
     parse_options( options_str );
 
@@ -572,7 +567,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   double insanity_gain;
 
   shadowy_apparition_damage_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparition", p, p.find_spell( 148859 ) ),
+    : priest_spell_t( "shadowy_apparition", p, p.specs.shadowy_apparition ),
       insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
   {
     affected_by_shadow_weaving = true;
@@ -636,7 +631,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   bool casted;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) )
+    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -702,7 +697,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 struct unfurling_darkness_t final : public priest_spell_t
 {
   unfurling_darkness_t( priest_t& p )
-    : priest_spell_t( "unfurling_darkness", p, p.find_class_spell( "Vampiric Touch" ) )
+    : priest_spell_t( "unfurling_darkness", p,
+                      p.dot_spells.vampiric_touch )  // Damage value is stored in Vampiric Touch
   {
     background                 = true;
     affected_by_shadow_weaving = true;
@@ -728,7 +724,7 @@ struct vampiric_touch_t final : public priest_spell_t
   bool casted;
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
+    : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       child_swp( nullptr ),
       child_ud( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
@@ -862,7 +858,7 @@ struct devouring_plague_t final : public priest_spell_t
   bool casted;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
+    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -999,7 +995,7 @@ struct void_bolt_t final : public priest_spell_t
     {
       dot_extension = data().effectN( 1 ).time_value();
       aoe           = -1;
-      radius        = p.find_spell( 234746 )->effectN( 1 ).radius();
+      radius        = p.specs.void_bolt->effectN( 1 ).trigger()->effectN( 1 ).radius_max();
       may_miss      = false;
       background = dual = true;
       energize_type     = action_energize::ON_CAST;
@@ -1024,7 +1020,7 @@ struct void_bolt_t final : public priest_spell_t
   timespan_t hungering_void_crit_duration;
 
   void_bolt_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_bolt", p, p.find_spell( 205448 ) ),
+    : priest_spell_t( "void_bolt", p, p.specs.void_bolt ),
       void_bolt_extension( nullptr ),
       shadowfiend_cooldown( p.get_cooldown( "mindbender" ) ),
       mindbender_cooldown( p.get_cooldown( "shadowfiend" ) ),
@@ -1129,7 +1125,7 @@ struct void_eruption_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
   {
     may_miss                   = false;
     background                 = true;
@@ -1154,8 +1150,8 @@ struct void_eruption_t final : public priest_spell_t
   double benevolent_faerie_rate;
 
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) ),
-      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
+    : priest_spell_t( "void_eruption", p, p.specs.void_eruption ),
+      benevolent_faerie_rate( p.covenant.benevolent_faerie->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -1209,9 +1205,9 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_stm_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_stm_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_stm_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
   {
-    // This Void Eruption currently only hits a single target
+    // This Void Eruption only hits a single target
     may_miss                   = false;
     background                 = true;
     affected_by_shadow_weaving = true;
@@ -1423,7 +1419,7 @@ struct searing_nightmare_t final : public priest_spell_t
   searing_nightmare_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "searing_nightmare", p, p.talents.searing_nightmare ),
       child_swp( new shadow_word_pain_t( priest(), false ) ),
-      mind_sear_spell( p.find_class_spell( "Mind Sear" ) )
+      mind_sear_spell( p.specs.mind_sear )
   {
     parse_options( options_str );
     child_swp->background = true;
@@ -1517,7 +1513,7 @@ namespace buffs
 // ==========================================================================
 struct voidform_t final : public priest_buff_t<buff_t>
 {
-  voidform_t( priest_t& p ) : base_t( p, "voidform", p.find_spell( 194249 ) )
+  voidform_t( priest_t& p ) : base_t( p, "voidform", p.specs.voidform )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -1573,7 +1569,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct shadowform_t final : public priest_buff_t<buff_t>
 {
-  shadowform_t( priest_t& p ) : base_t( p, "shadowform", p.find_class_spell( "Shadowform" ) )
+  shadowform_t( priest_t& p ) : base_t( p, "shadowform", p.specs.shadowform )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -1598,7 +1594,7 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct dark_thought_t final : public priest_buff_t<buff_t>
 {
-  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.find_spell( 341207 ) )
+  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
   {
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
@@ -1631,7 +1627,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
   double insanity_gain;
 
   death_and_madness_buff_t( priest_t& p )
-    : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
+    : base_t( p, "death_and_madness_insanity_gain", p.talents.death_and_madness_insanity ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -1653,7 +1649,7 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
-    set_duration( p.find_spell( 194249 )->duration() );
+    set_duration( p.specs.voidform->duration() );        // Uses the same duration as Voidform for tooltip
     set_default_value( data().effectN( 2 ).percent() );  // Each stack is worth 2% from effect 2
     set_max_stack( as<int>( data().effectN( 1 ).base_value() ) /
                    as<int>( data().effectN( 2 ).base_value() ) );  // Set max stacks to 30 / 2
@@ -1719,25 +1715,25 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 void priest_t::create_buffs_shadow()
 {
   // Baseline
+  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
   buffs.shadowform       = make_buff<buffs::shadowform_t>( *this );
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
+  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", specs.vampiric_embrace );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
-  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
 
   // Talents
-  buffs.void_torrent           = make_buff( this, "void_torrent", find_talent_spell( "Void Torrent" ) );
-  buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", find_talent_spell( "Surrender to Madness" ) );
-  buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
-  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
+  buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );
+  buffs.death_and_madness_buff     = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.surrender_to_madness       = make_buff( this, "surrender_to_madness", talents.surrender_to_madness );
+  buffs.surrender_to_madness_death = make_buff( this, "surrender_to_madness_death", talents.surrender_to_madness )
+                                         ->set_duration( timespan_t::zero() )
+                                         ->set_default_value( 0.0 )
+                                         ->set_chance( 1.0 );
   buffs.unfurling_darkness =
-      make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" )->effectN( 1 ).trigger() );
-  buffs.unfurling_darkness_cd = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
-  buffs.surrender_to_madness_death =
-      make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
-          ->set_duration( timespan_t::zero() )
-          ->set_default_value( 0.0 )
-          ->set_chance( 1.0 );
+      make_buff( this, "unfurling_darkness", talents.unfurling_darkness->effectN( 1 ).trigger() );
+  buffs.unfurling_darkness_cd = make_buff( this, "unfurling_darkness_cd",
+                                           talents.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+  buffs.void_torrent          = make_buff( this, "void_torrent", talents.void_torrent );
 
   // Conduits (Shadowlands)
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
@@ -1755,9 +1751,10 @@ void priest_t::init_spells_shadow()
 {
   // Talents
   // T15
-  talents.fortress_of_the_mind = find_talent_spell( "Fortress of the Mind" );
-  talents.death_and_madness    = find_talent_spell( "Death and Madness" );
-  talents.unfurling_darkness   = find_talent_spell( "Unfurling Darkness" );
+  talents.fortress_of_the_mind       = find_talent_spell( "Fortress of the Mind" );
+  talents.death_and_madness          = find_talent_spell( "Death and Madness" );
+  talents.death_and_madness_insanity = find_spell( 321973 );
+  talents.unfurling_darkness         = find_talent_spell( "Unfurling Darkness" );
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );
@@ -1785,11 +1782,23 @@ void priest_t::init_spells_shadow()
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
-  specs.voidform            = find_specialization_spell( "Voidform" );
-  specs.void_eruption       = find_specialization_spell( "Void Eruption" );
-  specs.shadowy_apparitions = find_specialization_spell( "Shadowy Apparitions" );
-  specs.shadow_priest       = find_specialization_spell( "Shadow Priest" );
-  specs.dark_thoughts       = find_specialization_spell( "Dark Thoughts" );
+  specs.dark_thought         = find_spell( 341207 );
+  specs.dark_thoughts        = find_specialization_spell( "Dark Thoughts" );
+  specs.dispersion           = find_specialization_spell( "Dispersion" );
+  specs.mind_flay            = find_specialization_spell( "Mind Flay" );
+  specs.shadowy_apparition   = find_spell( 148859 );
+  specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
+  specs.shadow_priest        = find_specialization_spell( "Shadow Priest" );
+  specs.shadowform           = find_specialization_spell( "Shadowform" );
+  specs.silence              = find_specialization_spell( "Silence" );
+  specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
+  specs.void_bolt            = find_spell( 205448 );
+  specs.voidform             = find_spell( 194249 );
+  specs.void_eruption        = find_specialization_spell( "Void Eruption" );
+  specs.void_eruption_damage = find_spell( 228360 );
+
+  // Legendary Effects
+  specs.painbreaker_psalm_insanity = find_spell( 336167 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
