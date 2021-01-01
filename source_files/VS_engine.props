@@ -202,6 +202,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest.cpp" />
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_discipline.cpp" />
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_holy.cpp" />
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_pets.cpp" />
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_shadow.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_death_knight.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp" />

@@ -199,6 +199,7 @@ SOURCES += engine/class_modules/paladin/sc_paladin_retribution.cpp
 SOURCES += engine/class_modules/priest/sc_priest.cpp
 SOURCES += engine/class_modules/priest/sc_priest_discipline.cpp
 SOURCES += engine/class_modules/priest/sc_priest_holy.cpp
+SOURCES += engine/class_modules/priest/sc_priest_pets.cpp
 SOURCES += engine/class_modules/priest/sc_priest_shadow.cpp
 SOURCES += engine/class_modules/sc_death_knight.cpp
 SOURCES += engine/class_modules/sc_demon_hunter.cpp
