@@ -376,6 +376,8 @@ struct sim_t : private sc_thread_t
 
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
+    /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
+    bool disable_iqd_execute = false;
   } shadowlands_opts;
 
   // Auras and De-Buffs

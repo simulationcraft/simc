@@ -1284,7 +1284,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      if ( target->health_percentage() <= 20 )
+      if ( target->health_percentage() <= 20 && !player->sim->shadowlands_opts.disable_iqd_execute)
       {
         execute_damage->set_target( target );
         execute_damage->execute();

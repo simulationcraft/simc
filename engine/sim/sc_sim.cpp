@@ -3804,6 +3804,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.anima_field_emitter_stddev",
     shadowlands_opts.anima_field_emitter_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "shadowlands.retarget_shadowgrasp_totem", shadowlands_opts.retarget_shadowgrasp_totem ) );
+  add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
 }
 
 // sim_t::parse_option ======================================================
