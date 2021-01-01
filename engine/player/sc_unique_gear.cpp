@@ -3130,6 +3130,10 @@ struct burning_mirror_t : public spell_t
 
 void item::mirror_of_the_blademaster( special_effect_t& effect )
 {
+  // Disabled because pet data is severely out of date.
+  effect.type = SPECIAL_EFFECT_NONE;
+  return;
+
   action_t* action = effect.player -> find_action( "burning_mirror" );
   if ( ! action )
   {
