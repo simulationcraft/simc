@@ -884,6 +884,7 @@ public:
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
+  std::unique_ptr<expr_t> create_action_expression(action_t& a, util::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type ) override;
@@ -2194,173 +2195,6 @@ public:
 #endif
 
     return ab::verify_actor_spec();
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
-  {
-    auto splits = util::string_split( name_str, "." );
-
-    if ( splits[ 0 ] == "dot" &&
-         ( splits[ 2 ] == "ticks_gained_on_refresh" || splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" ) )
-    {
-      // Since we know some action names don't map to the actual dot portion, lets add some exceptions
-      // this may have to be made more robust if other specs are interested in using it, but for now lets
-      // default any ambiguity to what would make most sense for ferals.
-      if ( splits[ 1 ] == "rake" )
-        splits[ 1 ] = "rake_bleed";
-      if ( p()->specialization() == DRUID_FERAL && splits[ 1 ] == "moonfire" )
-        splits[ 1 ] = "lunar_inspiration";
-
-      bool pmult_adjusted = false;
-      if ( splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" )
-        pmult_adjusted = true;
-
-      if ( splits[ 1 ] == "primal_wrath" )  // special case since pw applies in aoe
-      {
-        action_t* rip = p()->find_action( "rip" );
-        action_t* pw  = p()->find_action( "primal_wrath" );
-
-        return make_fn_expr( name_str, [pw, rip, pmult_adjusted]() -> double {
-          int cp = as<int>( pw->player->resources.current[ RESOURCE_COMBO_POINT ] );
-
-          double gained_ticks  = 0;
-          timespan_t duration  = rip->dot_duration * 0.5 * ( 1 + cp );
-          timespan_t tick_time = rip->base_tick_time * rip->composite_haste();
-
-          for ( player_t* pw_target : pw->targets_in_range_list( pw->target_list() ) )
-          {
-            timespan_t ttd         = pw_target->time_to_percent( 0 );
-            dot_t* dot             = pw_target->get_dot( "rip", pw->player );
-            double remaining_ticks = 0;
-            double potential_ticks = 0;
-            timespan_t durrem      = timespan_t::zero();
-            double pmult           = 0;
-
-            if ( dot->is_ticking() )
-            {
-              remaining_ticks = std::min( dot->remains(), ttd ) / tick_time;
-              durrem          = rip->calculate_dot_refresh_duration( dot, duration );
-              remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
-            }
-
-            if ( pmult_adjusted )
-            {
-              action_state_t* state = rip->get_state();
-
-              pw->snapshot_state( state, result_amount_type::NONE );
-              state->target = pw_target;
-
-              pmult = pw->composite_persistent_multiplier( state );
-
-              action_state_t::release( state );
-            }
-
-            potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
-            potential_ticks *= pmult_adjusted ? pmult : 1.0;
-            gained_ticks += potential_ticks - remaining_ticks;
-          }
-          return gained_ticks;
-        } );
-      }
-      else if ( splits[ 1 ] == "thrash_cat" )  // special case since pw applies in aoe
-      {
-        action_t* tc = p()->find_action( "thrash_cat" );
-
-        return make_fn_expr( name_str, [tc, pmult_adjusted]() -> double {
-          double gained_ticks  = 0;
-          timespan_t duration  = tc->dot_duration;
-          timespan_t tick_time = tc->base_tick_time * tc->composite_haste();
-
-          for ( player_t* tc_target : tc->targets_in_range_list( tc->target_list() ) )
-          {
-            timespan_t ttd         = tc_target->time_to_percent( 0 );
-            dot_t* dot             = tc_target->get_dot( "Thrash", tc->player );
-            double remaining_ticks = 0;
-            double potential_ticks = 0;
-            timespan_t durrem      = timespan_t::zero();
-            double pmult           = 0;
-
-            if ( dot->is_ticking() )
-            {
-              remaining_ticks = std::min( dot->remains(), ttd ) / tick_time;
-              durrem          = tc->calculate_dot_refresh_duration( dot, duration );
-              remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
-            }
-
-            if ( pmult_adjusted )
-            {
-              action_state_t* state = tc->get_state();
-
-              tc->snapshot_state( state, result_amount_type::NONE );
-              state->target = tc_target;
-
-              pmult = tc->composite_persistent_multiplier( state );
-
-              action_state_t::release( state );
-            }
-
-            potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
-            potential_ticks *= pmult_adjusted ? pmult : 1.0;
-            gained_ticks += potential_ticks - remaining_ticks;
-          }
-          return gained_ticks;
-        } );
-      }
-
-      action_t* action = p()->find_action( splits[ 1 ] );
-      if ( action )
-        return make_fn_expr( name_str, [action, pmult_adjusted]() -> double {
-          dot_t* dot             = action->get_dot();
-          double remaining_ticks = 0;
-          double potential_ticks = 0;
-          action_state_t* state  = action->get_state( dot->state );
-          timespan_t duration    = action->composite_dot_duration( state );
-          timespan_t ttd         = action->target->time_to_percent( 0 );
-          double pmult           = 0;
-
-          if ( dot->is_ticking() )
-          {
-            remaining_ticks = std::min( dot->remains(), ttd ) / dot->current_action->tick_time( dot->state );
-            duration        = action->calculate_dot_refresh_duration( dot, duration );
-            remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
-          }
-
-          if ( pmult_adjusted )
-          {
-            action->snapshot_state( state, result_amount_type::NONE );
-            state->target = action->target;
-
-            pmult = action->composite_persistent_multiplier( state );
-          }
-
-          potential_ticks = std::min( duration, ttd ) / action->tick_time( state );
-          potential_ticks *= pmult_adjusted ? pmult : 1.0;
-          action_state_t::release( state );
-          return potential_ticks - remaining_ticks;
-        } );
-      throw std::invalid_argument( "invalid action" );
-    }
-    else if ( splits[ 0 ] == "ticks_gained_on_refresh" )
-    {
-      return make_fn_expr( name_str, [this]() -> double {
-        dot_t* dot             = this->get_dot();
-        double remaining_ticks = 0;
-        double potential_ticks = 0;
-        timespan_t duration    = this->dot_duration;
-        timespan_t ttd         = this->target->time_to_percent( 0 );
-
-        if ( dot->is_ticking() )
-        {
-          remaining_ticks = std::min( dot->remains(), ttd ) / dot->current_action->tick_time( dot->state );
-          duration        = this->calculate_dot_refresh_duration( dot, duration );
-        }
-
-        potential_ticks = std::min( duration, ttd ) / ( this->base_tick_time * this->composite_haste() );
-        return potential_ticks - remaining_ticks;
-      } );
-    }
-
-    return ab::create_expression( name_str );
   }
 };
 
@@ -9565,6 +9399,82 @@ double druid_t::composite_leech() const
   return l;
 }
 
+// druid_t::create_action_expression ========================================
+std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::string_view name_str)
+{
+  auto splits = util::string_split(name_str, ".");
+
+  if (splits[0] == "ticks_gained_on_refresh" || splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh")
+  {
+    bool pmul = false;
+    if (splits.size() > 1 && splits[1] == "pmult" || splits.size() > 4 && splits[3] == "pmult")
+      pmul = true;
+
+    action_t * dot_action = (splits.size() > 2) ? find_action(splits[1]) : &a;
+    action_t * source_action = &a;
+    double multiplier = 1.0;
+
+    if (dot_action->name_str == "primal_wrath")
+    {
+      dot_action = find_action("rip");
+      source_action = find_action("primal_wrath");
+      multiplier = 0.5;
+    }
+
+    if (dot_action->name_str == "rake")
+    {
+      dot_action = find_action("rake_bleed");
+    }
+
+    if (dot_action->name_str == "moonfire_cat")
+    {
+      dot_action = find_action("lunar_inspiration");
+    }
+
+    if (dot_action->name_str == "thrash_cat")
+    {
+      source_action = find_action("thrash_cat");
+    }
+
+    return make_fn_expr("name_str", [dot_action, source_action, multiplier, pmul]() -> double {
+
+      auto ticks_gained_func = [](double mod, action_t * dot_action, player_t * target, bool pmul) -> double {
+
+	action_state_t* state = dot_action->get_state();
+	state->target = target;
+	dot_action->snapshot_state(state, result_amount_type::DMG_OVER_TIME);
+
+	dot_t* dot = dot_action->get_dot(target);
+	timespan_t ttd = target->time_to_percent(0);
+	timespan_t duration = dot_action->composite_dot_duration(state) * mod;
+	timespan_t tick_time = dot_action->tick_time(state);
+
+	double remaining_ticks = std::min(dot->remains(), ttd) / dot_action->tick_time(state) * ((pmul && dot->state) ? dot->state->persistent_multiplier : 1.0);
+	double new_ticks = std::min(dot_action->calculate_dot_refresh_duration(dot, duration), ttd) / dot_action->tick_time(state) * (pmul ? state->persistent_multiplier : 1.0);
+
+	action_state_t::release(state);
+	return new_ticks - remaining_ticks;
+
+      };
+
+      if (source_action->aoe == -1)
+      {
+	double accum = 0.0;
+	for (player_t* target : source_action->targets_in_range_list(source_action->target_list()))
+	  accum += ticks_gained_func(multiplier, dot_action, target, pmul);
+
+	return accum;
+      }
+
+      return ticks_gained_func(multiplier, dot_action, source_action->target, pmul);
+
+    });
+
+  }
+
+  return player_t::create_action_expression(a, name_str);
+}
+
 // druid_t::create_expression ===============================================
 
 std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
@@ -9582,59 +9492,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     if ( util::str_compare_ci( splits[1], "no_cds" ) && splits.size() == 2 )
       return make_fn_expr( "no_cds", [this]() { return no_cds; } );
   }
-  if ( splits[ 0 ] == "druid" &&
-       ( splits[ 2 ] == "ticks_gained_on_refresh" || splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" ) )
-  {
-    // Since we know some action names don't map to the actual dot portion, lets add some exceptions
-    // this may have to be made more robust if other specs are interested in using it, but for now lets
-    // default any ambiguity to what would make most sense for ferals.
-    if ( splits[ 1 ] == "rake" )
-      splits[ 1 ] = "rake_bleed";
-    if ( specialization() == DRUID_FERAL && splits[ 1 ] == "moonfire" )
-      splits[ 1 ] = "lunar_inspiration";
-
-    bool pmult_adjusted = false;
-
-    if ( splits[ 2 ] == "ticks_gained_on_refresh_pmultiplier" )
-      pmult_adjusted = true;
-
-    action_t* action = find_action( splits[ 1 ] );
-    if ( action )
-      return make_fn_expr( name_str, [ action, pmult_adjusted ]() -> double {
-        dot_t* dot             = action->get_dot();
-        double remaining_ticks = 0;
-        double potential_ticks = 0;
-        action_state_t* state  = action->get_state( dot->state );
-        timespan_t duration    = action->composite_dot_duration( state );
-        state->target = action->target = action->player->target;
-        timespan_t ttd                 = action->target->time_to_percent( 0 );
-        double pmult                   = 0;
-        // action->snapshot_state(state, result_amount_type::DMG_OVER_TIME);
-
-        if ( dot->is_ticking() )
-        {
-          remaining_ticks = std::min( dot->remains(), ttd ) / dot->current_action->tick_time( dot->state );
-          duration        = action->calculate_dot_refresh_duration( dot, duration );
-          remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
-        }
-
-        if ( pmult_adjusted )
-        {
-          action->snapshot_state( state, result_amount_type::NONE );
-          state->target = action->target;
-
-          pmult = action->composite_persistent_multiplier( state );
-        }
-
-        potential_ticks = std::min( duration, ttd ) / ( action->tick_time( state ) );
-        potential_ticks *= pmult_adjusted ? pmult : 1.0;
-
-        action_state_t::release( state );
-        return potential_ticks - remaining_ticks;
-      } );
-    throw std::invalid_argument( "invalid action" );
-  }
-
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
   {
