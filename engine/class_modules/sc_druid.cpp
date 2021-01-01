@@ -3848,7 +3848,7 @@ struct rake_t : public cat_attack_t
     if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
-    bleed = p->get_secondary_action<rake_bleed_t>( "rank_bleed" );
+    bleed = p->get_secondary_action<rake_bleed_t>( "rake_bleed" );
     bleed->stats = stats;
   }
 
