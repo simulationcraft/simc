@@ -189,8 +189,16 @@ struct action_execute_event_t : public player_event_t
     // Note, presumes that if the action is instant, it will still be ready, since it was ready on
     // the (near) previous event. Does check target sleepiness, since technically there can be
     // several damage events on the same timestamp one of which will kill the target.
-    if ( ( has_cast_time && ( action->background || action->ready() ) && action->target_ready( target ) ) ||
-         ( !has_cast_time && !target->is_sleeping() ) )
+    bool can_execute = true;
+    if ( has_cast_time )
+      can_execute = ( action->background || action->ready() ) && action->target_ready( target );
+    else
+      can_execute = !target->is_sleeping();
+
+    if ( sim().distance_targeting_enabled && !action->execute_targeting( action ) )
+      can_execute = false;
+
+    if ( can_execute )
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
@@ -1542,12 +1550,6 @@ void action_t::execute()
   int num_targets = n_targets();
   if ( num_targets == 0 && target->is_sleeping() )
     return;
-
-  if ( sim->distance_targeting_enabled && !execute_targeting( this ) )
-  {
-    cancel();  // This cancels the cast if the target moves out of range while the spell is casting.
-    return;
-  }
 
   if ( sim->log && !dual )
   {
