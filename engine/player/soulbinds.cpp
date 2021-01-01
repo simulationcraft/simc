@@ -1035,9 +1035,31 @@ void lead_by_example( special_effect_t& effect )
     // The duration modifier for each class comes from the description variables of Lead by Example (id=342156)
     duration *= class_value_from_desc_vars( effect, "mod" );
 
+    int allies_nearby = effect.player->sim->shadowlands_opts.lead_by_example_nearby;
+    // If the user doesn't specify a number of allies affected by LbA, use default values based on position and fight style
+    if ( allies_nearby < 0 )
+    {
+      switch( effect.player -> position() )
+      {
+        // Assume that players right in front or at the back of the boss have enough allies nearby to get full effect
+        case POSITION_BACK:
+        case POSITION_FRONT:
+          // For DungeonSlice, always assume two allies
+          if ( util::str_compare_ci( effect.player -> sim -> fight_style, "DungeonSlice" ) )
+            allies_nearby = 2;
+          else
+            allies_nearby = 4;
+          break;
+        // Assume two nearby allies for other positions
+        default:
+          allies_nearby = 2;
+          break;
+      }
+    }
+
     buff = make_buff( effect.player, "lead_by_example", s_data )
       ->set_default_value_from_effect( 1 )
-      ->modify_default_value( s_data->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.lead_by_example_nearby )
+      ->modify_default_value( s_data->effectN( 2 ).percent() * allies_nearby )
       ->set_duration( timespan_t::from_seconds( duration ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )

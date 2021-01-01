@@ -347,8 +347,9 @@ struct sim_t : private sc_thread_t
     double combat_meditation_extend_chance = 1.0;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
-    /// Number of nearby allies when you proc lead by example
-    unsigned lead_by_example_nearby = 2;
+    /// Number of nearby allies when you proc lead by example,
+    /// the default value of -1 adjusts to 2 for ranged position and 4 for front/back position
+    int lead_by_example_nearby = -1;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
