@@ -1940,6 +1940,16 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
+    // 2020-12-31: Healing is outdated and not supported (both discipline and holy)
+  if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
+  {
+    if ( ! quiet )
+      sim -> error( "Role heal for priest '{}' is currently not supported.", name() );
+
+    quiet = true;
+    return;
+  }
+  
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -1955,24 +1965,10 @@ void priest_t::init_action_list()
       generate_apl_shadow();
       break;
     case PRIEST_DISCIPLINE:
-      if ( primary_role() != ROLE_HEAL )
-      {
-        generate_apl_discipline_d();
-      }
-      else
-      {
-        generate_apl_discipline_h();
-      }
+        generate_apl_discipline();
       break;
     case PRIEST_HOLY:
-      if ( primary_role() != ROLE_HEAL )
-      {
-        generate_apl_holy_d();
-      }
-      else
-      {
-        generate_apl_holy_h();
-      }
+        generate_apl_holy();
       break;
     default:
       create_apl_default();

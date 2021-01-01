@@ -279,7 +279,7 @@ void priest_t::adjust_holy_word_serenity_cooldown()
 }
 
 /** Holy Damage Combat Action Priority List */
-void priest_t::generate_apl_holy_d()
+void priest_t::generate_apl_holy()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
@@ -336,12 +336,6 @@ void priest_t::generate_apl_holy_d()
       this, "Divine Star",
       "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>0" );
   default_list->add_action( this, "Holy Nova", "if=raid_event.movement.remains>gcd*0.3&spell_targets.holy_nova>0" );
-}
-
-/** Holy Heal Combat Action Priority List */
-void priest_t::generate_apl_holy_h()
-{
-  create_apl_default();
 }
 
 }  // namespace priestspace

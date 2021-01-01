@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "sc_enums.hpp"
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
@@ -3543,6 +3544,11 @@ void generic::windfury_totem( special_effect_t& effect )
       atk->set_target( old_target );
     }
   };
+
+  if ( effect.player->is_enemy() || effect.player->type == HEALING_ENEMY )
+  {
+    return;
+  }
 
   // Apply rank 2 automatically
   effect.proc_chance_ = effect.driver()->proc_chance() +

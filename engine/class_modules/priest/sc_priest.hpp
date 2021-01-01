@@ -536,16 +536,14 @@ private:
   void init_rng_discipline();
 
   void init_background_actions_shadow();
-  void generate_apl_discipline_d();
-  void generate_apl_discipline_h();
+  void generate_apl_discipline();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
   void create_buffs_holy();
   void init_spells_holy();
   void init_rng_holy();
-  void generate_apl_holy_d();
-  void generate_apl_holy_h();
+  void generate_apl_holy();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
   target_specific_t<priest_td_t> _target_data;
