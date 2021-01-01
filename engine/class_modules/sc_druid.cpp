@@ -6245,18 +6245,19 @@ struct starsurge_t : public druid_spell_t
     if ( p->legendary.oneths_clear_vision->ok() )
       p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
 
-    // use an explictly defined cooldown since with convoke it's possible to execute multiple versions of starsurge_t
-    if ( s->cooldown() > 0_ms )
-    {
-      cooldown = p->get_cooldown( "starsurge_affinity" );
-      cooldown->duration = s->cooldown();
-    }
-
+    // special handling for affinity version
     if ( p->talent.balance_affinity->ok() )
     {
-      form_mask = MOONKIN_FORM;
-    }
+      // use an explictly defined cooldown since with convoke it's possible to execute multiple versions of starsurge_t
+      if ( s->cooldown() > 0_ms )
+      {
+        cooldown = p->get_cooldown( "starsurge_affinity" );
+        cooldown->duration = s->cooldown();
+      }
 
+      form_mask = MOONKIN_FORM;           // not in spell data for affinity version (id=197626)
+      base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
+    }
   }
 
   void init() override
