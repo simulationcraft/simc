@@ -4911,7 +4911,7 @@ struct bear_form_t : public druid_form_t
 
   void execute() override
   {
-    druid_spell_t::execute();
+    druid_form_t::execute();
 
     if ( p()->conduit.ursine_vigor->ok() )
       p()->buff.ursine_vigor->trigger();
