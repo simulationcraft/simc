@@ -9410,7 +9410,22 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
     if (splits.size() > 1 && splits[1] == "pmult" || splits.size() > 4 && splits[3] == "pmult")
       pmul = true;
 
-    action_t * dot_action = (splits.size() > 2) ? find_action(splits[1]) : &a;
+    action_t* dot_action = nullptr;
+
+    if (splits.size() > 2)
+    {
+      if (splits[1] == "moonfire_cat")
+	dot_action = find_action("lunar_inspiration");
+      else if (splits[1] == "rake")
+	dot_action = find_action("rake_bleed");
+      else
+	dot_action = find_action(splits[1]);
+
+      if (!dot_action) throw std::invalid_argument("invalid action specified in ticks_gained_on_refresh");
+    }
+    else
+      dot_action = &a;
+
     action_t * source_action = &a;
     double multiplier = 1.0;
 
@@ -9419,16 +9434,6 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
       dot_action = find_action("rip");
       source_action = find_action("primal_wrath");
       multiplier = 0.5;
-    }
-
-    if (dot_action->name_str == "rake")
-    {
-      dot_action = find_action("rake_bleed");
-    }
-
-    if (dot_action->name_str == "moonfire_cat")
-    {
-      dot_action = find_action("lunar_inspiration");
     }
 
     if (dot_action->name_str == "thrash_cat")
