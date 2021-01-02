@@ -1057,6 +1057,7 @@ struct void_bolt_t final : public priest_spell_t
     }
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
+    // Dissonant Echoes proc is on the ghost impact, not on execute
     if ( !priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -1090,6 +1091,7 @@ struct void_bolt_t final : public priest_spell_t
     }
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
+    // Dissonant Echoes proc is on the ghost impact, not on execute
     if ( priest().bugs && priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -1103,7 +1105,9 @@ struct void_bolt_t final : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
       // Check if this buff is active, every Void Bolt after the first should get this
-      if ( td.buffs.hungering_void->up() && priest().buffs.voidform->check() )
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
+      // The first Void Bolt on a target will extend Voidform, even if Hungering Void is not active on the target
+      if ( ( td.buffs.hungering_void->up() || priest().bugs ) && priest().buffs.voidform->check() )
       {
         timespan_t seconds_to_add_to_voidform =
             s->result == RESULT_CRIT ? hungering_void_crit_duration : hungering_void_base_duration;
