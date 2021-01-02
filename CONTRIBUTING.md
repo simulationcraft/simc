@@ -31,8 +31,7 @@ maintainer, through your class Discord or directly as a ticket on Github.
 
 # Join the Team
 
-If you are interested in joining the team, contact us on Discord or send an email to natehieter@gmail.com with your contact info.
-We look forward to working with you!
+If you are interested in joining the team, contact us on Discord. We look forward to working with you!
 
 Discord: [SimCMinMax](https://discord.gg/tFR2uvK) (#simulationcraft)
 
