@@ -181,28 +181,11 @@ public:
     const spell_data_t* evangelism;    // not fully implemented
 
     // Holy
-    // T15
-    const spell_data_t* enlightenment;     // NYI
-    const spell_data_t* trail_of_light;    // NYI
-    const spell_data_t* enduring_renewal;  // NYI
-    // T25
-    const spell_data_t* angels_mercy;  // NYI
-    // T30
-    const spell_data_t* cosmic_ripple;   // NYI
-    const spell_data_t* guardian_angel;  // NYI
-    const spell_data_t* after_life;      // NYI
-    // T35
-    const spell_data_t* censure;  // NYI
-    // T40
-    const spell_data_t* surge_of_light;  // NYI
-    const spell_data_t* binding_heal;    // NYI
-    const spell_data_t* prayer_circle;   // NYI
-    // T45
-    const spell_data_t* benediction;  // NYI
-    // T50
-    const spell_data_t* light_of_the_naaru;  // NYI
+    // // T15
+    const spell_data_t* enlightenment;
+    // // T50
+    const spell_data_t* light_of_the_naaru;
     const spell_data_t* apotheosis;
-    const spell_data_t* holy_word_salvation;  // NYI
 
     // Shadow
     // T15
@@ -250,17 +233,13 @@ public:
 
     // Holy
     const spell_data_t* holy;  // General holy data
-    const spell_data_t* rapid_renewal;
     const spell_data_t* holy_words;
     const spell_data_t* holy_word_chastise;
     const spell_data_t* holy_word_serenity;
     const spell_data_t* holy_nova;
     const spell_data_t* holy_fire;
     const spell_data_t* apotheosis;
-    const spell_data_t* serendipity;
-    const spell_data_t* divine_providence;
 
-    const spell_data_t* focused_will;
     const spell_data_t* holy_priest;
 
     // Shadow

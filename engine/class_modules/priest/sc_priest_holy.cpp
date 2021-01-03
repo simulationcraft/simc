@@ -172,43 +172,14 @@ void priest_t::init_spells_holy()
   // Talents
   // T15
   talents.enlightenment    = find_talent_spell( "Enlightenment" );
-  talents.trail_of_light   = find_talent_spell( "Trail of Light" );
-  talents.enduring_renewal = find_talent_spell( "Enduring Renewal" );
-  // T25
-  talents.angels_mercy    = find_talent_spell( "Angel's Mercy" );
-  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
-  // T30
-  talents.cosmic_ripple  = find_talent_spell( "Cosmic Ripple" );
-  talents.guardian_angel = find_talent_spell( "Guardian Angel" );
-  talents.after_life     = find_talent_spell( "After Life" );
-  // T35
-  talents.psychic_voice = find_talent_spell( "Psychic Voice" );
-  talents.censure       = find_talent_spell( "Censure" );
-  talents.shining_force = find_talent_spell( "Shining Force" );
-  // T40
-  talents.surge_of_light = find_talent_spell( "Surge of Light" );
-  talents.binding_heal   = find_talent_spell( "Binding Heal" );
-  talents.prayer_circle  = find_talent_spell( "Prayer Circle" );
-  // T45
-  talents.benediction = find_talent_spell( "Benediction" );
-  talents.divine_star = find_talent_spell( "Divine Star" );
-  talents.halo        = find_talent_spell( "Halo" );
   // T50
   talents.light_of_the_naaru  = find_talent_spell( "Light of the Naaru" );
   talents.apotheosis          = find_talent_spell( "Apotheosis" );
-  talents.holy_word_salvation = find_talent_spell( "Holy Word: Salvation" );
 
   // General Spells
-  specs.serendipity        = find_specialization_spell( "Serendipity" );
-  specs.rapid_renewal      = find_specialization_spell( "Rapid Renewal" );
-  specs.divine_providence  = find_specialization_spell( "Divine Providence" );
-  specs.focused_will       = find_specialization_spell( "Focused Will" );
   specs.holy_words         = find_specialization_spell( "Holy Words" );
   specs.holy_word_serenity = find_specialization_spell( "Holy Word: Serenity" );
 
-  // Spec Core
-  specs.holy_priest = find_specialization_spell( "Holy Priest" );
 }
 
 action_t* priest_t::create_action_holy( util::string_view name, util::string_view options_str )
