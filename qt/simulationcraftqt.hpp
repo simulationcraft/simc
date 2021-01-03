@@ -6,10 +6,8 @@
 #ifndef SIMULATIONCRAFTQT_H
 #define SIMULATIONCRAFTQT_H
 
-#include <QtGui/QtGui>
-
-
 #include <QtCore/QTranslator>
+#include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 
 #if defined( Q_OS_MAC )
@@ -25,17 +23,13 @@ class SC_MainWindowCommandLine;
 struct player_t;
 struct sim_t;
 
+#include "EnumeratedTab.hpp"
 #include "sc_importWindow.hpp"
+#include "util/generic.hpp"
 #include "util/sc_recentlyclosed.hpp"  // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp"       // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp"        // remove once implementations are moved to source files
-#include "EnumeratedTab.hpp"
 #include "util/string_view.hpp"
-#include "util/generic.hpp"
-
-#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
-#include "sc_importWindow.hpp"
-#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
 
 enum main_tabs_e
 {
@@ -57,7 +51,6 @@ class SC_CommandLine;
 class SC_SimulateThread;
 class SC_AddonImportTab;
 class SC_ImportThread;
-
 
 inline QString webEngineName()
 {

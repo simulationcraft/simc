@@ -31,7 +31,7 @@ class BattleNetImportWindow : public QWidget
   bool m_embedded;
 
 public:
-  BattleNetImportWindow( SC_MainWindow* parent, bool embedded = false );
+  BattleNetImportWindow( SC_MainWindow* parent, bool embedded );
 
   QSize sizeHint() const override
   {
