@@ -13,6 +13,8 @@ CONFIG(release, debug|release): OBJECTS_DIR = build/release
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
+Profiles.files =  ../profiles/PreRaids ../profiles/Tier26 ../profiles/PR_Raid.simc ../profiles/T26_Raid.simc
+
 isEmpty(SC_NO_NETWORKING) {
   SC_NO_NETWORKING=$$(SC_NO_NETWORKING)
 }
@@ -111,6 +113,8 @@ win32 {
 # compilation definition) and pointing to the base curl directory (dll found in
 # CURL_ROOT/bin, includes in CURL_ROOT/include)
 isEmpty(SC_NO_NETWORKING) {
+  
+  message(Adding networking support dependencies)
   !win32:!macx {
     CONFIG += link_pkgconfig
     PKGCONFIG += libcurl

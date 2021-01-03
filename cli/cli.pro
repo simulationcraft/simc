@@ -26,15 +26,14 @@ unix {
 # Deployment for Linux
 unix:!macx {
   DISTFILES  += CHANGES COPYING
-  INSTALLS   += target profiles
+  INSTALLS   += target Profiles
   # Disable strip
   QMAKE_STRIP = echo
 
   target.path = $$DESTDIR$$PREFIX/bin/
 
-  profiles.path = $$SHAREPATH/profiles
-  profiles.files += ../profiles/*
-  profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
+  Profiles.path = $$SHAREPATH/profiles
+  Profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
 }
 
 include(../source_files/QT_engine_main.pri)
