@@ -54,7 +54,7 @@ macx {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
   }
 
-  Resources.files = ../Welcome.html ../Welcome.png ../Error.html
+  Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html
   Resources.path = Contents/Resources
   Profiles.files =  ../profiles/PreRaids ../profiles/Tier25
   Profiles.path = Contents/Resources/profiles
@@ -97,10 +97,10 @@ unix:!macx {
   profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
 
   data.path = $$SHAREPATH
-  data.files += ../Welcome.html
-  data.files += ../Welcome.png
+  data.files += ../qt/Welcome.html
+  data.files += ../qt/Welcome.png
   data.files += ../READ_ME_FIRST.txt
-  data.files += ../Error.html
+  data.files += ../qt/Error.html
   data.commands = @echo Installing global files to $$SHAREPATH
 
   icon.path = $$SHAREPATH

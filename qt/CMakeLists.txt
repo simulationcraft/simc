@@ -16,8 +16,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Resource files
-FILE(COPY ../Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-FILE(COPY ../Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY ../qt/Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY ../qt/Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY ../qt/Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 # gui executeable
 include(../source_files/cmake_gui.txt)
