@@ -242,7 +242,7 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* void_eruption_damage;
-    
+
     // Legendary Effects
     const spell_data_t* painbreaker_psalm_insanity;
   } specs;
@@ -485,7 +485,8 @@ public:
   const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
-  std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str, util::span<util::string_view> splits );
+  std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
+                                                 util::span<util::string_view> splits );
   void arise() override;
   void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
@@ -496,12 +497,9 @@ private:
   void create_gains();
   void create_procs();
   void create_benefits();
-  void create_apl_precombat();
-  void create_apl_default();
   void create_buffs_shadow();
   void init_rng_shadow();
   void init_spells_shadow();
-  void generate_apl_shadow();
   std::unique_ptr<expr_t> create_expression_shadow( util::string_view name_str );
   action_t* create_action_shadow( util::string_view name, util::string_view options_str );
 
@@ -510,7 +508,6 @@ private:
   void init_rng_discipline();
 
   void init_background_actions_shadow();
-  void generate_apl_discipline();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 

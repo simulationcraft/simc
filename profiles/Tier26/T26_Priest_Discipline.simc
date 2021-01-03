@@ -28,6 +28,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/smite
 
 # Executed every time the actor is available.
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
@@ -44,6 +45,9 @@ actions+=/power_word_solace
 # Hold Shadow Covenant if Boon of the Ascended cooldown is up or the buff is active.
 actions+=/shadow_covenant,if=!covenant.kyrian|(!cooldown.boon_of_the_ascended.up&!buff.boon_of_the_ascended.up)
 actions+=/schism
+actions+=/mindgames
+actions+=/fae_guardians
+actions+=/unholy_nova
 actions+=/boon_of_the_ascended
 actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 actions+=/mindbender

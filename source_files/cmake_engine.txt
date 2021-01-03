@@ -15,6 +15,7 @@ action/spell_base.hpp
 action/variable.hpp
 buff/sc_buff.hpp
 class_modules/apl/apl_death_knight.hpp
+class_modules/apl/apl_priest.hpp
 class_modules/apl/mage.hpp
 class_modules/class_module.hpp
 class_modules/paladin/sc_paladin.hpp
@@ -188,6 +189,7 @@ action/snapshot_stats.cpp
 action/variable.cpp
 buff/sc_buff.cpp
 class_modules/apl/apl_death_knight.cpp
+class_modules/apl/apl_priest.cpp
 class_modules/apl/mage.cpp
 class_modules/paladin/sc_paladin.cpp
 class_modules/paladin/sc_paladin_holy.cpp
