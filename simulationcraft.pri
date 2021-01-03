@@ -13,7 +13,7 @@ CONFIG(release, debug|release): OBJECTS_DIR = build/release
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
-Profiles.files =  ../profiles/PreRaids ../profiles/Tier26 ../profiles/PR_Raid.simc ../profiles/T26_Raid.simc
+Profiles.files =  ../profiles/*
 
 isEmpty(SC_NO_NETWORKING) {
   SC_NO_NETWORKING=$$(SC_NO_NETWORKING)
