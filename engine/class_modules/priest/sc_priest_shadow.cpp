@@ -1792,7 +1792,6 @@ void priest_t::init_spells_shadow()
   specs.mind_flay            = find_specialization_spell( "Mind Flay" );
   specs.shadowy_apparition   = find_spell( 148859 );
   specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
-  specs.shadow_priest        = find_specialization_spell( "Shadow Priest" );
   specs.shadowform           = find_specialization_spell( "Shadowform" );
   specs.silence              = find_specialization_spell( "Silence" );
   specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );

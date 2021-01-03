@@ -313,31 +313,24 @@ void priest_t::init_spells_discipline()
   talents.schism        = find_talent_spell( "Schism" );
   // T25
   talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.masochism       = find_talent_spell( "Masochism" );
   talents.angelic_feather = find_talent_spell( "Angelic Feather" );
   // T30
-  talents.shield_discipline = find_talent_spell( "Shield Discipline" );
   talents.mindbender        = find_talent_spell( "Mindbender" );
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   // T35
   talents.psychic_voice = find_talent_spell( "Psychic Voice" );
-  talents.dominant_mind = find_talent_spell( "Dominant Mind" );
   talents.shining_force = find_talent_spell( "Shining Force" );
   // T40
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
-  talents.contrition       = find_talent_spell( "Contrition" );
   talents.shadow_covenant  = find_talent_spell( "Shadow Covenant" );
   // T45
   talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
   talents.divine_star      = find_talent_spell( "Divine Star" );
   talents.halo             = find_talent_spell( "Halo" );
   // T50
-  talents.lenience     = find_talent_spell( "Lenience" );
   talents.spirit_shell = find_talent_spell( "Spirit Shell" );
-  talents.evangelism   = find_talent_spell( "Evangelism" );
 
   // Passive spell data
-  specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 }
 
@@ -398,7 +391,7 @@ void priest_t::generate_apl_discipline()
 
   // Potions
   def->add_action( "potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40",
-                     "Sync potion usage with Bloodlust or Power Infusion." );
+                   "Sync potion usage with Bloodlust or Power Infusion." );
 
   // Racials
   racials->add_action( "arcane_torrent,if=mana.pct<=95" );
