@@ -326,8 +326,8 @@ void unholy( player_t* p )
   default_->add_action( "run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))" );
   default_->add_action( "call_action_list,name=generic,if=active_enemies=1" );
 
-  aoe_burst->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3" );
-  aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle|buff.swarming_mist.up", "AoE Burst" );
+  aoe_burst->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2", "AoE Burst" );
+  aoe_burst->add_action( "epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle|buff.swarming_mist.up" );
   aoe_burst->add_action( "epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle" );
   aoe_burst->add_action( "epidemic,if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle|fight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5" );
   aoe_burst->add_action( "wound_spender" );
@@ -335,7 +335,7 @@ void unholy( player_t* p )
 
   aoe_setup->add_action( "any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11", "AoE Setup" );
   aoe_setup->add_action( "any_dnd,if=death_knight.fwounded_targets>=5" );
-  aoe_setup->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3" );
+  aoe_setup->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_for_gargoyle" );
   aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3" );
   aoe_setup->add_action( "festering_strike,target_if=debuff.festering_wound.stack<1" );
@@ -385,7 +385,7 @@ void unholy( player_t* p )
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&talent.unholy_blight&(!talent.army_of_the_damned&conduit.convocation_of_the_dead.rank<5|talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=5)&(cooldown.unholy_blight.remains<10|cooldown.apocalypse.remains<10&dot.unholy_blight_dot.remains)" );
   generic->add_action( "death_coil,if=!variable.pooling_for_gargoyle" );
 
-  generic_aoe->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3", "Generic AoE Priority" );
+  generic_aoe->add_action( "death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2", "Generic AoE Priority" );
   generic_aoe->add_action( "epidemic,if=buff.sudden_doom.react" );
   generic_aoe->add_action( "epidemic,if=!variable.pooling_for_gargoyle" );
   generic_aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
