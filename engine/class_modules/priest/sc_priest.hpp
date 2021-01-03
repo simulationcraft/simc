@@ -152,7 +152,7 @@ public:
     const spell_data_t* mindbender;
     const spell_data_t* twist_of_fate;
     const spell_data_t* angelic_feather;
-    const spell_data_t* body_and_soul;  // NYI
+    const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
     const spell_data_t* psychic_voice;
     const spell_data_t* divine_star;
