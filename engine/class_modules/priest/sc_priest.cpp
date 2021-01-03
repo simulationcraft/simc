@@ -143,28 +143,9 @@ public:
       // Parse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       Base::parse_effect_data( Base::data().effectN( 1 ) );
     }
-    Base::radius = 30;
-    Base::range  = 0;
-  }
-
-  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
-  {
-    return timespan_t::from_seconds( s->action->player->get_player_distance( *s->target ) / Base::travel_speed );
-  }
-
-  double calculate_direct_amount( action_state_t* s ) const override
-  {
-    double cda = Base::calculate_direct_amount( s );
-
-    // Source: Ghostcrawler 2012-06-20 http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
-
-    double distance;
-    distance = s->action->player->get_player_distance( *s->target );
-
-    // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
-    double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 + 0.015 * distance;
-
-    return cda * mult;
+    Base::radius       = 30;
+    Base::range        = 0;
+    Base::travel_speed = 15;  // Rough estimate, 2021-01-03
   }
 };
 
@@ -1450,10 +1431,10 @@ void priest_t::init_spells()
   specs.shadow_word_death  = find_class_spell( "Shadow Word: Death" );
 
   // Class passives
-  specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
-  specs.holy       = dbc::get_class_passive( *this, PRIEST_HOLY );
-  specs.discipline = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
-  specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
+  specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
+  specs.holy_priest       = dbc::get_class_passive( *this, PRIEST_HOLY );
+  specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
+  specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
   // DoT Spells
   dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );

@@ -152,7 +152,7 @@ public:
     const spell_data_t* mindbender;
     const spell_data_t* twist_of_fate;
     const spell_data_t* angelic_feather;
-    const spell_data_t* body_and_soul;  // NYI
+    const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
     const spell_data_t* psychic_voice;
     const spell_data_t* divine_star;
@@ -162,47 +162,22 @@ public:
     // T15
     const spell_data_t* castigation;
     const spell_data_t* schism;
-    // T25
-    const spell_data_t* masochism;  // NYI
     // T30
-    const spell_data_t* shield_discipline;  // NYI
     const spell_data_t* power_word_solace;
-    // T35
-    const spell_data_t* dominant_mind;  // NYI
     // T40
-    const spell_data_t* sins_of_the_many;
-    const spell_data_t* contrition;       // NYI
-    const spell_data_t* shadow_covenant;  // NYI
+    const spell_data_t* sins_of_the_many; // assumes 0 atonment targets
+    const spell_data_t* shadow_covenant;  // healing not fully implemented, only dmg/healing buff
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
-    const spell_data_t* lenience;      // not fully implemented
     const spell_data_t* spirit_shell;  // not fully implemented
-    const spell_data_t* evangelism;    // not fully implemented
 
     // Holy
-    // T15
-    const spell_data_t* enlightenment;     // NYI
-    const spell_data_t* trail_of_light;    // NYI
-    const spell_data_t* enduring_renewal;  // NYI
-    // T25
-    const spell_data_t* angels_mercy;  // NYI
-    // T30
-    const spell_data_t* cosmic_ripple;   // NYI
-    const spell_data_t* guardian_angel;  // NYI
-    const spell_data_t* after_life;      // NYI
-    // T35
-    const spell_data_t* censure;  // NYI
-    // T40
-    const spell_data_t* surge_of_light;  // NYI
-    const spell_data_t* binding_heal;    // NYI
-    const spell_data_t* prayer_circle;   // NYI
-    // T45
-    const spell_data_t* benediction;  // NYI
-    // T50
-    const spell_data_t* light_of_the_naaru;  // NYI
+    // // T15
+    const spell_data_t* enlightenment;
+    // // T50
+    const spell_data_t* light_of_the_naaru;
     const spell_data_t* apotheosis;
-    const spell_data_t* holy_word_salvation;  // NYI
 
     // Shadow
     // T15
@@ -244,34 +219,22 @@ public:
     const spell_data_t* shadow_word_death;
 
     // Discipline
-    const spell_data_t* discipline;  // General discipline data
-    const spell_data_t* discipline_priest;
+    const spell_data_t* discipline_priest; // General discipline data
     const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
 
     // Holy
-    const spell_data_t* holy;  // General holy data
-    const spell_data_t* rapid_renewal;
+    const spell_data_t* holy_priest;  // General holy data
     const spell_data_t* holy_words;
-    const spell_data_t* holy_word_chastise;
     const spell_data_t* holy_word_serenity;
-    const spell_data_t* holy_nova;
-    const spell_data_t* holy_fire;
-    const spell_data_t* apotheosis;
-    const spell_data_t* serendipity;
-    const spell_data_t* divine_providence;
-
-    const spell_data_t* focused_will;
-    const spell_data_t* holy_priest;
 
     // Shadow
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
     const spell_data_t* mind_flay;
-    const spell_data_t* shadow;               // General shadow data
-    const spell_data_t* shadowy_apparition;   // Damage event
-    const spell_data_t* shadowy_apparitions;  // Passive effect
-    const spell_data_t* shadow_priest;        // Passive spell, holds lots of random things
+    const spell_data_t* shadow_priest;  // General shadow data
+    const spell_data_t* shadowy_apparition; // Damage event
+    const spell_data_t* shadowy_apparitions; // Passive effect
     const spell_data_t* shadowform;
     const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;

@@ -122,14 +122,8 @@ struct priest_pet_spell_t : public spell_t
 {
   bool affected_by_shadow_weaving;
 
-  priest_pet_spell_t( priest_pet_t& p, util::string_view n )
-    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
-  {
-    may_crit = true;
-  }
-
-  priest_pet_spell_t( util::string_view token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : spell_t( token, p, s )
+  priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
+    : spell_t( token, &p, s ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
   }
@@ -300,7 +294,7 @@ namespace actions
 {
 struct shadowcrawl_t final : public priest_pet_spell_t
 {
-  shadowcrawl_t( base_fiend_pet_t& p ) : priest_pet_spell_t( p, "Shadowcrawl" )
+  shadowcrawl_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowcrawl", p, p.find_pet_spell( "Shadowcrawl" ) )
   {
     may_miss = false;
     harmful  = false;
@@ -388,7 +382,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 // ==========================================================================
 struct shadowflame_rift_t final : public priest_pet_spell_t
 {
-  shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
+  shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", p, p.o().find_spell( 344748 ) )
   {
     background = true;
     // This is hard coded in the spell
@@ -415,7 +409,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
   timespan_t duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
+    : priest_pet_spell_t( "shadowflame_prism", p, p.o().find_spell( 336143 ) ),
       duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
@@ -496,7 +490,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   const spell_data_t* void_tendril_insanity;
 
   void_tendril_mind_flay_t( void_tendril_t& p )
-    : priest_pet_spell_t( "mind_flay", &p, p.o().find_spell( 193473 ) ),
+    : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 193473 ) ),
       void_tendril_insanity( p.o().find_spell( 336214 ) )
   {
     channeled                  = true;
@@ -580,7 +574,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   const double void_lasher_insanity;
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "mind_sear_tick", &p, s ),
+    : priest_pet_spell_t( "mind_sear_tick", p, s ),
       void_lasher_insanity( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
@@ -613,7 +607,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
-  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344754 ) )
+  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
   {
     channeled    = true;
     hasted_ticks = false;
