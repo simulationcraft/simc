@@ -5,6 +5,7 @@
 
 #include "sc_priest.hpp"
 
+#include "class_modules/apl/apl_priest.hpp"
 #include "sc_enums.hpp"
 #include "tcb/span.hpp"
 
@@ -1573,87 +1574,29 @@ void priest_t::invalidate_cache( cache_e cache )
   }
 }
 
-/// ALL Spec Pre-Combat Action Priority List
-void priest_t::create_apl_precombat()
-{
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  // Snapshot stats
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "snapshot_stats",
-                         "Snapshot raid buffed stats before combat begins and "
-                         "pre-potting is done." );
-  // Precast
-  switch ( specialization() )
-  {
-    case PRIEST_DISCIPLINE:
-      break;
-    case PRIEST_HOLY:
-      break;
-    case PRIEST_SHADOW:
-    default:
-      // Calculate these variables once to reduce sim time
-      precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      precombat->add_action( "arcane_torrent" );
-      precombat->add_action( "use_item,name=azsharas_font_of_power" );
-      precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
-      precombat->add_action( this, "Vampiric Touch" );
-      break;
-  }
-}
-
-// TODO: Adjust these with new consumables in Shadowlands
 std::string priest_t::default_potion() const
 {
-  std::string lvl60_potion =
-      ( specialization() == PRIEST_SHADOW ) ? "potion_of_phantom_fire" : "potion_of_spectral_intellect";
-  std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
-
-  return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
+  return priest_apl::potion( this );
 }
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level > 50 ) ? "spectral_flask_of_power" : "greater_flask_of_endless_fathoms";
+  return priest_apl::flask( this );
 }
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "baked_port_tato";
+  return priest_apl::food( this );
 }
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
+  return priest_apl::rune( this );
 }
 
 std::string priest_t::default_temporary_enchant() const
 {
-  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
-}
-
-/** NO Spec Combat Action Priority List */
-void priest_t::create_apl_default()
-{
-  action_priority_list_t* def = get_action_priority_list( "default" );
-
-  // DEFAULT
-  if ( sim->allow_potions )
-  {
-    def->add_action( "mana_potion,if=mana.pct<=75" );
-  }
-
-  if ( find_class_spell( "Shadowfiend" )->ok() )
-  {
-    def->add_action( this, "Shadowfiend" );
-  }
-  // Racials
-  def->add_action( "berserking" );
-  def->add_action( "arcane_torrent,if=mana.pct<=90" );
-  // Spells
-  def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
-  def->add_action( this, "Smite" );
+  return priest_apl::temporary_enchant( this );
 }
 
 const priest_td_t* priest_t::find_target_data( const player_t* target ) const
@@ -1677,16 +1620,16 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
-    // 2020-12-31: Healing is outdated and not supported (both discipline and holy)
+  // 2020-12-31: Healing is outdated and not supported (both discipline and holy)
   if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
   {
-    if ( ! quiet )
-      sim -> error( "Role heal for priest '{}' is currently not supported.", name() );
+    if ( !quiet )
+      sim->error( "Role heal for priest '{}' is currently not supported.", name() );
 
     quiet = true;
     return;
   }
-  
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -1694,21 +1637,19 @@ void priest_t::init_action_list()
   }
   clear_action_priority_lists();
 
-  create_apl_precombat();
-
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      generate_apl_shadow();
+      priest_apl::shadow( this );
       break;
     case PRIEST_DISCIPLINE:
-        generate_apl_discipline();
+      priest_apl::discipline( this );
       break;
     case PRIEST_HOLY:
-        generate_apl_holy();
+      priest_apl::holy( this );
       break;
     default:
-      create_apl_default();
+      priest_apl::no_spec( this );
       break;
   }
 
