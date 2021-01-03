@@ -142,9 +142,9 @@ public:
       // Parse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       Base::parse_effect_data( Base::data().effectN( 1 ) );
     }
-    Base::radius = 30;
-    Base::range  = 0;
-    Base::travel_speed = 15; // Rough estimate, 2021-01-03
+    Base::radius       = 30;
+    Base::range        = 0;
+    Base::travel_speed = 15;  // Rough estimate, 2021-01-03
   }
 };
 
@@ -1430,10 +1430,10 @@ void priest_t::init_spells()
   specs.shadow_word_death  = find_class_spell( "Shadow Word: Death" );
 
   // Class passives
-  specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
-  specs.holy       = dbc::get_class_passive( *this, PRIEST_HOLY );
-  specs.discipline = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
-  specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
+  specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
+  specs.holy_priest       = dbc::get_class_passive( *this, PRIEST_HOLY );
+  specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
+  specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
   // DoT Spells
   dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
@@ -1658,16 +1658,16 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
-    // 2020-12-31: Healing is outdated and not supported (both discipline and holy)
+  // 2020-12-31: Healing is outdated and not supported (both discipline and holy)
   if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
   {
-    if ( ! quiet )
-      sim -> error( "Role heal for priest '{}' is currently not supported.", name() );
+    if ( !quiet )
+      sim->error( "Role heal for priest '{}' is currently not supported.", name() );
 
     quiet = true;
     return;
   }
-  
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -1683,10 +1683,10 @@ void priest_t::init_action_list()
       generate_apl_shadow();
       break;
     case PRIEST_DISCIPLINE:
-        generate_apl_discipline();
+      generate_apl_discipline();
       break;
     case PRIEST_HOLY:
-        generate_apl_holy();
+      generate_apl_holy();
       break;
     default:
       create_apl_default();
