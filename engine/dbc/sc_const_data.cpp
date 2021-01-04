@@ -890,6 +890,7 @@ bool dbc::has_common_school( school_e s1, school_e s2 )
 /**
  * Return class/spec passive spell data.
  * To get class data, use SPEC_NONE
+ * Only returns class passives or spec passive for your active spec
  */
 const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e s )
 {
@@ -897,6 +898,7 @@ const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e 
   {
     if ( entry.type != p.type ) continue;
     if ( s != SPEC_NONE && entry.spec != s ) continue;
+    if ( s != SPEC_NONE && entry.spec != p.specialization() ) continue;
 
     return p.find_spell( entry.spell_id );
   }
