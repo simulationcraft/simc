@@ -706,7 +706,7 @@ public:
 
   // Weapon Enchants
   shaman_attack_t* windfury_mh;
-  shaman_spell_t* flametongue_oh, *flametongue_mh;
+  shaman_spell_t* flametongue;
   shaman_attack_t* hailstorm;
 
   // Elemental Spirits attacks
@@ -756,8 +756,7 @@ public:
 
     // Weapon Enchants
     windfury_mh = nullptr;
-    flametongue_mh = nullptr;
-    flametongue_oh = nullptr;
+    flametongue = nullptr;
     hailstorm   = nullptr;
 
     // Elemental Spirits attacks
@@ -3649,7 +3648,6 @@ struct flametongue_weapon_t : public weapon_imbue_t
 
     imbue = FLAMETONGUE_IMBUE;
 
-    /*
     std::array<std::unique_ptr<option_t>, 1> options { {
       opt_string( "slot", slot_str )
     } };
@@ -3658,7 +3656,6 @@ struct flametongue_weapon_t : public weapon_imbue_t
       []( opts::parse_status, util::string_view, util::string_view ) {
         return opts::parse_status::OK;
     } );
-    */
 
     if ( slot_str.empty() )
     {
@@ -3669,13 +3666,9 @@ struct flametongue_weapon_t : public weapon_imbue_t
       slot = util::parse_slot_type( slot_str );
     }
 
-    if ( slot == SLOT_OFF_HAND )
+    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND )
     {
-      add_child( player->flametongue_oh );
-    }
-    else if ( slot == SLOT_MAIN_HAND )
-    {
-      add_child( player->flametongue_mh );
+      add_child( player->flametongue );
     }
     else
     {
@@ -8129,19 +8122,9 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
     return;
   }
 
-  if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-  {
-    flametongue_mh->set_target( state->target );
-    flametongue_mh->execute();
-    attack->proc_ft->occur();
-  }
-
-  if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-  {
-    flametongue_oh->set_target( state->target );
-    flametongue_oh->execute();
-    attack->proc_ft->occur();
-  }
+  flametongue->set_target( state->target );
+  flametongue->execute();
+  attack->proc_ft->occur();
 }
 
 void shaman_t::trigger_lightning_shield( const action_state_t* state )
@@ -9032,8 +9015,7 @@ void shaman_t::init_action_list()
   {
     windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
 
-    flametongue_mh = new flametongue_weapon_spell_t( "flametongue_attack_mh", this, &( main_hand_weapon ) );
-    flametongue_oh = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
+    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
 
     icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
 
