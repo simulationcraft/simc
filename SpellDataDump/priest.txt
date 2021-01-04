@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-22/36949, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2021-01-04/36949)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -10073,6 +10073,7 @@ Effects          :
 Description      : Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.
 
 Name             : Cauterizing Shadows (id=336370) [Spell Family (6), Passive] 
+Class            : Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -10088,6 +10089,27 @@ Effects          :
 #1 (id=833798)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : When $?s204197[Purge the Wicked][Shadow Word: Pain] expires on a target, $s1 allies within $336373A1 yds of the target are healed for $336373s1.
+
+Name             : Cauterizing Shadows (id=336373) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
+Family Flags     : 126
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=833801)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(87) -> AOE friendly (31)
+Description      : $@spelldesc336370
 
 Name             : Divine Image (id=336400) [Spell Family (6), Passive] 
 School           : Physical

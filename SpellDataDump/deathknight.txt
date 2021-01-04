@@ -1,4 +1,4 @@
-SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2020-12-22/36949, no-networking)
+SimulationCraft 902-01 for World of Warcraft 9.0.2.36949 Live (hotfix 2021-01-04/36949)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -14232,6 +14232,28 @@ Effects          :
 #1 (id=831089)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Dark Transformation also increases the attack speed and damage of you and your Monstrosity by $334896s1%.
+
+Name             : Frenzied Monstrosity (id=334895) 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : ........ x....... .......x x..x....   .....x.. ........ ........ ........ 
+                 : x..x.... ......x. ...x.... ........   ........ ........ ....x... ........ 
+                 : .....x.x ........ .x.x.x.. ........   x..x.... ........ .xx..... ........ 
+                 : ........ .x..x... .x...... ........   x....... ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ......x. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=831102)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=831103)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
 
 Name             : Death's Certainty (id=334898) [Spell Family (15), Passive] 
 School           : Physical

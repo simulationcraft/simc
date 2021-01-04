@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36949
-static const std::array<spelltext_data_t, 15091> __spelltext_data { {
+static const std::array<spelltext_data_t, 15092> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13931,6 +13931,7 @@ static const std::array<spelltext_data_t, 15091> __spelltext_data { {
   { 334886, "Deal $s1 Shadow damage to a target, but incur a stack of Lingering Despair each time you do. Lingering Despair deals $334887s1 Shadow damage every $334887t sec while you are holding the Mirror of Despair. Only usable outdoors in the Shadowlands.", 0, 0 },
   { 334887, "$@spelldesc334886", "Taking $w1 Shadow damage every $t sec while you continue to hold the Mirror of Despair. Destroy to remove the Lingering Despair.", 0 },
   { 334888, "Dark Transformation also increases the attack speed and damage of you and your Monstrosity by $334896s1%.", 0, 0 },
+  { 334895, 0, "Damage increased by $m2%, and attack speed increased by $m3%.", 0 },
   { 334896, "$@spelldesc334888", "Damage and attack speed increased by $m3%.", 0 },
   { 334898, "Death Strike and Death Coil deal $s2% increased damage and reduce the remaining cooldown of $?s152280[Defile]?a315442[Death's Due][Death and Decay] by ${$s1/10}.1 sec.", 0, 0 },
   { 334934, "$@spelldesc228920", 0, 0 },
