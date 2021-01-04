@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.36949
-static const std::array<spelltext_data_t, 15092> __spelltext_data { {
+static const std::array<spelltext_data_t, 15093> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13320,6 +13320,7 @@ static const std::array<spelltext_data_t, 15092> __spelltext_data { {
   { 323701, "$@spelldesc323673", 0, 0 },
   { 323705, "$@spelldesc323673", 0, 0 },
   { 323706, "$@spelldesc323673", 0, 0 },
+  { 323707, "$@spelldesc323673", 0, 0 },
   { 323710, "$@spelldesc315443", "Recently pulled  by Abomination Limb and can't be pulled again.", "Necrolord" },
   { 323755, "Permanently enchants a cloak to increase your Stamina by $ec1.", 0, 0 },
   { 323760, "Permanently enchants your chest to increase your Strength or Agility by $ec1 and give your auto-attacks and auto-shots a chance to deal additional shadow damage.", 0, 0 },
