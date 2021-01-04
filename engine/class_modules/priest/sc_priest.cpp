@@ -468,13 +468,43 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 // Mindgames - Venthyr Covenant
 // ==========================================================================
+struct mindgames_healing_reversal_t final : public priest_spell_t
+{
+  const spell_data_t* mindgames_spell;
+
+  mindgames_healing_reversal_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mindgames_healing_reversal", p, p.covenant.mindgames_healing_reversal ),
+      mindgames_spell( p.covenant.mindgames )
+  {
+    parse_options( options_str );
+
+    background        = true;
+    may_crit          = false;
+    energize_type     = action_energize::NONE;  // disable insanity gain (parent spell covers this)
+    energize_amount   = 0;
+    energize_resource = RESOURCE_NONE;
+
+    spell_power_mod.direct = 1.0;
+
+    // Formula found in spelldata for $healing
+    // $healing=${($SPS*$s7/100)*(1+$@versadmg)*$m3/100}
+    base_dd_min = base_dd_max = ( priest().intellect() * ( mindgames_spell->effectN( 7 ).base_value() / 100 ) ) *
+                                ( 1 + priest().composite_damage_versatility() ) *
+                                ( mindgames_spell->effectN( 3 ).base_value() / 100 );
+  }
+};
+
 struct mindgames_t final : public priest_spell_t
 {
+  propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
+  bool ignore_healing;
   double insanity_gain;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
-      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
+      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
+      ignore_healing( p.options.priest_ignore_healing ),
+      child_mindgames_healing_reversal( nullptr )
   {
     parse_options( options_str );
 
@@ -484,6 +514,23 @@ struct mindgames_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
     }
+
+    child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest(), options_str );
+    add_child( child_mindgames_healing_reversal );
+  }
+
+  void trigger_heal()
+  {
+    if ( ignore_healing )
+    {
+      return;
+    }
+    // Formula found in spelldata for $damage
+    // $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
+    double amount_to_heal = ( priest().intellect() * ( data().effectN( 2 ).base_value() / 100 ) ) *
+                            ( 1 + priest().composite_damage_versatility() ) *
+                            ( data().effectN( 3 ).base_value() / 100 );
+    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.mindgames_health, this );
   }
 
   void impact( action_state_t* s ) override
@@ -494,13 +541,18 @@ struct mindgames_t final : public priest_spell_t
     // 10 if the target deals enough dmg to break the shield
     // 10 if the targets heals enough to break the shield
     double insanity = 0;
+    // Healing reversal creates damage
     if ( priest().options.priest_mindgames_healing_insanity )
     {
       insanity += insanity_gain;
+      child_mindgames_healing_reversal->target = s->target;
+      child_mindgames_healing_reversal->execute();
     }
+    // Damage reversal creates healing
     if ( priest().options.priest_mindgames_damage_insanity )
     {
       insanity += insanity_gain;
+      trigger_heal();
     }
 
     if ( priest().specialization() == PRIEST_SHADOW )
@@ -1024,6 +1076,7 @@ void priest_t::create_gains()
   gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
   gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
   gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
+  gains.mindgames_health              = get_gain( "Health from Mindgames damage reversal" );
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
   gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
@@ -1477,11 +1530,12 @@ void priest_t::init_spells()
   conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
-  covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
-  covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
-  covenant.benevolent_faerie    = find_spell( 327710 );
-  covenant.mindgames            = find_covenant_spell( "Mindgames" );
-  covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
+  covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
+  covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
+  covenant.benevolent_faerie          = find_spell( 327710 );
+  covenant.mindgames                  = find_covenant_spell( "Mindgames" );
+  covenant.mindgames_healing_reversal = find_spell( 323707 );
+  covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 }
 
 void priest_t::create_buffs()

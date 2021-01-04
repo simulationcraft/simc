@@ -299,6 +299,7 @@ public:
     propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
+    propagate_const<gain_t*> mindgames_health;
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
@@ -444,6 +445,7 @@ public:
     const spell_data_t* unholy_nova;
     // Venthyr
     const spell_data_t* mindgames;
+    const spell_data_t* mindgames_healing_reversal;
     // Kyrian
     const spell_data_t* boon_of_the_ascended;
   } covenant;
