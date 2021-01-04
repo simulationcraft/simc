@@ -164,8 +164,8 @@ public:
     // T30
     const spell_data_t* power_word_solace;
     // T40
-    const spell_data_t* sins_of_the_many; // assumes 0 atonment targets
-    const spell_data_t* shadow_covenant;  // healing not fully implemented, only dmg/healing buff
+    const spell_data_t* sins_of_the_many;  // assumes 0 atonment targets
+    const spell_data_t* shadow_covenant;   // healing not fully implemented, only dmg/healing buff
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
@@ -218,7 +218,7 @@ public:
     const spell_data_t* shadow_word_death;
 
     // Discipline
-    const spell_data_t* discipline_priest; // General discipline data
+    const spell_data_t* discipline_priest;       // General discipline data
     const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
 
     // Holy
@@ -231,9 +231,9 @@ public:
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
     const spell_data_t* mind_flay;
-    const spell_data_t* shadow_priest;  // General shadow data
-    const spell_data_t* shadowy_apparition; // Damage event
-    const spell_data_t* shadowy_apparitions; // Passive effect
+    const spell_data_t* shadow_priest;        // General shadow data
+    const spell_data_t* shadowy_apparition;   // Damage event
+    const spell_data_t* shadowy_apparitions;  // Passive effect
     const spell_data_t* shadowform;
     const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
@@ -299,7 +299,6 @@ public:
     propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> mindgames_health;
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
@@ -771,13 +770,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s )
   {
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    may_crit = true;
   }
 
   void impact( action_state_t* s ) override

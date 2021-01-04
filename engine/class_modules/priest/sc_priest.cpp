@@ -1085,7 +1085,6 @@ void priest_t::create_gains()
   gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
   gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
   gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
-  gains.mindgames_health              = get_gain( "Health from Mindgames damage reversal" );
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
   gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
