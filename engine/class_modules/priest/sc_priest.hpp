@@ -120,7 +120,6 @@ public:
     propagate_const<buffs::dispersion_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
-    propagate_const<buff_t*> shadowy_insight;
     propagate_const<buff_t*> surrender_to_madness;
     propagate_const<buff_t*> surrender_to_madness_death;
     propagate_const<buff_t*> vampiric_embrace;
@@ -244,6 +243,7 @@ public:
     const spell_data_t* void_eruption_damage;
 
     // Legendary Effects
+    const spell_data_t* cauterizing_shadows_health;
     const spell_data_t* painbreaker_psalm_insanity;
   } specs;
 
@@ -288,23 +288,22 @@ public:
   // Gains
   struct
   {
-    propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> power_word_solace;
+    propagate_const<gain_t*> cauterizing_shadows_health;
+    propagate_const<gain_t*> devouring_plague_health;
     propagate_const<gain_t*> insanity_auspicious_spirits;
-    propagate_const<gain_t*> insanity_dispersion;
-    propagate_const<gain_t*> insanity_pet;
-    propagate_const<gain_t*> insanity_surrender_to_madness;
-    propagate_const<gain_t*> insanity_blessing;
-    propagate_const<gain_t*> shadowy_insight;
-    propagate_const<gain_t*> vampiric_touch_health;
-    propagate_const<gain_t*> power_of_the_dark_side;
-    propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
-    propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> insanity_mindgames;
+    propagate_const<gain_t*> insanity_pet;
+    propagate_const<gain_t*> insanity_surrender_to_madness;
+    propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> painbreaker_psalm;
+    propagate_const<gain_t*> power_of_the_dark_side;
+    propagate_const<gain_t*> power_word_solace;
+    propagate_const<gain_t*> shadow_word_death_self_damage;
+    propagate_const<gain_t*> vampiric_touch_health;
   } gains;
 
   // Benefits
@@ -315,8 +314,6 @@ public:
   // Procs
   struct
   {
-    propagate_const<proc_t*> shadowy_insight;
-    propagate_const<proc_t*> shadowy_insight_overflow;
     propagate_const<proc_t*> serendipity;
     propagate_const<proc_t*> serendipity_overflow;
     propagate_const<proc_t*> shadowy_apparition;
@@ -390,13 +387,18 @@ public:
     // Add "bugged" targets to Ascended Eruption for the SQRT calculation
     // Setting to 0 turns off the bug
     int priest_ascended_eruption_additional_targets = 0;
+
+    // The amount of allies to assume for Cauterizing Shadows healing
+    int cauterizing_shadows_allies = 3;
   } options;
 
   // Legendaries
   struct
   {
-    // Generic Priest
+    // Generic
     item_runeforge_t sephuzs_proclamation;
+    // Shared
+    item_runeforge_t cauterizing_shadows;
     item_runeforge_t twins_of_the_sun_priestess;
     // Holy
     item_runeforge_t divine_image;          // NYI

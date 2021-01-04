@@ -628,10 +628,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 // ==========================================================================
 struct shadow_word_pain_t final : public priest_spell_t
 {
+  bool ignore_healing;
   bool casted;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
+    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain ),
+      ignore_healing( p.options.priest_ignore_healing )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -655,6 +657,31 @@ struct shadow_word_pain_t final : public priest_spell_t
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
   {
     parse_options( options_str );
+  }
+
+  void trigger_heal()
+  {
+    if ( ignore_healing )
+    {
+      return;
+    }
+
+    // Use a simple option to dictate how many "allies" this will heal. All healing will go to the actor
+    double amount_to_heal = priest().options.cauterizing_shadows_allies * priest().intellect() *
+                            priest().specs.cauterizing_shadows_health->effectN( 1 ).sp_coeff();
+    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.cauterizing_shadows_health, this );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/789
+    // You only get the heal when the DoT expires naturally, not when a mob dies or you refresh it
+    if ( priest().legendary.cauterizing_shadows->ok() )
+    {
+      trigger_heal();
+    }
+
+    priest_spell_t::last_tick( d );
   }
 
   void impact( action_state_t* s ) override
@@ -855,10 +882,12 @@ struct devouring_plague_dot_state_t : public action_state_t
 
 struct devouring_plague_t final : public priest_spell_t
 {
+  bool ignore_healing;
   bool casted;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague )
+    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
+      ignore_healing( p.options.priest_ignore_healing )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -900,8 +929,21 @@ struct devouring_plague_t final : public priest_spell_t
     return priest_spell_t::cost();
   }
 
+  void trigger_heal( action_state_t* s )
+  {
+    if ( ignore_healing )
+    {
+      return;
+    }
+
+    double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
+    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.devouring_plague_health, this );
+  }
+
   void impact( action_state_t* s ) override
   {
+    trigger_heal( s );
+
     priest_spell_t::impact( s );
 
     // Damnation does not trigger a SA - 2020-08-08
@@ -1801,6 +1843,7 @@ void priest_t::init_spells_shadow()
   specs.void_eruption_damage = find_spell( 228360 );
 
   // Legendary Effects
+  specs.cauterizing_shadows_health = find_spell( 336373 );
   specs.painbreaker_psalm_insanity = find_spell( 336167 );
 }
 

@@ -1010,21 +1010,24 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
-  gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_auspicious_spirits   = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.vampiric_touch_health         = get_gain( "Health from Vampiric Touch" );
-  gains.insanity_death_and_madness    = get_gain( "Insanity Gained from Death and Madness" );
-  gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.insanity_mindgames            = get_gain( "Insanity Gained from Mindgames" );
+  gains.cauterizing_shadows_health  = get_gain( "Health from Cauterizing Shadows" );
+  gains.devouring_plague_health     = get_gain( "Health from Devouring Plague" );
+  gains.insanity_auspicious_spirits = get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_death_and_madness  = get_gain( "Insanity Gained from Death and Madness" );
   gains.insanity_eternal_call_to_the_void_mind_flay =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
-  gains.insanity_mind_sear = get_gain( "Insanity Gained from Mind Sear" );
-  gains.painbreaker_psalm  = get_gain( "Insanity Gained from Painbreaker Psalm" );
+  gains.insanity_mindgames = get_gain( "Insanity Gained from Mindgames" );
+
+  gains.insanity_mind_sear            = get_gain( "Insanity Gained from Mind Sear" );
+  gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
+  gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
+  gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.shadow_word_death_self_damage = get_gain( "Shadow Word: Death self inflicted damage" );
+  gains.vampiric_touch_health         = get_gain( "Health from Vampiric Touch" );
 }
 
 /** Construct priest procs */
@@ -1447,7 +1450,9 @@ void priest_t::init_spells()
   mastery_spells.shadow_weaving = find_mastery_spell( PRIEST_SHADOW );
 
   // Generic Legendaries
-  legendary.sephuzs_proclamation       = find_runeforge_legendary( "Sephuz's Proclamation" );
+  legendary.sephuzs_proclamation = find_runeforge_legendary( "Sephuz's Proclamation" );
+  // Shared Legendaries
+  legendary.cauterizing_shadows        = find_runeforge_legendary( "Cauterizing Shadows" );
   legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
@@ -1686,6 +1691,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
   add_option(
       opt_int( "priest_ascended_eruption_additional_targets", options.priest_ascended_eruption_additional_targets ) );
+  add_option( opt_int( "cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
 }
 
 std::string priest_t::create_profile( save_e type )
