@@ -564,10 +564,7 @@ struct mindgames_t final : public priest_spell_t
       }
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW )
-    {
-      priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
-    }
+    priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
   }
 };
 
