@@ -76,7 +76,7 @@ enum sef_ability_e
   SEF_MAX
 };
 
-unsigned sef_spell_idx( unsigned x )
+inline unsigned sef_spell_idx( unsigned x )
 {
   return x - as<unsigned>( static_cast<int>( SEF_SPELL_MIN ) );
 }
@@ -720,15 +720,11 @@ public:
     pets::niuzao_pet_t* niuzao = nullptr;
     pets::yulon_pet_t* yulon   = nullptr;
     pets::chiji_pet_t* chiji   = nullptr;
-    spawner::pet_spawner_t<pets::fallen_monk_ww_pet_t, monk_t> fallen_monk_ww;
-    spawner::pet_spawner_t<pets::fallen_monk_mw_pet_t, monk_t> fallen_monk_mw;
-    spawner::pet_spawner_t<pets::fallen_monk_brm_pet_t, monk_t> fallen_monk_brm;
+    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
+    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
+    spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
 
-    pets_t( monk_t* p )
-      : fallen_monk_ww( "fallen_monk_windwalker", p ),
-        fallen_monk_mw( "fallen_monk_mistweaver", p ),
-        fallen_monk_brm( "fallen_monk_brewmaster", p )
-   {}
+    pets_t( monk_t* p );
   } pets;
 
   // Options
@@ -831,14 +827,6 @@ public:
   }
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
-
-  // Monk specific
-  void apl_combat_brewmaster();
-  void apl_combat_mistweaver();
-  void apl_combat_windwalker();
-  void apl_pre_brewmaster();
-  void apl_pre_mistweaver();
-  void apl_pre_windwalker();
 
   // Custom Monk Functions
   void stagger_damage_changed( bool last_tick = false );
