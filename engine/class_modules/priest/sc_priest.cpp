@@ -470,11 +470,9 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 struct mindgames_healing_reversal_t final : public priest_spell_t
 {
-  mindgames_healing_reversal_t( priest_t& p, util::string_view options_str )
+  mindgames_healing_reversal_t( priest_t& p)
     : priest_spell_t( "mindgames_healing_reversal", p, p.covenant.mindgames_healing_reversal )
   {
-    parse_options( options_str );
-
     background        = true;
     may_crit          = false;
     energize_type     = action_energize::NONE;  // disable insanity gain (parent spell covers this)
@@ -490,11 +488,9 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
 
 struct mindgames_damage_reversal_t final : public priest_heal_t
 {
-  mindgames_damage_reversal_t( priest_t& p, util::string_view options_str )
+  mindgames_damage_reversal_t( priest_t& p )
     : priest_heal_t( "mindgames_damage_reversal", p, p.covenant.mindgames_damage_reversal )
   {
-    parse_options( options_str );
-
     background        = true;
     harmful           = false;
     may_crit          = false;
@@ -532,9 +528,9 @@ struct mindgames_t final : public priest_spell_t
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
     }
 
-    child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest(), options_str );
+    child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
     add_child( child_mindgames_healing_reversal );
-    child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest(), options_str );
+    child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
     add_child( child_mindgames_damage_reversal );
   }
 
