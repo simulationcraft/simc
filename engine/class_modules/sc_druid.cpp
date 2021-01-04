@@ -9736,22 +9736,22 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
-  add_option( opt_float( "initial_astral_power", initial_astral_power ) );
-  add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_float( "eclipse_snapshot_period", eclipse_snapshot_period ) );
-  add_option( opt_bool( "catweave_bear", catweave_bear ) );
-  add_option( opt_bool( "owlweave_bear", owlweave_bear ) );
-  add_option( opt_bool( "owlweave_cat", owlweave_cat ) );
-  add_option( opt_bool( "no_cds", no_cds ) );
-  add_option( opt_bool( "affinity_resources", affinity_resources ) );
-  add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
-  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
-  add_option( opt_float( "kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
-  add_option( opt_bool( "kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
-  add_option( opt_float( "kindred_spirits_absorbed", kindred_spirits_absorbed ) );
-  add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
-  add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
+  add_option( opt_float( "druid.predator_rppm", predator_rppm_rate ) );
+  add_option( opt_float( "druid.initial_astral_power", initial_astral_power ) );
+  add_option( opt_int( "druid.initial_moon_stage", initial_moon_stage ) );
+  add_option( opt_float( "druid.eclipse_snapshot_period", eclipse_snapshot_period ) );
+  add_option( opt_bool( "druid.catweave_bear", catweave_bear ) );
+  add_option( opt_bool( "druid.owlweave_bear", owlweave_bear ) );
+  add_option( opt_bool( "druid.owlweave_cat", owlweave_cat ) );
+  add_option( opt_bool( "druid.no_cds", no_cds ) );
+  add_option( opt_bool( "druid.affinity_resources", affinity_resources ) );
+  add_option( opt_float( "druid.thorns_attack_period", thorns_attack_period ) );
+  add_option( opt_float( "druid.thorns_hit_chance", thorns_hit_chance ) );
+  add_option( opt_float( "druid.kindred_spirits_partner_dps", kindred_spirits_partner_dps ) );
+  add_option( opt_bool( "druid.kindred_spirits_hide_partner", kindred_spirits_hide_partner ) );
+  add_option( opt_float( "druid.kindred_spirits_absorbed", kindred_spirits_absorbed ) );
+  add_option( opt_float( "druid.convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
 }
 
 // druid_t::create_profile ==================================================
