@@ -198,6 +198,7 @@ SOURCES += engine/class_modules/apl/apl_monk.cpp
 SOURCES += engine/class_modules/apl/apl_priest.cpp
 SOURCES += engine/class_modules/apl/mage.cpp
 SOURCES += engine/class_modules/monk/sc_monk.cpp
+SOURCES += engine/class_modules/monk/sc_monk_pets.cpp
 SOURCES += engine/class_modules/paladin/sc_paladin.cpp
 SOURCES += engine/class_modules/paladin/sc_paladin_holy.cpp
 SOURCES += engine/class_modules/paladin/sc_paladin_protection.cpp

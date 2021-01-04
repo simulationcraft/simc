@@ -715,11 +715,11 @@ public:
 
   struct pets_t
   {
-    pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
-    pets::xuen_pet_t* xuen = nullptr;
-    pets::niuzao_pet_t* niuzao = nullptr;
-    pets::yulon_pet_t* yulon   = nullptr;
-    pets::chiji_pet_t* chiji   = nullptr;
+    std::array<pets::storm_earth_and_fire_pet_t*, SEF_PET_MAX> sef;
+    pet_t* xuen = nullptr;
+    pet_t* niuzao = nullptr;
+    pet_t* yulon   = nullptr;
+    pet_t* chiji   = nullptr;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
@@ -859,6 +859,20 @@ public:
   void retarget_storm_earth_and_fire_pets() const;
 
   void accumulate_gale_burst_damage( action_state_t* );
+  void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
+  void storm_earth_and_fire_fixate( player_t* target );
+  bool storm_earth_and_fire_fixate_ready( player_t* target );
+  player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
+  void trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet );
 };
+struct sef_despawn_cb_t
+{
+  monk_t* monk;
 
+  sef_despawn_cb_t( monk_t* m ) : monk( m )
+  {
+  }
+
+  void operator()( player_t* );
+};
 }
