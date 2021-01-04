@@ -470,7 +470,7 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 struct mindgames_healing_reversal_t final : public priest_spell_t
 {
-  mindgames_healing_reversal_t( priest_t& p)
+  mindgames_healing_reversal_t( priest_t& p )
     : priest_spell_t( "mindgames_healing_reversal", p, p.covenant.mindgames_healing_reversal )
   {
     background        = true;
@@ -514,10 +514,10 @@ struct mindgames_t final : public priest_spell_t
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
-      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
-      ignore_healing( p.options.priest_ignore_healing ),
       child_mindgames_healing_reversal( nullptr ),
-      child_mindgames_damage_reversal( nullptr )
+      child_mindgames_damage_reversal( nullptr ),
+      ignore_healing( p.options.priest_ignore_healing ),
+      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
   {
     parse_options( options_str );
 
@@ -527,11 +527,16 @@ struct mindgames_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
     }
-
-    child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
-    add_child( child_mindgames_healing_reversal );
-    child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
-    add_child( child_mindgames_damage_reversal );
+    if ( priest().options.priest_mindgames_healing_reversal )
+    {
+      child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
+      add_child( child_mindgames_healing_reversal );
+    }
+    if ( priest().options.priest_mindgames_damage_reversal )
+    {
+      child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
+      add_child( child_mindgames_damage_reversal );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -543,14 +548,14 @@ struct mindgames_t final : public priest_spell_t
     // 10 if the targets heals enough to break the shield
     double insanity = 0;
     // Healing reversal creates damage
-    if ( priest().options.priest_mindgames_healing_reversal )
+    if ( child_mindgames_healing_reversal )
     {
       insanity += insanity_gain;
       child_mindgames_healing_reversal->target = s->target;
       child_mindgames_healing_reversal->execute();
     }
     // Damage reversal creates healing
-    if ( priest().options.priest_mindgames_damage_reversal )
+    if ( child_mindgames_damage_reversal )
     {
       insanity += insanity_gain;
       if ( !ignore_healing )
