@@ -16,29 +16,12 @@ namespace spells
 {
 struct stagger_self_damage_t;
 }
-namespace pet_summon
-{
-struct storm_earth_and_fire_t;
-}
 }  // namespace actions
 namespace pets
 {
   struct storm_earth_and_fire_pet_t;
-  struct xuen_pet_t;
-  struct niuzao_pet_t;
-  struct yulon_pet_t;
-  struct chiji_pet_t;
-
-  // Covenant
-  struct fallen_monk_ww_pet_t;
-  struct fallen_monk_mw_pet_t;
-  struct fallen_monk_brm_pet_t;
 }
-namespace orbs
-{
-  struct chi_orb_t;
-  struct energy_orb_t;
-}  // namespace orbs
+
 struct monk_t;
 
 enum sef_pet_e
