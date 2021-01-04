@@ -559,8 +559,7 @@ struct mindgames_t final : public priest_spell_t
       insanity += insanity_gain;
       if ( !ignore_healing )
       {
-        child_mindgames_healing_reversal->target = player;
-        child_mindgames_healing_reversal->execute();
+        child_mindgames_damage_reversal->execute();
       }
     }
 
