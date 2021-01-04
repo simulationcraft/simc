@@ -446,6 +446,7 @@ public:
     // Venthyr
     const spell_data_t* mindgames;
     const spell_data_t* mindgames_healing_reversal;
+    const spell_data_t* mindgames_damage_reversal;
     // Kyrian
     const spell_data_t* boon_of_the_ascended;
   } covenant;
