@@ -542,14 +542,14 @@ struct mindgames_t final : public priest_spell_t
     // 10 if the targets heals enough to break the shield
     double insanity = 0;
     // Healing reversal creates damage
-    if ( priest().options.priest_mindgames_healing_insanity )
+    if ( priest().options.priest_mindgames_healing_reversal )
     {
       insanity += insanity_gain;
       child_mindgames_healing_reversal->target = s->target;
       child_mindgames_healing_reversal->execute();
     }
     // Damage reversal creates healing
-    if ( priest().options.priest_mindgames_damage_insanity )
+    if ( priest().options.priest_mindgames_damage_reversal )
     {
       insanity += insanity_gain;
       trigger_heal();
@@ -1739,8 +1739,8 @@ void priest_t::create_options()
   add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
-  add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
-  add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
+  add_option( opt_bool( "priest_mindgames_healing_reversal", options.priest_mindgames_healing_reversal ) );
+  add_option( opt_bool( "priest_mindgames_damage_reversal", options.priest_mindgames_damage_reversal ) );
   add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
   add_option(

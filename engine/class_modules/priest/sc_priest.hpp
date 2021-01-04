@@ -379,8 +379,8 @@ public:
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
     // For most content the healing part won't proc, only default damage dealt
-    bool priest_mindgames_healing_insanity = false;
-    bool priest_mindgames_damage_insanity  = true;
+    bool priest_mindgames_healing_reversal = false;
+    bool priest_mindgames_damage_reversal  = true;
 
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
