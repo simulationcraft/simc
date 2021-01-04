@@ -154,6 +154,8 @@ struct agony_t : public affliction_spell_t
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
     dot_duration += p->conduit.rolling_agony.time_value();
+
+    base_td = 1.0;
   }
 
   void last_tick( dot_t* d ) override
