@@ -164,8 +164,8 @@ public:
     // T30
     const spell_data_t* power_word_solace;
     // T40
-    const spell_data_t* sins_of_the_many; // assumes 0 atonment targets
-    const spell_data_t* shadow_covenant;  // healing not fully implemented, only dmg/healing buff
+    const spell_data_t* sins_of_the_many;  // assumes 0 atonment targets
+    const spell_data_t* shadow_covenant;   // healing not fully implemented, only dmg/healing buff
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
@@ -218,7 +218,7 @@ public:
     const spell_data_t* shadow_word_death;
 
     // Discipline
-    const spell_data_t* discipline_priest; // General discipline data
+    const spell_data_t* discipline_priest;       // General discipline data
     const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
 
     // Holy
@@ -231,9 +231,9 @@ public:
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
     const spell_data_t* mind_flay;
-    const spell_data_t* shadow_priest;  // General shadow data
-    const spell_data_t* shadowy_apparition; // Damage event
-    const spell_data_t* shadowy_apparitions; // Passive effect
+    const spell_data_t* shadow_priest;        // General shadow data
+    const spell_data_t* shadowy_apparition;   // Damage event
+    const spell_data_t* shadowy_apparitions;  // Passive effect
     const spell_data_t* shadowform;
     const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
@@ -378,8 +378,8 @@ public:
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
     // For most content the healing part won't proc, only default damage dealt
-    bool priest_mindgames_healing_insanity = false;
-    bool priest_mindgames_damage_insanity  = true;
+    bool priest_mindgames_healing_reversal = false;
+    bool priest_mindgames_damage_reversal  = true;
 
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
@@ -444,6 +444,8 @@ public:
     const spell_data_t* unholy_nova;
     // Venthyr
     const spell_data_t* mindgames;
+    const spell_data_t* mindgames_healing_reversal;
+    const spell_data_t* mindgames_damage_reversal;
     // Kyrian
     const spell_data_t* boon_of_the_ascended;
   } covenant;
@@ -768,13 +770,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s )
   {
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    may_crit = true;
   }
 
   void impact( action_state_t* s ) override

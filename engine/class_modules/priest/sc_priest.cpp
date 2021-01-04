@@ -468,12 +468,55 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 // Mindgames - Venthyr Covenant
 // ==========================================================================
+struct mindgames_healing_reversal_t final : public priest_spell_t
+{
+  mindgames_healing_reversal_t( priest_t& p )
+    : priest_spell_t( "mindgames_healing_reversal", p, p.covenant.mindgames_healing_reversal )
+  {
+    background        = true;
+    may_crit          = false;
+    energize_type     = action_energize::NONE;  // disable insanity gain (parent spell covers this)
+    energize_amount   = 0;
+    energize_resource = RESOURCE_NONE;
+
+    // Formula found in parent spelldata for $healing
+    // $healing=${($SPS*$s7/100)*(1+$@versadmg)*$m3/100}
+    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 7 ).base_value() / 100 ) *
+                             ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+  }
+};
+
+struct mindgames_damage_reversal_t final : public priest_heal_t
+{
+  mindgames_damage_reversal_t( priest_t& p )
+    : priest_heal_t( "mindgames_damage_reversal", p, p.covenant.mindgames_damage_reversal )
+  {
+    background        = true;
+    harmful           = false;
+    may_crit          = false;
+    energize_type     = action_energize::NONE;  // disable insanity gain (parent spell covers this)
+    energize_amount   = 0;
+    energize_resource = RESOURCE_NONE;
+
+    // Formula found in parent spelldata for $damage
+    // $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
+    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 2 ).base_value() / 100 ) *
+                             ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+  }
+};
+
 struct mindgames_t final : public priest_spell_t
 {
+  propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
+  propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
+  bool ignore_healing;
   double insanity_gain;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
+      child_mindgames_healing_reversal( nullptr ),
+      child_mindgames_damage_reversal( nullptr ),
+      ignore_healing( p.options.priest_ignore_healing ),
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
   {
     parse_options( options_str );
@@ -483,6 +526,16 @@ struct mindgames_t final : public priest_spell_t
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
+    if ( priest().options.priest_mindgames_healing_reversal )
+    {
+      child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
+      add_child( child_mindgames_healing_reversal );
+    }
+    if ( priest().options.priest_mindgames_damage_reversal )
+    {
+      child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
+      add_child( child_mindgames_damage_reversal );
     }
   }
 
@@ -494,19 +547,24 @@ struct mindgames_t final : public priest_spell_t
     // 10 if the target deals enough dmg to break the shield
     // 10 if the targets heals enough to break the shield
     double insanity = 0;
-    if ( priest().options.priest_mindgames_healing_insanity )
+    // Healing reversal creates damage
+    if ( child_mindgames_healing_reversal )
     {
       insanity += insanity_gain;
+      child_mindgames_healing_reversal->target = s->target;
+      child_mindgames_healing_reversal->execute();
     }
-    if ( priest().options.priest_mindgames_damage_insanity )
+    // Damage reversal creates healing
+    if ( child_mindgames_damage_reversal )
     {
       insanity += insanity_gain;
+      if ( !ignore_healing )
+      {
+        child_mindgames_damage_reversal->execute();
+      }
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW )
-    {
-      priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
-    }
+    priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
   }
 };
 
@@ -1477,11 +1535,13 @@ void priest_t::init_spells()
   conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
-  covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
-  covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
-  covenant.benevolent_faerie    = find_spell( 327710 );
-  covenant.mindgames            = find_covenant_spell( "Mindgames" );
-  covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
+  covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
+  covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
+  covenant.benevolent_faerie          = find_spell( 327710 );
+  covenant.mindgames                  = find_covenant_spell( "Mindgames" );
+  covenant.mindgames_healing_reversal = find_spell( 323707 );
+  covenant.mindgames_damage_reversal  = find_spell( 323706 );
+  covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 }
 
 void priest_t::create_buffs()
@@ -1685,8 +1745,8 @@ void priest_t::create_options()
   add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
-  add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
-  add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
+  add_option( opt_bool( "priest_mindgames_healing_reversal", options.priest_mindgames_healing_reversal ) );
+  add_option( opt_bool( "priest_mindgames_damage_reversal", options.priest_mindgames_damage_reversal ) );
   add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
   add_option(
