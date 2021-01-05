@@ -639,7 +639,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain ),
-      ignore_healing( p.options.priest_ignore_healing )
+      ignore_healing( p.options.ignore_healing )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -673,7 +673,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     // Use a simple option to dictate how many "allies" this will heal. All healing will go to the actor
-    double amount_to_heal = priest().options.priest_cauterizing_shadows_allies * priest().intellect() *
+    double amount_to_heal = priest().options.cauterizing_shadows_allies * priest().intellect() *
                             priest().specs.cauterizing_shadows_health->effectN( 1 ).sp_coeff();
     priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.cauterizing_shadows_health, this );
   }
@@ -760,7 +760,7 @@ struct vampiric_touch_t final : public priest_spell_t
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       child_swp( nullptr ),
       child_ud( nullptr ),
-      ignore_healing( p.options.priest_ignore_healing )
+      ignore_healing( p.options.ignore_healing )
   {
     casted                     = _casted;
     may_crit                   = false;
@@ -893,7 +893,7 @@ struct devouring_plague_t final : public priest_spell_t
 
   devouring_plague_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
-      ignore_healing( p.options.priest_ignore_healing )
+      ignore_healing( p.options.ignore_healing )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -1240,7 +1240,7 @@ struct void_eruption_t final : public priest_spell_t
   {
     double m = priest_spell_t::recharge_multiplier( cd );
 
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.self_benevolent_faerie )
     {
       m /= 1.0 + benevolent_faerie_rate;
     }

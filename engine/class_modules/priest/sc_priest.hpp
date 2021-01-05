@@ -365,31 +365,31 @@ public:
   struct
   {
     bool autoUnshift           = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time     = true;
-    bool priest_ignore_healing = false;  // Remove Healing calculation codes
+    bool fixed_time     = true;
+    bool ignore_healing = false;  // Remove Healing calculation codes
 
     // Default param to set if you should cast Power Infusion on yourself
-    bool priest_self_power_infusion = true;
+    bool self_power_infusion = true;
 
     // Add in easy options to change if you are in range or not
-    bool priest_use_ascended_nova     = true;
-    bool priest_use_ascended_eruption = true;
+    bool use_ascended_nova     = true;
+    bool use_ascended_eruption = true;
 
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
     // For most content the healing part won't proc, only default damage dealt
-    bool priest_mindgames_healing_reversal = false;
-    bool priest_mindgames_damage_reversal  = true;
+    bool mindgames_healing_reversal = false;
+    bool mindgames_damage_reversal  = true;
 
     // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
-    bool priest_self_benevolent_faerie = true;
+    bool self_benevolent_faerie = true;
 
     // Add "bugged" targets to Ascended Eruption for the SQRT calculation
     // Setting to 0 turns off the bug
-    int priest_ascended_eruption_additional_targets = 0;
+    int ascended_eruption_additional_targets = 0;
 
     // The amount of allies to assume for Cauterizing Shadows healing
-    int priest_cauterizing_shadows_allies = 3;
+    int cauterizing_shadows_allies = 3;
   } options;
 
   // Legendaries
