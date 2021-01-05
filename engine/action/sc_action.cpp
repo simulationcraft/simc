@@ -326,13 +326,13 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     reduced_aoe_damage(),
     normalize_weapon_speed(),
     ground_aoe(),
-    ground_aoe_duration( timespan_t::zero() ),
     round_base_dmg( true ),
     dynamic_tick_action( true ),  // WoD updates everything on tick by default. If you need snapshotted values for a
                                   // periodic effect, use persistent multipliers.
-    ap_type( attack_power_type::NONE ),
     interrupt_immediate_occurred(),
     hit_any_target(),
+    ground_aoe_duration( timespan_t::zero() ),
+    ap_type( attack_power_type::NONE ),
     dot_behavior( DOT_REFRESH ),
     ability_lag(),
     ability_lag_stddev(),

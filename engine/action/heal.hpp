@@ -13,6 +13,12 @@ struct heal_t : public spell_base_t
 public:
   typedef spell_base_t base_t;
   bool group_only;
+
+private:
+  // Determines if stats for healing actions are recorded. Initialized to player->record_healing()
+  bool record_healing;
+
+public:
   double base_pct_heal;
   double tick_pct_heal;
   gain_t* heal_gain;
@@ -34,6 +40,7 @@ public:
   player_t* smart_target() const; // Find random injured healing target, preferring non-pets // Might need to move up hierarchy if there are smart absorbs
   virtual int num_targets() const override;
   void   parse_effect_data( const spelleffect_data_t& ) override;
+  void init() override;
 
   virtual double composite_da_multiplier(const action_state_t* s) const override;
 

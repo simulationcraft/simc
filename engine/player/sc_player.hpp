@@ -697,8 +697,6 @@ public:
   bool dual_wield() const
   { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   bool has_shield_equipped() const;
-  /// Figure out if healing should be recorded
-  bool record_healing() const;
   specialization_e specialization() const
   { return _spec; }
   const char* primary_tree_name() const;
@@ -1006,6 +1004,8 @@ public:
   // Check whether the player has enough of a given resource.
   // The caller needs to ensure current resources are up to date (in particular with dynamic regen).
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
+  /// Figure out if healing should be recorded
+  virtual bool record_healing() const;
   virtual resource_e primary_resource() const
   { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;

@@ -26,6 +26,7 @@ heal_t::heal_t(util::string_view token,
   const spell_data_t* s) :
   spell_base_t(ACTION_HEAL, token, p, s),
   group_only(),
+  record_healing(),
   base_pct_heal(),
   tick_pct_heal(),
   heal_gain(p -> get_gain(name()))
@@ -69,6 +70,13 @@ void heal_t::parse_effect_data(const spelleffect_data_t& e)
       tick_pct_heal = e.percent();
     }
   }
+}
+
+void heal_t::init()
+{
+  base_t::init();
+
+  record_healing = player->record_healing();
 }
 
 double heal_t::composite_da_multiplier(const action_state_t* s) const
@@ -232,7 +240,7 @@ void heal_t::assess_damage(result_amount_type heal_type, action_state_t* s)
     }
   }
 
-  if (player->record_healing())
+  if (record_healing)
   {
     stats->add_result(s->result_amount, s->result_total, (direct_tick ? result_amount_type::HEAL_OVER_TIME : heal_type),
       s->result, s->block_result, s->target);
