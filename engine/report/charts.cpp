@@ -1564,17 +1564,20 @@ highchart::time_series_t& chart::generate_stats_timeline(
 
   ts.height_ = 200;
   ts.set( "yAxis.min", 0 );
-  if ( s.type == STATS_DMG )
+
+  std::string chart_title_base = fmt::format( "{} per second", s.type );
+  ts.set_yaxis_title( chart_title_base );
+  std::string stat_name;
+  if ( s.action_list.size() > 0 && s.action_list[ 0 ]->data().ok() )
   {
-    ts.set_yaxis_title( "Damage per second" );
-    if ( s.action_list.size() > 0 && s.action_list[ 0 ]->data().id() != 0 )
-      ts.set_title( util::encode_html( s.action_list[ 0 ]->data().name_cstr() ) +
-                    " Damage per second" );
-    else
-      ts.set_title( util::encode_html( s.name_str ) + " Damage per second" );
+    stat_name = util::encode_html( s.action_list[ 0 ]->data().name_cstr() );
   }
   else
-    ts.set_yaxis_title( "Healing per second" );
+  {
+    stat_name = util::encode_html( s.name_str );
+  }
+
+  ts.set_title( fmt::format( "{} {}", stat_name, chart_title_base ) );
 
   std::string area_color = color::YELLOW;
   if ( s.action_list.size() > 0 )
