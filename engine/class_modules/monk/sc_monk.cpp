@@ -2266,7 +2266,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     cooldown->duration = data().cooldown();
 
     if ( p.legendary.fatal_touch.ok() )
-      cooldown->duration -= p.legendary.fatal_touch->effectN( 1 ).time_value();
+      cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
   }
 
   void init() override
