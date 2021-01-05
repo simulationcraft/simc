@@ -425,6 +425,11 @@ struct dispersion_t final : public priest_spell_t
     tick_may_crit         = false;
     hasted_ticks          = false;
     may_miss              = false;
+
+    if ( priest().talents.intangibility->ok() )
+    {
+      cooldown->duration += priest().talents.intangibility->effectN( 1 ).time_value();
+    }
   }
 
   void execute() override

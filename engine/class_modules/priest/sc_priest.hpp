@@ -185,8 +185,8 @@ public:
     const spell_data_t* death_and_madness_insanity;
     const spell_data_t* unfurling_darkness;
     // T25
-    const spell_data_t* sanlayn;        // NYI
-    const spell_data_t* intangibility;  // NYI
+    const spell_data_t* sanlayn;
+    const spell_data_t* intangibility;  // CDR implemented, healing NYI
     // T30
     const spell_data_t* searing_nightmare;
     const spell_data_t* misery;

@@ -1893,6 +1893,7 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   return multiplier;
 }
 
+// TODO: implement healing from Intangibility
 buffs::dispersion_t::dispersion_t( priest_t& p )
   : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
     rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
