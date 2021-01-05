@@ -59,7 +59,7 @@ enum sef_ability_e
   SEF_MAX
 };
 
-inline unsigned sef_spell_idx( unsigned x )
+inline unsigned sef_spell_index( sef_ability_e x )
 {
   return x - as<unsigned>( static_cast<int>( SEF_SPELL_MIN ) );
 }

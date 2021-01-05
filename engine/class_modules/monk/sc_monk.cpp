@@ -3468,6 +3468,7 @@ struct xuen_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    assert( p()->pets.xuen );
     p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
 
     p()->buff.invoke_xuen->trigger();
@@ -3516,6 +3517,7 @@ struct niuzao_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    assert( p()->pets.niuzao );
     p()->pets.niuzao->summon( p()->spec.invoke_niuzao->duration() );
 
     p()->buff.invoke_niuzao->trigger();
@@ -3546,6 +3548,7 @@ struct chiji_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    assert(p()->pets.chiji);
     p()->pets.chiji->summon( p()->talent.invoke_chi_ji->duration() );
 
     p()->buff.invoke_chiji->trigger();
@@ -3584,6 +3587,7 @@ struct yulon_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    assert(p()->pets.yulon);
     p()->pets.yulon->summon( p()->spec.invoke_yulon->duration() );
 
     if ( p()->legendary.invokers_delight->ok() )

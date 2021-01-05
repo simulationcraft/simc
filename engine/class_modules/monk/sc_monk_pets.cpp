@@ -212,25 +212,6 @@ struct pet_heal_t : public pet_action_base_t<heal_t>
 };
 
 // ==========================================================================
-// Monk Statues
-// ==========================================================================
-
-struct statue_t : public monk_pet_t
-{
-  statue_t( monk_t* owner, util::string_view n, pet_e pt, bool guardian = false )
-    : monk_pet_t( owner, n, pt, guardian, false )
-  {
-  }
-};
-
-struct jade_serpent_statue_t : public statue_t
-{
-  jade_serpent_statue_t( monk_t* owner, util::string_view n ) : statue_t( owner, n, PET_NONE, true )
-  {
-  }
-};
-
-// ==========================================================================
 // Storm Earth and Fire (SEF)
 // ==========================================================================
 
@@ -623,7 +604,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_tick_action_t : public sef_melee_attack_t
   {
-    sef_tick_action_t( const std::string& name, storm_earth_and_fire_pet_t* p, const spell_data_t* data )
+    sef_tick_action_t( util::string_view name, storm_earth_and_fire_pet_t* p, const spell_data_t* data )
       : sef_melee_attack_t( name, p, data )
     {
       aoe = -1;
@@ -639,7 +620,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
-      aoe = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      aoe = 1 + as<int>( p->o()->spec.fists_of_fury->effectN( 1 ).base_value() );
     }
   };
 
@@ -875,12 +856,12 @@ public:
 
   bool sticky_target;  // When enabled, SEF pets will stick to the target they have
 
-  struct active_actions_t
+  struct
   {
     action_t* rushing_jade_wind_sef = nullptr;
   } active_actions;
 
-  struct buffs_t
+  struct
   {
     buff_t* bok_proc_sef          = nullptr;
     buff_t* hit_combo_sef         = nullptr;
@@ -893,7 +874,8 @@ public:
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
       sticky_target( false ),
-      buff( buffs_t() )
+      active_actions(),
+      buff()
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -944,8 +926,8 @@ public:
     attacks.at( SEF_FIST_OF_THE_WHITE_TIGER )    = new sef_fist_of_the_white_tiger_t( this );
     attacks.at( SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
 
-    spells.at( sef_spell_idx( SEF_CHI_WAVE ) )                 = new sef_chi_wave_t( this );
-    spells.at( sef_spell_idx( SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
+    spells.at( sef_spell_index( SEF_CHI_WAVE ) )                 = new sef_chi_wave_t( this );
+    spells.at( sef_spell_index( SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
   }
 
   void init_action_list() override
@@ -1018,24 +1000,20 @@ public:
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
+    if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
+      buff.hit_combo_sef->trigger();
+    
     if ( ability >= SEF_SPELL_MIN )
     {
-      size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
-      assert( spells[ spell ] );
+      auto spell_index = sef_spell_index( ability );
+      assert( spells[ spell_index ] );
 
-      if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
-        buff.hit_combo_sef->trigger();
-
-      spells[ spell ]->source_action = source_action;
-      spells[ spell ]->execute();
+      spells[ spell_index ]->source_action = source_action;
+      spells[ spell_index ]->execute();
     }
     else
     {
       assert( attacks[ ability ] );
-
-      if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
-        buff.hit_combo_sef->trigger();
-
       attacks[ ability ]->source_action = source_action;
       attacks[ ability ]->execute();
     }
@@ -1201,24 +1179,20 @@ private:
     {
       double b = pet_melee_attack_t::bonus_da( s );
 
-      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
-
-      auto purify_amount = p->o()->buff.recent_purifies->value();
-      auto actual_damage = purify_amount * p->o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
+      auto purify_amount = o()->buff.recent_purifies->value();
+      auto actual_damage = purify_amount * o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
       b += actual_damage;
-      p->o()->sim->print_debug( "applying bonus purify damage (original: {}, reduced: {})", purify_amount,
-                                actual_damage );
+      o()->sim->print_debug( "applying bonus purify damage (original: {}, reduced: {})", purify_amount, actual_damage );
 
       return b;
     }
 
     double action_multiplier() const override
     {
-      double am       = pet_melee_attack_t::action_multiplier();
-      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+      double am = pet_melee_attack_t::action_multiplier();
 
-      if ( p->o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + p->o()->conduit.walk_with_the_ox.percent();
+      if ( o()->conduit.walk_with_the_ox->ok() )
+        am *= 1 + o()->conduit.walk_with_the_ox.percent();
 
       return am;
     }
@@ -1229,8 +1203,7 @@ private:
       // canceling the purify buff goes here so that in aoe all hits see the
       // purified damage that needs to be split. this occurs after all damage
       // has been dealt
-      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
-      p->o()->buff.recent_purifies->cancel();
+      o()->buff.recent_purifies->cancel();
     }
 
     void impact( action_state_t* s ) override
@@ -1432,13 +1405,13 @@ private:
   };
 
 public:
-  struct buffs_t
+  struct
   {
     buff_t* hit_combo_fm_ww = nullptr;
   } buff;
 
   fallen_monk_ww_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff()
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1543,9 +1516,8 @@ public:
 
   struct fallen_monk_fists_of_fury_t : public pet_melee_attack_t
   {
-    monk_t* owner;
     fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "fists_of_fury_fo", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
+      : pet_melee_attack_t( "fists_of_fury_fo", p, p->o()->passives.fallen_monk_fists_of_fury )
     {
       parse_options( options_str );
 
@@ -1609,7 +1581,7 @@ public:
       action_list_str += "/fists_of_fury";
     action_list_str += "/tiger_palm";
 
-    pet_t::init_action_list();
+    monk_pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -1623,7 +1595,7 @@ public:
     if ( name == "tiger_palm" )
       return new fallen_monk_tiger_palm_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return monk_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1659,7 +1631,7 @@ private:
   };
 
 public:
-  struct buffs_t
+  struct
   {
     buff_t* hit_combo_fm_brm = nullptr;
   } buff;
@@ -1983,35 +1955,33 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-  monk_t* p = this;
-
   if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
-    pets.xuen = new pets::xuen_pet_t( p );
+    pets.xuen = new pets::xuen_pet_t( this );
   }
 
   if ( spec.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
   {
-    pets.niuzao = new pets::niuzao_pet_t( p );
+    pets.niuzao = new pets::niuzao_pet_t( this );
   }
 
   if ( talent.invoke_chi_ji->ok() && ( find_action( "invoke_chiji" ) || find_action( "invoke_chiji_the_red_crane" ) ) )
   {
-    pets.chiji = new pets::chiji_pet_t( p );
+    pets.chiji = new pets::chiji_pet_t( this );
   }
 
   if ( spec.invoke_yulon->ok() && !talent.invoke_chi_ji->ok() &&
        ( find_action( "invoke_yulon" ) || find_action( "invoke_yulon_the_jade_serpent" ) ) )
   {
-    pets.yulon = new pets::yulon_pet_t( p );
+    pets.yulon = new pets::yulon_pet_t( this );
   }
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p, true, WEAPON_SWORD );
+    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", this, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p, true, WEAPON_MACE );
+    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
   }
 }
 
@@ -2082,19 +2052,17 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
 
-  // Start targeting logic from "owner" always
-  pets.sef[ SEF_EARTH ]->reset_targeting();
-  pets.sef[ SEF_EARTH ]->target        = target;
-  pets.sef[ SEF_EARTH ]->sticky_target = false;
-  retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
-  pets.sef[ SEF_EARTH ]->summon( duration );
+  auto summon_sef_pet = [ & ]( pets::storm_earth_and_fire_pet_t* pet ) {
+    // Start targeting logic from "owner" always
+    pet->reset_targeting();
+    pet->target        = target;
+    pet->sticky_target = false;
+    retarget_storm_earth_and_fire( pet, targets, n_targets );
+    pet->summon( duration );
+  };
 
-  // Start targeting logic from "owner" always
-  pets.sef[ SEF_FIRE ]->reset_targeting();
-  pets.sef[ SEF_FIRE ]->target        = target;
-  pets.sef[ SEF_FIRE ]->sticky_target = false;
-  retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
-  pets.sef[ SEF_FIRE ]->summon( duration );
+  summon_sef_pet( pets.sef[ SEF_EARTH ] );
+  summon_sef_pet( pets.sef[ SEF_FIRE ] );
 }
 
 // monk_t::retarget_storm_earth_and_fire_pets =======================================
