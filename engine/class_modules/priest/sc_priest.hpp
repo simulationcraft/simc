@@ -41,6 +41,7 @@ struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 struct eternal_call_to_the_void_t;
+struct unholy_transfusion_healing_t;
 }  // namespace spells
 namespace heals
 {
@@ -343,6 +344,7 @@ public:
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
+    propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
   } background_actions;
 
   // Items
@@ -539,6 +541,7 @@ public:
   void remove_wrathful_faerie_fermata();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
+  void trigger_unholy_transfusion_healing();
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -849,20 +852,29 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      // Wrathful Faerie works for any direct attacks by anyone, bugging this for now
-      // TODO: maybe rework this to just be a buff that gives insanity every tick instead?
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/777
-      if ( priest().specialization() == PRIEST_SHADOW &&
-           ( s->result_type == result_amount_type::DMG_DIRECT || priest().bugs ) && s->result_amount > 0 )
+      if ( s->result_amount > 0 )
       {
         const priest_td_t* td = find_td( s->target );
-        if ( td && td->buffs.wrathful_faerie->check() )
+        // Wrathful Faerie works for any direct attacks by anyone, bugging this for now
+        // TODO: maybe rework this to just be a buff that gives insanity every tick instead?
+        // https://github.com/SimCMinMax/WoW-BugTracker/issues/777
+        if ( priest().specialization() == PRIEST_SHADOW &&
+             ( s->result_type == result_amount_type::DMG_DIRECT || priest().bugs ) )
         {
-          priest().trigger_wrathful_faerie();
+          if ( td && td->buffs.wrathful_faerie->check() )
+          {
+            priest().trigger_wrathful_faerie();
+          }
+          if ( td && td->buffs.wrathful_faerie_fermata->check() )
+          {
+            priest().trigger_wrathful_faerie_fermata();
+          }
         }
-        if ( td && td->buffs.wrathful_faerie_fermata->check() )
+
+        // Unholy Transfusion leech healing
+        if ( td && td->dots.unholy_transfusion->is_ticking() )
         {
-          priest().trigger_wrathful_faerie_fermata();
+          priest().trigger_unholy_transfusion_healing();
         }
       }
     }

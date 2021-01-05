@@ -245,12 +245,12 @@ struct smite_t final : public priest_spell_t
       double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
       if ( rng().roll( hf_proc_chance ) )
       {
-        sim->print_debug( "{} reset holy fire cooldown, using smite. ", priest() );
+        sim->print_debug( "{} reset holy fire cooldown, using smite.", priest() );
         priest().cooldowns.holy_fire->reset( true );
       }
     }
 
-    sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent. ", priest() );
+    sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent.", priest() );
     auto cooldown_base_reduction = -timespan_t::from_seconds( holy_word_chastise->effectN( 2 ).base_value() );
     if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
     {
@@ -269,7 +269,7 @@ struct smite_t final : public priest_spell_t
     else if ( s->result_amount > 0 )
     {
       holy_word_chastise_cooldown->adjust( cooldown_base_reduction );
-      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis", priest(),
+      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis.", priest(),
                         cooldown_base_reduction );
     }
   }
@@ -431,6 +431,33 @@ struct unholy_transfusion_t final : public priest_spell_t
   }
 };
 
+struct unholy_transfusion_healing_t final : public priest_heal_t
+{
+  bool ignore_healing;
+
+  unholy_transfusion_healing_t( priest_t& p )
+    : priest_heal_t( "unholy_transfusion_healing", p,
+                     p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() ),
+      ignore_healing( p.options.priest_ignore_healing )
+  {
+    background             = true;
+    harmful                = false;
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+
+    // TODO: Confirm if this leech healing can proc trinkets/etc
+    callbacks = false;
+  }
+
+  void trigger()
+  {
+    if ( ignore_healing )
+      return;
+
+    execute();
+  }
+};
+
+// TODO: trigger group aoe heal id 347788
 struct unholy_nova_t final : public priest_spell_t
 {
   propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
@@ -1409,6 +1436,11 @@ void priest_t::create_pets()
   }
 }
 
+void priest_t::trigger_unholy_transfusion_healing()
+{
+  background_actions.unholy_transfusion_healing->trigger();
+}
+
 void priest_t::trigger_wrathful_faerie()
 {
   background_actions.wrathful_faerie->trigger();
@@ -1586,6 +1618,8 @@ void priest_t::init_background_actions()
   background_actions.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
 
   background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
+
+  background_actions.unholy_transfusion_healing = new actions::spells::unholy_transfusion_healing_t( *this );
 
   init_background_actions_shadow();
 }
