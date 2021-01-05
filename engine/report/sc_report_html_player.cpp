@@ -3582,109 +3582,86 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content flexwrap\">\n";
 
-  if ( cd.dps.mean() > 0 || cd.hps.mean() > 0 || cd.aps.mean() > 0 )
+  if ( cd.dps.mean() > 0 )
   {
-    // Table for DPS, HPS, APS
+    // Table for DPS
     os << "<table class=\"sc\">\n"
        << "<tr>\n";
-    // First, make the header row
-    // Damage
-    if ( cd.dps.mean() > 0 )
-    {
-      os << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
-         << "<th class=\"help\" data-help=\"#help-dpse\">DPS(e)</th>\n"
-         << "<th class=\"help\" data-help=\"#help-error\">DPS Error</th>\n"
-         << "<th class=\"help\" data-help=\"#help-range\">DPS Range</th>\n"
-         << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th>\n";
-    }
-    // spacer
-    if ( cd.hps.mean() > 0 && cd.dps.mean() > 0 )
-      os << "<th>&#160;</th>\n";
-    // Heal
-    if ( cd.hps.mean() > 0 )
-    {
-      os << "<th class=\"help\" data-help=\"#help-hps\">HPS</th>\n"
-         << "<th class=\"help\" data-help=\"#help-hpse\">HPS(e)</th>\n"
-         << "<th class=\"help\" data-help=\"#help-error\">HPS Error</th>\n"
-         << "<th class=\"help\" data-help=\"#help-range\">HPS Range</th>\n"
-         << "<th class=\"help\" data-help=\"#help-hpr\">HPR</th>\n";
-    }
-    // spacer
-    if ( cd.hps.mean() > 0 && cd.aps.mean() > 0 )
-      os << "<th>&#160;</th>\n";
-    // Absorb
-    if ( cd.aps.mean() > 0 )
-    {
-      os << "<th class=\"help\" data-help=\"#help-aps\">APS</th>\n"
-         << "<th class=\"help\" data-help=\"#help-error\">APS Error</th>\n"
-         << "<th class=\"help\" data-help=\"#help-range\">APS Range</th>\n"
-         << "<th class=\"help\" data-help=\"#help-hpr\">APR</th>\n";
-    }
-    // end row, begin new row
+    os << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
+       << "<th class=\"help\" data-help=\"#help-dpse\">DPS(e)</th>\n"
+       << "<th class=\"help\" data-help=\"#help-error\">DPS Error</th>\n"
+       << "<th class=\"help\" data-help=\"#help-range\">DPS Range</th>\n"
+       << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th>\n";
     os << "</tr>\n"
        << "<tr>\n";
 
-    // Now do the data row
-    if ( cd.dps.mean() > 0 )
-    {
-      double range = ( p.collected_data.dps.percentile( 0.5 + sim.confidence / 2 ) -
-                       p.collected_data.dps.percentile( 0.5 - sim.confidence / 2 ) );
-      double dps_error = sim_t::distribution_mean_error( sim, p.collected_data.dps );
-      os.printf( "<td>%.1f</td>\n"
-                 "<td>%.1f</td>\n"
-                 "<td>%.1f / %.3f%%</td>\n"
-                 "<td>%.1f / %.1f%%</td>\n"
-                 "<td>%.1f</td>\n",
-                 cd.dps.mean(),
-                 cd.dpse.mean(),
-                 dps_error,
-                 cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0,
-                 range,
-                 cd.dps.mean() ? range / cd.dps.mean() * 100.0 : 0,
-                 p.dpr );
-    }
-    // Spacer
-    if ( cd.dps.mean() > 0 && cd.hps.mean() > 0 )
-      os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-    // Heal
-    if ( cd.hps.mean() > 0 )
-    {
-      double range = ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) -
-                       cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
-      double hps_error = sim_t::distribution_mean_error( sim, p.collected_data.hps );
-      os.printf( "<td>%.1f</td>\n"
-                 "<td>%.1f</td>\n"
-                 "<td>%.2f / %.2f%%</td>\n"
-                 "<td>%.0f / %.1f%%</td>\n"
-                 "<td>%.1f</td>\n",
-                 cd.hps.mean(),
-                 cd.hpse.mean(),
-                 hps_error,
-                 cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0,
-                 range,
-                 cd.hps.mean() ? range / cd.hps.mean() * 100.0 : 0,
-                 p.hpr );
-    }
-    // Spacer
-    if ( cd.aps.mean() > 0 && cd.hps.mean() > 0 )
-      os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-    // Absorb
-    if ( cd.aps.mean() > 0 )
-    {
-      double range = ( cd.aps.percentile( 0.5 + sim.confidence / 2 ) -
-                       cd.aps.percentile( 0.5 - sim.confidence / 2 ) );
-      double aps_error = sim_t::distribution_mean_error( sim, p.collected_data.aps );
-      os.printf( "<td>%.1f</td>\n"
-                 "<td>%.2f / %.2f%%</td>\n"
-                 "<td>%.0f / %.1f%%</td>\n"
-                 "<td>%.1f</td>\n",
-                 cd.aps.mean(),
-                 aps_error,
-                 cd.aps.mean() ? aps_error * 100 / cd.aps.mean() : 0,
-                 range,
-                 cd.aps.mean() ? range / cd.aps.mean() * 100.0 : 0,
-                 p.hpr );
-    }
+    double dps_range =
+        ( cd.dps.percentile( 0.5 + sim.confidence / 2 ) - cd.dps.percentile( 0.5 - sim.confidence / 2 ) );
+    double dps_error = sim_t::distribution_mean_error( sim, cd.dps );
+    os.printf(
+        "<td>%.1f</td>\n"
+        "<td>%.1f</td>\n"
+        "<td>%.1f / %.3f%%</td>\n"
+        "<td>%.1f / %.1f%%</td>\n"
+        "<td>%.1f</td>\n",
+        cd.dps.mean(), cd.dpse.mean(), dps_error, cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0, dps_range,
+        cd.dps.mean() ? dps_range / cd.dps.mean() * 100.0 : 0, p.dpr );
+    // close table
+    os << "</tr>\n"
+       << "</table>\n";
+  }
+
+  // Heal
+  if ( cd.hps.mean() > 0 )
+  {
+    // Table for HPS
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n";
+    os << "<th class=\"help\" data-help=\"#help-hps\">HPS</th>\n"
+       << "<th class=\"help\" data-help=\"#help-hpse\">HPS(e)</th>\n"
+       << "<th class=\"help\" data-help=\"#help-error\">HPS Error</th>\n"
+       << "<th class=\"help\" data-help=\"#help-range\">HPS Range</th>\n"
+       << "<th class=\"help\" data-help=\"#help-hpr\">HPR</th>\n";
+    os << "</tr>\n"
+       << "<tr>\n";
+    double hps_range =
+        ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) - cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
+    double hps_error = sim_t::distribution_mean_error( sim, cd.hps );
+    os.printf(
+        "<td>%.1f</td>\n"
+        "<td>%.1f</td>\n"
+        "<td>%.1f / %.3f%%</td>\n"
+        "<td>%.1f / %.1f%%</td>\n"
+        "<td>%.1f</td>\n",
+        cd.hps.mean(), cd.hpse.mean(), hps_error, cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0, hps_range,
+        cd.hps.mean() ? hps_range / cd.hps.mean() * 100.0 : 0, p.hpr );
+    // close table
+    os << "</tr>\n"
+       << "</table>\n";
+  }
+
+  // Absorb
+  if ( cd.aps.mean() > 0 )
+  {
+    // Table for APS
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n";
+    os << "<th class=\"help\" data-help=\"#help-aps\">APS</th>\n"
+       << "<th class=\"help\" data-help=\"#help-error\">APS Error</th>\n"
+       << "<th class=\"help\" data-help=\"#help-range\">APS Range</th>\n"
+       << "<th class=\"help\" data-help=\"#help-hpr\">APR</th>\n";
+    os << "</tr>\n"
+       << "<tr>\n";
+    double aps_range =
+        ( cd.aps.percentile( 0.5 + sim.confidence / 2 ) - cd.aps.percentile( 0.5 - sim.confidence / 2 ) );
+    double aps_error = sim_t::distribution_mean_error( sim, cd.aps );
+    os.printf(
+        "<td>%.1f</td>\n"
+        "<td>%.1f / %.3f%%</td>\n"
+        "<td>%.1f / %.1f%%</td>\n"
+        "<td>%.1f</td>\n",
+        cd.aps.mean(), aps_error, cd.aps.mean() ? aps_error * 100 / cd.aps.mean() : 0, aps_range,
+        cd.aps.mean() ? aps_range / cd.aps.mean() * 100.0 : 0, p.hpr );
     // close table
     os << "</tr>\n"
        << "</table>\n";
