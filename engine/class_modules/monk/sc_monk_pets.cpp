@@ -7,15 +7,14 @@
 
 #include "simulationcraft.hpp"
 
-namespace monk {
-
+namespace monk
+{
 // ==========================================================================
 // Monk Pets & Statues
 // ==========================================================================
 
 namespace pets
 {
-
 // ==========================================================================
 // Base Monk Pet Action
 // ==========================================================================
@@ -101,10 +100,9 @@ struct pet_action_base_t : public BASE
 // Base Monk Pet Melee Attack
 // ==========================================================================
 
-  struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
+struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
-  pet_melee_attack_t( util::string_view n, monk_pet_t* p,
-                      const spell_data_t* data = spell_data_t::nil() )
+  pet_melee_attack_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
     : base_t( n, p, data )
   {
   }
@@ -207,11 +205,11 @@ struct pet_spell_t : public pet_action_base_t<spell_t>
 
 struct pet_heal_t : public pet_action_base_t<heal_t>
 {
-  pet_heal_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() ) : base_t( n, p, data )
+  pet_heal_t( util::string_view n, monk_pet_t* p, const spell_data_t* data = spell_data_t::nil() )
+    : base_t( n, p, data )
   {
   }
 };
-
 
 // ==========================================================================
 // Monk Statues
@@ -388,11 +386,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( this->o()->conduit.coordinated_offensive->ok() && this->p()->sticky_target )
       {
-         if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-           state->da_multiplier += this->o()->conduit.coordinated_offensive.percent();
+        if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
+          state->da_multiplier += this->o()->conduit.coordinated_offensive.percent();
 
-         if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-           state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
+        if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
+          state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
       }
     }
   };
@@ -504,8 +502,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       if ( time_to_execute > timespan_t::zero() && ( player->channeling || player->executing ) )
       {
         sim->print_debug( "{} Executing {} during melee ({}).", *player,
-                                 player->executing ? *player->executing : *player->channeling,
-                                 weapon->slot );
+                          player->executing ? *player->executing : *player->channeling, weapon->slot );
 
         schedule_execute();
       }
@@ -518,8 +515,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( storm_earth_and_fire_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( storm_earth_and_fire_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
@@ -840,7 +836,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t* player )
       : sef_spell_t( "crackling_jade_lightning", player, player->o()->spec.crackling_jade_lightning )
     {
-      tick_may_crit         = true;
+      tick_may_crit = true;
       channeled = tick_zero = true;
       hasted_ticks          = false;
       interrupt_auto_attack = true;
@@ -863,7 +859,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       double c = sef_spell_t::cost_per_tick( resource );
 
-     c = 0;
+      c = 0;
 
       return c;
     }
@@ -892,8 +888,7 @@ public:
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
 
-  storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield,
-                              weapon_e weapon_type )
+  storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
     : monk_pet_t( owner, name, PET_NONE, true, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
@@ -1009,7 +1004,7 @@ public:
                                      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                      ->set_duration( sim->expected_iteration_time * 2 )
                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
-                                     ->set_tick_callback( [this]( buff_t* d, int, timespan_t ) {
+                                     ->set_tick_callback( [ this ]( buff_t* d, int, timespan_t ) {
                                        if ( o()->buff.rushing_jade_wind->up() )
                                          active_actions.rushing_jade_wind_sef->execute();
                                        else
@@ -1101,7 +1096,7 @@ private:
       dynamic_tick_action = true;
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();              // we're done after 25 seconds
+      cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();                // we're done after 25 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -1111,12 +1106,11 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( xuen_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( xuen_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -1185,13 +1179,12 @@ private:
 
   struct stomp_t : public pet_melee_attack_t
   {
-    stomp_t( niuzao_pet_t* p, util::string_view options_str )
-      : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
+    stomp_t( niuzao_pet_t* p, util::string_view options_str ) : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
     {
       parse_options( options_str );
 
-      aoe          = -1;
-      may_crit     = true;
+      aoe      = -1;
+      may_crit = true;
       // technically the base damage doesn't split. practically, the base damage
       // is ass and totally irrelevant. the r2 hot trub effect (which does
       // split) is by far the dominating factor in any aoe sim.
@@ -1250,12 +1243,11 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( niuzao_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( niuzao_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -1316,18 +1308,17 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( chiji_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( chiji_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
 
 public:
-  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
+  chiji_pet_t( monk_t* owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI, true, true )
   {
     npc_id                      = 166949;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1396,7 +1387,7 @@ private:
     // Copy melee code from Storm, Earth and Fire
     double composite_attack_power() const override
     {
-      double ap = pet_melee_t::composite_attack_power();
+      double ap  = pet_melee_t::composite_attack_power();
       auto owner = o();
 
       if ( owner->main_hand_weapon.group() == WEAPON_2H )
@@ -1431,12 +1422,11 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_ww_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -1444,11 +1434,11 @@ private:
 public:
   struct buffs_t
   {
-    buff_t* hit_combo_fm_ww     = nullptr;
+    buff_t* hit_combo_fm_ww = nullptr;
   } buff;
 
-  fallen_monk_ww_pet_t( monk_t* owner ) :
-      monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
+  fallen_monk_ww_pet_t( monk_t* owner )
+    : monk_pet_t( owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1458,10 +1448,10 @@ public:
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     off_hand_weapon.type       = WEAPON_1H;
-    off_hand_weapon.min_dmg     = dbc->spell_scaling( o()->type, level() );
-    off_hand_weapon.max_dmg     = dbc->spell_scaling( o()->type, level() );
-    off_hand_weapon.damage      = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
-    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2 );
+    off_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.damage     = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     switch ( owner->specialization() )
     {
@@ -1504,9 +1494,9 @@ public:
     monk_pet_t::create_buffs();
 
     buff.hit_combo_fm_ww = make_buff( this, "hit_combo_fo_ww", o()->passives.hit_combo )
-                           ->set_default_value_from_effect( 1 )
-                           ->set_quiet( true )
-                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               ->set_default_value_from_effect( 1 )
+                               ->set_quiet( true )
+                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   struct fallen_monk_fists_of_fury_tick_t : public pet_melee_attack_t
@@ -1616,7 +1606,7 @@ public:
     action_list_str = "auto_attack";
     // Only cast Fists of Fury for Windwalker specialization
     if ( owner->specialization() == MONK_WINDWALKER )
-        action_list_str += "/fists_of_fury";
+      action_list_str += "/fists_of_fury";
     action_list_str += "/tiger_palm";
 
     pet_t::init_action_list();
@@ -1659,12 +1649,11 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str )
-      : pet_auto_attack_t( player )
+    auto_attack_t( fallen_monk_brm_pet_t* player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
-      player->main_hand_attack                    = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     }
   };
@@ -1672,7 +1661,7 @@ private:
 public:
   struct buffs_t
   {
-    buff_t* hit_combo_fm_brm    = nullptr;
+    buff_t* hit_combo_fm_brm = nullptr;
   } buff;
 
   fallen_monk_brm_pet_t( monk_t* owner )
@@ -1728,7 +1717,7 @@ public:
         cooldown->duration = timespan_t::from_seconds( 6.0 );
       else
         cooldown->duration = timespan_t::from_seconds( 9.0 );
-      trigger_gcd             = timespan_t::from_seconds( 1.5 );
+      trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
 
     // For more than 5 targets damage is based on a Sqrt(5/x)
@@ -1754,10 +1743,10 @@ public:
         am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
       if ( o()->conduit.scalding_brew->ok() )
-        {
-          if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
-            am *= 1 + o()->conduit.scalding_brew.percent();
-        }
+      {
+        if ( o()->get_target_data( player->target )->dots.breath_of_fire->is_ticking() )
+          am *= 1 + o()->conduit.scalding_brew.percent();
+      }
 
       return am;
     }
@@ -1781,7 +1770,7 @@ public:
       {
         background    = true;
         tick_may_crit = may_crit = true;
-        hasted_ticks  = false;
+        hasted_ticks             = false;
       }
 
       // Initial damage does Square Root damage
@@ -1834,7 +1823,7 @@ public:
       : pet_spell_t( "clash_fo", p, p->o()->passives.fallen_monk_clash )
     {
       parse_options( options_str );
-      gcd_type           = gcd_haste_type::NONE;
+      gcd_type = gcd_haste_type::NONE;
 
       cooldown->duration = timespan_t::from_seconds( 9 );
       trigger_gcd        = timespan_t::from_seconds( 2 );
@@ -1866,9 +1855,9 @@ public:
     monk_pet_t::create_buffs();
 
     buff.hit_combo_fm_brm = make_buff( this, "hit_combo_fo_brm", o()->passives.hit_combo )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_quiet( true )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                ->set_default_value_from_effect( 1 )
+                                ->set_quiet( true )
+                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -1895,8 +1884,7 @@ public:
 struct fallen_monk_mw_pet_t : public monk_pet_t
 {
 public:
-  fallen_monk_mw_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+  fallen_monk_mw_pet_t( monk_t* owner ) : monk_pet_t( owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
   {
     npc_id                      = 168074;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1945,7 +1933,7 @@ public:
     {
       parse_options( options_str );
 
-      may_miss = false;
+      may_miss  = false;
       channeled = tick_zero = true;
       interrupt_auto_attack = true;
 
@@ -2030,29 +2018,29 @@ void monk_t::create_pets()
 void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability )
 {
   if ( !spec.storm_earth_and_fire->ok() )
-    {
-      return;
-    }
+  {
+    return;
+  }
 
-    if ( sef_ability == SEF_NONE )
-    {
-      return;
-    }
+  if ( sef_ability == SEF_NONE )
+  {
+    return;
+  }
 
-    if ( !buff.storm_earth_and_fire->up() )
-    {
-      return;
-    }
+  if ( !buff.storm_earth_and_fire->up() )
+  {
+    return;
+  }
 
-    pets.sef[ SEF_EARTH ]->trigger_attack( sef_ability, a );
-    pets.sef[ SEF_FIRE ]->trigger_attack( sef_ability, a );
-    // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
-    // Strike triggering abilities
-    if ( !pets.sef[ SEF_EARTH ]->sticky_target &&
-         ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || sef_ability == SEF_RISING_SUN_KICK ) )
-    {
-      retarget_storm_earth_and_fire_pets();
-    }
+  pets.sef[ SEF_EARTH ]->trigger_attack( sef_ability, a );
+  pets.sef[ SEF_FIRE ]->trigger_attack( sef_ability, a );
+  // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
+  // Strike triggering abilities
+  if ( !pets.sef[ SEF_EARTH ]->sticky_target &&
+       ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || sef_ability == SEF_RISING_SUN_KICK ) )
+  {
+    retarget_storm_earth_and_fire_pets();
+  }
 }
 
 void monk_t::storm_earth_and_fire_fixate( player_t* target )
@@ -2096,14 +2084,14 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 
   // Start targeting logic from "owner" always
   pets.sef[ SEF_EARTH ]->reset_targeting();
-  pets.sef[ SEF_EARTH ]->target = target;
+  pets.sef[ SEF_EARTH ]->target        = target;
   pets.sef[ SEF_EARTH ]->sticky_target = false;
   retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
   pets.sef[ SEF_EARTH ]->summon( duration );
 
   // Start targeting logic from "owner" always
   pets.sef[ SEF_FIRE ]->reset_targeting();
-  pets.sef[ SEF_FIRE ]->target = target;
+  pets.sef[ SEF_FIRE ]->target        = target;
   pets.sef[ SEF_FIRE ]->sticky_target = false;
   retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
   pets.sef[ SEF_FIRE ]->summon( duration );
@@ -2123,7 +2111,6 @@ void monk_t::retarget_storm_earth_and_fire_pets() const
   retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
   retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
 }
-
 
 // Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
 // (i.e., die).
