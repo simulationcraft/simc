@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "dbc.hpp"
+#include "dbc/item_runeforge.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
 #include "covenant_data.hpp"
@@ -317,7 +318,7 @@ struct expr_data_map_t
   expr_data_e type;
 };
 
-static constexpr std::array<expr_data_map_t, 12> expr_map { {
+static constexpr std::array<expr_data_map_t, 13> expr_map { {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },
@@ -329,7 +330,8 @@ static constexpr std::array<expr_data_map_t, 12> expr_map { {
   { "azerite", DATA_AZERITE_SPELL },
   { "covenant_spell", DATA_COVENANT_SPELL },
   { "soulbind_spell", DATA_SOULBIND_SPELL },
-  { "conduit_spell", DATA_CONDUIT_SPELL }
+  { "conduit_spell", DATA_CONDUIT_SPELL },
+  { "runeforge_spell", DATA_RUNEFORGE_SPELL }
 } };
 
 expr_data_e parse_data_type( util::string_view name )
@@ -540,6 +542,12 @@ struct spell_list_expr_t : public spell_data_expr_t
       case DATA_CONDUIT_SPELL:
         range::for_each( conduit_entry_t::data( dbc.ptr ),
             [this]( const conduit_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
+        break;
+      case DATA_RUNEFORGE_SPELL:
+        range::for_each( runeforge_legendary_entry_t::data( dbc.ptr ),
+            [this]( const runeforge_legendary_entry_t& e ) {
               result_spell_list.push_back( e.spell_id );
         } );
         break;

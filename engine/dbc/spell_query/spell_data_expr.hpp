@@ -27,7 +27,8 @@ enum expr_data_e : int
   DATA_AZERITE_SPELL,
   DATA_COVENANT_SPELL,
   DATA_SOULBIND_SPELL,
-  DATA_CONDUIT_SPELL
+  DATA_CONDUIT_SPELL,
+  DATA_RUNEFORGE_SPELL
 };
 
 struct spell_data_expr_t
