@@ -440,9 +440,8 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
                      p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() ),
       ignore_healing( p.options.priest_ignore_healing )
   {
-    background             = true;
-    harmful                = false;
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    background = true;
+    harmful    = false;
 
     // TODO: Confirm if this leech healing can proc trinkets/etc
     callbacks = false;
