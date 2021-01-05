@@ -1,10 +1,11 @@
 // ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com
+// Priest Definitions Sim File
+// Contact: https://github.com/orgs/simulationcraft/teams/priest/members
+// Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 //
 // This file contains all definitions for priests. Implementations should
-// be done on sc_priest.cpp if they are shared by more than one spec or
+// be done in sc_priest.cpp if they are shared by more than one spec or
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
@@ -164,7 +165,7 @@ public:
     // T30
     const spell_data_t* power_word_solace;
     // T40
-    const spell_data_t* sins_of_the_many;  // assumes 0 atonment targets
+    const spell_data_t* sins_of_the_many;  // assumes 0 atonement targets
     const spell_data_t* shadow_covenant;   // healing not fully implemented, only dmg/healing buff
     // T45
     const spell_data_t* purge_the_wicked;
