@@ -363,10 +363,9 @@ public:
   // Options
   struct
   {
-    bool autoUnshift                 = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time           = true;
-    bool priest_ignore_healing       = false;  // Remove Healing calculation codes
-    int priest_set_voidform_duration = 0;      // Voidform will always have this duration
+    bool autoUnshift           = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time     = true;
+    bool priest_ignore_healing = false;  // Remove Healing calculation codes
 
     // Default param to set if you should cast Power Infusion on yourself
     bool priest_self_power_infusion = true;
@@ -389,7 +388,7 @@ public:
     int priest_ascended_eruption_additional_targets = 0;
 
     // The amount of allies to assume for Cauterizing Shadows healing
-    int cauterizing_shadows_allies = 3;
+    int priest_cauterizing_shadows_allies = 3;
   } options;
 
   // Legendaries

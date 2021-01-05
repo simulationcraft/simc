@@ -667,7 +667,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     // Use a simple option to dictate how many "allies" this will heal. All healing will go to the actor
-    double amount_to_heal = priest().options.cauterizing_shadows_allies * priest().intellect() *
+    double amount_to_heal = priest().options.priest_cauterizing_shadows_allies * priest().intellect() *
                             priest().specs.cauterizing_shadows_health->effectN( 1 ).sp_coeff();
     priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.cauterizing_shadows_health, this );
   }

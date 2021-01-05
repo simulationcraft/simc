@@ -1742,7 +1742,6 @@ void priest_t::create_options()
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
-  add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
   add_option( opt_bool( "priest_mindgames_healing_reversal", options.priest_mindgames_healing_reversal ) );
@@ -1751,7 +1750,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
   add_option(
       opt_int( "priest_ascended_eruption_additional_targets", options.priest_ascended_eruption_additional_targets ) );
-  add_option( opt_int( "cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
+  add_option( opt_int( "priest_cauterizing_shadows_allies", options.priest_cauterizing_shadows_allies ) );
 }
 
 std::string priest_t::create_profile( save_e type )
