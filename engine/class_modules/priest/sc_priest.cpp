@@ -439,7 +439,7 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
   unholy_transfusion_healing_t( priest_t& p )
     : priest_heal_t( "unholy_transfusion_healing", p,
                      p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() ),
-      ignore_healing( p.options.priest_ignore_healing )
+      ignore_healing( p.options.ignore_healing )
   {
     background = true;
     harmful    = false;
