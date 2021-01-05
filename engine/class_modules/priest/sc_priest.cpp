@@ -8,6 +8,7 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 #include "sc_enums.hpp"
+#include "sim/sc_option.hpp"
 #include "tcb/span.hpp"
 
 #include "simulationcraft.hpp"
@@ -299,7 +300,7 @@ struct power_infusion_t final : public priest_spell_t
 
     // Adjust the cooldown if using the conduit and not casting PI on yourself
     if ( priest().conduits.power_unto_others->ok() &&
-         ( priest().legendary.twins_of_the_sun_priestess->ok() || !priest().options.priest_self_power_infusion ) )
+         ( priest().legendary.twins_of_the_sun_priestess->ok() || !priest().options.self_power_infusion ) )
     {
       cooldown->duration -= timespan_t::from_seconds( priest().conduits.power_unto_others.value() );
     }
@@ -310,7 +311,7 @@ struct power_infusion_t final : public priest_spell_t
     priest_spell_t::execute();
 
     // Trigger PI on the actor only if casting on itself or having the legendary
-    if ( priest().options.priest_self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
+    if ( priest().options.self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
       player->buffs.power_infusion->trigger();
   }
 };
@@ -517,7 +518,7 @@ struct mindgames_t final : public priest_spell_t
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
-      ignore_healing( p.options.priest_ignore_healing ),
+      ignore_healing( p.options.ignore_healing ),
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
   {
     parse_options( options_str );
@@ -528,12 +529,12 @@ struct mindgames_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
     }
-    if ( priest().options.priest_mindgames_healing_reversal )
+    if ( priest().options.mindgames_healing_reversal )
     {
       child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
       add_child( child_mindgames_healing_reversal );
     }
-    if ( priest().options.priest_mindgames_damage_reversal )
+    if ( priest().options.mindgames_damage_reversal )
     {
       child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
       add_child( child_mindgames_damage_reversal );
@@ -616,7 +617,7 @@ struct ascended_nova_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.boon_of_the_ascended->check() || !priest().options.priest_use_ascended_nova )
+    if ( !priest().buffs.boon_of_the_ascended->check() || !priest().options.use_ascended_nova )
     {
       return false;
     }
@@ -712,8 +713,8 @@ struct ascended_eruption_t final : public priest_spell_t
     double cam  = priest_spell_t::composite_aoe_multiplier( state );
     int targets = state->n_targets;
     sim->print_debug( "{} {} sets damage multiplier as if it hit an additional {} targets.", *player, *this,
-                      priest().options.priest_ascended_eruption_additional_targets );
-    targets += priest().options.priest_ascended_eruption_additional_targets;
+                      priest().options.ascended_eruption_additional_targets );
+    targets += priest().options.ascended_eruption_additional_targets;
     return cam / std::sqrt( targets );
   }
 };
@@ -892,7 +893,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    if ( priest().options.priest_use_ascended_eruption )
+    if ( priest().options.use_ascended_eruption )
     {
       priest().background_actions.ascended_eruption->trigger_eruption( expiration_stacks );
     }
@@ -1191,7 +1192,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
     {
       if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
       {
-        return expr_t::create_constant( "self_power_infusion", options.priest_self_power_infusion );
+        return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
       }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
@@ -1740,18 +1741,30 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_bool( "autounshift", options.autoUnshift ) );
-  add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
-  add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
-  add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
-  add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
-  add_option( opt_bool( "priest_mindgames_healing_reversal", options.priest_mindgames_healing_reversal ) );
-  add_option( opt_bool( "priest_mindgames_damage_reversal", options.priest_mindgames_damage_reversal ) );
-  add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
-  add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
+  add_option( opt_deprecated( "autounshift", "priest.autounshift" ) );
+  add_option( opt_deprecated( "priest_fixed_time", "priest.fixed_time" ) );
+  add_option( opt_deprecated( "priest_ignore_healing", "priest.ignore_healing" ) );
+  add_option( opt_deprecated( "priest_use_ascended_nova", "priest.use_ascended_nova" ) );
+  add_option( opt_deprecated( "priest_use_ascended_eruption", "priest.use_ascended_eruption" ) );
+  add_option( opt_deprecated( "priest_mindgames_healing_reversal", "priest.mindgames_healing_reversal" ) );
+  add_option( opt_deprecated( "priest_mindgames_damage_reversal", "priest.mindgames_damage_reversal" ) );
+  add_option( opt_deprecated( "priest_self_power_infusion", "priest.self_power_infusion" ) );
+  add_option( opt_deprecated( "priest_self_benevolent_faerie", "priest.self_benevolent_faerie" ) );
   add_option(
-      opt_int( "priest_ascended_eruption_additional_targets", options.priest_ascended_eruption_additional_targets ) );
-  add_option( opt_int( "priest_cauterizing_shadows_allies", options.priest_cauterizing_shadows_allies ) );
+      opt_deprecated( "priest_ascended_eruption_additional_targets", "priest.ascended_eruption_additional_targets" ) );
+  add_option( opt_deprecated( "priest_cauterizing_shadows_allies", "priest.cauterizing_shadows_allies" ) );
+
+  add_option( opt_bool( "priest.autounshift", options.autoUnshift ) );
+  add_option( opt_bool( "priest.fixed_time", options.fixed_time ) );
+  add_option( opt_bool( "priest.ignore_healing", options.ignore_healing ) );
+  add_option( opt_bool( "priest.use_ascended_nova", options.use_ascended_nova ) );
+  add_option( opt_bool( "priest.use_ascended_eruption", options.use_ascended_eruption ) );
+  add_option( opt_bool( "priest.mindgames_healing_reversal", options.mindgames_healing_reversal ) );
+  add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
+  add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
+  add_option( opt_bool( "priest.self_benevolent_faerie", options.self_benevolent_faerie ) );
+  add_option( opt_int( "priest.ascended_eruption_additional_targets", options.ascended_eruption_additional_targets ) );
+  add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -1765,9 +1778,9 @@ std::string priest_t::create_profile( save_e type )
       profile_str += fmt::format( "autounshift={}\n", options.autoUnshift );
     }
 
-    if ( !options.priest_fixed_time )
+    if ( !options.fixed_time )
     {
-      profile_str += fmt::format( "priest_fixed_time={}\n", options.priest_fixed_time );
+      profile_str += fmt::format( "priest_fixed_time={}\n", options.fixed_time );
     }
   }
 
