@@ -849,7 +849,6 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
-
 struct devouring_plague_dot_state_t : public action_state_t
 {
   double rolling_multiplier;
@@ -957,6 +956,13 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().trigger_shadowy_apparitions( s );
     }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
+
+    trigger_heal( d->state );
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
