@@ -497,7 +497,10 @@ void collect_aps( const stats_t* stats, double& caps, double& capspct )
   capspct += stats->portion_amount;
 
   range::for_each( stats->children, [&]( const stats_t* s ) {
-    collect_aps( s, caps, capspct );
+    if (stats->type == s -> type)
+    {
+      collect_aps( s, caps, capspct );
+    }
   } );
 }
 
