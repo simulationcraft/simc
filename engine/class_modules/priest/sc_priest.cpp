@@ -1775,12 +1775,12 @@ std::string priest_t::create_profile( save_e type )
   {
     if ( !options.autoUnshift )
     {
-      profile_str += fmt::format( "autounshift={}\n", options.autoUnshift );
+      profile_str += fmt::format( "priest.autounshift={}\n", options.autoUnshift );
     }
 
     if ( !options.fixed_time )
     {
-      profile_str += fmt::format( "priest_fixed_time={}\n", options.fixed_time );
+      profile_str += fmt::format( "priest.fixed_time={}\n", options.fixed_time );
     }
   }
 
