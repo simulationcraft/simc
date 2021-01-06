@@ -457,13 +457,35 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
   }
 };
 
-// TODO: trigger group aoe heal id 347788
+struct unholy_nova_healing_t final : public priest_heal_t
+{
+  unholy_nova_healing_t( priest_t& p )
+    : priest_heal_t( "unholy_nova_healing", p, p.covenant.unholy_nova->effectN( 1 ).trigger() )
+  {
+    background = true;
+    harmful    = false;
+    aoe        = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // Should only heal allies/pets and not enemies, even if you target an enemy
+    if ( s->target->is_enemy() )
+      return;
+
+    priest_heal_t::impact( s );
+  }
+};
+
 struct unholy_nova_t final : public priest_spell_t
 {
   propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
+  propagate_const<unholy_nova_healing_t*> child_unholy_nova_healing;
 
   unholy_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ), child_unholy_transfusion( nullptr )
+    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
+      child_unholy_transfusion( nullptr ),
+      child_unholy_nova_healing( nullptr )
   {
     parse_options( options_str );
     aoe      = -1;
@@ -472,8 +494,13 @@ struct unholy_nova_t final : public priest_spell_t
     // Radius for damage spell is stored in the DoT's spell radius
     radius = data().effectN( 2 ).trigger()->effectN( 1 ).radius_max();
 
+    // Create child for DoT spell trigger
     child_unholy_transfusion = new unholy_transfusion_t( p, options_str );
     add_child( child_unholy_transfusion );
+
+    // Create child for Healing AoE trigger
+    child_unholy_nova_healing = new unholy_nova_healing_t( p );
+    add_child( child_unholy_nova_healing );
 
     // Unholy Nova itself does NOT do damage, just the DoT
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
@@ -487,6 +514,13 @@ struct unholy_nova_t final : public priest_spell_t
       child_unholy_transfusion->target         = s->target;
       child_unholy_transfusion->parent_targets = s->n_targets;
       child_unholy_transfusion->execute();
+    }
+
+    // The AoE heal happens at your current target in an AoE radius around them
+    if ( child_unholy_nova_healing )
+    {
+      child_unholy_nova_healing->target = s->target;
+      child_unholy_nova_healing->execute();
     }
 
     priest_spell_t::impact( s );
