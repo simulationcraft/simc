@@ -2552,6 +2552,15 @@ struct crimson_tempest_t : public rogue_attack_t
     aoe = as<int>( data().effectN( 3 ).base_value() );
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // BUG: CT does not trigger alacrity, see https://github.com/SimCMinMax/WoW-BugTracker/issues/791
+    if ( p()->bugs )
+      affected_by.alacrity = false;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     const rogue_action_state_t* state = cast_state( s );
