@@ -3268,7 +3268,9 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + p()->buff.hot_hand->data().effectN( 1 ).percent();
     }
 
-    if ( weapon->buff_type == FLAMETONGUE_IMBUE )
+    // Flametongue imbue only increases Lava Lash damage if it is imbued on the off-hand
+    // weapon
+    if ( p()->off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       m *= 1.0 + data().effectN( 2 ).percent();
     }
@@ -3567,13 +3569,27 @@ struct sundering_t : public shaman_attack_t
 
 struct weapon_imbue_t : public shaman_spell_t
 {
-  slot_e slot;
+  std::string slot_str;
+  slot_e slot, default_slot;
   imbue_e imbue;
 
-  weapon_imbue_t( const std::string& name, shaman_t* player, const spell_data_t* spell ) :
+  weapon_imbue_t( const std::string& name, shaman_t* player, const spell_data_t* spell, const std::string& options_str ) :
     shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), imbue( IMBUE_NONE )
   {
     harmful = false;
+
+    add_option( opt_string( "slot", slot_str ) );
+
+    parse_options( options_str );
+
+    if ( slot_str.empty() )
+    {
+      slot = default_slot;
+    }
+    else
+    {
+      slot = util::parse_slot_type( slot_str );
+    }
   }
 
   void init_finished() override
@@ -3620,51 +3636,40 @@ struct weapon_imbue_t : public shaman_spell_t
 };
 
 // Windfury Imbue =========================================================
+
 struct windfury_weapon_t : public weapon_imbue_t
 {
   windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
-    weapon_imbue_t( "windfury_weapon", player, player->find_specialization_spell( "Windfury Weapon" ) )
+    weapon_imbue_t( "windfury_weapon", player, player->find_specialization_spell( "Windfury Weapon" ), options_str )
   {
-    parse_options( options_str );
-
-    slot = SLOT_MAIN_HAND;
     imbue = WINDFURY_IMBUE;
+    default_slot = SLOT_MAIN_HAND;
 
-    add_child( player->windfury_mh );
+    if ( slot == SLOT_MAIN_HAND )
+    {
+      add_child( player->windfury_mh );
+    }
+    // Technically, you can put Windfury on the off-hand slot but it disables the proc
+    else if ( slot == SLOT_OFF_HAND )
+    {
+      ;
+    }
+    else
+    {
+      sim->error( "{} invalid windfury slot '{}'", player->name(), slot_str );
+    }
   }
 };
 
 // Flametongue Imbue =========================================================
+
 struct flametongue_weapon_t : public weapon_imbue_t
 {
   flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
-    weapon_imbue_t( "flametongue_weapon", player, player->find_spell( "Flametongue Weapon" ) )
+    weapon_imbue_t( "flametongue_weapon", player, player->find_spell( "Flametongue Weapon" ), options_str )
   {
-    std::string slot_str;
-
-    add_option( opt_string( "slot", slot_str ) );
-
-    parse_options( options_str );
-
     imbue = FLAMETONGUE_IMBUE;
-
-    std::array<std::unique_ptr<option_t>, 1> options { {
-      opt_string( "slot", slot_str )
-    } };
-
-    opts::parse( sim, "player", options, options_str,
-      []( opts::parse_status, util::string_view, util::string_view ) {
-        return opts::parse_status::OK;
-    } );
-
-    if ( slot_str.empty() )
-    {
-      slot = SLOT_OFF_HAND;
-    }
-    else
-    {
-      slot = util::parse_slot_type( slot_str );
-    }
+    default_slot = SLOT_OFF_HAND;
 
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND )
     {
@@ -8016,7 +8021,9 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     return;
   }
 
-  if ( main_hand_weapon.buff_type != WINDFURY_IMBUE )
+  // Note, applying Windfury-imbue to off-hand disables procs in game.
+  if ( main_hand_weapon.buff_type != WINDFURY_IMBUE ||
+      off_hand_weapon.buff_type == WINDFURY_IMBUE )
   {
     return;
   }
