@@ -1657,10 +1657,24 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
-    if ( p()->buff.dance_of_chiji_hidden->up() )
+    if ( p()->buff.dance_of_chiji_hidden->up() && !p()->bugs )
       am *= 1 + p()->buff.dance_of_chiji_hidden->value();
 
     return am;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    // Not sure if this is a bug or intended but this appears to be applying the old Azerite format
+    // where it applies a bonus damage instead of the 200% as mentioned in the tooltip.
+    // This does the full scaled damage per tick (pre-armor).
+    // 439.8155886135744 Bonus Damage at 60
+    if ( p()->buff.dance_of_chiji_hidden->up() && p()->bugs )
+      b += p()->passives.dance_of_chiji_bug->effectN( 1 ).average( p(), p()->level() );
+
+    return b;
   }
 
   void execute() override
@@ -5920,6 +5934,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
+  passives.dance_of_chiji_bug               = find_spell( 286585 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.empowered_tiger_lightning        = find_spell( 335913 );
   passives.fists_of_fury_tick               = find_spell( 117418 );

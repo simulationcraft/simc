@@ -553,6 +553,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dance_of_chiji;
+    const spell_data_t* dance_of_chiji_bug;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* empowered_tiger_lightning;
     const spell_data_t* fists_of_fury_tick;
