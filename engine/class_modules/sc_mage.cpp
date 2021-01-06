@@ -4178,6 +4178,7 @@ struct icy_veins_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.rune_of_power->trigger();
   }
