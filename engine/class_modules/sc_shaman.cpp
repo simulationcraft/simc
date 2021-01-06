@@ -3573,8 +3573,8 @@ struct weapon_imbue_t : public shaman_spell_t
   slot_e slot, default_slot;
   imbue_e imbue;
 
-  weapon_imbue_t( const std::string& name, shaman_t* player, const spell_data_t* spell, const std::string& options_str ) :
-    shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), imbue( IMBUE_NONE )
+  weapon_imbue_t( const std::string& name, shaman_t* player, slot_e d_, const spell_data_t* spell, const std::string& options_str ) :
+    shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), default_slot( d_ ), imbue( IMBUE_NONE )
   {
     harmful = false;
 
@@ -3640,10 +3640,10 @@ struct weapon_imbue_t : public shaman_spell_t
 struct windfury_weapon_t : public weapon_imbue_t
 {
   windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
-    weapon_imbue_t( "windfury_weapon", player, player->find_specialization_spell( "Windfury Weapon" ), options_str )
+    weapon_imbue_t( "windfury_weapon", player, SLOT_MAIN_HAND,
+                    player->find_specialization_spell( "Windfury Weapon" ), options_str )
   {
     imbue = WINDFURY_IMBUE;
-    default_slot = SLOT_MAIN_HAND;
 
     if ( slot == SLOT_MAIN_HAND )
     {
@@ -3666,10 +3666,10 @@ struct windfury_weapon_t : public weapon_imbue_t
 struct flametongue_weapon_t : public weapon_imbue_t
 {
   flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
-    weapon_imbue_t( "flametongue_weapon", player, player->find_spell( "Flametongue Weapon" ), options_str )
+    weapon_imbue_t( "flametongue_weapon", player,
+                    SLOT_OFF_HAND, player->find_spell( "Flametongue Weapon" ), options_str )
   {
     imbue = FLAMETONGUE_IMBUE;
-    default_slot = SLOT_OFF_HAND;
 
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND )
     {
