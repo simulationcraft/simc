@@ -82,10 +82,10 @@ std::string temporary_enchant( const player_t* p )
 //blood_apl_start
 void blood( player_t* p )
 {
-  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
-  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* covenants = p->get_action_priority_list( "covenants" );
-  action_priority_list_t* standard = p->get_action_priority_list( "standard" );
+  action_priority_list_t* default_ = p->get_action_priority_list  ( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list ( "precombat" );
+  action_priority_list_t* covenants = p->get_action_priority_list ( "covenants" );
+  action_priority_list_t* standard = p->get_action_priority_list  ( "standard" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -146,17 +146,17 @@ void blood( player_t* p )
 //frost_apl_start
 void frost( player_t* p )
 {
-  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
-  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* bos_pooling = p->get_action_priority_list( "bos_pooling" );
-  action_priority_list_t* bos_ticking = p->get_action_priority_list( "bos_ticking" );
-  action_priority_list_t* cold_heart = p->get_action_priority_list( "cold_heart" );
-  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t* covenants = p->get_action_priority_list( "covenants" );
-  action_priority_list_t* obliteration = p->get_action_priority_list( "obliteration" );
-  action_priority_list_t* obliteration_pooling = p->get_action_priority_list( "obliteration_pooling" );
-  action_priority_list_t* standard = p->get_action_priority_list( "standard" );
+  action_priority_list_t* default_ = p->get_action_priority_list             ( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list            ( "precombat" );
+  action_priority_list_t* aoe = p->get_action_priority_list                  ( "aoe" );
+  action_priority_list_t* bos_pooling = p->get_action_priority_list          ( "bos_pooling" );
+  action_priority_list_t* bos_ticking = p->get_action_priority_list          ( "bos_ticking" );
+  action_priority_list_t* cold_heart = p->get_action_priority_list           ( "cold_heart" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list            ( "cooldowns" );
+  action_priority_list_t* covenants = p->get_action_priority_list            ( "covenants" );
+  action_priority_list_t* obliteration = p->get_action_priority_list         ( "obliteration" );
+  action_priority_list_t* obliteration_pooling = p->get_action_priority_list ( "obliteration_pooling" );
+  action_priority_list_t* standard = p->get_action_priority_list             ( "standard" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -290,15 +290,15 @@ void frost( player_t* p )
 //unholy_apl_start
 void unholy( player_t* p )
 {
-  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
-  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* aoe_burst = p->get_action_priority_list( "aoe_burst" );
-  action_priority_list_t* aoe_setup = p->get_action_priority_list( "aoe_setup" );
-  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t* covenants = p->get_action_priority_list( "covenants" );
-  action_priority_list_t* generic = p->get_action_priority_list( "generic" );
-  action_priority_list_t* generic_aoe = p->get_action_priority_list( "generic_aoe" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t* default_ = p->get_action_priority_list    ( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list   ( "precombat" );
+  action_priority_list_t* aoe_burst = p->get_action_priority_list   ( "aoe_burst" );
+  action_priority_list_t* aoe_setup = p->get_action_priority_list   ( "aoe_setup" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list   ( "cooldowns" );
+  action_priority_list_t* covenants = p->get_action_priority_list   ( "covenants" );
+  action_priority_list_t* generic = p->get_action_priority_list     ( "generic" );
+  action_priority_list_t* generic_aoe = p->get_action_priority_list ( "generic_aoe" );
+  action_priority_list_t* trinkets = p->get_action_priority_list    ( "trinkets" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
