@@ -320,7 +320,7 @@ void unholy( player_t* p )
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
-  default_->add_action( "call_action_lust,name=trinkets", "Action Lists and Openers" );
+  default_->add_action( "call_action_list,name=trinkets", "Action Lists and Openers" );
   default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:abomination_limb:apocalypse,if=talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
   default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:abomination_limb:apocalypse,if=!talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
   default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:apocalypse,if=!talent.unholy_blight&!covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
