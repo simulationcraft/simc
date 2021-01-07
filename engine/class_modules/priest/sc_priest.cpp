@@ -446,6 +446,11 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
 
     // TODO: Confirm if this leech healing can proc trinkets/etc
     callbacks = false;
+
+    if ( priest().conduits.festering_transfusion->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
+    }
   }
 
   void trigger()
@@ -465,6 +470,11 @@ struct unholy_nova_healing_t final : public priest_heal_t
     background = true;
     harmful    = false;
     aoe        = -1;
+
+    if ( priest().conduits.festering_transfusion->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -545,6 +555,11 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
     // $healing=${($SPS*$s7/100)*(1+$@versadmg)*$m3/100}
     spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 7 ).base_value() / 100 ) *
                              ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+
+    if ( priest().conduits.shattered_perceptions->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
   }
 };
 
@@ -564,6 +579,11 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     // $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
     spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 2 ).base_value() / 100 ) *
                              ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+                            
+    if ( priest().conduits.shattered_perceptions->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
   }
 };
 
