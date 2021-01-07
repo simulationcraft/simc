@@ -298,6 +298,7 @@ void unholy( player_t* p )
   action_priority_list_t* covenants = p->get_action_priority_list( "covenants" );
   action_priority_list_t* generic = p->get_action_priority_list( "generic" );
   action_priority_list_t* generic_aoe = p->get_action_priority_list( "generic_aoe" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -319,7 +320,12 @@ void unholy( player_t* p )
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
-  default_->add_action( "call_action_list,name=covenants", "Action Lists" );
+  default_->add_action( "call_action_lust,name=trinkets", "Action Lists and Openers" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:abomination_limb:apocalypse,if=talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:abomination_limb:apocalypse,if=!talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:apocalypse,if=!talent.unholy_blight&!covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:apocalypse,if=talent.unholy_blight&!covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
+  default_->add_action( "call_action_list,name=covenants" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile)&!death_and_decay.ticking" );
   default_->add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
@@ -341,12 +347,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=debuff.festering_wound.stack<1" );
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)" );
 
-  cooldowns->add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|pet.apoc_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)|fight_remains<26", "Potions and other on use" );
-  cooldowns->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21" );
-  cooldowns->add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
-  cooldowns->add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<3" );
-  cooldowns->add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
-  cooldowns->add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
+  cooldowns->add_action( "potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|pet.apoc_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)|fight_remains<26", "Potion" );
   cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight&!soulbind.lead_by_example|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.abomination_limb.ready&soulbind.lead_by_example" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)&(!runeforge.deadliest_coil|!talent.army_of_the_damned|conduit.convocation_of_the_dead.rank<5)", "Sync Blight with Dark Transformation if utilizing other Dark Transformation buffs, those being Deadliest Coil, Frenzied Monstrosity or Eternal Hunger. Also checks if conditions are met to instead hold for Apocalypse." );
@@ -391,6 +392,12 @@ void unholy( player_t* p )
   generic_aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)" );
   generic_aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1" );
   generic_aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1" );
+  
+  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21", "Trinkets" );
+  trinkets->add_action( "use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
+  trinkets->add_action( "use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<3" );
+  trinkets->add_action( "use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21" );
+  trinkets->add_action( "use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)" );
 }
 //unholy_apl_end
 
