@@ -321,11 +321,9 @@ void unholy( player_t* p )
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
   default_->add_action( "call_action_list,name=trinkets", "Action Lists and Openers" );
-  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:abomination_limb:apocalypse,if=talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
-  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:abomination_limb:apocalypse,if=!talent.unholy_blight&covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
-  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:potion:dark_transformation:apocalypse,if=!talent.unholy_blight&!covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
-  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:apocalypse,if=talent.unholy_blight&!covenant.necrolord&active_enemies=1&!death_knight.disable_aotd" );
   default_->add_action( "call_action_list,name=covenants" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:apocalypse,if=talent.unholy_blight&active_enemies=1&!death_knight.disable_aotd" );
+  default_->add_action( "sequence,army_of_the_dead:festering_strike:festering_strike:dark_transformation:potion:apocalypse,if=!talent.unholy_blight&active_enemies=1&!death_knight.disable_aotd" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile)&!death_and_decay.ticking" );
   default_->add_action( "run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking" );
