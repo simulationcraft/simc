@@ -434,12 +434,9 @@ struct unholy_transfusion_t final : public priest_spell_t
 
 struct unholy_transfusion_healing_t final : public priest_heal_t
 {
-  bool ignore_healing;
-
   unholy_transfusion_healing_t( priest_t& p )
     : priest_heal_t( "unholy_transfusion_healing", p,
-                     p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() ),
-      ignore_healing( p.options.ignore_healing )
+                     p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() )
   {
     background = true;
     harmful    = false;
@@ -455,9 +452,6 @@ struct unholy_transfusion_healing_t final : public priest_heal_t
 
   void trigger()
   {
-    if ( ignore_healing )
-      return;
-
     execute();
   }
 };
@@ -579,7 +573,7 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     // $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
     spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 2 ).base_value() / 100 ) *
                              ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
-                            
+
     if ( priest().conduits.shattered_perceptions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
@@ -591,14 +585,12 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
-  bool ignore_healing;
   double insanity_gain;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
-      ignore_healing( p.options.ignore_healing ),
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() )
   {
     parse_options( options_str );
@@ -640,10 +632,7 @@ struct mindgames_t final : public priest_spell_t
     if ( child_mindgames_damage_reversal )
     {
       insanity += insanity_gain;
-      if ( !ignore_healing )
-      {
-        child_mindgames_damage_reversal->execute();
-      }
+      child_mindgames_damage_reversal->execute();
     }
 
     priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
@@ -1830,7 +1819,6 @@ void priest_t::create_options()
 
   add_option( opt_deprecated( "autounshift", "priest.autounshift" ) );
   add_option( opt_deprecated( "priest_fixed_time", "priest.fixed_time" ) );
-  add_option( opt_deprecated( "priest_ignore_healing", "priest.ignore_healing" ) );
   add_option( opt_deprecated( "priest_use_ascended_nova", "priest.use_ascended_nova" ) );
   add_option( opt_deprecated( "priest_use_ascended_eruption", "priest.use_ascended_eruption" ) );
   add_option( opt_deprecated( "priest_mindgames_healing_reversal", "priest.mindgames_healing_reversal" ) );
@@ -1843,7 +1831,6 @@ void priest_t::create_options()
 
   add_option( opt_bool( "priest.autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest.fixed_time", options.fixed_time ) );
-  add_option( opt_bool( "priest.ignore_healing", options.ignore_healing ) );
   add_option( opt_bool( "priest.use_ascended_nova", options.use_ascended_nova ) );
   add_option( opt_bool( "priest.use_ascended_eruption", options.use_ascended_eruption ) );
   add_option( opt_bool( "priest.mindgames_healing_reversal", options.mindgames_healing_reversal ) );
