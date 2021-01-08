@@ -6071,12 +6071,12 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() )
     return;
 
-  // TOCHECK: Currently it appears all Rogues can trigger this with Ambush
+  // Currently it appears all Rogues can trigger this with Ambush
   if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
-  // TOCHECK: Does this work with Shadowmeld?
-  const double stealth_bonus = p()->stealthed( STEALTH_BASIC ) ? 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent() : 1.0;
+  // 1/8/2020 - Confirmed via logs this works with Shadowmeld
+  const double stealth_bonus = p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) ? 1.0 + p()->conduit.count_the_odds->effectN( 3 ).percent() : 1.0;
   if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() * stealth_bonus ) )
     return;
 
