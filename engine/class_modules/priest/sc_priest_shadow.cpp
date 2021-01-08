@@ -634,12 +634,10 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 // ==========================================================================
 struct shadow_word_pain_t final : public priest_spell_t
 {
-  bool ignore_healing;
   bool casted;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain ),
-      ignore_healing( p.options.ignore_healing )
+    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -667,11 +665,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
   void trigger_heal()
   {
-    if ( ignore_healing )
-    {
-      return;
-    }
-
     // Use a simple option to dictate how many "allies" this will heal. All healing will go to the actor
     double amount_to_heal = priest().options.cauterizing_shadows_allies * priest().intellect() *
                             priest().specs.cauterizing_shadows_health->effectN( 1 ).sp_coeff();
@@ -753,14 +746,10 @@ struct vampiric_touch_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
-  bool ignore_healing;
   bool casted;
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
-      child_swp( nullptr ),
-      child_ud( nullptr ),
-      ignore_healing( p.options.ignore_healing )
+    : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ), child_swp( nullptr ), child_ud( nullptr )
   {
     casted                     = _casted;
     may_crit                   = false;
@@ -789,11 +778,6 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void trigger_heal( action_state_t* s )
   {
-    if ( ignore_healing )
-    {
-      return;
-    }
-
     double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
     priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health, this );
   }
@@ -887,12 +871,10 @@ struct devouring_plague_dot_state_t : public action_state_t
 
 struct devouring_plague_t final : public priest_spell_t
 {
-  bool ignore_healing;
   bool casted;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
-      ignore_healing( p.options.ignore_healing )
+    : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -936,11 +918,6 @@ struct devouring_plague_t final : public priest_spell_t
 
   void trigger_heal( action_state_t* s )
   {
-    if ( ignore_healing )
-    {
-      return;
-    }
-
     double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
     priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.devouring_plague_health, this );
   }

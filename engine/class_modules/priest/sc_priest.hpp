@@ -368,7 +368,6 @@ public:
   {
     bool autoUnshift           = true;  // Shift automatically out of stance/form
     bool fixed_time     = true;
-    bool ignore_healing = false;  // Remove Healing calculation codes
 
     // Default param to set if you should cast Power Infusion on yourself
     bool self_power_infusion = true;
