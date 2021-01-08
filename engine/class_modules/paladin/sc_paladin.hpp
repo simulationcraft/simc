@@ -700,7 +700,9 @@ namespace buffs {
   {
     execution_sentence_debuff_t( paladin_td_t* td ) :
       buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td -> source ) -> talents.execution_sentence ),
-      accumulated_damage( 0.0 ) {}
+      accumulated_damage( 0.0 ) {
+      set_cooldown( 0_ms ); // handled by the ability
+    }
 
     void reset() override
     {
