@@ -1120,6 +1120,8 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
   if ( data_type == static_cast<expr_data_e>( -1 ) )
   {
     std::vector<std::string> valid_types;
+    valid_types.reserve(expr_map.size());
+
     for(const auto& entry : expr_map)
     {
       valid_types.push_back(std::string(entry.name));

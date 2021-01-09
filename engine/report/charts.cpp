@@ -1466,6 +1466,8 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
 
     ac.add( "colors", color );
 
+    data.reserve(pd.size());
+
     for ( const auto& pdata : pd )
     {
       data.emplace_back(

@@ -2735,7 +2735,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       : event_t( *f->dh, time ),
       dh( f->dh ),
       frag( f ),
-      expr( std::move(e) )
+      expr( e )
     {
     }
 
