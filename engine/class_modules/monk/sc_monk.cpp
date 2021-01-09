@@ -1208,7 +1208,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     ap_type = attack_power_type::NONE;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_melee_attack_t::cost();
 
@@ -2315,7 +2315,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       p()->buff.touch_of_death->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
     // Meaning using Fortifying Brew does not affect ToD's damage
@@ -3822,7 +3822,7 @@ struct fallen_order_t : public monk_spell_t
     {
     }
 
-    virtual const char* name() const override
+    const char* name() const override
     {
       return "fallen_order_summon";
     }

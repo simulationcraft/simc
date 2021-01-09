@@ -269,7 +269,7 @@ struct spirit_shell_t final : public priest_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 

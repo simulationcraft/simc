@@ -79,7 +79,7 @@ namespace
       interrupt_auto_attack = false;
     }
 
-    virtual void execute() override
+    void execute() override
     {
       player->iteration_waiting_time += time_to_execute;
     }
@@ -92,8 +92,8 @@ namespace
     cooldown_t* wait_cd;
     action_t* a;
     wait_for_cooldown_t(player_t* player, util::string_view cd_name);
-    virtual bool usable_moving() const override { return a->usable_moving(); }
-    virtual timespan_t execute_time() const override;
+    bool usable_moving() const override { return a->usable_moving(); }
+    timespan_t execute_time() const override;
   };
 
 

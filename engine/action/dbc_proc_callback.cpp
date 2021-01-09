@@ -35,7 +35,7 @@ struct proc_event_t : public event_t
     schedule( timespan_t::zero() );
   }
 
-  ~proc_event_t()
+  ~proc_event_t() override
   {
     action_state_t::release( source_state );
   }

@@ -1307,7 +1307,7 @@ struct blessing_of_summer_proc_t : public paladin_spell_t
     background = true;
   }
 
-  virtual void init() override
+  void init() override
   {
     paladin_spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;

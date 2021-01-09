@@ -2632,7 +2632,7 @@ struct resonating_arrow_t : hunter_spell_t
       triggers_master_marksman = false;
     }
 
-    void execute()
+    void execute() override
     {
       hunter_spell_t::execute();
 
@@ -2669,7 +2669,7 @@ struct wild_spirits_t : hunter_spell_t
       triggers_master_marksman = false;
     }
 
-    void execute()
+    void execute() override
     {
       hunter_spell_t::execute();
 

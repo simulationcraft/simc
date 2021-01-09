@@ -21,8 +21,8 @@ public:
   dot_tick_event_t( dot_t* d, timespan_t tick_time );
 
 private:
-  virtual void execute() override;
-  virtual const char* name() const override
+  void execute() override;
+  const char* name() const override
   {
     return "Dot Tick";
   }
@@ -37,8 +37,8 @@ public:
   dot_end_event_t(dot_t* d, timespan_t time_to_end);
 
 private:
-  virtual void execute() override;
-  virtual const char* name() const override
+  void execute() override;
+  const char* name() const override
   {
     return "DoT End";
   }
