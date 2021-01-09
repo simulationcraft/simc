@@ -1487,11 +1487,11 @@ std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spe
 
   auto budgets = power.budget( effect.spell() );
   range::for_each( budgets, [&]( double budget ) {
-    avg_ += static_cast<int>( budget * effect.m_coefficient() + 0.5 );
-    min_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 - effect.m_delta() / 2 ) + 0.5 );
-    max_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 + effect.m_delta() / 2 ) + 0.5 );
+    avg_ += as<int>( std::lround( budget * effect.m_coefficient() ) );
+    min_ += as<int>( std::lround( budget * effect.m_coefficient() *
+        ( 1.0 - effect.m_delta() / 2 ) ) );
+    max_ += as<int>( std::lround( budget * effect.m_coefficient() *
+        ( 1.0 + effect.m_delta() / 2 ) ) );
   } );
 
   return std::make_tuple( min_, avg_, max_ );

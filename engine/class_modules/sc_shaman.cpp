@@ -3001,7 +3001,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    base_t::snapshot_internal( s, flags, rt );
+    shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->exec_type = parent->exec_type;
   }

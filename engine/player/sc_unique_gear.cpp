@@ -14,7 +14,7 @@
 
 using namespace unique_gear;
 
-#define maintenance_check( ilvl ) static_assert( ilvl >= 90, "unique item below min level, should be deprecated." )
+#define maintenance_check( ilvl ) static_assert( (ilvl) >= 90, "unique item below min level, should be deprecated." )
 
 namespace { // UNNAMED NAMESPACE
 

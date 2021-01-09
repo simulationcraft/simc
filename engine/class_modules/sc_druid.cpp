@@ -4474,7 +4474,7 @@ struct cenarion_ward_hot_t : public druid_heal_t
 
   void execute() override
   {
-    heal_t::execute();
+    druid_heal_t::execute();
 
     p()->buff.cenarion_ward->expire();
   }
@@ -8343,21 +8343,18 @@ void druid_t::apl_default()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // Assemble Racials / On-Use Items / Professions
-  std::string extra_actions = "";
-
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    extra_actions += add_action( racial_actions[ i ] );
-
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    extra_actions += add_action( item_actions[ i ] );
-
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    extra_actions += add_action( profession_actions[ i ] );
-
-  def->add_action( extra_actions );
+  for ( const auto& action_str : get_racial_actions() )
+  {
+    def->add_action( action_str );
+  }
+  for ( const auto& action_str : get_item_actions() )
+  {
+    def->add_action( action_str );
+  }
+  for ( const auto& action_str : get_profession_actions() )
+  {
+    def->add_action( action_str );
+  }
 }
 
 // Feral Combat Action Priority List ========================================

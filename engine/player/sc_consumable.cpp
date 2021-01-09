@@ -711,7 +711,7 @@ struct potion_t : public dbc_consumable_base_t
     if ( !player->in_combat )
       cd_duration = cooldown->duration - pre_pot_time;
 
-    action_t::update_ready( cd_duration );
+    dbc_consumable_base_t::update_ready( cd_duration );
   }
 
   // Overwrite with fanciful execution due to prepotting

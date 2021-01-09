@@ -925,7 +925,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   status.insert( 1, parent -> progress_bar.steps, '.' );
   status += "]";
 
-  int length = static_cast<int>( parent -> progress_bar.steps * pct + 0.5 );
+  int length = as<int>( std::lround( parent -> progress_bar.steps * pct ) );
   for ( int i = 1; i < length + 1; ++i )
   {
     status[ i ] = '=';
@@ -941,7 +941,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   auto average_per_sim = chrono::to_fp_seconds(m_total_elapsed) / as<double>( done );
   auto elapsed = chrono::elapsed_fp_seconds( m_start_time );
   auto work_left = m_profilesets.size() - done;
-  auto time_left = ( work_left / m_max_workers ) * average_per_sim;
+  auto time_left = work_left * ( average_per_sim / m_max_workers );
 
   // Average time per done simulation
   s << " avg=" << format_time( average_per_sim / as<double>( m_max_workers ) );

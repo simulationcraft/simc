@@ -610,8 +610,7 @@ std::vector<std::string> report_helper::beta_warnings()
                                  "Some class action lists need tweaking.",
                                  "Some class BiS gear setups need tweaking.",
                                  "Some trinkets not yet implemented.",
-                                 "Constructive feedback regarding our output will shorten the Beta phase "
-                                 "dramatically.",
+                                 "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
                                  "Beta! Beta! Beta! Beta! Beta! Beta!" };
   return s;
 }

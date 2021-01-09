@@ -230,7 +230,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   size_t prev_size = status.size();
   fmt::memory_buffer new_status;
 
-  int progress_length = static_cast<int>( steps * pct + 0.5 );
+  int progress_length = as<int>( std::lround( steps * pct ) );
   if ( progress_length >= 1 )
   {
     fmt::format_to(new_status, "[{:=>{}s}", ">", progress_length);

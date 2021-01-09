@@ -2361,7 +2361,7 @@ struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
   void init() override
   {
-    monk_melee_attack_t::init();
+    residual_action::residual_periodic_action_t<monk_melee_attack_t>::init();
     // disable the snapshot_flags for all multipliers
     snapshot_flags = update_flags = 0;
     snapshot_flags |= STATE_VERSATILITY;
@@ -2561,7 +2561,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
   void reset() override
   {
-    action_t::reset();
+    monk_melee_attack_t::reset();
     first_charge = true;
   }
 

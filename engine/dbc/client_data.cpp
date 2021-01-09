@@ -62,7 +62,7 @@ std::string dbc::hotfix_hash_str( bool ptr )
 #ifdef PTR_CLIENT_DATA_HOTFIX_HASH
     return PTR_CLIENT_DATA_HOTFIX_HASH;
 #else
-    return 0;
+    return "";
 #endif  /* PTR_CLIENT_DATA_HOTFIX_HASH */
   }
 

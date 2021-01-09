@@ -2380,7 +2380,7 @@ struct charge_t : public warrior_attack_t
 
   void reset() override
   {
-    action_t::reset();
+    warrior_attack_t::reset();
     first_charge = true;
   }
 
@@ -5766,7 +5766,7 @@ struct ignore_pain_t : public warrior_spell_t
       }
       else
       {
-        percent_health = ( rng().gauss( p() -> never_surrender_percentage / 100, 0.2 ) );
+        percent_health = ( rng().gauss( p() -> never_surrender_percentage / 100.0, 0.2 ) );
       }
 
       new_ip *= 1.0 + percent_health * p() -> talents.never_surrender -> effectN( 1 ).percent();

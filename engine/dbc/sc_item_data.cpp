@@ -527,7 +527,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
     double v_socket_penalty = socket_mul( item.parsed.data, idx ) *
                               dbc.item_socket_cost( item.base_item_level() );
 
-    int v_raw = static_cast<int>(item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5);
+    int v_raw = as<int>( std::lround( item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty ) );
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
     if ( util::is_combat_rating( stat_type ) )

@@ -482,7 +482,7 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    warlock_spell_t::execute();
+    demonology_spell_t::execute();
 
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();

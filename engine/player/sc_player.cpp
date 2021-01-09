@@ -9160,9 +9160,9 @@ void player_t::create_talents_wowhead()
     encoding[ 0 ] = 1;
   }
 
-  result += encoding[ 0 ] + '/';
+  result += fmt::format("{}/", encoding[ 0 ] );
   if ( encoding[ 1 ] != 0 )
-    result += encoding[ 1 ] + '/';
+    result += fmt::format("{}/", encoding[ 1 ] );
 
   talents_str = result;
 }
