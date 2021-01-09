@@ -101,7 +101,7 @@ public:
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
     if ( talbadars_stratagem_active( t ) )
     {
@@ -343,7 +343,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
     if ( t->health_percentage() < execute_percent )
     {
