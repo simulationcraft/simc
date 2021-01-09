@@ -2032,7 +2032,7 @@ public:
   {
     double return_value = 1.0;
 
-    for ( auto i : target_multiplier_dotdebuffs )
+    for ( const auto& i : target_multiplier_dotdebuffs )
     {
       auto dot = i.func( t );
 

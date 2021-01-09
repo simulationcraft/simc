@@ -10743,7 +10743,7 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += term;
       profile_str += "# Custom default values for APL variables." + term;
-      for ( auto v : apl_variable_map )
+      for ( const auto& v : apl_variable_map )
       {
         profile_str += "apl_variable." + v.first + "=" + v.second + term;
       }

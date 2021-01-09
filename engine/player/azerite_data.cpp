@@ -781,7 +781,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
 
   size_t n_traits = m_overrides.size();
 
-  for ( auto item : m_items )
+  for ( const auto& item : m_items )
     n_traits += rank( item.first );
 
   if ( n_traits == 0 )
@@ -833,7 +833,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
          << "<td><ul class=\"float\">\n"
          << "<li>Azerite Overrides:</li>\n";
 
-    for ( auto override : m_overrides )
+    for ( const auto& override : m_overrides )
     {
       for ( auto ilevel : override.second )
       {
