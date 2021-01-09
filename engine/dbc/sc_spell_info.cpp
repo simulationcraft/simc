@@ -996,7 +996,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
   {
-    if ( e -> affected_schools() != 0u )
+    if ( e -> affected_schools() != 0U )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
@@ -1063,7 +1063,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   s << std::endl;
 
   if ( e -> type() == E_APPLY_AURA &&
-       e -> affected_schools() != 0u )
+       e -> affected_schools() != 0U )
   {
     s << "                   Affected School(s): ";
     if ( e -> affected_schools() == 0x7f )
@@ -1401,7 +1401,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     std::vector<std::string> weapon_types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( spell->equipped_subclass_mask() & ( 1u << static_cast<unsigned>( wt ) ) )
+      if ( spell->equipped_subclass_mask() & ( 1U << static_cast<unsigned>( wt ) ) )
       {
         weapon_types.emplace_back( util::weapon_subclass_string( wt ) );
       }
@@ -1409,7 +1409,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     for ( auto it = INVTYPE_HEAD; it < INVTYPE_MAX; ++it )
     {
-      if ( spell->equipped_invtype_mask() & ( 1u << static_cast<unsigned>( it ) ) )
+      if ( spell->equipped_invtype_mask() & ( 1U << static_cast<unsigned>( it ) ) )
       {
         weapon_types.emplace_back( util::weapon_class_string( it ) );
       }

@@ -1166,7 +1166,7 @@ void warlock_t::vision_of_perfection_proc_demo()
 {
   timespan_t summon_duration = find_spell( 265187 )->duration() * vision_of_perfection_multiplier;
 
-  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1u );
+  warlock_pet_list.demonic_tyrants.spawn( summon_duration, 1U );
 
   auto essence         = find_azerite_essence( "Vision of Perfection" );
   timespan_t extension = timespan_t::from_seconds(

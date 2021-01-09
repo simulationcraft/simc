@@ -1245,8 +1245,8 @@ struct double_breath_t : public warlock_pet_spell_t
 
   double_breath_t( warlock_pet_t* p ) : warlock_pet_spell_t( "double_breath", p, p->find_spell( 272156 ) )
   {
-    breath_1 = new double_breath_damage_t( p, 1u );
-    breath_2 = new double_breath_damage_t( p, 2u );
+    breath_1 = new double_breath_damage_t( p, 1U );
+    breath_2 = new double_breath_damage_t( p, 2U );
     add_child( breath_1 );
     add_child( breath_2 );
   }

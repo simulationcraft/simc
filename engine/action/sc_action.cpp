@@ -612,7 +612,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   else
   {
     // Find the first power entry without a aura id
-    auto it = range::find( spell_powers, 0u, &spellpower_data_t::aura_id );
+    auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
     if ( it != spell_powers.end() )
     {
       resource_current = it->resource();
@@ -897,12 +897,12 @@ bool action_t::verify_actor_weapon() const
 
   const unsigned mask = data().equipped_subclass_mask();
   if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
-       !( mask & ( 1u << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
@@ -915,12 +915,12 @@ bool action_t::verify_actor_weapon() const
   }
 
   if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
-       !( mask & ( 1u << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
@@ -3385,7 +3385,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     else
     {
-      if ( sim->target_list.size() == 1u && !sim->has_raid_event( "adds" ) )
+      if ( sim->target_list.size() == 1U && !sim->has_raid_event( "adds" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }

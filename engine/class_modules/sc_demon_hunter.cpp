@@ -5468,10 +5468,10 @@ void demon_hunter_t::init_spells()
   // General
   azerite.conflict_and_strife           = find_azerite_essence( "Conflict and Strife" );
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
-  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR );
-  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1U, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR );
 
   // Havoc
   azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );

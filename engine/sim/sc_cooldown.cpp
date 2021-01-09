@@ -104,7 +104,7 @@ cooldown_t::cooldown_t( util::string_view n, player_t& p ) :
   last_charged( 0_ms ),
   hasted( false ),
   action( nullptr ),
-  execute_types_mask( 0u ),
+  execute_types_mask( 0U ),
   current_charge( 1 ),
   recharge_multiplier( 1.0 ),
   base_duration( 0_ms )
@@ -124,7 +124,7 @@ cooldown_t::cooldown_t( util::string_view n, sim_t& s ) :
   last_charged( 0_ms ),
   hasted( false ),
   action( nullptr ),
-  execute_types_mask( 0u ),
+  execute_types_mask( 0U ),
   current_charge( 1 ),
   recharge_multiplier( 1.0 ),
   base_duration( 0_ms )

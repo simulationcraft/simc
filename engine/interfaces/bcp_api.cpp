@@ -445,7 +445,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
 
     const auto& talents = spec_data[ "talents" ];
 
-    for ( auto talent_idx = 0u, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
+    for ( auto talent_idx = 0U, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
     {
       const auto& talent_data = talents[ talent_idx ];
 
@@ -506,7 +506,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     return;
   }
 
-  for ( auto idx = 0u, end = equipment_data[ "equipped_items" ].Size(); idx < end; ++idx )
+  for ( auto idx = 0U, end = equipment_data[ "equipped_items" ].Size(); idx < end; ++idx )
   {
     const auto& slot_data = equipment_data[ "equipped_items" ][ idx ];
 
@@ -538,7 +538,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "bonus_list" ) )
     {
-      for ( auto bonus_idx = 0u, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
+      for ( auto bonus_idx = 0U, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
       {
         item.parsed.bonus_id.push_back( slot_data[ "bonus_list" ][ bonus_idx ].GetInt() );
       }
@@ -546,7 +546,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "enchantments" ) )
     {
-      for ( auto ench_idx = 0u, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
+      for ( auto ench_idx = 0U, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
       {
         const auto& ench_data = slot_data[ "enchantments" ][ ench_idx ];
 
@@ -577,7 +577,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "sockets" ) )
     {
-      for ( auto gem_idx = 0u, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
+      for ( auto gem_idx = 0U, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
       {
         const auto& socket_data = slot_data[ "sockets" ][ gem_idx ];
         if ( !socket_data.HasMember( "item" ) )
@@ -594,7 +594,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
         if ( socket_data.HasMember( "bonus_list" ) )
         {
-          for ( auto gbonus_idx = 0u, end = socket_data[ "bonus_list" ].Size(); gbonus_idx < end; ++gbonus_idx )
+          for ( auto gbonus_idx = 0U, end = socket_data[ "bonus_list" ].Size(); gbonus_idx < end; ++gbonus_idx )
           {
             item.parsed.gem_bonus_id[ gem_idx ].push_back( socket_data[ "bonus_list" ][ gbonus_idx ].GetInt() );
           }
@@ -604,7 +604,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "modified_crafting_stat" ) )
     {
-      for ( auto idx = 0u, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
+      for ( auto idx = 0U, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
       {
         const auto& stat_data = slot_data[ "modified_crafting_stat" ][ idx ];
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
@@ -927,7 +927,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
       const rapidjson::Value& damage = weaponInfo[ "damage" ];
       if ( ! damage.HasMember( "exactMin" ) ) throw( "weapon minimum damage" );
 
-      item.parsed.data.delay = weaponInfo[ "weaponSpeed" ].GetFloat() * 1000.0f;
+      item.parsed.data.delay = weaponInfo[ "weaponSpeed" ].GetFloat() * 1000.0F;
       item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetFloat() / ( weaponInfo[ "dps" ].GetFloat() * weaponInfo[ "weaponSpeed" ].GetFloat() );
     }
 

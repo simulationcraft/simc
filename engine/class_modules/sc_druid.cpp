@@ -1893,13 +1893,13 @@ public:
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0u, 0u, stack, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, 0U, stack, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0u, 0u, true, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, 0U, true, mods... );
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
@@ -1963,8 +1963,8 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreambinder );
     // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
-    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
-    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -1976,8 +1976,8 @@ public:
     }
     else
     {
-      parse_buff_effects<S>( p()->buff.berserk_bear, 5u, 0u, p()->spec.berserk_bear_2 );
-      parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.berserk_bear, 5U, 0U, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.incarnation_bear, 7U, 0U, p()->spec.berserk_bear_2 );
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
@@ -3837,7 +3837,7 @@ struct primal_wrath_t : public cat_attack_t
   {
     double adpc = cat_attack_t::attack_direct_power_coefficient( s );
 
-    adpc *= ( 1ll + combo_points );
+    adpc *= ( 1LL + combo_points );
 
     return adpc;
   }

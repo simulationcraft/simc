@@ -1329,7 +1329,7 @@ struct mage_spell_state_t : public action_state_t
   void initialize() override
   {
     action_state_t::initialize();
-    frozen = 0u;
+    frozen = 0U;
     frozen_multiplier = 1.0;
     totm_factor = 1.0;
   }
@@ -1603,9 +1603,9 @@ public:
     const mage_td_t* td = find_td( s->target );
 
     if ( !td )
-      return 0u;
+      return 0U;
 
-    unsigned source = 0u;
+    unsigned source = 0U;
 
     if ( td->debuffs.winters_chill->check() )
       source |= FF_WINTERS_CHILL;

@@ -60,7 +60,7 @@ size_t parsed_item_data_t::add_effect( unsigned spell_id, int type )
 
 size_t parsed_item_data_t::add_effect( const item_effect_t& effect )
 {
-  const auto it = range::find( effects, 0u, &item_effect_t::spell_id );
+  const auto it = range::find( effects, 0U, &item_effect_t::spell_id );
   const size_t index = static_cast<size_t>( std::distance( effects.begin(), it ) );
 
   assert( index < effects.size() );

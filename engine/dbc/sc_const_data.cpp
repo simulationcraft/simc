@@ -1640,14 +1640,14 @@ unsigned dbc_t::class_ability_id( player_e          c,
     active_spell = &active_class_spell_t::find( spell_name, spec_id, ptr, name_tokenized );
 
     // Try to find in class-specific general spells
-    if ( active_spell->spell_id == 0u )
+    if ( active_spell->spell_id == 0U )
     {
       unsigned class_idx = 0;
       unsigned spec_index = 0;
 
       if ( !spec_idx( spec_id, class_idx, spec_index ) )
       {
-        return 0u;
+        return 0U;
       }
 
       active_spell = &active_class_spell_t::find( spell_name,
@@ -1663,9 +1663,9 @@ unsigned dbc_t::class_ability_id( player_e          c,
     active_spell = &active_class_spell_t::find( spell_name, ptr, name_tokenized );
   }
 
-  if ( active_spell->spell_id == 0u )
+  if ( active_spell->spell_id == 0U )
   {
-    return 0u;
+    return 0U;
   }
 
   if ( !replaced_id( active_spell->spell_id ) )
@@ -1674,7 +1674,7 @@ unsigned dbc_t::class_ability_id( player_e          c,
   }
   else
   {
-    return 0u;
+    return 0U;
   }
 }
 
@@ -1690,9 +1690,9 @@ unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokeniz
     active_spell = &active_pet_spell_t::find( name, ptr, tokenized );
   }
 
-  if ( active_spell->spell_id == 0u )
+  if ( active_spell->spell_id == 0U )
   {
-    return 0u;
+    return 0U;
   }
 
   if ( !replaced_id( active_spell->spell_id ) )
@@ -1701,7 +1701,7 @@ unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokeniz
   }
   else
   {
-    return 0u;
+    return 0U;
   }
 }
 

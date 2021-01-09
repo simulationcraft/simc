@@ -262,18 +262,18 @@ struct class_info_t {
   unsigned spell_family;
 };
 static constexpr std::array<class_info_t, 12> _class_info { {
-  { "Warrior",       1u <<  0,   4 },
-  { "Paladin",       1u <<  1,  10 },
-  { "Hunter",        1u <<  2,   9 },
-  { "Rogue",         1u <<  3,   8 },
-  { "Priest",        1u <<  4,   6 },
-  { "DeathKnight",   1u <<  5,  15 },
-  { "Shaman",        1u <<  6,  11 },
-  { "Mage",          1u <<  7,   3 },
-  { "Warlock",       1u <<  8,   5 },
-  { "Monk",          1u <<  9,  53 },
-  { "Druid",         1u << 10,   7 },
-  { "DemonHunter",   1u << 11, 107 },
+  { "Warrior",       1U <<  0,   4 },
+  { "Paladin",       1U <<  1,  10 },
+  { "Hunter",        1U <<  2,   9 },
+  { "Rogue",         1U <<  3,   8 },
+  { "Priest",        1U <<  4,   6 },
+  { "DeathKnight",   1U <<  5,  15 },
+  { "Shaman",        1U <<  6,  11 },
+  { "Mage",          1U <<  7,   3 },
+  { "Warlock",       1U <<  8,   5 },
+  { "Monk",          1U <<  9,  53 },
+  { "Druid",         1U << 10,   7 },
+  { "DemonHunter",   1U << 11, 107 },
 } };
 
 static constexpr std::array<util::string_view, 33> _race_strings { {

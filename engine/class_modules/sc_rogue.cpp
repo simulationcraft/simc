@@ -60,13 +60,13 @@ namespace actions
 
 enum current_weapon_e
 {
-  WEAPON_PRIMARY = 0u,
+  WEAPON_PRIMARY = 0U,
   WEAPON_SECONDARY
 };
 
 enum weapon_slot_e
 {
-  WEAPON_MAIN_HAND = 0u,
+  WEAPON_MAIN_HAND = 0U,
   WEAPON_OFF_HAND
 };
 

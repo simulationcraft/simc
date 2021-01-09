@@ -481,7 +481,7 @@ protected:
   {
     for ( auto& entry : _ref )
     {
-      for ( auto i = 0u; i < entry.second.size(); ++i )
+      for ( auto i = 0U; i < entry.second.size(); ++i )
       {
         fmt::format_to( out, "{}{}{}{}\n", name(), entry.first, i == 0 ? "=" : "+=", entry.second[ i ] );
       }

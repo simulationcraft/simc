@@ -6249,12 +6249,12 @@ void warrior_t::init_spells()
   azerite.unbridled_ferocity     = find_azerite_spell( "Unbridled Ferocity" );
   // Essences
   azerite.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
   azerite.vision_of_perfection_percentage =
-      azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+      azerite.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage +=
-      azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+      azerite.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
   // Convenant Abilities
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );

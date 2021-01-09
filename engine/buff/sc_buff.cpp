@@ -500,7 +500,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
-    schools( 0u ),
+    schools( 0U ),
     activated( true ),
     reactable( false ),
     reverse(),

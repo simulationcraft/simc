@@ -716,7 +716,7 @@ public:
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
-      lotfw_counter( 0u ),
+      lotfw_counter( 0U ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -4822,15 +4822,15 @@ struct lightning_bolt_t : public shaman_spell_t
       double roll = rng().real();
       if ( roll >= 0.98 )
       {
-        n += 3u;
+        n += 3U;
       }
       else if ( roll >= 0.8 )
       {
-        n += 2u;
+        n += 2U;
       }
       else
       {
-        n += 1u;
+        n += 1U;
       }
     }
 
@@ -7620,7 +7620,7 @@ void shaman_t::summon_feral_spirits( timespan_t duration )
   // No elemental spirits selected, just summon normal pets and exit
   if ( !talent.elemental_spirits->ok() )
   {
-    pet.spirit_wolves.spawn( duration, 2u );
+    pet.spirit_wolves.spawn( duration, 2U );
     return;
   }
 
@@ -9361,7 +9361,7 @@ void shaman_t::reset()
     elem->reset();
 
   vesper_totem = nullptr;
-  lotfw_counter = 0u;
+  lotfw_counter = 0U;
 }
 
 // shaman_t::merge ==========================================================

@@ -3232,7 +3232,7 @@ void player_t::create_buffs()
       auto memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
       buffs.lucid_dreams = make_buff<stat_buff_t>( this, "lucid_dreams", find_spell( 298343 ) );
       buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
-        memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
+        memory_of_lucid_dreams.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
           memory_of_lucid_dreams.item() ) );
       buffs.lucid_dreams->set_quiet( memory_of_lucid_dreams.rank() < 3 );
 
@@ -3257,10 +3257,10 @@ void player_t::create_buffs()
       auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
       buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
       buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-        ripple_in_space.spell_ref(1u, essence_type::MINOR).effectN( 2 ).average(
+        ripple_in_space.spell_ref(1U, essence_type::MINOR).effectN( 2 ).average(
           ripple_in_space.item() ) );
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
-        + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
+        + timespan_t::from_seconds( ripple_in_space.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
 
       buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
@@ -11757,7 +11757,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
 
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
-  unsigned size = std::min( as<unsigned>( p.sim->iterations ), 2048u );
+  unsigned size = std::min( as<unsigned>( p.sim->iterations ), 2048U );
   fight_length.reserve( size );
   // DMG
   dmg.reserve( size );

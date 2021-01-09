@@ -1786,8 +1786,8 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
 void paladin_t::vision_of_perfection_proc()
 {
   auto vision = azerite_essence.vision_of_perfection;
-  double vision_multiplier = vision.spell( 1u, essence_type::MAJOR ) -> effectN( 1 ).percent() +
-                             vision.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
+  double vision_multiplier = vision.spell( 1U, essence_type::MAJOR ) -> effectN( 1 ).percent() +
+                             vision.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
   if ( vision_multiplier <= 0 )
     return;
 
@@ -2298,7 +2298,7 @@ void paladin_t::init_spells()
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
+  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR ) -> effectN( 1 ).percent();
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 
   // Shadowlands legendaries
@@ -3055,17 +3055,17 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
     return nullptr;
   }
 
-  if ( ! util::str_compare_ci( expr[ 0u ], "consecration" ) )
+  if ( ! util::str_compare_ci( expr[ 0U ], "consecration" ) )
   {
     return nullptr;
   }
 
-  if ( util::str_compare_ci( expr[ 1u ], "ticking" ) ||
-       util::str_compare_ci( expr[ 1u ], "up" ) )
+  if ( util::str_compare_ci( expr[ 1U ], "ticking" ) ||
+       util::str_compare_ci( expr[ 1U ], "up" ) )
   {
     return make_fn_expr( "consecration_ticking", [ this ]() { return active_consecration == nullptr ? 0 : 1; } );
   }
-  else if ( util::str_compare_ci( expr[ 1u ], "remains" ) )
+  else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
   {
     return make_fn_expr( "consecration_remains", [ this ]() {
       return active_consecration == nullptr ? 0 : active_consecration -> remaining_time().total_seconds();

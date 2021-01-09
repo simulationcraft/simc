@@ -972,13 +972,13 @@ void warlock_t::init_spells()
 
   // BFA - Essence
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  spells.memory_of_lucid_dreams_base     = azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR );
 
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
   strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
   vision_of_perfection_multiplier =
-      azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent() +
-      azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )
+      azerite_essence.vision_of_perfection.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent() +
+      azerite_essence.vision_of_perfection.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )
           ->effectN( 1 )
           .percent();
 }

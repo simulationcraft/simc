@@ -65,7 +65,7 @@ void add_non_zero( JsonOutput root, util::string_view name, int v )
 { add_non_default( root, name, v, 0 ); }
 
 void add_non_zero( JsonOutput root, util::string_view name, unsigned v )
-{ add_non_default( root, name, v, 0u ); }
+{ add_non_default( root, name, v, 0U ); }
 
 void add_non_zero( JsonOutput root, util::string_view name, bool v )
 { add_non_default( root, name, v, false ); }

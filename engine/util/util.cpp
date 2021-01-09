@@ -3320,7 +3320,7 @@ double approx_sqrt(double number)
 {
   if (number > 0.0)
   {
-    float xhalf = 0.5f * static_cast<float>(number);
+    float xhalf = 0.5F * static_cast<float>(number);
     union
     {
       float x;
@@ -3328,7 +3328,7 @@ double approx_sqrt(double number)
     } u;
     u.x = static_cast<float>(number);
     u.i = 0x5f3759df - (u.i >> 1);
-    u.x = u.x * (1.5f - xhalf * u.x * u.x);
+    u.x = u.x * (1.5F - xhalf * u.x * u.x);
     return static_cast<double>(u.x * number);
   }
   return 0.0;

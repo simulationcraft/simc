@@ -2267,8 +2267,8 @@ void sim_t::init_fight_style()
   else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
   {
     // Phase 1 - Adds and move into position to fight adds
-    auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1u );
-    auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1u );
+    auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1U );
+    auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1U );
     auto last = static_cast<unsigned>( max_time.total_seconds() * 0.75 );
 
     raid_events_str += fmt::format( "/adds,count=5,first={},cooldown={},duration={},last={}",
@@ -2279,7 +2279,7 @@ void sim_t::init_fight_style()
 
     // Phase2 - Move out of stuff
     auto first2 = static_cast<unsigned>( max_time.total_seconds() * 0.03 );
-    auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1u );
+    auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1U );
 
     raid_events_str += fmt::format( "/movement,players_only=1,distance=8,first={},cooldown={}",
                                     first2, cooldown2 );
@@ -3257,7 +3257,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1u && !has_raid_event( "adds" ) )
+    if ( target_list.size() == 1U && !has_raid_event( "adds" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }
