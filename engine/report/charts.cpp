@@ -4,23 +4,25 @@
 // ==========================================================================
 
 #include "charts.hpp"
-#include "sc_highchart.hpp"
 
 #include "action/sc_action.hpp"
 #include "dbc/dbc.hpp"
-#include "player/player_scaling.hpp"
 #include "player/gear_stats.hpp"
+#include "player/pet.hpp"
+#include "player/player_scaling.hpp"
 #include "player/sc_player.hpp"
 #include "player/stats.hpp"
-#include "player/pet.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
+#include "sc_highchart.hpp"
 #include "sim/reforge_plot.hpp"
-#include "util/util.hpp"
 #include "util/sample_data.hpp"
+#include "util/util.hpp"
 
 #include <clocale>
 #include <cmath>
+#include <utility>
+
 
 using namespace js;
 
@@ -30,7 +32,7 @@ namespace
 struct filter_non_performing_players
 {
   std::string type;
-  filter_non_performing_players( std::string type_ ) : type( type_ )
+  filter_non_performing_players( std::string type_ ) : type( std::move(type_) )
   {
   }
   bool operator()( player_t* p ) const
@@ -887,7 +889,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   return true;
 }
 
-bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string title,
+bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string& title,
                                     const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )

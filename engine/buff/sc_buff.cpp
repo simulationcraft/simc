@@ -4,23 +4,25 @@
 // ==========================================================================
 
 #include "sc_buff.hpp"
-#include "dbc/spell_data.hpp"
-#include "player/target_specific.hpp"
-#include "player/sc_player.hpp"
-#include "dbc/dbc.hpp"
-#include "sim/sc_expressions.hpp"
+
 #include "action/sc_action.hpp"
+#include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
+#include "dbc/spell_data.hpp"
+#include "player/expansion_effects.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "player/target_specific.hpp"
 #include "sim/event.hpp"
-#include "sim/sc_sim.hpp"
 #include "sim/real_ppm.hpp"
-#include "util/rng.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
-#include "dbc/item_database.hpp"
-#include "player/expansion_effects.hpp"
-#include "player/stats.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/rng.hpp"
 
 #include <sstream>
+#include <utility>
+
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -2773,7 +2775,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
   }
 }
 
-stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool( const stat_buff_t& )> c )
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool( const stat_buff_t& )>& c )
 {
   if ( !manual_stats_added )
   {
@@ -3084,7 +3086,7 @@ absorb_buff_t* absorb_buff_t::set_absorb_high_priority( bool hp )
 
 absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
 {
-  eligibility = e;
+  eligibility = std::move(e);
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
   return this;

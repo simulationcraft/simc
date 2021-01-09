@@ -43,14 +43,14 @@ SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search
   }
 }
 
-void SC_TextEdit::addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
+void SC_TextEdit::addIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s )
 {
   QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
   if ( !ignoreKeys.contains( p ) )
     ignoreKeys.push_back( p );
 }
 
-bool SC_TextEdit::removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
+bool SC_TextEdit::removeIgnoreKeyPressEvent( Qt::Key k, const QList<Qt::KeyboardModifier>& s )
 {
   QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
   return ignoreKeys.removeAll( p );

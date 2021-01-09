@@ -11,8 +11,8 @@
 #include "action/dot.hpp"
 #include "action/heal.hpp"
 #include "action/residual_action.hpp"
-#include "action/sc_action_state.hpp"
 #include "action/sc_action.hpp"
+#include "action/sc_action_state.hpp"
 #include "action/sequence.hpp"
 #include "action/snapshot_stats.hpp"
 #include "action/spell.hpp"
@@ -22,8 +22,8 @@
 #include "dbc/azerite.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
-#include "dbc/specialization_spell.hpp"
 #include "dbc/rank_spells.hpp"
+#include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
@@ -40,9 +40,9 @@
 #include "player/player_scaling.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/set_bonus.hpp"
+#include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
-#include "player/soulbinds.hpp"
 #include "player/unique_gear.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
@@ -57,13 +57,15 @@
 #include "util/rng.hpp"
 #include "util/util.hpp"
 
+#include <cctype>
 #include <cerrno>
+#include <iostream>
 #include <limits>
 #include <memory>
 #include <sstream>
-#include <cctype>
 #include <stdexcept>
-#include <iostream>
+#include <utility>
+
 
 namespace
 {
@@ -11444,7 +11446,7 @@ void player_t::change_position( position_e new_pos )
 void player_t::register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
     bool use_pct, bool fire_once)
 {
-  resource_callback_entry_t entry{resource, value, use_pct, fire_once, false, callback};
+  resource_callback_entry_t entry{resource, value, use_pct, fire_once, false, std::move(callback)};
   resource_callbacks.push_back(entry);
   has_active_resource_callbacks = true;
   sim->print_debug("{} resource callback registered. resource={} value={} pct={} fire_once={}",

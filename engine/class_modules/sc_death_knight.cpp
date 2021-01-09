@@ -3797,7 +3797,7 @@ struct blood_boil_t : public death_knight_spell_t
 
 struct blood_tap_t : public death_knight_spell_t
 {
-  blood_tap_t( death_knight_t* p, const std::string options_str ) :
+  blood_tap_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "blood_tap", p, p -> talent.blood_tap )
   {
     parse_options( options_str );

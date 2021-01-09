@@ -3,10 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "darkmoon_deck.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
+
+#include <utility>
+
+#include "simulationcraft.hpp"
 
 using namespace unique_gear;
 
@@ -2285,7 +2288,7 @@ struct riftworld_codex_callback_t : public dbc_proc_callback_t
   std::vector<buff_t*> buffs;
 
   riftworld_codex_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move(b) )
   {}
 
   void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
@@ -2394,7 +2397,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
   {
     struct common_buff_t : public stat_buff_t
     {
-      common_buff_t( player_t* p, std::string n, const spell_data_t* spell, const item_t* item, stat_e stat ) :
+      common_buff_t( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item, stat_e stat ) :
         stat_buff_t ( p, "deathbringers_will_" + n, spell )
       {
         const double buff_amount = item_database::apply_combat_rating_multiplier(*item,
@@ -2464,7 +2467,7 @@ struct memento_callback_t : public dbc_proc_callback_t
   std::vector<buff_t*> buffs;
 
   memento_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    dbc_proc_callback_t( effect.item, effect ), buffs( std::move(b) )
   {}
 
   void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
@@ -4416,7 +4419,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
   std::vector<natures_call_proc_t*> procs;
 
   natures_call_callback_t( const special_effect_t& effect, std::vector<natures_call_proc_t*> p ) :
-    dbc_proc_callback_t( effect.item, effect ), procs( p )
+    dbc_proc_callback_t( effect.item, effect ), procs( std::move(p) )
   {}
 
   void execute( action_t* /* a */, action_state_t* call_data ) override

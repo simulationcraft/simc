@@ -974,7 +974,7 @@ std::string item_t::encoded_item() const
       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
     s << ",gems=" << encoded_gems();
 
-  auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned> v ) {
+  auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned>& v ) {
     return v.size() > 0;
   } );
 

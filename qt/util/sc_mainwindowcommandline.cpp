@@ -8,6 +8,8 @@
 #include "ImportTab.hpp"
 #include "util/generic.hpp"
 
+#include <utility>
+
 SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent )
   : QWidget( parent ), statesStackedLayout( nullptr ), current_tab( CMDLINE_TAB_WELCOME ), current_state( IDLE )
 {
@@ -21,7 +23,7 @@ SC_MainWindowCommandLine::state_e SC_MainWindowCommandLine::currentState() const
 
 void SC_MainWindowCommandLine::setSimulatingProgress( int value, QString format, QString toolTip )
 {
-  updateProgress( PROGRESSBAR_SIMULATING, value, format, toolTip );
+  updateProgress( PROGRESSBAR_SIMULATING, value, std::move(format), std::move(toolTip) );
 }
 
 int SC_MainWindowCommandLine::getSimulatingProgress()
@@ -31,7 +33,7 @@ int SC_MainWindowCommandLine::getSimulatingProgress()
 
 void SC_MainWindowCommandLine::setImportingProgress( int value, QString format, QString toolTip )
 {
-  updateProgress( PROGRESSBAR_IMPORTING, value, format, toolTip );
+  updateProgress( PROGRESSBAR_IMPORTING, value, std::move(format), std::move(toolTip) );
 }
 
 int SC_MainWindowCommandLine::getImportingProgress()
@@ -41,7 +43,7 @@ int SC_MainWindowCommandLine::getImportingProgress()
 
 void SC_MainWindowCommandLine::setHelpViewProgress( int value, QString format, QString toolTip )
 {
-  updateProgress( PROGRESSBAR_HELP, value, format, toolTip );
+  updateProgress( PROGRESSBAR_HELP, value, std::move(format), std::move(toolTip) );
 }
 
 int SC_MainWindowCommandLine::getHelpViewProgress()
@@ -82,22 +84,22 @@ QString SC_MainWindowCommandLine::commandLineText( tabs_e tab )
 void SC_MainWindowCommandLine::setCommandLineText( QString text )
 {
   // sets commandline text for the current tab
-  setCommandLineText( current_tab, text );
+  setCommandLineText( current_tab, std::move(text) );
 }
 
 void SC_MainWindowCommandLine::setCommandLineText( main_tabs_e tab, QString text )
 {
-  setCommandLineText( convertTabsEnum( tab ), text );
+  setCommandLineText( convertTabsEnum( tab ), std::move(text) );
 }
 
 void SC_MainWindowCommandLine::setCommandLineText( import_tabs_e tab, QString text )
 {
-  setCommandLineText( convertTabsEnum( tab ), text );
+  setCommandLineText( convertTabsEnum( tab ), std::move(text) );
 }
 
 void SC_MainWindowCommandLine::setCommandLineText( tabs_e tab, QString text )
 {
-  adjustText( current_state, tab, TEXTEDIT_CMDLINE, text );
+  adjustText( current_state, tab, TEXTEDIT_CMDLINE, std::move(text) );
   updateWidget( current_state, tab, TEXTEDIT_CMDLINE );
 }
 
@@ -633,7 +635,7 @@ void SC_MainWindowCommandLine::adjustText( state_e state, tabs_e tab, widgets_e 
   // only change the text's value, not where it points to, only if its not null
   if ( states[ state ][ tab ][ widget ].text != nullptr )
   {
-    ( *states[ state ][ tab ][ widget ].text ) = text;
+    ( *states[ state ][ tab ][ widget ].text ) = std::move(text);
   }
 }
 
@@ -740,7 +742,7 @@ void SC_MainWindowCommandLine::setWidget( state_e state, widgets_e widget, QWidg
 void SC_MainWindowCommandLine::setProgressBarFormat( progressbar_states_e state, QString format, bool update )
 {
   // sets the QProgressBar->setFormat(format) text value for the specified state's progress bar
-  progressBarFormat[ state ].text = format;
+  progressBarFormat[ state ].text = std::move(format);
   if ( update && getProgressBarStateForState( current_state, current_tab ) == state )
   {
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
@@ -749,7 +751,7 @@ void SC_MainWindowCommandLine::setProgressBarFormat( progressbar_states_e state,
 
 void SC_MainWindowCommandLine::setProgressBarToolTip( progressbar_states_e state, QString toolTip, bool update )
 {
-  progressBarFormat[ state ].tool_tip = toolTip;
+  progressBarFormat[ state ].tool_tip = std::move(toolTip);
   if ( update && getProgressBarStateForState( current_state, current_tab ) == state )
   {
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
@@ -758,8 +760,8 @@ void SC_MainWindowCommandLine::setProgressBarToolTip( progressbar_states_e state
 
 void SC_MainWindowCommandLine::updateProgress( progressbar_states_e state, int value, QString format, QString toolTip )
 {
-  setProgressBarFormat( state, format );
-  setProgressBarToolTip( state, toolTip );
+  setProgressBarFormat( state, std::move(format) );
+  setProgressBarToolTip( state, std::move(toolTip) );
   setProgressBarProgress( state, value );
 }
 

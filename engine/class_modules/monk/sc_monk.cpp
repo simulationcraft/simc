@@ -3818,7 +3818,7 @@ struct fallen_order_t : public monk_spell_t
     monk_t* p;
 
     fallen_order_event_t( monk_t* monk, std::vector<std::pair<specialization_e, timespan_t>> fm, timespan_t interval )
-      : event_t( *monk, interval ), fallen_monks( fm ), summon_interval( interval ), p( monk )
+      : event_t( *monk, interval ), fallen_monks( std::move(fm) ), summon_interval( interval ), p( monk )
     {
     }
 
@@ -3853,7 +3853,7 @@ struct fallen_order_t : public monk_spell_t
       fallen_monks.erase( fallen_monks.begin() );
 
       if ( !fallen_monks.empty() )
-        make_event<fallen_order_event_t>( sim(), p, fallen_monks, summon_interval );
+        make_event<fallen_order_event_t>( sim(), p, std::move(fallen_monks), summon_interval );
     }
   };
 
@@ -3931,7 +3931,7 @@ struct fallen_order_t : public monk_spell_t
       }
     }
 
-    make_event<fallen_order_event_t>( *sim, p(), fallen_monks, p()->covenant.venthyr->effectN( 1 ).period() * 3 );
+    make_event<fallen_order_event_t>( *sim, p(), std::move(fallen_monks), p()->covenant.venthyr->effectN( 1 ).period() * 3 );
   }
 };
 }  // namespace spells

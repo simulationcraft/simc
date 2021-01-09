@@ -2,13 +2,15 @@
 
 #include "lib/fmt/format.h"
 #include "report/reports.hpp"
+#include "sc_Workaround.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
-#include "sc_Workaround.hpp"
 #include "simulationcraftqt.hpp"
+
+#include <utility>
 
 namespace
 {
@@ -116,9 +118,9 @@ void SC_SimulateThread::run()
 
 void SC_SimulateThread::start( std::shared_ptr<sim_t> s, const QByteArray& o, QString t )
 {
-  sim          = s;
+  sim          = std::move(s);
   utf8_options = o;
   success      = false;
-  tabName      = t;
+  tabName      = std::move(t);
   QThread::start();
 }

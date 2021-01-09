@@ -3084,7 +3084,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 }
 
 void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data,
-                                       std::string data_name )
+                                       const std::string& data_name )
 {
   // Spelldata
   if ( data.ok() )

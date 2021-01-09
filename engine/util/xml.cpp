@@ -4,15 +4,18 @@
 // ==========================================================================
 
 #include "xml.hpp"
+
+#include "interfaces/sc_http.hpp"
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 #include "util/concurrency.hpp"
 #include "util/util.hpp"
-#include "interfaces/sc_http.hpp"
 
 #include <memory>
 #include <sstream>
 #include <unordered_map>
+#include <utility>
+
 
 using namespace rapidxml;
 
@@ -751,7 +754,7 @@ sc_xml_t::sc_xml_t() : root(nullptr)
 sc_xml_t::sc_xml_t(rapidxml::xml_node<char> * n) : buf(), root(n)
 { }
 
-sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(b), root_owner(std::move(n)), root(root_owner.get())
+sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(std::move(b)), root_owner(std::move(n)), root(root_owner.get())
 {
 }
 

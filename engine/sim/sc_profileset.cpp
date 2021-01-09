@@ -1255,7 +1255,7 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
   }
 }
 
-void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, std::string option )
+void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, const std::string& option )
 {
   // TODO: Make an enum to proper use a switch instead of if/else
   if ( option == "race") {
@@ -1365,7 +1365,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
   }
 }
 
-void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr )
+void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput& ovr )
 {
   if ( output_data.race() != RACE_NONE )
   {

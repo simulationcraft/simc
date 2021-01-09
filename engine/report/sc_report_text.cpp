@@ -1091,7 +1091,7 @@ void print_event_manager_infos( std::ostream& os, const sim_t& sim )
 #endif
 }
 
-void print_collected_amount( std::ostream& os, const player_t& p, std::string name, const extended_sample_data_t& sd )
+void print_collected_amount( std::ostream& os, const player_t& p, const std::string& name, const extended_sample_data_t& sd )
 {
   if ( sd.sum() <= 0.0 )
     return;
@@ -1159,7 +1159,7 @@ void print_player( std::ostream& os, player_t& p )
   print_waiting_player( os, p );
 }
 
-void print_player_sequence( std::ostream& os, sim_t* sim, std::vector<player_t*> players, bool detail )
+void print_player_sequence( std::ostream& os, sim_t* sim, const std::vector<player_t*>& players, bool detail )
 {
   (void) detail;
   for ( auto& player : players )

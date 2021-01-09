@@ -3189,7 +3189,7 @@ void util::print_chained_exception( const std::exception& e, std::ostream& out, 
   } catch(...) {}
 }
 
-void util::print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level)
+void util::print_chained_exception( const std::exception_ptr& eptr, std::ostream& out, int level)
 {
   try
   {

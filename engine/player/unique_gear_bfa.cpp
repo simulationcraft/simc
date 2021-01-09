@@ -3,11 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
-#include "pet_spawner.hpp"
 #include "darkmoon_deck.hpp"
+#include "pet_spawner.hpp"
 #include "util/static_map.hpp"
+
+#include <utility>
+
+#include "simulationcraft.hpp"
 
 using namespace unique_gear;
 
@@ -5550,7 +5552,7 @@ struct titanic_empowerment_cb_t : public dbc_proc_callback_t
   std::vector<buff_t*> proc_buffs;
 
   titanic_empowerment_cb_t( const special_effect_t& effect, std::vector<buff_t*> proc_buffs )
-    : dbc_proc_callback_t( effect.player, effect ), proc_buffs( proc_buffs )
+    : dbc_proc_callback_t( effect.player, effect ), proc_buffs( std::move(proc_buffs) )
   {
   }
 

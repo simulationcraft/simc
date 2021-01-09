@@ -392,7 +392,7 @@ struct stat_buff_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override { stack(); return stats[ 0 ].current_value; }
 
-  stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
+  stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
 
   stat_buff_t(actor_pair_t q, util::string_view name);
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );

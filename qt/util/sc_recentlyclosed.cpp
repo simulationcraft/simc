@@ -9,6 +9,8 @@
 #include "sc_tabbar.hpp"
 
 #include <cassert>
+#include <utility>
+
 
 // ============================================================================
 // SC_TabWidgetCloseAll
@@ -18,10 +20,10 @@ SC_TabWidgetCloseAll::SC_TabWidgetCloseAll( QWidget* parent, Qt::Corner corner, 
                                             QString closeAllWarningText, QString closeOthersWarningTitle,
                                             QString closeOthersWarningText )
   : QTabWidget( parent ),
-    closeAllTabsTitleText( closeAllWarningTitle ),
-    closeAllTabsBodyText( closeAllWarningText ),
-    closeOtherTabsTitleText( closeOthersWarningTitle ),
-    closeOtherTabsBodyText( closeOthersWarningText ),
+    closeAllTabsTitleText( std::move(closeAllWarningTitle) ),
+    closeAllTabsBodyText( std::move(closeAllWarningText) ),
+    closeOtherTabsTitleText( std::move(closeOthersWarningTitle) ),
+    closeOtherTabsBodyText( std::move(closeOthersWarningText) ),
     scTabBar( new SC_TabBar( this ) )
 {
   initTabBar();

@@ -1251,7 +1251,7 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     {
       struct common_buff_t : public stat_buff_t
       {
-        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+        common_buff_t( player_t* p, const item_t* i, const std::string& n, stat_e stat, int id ) :
           stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
         {
           add_stat( stat, p -> find_spell( id ) -> effectN( 1 ).average( *i ) );
@@ -1402,7 +1402,7 @@ void item::deathbringers_will( special_effect_t& effect )
     {
       struct common_buff_t : public stat_buff_t
       {
-        common_buff_t( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+        common_buff_t( player_t* p, const item_t* i, const std::string& n, stat_e stat, int id ) :
           stat_buff_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
         {
           add_stat( stat, p -> find_spell( id ) -> effectN( 2 ).average( *i ) );
@@ -1641,7 +1641,7 @@ void item::legendary_ring( special_effect_t& effect )
       action_t* boom;
       player_t* p;
 
-      legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
+      legendary_ring_buff_t( special_effect_t& originaleffect, const std::string& name, const spell_data_t* buff, const spell_data_t* damagespell ):
         buff_t( originaleffect.player, name, buff, originaleffect.item ),
         boom( nullptr ), p( originaleffect.player )
       {
@@ -3851,7 +3851,7 @@ struct item_effect_base_expr_t : public expr_t
 {
   std::vector<const special_effect_t*> effects;
 
-  item_effect_base_expr_t( player_t& player, const std::vector<slot_e> slots ) :
+  item_effect_base_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
     expr_t( "item_effect_base_expr" )
   {
     const special_effect_t* e = nullptr;
@@ -3875,7 +3875,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 {
   std::vector<std::unique_ptr<expr_t>> exprs;
 
-  item_effect_expr_t( player_t& player, const std::vector<slot_e> slots ) :
+  item_effect_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
     item_effect_base_expr_t( player, slots )
   { }
 
@@ -3900,7 +3900,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 // user input
 struct item_buff_expr_t : public item_effect_expr_t
 {
-  item_buff_expr_t( player_t& player, const std::vector<slot_e> slots, stat_e s, bool stacking, util::string_view expr_str ) :
+  item_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, bool stacking, util::string_view expr_str ) :
     item_effect_expr_t( player, slots )
   {
     for (auto e : effects)

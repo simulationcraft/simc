@@ -140,7 +140,7 @@ bool SC_SimulateTab::wrapToBeginning()
   return false;
 }
 
-void SC_SimulateTab::insertNewTabAt( int index, const QString text, const QString title )
+void SC_SimulateTab::insertNewTabAt( int index, const QString& text, const QString& title )
 {
   if ( index < 0 || index > count() )
     index = currentIndex();

@@ -1577,7 +1577,7 @@ struct dot_debuff_t
   double value;
   bool use_stacks;
 
-  dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v, bool b ) : func( f ), value( v ), use_stacks( b ) {}
+  dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v, bool b ) : func( std::move(f) ), value( v ), use_stacks( b ) {}
 };
 
 struct free_cast_stats_t
@@ -1991,7 +1991,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( std::function<dot_t*( druid_td_t* )> func, bool use_stacks, const spell_data_t* s_data,
+  void parse_dot_debuffs( const std::function<dot_t*( druid_td_t* )>& func, bool use_stacks, const spell_data_t* s_data,
                           Ts... mods )
   {
     if ( !s_data->ok() )
@@ -7245,7 +7245,7 @@ struct persistent_delay_event_t : public event_t
     : persistent_delay_event_t( p, [ b ]() { b->execute(); }, b->buff_period )
   {}
 
-  persistent_delay_event_t( druid_t* p, std::function<void()> fn, timespan_t d ) : event_t( *p ), exec_fn( fn )
+  persistent_delay_event_t( druid_t* p, std::function<void()> fn, timespan_t d ) : event_t( *p ), exec_fn( std::move(fn) )
   {
     schedule( rng().real() * d );
   }

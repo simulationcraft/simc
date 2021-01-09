@@ -25,7 +25,7 @@ namespace chart
     bool percent = false);
   bool generate_gains(highchart::pie_chart_t&, const player_t&, resource_e);
   bool generate_spent_time(highchart::pie_chart_t&, const player_t&);
-  bool generate_stats_sources(highchart::pie_chart_t&, const player_t&, const std::string title,
+  bool generate_stats_sources(highchart::pie_chart_t&, const player_t&, const std::string& title,
     const std::vector<stats_t*>& stats_list);
   bool generate_damage_stats_sources(highchart::pie_chart_t&, const player_t&);
   bool generate_heal_stats_sources(highchart::pie_chart_t&, const player_t&);
