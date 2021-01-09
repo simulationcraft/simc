@@ -794,10 +794,7 @@ public:
   virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
-  virtual std::string init_use_item_actions( const std::string& append = std::string() );
-  virtual std::string init_use_profession_actions( const std::string& append = std::string() );
-  virtual std::string init_use_racial_actions( const std::string& append = std::string() );
-  virtual std::vector<std::string> get_item_actions( const std::string& options = std::string() );
+  virtual std::vector<std::string> get_item_actions();
   virtual std::vector<std::string> get_profession_actions();
   virtual std::vector<std::string> get_racial_actions();
   virtual void init_target();
