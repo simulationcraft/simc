@@ -5745,7 +5745,7 @@ void monk_t::init_spells()
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
   spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
-  spec.two_hand_adjustment       = find_spell( 346104 );
+  spec.two_hand_adjustment       = find_specialization_spell( 346104 );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );
@@ -7564,73 +7564,37 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   auto splits = util::string_split<util::string_view>( name_str, "." );
   if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
   {
-    struct stagger_threshold_expr_t : public expr_t
-    {
-      monk_t& player;
-      double stagger_health_pct;
-      stagger_threshold_expr_t( monk_t& p, double stagger_health_pct )
-        : expr_t( "stagger_threshold_" + util::to_string( stagger_health_pct ) ),
-          player( p ),
-          stagger_health_pct( stagger_health_pct )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player.current_stagger_tick_dmg_percent() > stagger_health_pct;
-      }
-    };
-    // WoW API has this as the 16th node from UnitDebuff
-    struct stagger_amount_expr_t : public expr_t
-    {
-      monk_t& player;
-      stagger_amount_expr_t( monk_t& p ) : expr_t( "stagger_amount" ), player( p )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player.current_stagger_tick_dmg();
-      }
-    };
-    struct stagger_percent_expr_t : public expr_t
-    {
-      monk_t& player;
-      stagger_percent_expr_t( monk_t& p ) : expr_t( "stagger_percent" ), player( p )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player.current_stagger_tick_dmg_percent() * 100;
-      }
-    };
-    // This is the current stagger amount remaining compared to the total amount of the stagger dot
-    struct stagger_amount_to_total_percent_expr_t : public expr_t
-    {
-      monk_t& player;
-      stagger_amount_to_total_percent_expr_t( monk_t& p ) : expr_t( "stagger_amount_to_total_percent" ), player( p )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player.current_stagger_amount_remains_to_total_percent() * 100;
-      }
+    auto create_stagger_threshold_expression = []( util::string_view name_str, monk_t* p, double stagger_health_pct ) {
+      return make_fn_expr(
+          name_str, [ p, stagger_health_pct ] { return p->current_stagger_tick_dmg_percent() > stagger_health_pct; } );
     };
 
     if ( splits[ 1 ] == "light" )
-      return std::make_unique<stagger_threshold_expr_t>( *this, light_stagger_threshold );
+    {
+      return create_stagger_threshold_expression( name_str, this, light_stagger_threshold );
+    }
     else if ( splits[ 1 ] == "moderate" )
-      return std::make_unique<stagger_threshold_expr_t>( *this, moderate_stagger_threshold );
+    {
+      return create_stagger_threshold_expression( name_str, this, moderate_stagger_threshold );
+    }
     else if ( splits[ 1 ] == "heavy" )
-      return std::make_unique<stagger_threshold_expr_t>( *this, heavy_stagger_threshold );
+    {
+      return create_stagger_threshold_expression( name_str, this, heavy_stagger_threshold );
+    }
     else if ( splits[ 1 ] == "amount" )
-      return std::make_unique<stagger_amount_expr_t>( *this );
+    {
+      // WoW API has this as the 16th node from UnitDebuff
+      return make_fn_expr( name_str, [ this ] { return current_stagger_tick_dmg(); } );
+    }
     else if ( splits[ 1 ] == "pct" )
-      return std::make_unique<stagger_percent_expr_t>( *this );
+    {
+      return make_fn_expr( name_str, [ this ] { return current_stagger_tick_dmg_percent() * 100; } );
+    }
     else if ( splits[ 1 ] == "amounttototalpct" )
-      return std::make_unique<stagger_amount_to_total_percent_expr_t>( *this );
+    {
+      // This is the current stagger amount remaining compared to the total amount of the stagger dot
+      return make_fn_expr( name_str, [ this ] { return current_stagger_amount_remains_to_total_percent() * 100; } );
+    }
     else if ( splits[ 1 ] == "remains" )
     {
       return make_fn_expr( name_str, [ this ]() { return current_stagger_dot_remains(); } );
@@ -7663,21 +7627,10 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 
   else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
-    struct sck_stack_expr_t : public expr_t
-    {
-      monk_t& player;
-      sck_stack_expr_t( monk_t& p ) : expr_t( "sck_count" ), player( p )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player.mark_of_the_crane_counter();
-      }
-    };
-
     if ( splits[ 1 ] == "count" )
-      return std::make_unique<sck_stack_expr_t>( *this );
+    {
+      return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
+    }
   }
 
   return base_t::create_expression( name_str );
@@ -7692,22 +7645,10 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.windwalker_monk );
   action.apply_affecting_aura( spec.mistweaver_monk );
 
-  if ( ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER ) &&
-       main_hand_weapon.group() == weapon_e::WEAPON_1H )
+  if ( main_hand_weapon.group() == weapon_e::WEAPON_1H )
+  {
     action.apply_affecting_aura( spec.two_hand_adjustment );
-
-  // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
-  //   action.gcd_type = gcd_haste_type::HASTE;
-
-  // if ( action.data().affected_by( spec.windwalker_monk->effectN( 14 ) ) )
-  //   action.trigger_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-
-  // // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-  // if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 16 ) ) )
-  // {
-  //   action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 16 ).base_value() ) / 100.0;
-  //   action.gcd_type = gcd_haste_type::NONE;
-  // }
+  }
 }
 
 void monk_t::merge( player_t& other )
@@ -7885,10 +7826,10 @@ struct monk_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r ) const override
   {
     auto p              = new monk_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new monk_report_t( *p ) );
+    p->report_extension = std::make_unique<monk_report_t>( *p );
     return p;
   }
   bool valid() const override
@@ -7915,15 +7856,6 @@ struct monk_module_t : public module_t
         .operation( hotfix::HOTFIX_ADD )
         .modifier( 2 )
         .verification_value( 0 );
-    /*    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds
-       per
-       rank (was 3 seconds per rank). [SEF]", 739336) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier(
-       -5000 ) .verification_value( -3000 ); hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown
-       reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 739336) .field( "base_value" )
-          .operation( hotfix::HOTFIX_SET )
-          .modifier( -5000 )
-          .verification_value( -3000 );
-    */
   }
 
   void init( player_t* p ) const override
