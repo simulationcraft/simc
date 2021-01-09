@@ -347,11 +347,10 @@ std::shared_ptr<xml_node_t> xml_node_t::create( const std::string& input )
 {
   std::shared_ptr<xml_node_t> root = std::make_shared<xml_node_t>( "root" );
 
-  std::string buffer = input;
   std::string::size_type index = 0;
 
   if ( root )
-    root -> create_children( buffer, index );
+    root -> create_children( input, index );
 
   return root;
 }
