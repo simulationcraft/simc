@@ -1002,7 +1002,7 @@ public:
   {
     if ( o()->buff.combo_strikes->up() && o()->talent.hit_combo->ok() )
       buff.hit_combo_sef->trigger();
-    
+
     if ( ability >= SEF_SPELL_MIN )
     {
       auto spell_index = sef_spell_index( ability );

@@ -5,11 +5,12 @@
 
 #pragma once
 
-#include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
 
-namespace monk {
- 
+#include "simulationcraft.hpp"
+
+namespace monk
+{
 namespace actions
 {
 namespace spells
@@ -19,7 +20,7 @@ struct stagger_self_damage_t;
 }  // namespace actions
 namespace pets
 {
-  struct storm_earth_and_fire_pet_t;
+struct storm_earth_and_fire_pet_t;
 }
 
 struct monk_t;
@@ -217,7 +218,7 @@ public:
     buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dance_of_chiji;
-    buff_t* dance_of_chiji_hidden; // Used for trigger DoCJ ticks
+    buff_t* dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     buff_t* dizzying_kicks;
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
@@ -611,25 +612,27 @@ public:
     const spell_data_t* kyrian;
 
     // Night Fae
-    // Faeline Stomp - Strike the ground fiercely to expose a faeline for 30 sec, dealing (X% of Attack power) Nature damage
-    // Brewmaster - and igniting enemies with Breath of Fire
-    // Mistweaver - and healing allies with an Essence Font bolt
-    // Windwalker - and ripping Chi and Energy Spheres out of enemies
-    // Your abilities have a 6% chance of resetting the cooldown of Faeline Stomp while fighting on a faeline.
+    // Faeline Stomp - Strike the ground fiercely to expose a faeline for 30 sec, dealing (X% of Attack power) Nature
+    // damage Brewmaster - and igniting enemies with Breath of Fire Mistweaver - and healing allies with an Essence Font
+    // bolt Windwalker - and ripping Chi and Energy Spheres out of enemies Your abilities have a 6% chance of resetting
+    // the cooldown of Faeline Stomp while fighting on a faeline.
     const spell_data_t* night_fae;
 
     // Venthyr
     // Fallen Order
-    // Opens a mystic portal for 24 sec. Every 2 sec, it summons a spirit of your order's fallen Ox, Crane, or Tiger adepts for 4 sec.
-    // Fallen [Ox][Crane][Tiger] adepts assist for an additional 2 sec, and will [attack your enemies with Breath of Fire][heal with Enveloping Mist][assault with Fists of Fury].
+    // Opens a mystic portal for 24 sec. Every 2 sec, it summons a spirit of your order's fallen Ox, Crane, or Tiger
+    // adepts for 4 sec. Fallen [Ox][Crane][Tiger] adepts assist for an additional 2 sec, and will [attack your enemies
+    // with Breath of Fire][heal with Enveloping Mist][assault with Fists of Fury].
     const spell_data_t* venthyr;
 
     // Necrolord
     // Bonedust Brew
-    // Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for 10 sec.  Your abilities have a 35% chance to affect the target a second time at 35% effectiveness as Shadow damage or healing.
+    // Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for 10 sec.  Your
+    // abilities have a 35% chance to affect the target a second time at 35% effectiveness as Shadow damage or healing.
     // Mistweaver - Gust of Mists heals targets with your Bonedust Brew active for an additional (42% of Attack power)
-    // Brewmaster - Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional 1 sec. when striking enemies with your Bonedust Brew active
-    // Windwalker - Spinning Crane Kick refunds 1 Chi when striking enemies with your Bonedust Brew active
+    // Brewmaster - Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional 1 sec. when striking
+    // enemies with your Bonedust Brew active Windwalker - Spinning Crane Kick refunds 1 Chi when striking enemies with
+    // your Bonedust Brew active
     const spell_data_t* necrolord;
   } covenant;
 
@@ -673,37 +676,37 @@ public:
   struct legendary_t
   {
     // General
-    item_runeforge_t fatal_touch;                        // 7081
-    item_runeforge_t invokers_delight;                   // 7082
-    item_runeforge_t swiftsure_wraps;                    // 7080
-    item_runeforge_t escape_from_reality;                // 7184
+    item_runeforge_t fatal_touch;          // 7081
+    item_runeforge_t invokers_delight;     // 7082
+    item_runeforge_t swiftsure_wraps;      // 7080
+    item_runeforge_t escape_from_reality;  // 7184
 
     // Brewmaster
-    item_runeforge_t charred_passions;                   // 7076
-    item_runeforge_t celestial_infusion;                 // 7078
-    item_runeforge_t shaohaos_might;                     // 7079
-    item_runeforge_t stormstouts_last_keg;               // 7077
+    item_runeforge_t charred_passions;      // 7076
+    item_runeforge_t celestial_infusion;    // 7078
+    item_runeforge_t shaohaos_might;        // 7079
+    item_runeforge_t stormstouts_last_keg;  // 7077
 
     // Mistweaver
-    item_runeforge_t ancient_teachings_of_the_monastery; // 7075
-    item_runeforge_t clouded_focus;                      // 7074
-    item_runeforge_t tear_of_morning;                    // 7072
-    item_runeforge_t yulons_whisper;                     // 7073
+    item_runeforge_t ancient_teachings_of_the_monastery;  // 7075
+    item_runeforge_t clouded_focus;                       // 7074
+    item_runeforge_t tear_of_morning;                     // 7072
+    item_runeforge_t yulons_whisper;                      // 7073
 
     // Windwalker
-    item_runeforge_t jade_ignition;                      // 7071
-    item_runeforge_t keefers_skyreach;                   // 7068
-    item_runeforge_t last_emperors_capacitor;            // 7069
-    item_runeforge_t xuens_treasure;                     // 7070
+    item_runeforge_t jade_ignition;            // 7071
+    item_runeforge_t keefers_skyreach;         // 7068
+    item_runeforge_t last_emperors_capacitor;  // 7069
+    item_runeforge_t xuens_treasure;           // 7070
   } legendary;
 
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t*, SEF_PET_MAX> sef;
-    pet_t* xuen = nullptr;
+    pet_t* xuen   = nullptr;
     pet_t* niuzao = nullptr;
-    pet_t* yulon   = nullptr;
-    pet_t* chiji   = nullptr;
+    pet_t* yulon  = nullptr;
+    pet_t* chiji  = nullptr;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_ww;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pet_t, monk_t> fallen_monk_brm;
@@ -824,9 +827,9 @@ public:
   double stagger_pct( int target_level );
   double stagger_total();
   void trigger_celestial_fortune( action_state_t* );
-  void trigger_bonedust_brew ( const action_state_t* );
+  void trigger_bonedust_brew( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*);
+  void trigger_empowered_tiger_lightning( action_state_t* );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
@@ -859,4 +862,4 @@ struct sef_despawn_cb_t
 
   void operator()( player_t* );
 };
-}
+}  // namespace monk
