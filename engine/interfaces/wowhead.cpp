@@ -278,7 +278,7 @@ bool wowhead::download_item_data( item_t&            item,
         if (!spell_links[i]->get_value(url, "a/href"))
           continue;
 
-        size_t begin = url.rfind("=");
+        size_t begin = url.rfind('=');
         if (begin == std::string::npos)
           continue;
         else

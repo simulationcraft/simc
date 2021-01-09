@@ -97,7 +97,7 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
   {
     enchant_name                              = enchant_source->name_cstr();
     std::string::size_type enchant_pos        = enchant_name.find( "Enchant " );
-    std::string::size_type enchant_hyphen_pos = enchant_name.find( "-" );
+    std::string::size_type enchant_hyphen_pos = enchant_name.find( '-' );
 
     // Cut out "Enchant XXX -" from the string, if it exists, also remove any
     // following whitespace. Consider that to be the enchant name. If "Enchant

@@ -823,7 +823,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       }
 
       // Kludge the rest
-      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 ) )
+      if ( dbc_name.find( '$' ) != dbc_name.npos || ( es && es -> id() > 0 ) )
       {
         if ( es && es -> id() > 0 )
         {

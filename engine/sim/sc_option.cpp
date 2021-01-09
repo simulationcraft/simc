@@ -94,7 +94,7 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
     do_replace( opts, str, next, ++depth );
   }
 
-  auto end = str.find( ")", begin + 2 );
+  auto end = str.find( ')', begin + 2 );
   if ( end == std::string::npos )
   {
     throw std::invalid_argument( fmt::format( "Unbalanced parenthesis in template variable for: '{}'", str ) );
@@ -762,7 +762,7 @@ void option_db_t::parse_token( util::string_view token )
   {
     do_replace( *this, parsed_token, parsed_token.find( "$(" ), 1 );
 
-    cut_pt = parsed_token.find( "=" );
+    cut_pt = parsed_token.find( '=' );
   }
 
   if ( cut_pt == token.npos )

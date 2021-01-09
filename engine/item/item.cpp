@@ -646,7 +646,7 @@ void item_t::parse_options()
   std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
   std::string DUMMY_CONTEXT; // not used by simc but used by 3rd parties (raidbots)
 
-  std::string::size_type cut_pt = options_str.find_first_of( "," );
+  std::string::size_type cut_pt = options_str.find_first_of( ',' );
 
   if ( cut_pt != options_str.npos )
   {

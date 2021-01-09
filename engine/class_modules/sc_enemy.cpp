@@ -1351,7 +1351,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
-  std::string::size_type cut_pt = heal_raid_event.find_first_of( "," );
+  std::string::size_type cut_pt = heal_raid_event.find_first_of( ',' );
   auto heal_options             = heal_raid_event.substr( cut_pt + 1 );
   auto heal_name                = heal_raid_event.substr( 0, cut_pt );
   auto raid_event               = raid_event_t::create( sim, heal_name, heal_options );
