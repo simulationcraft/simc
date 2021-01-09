@@ -503,6 +503,8 @@ struct final_reckoning_t : public paladin_spell_t
   {
     parse_options( options_str );
 
+    aoe = -1;
+
     if ( ! ( p -> talents.final_reckoning -> ok() ) )
       background = true;
   }
