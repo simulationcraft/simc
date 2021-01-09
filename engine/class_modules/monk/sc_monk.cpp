@@ -5232,8 +5232,7 @@ namespace monk
 // ==========================================================================
 
 // Debuffs ==================================================================
-monk_td_t::monk_td_t( player_t* target, monk_t* p )
-  : actor_target_data_t( target, p ), dots( dots_t() ), debuff( buffs_t() ), monk( *p )
+monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
   if ( p->specialization() == MONK_WINDWALKER )
   {
@@ -5313,11 +5312,10 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     mastery(),
     cooldown(),
     passives(),
-    rppm(),
     covenant(),
     conduit(),
     legendary(),
-    pets( pets_t( this ) ),
+    pets( this ),
     user_options(),
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
@@ -6092,8 +6090,6 @@ void monk_t::init_scaling()
     scaling->enable( STAT_WEAPON_OFFHAND_DPS );
 }
 
-// monk_t::init_buffs =======================================================
-
 // monk_t::create_buffs =====================================================
 
 void monk_t::create_buffs()
@@ -6351,22 +6347,6 @@ void monk_t::init_assessors()
   } );
 }
 
-// monk_t::init_rng =======================================================
-
-void monk_t::init_rng()
-{
-  player_t::init_rng();
-  if ( specialization() == MONK_BREWMASTER )
-    rppm.boiling_brew = get_rppm( "boiling_brew", find_spell( 272797 ) );
-}
-
-// monk_t::init_resources ===================================================
-
-void monk_t::init_resources( bool force )
-{
-  player_t::init_resources( force );
-}
-
 // monk_t::reset ============================================================
 
 void monk_t::reset()
@@ -6376,22 +6356,6 @@ void monk_t::reset()
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
   stagger_tick_damage.clear();
-}
-
-// monk_t::regen (brews/teas)================================================
-
-void monk_t::regen( timespan_t periodicity )
-{
-  // resource_e resource_type = primary_resource();
-
-  base_t::regen( periodicity );
-}
-
-// monk_t::interrupt =========================================================
-
-void monk_t::interrupt()
-{
-  player_t::interrupt();
 }
 
 // monk_t::matching_gear_multiplier =========================================
@@ -6417,13 +6381,6 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
   }
 
   return 0.0;
-}
-
-// monk_t::recalculate_resource_max =========================================
-
-void monk_t::recalculate_resource_max( resource_e r, gain_t* source )
-{
-  player_t::recalculate_resource_max( r, source );
 }
 
 // monk_t::create_storm_earth_and_fire_target_list ====================================
@@ -6559,11 +6516,7 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
     }
   }
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s storm_earth_and_fire %s (re)target=%s old_target=%s", name(), pet->name(),
-                           pet->target->name(), original_target->name() );
-  }
+  sim->print_debug( "{} {} (re)target={} old_target={}", *this, *pet, *pet->target, *original_target );
 
   range::for_each( pet->action_list,
                    [ pet ]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
@@ -6609,18 +6562,6 @@ double monk_t::stagger_total()
  */
 double shared_composite_haste_modifiers( const monk_t& p, double h )
 {
-  //  if ( p.buff.sephuzs_secret && p.buff.sephuzs_secret->check() )
-  //  {
-  //    h *= 1.0 / ( 1.0 + p.buff.sephuzs_secret->stack_value() );
-  //  }
-
-  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
-  // the fallback buff creator).
-  //  if ( p.legendary.sephuzs_secret && p.level() < 120 )
-  //  {
-  //    h *= 1.0 / ( 1.0 + p.legendary.sephuzs_secret->effectN( 3 ).percent() );
-  //  }
-
   if ( p.talent.high_tolerance->ok() )
   {
     int effect_index = 2;  // Effect index of HT affecting each stagger buff
@@ -6670,15 +6611,6 @@ double monk_t::composite_melee_crit_chance() const
   return crit;
 }
 
-// monk_t::composite_melee_crit_chance_multiplier ===========================
-
-double monk_t::composite_melee_crit_chance_multiplier() const
-{
-  double crit = player_t::composite_melee_crit_chance_multiplier();
-
-  return crit;
-}
-
 // monk_t::composite_spell_crit_chance ============================================
 
 double monk_t::composite_spell_crit_chance() const
@@ -6688,24 +6620,6 @@ double monk_t::composite_spell_crit_chance() const
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
   return crit;
-}
-
-// monk_t::composte_spell_crit_chance_multiplier===================================
-
-double monk_t::composite_spell_crit_chance_multiplier() const
-{
-  double crit = player_t::composite_spell_crit_chance_multiplier();
-
-  return crit;
-}
-
-// monk_t::composite_player_multiplier =====================================
-
-double monk_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  return m;
 }
 
 // monk_t::composite_attribute_multiplier =====================================
@@ -6720,15 +6634,6 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   }
 
   return cam;
-}
-
-// monk_t::composite_player_heal_multiplier ==================================
-
-double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  return m;
 }
 
 // monk_t::composite_melee_expertise ========================================
@@ -6752,11 +6657,6 @@ double monk_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double monk_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
-{
-  return player_t::composite_melee_attack_power_by_type( ap_type );
-}
-
 // monk_t::composite_attack_power_multiplier() ==========================
 
 double monk_t::composite_attack_power_multiplier() const
@@ -6769,22 +6669,13 @@ double monk_t::composite_attack_power_multiplier() const
   return ap;
 }
 
-// monk_t::composite_parry ==============================================
-
-double monk_t::composite_parry() const
-{
-  double p = player_t::composite_parry();
-
-  return p;
-}
-
 // monk_t::composite_dodge ==============================================
 
 double monk_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  if ( buff.elusive_brawler->up() )
+  if ( buff.elusive_brawler->check() )
     d += buff.elusive_brawler->current_stack * cache.mastery_value();
 
   return d;
@@ -6807,9 +6698,9 @@ double monk_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( buff.weapons_of_order->up() )
+  if ( buff.weapons_of_order->check() )
   {
-    m += buff.weapons_of_order->value();
+    m += buff.weapons_of_order->check_value();
     if ( conduit.strike_with_clarity->ok() )
       m += conduit.strike_with_clarity.value();
   }
@@ -6823,17 +6714,8 @@ double monk_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
 
-  if ( buff.combo_master->up() )
-    m += buff.combo_master->value();
-
-  return m;
-}
-
-// monk_t::composite_rating_multiplier =================================
-
-double monk_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
+  if ( buff.combo_master->check() )
+    m += buff.combo_master->check_value();
 
   return m;
 }
@@ -6846,17 +6728,10 @@ double monk_t::composite_base_armor_multiplier() const
 
   a *= 1 + spec.brewmasters_balance->effectN( 1 ).percent();
 
-  if ( buff.mighty_pour->up() )
+  if ( buff.mighty_pour->check() )
     a *= 1 + buff.mighty_pour->data().effectN( 1 ).percent();
 
   return a;
-}
-
-// monk_t::resource_gain ================================================
-
-double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
-{
-  return player_t::resource_gain( r, a, g, action );
 }
 
 // monk_t::temporary_movement_modifier =====================================
@@ -6865,30 +6740,13 @@ double monk_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-  //  if ( buff.sephuzs_secret->up() )
-  //    active = std::max( buff.sephuzs_secret->data().effectN( 1 ).percent(), active );
+  if ( buff.chi_torpedo->check() )
+    active = std::max( buff.chi_torpedo->check_stack_value(), active );
 
-  if ( buff.chi_torpedo->up() )
-    active = std::max( buff.chi_torpedo->stack_value(), active );
-
-  if ( buff.flying_serpent_kick_movement->up() )
-    active = std::max( buff.flying_serpent_kick_movement->value(), active );
+  if ( buff.flying_serpent_kick_movement->check() )
+    active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
 
   return active;
-}
-
-// monk_t::passive_movement_modifier =======================================
-
-double monk_t::passive_movement_modifier() const
-{
-  double ms = player_t::passive_movement_modifier();
-
-  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
-  // to 0 (by the fallback buff creator).
-  //  if ( legendary.sephuzs_secret && level() < 120 )
-  //    ms += legendary.sephuzs_secret->effectN( 2 ).percent();
-
-  return ms;
 }
 
 // monk_t::invalidate_cache ==============================================

@@ -68,7 +68,7 @@ inline unsigned sef_spell_index( sef_ability_e x )
 struct monk_td_t : public actor_target_data_t
 {
 public:
-  struct dots_t
+  struct
   {
     dot_t* breath_of_fire;
     dot_t* enveloping_mist;
@@ -81,7 +81,7 @@ public:
     dot_t* touch_of_karma;
   } dots;
 
-  struct buffs_t
+  struct
   {
     // Brewmaster
     buff_t* exploding_keg;
@@ -594,13 +594,6 @@ public:
     const spell_data_t* charred_passions_dmg;
   } passives;
 
-  // RPPM objects
-  struct rppms_t
-  {
-    // Azerite Traits
-    real_ppm_t* boiling_brew;
-  } rppm;
-
   // Covenant
   struct covenant_t
   {
@@ -746,28 +739,19 @@ public:
   action_t* create_action( util::string_view name, const std::string& options ) override;
   double composite_base_armor_multiplier() const override;
   double composite_melee_crit_chance() const override;
-  double composite_melee_crit_chance_multiplier() const override;
   double composite_spell_crit_chance() const override;
-  double composite_spell_crit_chance_multiplier() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_player_multiplier( school_e school ) const override;
-  double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_melee_expertise( const weapon_t* weapon ) const override;
   double composite_melee_attack_power() const override;
-  double composite_melee_attack_power_by_type( attack_power_type ap_type ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_parry() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;
   double composite_mastery_rating() const override;
   double composite_crit_avoidance() const override;
-  double composite_rating_multiplier( rating_e rating ) const override;
-  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double temporary_movement_modifier() const override;
-  double passive_movement_modifier() const override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
@@ -776,13 +760,8 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
-  void init_rng() override;
-  void init_resources( bool ) override;
-  void regen( timespan_t periodicity ) override;
   void reset() override;
-  void interrupt() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void create_options() override;
   void copy_from( player_t* ) override;
   resource_e primary_resource() const override;
