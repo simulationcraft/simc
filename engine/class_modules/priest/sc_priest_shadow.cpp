@@ -886,7 +886,7 @@ struct devouring_plague_t final : public priest_spell_t
     parse_options( options_str );
   }
 
-  action_state_t* new_state()
+  action_state_t* new_state() override
   {
     return new devouring_plague_dot_state_t( this, target );
   }

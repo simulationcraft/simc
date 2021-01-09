@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_buff.hpp"
+#include "dbc/spell_data.hpp"
 #include "player/target_specific.hpp"
 #include "player/sc_player.hpp"
 #include "dbc/dbc.hpp"
@@ -3225,7 +3226,7 @@ buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect 
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )
 {
-  return set_buff_mod( mod, nullptr, 0, multiplier );
+  return set_buff_mod( mod, spell_data_t::nil(), 0, multiplier );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier )
@@ -3247,19 +3248,19 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
 }
 
 damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
-{ return set_direct_mod( nullptr, 0, multiplier ); }
+{ return set_direct_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( direct_mod, s, effect_idx, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_periodic_mod( double multiplier )
-{ return set_periodic_mod( nullptr, 0, multiplier ); }
+{ return set_periodic_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( periodic_mod, s, effect_idx, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
-{ return set_auto_attack_mod( nullptr, 0, multiplier ); }
+{ return set_auto_attack_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }

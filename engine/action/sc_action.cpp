@@ -4367,7 +4367,7 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
   }
 
   // Don't swap targets if the action's current target is still alive
-  if ( !target->is_sleeping() && !target->debuffs.invulnerable->check() )
+  if ( target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;
   }
@@ -4377,7 +4377,7 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
     if ( sim->debug )
     {
       sim->out_debug.print( "{} {} target change, current={} candidate={}", *player, *this,
-                             target ? target->name() : "(none)", candidate_target->name() );
+                             target ? target->name() : "(none)", candidate_target ? candidate_target->name() : "(none)" );
     }
     target                = candidate_target;
   }

@@ -3155,7 +3155,7 @@ struct the_hunt_t : public demon_hunter_spell_t
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
   }
 
-  timespan_t travel_time() const
+  timespan_t travel_time() const override
   { return 100_ms; }
 };
 

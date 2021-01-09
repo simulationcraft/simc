@@ -2812,7 +2812,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
   }
 
-  void trigger_dot( action_state_t* s )
+  void trigger_dot( action_state_t* s ) override
   {
     dot_t* d = get_dot( s->target );
     timespan_t tick_remains = d->time_to_next_full_tick();

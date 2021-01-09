@@ -1377,7 +1377,7 @@ struct blessing_of_winter_proc_t : public paladin_spell_t
     background = true;
   }
 
-  virtual void init() override
+  void init() override
   {
     paladin_spell_t::init();
 
@@ -1386,13 +1386,13 @@ struct blessing_of_winter_proc_t : public paladin_spell_t
   }
 
   // Uses max(AP, SP)
-  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( s -> attack_power < s -> spell_power ) return 0;
     return data().effectN( 2 ).percent();
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( s -> spell_power <= s -> attack_power ) return 0;
     return data().effectN( 2 ).percent();

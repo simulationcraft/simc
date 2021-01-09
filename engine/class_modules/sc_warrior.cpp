@@ -2680,7 +2680,7 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
-      return c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
+      c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
     }
     if ( p()->buff.sudden_death->check() )
     {
@@ -5003,7 +5003,7 @@ struct condemn_arms_t : public warrior_attack_t
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
-      return c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
+      c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
     }
     if ( p()->buff.sudden_death->check() )
     {

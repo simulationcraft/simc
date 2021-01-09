@@ -205,43 +205,8 @@ namespace set_bonus
   void march_of_the_legion( special_effect_t& );
   void journey_through_time( special_effect_t& ); // NYI
 
-  // Generic passive stat aura adder for set bonuses
-  void passive_stat_aura( special_effect_t& );
   // Simple callback creator for set bonuses
   void simple_callback( special_effect_t& );
-}
-
-// TODO: Ratings
-void set_bonus::passive_stat_aura( special_effect_t& effect )
-{
-  const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
-  stat_e stat = STAT_NONE;
-  // Sanity check for stat-giving aura, either stats or aura type 465 ("bonus armor")
-  if ( spell -> effectN( 1 ).subtype() != A_MOD_STAT || spell -> effectN( 1 ).subtype() == A_465 )
-  {
-    effect.type = SPECIAL_EFFECT_NONE;
-    return;
-  }
-
-  if ( spell -> effectN( 1 ).subtype() == A_MOD_STAT )
-  {
-    if ( spell -> effectN( 1 ).misc_value1() >= 0 )
-    {
-      stat = static_cast< stat_e >( spell -> effectN( 1 ).misc_value1() + 1 );
-    }
-    else if ( spell -> effectN( 1 ).misc_value1() == -1 )
-    {
-      stat = STAT_ALL;
-    }
-  }
-  else
-  {
-    stat = STAT_BONUS_ARMOR;
-  }
-
-  double amount = ::util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
-
-  effect.player -> passive.add_stat( stat, amount );
 }
 
 void set_bonus::simple_callback( special_effect_t& effect )

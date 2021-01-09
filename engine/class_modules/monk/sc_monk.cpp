@@ -1839,7 +1839,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
     if ( state->target != target )
-      return cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
+      cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
 
     return cam;
   }
@@ -5167,7 +5167,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
     : monk_buff_t( p, n, s ), movement_increase( 0 )
   {
     set_tick_callback( [ &p, this ]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      range::for_each( p.windwalking_aura->target_list(), [ &p, this ]( player_t* target ) {
+      range::for_each( p.windwalking_aura->target_list(), [ this ]( player_t* target ) {
         target->buffs.windwalking_movement_aura->trigger( 1, ( movement_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
@@ -7279,7 +7279,6 @@ void monk_t::stagger_damage_changed( bool last_tick )
 
   buff_t* new_buff = nullptr;
   dot_t* dot       = nullptr;
-  int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
   if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
@@ -7290,17 +7289,14 @@ void monk_t::stagger_damage_changed( bool last_tick )
     if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
-      niuzao   = 3;
     }
     else if ( current_tick_dmg_per_max_health > 0.03 )
     {
       new_buff = buff.moderate_stagger;
-      niuzao   = 2;
     }
     else if ( current_tick_dmg_per_max_health > 0.0 )
     {
       new_buff = buff.light_stagger;
-      niuzao   = 1;
     }
   }
   sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );

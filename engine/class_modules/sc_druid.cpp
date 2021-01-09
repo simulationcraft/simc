@@ -1943,7 +1943,7 @@ public:
   //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
   //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
   //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the buff
-  virtual void apply_buff_effects()
+  void apply_buff_effects()
   {
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
@@ -9412,10 +9412,10 @@ std::unique_ptr<expr_t> druid_t::create_action_expression(action_t& a, util::str
 {
   auto splits = util::string_split(name_str, ".");
 
-  if (splits[0] == "ticks_gained_on_refresh" || splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh")
+  if (splits[0] == "ticks_gained_on_refresh" || (splits.size() > 2 && (splits[0] == "druid" || splits[0] == "dot" ) && splits[2] == "ticks_gained_on_refresh"))
   {
     bool pmul = false;
-    if (splits.size() > 1 && splits[1] == "pmult" || splits.size() > 4 && splits[3] == "pmult")
+    if ((splits.size() > 1 && splits[1] == "pmult") || (splits.size() > 4 && splits[3] == "pmult"))
       pmul = true;
 
     action_t* dot_action = nullptr;

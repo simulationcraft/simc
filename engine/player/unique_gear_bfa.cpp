@@ -3802,8 +3802,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
           return;
         }
 
-        if ( cdgrp )
-          cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
 
         // add cast time or gcd for any following precombat action
         std::for_each( it + 1, apl.end(), [&time, this]( action_t* a ) {
@@ -4967,7 +4966,7 @@ void items::subroutine_optimization( special_effect_t& effect )
     {
       const gem_property_data_t* data = nullptr;
 
-      auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
+      range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
         const auto& item_data = source->dbc->item( gem_id );
         if ( item_data.id == 0 )
         {
@@ -4988,7 +4987,7 @@ void items::subroutine_optimization( special_effect_t& effect )
         return false;
       } );
 
-      if ( it == effect.item->parsed.gem_id.end() )
+      if ( !data )
       {
         return spell_data_t::not_found();
       }

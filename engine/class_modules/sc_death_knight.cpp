@@ -1745,7 +1745,7 @@ struct death_knight_pet_t : public pet_t
     }
   };
 
-  action_t* create_action( util::string_view name, const std::string& options_str )
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this );
     if ( name == "spawn_travel" ) return new spawn_travel_t( this );

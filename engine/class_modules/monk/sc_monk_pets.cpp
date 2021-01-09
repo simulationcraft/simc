@@ -836,13 +836,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       return t;
     }
 
-    double cost_per_tick( resource_e resource ) const override
+    double cost_per_tick( resource_e ) const override
     {
-      double c = sef_spell_t::cost_per_tick( resource );
-
-      c = 0;
-
-      return c;
+      return 0;
     }
   };
 
@@ -1490,7 +1486,7 @@ public:
       double cam = pet_melee_attack_t::composite_aoe_multiplier( state );
 
       if ( state->target != target )
-        return cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
+        cam *= o()->passives.fallen_monk_fists_of_fury->effectN( 6 ).percent();
 
       return cam;
     }
@@ -1537,8 +1533,6 @@ public:
 
     double action_multiplier() const override
     {
-      double am = pet_melee_attack_t::action_multiplier();
-
       return 0;
     }
   };

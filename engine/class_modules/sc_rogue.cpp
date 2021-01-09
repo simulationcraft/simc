@@ -1117,15 +1117,16 @@ public:
     {
       symbols_of_death_autocrit_proc = p->get_proc( "Symbols of Death Autocrit " + ab::name_str );
     }
-    if ( consumes_echoing_reprimand() )
-    {
-      animacharged_cp_proc = p->get_proc( "Echoing Reprimand " + ab::name_str );
-    }
   }
 
   void init() override
   {
     ab::init();
+    
+    if ( consumes_echoing_reprimand() )
+    {
+      animacharged_cp_proc = p()->get_proc( "Echoing Reprimand " + ab::name_str );
+    }
 
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
       if ( buff->is_affecting_direct( ab::s_data ) )

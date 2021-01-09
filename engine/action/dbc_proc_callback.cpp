@@ -86,6 +86,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
   if ( triggered )
   {
+    assert( state && state -> action);
     // Detach proc execution from proc triggering
     make_event<proc_event_t>( *listener->sim, this, a, state );
 
@@ -278,6 +279,7 @@ void dbc_proc_callback_t::execute( action_t*, action_state_t* state )
     // Decide whether to expire the buff even with 1 max stack
     if ( expire_on_max_stack )
     {
+      assert(proc_buff);
       proc_buff->expire();
     }
   }
