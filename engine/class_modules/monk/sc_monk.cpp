@@ -568,7 +568,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
-  monk_absorb_t( const std::string& n, monk_t& player, const spell_data_t* s = spell_data_t::nil() )
+  monk_absorb_t( util::string_view n, monk_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, &player, s )
   {
   }
@@ -576,7 +576,7 @@ struct monk_absorb_t : public monk_action_t<absorb_t>
 
 struct monk_snapshot_stats_t : public snapshot_stats_t
 {
-  monk_snapshot_stats_t( monk_t* player, const std::string& options ) : snapshot_stats_t( player, options )
+  monk_snapshot_stats_t( monk_t* player, util::string_view options ) : snapshot_stats_t( player, options )
   {
   }
 
@@ -1083,7 +1083,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 {
-  rising_sun_kick_dmg_t( monk_t* p, const std::string& name )
+  rising_sun_kick_dmg_t( monk_t* p, util::string_view name )
     : monk_melee_attack_t( name, p, p->spec.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
@@ -1514,7 +1514,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
-  rjw_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
+  rjw_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
     ww_mastery = true;
@@ -1601,7 +1601,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 {
   charred_passions_t* charred_passions;
 
-  sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
+  sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data ), charred_passions( new charred_passions_t( p ) )
   {
     ww_mastery    = true;
@@ -1820,7 +1820,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
 struct fists_of_fury_tick_t : public monk_melee_attack_t
 {
-  fists_of_fury_tick_t( monk_t* p, const std::string& name )
+  fists_of_fury_tick_t( monk_t* p, util::string_view name )
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background = true;
@@ -1943,7 +1943,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
 {
-  whirling_dragon_punch_tick_t( const std::string& name, monk_t* p, const spell_data_t* s )
+  whirling_dragon_punch_tick_t( util::string_view name, monk_t* p, const spell_data_t* s )
     : monk_melee_attack_t( name, p, s )
   {
     ww_mastery = true;
@@ -2068,7 +2068,7 @@ struct melee_t : public monk_melee_attack_t
 {
   int sync_weapons;
   bool first;
-  melee_t( const std::string& name, monk_t* player, int sw )
+  melee_t( util::string_view name, monk_t* player, int sw )
     : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true )
   {
     background = repeating = may_glance = true;
@@ -4469,7 +4469,7 @@ struct zen_pulse_t : public monk_spell_t
 
 struct chi_wave_heal_tick_t : public monk_heal_t
 {
-  chi_wave_heal_tick_t( monk_t& p, const std::string& name ) : monk_heal_t( name, p, p.passives.chi_wave_heal )
+  chi_wave_heal_tick_t( monk_t& p, util::string_view name ) : monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
     target                   = player;
@@ -4478,7 +4478,7 @@ struct chi_wave_heal_tick_t : public monk_heal_t
 
 struct chi_wave_dmg_tick_t : public monk_spell_t
 {
-  chi_wave_dmg_tick_t( monk_t* player, const std::string& name )
+  chi_wave_dmg_tick_t( monk_t* player, util::string_view name )
     : monk_spell_t( name, player, player->passives.chi_wave_damage )
   {
     background              = true;
@@ -4830,13 +4830,13 @@ struct monk_buff_t : public buff_t
 public:
   using base_t = monk_buff_t;
 
-  monk_buff_t( monk_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  monk_buff_t( monk_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                const item_t* item = nullptr )
     : buff_t( p, name, s, item )
   {
   }
 
-  monk_buff_t( monk_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  monk_buff_t( monk_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                const item_t* item = nullptr )
     : buff_t( &p, name, s, item )
   {
@@ -4869,7 +4869,7 @@ public:
 struct fortifying_brew_t : public monk_buff_t<buff_t>
 {
   int health_gain;
-  fortifying_brew_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s ), health_gain( 0 )
+  fortifying_brew_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s ), health_gain( 0 )
   {
     cooldown->duration = timespan_t::zero();
   }
@@ -4909,7 +4909,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 struct serenity_buff_t : public monk_buff_t<buff_t>
 {
   monk_t& m;
-  serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s ), m( p )
+  serenity_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s ), m( p )
   {
     set_default_value_from_effect( 2 );
     set_cooldown( timespan_t::zero() );
@@ -4928,7 +4928,7 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 {
-  touch_of_karma_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  touch_of_karma_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     default_value = 0;
     set_cooldown( timespan_t::zero() );
@@ -4965,7 +4965,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     p->active_actions.rushing_jade_wind->execute();
   }
 
-  rushing_jade_wind_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  rushing_jade_wind_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
     set_tick_zero( true );
@@ -5006,7 +5006,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 {
-  gift_of_the_ox_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  gift_of_the_ox_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( false );
     set_cooldown( timespan_t::zero() );
@@ -5066,7 +5066,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
     }
   }
 
-  invoke_xuen_the_white_tiger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  invoke_xuen_the_white_tiger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
     set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -5090,7 +5090,7 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
   std::deque<double> values;
   // tracking variable for debug code
   bool ignore_empty;
-  purifying_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
     set_quiet( true );
@@ -5163,7 +5163,7 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 struct windwalking_driver_t : public monk_buff_t<buff_t>
 {
   double movement_increase;
-  windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s )
+  windwalking_driver_t( monk_t& p, util::string_view n, const spell_data_t* s )
     : monk_buff_t( p, n, s ), movement_increase( 0 )
   {
     set_tick_callback( [ &p, this ]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
@@ -5184,7 +5184,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
 // ===============================================================================
 struct stagger_buff_t : public monk_buff_t<buff_t>
 {
-  stagger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  stagger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     timespan_t stagger_duration = s->duration();
     stagger_duration += timespan_t::from_seconds( p.talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
