@@ -37,7 +37,7 @@ position=back
 talents=2313122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:7/born_of_the_wilds:7/niyas_tools_burrs
-owlweave_cat=1
+druid.owlweave_cat=1
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
@@ -67,7 +67,7 @@ position=back
 talents=2331122
 covenant=night_fae
 soulbind=niya,grove_invigoration/taste_for_blood:7/niyas_tools_burrs
-owlweave_cat=0
+druid.owlweave_cat=0
 
 head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
