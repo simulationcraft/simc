@@ -747,7 +747,7 @@ public:
     uptime_t* conserve_phase;
   } uptime;
 
-public:
+
   mage_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE );
 
   // Character Definition
