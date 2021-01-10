@@ -66,7 +66,7 @@ actions+=/run_action_list,name=bloodtalons,if=talent.bloodtalons.enabled&buff.bl
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up
 actions+=/pool_resource,for_next=1
 actions+=/rake,target_if=(refreshable|persistent_multiplier>dot.rake.pmultiplier)&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
-actions+=/moonfire_cat,target_if=refreshable&druid.moonfire.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
+actions+=/moonfire_cat,target_if=refreshable&druid.moonfire_cat.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,target_if=refreshable&druid.thrash_cat.ticks_gained_on_refresh>variable.thrash_ticks&!buff.bs_inc.up
 actions+=/pool_resource,for_next=1

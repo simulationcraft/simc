@@ -49,16 +49,18 @@ actions+=/bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1
 actions+=/outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists
 actions+=/outbreak,if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains)
 actions+=/outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)
-# Action Lists
+# Action Lists and Openers
+actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=covenants
+actions+=/sequence,if=active_enemies=1&!death_knight.disable_aotd,name=opener:army_of_the_dead:festering_strike:festering_strike:unholy_blight:potion:dark_transformation:apocalypse
 actions+=/call_action_list,name=cooldowns
 actions+=/run_action_list,name=aoe_setup,if=active_enemies>=2&(cooldown.death_and_decay.remains<10&!talent.defile|cooldown.defile.remains<10&talent.defile)&!death_and_decay.ticking
 actions+=/run_action_list,name=aoe_burst,if=active_enemies>=2&death_and_decay.ticking
 actions+=/run_action_list,name=generic_aoe,if=active_enemies>=2&(!death_and_decay.ticking&(cooldown.death_and_decay.remains>10&!talent.defile|cooldown.defile.remains>10&talent.defile))
 actions+=/call_action_list,name=generic,if=active_enemies=1
 
-actions.aoe_burst=death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3
 # AoE Burst
+actions.aoe_burst=death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2
 actions.aoe_burst+=/epidemic,if=runic_power.deficit<(10+death_knight.fwounded_targets*3)&death_knight.fwounded_targets<6&!variable.pooling_for_gargoyle|buff.swarming_mist.up
 actions.aoe_burst+=/epidemic,if=runic_power.deficit<25&death_knight.fwounded_targets>5&!variable.pooling_for_gargoyle
 actions.aoe_burst+=/epidemic,if=!death_knight.fwounded_targets&!variable.pooling_for_gargoyle|fight_remains<5|raid_event.adds.exists&raid_event.adds.remains<5
@@ -68,19 +70,14 @@ actions.aoe_burst+=/epidemic,if=!variable.pooling_for_gargoyle
 # AoE Setup
 actions.aoe_setup=any_dnd,if=death_knight.fwounded_targets=active_enemies|raid_event.adds.exists&raid_event.adds.remains<=11
 actions.aoe_setup+=/any_dnd,if=death_knight.fwounded_targets>=5
-actions.aoe_setup+=/death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3
+actions.aoe_setup+=/death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2
 actions.aoe_setup+=/epidemic,if=!variable.pooling_for_gargoyle
 actions.aoe_setup+=/festering_strike,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3
 actions.aoe_setup+=/festering_strike,target_if=debuff.festering_wound.stack<1
 actions.aoe_setup+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile)
 
-# Potions and other on use
+# Potion
 actions.cooldowns=potion,if=pet.gargoyle.active|buff.unholy_assault.up|talent.army_of_the_damned&(pet.army_ghoul.active|pet.apoc_ghoul.active|cooldown.army_of_the_dead.remains>target.time_to_die)|fight_remains<26
-actions.cooldowns+=/use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21
-actions.cooldowns+=/use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21
-actions.cooldowns+=/use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<3
-actions.cooldowns+=/use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21
-actions.cooldowns+=/use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)
 # Cooldowns
 actions.cooldowns+=/army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.dark_transformation.remains<3&talent.unholy_blight&!soulbind.lead_by_example|!talent.unholy_blight|fight_remains<35
 actions.cooldowns+=/army_of_the_dead,if=cooldown.unholy_blight.remains<3&cooldown.abomination_limb.ready&soulbind.lead_by_example
@@ -126,12 +123,19 @@ actions.generic+=/festering_strike,if=debuff.festering_wound.stack<4&talent.unho
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
 # Generic AoE Priority
-actions.generic_aoe=death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3
+actions.generic_aoe=death_coil,if=buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2
 actions.generic_aoe+=/epidemic,if=buff.sudden_doom.react
 actions.generic_aoe+=/epidemic,if=!variable.pooling_for_gargoyle
 actions.generic_aoe+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=(cooldown.apocalypse.remains>5&debuff.festering_wound.up|debuff.festering_wound.stack>4)&(fight_remains<cooldown.death_and_decay.remains+10|fight_remains>cooldown.apocalypse.remains)
 actions.generic_aoe+=/festering_strike,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=3&cooldown.apocalypse.remains<3|debuff.festering_wound.stack<1
 actions.generic_aoe+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains>5&debuff.festering_wound.stack<1
+
+# Trinkets
+actions.trinkets=use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains|cooldown.dark_trasnformation.remains)&(pet.army_ghoul.active|pet.apoc_ghoul.active&!talent.army_of_the_damned|target.time_to_pct_20<5)|fight_remains<21
+actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.apocalypse.remains<5&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21
+actions.trinkets+=/use_item,name=dreadfire_vessel,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<3
+actions.trinkets+=/use_item,name=darkmoon_deck_voracity,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)|fight_remains<21
+actions.trinkets+=/use_items,if=cooldown.apocalypse.remains&(!equipped.inscrutable_quantum_device|cooldown.inscrutable_quantum_device.remains)
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173130
 neck=sin_stained_pendant,id=178827,bonus_id=6536/1540/6646,gem_id=173128
