@@ -41,7 +41,6 @@ void open_file( io::ifstream& f, util::span<const std::string> splits, const std
 
   actual_name = name;
   f.open( name );
-  return;
 }
 
 std::string base_name( const std::string& file_path )
