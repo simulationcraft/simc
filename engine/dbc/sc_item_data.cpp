@@ -147,7 +147,7 @@ void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigne
   }
 
   auto curve_data = curve_point_t::find( curve_id, item.player->dbc->ptr );
-  if ( curve_data.size() == 0 )
+  if ( curve_data.empty() )
   {
     return;
   }
@@ -1074,7 +1074,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
     if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
       auto curve_data = curve_point_t::find( entries[ i ].value_4, dbc.ptr );
-      if ( curve_data.size() == 0 )
+      if ( curve_data.empty() )
       {
         return std::pair<std::pair<int, double>, std::pair<int, double> >(
             std::pair<int, double>( -1, 0 ),
@@ -1368,7 +1368,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
       fields.push_back( "add_rank={ power_index=" + util::to_string( power_index ) + " }" );
     }
 
-    if ( stats.size() > 0 )
+    if ( !stats.empty() )
     {
       std::string stats_str = "stats={ ";
       for ( size_t j = 0; j < stats.size(); ++j )

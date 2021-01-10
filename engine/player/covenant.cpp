@@ -545,7 +545,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   root << "</ul></td></tr>\n";
 
-  if ( m_soulbinds.size() )
+  if ( !m_soulbinds.empty() )
   {
     root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
 

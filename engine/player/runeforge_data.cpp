@@ -66,7 +66,7 @@ const item_effect_t& item_runeforge_t::item_effect() const
   }
 
   auto bonus = m_item->player->dbc->item_bonus( m_entry->bonus_id );
-  if ( bonus.size() == 0 )
+  if ( bonus.empty() )
   {
     return item_effect_t::nil();
   }

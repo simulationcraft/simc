@@ -426,7 +426,7 @@ namespace report_decorators {
     fmt::memory_buffer buf;
     fmt::format_to(buf, "<a style=\"color:{};\" href=\"https://{}.wowhead.com/item={}",
                    item_quality_color(*item), decoration_domain(*item->sim), item->parsed.data.id);
-    if (params.size() > 0)
+    if (!params.empty())
     {
       fmt::format_to(buf, "?{}", fmt::join(params, "&"));
     }

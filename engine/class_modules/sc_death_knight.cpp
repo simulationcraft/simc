@@ -1323,7 +1323,7 @@ inline void runes_t::regenerate_immediate( timespan_t seconds )
   {
     // Pop out all full runes from regenerating runes. Can happen if below the call to
     // adjust_regen_event causes the rune to actually fill up.
-    while ( regenerating_runes.size() > 0 && regenerating_runes.front() -> is_ready() )
+    while ( !regenerating_runes.empty() && regenerating_runes.front() -> is_ready() )
     {
       regenerating_runes.erase( regenerating_runes.begin() );
     }
@@ -1347,7 +1347,7 @@ inline void runes_t::regenerate_immediate( timespan_t seconds )
     }
 
     // Break out early if all runes are filled up
-    if ( regenerating_runes.size() == 0 )
+    if ( regenerating_runes.empty() )
     {
       break;
     }
@@ -7378,7 +7378,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   }
 
   // Triggers a bursting sores explosion for each wound on the target
-  if ( talent.bursting_sores -> ok() && active_spells.bursting_sores -> target_list().size() > 0 )
+  if ( talent.bursting_sores -> ok() && !active_spells.bursting_sores -> target_list().empty() )
   {
     for ( int i = 0; i < n_wounds; i++ )
     {
@@ -7599,7 +7599,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
 
         // Don't unnecessarily call bursting sores in single target scenarios
         if ( dk -> talent.bursting_sores -> ok() &&
-             dk -> active_spells.bursting_sores -> target_list().size() > 0 )
+             !dk -> active_spells.bursting_sores -> target_list().empty() )
         {
           dk -> active_spells.bursting_sores -> set_target( target );
           dk -> active_spells.bursting_sores -> execute();

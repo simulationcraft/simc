@@ -165,7 +165,7 @@ bool prune_specialized_execute_actions_internal( std::vector<action_t*>& apl, ex
     }
   }
 
-  return apl.size() > 0;
+  return !apl.empty();
 }
 
 bool prune_specialized_execute_actions( std::vector<action_t*>& apl, execute_type e )
@@ -2007,7 +2007,7 @@ void player_t::create_special_effects()
     special_effect_t effect( this );
     unique_gear::initialize_special_effect( effect, set_bonus->spell_id );
 
-    if ( effect.custom_init_object.size() == 0 )
+    if ( effect.custom_init_object.empty() )
     {
       continue;
     }
@@ -2022,7 +2022,7 @@ void player_t::create_special_effects()
     special_effect_t effect( this );
 
     unique_gear::initialize_special_effect( effect, 327942 );
-    if ( effect.custom_init_object.size() )
+    if ( !effect.custom_init_object.empty() )
     {
       special_effects.push_back( new special_effect_t( effect ) );
     }
@@ -2117,7 +2117,7 @@ void player_t::init_resources( bool force )
   // Only collect pet resource timelines if they get reported separately
   if ( !is_pet() || sim->report_pets_separately )
   {
-    if ( collected_data.resource_timelines.size() == 0 )
+    if ( collected_data.resource_timelines.empty() )
     {
       for ( resource_e resource = RESOURCE_NONE; resource < RESOURCE_MAX; ++resource )
       {
@@ -2464,7 +2464,7 @@ void player_t::init_stats()
   }
   if ( !is_pet() || sim->report_pets_separately )
   {
-    if ( collected_data.stat_timelines.size() == 0 )
+    if ( collected_data.stat_timelines.empty() )
     {
       for ( stat_e stat : stat_timelines )
       {
@@ -2915,7 +2915,7 @@ void player_t::init_assessors()
   // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
   // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
   // completely from there, and only conditionally include it if logging/debugging is enabled.
-  if ( sim->log || sim->debug || sim->debug_seed.size() > 0 )
+  if ( sim->log || sim->debug || !sim->debug_seed.empty() )
   {
     assessor_out_damage.add( assessor::LOG, [this]( result_amount_type type, action_state_t* state ) {
       if ( sim->debug )
@@ -4522,7 +4522,7 @@ void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
     {
       if ( in_combat )
       {
-        if ( collected_data.action_sequence.size() &&
+        if ( !collected_data.action_sequence.empty() &&
              collected_data.action_sequence.back().wait_time > timespan_t::zero() )
           collected_data.action_sequence.back().wait_time += amount;
         else
@@ -8307,7 +8307,7 @@ struct use_items_t : public action_t
 
     // No use_item sub-actions created here, so this action does not need to execute ever. The
     // parent init() call below will filter it out from the "foreground action list".
-    if ( use_actions.size() == 0 )
+    if ( use_actions.empty() )
     {
       background = true;
     }
@@ -8353,7 +8353,7 @@ struct use_items_t : public action_t
     custom_slots = true;
 
     // If slots= option is given, presume that at aleast one of those slots is a valid slot name
-    return priority_slots.size() > 0;
+    return !priority_slots.empty();
   }
 
   // Creates "use_item" actions for all usable special effects on the actor. Note that the creation
@@ -9512,7 +9512,7 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized ) const
 {
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
-  if ( entries.size() == 0 )
+  if ( entries.empty() )
   {
     return item_runeforge_t::nil();
   }
@@ -10470,7 +10470,7 @@ double player_t::compute_incoming_damage( timespan_t interval ) const
 {
   double amount = 0;
 
-  if ( incoming_damage.size() > 0 )
+  if ( !incoming_damage.empty() )
   {
     for ( auto i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; ++i )
     {
@@ -10488,7 +10488,7 @@ double player_t::compute_incoming_magic_damage( timespan_t interval ) const
 {
   double amount = 0;
 
-  if ( incoming_damage.size() > 0 )
+  if ( !incoming_damage.empty() )
   {
     for ( auto i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; ++i )
     {
@@ -10637,7 +10637,7 @@ std::string player_t::create_profile( save_e stype )
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
 
-    if ( professions_str.size() > 0 )
+    if ( !professions_str.empty() )
     {
       profile_str += "professions=" + professions_str + term;
     }
@@ -10651,7 +10651,7 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "talents=" + talents_str + term;
     }
 
-    if ( talent_overrides_str.size() > 0 )
+    if ( !talent_overrides_str.empty() )
     {
       auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
@@ -10728,7 +10728,7 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( initial_resources.size() > 0 )
+    if ( !initial_resources.empty() )
     {
       profile_str += term;
       profile_str += "initial_resource=";
@@ -10743,7 +10743,7 @@ std::string player_t::create_profile( save_e stype )
       profile_str += term;
     }
 
-    if ( apl_variable_map.size() > 0 )
+    if ( !apl_variable_map.empty() )
     {
       profile_str += term;
       profile_str += "# Custom default values for APL variables." + term;
@@ -12542,7 +12542,7 @@ timespan_t find_minimum_cd( const std::vector<const cooldown_t*>& list )
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_off_gcd_ready()
 {
-  if ( off_gcd_cd.size() == 0 && off_gcd_icd.size() == 0 )
+  if ( off_gcd_cd.empty() && off_gcd_icd.empty() )
   {
     return;
   }
@@ -12563,7 +12563,7 @@ void player_t::update_off_gcd_ready()
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_cast_while_casting_ready()
 {
-  if ( cast_while_casting_cd.size() == 0 && cast_while_casting_icd.size() == 0 )
+  if ( cast_while_casting_cd.empty() && cast_while_casting_icd.empty() )
   {
     return;
   }
@@ -12585,7 +12585,7 @@ void player_t::update_cast_while_casting_ready()
  */
 bool player_t::verify_use_items() const
 {
-  if ( !sim->use_item_verification || ( action_list_str.empty() && action_priority_list.size() == 0 ) )
+  if ( !sim->use_item_verification || ( action_list_str.empty() && action_priority_list.empty() ) )
   {
     return true;
   }

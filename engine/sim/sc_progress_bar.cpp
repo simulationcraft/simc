@@ -516,7 +516,7 @@ size_t progress_bar_t::n_scale_factor_phases() const
 
   for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
   {
-    if ( scale_only.size() > 0 && range::find( scale_only, stat ) == scale_only.end() )
+    if ( !scale_only.empty() && range::find( scale_only, stat ) == scale_only.end() )
     {
       continue;
     }

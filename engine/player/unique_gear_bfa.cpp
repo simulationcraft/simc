@@ -1978,12 +1978,12 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
       if ( player->consumables.flask )
       {
         const stat_buff_t* flask_buff = dynamic_cast<stat_buff_t*>( player->consumables.flask );
-        if ( flask_buff && flask_buff->stats.size() > 0 )
+        if ( flask_buff && !flask_buff->stats.empty() )
         {
           // Check if the flask buff matches one of the trinket's stat buffs
           const stat_e flask_stat = flask_buff->stats.front().stat;
           const auto it           = range::find_if( buffs, [flask_stat]( const stat_buff_t* buff ) {
-            return buff->stats.size() > 0 && buff->stats.front().stat == flask_stat;
+            return !buff->stats.empty() && buff->stats.front().stat == flask_stat;
           } );
 
           if ( it != buffs.end() )

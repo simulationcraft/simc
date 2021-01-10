@@ -1165,7 +1165,7 @@ std::string special_effect_t::cooldown_name() const
 {
   if (!name_str.empty())
   {
-    assert(name_str.size());
+    assert(!name_str.empty());
     return name_str;
   }
 

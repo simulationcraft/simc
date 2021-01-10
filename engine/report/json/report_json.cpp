@@ -486,7 +486,7 @@ void to_json( JsonOutput root,
     }
 
 
-    if ( entry.buff_list.size() > 0 )
+    if ( !entry.buff_list.empty() )
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
@@ -854,12 +854,12 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
     buffs_to_json( root[ "buffs" ], p );
     constant_buffs_to_json( root[ "buffs_constant" ], p );
 
-    if ( p.proc_list.size() > 0 )
+    if ( !p.proc_list.empty() )
     {
       procs_to_json( root[ "procs" ], p );
     }
 
-    if ( p.gain_list.size() > 0 )
+    if ( !p.gain_list.empty() )
     {
       gains_to_json( root[ "gains" ], p );
     }
@@ -1185,7 +1185,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
       } );
     }
 
-    if ( sim.buff_list.size() > 0 )
+    if ( !sim.buff_list.empty() )
     {
       JsonOutput buffs_arr = root[ "sim_auras" ].make_array();
       range::for_each( sim.buff_list, [ & ]( const buff_t* b ) {
@@ -1197,12 +1197,12 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
       } );
     }
 
-    if ( sim.low_iteration_data.size() > 0 )
+    if ( !sim.low_iteration_data.empty() )
     {
       iteration_data_to_json( root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
     }
 
-    if ( sim.high_iteration_data.size() > 0 )
+    if ( !sim.high_iteration_data.empty() )
     {
       iteration_data_to_json( root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
     }
@@ -1268,7 +1268,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   to_json( report_configuration, root[ "sim" ], sim );
 
-  if ( sim.error_list.size() > 0 )
+  if ( !sim.error_list.empty() )
   {
     root[ "notifications" ] = sim.error_list;
   }

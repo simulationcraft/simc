@@ -361,7 +361,7 @@ int http::get( std::string&       result,
       fmt::print( http_log, "{}: Unmodified ({},{})\n", cache::era(), entry.modified, entry.validated );
     }
 
-    if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )
+    if ( !confirmation.empty() && ( entry.result.find( confirmation ) == std::string::npos ) )
     {
       //fmt::print( "\nsimulationcraft: HTTP failed on '{}'\n", url );
       //fmt::print( "{}\n", ( result.empty() ? "empty" : result.c_str() ) );

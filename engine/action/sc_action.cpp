@@ -2102,7 +2102,7 @@ bool action_t::select_target()
       {
         target_cache.is_valid = false;
       }
-      if ( child_action.size() > 0 )
+      if ( !child_action.empty() )
       {  // If spell_targets is used on the child instead of the parent action, we need to reset the cache for that
          // action as well.
         for ( size_t i = 0; i < child_action.size(); i++ )
@@ -2458,7 +2458,7 @@ void action_t::init()
     }
     // Special case for disabled actions that are preceded by pool_resource,for_next=1 lines
     // If we are skipping adding the action to the foreground_action_list above, we also need to disable the pool_resource entry
-    else if ( apl->foreground_action_list.size() > 0 &&
+    else if ( !apl->foreground_action_list.empty() &&
               apl->foreground_action_list.back()->name_str == "pool_resource"  &&
               util::str_in_str_ci( apl->foreground_action_list.back()->signature_str, "for_next=1" ) )
     {
@@ -3241,7 +3241,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         }
         double evaluate() override
         {
-          if ( previously_off_gcd != nullptr && action.player->off_gcdactions.size() > 0 )
+          if ( previously_off_gcd != nullptr && !action.player->off_gcdactions.empty() )
           {
             for ( size_t i = 0; i < action.player->off_gcdactions.size(); i++ )
             {

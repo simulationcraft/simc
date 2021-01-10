@@ -1166,7 +1166,7 @@ std::unique_ptr<expr_t> build_player_expression_tree(
     }
     else if ( expression::is_unary( t.type ) )
     {
-      if ( stack.size() < 1 )
+      if ( stack.empty() )
         return nullptr;
       auto input = std::move(stack.back());
       stack.pop_back();
@@ -1238,7 +1238,7 @@ static std::unique_ptr<expr_t> build_expression_tree(
     }
     else if ( expression::is_unary( t.type ) )
     {
-      if ( stack.size() < 1 )
+      if ( stack.empty() )
         return {};
       auto input = std::move(stack.back());
       stack.pop_back();

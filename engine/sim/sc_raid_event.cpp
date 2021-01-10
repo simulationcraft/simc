@@ -742,7 +742,7 @@ struct movement_event_t final : public raid_event_t
       p->moving();
     }
 
-    if ( affected_players.size() > 0 )
+    if ( !affected_players.empty() )
     {
       make_event<movement_ticker_t>( *sim, *sim, affected_players );
     }

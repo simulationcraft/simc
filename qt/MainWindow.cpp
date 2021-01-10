@@ -576,7 +576,7 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
         }
       }
       directoriesWithPermissionIssues.unique();
-      if ( filesThatAreDirectories.size() != 0 )
+      if ( !filesThatAreDirectories.empty() )
       {
         suggestions.append(
             "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
@@ -586,7 +586,7 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
       {
         suggestions.append( "   " + ( *it ).toStdString() + "\n" );
       }
-      if ( filesWithPermissionIssues.size() != 0 )
+      if ( !filesWithPermissionIssues.empty() )
       {
         suggestions.append(
             "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these "
@@ -597,7 +597,7 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
       {
         suggestions.append( "   " + ( *it ).toStdString() + "\n" );
       }
-      if ( directoriesWithPermissionIssues.size() != 0 )
+      if ( !directoriesWithPermissionIssues.empty() )
       {
         suggestions.append(
             "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot "

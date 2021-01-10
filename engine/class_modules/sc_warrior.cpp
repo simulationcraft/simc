@@ -1287,7 +1287,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       } );
 
       auto random_idx = rng().range( targets.size() );
-      return targets.size() ? targets[ random_idx ] : nullptr;
+      return !targets.empty() ? targets[ random_idx ] : nullptr;
     }
     else
     {
@@ -8423,7 +8423,7 @@ public:
     os << p.name();
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

@@ -762,7 +762,7 @@ void option_db_t::parse_token( util::string_view token )
 
   do_replace( *this, value, value.find( "$(" ), 1 );
 
-  if ( name.size() >= 1 && name[ 0 ] == '$' )
+  if ( !name.empty() && name[ 0 ] == '$' )
   {
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {

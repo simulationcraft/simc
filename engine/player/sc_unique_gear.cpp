@@ -3673,7 +3673,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
 
   // Custom init found a valid initializer callback, this special effect will be initialized with it
   // later on
-  if ( effect.custom_init_object.size() > 0 )
+  if ( !effect.custom_init_object.empty() )
   {
     return;
   }
@@ -3685,7 +3685,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
   //
   // This is mostly relevant for "simple looking" legendary effects such as Recurrent Ritual that
   // gets automatically inferred to affect all (warlock) spells globally.
-  if ( effect.custom_init_object.size() == 0 && effect.item &&
+  if ( effect.custom_init_object.empty() && effect.item &&
        effect.source == SPECIAL_EFFECT_SOURCE_ITEM &&
        effect.item->parsed.data.quality == ITEM_QUALITY_LEGENDARY )
   {
@@ -3732,7 +3732,7 @@ void unique_gear::initialize_special_effect( special_effect_t& effect,
 // effects, or calls the custom initialization function given in the first phase initialization.
 void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
-  if ( effect -> custom_init || effect -> custom_init_object.size() > 0 )
+  if ( effect -> custom_init || !effect -> custom_init_object.empty() )
   {
     if ( effect -> custom_init )
     {
@@ -4219,12 +4219,12 @@ bool class_scoped_callback_t::valid(const special_effect_t& effect) const
 {
   assert(effect.player);
 
-  if (class_.size() > 0 && range::find(class_, effect.player->type) == class_.end())
+  if (!class_.empty() && range::find(class_, effect.player->type) == class_.end())
   {
     return false;
   }
 
-  if (spec_.size() > 0 && range::find(spec_, effect.player->specialization()) == spec_.end())
+  if (!spec_.empty() && range::find(spec_, effect.player->specialization()) == spec_.end())
   {
     return false;
   }
@@ -4272,7 +4272,7 @@ static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     assert( it -> cb_obj );
 
     // Push all callback-based initializers of the same priority into the vector
-    if ( entries.size() == 0 || it -> cb_obj -> priority == entries.front() -> cb_obj -> priority )
+    if ( entries.empty() || it -> cb_obj -> priority == entries.front() -> cb_obj -> priority )
     {
       entries.push_back( &( *it ) );
     }
@@ -4671,7 +4671,7 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
     // Get all registered fallback effects for the spell (fallback) id
     auto dbitems = find_fallback_effect_db_item( fallback_id );
     // .. nothing found, continue
-    if ( dbitems.size() == 0 )
+    if ( dbitems.empty() )
     {
       continue;
     }
@@ -4688,7 +4688,7 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
       fallback_effect.custom_init_object.push_back( dbitem -> cb_obj );
     }
 
-    if ( fallback_effect.custom_init_object.size() > 0 )
+    if ( !fallback_effect.custom_init_object.empty() )
     {
       actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
     }

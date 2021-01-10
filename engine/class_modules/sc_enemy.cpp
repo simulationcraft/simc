@@ -94,7 +94,7 @@ struct enemy_t : public player_t
 
   void actor_changed() override
   {
-    if ( sim->overrides.target_health.size() > 0 )
+    if ( !sim->overrides.target_health.empty() )
     {
       initial_health =
           static_cast<double>( sim->overrides.target_health[ enemy_id % sim->overrides.target_health.size() ] );
@@ -344,7 +344,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
     this->interrupt_auto_attack = false;
     // if there are no valid targets, disable
-    if ( ch_list.size() < 1 )
+    if ( ch_list.empty() )
       this->background = true;
   }
 
@@ -381,7 +381,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
           rt_list.erase( rt_list.begin() + element );
 
           // infinte loop check
-          if ( rt_list.size() == 0 )
+          if ( rt_list.empty() )
             break;
         }
       }
@@ -488,7 +488,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
       mh_list.push_back( mh );
     }
 
-    if ( mh_list.size() > 0 )
+    if ( !mh_list.empty() )
       p->main_hand_attack = mh_list[ 0 ];
   }
 
@@ -1195,7 +1195,7 @@ void enemy_t::init_base_stats()
 
   base.attack_crit_chance = 0.05;
 
-  if ( sim->overrides.target_health.size() > 0 )
+  if ( !sim->overrides.target_health.empty() )
   {
     initial_health =
         static_cast<double>( sim->overrides.target_health[ enemy_id % sim->overrides.target_health.size() ] );
@@ -1207,7 +1207,7 @@ void enemy_t::init_base_stats()
 
   if ( this == sim->target )
   {
-    if ( sim->overrides.target_health.size() > 0 || fixed_health > 0 )
+    if ( !sim->overrides.target_health.empty() || fixed_health > 0 )
     {
       sim->print_debug( "Setting vary_combat_length forcefully to 0.0 because fixed health simulation was detected." );
 
@@ -1698,7 +1698,7 @@ void enemy_t::combat_end()
 {
   player_t::combat_end();
 
-  if ( !sim->overrides.target_health.size() )
+  if ( sim->overrides.target_health.empty() )
     recalculate_health();
 }
 
@@ -1706,7 +1706,7 @@ void enemy_t::demise()
 {
   if ( this == sim->target )
   {
-    if ( sim->current_iteration != 0 || sim->overrides.target_health.size() > 0 || fixed_health > 0 )
+    if ( sim->current_iteration != 0 || !sim->overrides.target_health.empty() || fixed_health > 0 )
       // For the main target, end simulation on death.
       sim->cancel_iteration();
   }

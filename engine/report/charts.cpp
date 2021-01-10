@@ -1291,7 +1291,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
   }
 
-  auto log = stats_list.size() > 0 &&
+  auto log = !stats_list.empty() &&
              stats_list.back() -> apet > 0
              ? stats_list.front()->apet / stats_list.back()->apet >= 100
              : false;
@@ -1565,7 +1565,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   std::string chart_title_base = fmt::format( "{} per second", s.type );
   ts.set_yaxis_title( chart_title_base );
   std::string stat_name;
-  if ( s.action_list.size() > 0 && s.action_list[ 0 ]->data().ok() )
+  if ( !s.action_list.empty() && s.action_list[ 0 ]->data().ok() )
   {
     stat_name = util::encode_html( s.action_list[ 0 ]->data().name_cstr() );
   }
@@ -1577,7 +1577,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   ts.set_title( fmt::format( "{} {}", stat_name, chart_title_base ) );
 
   std::string area_color = color::YELLOW;
-  if ( s.action_list.size() > 0 )
+  if ( !s.action_list.empty() )
     area_color = color::school_color( s.action_list[ 0 ]->school );
 
   ts.add_simple_series( "area", area_color, s.type == STATS_DMG ? "DPS" : "HPS",

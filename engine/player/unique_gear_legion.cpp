@@ -1473,7 +1473,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
   effect.player -> register_on_arise_callback( effect.player, [ buff, effect ]() {
     buff -> trigger( buff -> data().max_stacks() );
-    if ( buff -> sim -> legion_opts.cradle_of_anguish_resets.size() )
+    if ( !buff -> sim -> legion_opts.cradle_of_anguish_resets.empty() )
     {
       make_event<cradle_of_anguish_reset_t>( *buff -> sim, effect, buff );
       make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
@@ -2428,12 +2428,12 @@ struct majordomos_dinner_bell_t : proc_spell_t
     if ( player -> consumables.food && player -> role == ROLE_TANK )
     {
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>( player -> consumables.food );
-      if ( food_buff && food_buff -> stats.size() > 0 )
+      if ( food_buff && !food_buff -> stats.empty() )
       {
         const stat_e food_stat = food_buff -> stats.front().stat;
         // Check if the food buff matches one of the trinket's stat buffs
         const auto index_buffs = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
-          if ( buff -> stats.size() > 0 )
+          if ( !buff -> stats.empty() )
             return buff -> stats.front().stat == food_stat;
           else
             return false;
@@ -3868,7 +3868,7 @@ void item::draught_of_souls( special_effect_t& effect )
         } );
 
         auto random_idx = rng().range(size_t(), targets.size() );
-        return targets.size() ? targets[ random_idx ] : nullptr;
+        return !targets.empty() ? targets[ random_idx ] : nullptr;
       }
       else
       {
@@ -5091,7 +5091,7 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* ) override
   {
-    assert( cooldowns.size() > 0 );
+    assert( !cooldowns.empty() );
 
     for ( size_t i = 0; i < cooldowns.size(); i++ )
     {

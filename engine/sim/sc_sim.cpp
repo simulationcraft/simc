@@ -1835,7 +1835,7 @@ void sim_t::combat_begin()
 
   // Debug seed needs to be done _after_ sim reset, because deterministic=1 will reseed in
   // sim_t::reset()
-  if ( debug_seed.size() > 0 )
+  if ( !debug_seed.empty() )
   {
     enable_debug_seed();
   }
@@ -1949,7 +1949,7 @@ void sim_t::combat_end()
 
   analyze_error();
 
-  if ( debug_seed.size() > 0 )
+  if ( !debug_seed.empty() )
   {
     disable_debug_seed();
   }
@@ -2792,7 +2792,7 @@ void sim_t::analyze()
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.size() == 0 && ! profileset_enabled )
+       profileset_map.empty() && ! profileset_enabled )
   {
     std::cout << "Analyzing actor data ..." << std::endl;
   }
@@ -2969,7 +2969,7 @@ void sim_t::merge( sim_t& other_sim )
        scaling -> calculate_scale_factors == 0 &&
        plot -> dps_plot_stat_str.empty() &&
        reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.size() == 0 && ! profileset_enabled )
+       profileset_map.empty() && ! profileset_enabled )
   {
     std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
   }
@@ -3096,7 +3096,7 @@ void sim_t::partition()
   // Filter out profileset-related options from the child sim control, since they are not going to
   // use them anyhow. This significantly speeds up child creation in situations where the input
   // profile is a very large set of profileset sims.
-  if ( profileset_map.size() > 0 )
+  if ( !profileset_map.empty() )
   {
     child_control = profileset::filter_control( control );
   }
@@ -3137,7 +3137,7 @@ void sim_t::partition()
 
   // Safe to do for now, since control is only referenced by sim_t::setup, which is called in the
   // sim_t constructor.
-  if ( profileset_map.size() > 0 )
+  if ( !profileset_map.empty() )
   {
     delete child_control;
   }

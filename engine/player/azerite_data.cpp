@@ -244,7 +244,7 @@ const spell_data_t* azerite_essence_t::spell( unsigned rank, essence_spell spell
   if ( ( type == essence_type::INVALID && m_type == essence_type::PASSIVE ) ||
        type == essence_type::PASSIVE )
   {
-    return m_base_major.size() ? m_base_major.front(): spell_data_t::not_found();
+    return !m_base_major.empty() ? m_base_major.front(): spell_data_t::not_found();
   }
   // Major or Minor essence
   else
@@ -457,7 +457,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   else
   {
     // Item-related azerite effects are only enabled when "all" is defined
-    if ( m_spell_items[ power.spell_id ].size() > 0 &&
+    if ( !m_spell_items[ power.spell_id ].empty() &&
          m_player -> sim -> azerite_status == azerite_control::ENABLED )
     {
       if ( m_player -> sim -> debug )
@@ -536,7 +536,7 @@ std::string azerite_state_t::overrides_str() const
       } );
   } );
 
-  if ( override_strings.size() == 0 )
+  if ( override_strings.empty() )
   {
     return {};
   }
@@ -798,7 +798,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
            << "<td><ul class=\"float\">\n"
            << "<li>" << report_decorators::decorated_item(item) << "&#160;(" << item.item_level() << ")</li>\n";
 
-      if ( item.parsed.azerite_ids.size() )
+      if ( !item.parsed.azerite_ids.empty() )
       {
         for ( auto id : item.parsed.azerite_ids )
         {
@@ -826,7 +826,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
     }
   }
 
-  if ( m_overrides.size() )
+  if ( !m_overrides.empty() )
   {
     root << "<tr class=\"left\">\n"
          << "<th></th>\n"

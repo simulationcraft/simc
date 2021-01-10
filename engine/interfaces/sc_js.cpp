@@ -31,7 +31,7 @@ namespace js {
   {
     auto path = util::string_split(path_str, ".");
     rapidjson::Value* v = nullptr;
-    if (path.size() < 1)
+    if (path.empty())
       return v;
 
     assert(!util::is_number(path[0]));

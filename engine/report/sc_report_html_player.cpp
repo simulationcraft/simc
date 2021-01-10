@@ -392,7 +392,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   std::string critpct_str;
 
   // Create Merged Stat
-  if ( s.children.size() )
+  if ( !s.children.empty() )
   {
     auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
 
@@ -1122,7 +1122,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       os << "</div>\n";  // Close details, damage/weapon, spell_data
     }
 
-    if ( expressions.size() )
+    if ( !expressions.empty() )
     {
       os << "<div>\n"
          << "<h4>Action Priority List</h4>\n";
@@ -1233,11 +1233,11 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.gem_stats.size() > 0 )
+    if ( !item.parsed.gem_stats.empty() )
     {
       item_sim_desc += ", gems: { ";
       item_sim_desc += item.gem_stats_str();
-      if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
+      if ( item.socket_color_match() && !item.parsed.socket_bonus_stats.empty() )
       {
         item_sim_desc += ", ";
         item_sim_desc += item.socket_bonus_stats_str();
@@ -1245,7 +1245,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.enchant_stats.size() > 0 )
+    if ( !item.parsed.enchant_stats.empty() )
     {
       item_sim_desc += ", enchant: { ";
       item_sim_desc += item.enchant_stats_str();
@@ -1287,7 +1287,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( item.parsed.azerite_ids.size() )
+    if ( !item.parsed.azerite_ids.empty() )
     {
       std::stringstream s;
       for ( size_t i = 0; i < item.parsed.azerite_ids.size(); ++i )
@@ -3397,7 +3397,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
   os << "</table>\n";
 
   // constant buffs
-  if ( !p.is_pet() && ri.constant_buffs.size() )
+  if ( !p.is_pet() && !ri.constant_buffs.empty() )
   {
     os << "<table class=\"sc stripebody\">\n"
        << "<thead>\n"

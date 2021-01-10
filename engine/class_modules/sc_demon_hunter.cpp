@@ -2283,7 +2283,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
       } );
       targets.erase( it, targets.end() );
 
-      if ( targets.size() == 0 )
+      if ( targets.empty() )
         return;
 
       // Execute a dot on a random target
@@ -2802,7 +2802,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       select_mode = SOUL_FRAGMENT_SELECT_OLDEST;
     }
-    else if ( value != "" )
+    else if ( !value.empty() )
     {
       sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
@@ -2829,7 +2829,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       type = soul_fragment::ANY_DEMON;
     }
-    else if ( value != "" )
+    else if ( !value.empty() )
     {
       sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
@@ -4272,7 +4272,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       std::vector<cooldown_t*> sigils_on_cooldown;
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ), []( cooldown_t* c ) { return c->down(); } );
-      if ( sigils_on_cooldown.size() > 0 )
+      if ( !sigils_on_cooldown.empty() )
       {
         cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
         if ( sigil_cooldown == p()->cooldown.elysian_decree )
@@ -6481,7 +6481,7 @@ void demon_hunter_t::adjust_movement()
   {
     // Recalculate movement duration.
     assert( buff.out_of_range->value() > 0 );
-    assert( buff.out_of_range->expiration.size() );
+    assert( !buff.out_of_range->expiration.empty() );
 
     timespan_t remains = buff.out_of_range->remains();
     remains *= buff.out_of_range->check_value() / cache.run_speed();
@@ -6777,7 +6777,7 @@ public:
   {
     (void)p;
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";

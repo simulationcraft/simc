@@ -1308,7 +1308,7 @@ timespan_t warlock_t::time_to_imps( int count )
       }
     }
 
-    if ( shortest.size() > 0 )
+    if ( !shortest.empty() )
     {
       return shortest.top();
     }
@@ -1573,7 +1573,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return make_fn_expr( name_str, [this, soc_list] {
       std::vector<player_t*> no_dots;
 
-      if ( soc_list.size() == 0 ) 
+      if ( soc_list.empty() ) 
         return false;
 
       //All the actions should have the same target list, so do this once only
@@ -1586,7 +1586,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
 
       //If there are no targets without a seed already, this expression should be false
-      if ( no_dots.size() == 0 )
+      if ( no_dots.empty() )
         return false;
 
       //If all of the remaining unseeded targets have a seed in flight, we should also return false

@@ -3265,7 +3265,7 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( p.cooldown_waste_data_list.size() > 0 )
+    if ( !p.cooldown_waste_data_list.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

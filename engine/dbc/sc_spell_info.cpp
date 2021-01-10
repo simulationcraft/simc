@@ -172,7 +172,7 @@ std::string concatenate( Range&& data,
                          Callback&& fn,
                          const std::string& delim = ", " )
 {
-  if ( data.size() == 0 )
+  if ( data.empty() )
   {
     return "";
   }
@@ -1087,7 +1087,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
 
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
-  if ( affected_spells.size() > 0 )
+  if ( !affected_spells.empty() )
   {
     s << "                   Affected Spells: ";
     s << concatenate( affected_spells,
@@ -1112,7 +1112,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
-    if ( affected_spells.size() > 0 )
+    if ( !affected_spells.empty() )
     {
       s << "                   Affected Spells (Category): ";
       s << concatenate( affected_spells,
@@ -1135,12 +1135,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       }
     }
 
-    if ( flags.size() )
+    if ( !flags.empty() )
       fmt::print( s, "                   Family Flags: {}\n", fmt::join( flags, ", " ) );
   }
 
   const auto hotfixes = spelleffect_data_t::hotfixes( *e, dbc.ptr );
-  if ( hotfixes.size() > 0 )
+  if ( !hotfixes.empty() )
   {
     if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
       fmt::print( s, "Hotfixed         : NEW EFFECT\n" );
@@ -1173,7 +1173,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
 
   const auto hotfixes = spell_data_t::hotfixes( *spell, dbc.ptr );
-  if ( hotfixes.size() > 0 && hotfixes.front().field_id == hotfix::NEW_ENTRY )
+  if ( !hotfixes.empty() && hotfixes.front().field_id == hotfix::NEW_ENTRY )
   {
     fmt::print( s, "Hotfixed         : NEW SPELL\n" );
   }
@@ -1319,7 +1319,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << " w/ " << dbc.spell( pd.aura_id() ) -> name_cstr() << " (id=" << pd.aura_id() << ")";
 
     const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
-    if ( hotfixes.size() > 0 )
+    if ( !hotfixes.empty() )
     {
       if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
         fmt::print( s, "[Hotfixed: NEW POWER]" );
@@ -1416,7 +1416,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
 
     s << "Requires weapon  : ";
-    if ( weapon_types.size() > 0 )
+    if ( !weapon_types.empty() )
     {
       s << util::string_join( weapon_types );
     }
@@ -1438,7 +1438,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Category         : " << spell -> category();
     auto affecting_effects = dbc.effect_categories_affecting_spell( spell );
-    if ( affecting_effects.size() > 0 )
+    if ( !affecting_effects.empty() )
     {
       s << ": ";
       s << concatenate( affecting_effects,
@@ -1459,7 +1459,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       if ( i > 1 )
       {
-        if ( affecting_effects.size() == 0 )
+        if ( affecting_effects.empty() )
         {
           if ( i < end )
           {
@@ -1475,7 +1475,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       s << label;
 
-      if ( affecting_effects.size() > 0 )
+      if ( !affecting_effects.empty() )
       {
         s << ": " << concatenate( affecting_effects,
           []( std::stringstream& s, const spelleffect_data_t* e ) {
@@ -1612,7 +1612,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       rank_str.emplace_back( fmt::format( "{}", entry.value ) );
     } );
 
-    if ( ranks.size() )
+    if ( !ranks.empty() )
     {
       fmt::print( s, " (values={})", fmt::join( rank_str, ", " ) );
     }
@@ -1650,7 +1650,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> class_family() > 0 )
   {
     auto affecting_effects = dbc.effects_affecting_spell( spell );
-    if ( affecting_effects.size() > 0 )
+    if ( !affecting_effects.empty() )
     {
       const auto spell_string = []( util::span<const spelleffect_data_t* const> effects ) {
         const spell_data_t* spell = effects.front()->spell();
@@ -1707,7 +1707,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
 
-    if ( flags.size() )
+    if ( !flags.empty() )
       fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 

@@ -2615,7 +2615,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random unafflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
+        while ( tl.size() < as<size_t>( aoe ) && !unafflicted.empty() )
         {
           // Random target
           auto i = rng().range( unafflicted.size() );
@@ -2625,7 +2625,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random afflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
+        while ( tl.size() < as<size_t>( aoe ) && !afflicted.empty() )
         {
           // Random target
           auto i = rng().range( afflicted.size() );
@@ -6653,7 +6653,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
 
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
     else if ( base_type == CAST_SPEC )
     {
@@ -6664,7 +6664,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
-      if ( mf_tl.size() )
+      if ( !mf_tl.empty() )
         dist.emplace_back( std::make_pair( CAST_MOONFIRE, main_count ? 0.25 : 1.0 ) );
 
       type_ = get_cast_from_dist( dist );
@@ -6716,7 +6716,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
 
-    if ( base_type == CAST_OFFSPEC && offspec_list.size() )
+    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
     else if ( base_type == CAST_MAIN )
       type_ = CAST_FEROCIOUS_BITE;
@@ -6773,7 +6773,7 @@ struct convoke_the_spirits_t : public druid_spell_t
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
-      if ( mf_tl.size() )
+      if ( !mf_tl.empty() )
       {
         dist.emplace_back( std::make_pair( CAST_MOONFIRE, 2.0 ) );
         add_more = false;
@@ -6869,7 +6869,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     cast_list.erase( it );
 
     std::vector<player_t*> tl = target_list();
-    if ( !tl.size() )
+    if ( tl.empty() )
       return;
 
     // Do form-specific spell selection
@@ -6989,7 +6989,7 @@ struct adaptive_swarm_t : public druid_spell_t
     player_t* new_swarm_target()
     {
       const auto &tl = other->target_list();
-      if ( !tl.size() )
+      if ( tl.empty() )
         return nullptr;
 
       player_t* tar = nullptr;
@@ -7032,10 +7032,10 @@ struct adaptive_swarm_t : public druid_spell_t
         }
       }
 
-      if      ( tl_1.size() ) tar = tl_1.at( rng().range( tl_1.size() ) );
-      else if ( tl_2.size() ) tar = tl_2.at( rng().range( tl_2.size() ) );
-      else if ( tl_3.size() ) tar = tl_3.at( rng().range( tl_3.size() ) );
-      else if ( tl_4.size() ) tar = tl_4.at( rng().range( tl_4.size() ) );
+      if      ( !tl_1.empty() ) tar = tl_1.at( rng().range( tl_1.size() ) );
+      else if ( !tl_2.empty() ) tar = tl_2.at( rng().range( tl_2.size() ) );
+      else if ( !tl_3.empty() ) tar = tl_3.at( rng().range( tl_3.size() ) );
+      else if ( !tl_4.empty() ) tar = tl_4.at( rng().range( tl_4.size() ) );
 
       return tar;
     }

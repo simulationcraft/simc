@@ -104,7 +104,7 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
     attempts++;
     if ( attempts >= max_attempts )
       stop_trying = true;
-    while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
+    while ( !targets_left_to_try.empty() && local_attempts < num_targets * 2 )
     {
       player_t* possibletarget;
       size_t rng_target = static_cast<size_t>(
@@ -1324,7 +1324,7 @@ public:
 
       double evaluate() override
       {
-        if ( cd_.size() == 0 )
+        if ( cd_.empty() )
           return 0;
 
         timespan_t min_cd = cd_[ 0 ]->remains();
@@ -4684,7 +4684,7 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lava_burst_pw->set_target( execute_state->target );
-      if ( p()->action.lava_burst_pw->target_list().size() )
+      if ( !p()->action.lava_burst_pw->target_list().empty() )
       {
         p()->action.lava_burst_pw->schedule_execute();
       }
@@ -4897,7 +4897,7 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->buff.primordial_wave->expire();
       p()->action.lightning_bolt_pw->set_target( target );
-      if ( p()->action.lightning_bolt_pw->target_list().size() )
+      if ( !p()->action.lightning_bolt_pw->target_list().empty() )
       {
         p()->action.lightning_bolt_pw->execute();
       }
@@ -5200,7 +5200,7 @@ struct earthquake_t : public shaman_spell_t
           .action( rumble ) );
 
     if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
-         rumble->target_list().size() )
+         !rumble->target_list().empty() )
     {
       auto t = rumble->target_list()[ static_cast<unsigned>( rng().range( 0,
             as<double>( rumble->target_list().size() ) ) ) ];
@@ -5745,7 +5745,7 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
-      if ( lvb->target_list().size() )
+      if ( !lvb->target_list().empty() )
       {
         lvb->execute();
       }
@@ -5889,7 +5889,7 @@ struct static_discharge_tick_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( target_list().size() == 0 )
+    if ( target_list().empty() )
     {
       sim->print_debug( "Static Discharge Tick without an active FS" );
       return;
@@ -9807,7 +9807,7 @@ public:
                       os << "<div class=\"clear\"></div>\n";
                     }
     */
-    if ( p.cd_waste_exec.size() > 0 )
+    if ( !p.cd_waste_exec.empty() )
     {
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";

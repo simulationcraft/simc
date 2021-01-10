@@ -436,7 +436,7 @@ const profile_result_t& profile_set_t::result( scale_metric_e metric ) const
 {
   static const profile_result_t __default {};
 
-  if ( m_results.size() == 0 )
+  if ( m_results.empty() )
   {
     return __default;
   }
@@ -569,7 +569,7 @@ void profilesets_t::finalize_work()
     return;
   }
 
-  while ( m_current_work.size() > 0 )
+  while ( !m_current_work.empty() )
   {
     assert( ! m_work_lock.owns_lock() );
 
@@ -729,7 +729,7 @@ void profilesets_t::initialize( sim_t* sim )
     return;
   }
 
-  if ( sim -> profileset_map.size() == 0 )
+  if ( sim -> profileset_map.empty() )
   {
     set_state( DONE );
     return;
@@ -835,7 +835,7 @@ std::string profilesets_t::current_profileset_name()
 
 bool profilesets_t::iterate( sim_t* parent )
 {
-  if ( parent -> profileset_map.size() == 0 )
+  if ( parent -> profileset_map.empty() )
   {
     return true;
   }
@@ -966,7 +966,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
 
 void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 {
-  if ( m_profilesets.size() == 0 )
+  if ( m_profilesets.empty() )
   {
     return;
   }
@@ -985,7 +985,7 @@ void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 
 void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
 {
-  if ( m_profilesets.size() == 0 )
+  if ( m_profilesets.empty() )
   {
     return;
   }
@@ -1289,7 +1289,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
           saved_talents.push_back( talent_data );
         }
       }
-      if ( saved_talents.size() > 0 )
+      if ( !saved_talents.empty() )
       {
         profileset.output_data().talents( saved_talents );
       }
@@ -1316,7 +1316,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
         saved_gear.push_back( saved_item );
       }
     }
-    if ( saved_gear.size() > 0 )
+    if ( !saved_gear.empty() )
     {
       profileset.output_data().gear( saved_gear );
     }
@@ -1387,7 +1387,7 @@ void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput
       ovr_talent[ "name"     ] = talent -> name_cstr();
     }
   }
-  if ( output_data.gear().size() > 0 ) {
+  if ( !output_data.gear().empty() ) {
     const auto& gear = output_data.gear();
     auto ovr_gear = ovr[ "gear" ];
     for ( size_t i = 0; i < gear.size(); i++ )

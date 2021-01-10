@@ -1160,7 +1160,7 @@ QString SC_OptionsTab::get_globalSettings()
   {
     std::string target_error = choice.target_error->currentText().toStdString();
     auto splits              = util::string_split<util::string_view>( target_error, "%" );
-    assert( splits.size() > 0 );
+    assert( !splits.empty() );
     options += "target_error=" + util::to_QString( splits[ 0 ] ) + "\n";
     options += "iterations=0\n";
   }
@@ -1378,7 +1378,7 @@ QString SC_OptionsTab::mergeOptions()
       {
         std::string target_error = choice.plots_target_error->currentText().toStdString();
         auto splits              = util::string_split<util::string_view>( target_error, "%" );
-        assert( splits.size() > 0 );
+        assert( !splits.empty() );
         options += "dps_plot_target_error=" + util::to_QString( splits[ 0 ] ) + "\n";
         options += "dps_plot_iterations=0\n";
       }

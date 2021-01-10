@@ -638,7 +638,7 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
   std::string spacer_str_2( n_spacer, ' ' );
 
   fmt::print( os, "\nIteration data:\n" );
-  if ( sim.low_iteration_data.size() && sim.high_iteration_data.size() )
+  if ( !sim.low_iteration_data.empty() && !sim.high_iteration_data.empty() )
   {
     fmt::print(
         os,

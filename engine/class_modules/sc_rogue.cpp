@@ -3692,7 +3692,7 @@ struct black_powder_t: public rogue_attack_t
       // Invalidate target cache to force re-checking Find Weakness debuffs.
       // Don't attempt to execute this attack if it has no valid targets
       target_cache.is_valid = false;
-      if ( target_list().size() > 0 )
+      if ( !target_list().empty() )
       {
         rogue_attack_t::execute();
       }
@@ -5432,7 +5432,7 @@ struct roll_the_bones_t : public buff_t
   unsigned roll_the_bones( timespan_t duration )
   {
     std::vector<buff_t*> rolled;
-    if ( rogue->options.fixed_rtb.size() == 0 )
+    if ( rogue->options.fixed_rtb.empty() )
     {
       rolled = random_roll( rogue->buffs.loaded_dice->up() );
     }
@@ -7018,7 +7018,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     } );
 
     // If we have buffs and an operating mode, make an expression
-    if ( type != RTB_NONE && list_values.size() > 0 )
+    if ( type != RTB_NONE && !list_values.empty() )
     {
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( size_t i = 0, end = list_values.size(); i < end; ++i )
@@ -7914,7 +7914,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::str
     buffs.push_back( buff_index );
   }
 
-  if ( buffs.size() == 0 || buffs.size() > 6 )
+  if ( buffs.empty() || buffs.size() > 6 )
   {
     sim -> error( "{}: No valid 'fixed_rtb' buffs given by string '{}'", sim -> active_player -> name(),
         value );
