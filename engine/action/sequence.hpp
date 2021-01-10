@@ -34,6 +34,7 @@ struct sequence_t : public action_t
   virtual bool ready() override;
   void restart();
   bool can_restart();
+  void init_finished() override;
 };
 
 struct strict_sequence_t : public action_t
@@ -52,4 +53,5 @@ struct strict_sequence_t : public action_t
   void cancel() override;
   void interrupt_action() override;
   void schedule_execute(action_state_t* execute_state = nullptr) override;
+  void init_finished() override;
 };
