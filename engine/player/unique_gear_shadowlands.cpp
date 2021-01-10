@@ -1621,6 +1621,12 @@ void hymnal_of_the_path( special_effect_t& effect )
   new hymnal_of_the_path_cb_t( effect.player, effect );
 }
 
+void overwhelming_power_crystal( special_effect_t& effect)
+{
+  // automagic handles almost everything, just need to disable the damage action
+  // so the automagic doesn't incorrectly apply it to the target
+  effect.disable_action();
+}
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -1883,6 +1889,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 332300, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 332301, items::mistcaller_ocarina );
     unique_gear::register_special_effect( 336841, items::flame_of_battle );
+    unique_gear::register_special_effect( 329831, items::overwhelming_power_crystal );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
