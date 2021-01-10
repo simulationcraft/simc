@@ -188,9 +188,9 @@ void shadow( player_t* p )
   main->add_call_action_list( p, priest->covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action( p, "Void Eruption",
                     "if=variable.pool_for_cds&insanity>=40&(insanity<=85|talent.searing_nightmare.enabled&variable."
-                    "searing_nightmare_cutoff)&!cooldown.fiend.up",
+                    "searing_nightmare_cutoff)&!cooldown.fiend.up&(!cooldown.mind_blast.up|spell_targets.mind_sear>2)",
                     "Use Void Eruption on cooldown pooling at least 40 insanity but not if you will overcap insanity "
-                    "in VF. Make sure shadowfiend/mindbender is on cooldown before VE." );
+                    "in VF. Make sure shadowfiend/mindbender and Mind Blast is on cooldown before VE." );
   main->add_action( p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
                     "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
   main->add_call_action_list( cds );
