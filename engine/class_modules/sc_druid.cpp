@@ -9043,7 +9043,8 @@ void druid_t::combat_begin()
 
 void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
 {
-  double pct_health = 0, current_health = 0;
+  double pct_health = 0;
+  double current_health = 0;
   bool adjust_natures_guardian_health = mastery.natures_guardian->ok() && rt == RESOURCE_HEALTH;
   if ( adjust_natures_guardian_health )
   {
@@ -10405,10 +10406,17 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
   for ( size_t i = 0, end = stats_list.size(); i < end; i++ )
   {
     stats_t* stats   = stats_list[ i ];
-    double tf_exe_up = 0, tf_exe_total = 0;
-    double tf_benefit_up = 0, tf_benefit_total = 0;
-    double bt_exe_up = 0, bt_exe_total = 0;
-    double bt_benefit_up = 0, bt_benefit_total = 0;
+    double tf_exe_up = 0;
+    double tf_exe_total = 0;
+
+    double tf_benefit_up = 0;
+    double tf_benefit_total = 0;
+
+    double bt_exe_up = 0;
+    double bt_exe_total = 0;
+
+    double bt_benefit_up = 0;
+    double bt_benefit_total = 0;
     // int n = 0;
 
     for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
@@ -10557,10 +10565,17 @@ public:
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats   = p.stats_list[ i ];
-      double tf_exe_up = 0, tf_exe_total = 0;
-      double tf_benefit_up = 0, tf_benefit_total = 0;
-      double bt_exe_up = 0, bt_exe_total = 0;
-      double bt_benefit_up = 0, bt_benefit_total = 0;
+      double tf_exe_up = 0;
+      double tf_exe_total = 0;
+
+      double tf_benefit_up = 0;
+      double tf_benefit_total = 0;
+
+      double bt_exe_up = 0;
+      double bt_exe_total = 0;
+
+      double bt_benefit_up = 0;
+      double bt_benefit_total = 0;
 
       for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {

@@ -4907,7 +4907,8 @@ void merge( player_t& left, player_t& right )
   prepare( right );
 
   // Both buff_lists are sorted, join them mergesort-style.
-  size_t i = 0, j = 0;
+  size_t i = 0;
+  size_t j = 0;
   while ( i < left.buff_list.size() && j < right.buff_list.size() )
   {
     if ( compare( left.buff_list[ i ], right.buff_list[ j ] ) )
@@ -6479,7 +6480,8 @@ void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
 
 bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
 {
-  double lv = a->current_value, rv = a->current_value;
+  double lv = a->current_value;
+  double rv = a->current_value;
   if ( lv == rv )
   {
     return a->name_str < b->name_str;
@@ -9226,7 +9228,8 @@ static bool parse_min_gcd( sim_t* sim, util::string_view name, util::string_view
 // TODO: HOTFIX handling
 void player_t::replace_spells()
 {
-  uint32_t class_idx, spec_index;
+  uint32_t class_idx;
+  uint32_t spec_index;
 
   if ( !dbc->spec_idx( _spec, class_idx, spec_index ) )
     return;
@@ -12469,8 +12472,8 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
   }
 
   double delta           = new_haste / gcd_current_haste_value;
-  timespan_t remains     = readying ? readying->remains() : ( gcd_ready - sim->current_time() ),
-             new_remains = remains * delta;
+  timespan_t remains     = readying ? readying->remains() : ( gcd_ready - sim->current_time() );
+  timespan_t new_remains = remains * delta;
 
   // Don't bother processing too small (less than a millisecond) granularity changes
   if ( remains == new_remains )

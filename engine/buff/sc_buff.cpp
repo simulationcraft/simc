@@ -1872,10 +1872,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      timespan_t lag, dev;
-
-      lag             = p->world_lag_override ? p->world_lag : sim->world_lag;
-      dev             = p->world_lag_stddev_override ? p->world_lag_stddev : sim->world_lag_stddev;
+      timespan_t lag  = p->world_lag_override ? p->world_lag : sim->world_lag;
+      timespan_t dev  = p->world_lag_stddev_override ? p->world_lag_stddev : sim->world_lag_stddev;
       reschedule_time = rng().gauss( lag, dev );
     }
 

@@ -726,11 +726,13 @@ struct power_siphon_t : public demonology_spell_t
 
     range::sort(
         imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
-          double lv = imp1->resources.current[ RESOURCE_ENERGY ], rv = imp2->resources.current[ RESOURCE_ENERGY ];
+          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
 
           if ( lv == rv )
           {
-            timespan_t lr = imp1->expiration->remains(), rr = imp2->expiration->remains();
+            timespan_t lr = imp1->expiration->remains();
+            timespan_t rr = imp2->expiration->remains();
             if ( lr == rr )
             {
               return imp1->actor_spawn_index < imp2->actor_spawn_index;

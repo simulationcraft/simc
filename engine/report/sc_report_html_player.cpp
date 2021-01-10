@@ -280,7 +280,8 @@ double mean_damage( const T& result )
 template <typename T, typename V>
 double mean_value( const T& results, const std::initializer_list<V>& selectors )
 {
-  double sum = 0, count = 0;
+  double sum = 0;
+  double count = 0;
 
   range::for_each( selectors, [ & ]( const V& selector ) {
     auto idx = static_cast<int>( selector );

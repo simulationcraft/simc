@@ -1533,13 +1533,13 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   if ( ! e )
     return 0.0;
 
-  double avg, result;
+  double result;
 
   assert( e && ( level > 0 ) );
   assert( ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( e, level );
+  double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {
@@ -1570,12 +1570,12 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
 {
-  double avg, result;
+  double result;
 
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( e, level );
+  double avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {

@@ -144,7 +144,8 @@ void plot_t::analyze_stats()
 
     remaining_plot_points = dps_plot_points;
 
-    int start, end;
+    int start;
+    int end;
 
     if ( dps_plot_positive )
     {

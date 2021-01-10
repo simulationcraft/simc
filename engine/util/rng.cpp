@@ -164,7 +164,8 @@ double stdnormal_cdf( double u )
   if ( u == std::numeric_limits<double>::infinity() )
     return ( u < 0 ? 0.0 : 1.0 );
 
-  double y, z;
+  double y;
+  double z;
 
   y = fabs( u );
 
@@ -269,7 +270,11 @@ double stdnormal_inv( double p )
   if ( p == 1.0 )
     return std::numeric_limits<double>::infinity();
 
-  double q, t, u;
+  double q;
+
+  double t;
+
+  double u;
 
   q = std::min( p, 1 - p );
 

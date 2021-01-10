@@ -376,7 +376,8 @@ struct player_list_comparator_t
 
   bool operator()( const player_t* p1, const player_t* p2 )
   {
-    const extended_sample_data_t *d_p1 = nullptr, *d_p2 = nullptr;
+    const extended_sample_data_t *d_p1 = nullptr;
+    const extended_sample_data_t *d_p2 = nullptr;
     switch ( metric_ )
     {
       case METRIC_DPS:
@@ -408,7 +409,8 @@ struct player_list_comparator_t
         return true;
     }
 
-    double rv, lv;
+    double rv;
+    double lv;
     switch ( value_ )
     {
       case VALUE_MEAN:
@@ -619,15 +621,10 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 
   ac.set_title( util::encode_html( p.name_str ) + " Reforge Plot" );
   ac.set_yaxis_title( "Damage Per Second" );
-  std::string from_stat, to_stat, from_color, to_color;
-  from_stat = util::stat_type_abbrev(
-      p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
-  to_stat = util::stat_type_abbrev(
-      p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
-  from_color =
-      color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
-  to_color =
-      color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
+  std::string from_stat  = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
+  std::string to_stat    = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
+  std::string from_color = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
+  std::string to_color   = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
 
   std::string span_from_stat = "<span style=\"color:" + from_color +
                                ";font-weight:bold;\">" + from_stat + "</span>";
@@ -1416,7 +1413,8 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t& p 
 
 bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, scale_metric_e metric )
 {
-  double max_dps = 0, min_dps = std::numeric_limits<double>::max();
+  double max_dps = 0;
+  double min_dps = std::numeric_limits<double>::max();
 
   for ( const auto& plot_data_list : p.dps_plot_data )
   {

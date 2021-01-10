@@ -1133,7 +1133,8 @@ std::vector<raid_event_t*> get_longest_active_raid_events( const std::vector<rai
   }
 
   range::sort( result, []( const raid_event_t* l, const raid_event_t* r ) {
-    timespan_t lv = l->remains(), rv = r->remains();
+    timespan_t lv = l->remains();
+    timespan_t rv = r->remains();
     if ( lv == rv )
     {
       // Integer comparison to break ties

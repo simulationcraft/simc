@@ -92,13 +92,15 @@ bool wowhead::download_item_data( item_t&            item,
 
       if (!xml->get_value(item.parsed.data.quality, "quality/id")) throw("quality");
 
-      std::string jsonequipdata, jsondata;
+      std::string jsonequipdata;
+      std::string jsondata;
       xml->get_value(jsonequipdata, "jsonEquip/cdata");
       jsonequipdata = "{" + jsonequipdata + "}";
       xml->get_value(jsondata, "json/cdata");
       jsondata = "{" + jsondata + "}";
 
-      rapidjson::Document json, jsonequip;
+      rapidjson::Document json;
+      rapidjson::Document jsonequip;
       json.Parse(jsondata.c_str());
       jsonequip.Parse(jsonequipdata.c_str());
 

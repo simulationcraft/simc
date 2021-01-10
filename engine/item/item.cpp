@@ -1802,7 +1802,10 @@ void item_t::decode_weapon()
   {
     auto tokens = item_database::parse_tokens( option_weapon_str );
 
-    bool dps_set = false, dmg_set = false, min_set = false, max_set = false;
+    bool dps_set = false;
+    bool dmg_set = false;
+    bool min_set = false;
+    bool max_set = false;
 
     for ( auto& t : tokens )
     {

@@ -81,7 +81,8 @@ namespace {
 
     const std::string url_name = data.url_name();
 
-    std::string prefix, suffix;
+    std::string prefix;
+    std::string suffix;
     {
       std::string tokenized_name = util::tokenize_fn(url_name);
       std::string obj_token = data.token();

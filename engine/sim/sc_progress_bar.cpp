@@ -21,7 +21,9 @@ std::string progress_bar_t::format_time( double t )
 {
   std::stringstream s;
 
-  int days = 0, hours = 0, minutes = 0;
+  int days = 0;
+  int hours = 0;
+  int minutes = 0;
 
   double remainder = t;
 

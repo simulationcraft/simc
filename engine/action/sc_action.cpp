@@ -2024,10 +2024,8 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       The only situation that this could happen is when world lag is over 400, as blizzard does not allow
       custom lag tolerance to go over 400.
       */
-      timespan_t lag, dev;
-
-      lag   = player->world_lag_override ? player->world_lag : sim->world_lag;
-      dev   = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
+      timespan_t lag   = player->world_lag_override ? player->world_lag : sim->world_lag;
+      timespan_t dev   = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
       delay = rng().gauss( lag, dev );
       if ( delay > timespan_t::from_millis( 400 ) )
       {

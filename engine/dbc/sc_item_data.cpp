@@ -69,7 +69,8 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
 {
   auto data = curve_point_t::find( curve_id, ptr );
 
-  const curve_point_t* lower_bound = nullptr, * upper_bound = nullptr;
+  const curve_point_t * lower_bound = nullptr;
+  const curve_point_t * upper_bound = nullptr;
   for ( const auto& point : data )
   {
     assert( point.curve_id == curve_id );
@@ -711,7 +712,9 @@ uint32_t item_database::armor_value( const dbc_item_data_t& item, const dbc_t& d
   if ( item.item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item.item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
 
-  double m_invtype = 0, m_quality = 0, total_armor = 0;
+  double m_invtype = 0;
+  double m_quality = 0;
+  double total_armor = 0;
 
   switch ( item.inventory_type )
   {

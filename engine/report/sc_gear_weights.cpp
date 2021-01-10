@@ -370,7 +370,9 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::askmrrobot(
       // otherwise try to reconstruct it from the origin string
       else
       {
-        std::string region_str, server_str, name_str;
+        std::string region_str;
+        std::string server_str;
+        std::string name_str;
         if ( util::parse_origin( region_str, server_str, name_str,
                                  p.origin_str ) )
           ss << "/optimize/" << region_str << '/' << server_str << '/'

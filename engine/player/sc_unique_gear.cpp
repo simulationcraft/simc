@@ -157,7 +157,8 @@ struct select_attr
     // the one selected. The order of stats checked is determined by the
     // stat_buff_creator add_stats() calls.
     double compare_to = 0;
-    stat_e compare_stat = STAT_NONE, my_stat = STAT_NONE;
+    stat_e compare_stat = STAT_NONE;
+    stat_e my_stat = STAT_NONE;
 
     for ( size_t i = 0, end = buff.stats.size(); i < end; i++ )
     {
@@ -4057,7 +4058,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     PROC_COOLDOWN,
   };
 
-  unsigned int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+  unsigned int ptype_idx = 1;
+  unsigned int stat_idx = 2;
+  unsigned int expr_idx = 3;
   enum proc_expr_e pexprtype = PROC_ENABLED;
   enum proc_type_e ptype = PROC_STAT;
   stat_e stat = STAT_NONE;

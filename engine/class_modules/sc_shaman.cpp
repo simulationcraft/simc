@@ -84,7 +84,9 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   size_t num_targets  = sim->target_non_sleeping_list.size();
   size_t max_attempts = static_cast<size_t>(
       std::min( ( num_targets - 1.0 ) * 2.0, 30.0 ) );  // With a lot of targets this can get pretty high. Cap it at 30.
-  size_t local_attempts = 0, attempts = 0, chain_number = 1;
+  size_t local_attempts = 0;
+  size_t attempts = 0;
+  size_t chain_number = 1;
   std::vector<player_t*> targets_left_to_try(
       sim->target_non_sleeping_list.data() );  // This list contains members of a vector that haven't been tried yet.
   auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );

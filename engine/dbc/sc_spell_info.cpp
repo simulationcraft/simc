@@ -822,8 +822,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
                                                int level )
 {
   std::streamsize ssize = s.precision( 7 );
-  char tmp_buffer[512],
-       tmp_buffer2[64];
+  char tmp_buffer[512];
+  char tmp_buffer2[64];
 
   snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
   snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2 );

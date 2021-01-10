@@ -147,7 +147,8 @@ struct dynamic_event_t : public event_t
     }
 
     auto ratio = new_coefficient / m_coefficient;
-    auto remains = this -> remains(), new_duration = remains * ratio;
+    auto remains = this -> remains();
+    auto new_duration = remains * ratio;
 
     sim().print_debug( "{} coefficient change, remains={} old_coeff={} new_coeff={} ratio={} new_remains={}",
       name(), remains.total_seconds(), m_coefficient, new_coefficient, ratio, new_duration.total_seconds() );
@@ -1292,7 +1293,8 @@ inline void runes_t::regenerate_immediate( timespan_t seconds )
   log_rune_status( dk );
 
   // Collect regenerating and depleted runes
-  std::vector<rune_t*> regenerating_runes, depleted_runes;
+  std::vector<rune_t*> regenerating_runes;
+  std::vector<rune_t*> depleted_runes;
   range::for_each( slot, [ &regenerating_runes, &depleted_runes ]( rune_t& r ) {
     if ( r.is_regenerating() )
     {
@@ -1306,7 +1308,8 @@ inline void runes_t::regenerate_immediate( timespan_t seconds )
 
   // Sort regenerating runes by ascending remaining time
   range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
-    timespan_t lv = l -> event -> remains(), rv = r -> event -> remains();
+    timespan_t lv = l -> event -> remains();
+    timespan_t rv = r -> event -> remains();
     // Use pointers as tiebreaker
     if ( lv == rv )
     {
@@ -1404,7 +1407,8 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
 
   // Sort by ascending remaining time
   range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
-    timespan_t lv = l -> event -> remains(), rv = r -> event -> remains();
+    timespan_t lv = l -> event -> remains();
+    timespan_t rv = r -> event -> remains();
     // Use pointers as tiebreaker
     if ( lv == rv )
     {

@@ -148,7 +148,10 @@ void print_player_actions( std::ostream& os, const player_t& p )
   fmt::print( os, "  Actions:\n" );
 
   size_t max_length = 0;
-  int max_dpe = 0, max_dpet = 0, max_dpr = 0, max_pdps = 0;
+  int max_dpe = 0;
+  int max_dpet = 0;
+  int max_dpr = 0;
+  int max_pdps = 0;
   std::vector<stats_t*> tmp_stats_list = p.stats_list;
   for ( auto& pet : p.pet_list )
   {
@@ -630,7 +633,9 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
   }
 
   size_t n_spacer = ( sim.target_list.size() - 1 ) * 10 + ( sim.target_list.size() - 2 ) * 2 + 2;
-  std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
+  std::string spacer_str_1( n_spacer, '-' );
+
+  std::string spacer_str_2( n_spacer, ' ' );
 
   fmt::print( os, "\nIteration data:\n" );
   if ( sim.low_iteration_data.size() && sim.high_iteration_data.size() )

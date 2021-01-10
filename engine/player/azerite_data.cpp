@@ -1479,7 +1479,9 @@ void register_azerite_target_data_initializers( sim_t* sim )
 
 std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
 {
-  int min_ = 0, max_ = 0, avg_ = 0;
+  int min_ = 0;
+  int max_ = 0;
+  int avg_ = 0;
   if ( !power.enabled() || effect.m_coefficient() == 0 )
   {
     return std::make_tuple( 0, 0, 0 );
@@ -2868,7 +2870,9 @@ void relational_normalization_gizmo( special_effect_t& effect )
   const spell_data_t* increase_spell = effect.player->find_spell( 280653 );
   const spell_data_t* decrease_spell = effect.player->find_spell( 280654 );
 
-  double haste_amount = 0, stat_amount = 0, health_amount = 0;
+  double haste_amount = 0;
+  double stat_amount = 0;
+  double health_amount = 0;
   for ( size_t i = 0, end = ilevels.size(); i < end; ++i )
   {
     double value = floor( increase_spell->effectN( 1 ).m_coefficient() * budgets[ i ] + 0.5 );

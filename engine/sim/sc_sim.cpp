@@ -1244,7 +1244,8 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.dps.mean(), rv = r->collected_data.dps.mean();
+    double lv = l->collected_data.dps.mean();
+    double rv = r->collected_data.dps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1260,7 +1261,8 @@ struct compare_priority_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.prioritydps.mean(), rv = r->collected_data.prioritydps.mean();
+    double lv = l->collected_data.prioritydps.mean();
+    double rv = r->collected_data.prioritydps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1299,7 +1301,8 @@ struct compare_hps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.hps.mean(), rv = r->collected_data.hps.mean();
+    double lv = l->collected_data.hps.mean();
+    double rv = r->collected_data.hps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1315,8 +1318,8 @@ struct compare_hps_plus_aps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.hps.mean() + l->collected_data.aps.mean(),
-           rv = r->collected_data.hps.mean() + r->collected_data.aps.mean();
+    double lv = l->collected_data.hps.mean() + l->collected_data.aps.mean();
+    double rv = r->collected_data.hps.mean() + r->collected_data.aps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1332,7 +1335,8 @@ struct compare_dtps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.dtps.mean(), rv = r->collected_data.dtps.mean();
+    double lv = l->collected_data.dtps.mean();
+    double rv = r->collected_data.dtps.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -1348,8 +1352,8 @@ struct compare_tmi
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    double lv = l->collected_data.theck_meloree_index.mean(),
-           rv = r->collected_data.theck_meloree_index.mean();
+    double lv = l->collected_data.theck_meloree_index.mean();
+    double rv = r->collected_data.theck_meloree_index.mean();
     if ( lv == rv )
     {
       return l->actor_index < r->actor_index;
@@ -2673,7 +2677,8 @@ void sim_t::init()
 
   {
     // Determine whether we have healers or tanks.
-    unsigned int healers = 0, tanks = 0;
+    unsigned int healers = 0;
+    unsigned int tanks = 0;
     for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
       player_t& p = *player_no_pet_list[ i ];

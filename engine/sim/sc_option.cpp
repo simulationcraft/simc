@@ -772,7 +772,8 @@ void option_db_t::parse_token( util::string_view token )
     return;
   }
 
-  std::string name( parsed_token, 0, cut_pt ), value( parsed_token, cut_pt + 1, std::string::npos );
+  std::string name( parsed_token, 0, cut_pt );
+  std::string value( parsed_token, cut_pt + 1, std::string::npos );
 
   do_replace( *this, value, value.find( "$(" ), 1 );
 

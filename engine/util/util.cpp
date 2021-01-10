@@ -2306,7 +2306,8 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
 {
   std::vector<std::string> results;
-  util::string_view::size_type cut_pt, start = 0;
+  util::string_view::size_type cut_pt;
+  util::string_view::size_type start = 0;
 
   std::string buffer;
 

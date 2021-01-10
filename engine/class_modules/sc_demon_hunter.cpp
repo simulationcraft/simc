@@ -975,7 +975,8 @@ struct soul_fragment_t
     y = dh->y_position + 10.6066;
 
     // Calculate random offset, 2-5 yards from the base position.
-    double r_min = 2.0, r_max = 5.0;
+    double r_min = 2.0;
+    double r_max = 5.0;
     // Nornmalizing factor
     double a = 2.0 / ( r_max * r_max - r_min * r_min );
     // Calculate distance from origin using power-law distribution for
@@ -2771,12 +2772,14 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
       type( soul_fragment::ANY )
   {
-    std::string type_str, mode_str;
+    std::string type_str;
+    std::string mode_str;
     add_option( opt_string( "type", type_str ) );
     add_option( opt_string( "mode", mode_str ) );
+    parse_options( options_str );
+    
     parse_mode( mode_str );
     parse_type( mode_str );
-    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     // use_off_gcd = true;
