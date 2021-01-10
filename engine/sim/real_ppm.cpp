@@ -24,7 +24,7 @@ real_ppm_t::real_ppm_t( util::string_view name, player_t* p, const spell_data_t*
 }
 
 double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_trigger,
-                                timespan_t accumulated_blp, unsigned scales_with, blp blp_state )
+                                timespan_t accumulated_bad_luck_protection, unsigned scales_with, blp blp_state )
 {
   auto sim       = player->sim;
   double coeff   = 1.0;
@@ -50,7 +50,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
   {
     // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
     // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-    double last_success = std::min( accumulated_blp, max_bad_luck_prot() ).total_seconds();
+    double last_success = std::min( accumulated_bad_luck_protection, max_bad_luck_prot() ).total_seconds();
     double expected_average_proc_interval = 60.0 / real_ppm;
 
     rppm_chance =
@@ -66,7 +66,7 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
     sim->out_debug.print(
         "base={:.3f} coeff={:.3f} last_trig={:.3f} last_proc={:.3f}"
         " scales={} blp={} chance={:.5f}%",
-        PPM, coeff, last_trigger.total_seconds(), accumulated_blp.total_seconds(), scales_with,
+        PPM, coeff, last_trigger.total_seconds(), accumulated_bad_luck_protection.total_seconds(), scales_with,
         blp_state == BLP_ENABLED ? "enabled" : "disabled", rppm_chance * 100.0 );
   }
 

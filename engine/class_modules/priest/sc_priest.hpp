@@ -489,7 +489,7 @@ public:
   void init_rng() override;
   const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
                                                  util::span<util::string_view> splits );
   void arise() override;

@@ -652,8 +652,8 @@ public:
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      create_options() override;
-  std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
-  std::unique_ptr<expr_t>   create_action_expression( action_t&, util::string_view name ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view expression_str ) override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t*    create_pet( util::string_view name, util::string_view type ) override;
   void      create_pets() override;

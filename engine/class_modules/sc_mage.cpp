@@ -770,7 +770,7 @@ public:
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   void do_dynamic_regen( bool = false ) override;
-  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
+  void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void reset() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view ) override;

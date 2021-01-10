@@ -1140,13 +1140,9 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 
 // bcp_api::download_player =================================================
 
-player_t* bcp_api::download_player(sim_t* sim,
-  const std::string& region,
-  const std::string& server,
-  const std::string& name,
-  const std::string& talents,
-  cache::behavior_e  caching,
-  bool               allow_failures)
+player_t* bcp_api::download_player( sim_t* sim, const std::string& region, const std::string& server,
+                                    const std::string& name, const std::string& talents,
+                                    cache::behavior_e cache_behavior, bool allow_failures )
 {
   sim->current_name = name;
 
@@ -1190,7 +1186,7 @@ player_t* bcp_api::download_player(sim_t* sim,
   player.name = name;
   player.talent_spec = talents;
 
-  return parse_player( sim, player, caching, allow_failures );
+  return parse_player( sim, player, cache_behavior, allow_failures );
 }
 
 // bcp_api::from_local_json =================================================
@@ -1260,11 +1256,11 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
 // bcp_api::download_item() =================================================
 
-bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
+bool bcp_api::download_item( item_t& item, cache::behavior_e cache_behavior )
 {
   try
   {
-    download_item_data( item, caching );
+    download_item_data( item, cache_behavior );
     item.source_str = "Blizzard";
 
     for ( const auto& id : item.parsed.bonus_id)
@@ -1288,14 +1284,9 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
 // bcp_api::download_guild ==================================================
 
-bool bcp_api::download_guild( sim_t* sim,
-                              const std::string& region,
-                              const std::string& server,
-                              const std::string& name,
-                              const std::vector<int>& ranks,
-                              int player_filter,
-                              int max_rank,
-                              cache::behavior_e caching )
+bool bcp_api::download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name,
+                              const std::vector<int>& ranks, int player_type_filter, int max_rank,
+                              cache::behavior_e cache_behavior )
 {
   rapidjson::Document js;
 
@@ -1310,7 +1301,7 @@ bool bcp_api::download_guild( sim_t* sim,
   auto normalized_server = server;
   util::tolower( normalized_server );
 
-  download_roster( js, sim, region, normalized_server, normalized_name, caching );
+  download_roster( js, sim, region, normalized_server, normalized_name, cache_behavior );
 
   if ( !check_for_error( js ) )
   {
@@ -1349,8 +1340,8 @@ bool bcp_api::download_guild( sim_t* sim,
     if ( ! character.HasMember( "name" ) )
       continue;
 
-    if ( player_filter != PLAYER_NONE &&
-         player_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+    if ( player_type_filter != PLAYER_NONE &&
+         player_type_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
       continue;
 
     names.emplace_back(character[ "name" ].GetString() );
@@ -1363,7 +1354,7 @@ bool bcp_api::download_guild( sim_t* sim,
   for (auto & cname : names)
   {
     fmt::print("Downloading character: {}\n", cname);
-    download_player( sim, region, server, cname, "active", caching, true );
+    download_player( sim, region, server, cname, "active", cache_behavior, true );
   }
 
   return true;

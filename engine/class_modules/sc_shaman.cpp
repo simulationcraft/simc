@@ -780,7 +780,7 @@ public:
   void summon_storm_elemental( timespan_t duration );
 
   // triggers
-  void trigger_maelstrom_gain( double base, gain_t* gain = nullptr );
+  void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );

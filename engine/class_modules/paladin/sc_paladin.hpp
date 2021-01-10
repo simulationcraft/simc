@@ -557,8 +557,10 @@ public:
   virtual double 	  composite_player_target_multiplier ( player_t *target, school_e school ) const override;
   virtual double    composite_base_armor_multiplier() const override;
 
-  virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
-  virtual double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
+                                action_t* action = nullptr ) override;
+  virtual double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
+                                action_t* action = nullptr ) override;
 
   // combat outcome functions
   virtual void      assess_damage( school_e, result_amount_type, action_state_t* ) override;

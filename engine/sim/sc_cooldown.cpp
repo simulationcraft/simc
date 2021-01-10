@@ -241,7 +241,7 @@ void cooldown_t::adjust_remaining_duration( double delta )
   }
 }
 
-void cooldown_t::adjust( timespan_t amount, bool require_reaction )
+void cooldown_t::adjust( timespan_t amount, bool requires_reaction )
 {
   if ( amount == 0_ms )
     return;
@@ -255,7 +255,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 
     // Cooldown resets
     if ( ready + amount <= sim.current_time() )
-      reset( require_reaction );
+      reset( requires_reaction );
     // Still some time left, adjust ready
     else
     {
@@ -299,7 +299,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       // If the remaining adjustment is greater than cooldown duration,
       // we have to recharge more than one charge.
       int extra_charges = as<int>( -remains.total_millis() / cd_duration.total_millis() );
-      reset( require_reaction, 1 + extra_charges );
+      reset( requires_reaction, 1 + extra_charges );
       remains += extra_charges * cd_duration;
 
       // Excess time adjustment goes to the next recharge event, if we didnt

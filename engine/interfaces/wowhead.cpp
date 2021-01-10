@@ -63,16 +63,14 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
 
 // download_item_data =======================================================
 
-bool wowhead::download_item_data( item_t&            item,
-                                  cache::behavior_e  caching,
-                                  wowhead_e          source )
+bool wowhead::download_item_data( item_t& item, cache::behavior_e cache_behavior, wowhead_e source )
 {
   try
   {
-    std::shared_ptr<xml_node_t> xml = item.xml = download_id(item.sim, item.parsed.data.id, caching, source);
+    std::shared_ptr<xml_node_t> xml = item.xml = download_id( item.sim, item.parsed.data.id, cache_behavior, source );
     if ( ! xml )
     {
-      if ( caching != cache::ONLY )
+      if ( cache_behavior != cache::ONLY )
         item.sim -> errorf( "Player %s unable to download item id '%u' from wowhead at slot %s.\n", item.player -> name(), item.parsed.data.id, item.slot_name() );
       return false;
     }
@@ -303,7 +301,7 @@ bool wowhead::download_item_data( item_t&            item,
 
       xml->get_value(error_str, "error/.");
 
-      if (caching != cache::ONLY)
+      if ( cache_behavior != cache::ONLY )
         item.sim->errorf("Wowhead (%s): Player %s unable to parse item '%u' %s in slot '%s': %s\n",
           source_desc_str(source).c_str(), item.player->name(), item.parsed.data.id,
           fieldname, item.slot_name(), error_str.c_str());
@@ -312,7 +310,7 @@ bool wowhead::download_item_data( item_t&            item,
   }
   catch( const std::exception& e )
   {
-    if ( caching != cache::ONLY )
+    if ( cache_behavior != cache::ONLY )
       item.sim -> errorf( "Wowhead (%s): Player %s unable to download/parse item '%u' in slot '%s': %s\n",
                           source_desc_str( source ).c_str(), item.player -> name(), item.parsed.data.id,
                           item.slot_name(), e.what() );
@@ -326,9 +324,9 @@ bool wowhead::download_item_data( item_t&            item,
 
 bool wowhead::download_item( item_t&            item,
                              wowhead_e          source,
-                             cache::behavior_e  caching )
+                             cache::behavior_e  cache_behavior )
 {
-  bool ret = download_item_data( item, caching, source );
+  bool ret = download_item_data( item, cache_behavior, source );
 
   if ( ret )
     item.source_str = "Wowhead";

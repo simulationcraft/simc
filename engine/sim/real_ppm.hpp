@@ -43,12 +43,8 @@ private:
   static timespan_t max_interval() { return 3.5_s; }
   static timespan_t max_bad_luck_prot() { return 1000_s; }
 public:
-  static double proc_chance( player_t*  player,
-                             double     PPM,
-                             timespan_t last_trigger,
-                             timespan_t last_successful_proc,
-                             unsigned   scales_with,
-                             blp        blp_state );
+  static double proc_chance( player_t* player, double PPM, timespan_t last_trigger,
+                             timespan_t accumulated_bad_luck_protection, unsigned scales_with, blp blp_state );
 
   real_ppm_t( util::string_view name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),

@@ -1820,19 +1820,19 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-void action_t::assess_damage( result_amount_type type, action_state_t* s )
+void action_t::assess_damage( result_amount_type type, action_state_t* state )
 {
   // Execute outbound damage assessor pipeline on the state object
-  player->assessor_out_damage.execute( type, s );
+  player->assessor_out_damage.execute( type, state );
 
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
-  if ( s->result_raw > 0 || result_is_miss( s->result ) )
+  if ( state->result_raw > 0 || result_is_miss( state->result ) )
   {
-    if ( s->target == sim->target )
+    if ( state->target == sim->target )
     {
-      player->priority_iteration_dmg += s->result_amount;
+      player->priority_iteration_dmg += state->result_amount;
     }
-    record_data( s );
+    record_data( state );
   }
 }
 
@@ -1917,16 +1917,16 @@ void action_t::start_gcd()
   }
 }
 
-void action_t::schedule_execute( action_state_t* execute_state )
+void action_t::schedule_execute( action_state_t* state )
 {
   if ( target->is_sleeping() )
   {
     sim->print_debug( "{} action={} attempted to schedule on a dead target {}",
       *player, *this, *target );
 
-    if ( execute_state )
+    if ( state )
     {
-      action_state_t::release( execute_state );
+      action_state_t::release( state );
     }
     return;
   }
@@ -1935,7 +1935,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
 
   time_to_execute = execute_time();
 
-  execute_event = start_action_execute_event( time_to_execute, execute_state );
+  execute_event = start_action_execute_event( time_to_execute, state );
 
   if ( trigger_gcd > timespan_t::zero() )
     player->off_gcdactions.clear();
@@ -3781,9 +3781,9 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
   return dot_duration;
 }
 
-event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
+event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* state )
 {
-  return make_event<action_execute_event_t>( *sim, this, t, execute_event );
+  return make_event<action_execute_event_t>( *sim, this, t, state );
 }
 
 void action_t::do_schedule_travel( action_state_t* state, timespan_t time_ )

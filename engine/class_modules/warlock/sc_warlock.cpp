@@ -542,14 +542,14 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
 }
 
 // BFA - Essence
-void warlock_t::trigger_memory_of_lucid_dreams( double cost )
+void warlock_t::trigger_memory_of_lucid_dreams( double gain )
 {
   if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
   {
     return;
   }
 
-  if ( cost <= 0 )
+  if ( gain <= 0 )
   {
     return;
   }
@@ -565,7 +565,7 @@ void warlock_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  memory_of_lucid_dreams_accumulator += cost * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+  memory_of_lucid_dreams_accumulator += gain * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
 
   double shards_to_give = floor( memory_of_lucid_dreams_accumulator );
 

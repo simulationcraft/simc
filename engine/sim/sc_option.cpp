@@ -611,13 +611,10 @@ opts::parse_status opts::parse( sim_t*                                      sim,
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                                      sim,
-                  util::string_view                          /* context */,
-                  util::span<const std::unique_ptr<option_t>> options,
-                  util::span<const util::string_view>         splits,
-                  const parse_status_fn_t&                    status_fn )
+void opts::parse( sim_t* sim, util::string_view /* context */, util::span<const std::unique_ptr<option_t>> options,
+                  util::string_view options_str, const parse_status_fn_t& status_fn )
 {
-  for ( auto& split : splits )
+  for ( auto& split : util::string_split<util::string_view>( options_str, "," ) )
   {
     auto index = split.find_first_of( '=' );
 
@@ -637,18 +634,6 @@ void opts::parse( sim_t*                                      sim,
     }
   }
 }
-
-// option_t::parse ==========================================================
-
-void opts::parse( sim_t*                                      sim,
-                  util::string_view                          context,
-                  util::span<const std::unique_ptr<option_t>> options,
-                  util::string_view                           options_str,
-                  const parse_status_fn_t&                    status_fn )
-{
-  opts::parse( sim, context, options, util::string_split<util::string_view>( options_str, "," ), status_fn );
-}
-
 
 // option_db_t::parse_file ==================================================
 

@@ -898,7 +898,7 @@ public:
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
   void assess_heal( school_e, result_amount_type, action_state_t* ) override;
-  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
+  void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
   const druid_td_t* find_target_data( const player_t* target ) const override;

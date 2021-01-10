@@ -225,9 +225,9 @@ rgb stat_color( stat_e type )
  */
 // These colors are picked to sort of line up with classes, but match the "feel"
 // of the spell class' color
-rgb school_color( school_e type )
+rgb school_color( school_e school )
 {
-  switch ( type )
+  switch ( school )
   {
     // -- Single Schools
     case SCHOOL_NONE:

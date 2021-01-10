@@ -21,8 +21,8 @@ conduit_data_t::conduit_data_t() :
   /* m_player( nullptr ), */ m_conduit( &conduit_rank_entry_t::nil() ), m_spell( spell_data_t::not_found() )
 { }
 
-conduit_data_t::conduit_data_t( const player_t* player, const conduit_rank_entry_t& entry ) :
-  /* m_player( player ), */ m_conduit( &entry ), m_spell( dbc::find_spell( player, entry.spell_id ) )
+conduit_data_t::conduit_data_t( const player_t* player, const conduit_rank_entry_t& conduit )
+  : /* m_player( player ), */ m_conduit( &conduit ), m_spell( dbc::find_spell( player, conduit.spell_id ) )
 { }
 
 bool conduit_data_t::ok() const

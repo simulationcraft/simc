@@ -353,7 +353,7 @@ public:
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
-  buff_t* set_reverse_stack_count( int value );
+  buff_t* set_reverse_stack_count( int count );
   buff_t* set_stack_behavior( buff_stack_behavior b );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );

@@ -68,7 +68,7 @@ struct action_state_t : private noncopyable
   virtual void copy_state( const action_state_t* );
   virtual void initialize();
 
-  virtual std::ostringstream& debug_str( std::ostringstream& debug_str );
+  virtual std::ostringstream& debug_str( std::ostringstream& s );
   virtual void debug();
 
   virtual double composite_crit_chance() const

@@ -8981,19 +8981,19 @@ player_e armory2_parse_player_type( util::string_view class_name )
 /**
  * New armory format used in worldofwarcraft.com / www.wowchina.com
  */
-bool player_t::parse_talents_armory2( util::string_view talents_url )
+bool player_t::parse_talents_armory2( util::string_view talent_url )
 {
-  auto split = util::string_split<util::string_view>( talents_url, "#/=" );
+  auto split = util::string_split<util::string_view>( talent_url, "#/=" );
   if ( split.size() < 5 )
   {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talents_url );
+    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
     return false;
   }
 
   // Sanity check that second to last split is "talents"
   if ( !util::str_compare_ci( split[ split.size() - 2 ], "talents" ) )
   {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talents_url );
+    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
     return false;
   }
 
@@ -9007,16 +9007,15 @@ bool player_t::parse_talents_armory2( util::string_view talents_url )
 
   if ( player_type == PLAYER_NONE || type != player_type )
   {
-    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talents_url,
-                 util::player_type_string( type ), split[ OFFSET_CLASS ] );
+    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talent_url,
+                util::player_type_string( type ), split[ OFFSET_CLASS ] );
     return false;
   }
 
   if ( spec_type == SPEC_NONE || specialization() != spec_type )
   {
-    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(),
-                 talents_url, dbc::specialization_string( specialization() ),
-                 split[ OFFSET_SPEC ] );
+    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(), talent_url,
+                dbc::specialization_string( specialization() ), split[ OFFSET_SPEC ] );
     return false;
   }
 
@@ -9777,9 +9776,9 @@ std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, util::s
  * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not
  * just to the player itself.
  */
-std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, util::string_view name )
+std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, util::string_view expression_str )
 {
-  return create_expression( name );
+  return create_expression( expression_str );
 }
 
 std::unique_ptr<expr_t> player_t::create_expression( util::string_view expression_str )
@@ -10372,9 +10371,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   return sim->create_expression( expression_str );
 }
 
-std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view name_str )
+std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view expression_str )
 {
-  auto splits = util::string_split<util::string_view>( name_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
   if ( splits.empty() )
     return nullptr;
 
@@ -10383,43 +10382,43 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
     return nullptr;
 
   if ( splits.size() == 1 )
-    return make_ref_expr( name_str, resources.current[ r ] );
+    return make_ref_expr( expression_str, resources.current[ r ] );
 
   if ( splits.size() == 2 )
   {
     if ( splits[ 1 ] == "deficit" )
     {
-      return make_fn_expr( name_str, [ this, r ] { return resources.max[ r ] - resources.current[ r ]; } );
+      return make_fn_expr( expression_str, [ this, r ] { return resources.max[ r ] - resources.current[ r ]; } );
     }
 
     else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
     {
       if ( r == RESOURCE_HEALTH )
       {
-        return make_mem_fn_expr( name_str, *this, &player_t::health_percentage );
+        return make_mem_fn_expr( expression_str, *this, &player_t::health_percentage );
       }
       else
       {
-        return make_fn_expr( name_str, [ this, r ] { return resources.pct( r ) * 100.0; } );
+        return make_fn_expr( expression_str, [ this, r ] { return resources.pct( r ) * 100.0; } );
       }
     }
 
     else if ( splits[ 1 ] == "max" )
-      return make_ref_expr( name_str, resources.max[ r ] );
+      return make_ref_expr( expression_str, resources.max[ r ] );
 
     else if ( splits[ 1 ] == "max_nonproc" )
-      return make_ref_expr( name_str, collected_data.buffed_stats_snapshot.resource[ r ] );
+      return make_ref_expr( expression_str, collected_data.buffed_stats_snapshot.resource[ r ] );
 
     else if ( splits[ 1 ] == "pct_nonproc" )
     {
-      return make_fn_expr( name_str, [ this, r ] {
+      return make_fn_expr( expression_str, [ this, r ] {
         return resources.current[ r ] / collected_data.buffed_stats_snapshot.resource[ r ] * 100.0;
       } );
     }
 
     else if ( splits[ 1 ] == "net_regen" )
     {
-      return make_fn_expr( name_str, [ this, r ] {
+      return make_fn_expr( expression_str, [ this, r ] {
         timespan_t now = sim->current_time();
         if ( now != timespan_t::zero() )
           return ( iteration_resource_gained[ r ] - iteration_resource_lost[ r ] ) / now.total_seconds();
@@ -10430,7 +10429,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
 
     else if ( splits[ 1 ] == "regen" )
     {
-      return make_fn_expr( name_str, [ this, r ] { return resource_regen_per_second( r ); } );
+      return make_fn_expr( expression_str, [ this, r ] { return resource_regen_per_second( r ); } );
     }
 
     else if ( util::str_prefix_ci( splits[ 1 ], "time_to_" ) )
@@ -10440,14 +10439,14 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
       // foo.time_to_max
       if ( util::str_in_str_ci( parts[ 2 ], "max" ) )
       {
-        return make_fn_expr( name_str, [ this, r ] {
+        return make_fn_expr( expression_str, [ this, r ] {
           return ( resources.max[ r ] - resources.current[ r ] ) / resource_regen_per_second( r );
         } );
       }
 
       // foo.time_to_x
       const double amount = util::to_double( parts[ 2 ] );
-      return make_fn_expr( name_str, [ this, r, amount ] {
+      return make_fn_expr( expression_str, [ this, r, amount ] {
         if ( resources.current[ r ] >= amount )
         {
           return timespan_t::zero().total_seconds();
@@ -10463,7 +10462,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
     }
   }
 
-  auto tail = name_str.substr(splits[ 0 ].length() + 1);
+  auto tail = expression_str.substr( splits[ 0 ].length() + 1 );
   throw std::invalid_argument(fmt::format("Unsupported resource expression '{}'.", tail));
 }
 
@@ -11917,7 +11916,7 @@ void player_collected_data_t::analyze( const player_t& p )
 }
 
 // This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
-void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& wv,
+void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value,
                                                    const player_t& p )
 {
   if ( !p.tmi_debug_file_str.empty() )
@@ -11933,7 +11932,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
     {
       f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ], timeline_healing_taken.data()[ i ],
                 health_changes.timeline.data()[ i ], health_changes.timeline_normalized.data()[ i ], nma->data()[ i ],
-                wv[ i ] );
+                weighted_value[ i ] );
     }
     f << "\n";
   }

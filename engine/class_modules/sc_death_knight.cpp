@@ -435,7 +435,7 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* everfrost;
   } debuff;
 
-  death_knight_td_t( player_t* target, death_knight_t* death_knight );
+  death_knight_td_t( player_t* target, death_knight_t* player );
 };
 
 struct death_knight_t : public player_t {
@@ -1078,7 +1078,7 @@ public:
   void      invalidate_cache( cache_e ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
-  void      copy_from( player_t* other ) override;
+  void      copy_from( player_t* source ) override;
   void      merge( player_t& other ) override;
   void      analyze( sim_t& sim ) override;
   void      apply_affecting_auras( action_t& action ) override;
@@ -1116,7 +1116,7 @@ public:
   void      trigger_virulent_plague_death( player_t* );
 
   // Runeforge expression handling for Death Knight Runeforges (not legendary)
-  std::unique_ptr<expr_t>   create_runeforge_expression( util::string_view expr_str, bool warning );
+  std::unique_ptr<expr_t> create_runeforge_expression( util::string_view expression_str, bool warning );
 
   target_specific_t<death_knight_td_t> target_data;
 
@@ -1150,46 +1150,44 @@ inline void rune_event_t::execute_event()
   m_rune -> fill_rune();
 }
 
-inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p ) :
-  actor_target_data_t( target, p )
+inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* player )
+  : actor_target_data_t( target, player )
 {
-  dot.blood_plague         = target -> get_dot( "blood_plague",         p );
-  dot.frost_fever          = target -> get_dot( "frost_fever",          p );
-  dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
-  dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
-  dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
+  dot.blood_plague         = target->get_dot( "blood_plague", player );
+  dot.frost_fever          = target->get_dot( "frost_fever", player );
+  dot.virulent_plague      = target->get_dot( "virulent_plague", player );
+  dot.soul_reaper          = target->get_dot( "soul_reaper", player );
+  dot.shackle_the_unworthy = target->get_dot( "shackle_the_unworthy", player );
 
-  debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
-                           -> set_cooldown( 0_ms ); // Handled by the action
-  debuff.razorice          = make_buff( *this, "razorice", p -> spell.razorice_debuff )
-                           -> set_default_value_from_effect( 1 )
-                           -> set_period( 0_ms );
-  debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
-                           -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
-                           -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
-                           {
-                             // Update the FW target count if needed
-                             if ( old_ == 0 )
-                               p -> festering_wounds_target_count++;
-                             else if ( new_ == 0 )
-                               p -> festering_wounds_target_count--;
-                           } );
+  debuff.mark_of_blood =
+      make_buff( *this, "mark_of_blood", player->talent.mark_of_blood )->set_cooldown( 0_ms );  // Handled by the action
+  debuff.razorice = make_buff( *this, "razorice", player->spell.razorice_debuff )
+                        ->set_default_value_from_effect( 1 )
+                        ->set_period( 0_ms );
+  debuff.festering_wound = make_buff( *this, "festering_wound", player->spell.festering_wound_debuff )
+                               ->set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
+                               ->set_stack_change_callback( [ player ]( buff_t*, int old_, int new_ ) {
+                                 // Update the FW target count if needed
+                                 if ( old_ == 0 )
+                                   player->festering_wounds_target_count++;
+                                 else if ( new_ == 0 )
+                                   player->festering_wounds_target_count--;
+                               } );
 
-  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) ); // Effect not implemented
-  debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                           -> set_default_value_from_effect( 1 );
-  debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
-                           -> set_default_value_from_effect( 1 );
+  debuff.apocalypse_death = make_buff( *this, "death", player->find_spell( 327095 ) );  // Effect not implemented
+  debuff.apocalypse_famine =
+      make_buff( *this, "famine", player->find_spell( 327092 ) )->set_default_value_from_effect( 1 );
+  debuff.apocalypse_war = make_buff( *this, "war", player->find_spell( 327096 ) )->set_default_value_from_effect( 1 );
 
-  debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
-                           -> set_default_value( p -> conduits.debilitating_malady.percent() );
+  debuff.debilitating_malady = make_buff( *this, "debilitating_malady", player->find_spell( 338523 ) )
+                                   ->set_default_value( player->conduits.debilitating_malady.percent() );
 
-  debuff.everfrost         = make_buff( *this, "everfrost", p -> find_spell( 337989 ) )
-                           -> set_default_value( p -> conduits.everfrost.percent() );
+  debuff.everfrost = make_buff( *this, "everfrost", player->find_spell( 337989 ) )
+                         ->set_default_value( player->conduits.everfrost.percent() );
 
-  debuff.unholy_blight     = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy_blight -> effectN( 1 ).trigger() )
-                           -> set_default_value_from_effect( 2 );
-
+  debuff.unholy_blight =
+      make_buff( *this, "unholy_blight_debuff", player->talent.unholy_blight->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 2 );
 }
 
 // ==========================================================================
@@ -7814,62 +7812,63 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
 // death_knight_t::create_expression ========================================
 
 // Equipped death knight runeforge expressions
-std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::string_view name, bool warning = false )
+std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::string_view expression_str,
+                                                                     bool warning = false )
 {
   // Razorice, looks for the damage procs related to MH and OH
-  if ( util::str_compare_ci( name, "razorice" ) )
+  if ( util::str_compare_ci( expression_str, "razorice" ) )
     return make_fn_expr( "razorice_runforge_expression", [ this ]() {
       return runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh;
     } );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
-  if ( util::str_compare_ci( name, "razorice_mh" ) )
+  if ( util::str_compare_ci( expression_str, "razorice_mh" ) )
     return make_fn_expr( "razorice_mh_runforge_expression", [ this ]() {
       return runeforge.rune_of_razorice_mh;
     } );
-  if ( util::str_compare_ci( name, "razorice_oh" ) )
+  if ( util::str_compare_ci( expression_str, "razorice_oh" ) )
     return make_fn_expr( "razorice_oh_runforge_expression", [ this ]() {
       return runeforge.rune_of_razorice_oh;
     } );
 
   // Fallen Crusader, looks for the unholy strength healing action
-  if ( util::str_compare_ci( name, "fallen_crusader" ) )
+  if ( util::str_compare_ci( expression_str, "fallen_crusader" ) )
     return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
       return runeforge.rune_of_the_fallen_crusader;
     } );
 
   // Stoneskin Gargoyle
-  if ( util::str_compare_ci( name, "stoneskin_gargoyle" ) )
+  if ( util::str_compare_ci( expression_str, "stoneskin_gargoyle" ) )
     return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
       return runeforge.rune_of_the_stoneskin_gargoyle;
     } );
 
   // Apocalypse
-  if ( util::str_compare_ci( name, "apocalypse" ) )
+  if ( util::str_compare_ci( expression_str, "apocalypse" ) )
     return make_fn_expr( "apocalypse_runforge_expression", [ this ]() {
       return runeforge.rune_of_apocalypse;
     } );
 
   // Hysteria
-  if ( util::str_compare_ci( name, "hysteria" ) )
+  if ( util::str_compare_ci( expression_str, "hysteria" ) )
     return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
       return runeforge.rune_of_hysteria;
     } );
 
   // Sanguination
-  if ( util::str_compare_ci( name, "sanguination" ) )
+  if ( util::str_compare_ci( expression_str, "sanguination" ) )
     return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
       return runeforge.rune_of_sanguination;
     } );
 
   // Spellwarding
-  if ( util::str_compare_ci( name, "spellwarding" ) )
+  if ( util::str_compare_ci( expression_str, "spellwarding" ) )
     return make_fn_expr( "spellwarding_runeforge_expression", [ this ]() {
       return runeforge.rune_of_spellwarding != 0;
     } );
 
   // Unending Thirst, effect NYI
-  if ( util::str_compare_ci( name, "unending_thirst" ) )
+  if ( util::str_compare_ci( expression_str, "unending_thirst" ) )
     return make_fn_expr( "unending_thirst_runeforge_expression", [ this ]() {
       return runeforge.rune_of_unending_thirst;
     } );
@@ -7877,7 +7876,7 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
   if ( !warning )
-    throw std::invalid_argument( fmt::format( "Unknown Death Knight runeforge name '{}'", name ) );
+    throw std::invalid_argument( fmt::format( "Unknown Death Knight runeforge name '{}'", expression_str ) );
   return nullptr;
 }
 

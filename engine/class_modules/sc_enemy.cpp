@@ -86,7 +86,7 @@ struct enemy_t : public player_t
   void combat_end() override;
   virtual void recalculate_health();
   void demise() override;
-  std::unique_ptr<expr_t> create_expression( util::string_view type ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   timespan_t available() const override
   {
     return waiting_time;
@@ -1615,20 +1615,20 @@ bool enemy_t::taunt( player_t* source )
 
 // enemy_t::create_expression ===============================================
 
-std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view expression_str )
 {
-  if ( name_str == "adds" )
-    return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );
+  if ( expression_str == "adds" )
+    return make_mem_fn_expr( expression_str, active_pets, &std::vector<pet_t*>::size );
 
   // override enemy health.pct expression
-  if ( name_str == "health.pct" )
-    return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
+  if ( expression_str == "health.pct" )
+    return make_mem_fn_expr( expression_str, *this, &enemy_t::health_percentage );
 
   // current target (for tank/taunting purposes)
-  if ( name_str == "current_target" )
-    return make_ref_expr( name_str, current_target );
+  if ( expression_str == "current_target" )
+    return make_ref_expr( expression_str, current_target );
 
-  auto splits = util::string_split<util::string_view>( name_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   if ( splits[ 0 ] == "current_target" )
   {
@@ -1680,7 +1680,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
     }
   }
 
-  return player_t::create_expression( name_str );
+  return player_t::create_expression( expression_str );
 }
 
 // enemy_t::combat_begin ====================================================

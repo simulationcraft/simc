@@ -679,7 +679,7 @@ public:
   void add_option( std::unique_ptr<option_t> o );
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
-  bool parse_talents_armory2( util::string_view talent_string );
+  bool parse_talents_armory2( util::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
@@ -743,9 +743,10 @@ public:
   const spell_data_t* find_soulbind_spell( util::string_view name ) const;
   const spell_data_t* find_covenant_spell( util::string_view name ) const;
 
-  const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
+  const spell_data_t* find_racial_spell( util::string_view name, race_e r = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_rank_spell( util::string_view name, util::string_view desc, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
+                                       specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
   const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
@@ -995,9 +996,11 @@ public:
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
-  virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
-  virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
-  virtual void   recalculate_resource_max( resource_e resource_type, gain_t* g = nullptr );
+  virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
+                                action_t* action = nullptr );
+  virtual double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
+                                action_t* action = nullptr );
+  virtual void recalculate_resource_max( resource_e resource_type, gain_t* source = nullptr );
   // Check whether the player has enough of a given resource.
   // The caller needs to ensure current resources are up to date (in particular with dynamic regen).
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
@@ -1029,9 +1032,9 @@ public:
   virtual void  summon_pet( util::string_view name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( util::string_view name );
 
-  virtual std::unique_ptr<expr_t> create_expression( util::string_view name );
-  virtual std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view name );
-  virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view name );
+  virtual std::unique_ptr<expr_t> create_expression( util::string_view expression_str );
+  virtual std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view expression_str );
+  virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view expression_str );
 
   virtual void create_options();
   void recreate_talent_str( talent_format format = talent_format::NUMBERS );

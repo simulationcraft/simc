@@ -46,25 +46,20 @@ pet_t::pet_t( sim_t*             sim,
 {
 }
 
-pet_t::pet_t( sim_t*             sim,
-              player_t*          owner,
-              util::string_view name,
-              pet_e              type,
-              bool               guardian,
-              bool               dynamic ) :
-  player_t( sim, type == PET_ENEMY ? ENEMY_ADD : guardian ? PLAYER_GUARDIAN : PLAYER_PET, name, RACE_NONE ),
-  full_name_str( owner -> name_str + '_' + name_str ),
-  owner( owner ),
-  stamina_per_owner( 0.75 ),
-  intellect_per_owner( 0.30 ),
-  summoned( false ),
-  dynamic( dynamic ),
-  affects_wod_legendary_ring( true ),
-  pet_type( type ),
-  expiration( nullptr ),
-  duration( timespan_t::zero() ),
-  npc_id(),
-  owner_coeff()
+pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
+  : player_t( sim, pet_type == PET_ENEMY ? ENEMY_ADD : guardian ? PLAYER_GUARDIAN : PLAYER_PET, name, RACE_NONE ),
+    full_name_str( owner->name_str + '_' + name_str ),
+    owner( owner ),
+    stamina_per_owner( 0.75 ),
+    intellect_per_owner( 0.30 ),
+    summoned( false ),
+    dynamic( dynamic ),
+    affects_wod_legendary_ring( true ),
+    pet_type( pet_type ),
+    expiration( nullptr ),
+    duration( timespan_t::zero() ),
+    npc_id(),
+    owner_coeff()
 {
   target = owner -> target;
   true_level = owner -> true_level;

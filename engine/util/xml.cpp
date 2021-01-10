@@ -314,18 +314,17 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 
 // xml_node_t::get ==========================================================
 
-std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url,
-                                             cache::behavior_e  caching,
+std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url, cache::behavior_e cache_behavior,
                                              const std::string& confirmation )
 {
   auto_lock_t lock( xml_mutex );
 
   auto p = xml_cache.find( url );
-  if ( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
+  if ( p != xml_cache.end() && ( cache_behavior != cache::CURRENT || p->second.era >= cache::era() ) )
     return p -> second.root;
 
   std::string result;
-  if ( http::get( result, url, caching, confirmation ) != 200 )
+  if ( http::get( result, url, cache_behavior, confirmation ) != 200 )
     return std::shared_ptr<xml_node_t>();
 
   if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( result ) )
@@ -1227,22 +1226,20 @@ sc_xml_t sc_xml_t::create( const std::string& input,
   return *c.root;
 }
 
-sc_xml_t sc_xml_t::get( const std::string& url,
-                        cache::behavior_e caching,
-                        const std::string& confirmation )
+sc_xml_t sc_xml_t::get( const std::string& url, cache::behavior_e cache_behavior, const std::string& confirmation )
 {
   {
     auto_lock_t lock( xml_mutex );
 
     auto p = new_xml_cache.find( url );
-    if ( p != new_xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
+    if ( p != new_xml_cache.end() && ( cache_behavior != cache::CURRENT || p->second.era >= cache::era() ) )
     {
       return sc_xml_t( *p -> second.root );
     }
   }
 
   std::string result;
-  auto status = http::get(result, url, caching, confirmation);
+  auto status = http::get( result, url, cache_behavior, confirmation );
   if (status != 200)
   {
     throw std::runtime_error(fmt::format("Error obtaining http data. Status={}", status));

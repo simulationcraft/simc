@@ -836,9 +836,9 @@ uint32_t dbc::get_school_mask( school_e s )
   }
 }
 
-school_e dbc::get_school_type( uint32_t school_mask )
+school_e dbc::get_school_type( uint32_t school_id )
 {
-  switch ( school_mask )
+  switch ( school_id )
   {
     case 0x01: return SCHOOL_PHYSICAL;
     case 0x02: return SCHOOL_HOLY;
