@@ -525,7 +525,7 @@ bool xml_node_t::get_value( double&            value,
   xml_parm_t* parm = node -> get_parm( key );
   if ( ! parm ) return false;
 
-  value = std::stod( parm -> value_str.c_str() );
+  value = std::stod( parm -> value_str );
 
   return true;
 }

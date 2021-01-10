@@ -161,7 +161,7 @@ void authorize( sim_t* sim, const std::string& region )
     auto pool = http::pool();
     auto handle = pool->handle( oauth_endpoint );
 
-    handle->set_basic_auth( sim->apikey.c_str() );
+    handle->set_basic_auth( sim->apikey );
     auto res = handle->post( oauth_endpoint,
       "grant_type=client_credentials", "application/x-www-form-urlencoded" );
 

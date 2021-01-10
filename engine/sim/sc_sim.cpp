@@ -4105,7 +4105,7 @@ void sim_t::print_spell_query()
 {
   if ( ! spell_query_xml_output_file_str.empty() )
   {
-    io::cfile file( spell_query_xml_output_file_str.c_str(), "w" );
+    io::cfile file( spell_query_xml_output_file_str, "w" );
     if ( ! file )
     {
       std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";

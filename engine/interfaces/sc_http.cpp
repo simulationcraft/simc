@@ -110,7 +110,7 @@ int download( url_cache_entry_t&              entry,
   // Add If-Modified-Since
   if ( !entry.last_modified_header.empty() )
   {
-    handle->add_request_header( ( "If-Modified-Since: " + entry.last_modified_header ).c_str() );
+    handle->add_request_header( "If-Modified-Since: " + entry.last_modified_header );
   }
 
   auto res = handle->get( url );

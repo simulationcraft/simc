@@ -996,7 +996,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( util::string_vi
     {
       t.name = t.full.substr( index );
       t.value_str = t.full.substr( 0, index );
-      t.value = std::stod( t.value_str.c_str() );
+      t.value = std::stod( t.value_str );
     }
     tokens.push_back( std::move(t) );
   }
