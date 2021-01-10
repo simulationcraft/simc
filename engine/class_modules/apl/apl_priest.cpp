@@ -1,3 +1,9 @@
+// ==========================================================================
+// Priest APL File
+// Contact: https://github.com/orgs/simulationcraft/teams/priest/members
+// Wiki: https://github.com/simulationcraft/simc/wiki/Priests
+// ==========================================================================
+
 #include "class_modules/apl/apl_priest.hpp"
 
 #include "class_modules/priest/sc_priest.hpp"
@@ -200,8 +206,8 @@ void shadow( player_t* p )
       "talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)",
       "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
   main->add_action( p, "Devouring Plague",
-                    "target_if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_"
-                    "nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+                    "if=(refreshable|insanity>75)&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare."
+                    "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
   main->add_action( p, "Void Bolt",
