@@ -9744,6 +9744,23 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
+  add_option( opt_deprecated( "predator_rppm", "druid.predator_rppm" ) );
+  add_option( opt_deprecated( "initial_astral_power", "druid.initial_astral_power" ) );
+  add_option( opt_deprecated( "initial_moon_stage", "druid.initial_moon_stage" ) );
+  add_option( opt_deprecated( "eclipse_snapshot_period", "druid.eclipse_snapshot_period" ) );
+  add_option( opt_deprecated( "catweave_bear", "druid.catweave_bear" ) );
+  add_option( opt_deprecated( "owlweave_bear", "druid.owlweave_bear" ) );
+  add_option( opt_deprecated( "owlweave_cat", "druid.owlweave_cat" ) );
+  add_option( opt_deprecated( "no_cds", "druid.no_cds" ) );
+  add_option( opt_deprecated( "affinity_resources", "druid.affinity_resources" ) );
+  add_option( opt_deprecated( "thorns_attack_period", "druid.thorns_attack_period" ) );
+  add_option( opt_deprecated( "thorns_hit_chance", "druid.thorns_hit_chance" ) );
+  add_option( opt_deprecated( "kindred_spirits_partner_dps", "druid.kindred_spirits_partner_dps" ) );
+  add_option( opt_deprecated( "kindred_spirits_hide_partner", "druid.kindred_spirits_hide_partner" ) );
+  add_option( opt_deprecated( "kindred_spirits_absorbed", "druid.kindred_spirits_absorbed" ) );
+  add_option( opt_deprecated( "convoke_the_spirits_ultimate", "druid.convoke_the_spirits_ultimate" ) );
+  add_option( opt_deprecated( "adaptive_swarm_jump_distance", "druid.adaptive_swarm_jump_distance" ) );
+
   add_option( opt_float( "druid.predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "druid.initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", initial_moon_stage ) );
