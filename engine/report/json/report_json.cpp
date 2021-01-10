@@ -919,6 +919,7 @@ void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_e
   } );
 }
 
+#ifndef SC_NO_THREADING
 void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
 root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
@@ -1031,18 +1032,20 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
     }
   } );
 }
+#endif
 
 void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
-  if (report_configuration.version_intersects(">=3.0.0"))
+#ifndef SC_NO_THREADING
+  if ( report_configuration.version_intersects( ">=3.0.0" ) )
   {
-    profileset_json3(profileset, sim, root);
+    profileset_json3( profileset, sim, root );
   }
   else
   {
-    profileset_json2(profileset, sim, root);
+    profileset_json2( profileset, sim, root );
   }
-  
+#endif
 }
 
 void to_json( const ::report::json::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
