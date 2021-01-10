@@ -163,7 +163,7 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
   return b;
 }
 
-const std::vector<unsigned> azerite_power_t::ilevels() const
+std::vector<unsigned> azerite_power_t::ilevels() const
 { return m_ilevels; }
 
 unsigned azerite_power_t::n_items() const

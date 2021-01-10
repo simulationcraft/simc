@@ -4198,7 +4198,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   unsigned impact_flags;
   lava_burst_type type;
 
-  static const std::string action_name( const std::string& suffix )
+  static std::string action_name( const std::string& suffix )
   {
     return !suffix.empty() ? "lava_burst_overload_" + suffix : "lava_burst_overload";
   }
