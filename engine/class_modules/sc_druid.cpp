@@ -5927,7 +5927,15 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( !free_cast )
+    if ( !free_cast && ( p()->specialization() == DRUID_BALANCE || p()->specialization() == DRUID_RESTORATION ) )
+      p()->eclipse_handler.cast_wrath();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    if ( !free_cast && ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_GUARDIAN ) )
       p()->eclipse_handler.cast_wrath();
   }
 };
