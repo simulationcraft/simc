@@ -599,7 +599,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     parent -> control = original_opts;
 
-    simulate_profileset( parent, *ptr_set.get(), profile_sim );
+    simulate_profileset( parent, *ptr_set, profile_sim );
 
     delete profile_sim;
   }
