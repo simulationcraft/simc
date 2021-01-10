@@ -38,6 +38,13 @@ namespace profileset
 {
 class profilesets_t;
 
+#ifdef SC_NO_THREADING
+class profile_set_t;
+class profile_output_data_t;
+struct statistical_data_t;
+#endif
+
+#ifndef SC_NO_THREADING
 struct statistical_data_t
 {
   double min, first_quartile, median, mean, third_quartile, max, std_dev, mean_std_dev;
@@ -416,7 +423,6 @@ public:
   }
 };
 
-#ifndef SC_NO_THREADING
 class worker_t
 {
   bool           m_done;
@@ -449,12 +455,6 @@ public:
   using profileset_entry_t = std::unique_ptr<profile_set_t>;
   using profileset_vector_t = std::vector<profileset_entry_t>;
 private:
-  enum simulation_mode
-  {
-    SEQUENTIAL = 0,
-    PARALLEL
-  };
-
   enum state
   {
     STARTED,            // Initial state
@@ -462,7 +462,12 @@ private:
     RUNNING,            // Finished initializing, running through profilesets
     DONE                // Finished profileset iterating
   };
-
+#ifndef SC_NO_THREADING
+  enum simulation_mode
+  {
+    SEQUENTIAL = 0,
+    PARALLEL
+  };
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
@@ -472,18 +477,14 @@ private:
   std::unique_ptr<sim_control_t>         m_original;
   int64_t                                m_insert_index;
   size_t                                 m_work_index;
-#ifndef SC_NO_THREADING
   std::mutex                             m_mutex;
   std::unique_lock<std::mutex>           m_control_lock;
   std::condition_variable                m_control;
   std::vector<std::thread>               m_thread;
-#endif
 
   // Shared iterator for threaded init workers
   opts::map_list_t::const_iterator       m_init_index;
 
-
-#ifndef SC_NO_THREADING
   // Parallel profileset worker information
   size_t                                 m_max_workers;
   std::vector<std::unique_ptr<worker_t>> m_current_work;
@@ -520,11 +521,9 @@ public:
 
   ~profilesets_t();
 
-  size_t n_profilesets() const
-  { return m_profilesets.size(); }
+  size_t n_profilesets() const;
 
-  const profileset_vector_t& profilesets() const
-  { return m_profilesets; }
+  const profileset_vector_t& profilesets() const;
 
   size_t done_profilesets() const;
 
@@ -541,20 +540,15 @@ public:
   void output_text( const sim_t& sim, std::ostream& out ) const;
   void output_html( const sim_t& sim, std::ostream& out ) const;
 
-  bool is_initializing() const
-  { return m_state == INITIALIZING; }
+  bool is_initializing() const;
 
-  bool is_running() const
-  { return m_state == RUNNING; }
+  bool is_running() const;
 
-  bool is_done() const
-  { return m_state == DONE; }
+  bool is_done() const;
 
-  bool is_sequential() const
-  { return m_mode == SEQUENTIAL; }
+  bool is_sequential() const;
 
-  bool is_parallel() const
-  { return m_mode == PARALLEL; }
+  bool is_parallel() const;
 };
 
 void create_options( sim_t* sim );
